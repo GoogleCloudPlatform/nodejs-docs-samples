@@ -28,6 +28,7 @@ const redisExists = promisify(redisClient.exists).bind(redisClient);
 
 // Insert new messages into the Redis cache
 async function addMessageToCache(roomName, msg) {
+  // Check for current cache
   let room = await getRoomFromCache(roomName);
   if (room) {
     // Update old room
@@ -40,19 +41,8 @@ async function addMessageToCache(roomName, msg) {
     };
   }
   redisClient.set(roomName, JSON.stringify(room));
+  // Insert message to the database as well
   addMessageToDb(room);
-}
-
-// Insert messages into the database
-async function addMessageToDb(data) {
-  const room = messageDb.find(messages => messages.room === data.room);
-  if (room) {
-    // Update room in database
-    Object.assign(room, data);
-  } else {
-    // Create new room in database
-    messageDb.push(data);
-  }
 }
 
 // Query Redis for messages for a specific room
@@ -67,12 +57,7 @@ async function getRoomFromCache(roomName) {
   return JSON.parse(await redisGet(roomName));
 }
 
-// Query the database for messages for a specific room
-function getRoomFromDatabase(roomName) {
-  return messageDb.find(messages => messages.room === roomName);
-}
-
-// Example of local database storage -
+// In-memory database example -
 // Production applications should use a persistent database such as Firestore
 const messageDb = [
   {
@@ -94,6 +79,24 @@ const messageDb = [
     ],
   },
 ];
+
+// Insert messages into the example database for long term storage
+async function addMessageToDb(data) {
+  const room = messageDb.find(messages => messages.room === data.room);
+  if (room) {
+    // Update room in database
+    Object.assign(room, data);
+  } else {
+    // Create new room in database
+    messageDb.push(data);
+  }
+}
+
+// Query the example database for messages for a specific room
+function getRoomFromDatabase(roomName) {
+  return messageDb.find(messages => messages.room === roomName);
+}
+
 
 module.exports = {
   getRoomFromCache,

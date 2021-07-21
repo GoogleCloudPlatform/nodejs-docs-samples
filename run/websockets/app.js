@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const express = require('express');
 const {redisClient, getRoomFromCache, addMessageToCache} = require('./redis');
 const {addUser, getUser, deleteUser} = require('./users');
-const express = require('express');
 
 const app = express();
 app.use(express.static(__dirname + '/public'));
@@ -37,21 +37,22 @@ io.adapter(redisAdapter(redisClient, redisClient.duplicate()));
 
 // Listen for new connection
 io.on('connection', socket => {
-  // Add listener for "login" event
-  socket.on('login', async ({name, room}, callback) => {
+  // Add listener for "signin" event
+  socket.on('signin', async ({user, room}, callback) => {
     try {
       // Record socket ID to user's name and chat room
-      addUser(socket.id, name, room);
+      addUser(socket.id, user, room);
       // Call join to subscribe the socket to a given channel
       socket.join(room);
       // Emit notification event
       socket.in(room).emit('notification', {
         title: "Someone's here",
-        description: `${name} just entered the room`,
+        description: `${user} just entered the room`,
       });
       // Retrieve room's message history or return null
       const messages = await getRoomFromCache(room);
-      // Send room's message history
+      // Use the callback to respond with the room's message history
+      // Callbacks are more commonly used for event listeners than promises
       callback(null, messages);
     } catch (err) {
       callback(err, null);
@@ -60,9 +61,9 @@ io.on('connection', socket => {
 
   // [START cloudrun_websockets_update_socket]
   // Add listener for "updateSocketId" event
-  socket.on('updateSocketId', async ({name, room}) => {
+  socket.on('updateSocketId', async ({user, room}) => {
     try {
-      addUser(socket.id, name, room);
+      addUser(socket.id, user, room);
       socket.join(room);
     } catch (err) {
       console.log(err);

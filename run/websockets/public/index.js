@@ -30,20 +30,22 @@ const socket = io('', {
 });
 // [END cloudrun_websockets_initialization]
 
-let name;
+// Initialize global variables for connection and reconnection
+let user;
 let room;
-// Submit login form
+// Submit signin form
 $('#signin').submit(e => {
   e.preventDefault();
-  name = $('#name').val();
+  user = $('#name').val();
   room = $('#room').val();
-  // Emit "login" event with user name and chat room
-  socket.emit('login', {name, room}, (error, history) => {
+  // Emit "signin" event with user name and chat room
+  socket.emit('signin', {user, room}, (error, history) => {
     if (error) {
       console.log(error);
     } else {
-      // Set up chat room
+      // The history callback includes message history 
       if (history) addHistory(history.messages);
+      // Load chat room messages
       setChatroom(room);
       $('#signin').hide();
       $('#chatroom').show();

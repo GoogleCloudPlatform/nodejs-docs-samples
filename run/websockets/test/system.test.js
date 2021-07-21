@@ -68,6 +68,7 @@ describe('End-to-End Tests', () => {
     ID_TOKEN = clientHeaders['Authorization'].trim();
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
 
+    // Initialize puppeteer to test service client websockets
     browser = await puppeteer.launch({
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
@@ -104,14 +105,15 @@ describe('End-to-End Tests', () => {
     await browserPage.setExtraHTTPHeaders({
       Authorization: ID_TOKEN,
     });
+    // Go to service client
     await browserPage.goto(BASE_URL, {
       waitUntil: 'networkidle2',
     });
 
-    // Log in
+    // Join chat room
     await browserPage.evaluate(() => {
       document.querySelector('#name').value = 'Sundar';
-      document.querySelector('#room').value = 'Google';
+      document.querySelector('#room').value = `Room_${SAMPLE_VERSION}`;
       document.querySelector('.signin').click();
     });
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -130,6 +132,6 @@ describe('End-to-End Tests', () => {
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
-    assert.strictEqual(roomText, 'Google');
+    assert.strictEqual(roomText, `Room_${SAMPLE_VERSION}`);
   });
 });

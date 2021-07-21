@@ -16,7 +16,7 @@ steps:
         "gcloud compute networks vpc-access connectors delete my-connector --region ${_REGION} --quiet"
 
 substitutions:
-  _SERVICE: websocket
+  _SERVICE: websockets
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed

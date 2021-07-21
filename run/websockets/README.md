@@ -38,8 +38,7 @@ With `npm`:
     export CONNECTOR_NAME=<CONNECTOR>
     export REDISHOST=<REDIS_IP>
 
-    gcloud beta run deploy websocket --source . \
-    --platform managed \
+    gcloud beta run deploy websockets --source . \
     --allow-unauthenticated \
     --region $REGION \
     --timeout 3600 \

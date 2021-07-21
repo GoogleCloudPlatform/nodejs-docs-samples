@@ -43,7 +43,7 @@ $('#signin').submit(e => {
     if (error) {
       console.log(error);
     } else {
-      // The history callback includes message history 
+      // The history callback includes message history
       if (history) addHistory(history.messages);
       // Load chat room messages
       setChatroom(room);

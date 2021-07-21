@@ -97,7 +97,6 @@ function getRoomFromDatabase(roomName) {
   return messageDb.find(messages => messages.room === roomName);
 }
 
-
 module.exports = {
   getRoomFromCache,
   addMessageToCache,

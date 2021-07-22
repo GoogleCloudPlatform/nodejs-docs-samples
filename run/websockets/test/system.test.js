@@ -106,6 +106,7 @@ describe('End-to-End Tests', () => {
       waitUntil: 'networkidle2',
     });
 
+    let document;
     // Join chat room
     await browserPage.evaluate(() => {
       document.querySelector('#name').value = 'Sundar';

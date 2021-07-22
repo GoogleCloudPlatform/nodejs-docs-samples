@@ -20,6 +20,5 @@ steps:
 
 substitutions:
   _SERVICE: websockets
-  _VERSION: manual
   _REGION: us-central1
   _REDISHOST: localhost

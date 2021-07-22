@@ -46,7 +46,6 @@ describe('End-to-End Tests', () => {
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
-    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -83,7 +82,6 @@ describe('End-to-End Tests', () => {
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     exec(cleanUpCmd);
   });
@@ -112,7 +110,7 @@ describe('End-to-End Tests', () => {
     // Join chat room
     await browserPage.evaluate(() => {
       document.querySelector('#name').value = 'Sundar';
-      document.querySelector('#room').value = `Room_${SAMPLE_VERSION}`;
+      document.querySelector('#room').value = 'Google';
       document.querySelector('.signin').click();
     });
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -131,6 +129,6 @@ describe('End-to-End Tests', () => {
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
-    assert.strictEqual(roomText, `Room_${SAMPLE_VERSION}`);
+    assert.strictEqual(roomText, 'Google');
   });
 });

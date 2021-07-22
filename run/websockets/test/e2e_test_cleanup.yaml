@@ -6,8 +6,7 @@ steps:
   args:
     - '-c'
     - |
-      ./test/retry.sh "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
-        "gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
+      ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
 
       ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}" \
         "gcloud run services delete ${_SERVICE} --region ${_REGION} --quiet"
@@ -17,5 +16,4 @@ steps:
 
 substitutions:
   _SERVICE: websockets
-  _VERSION: manual
   _REGION: us-central1

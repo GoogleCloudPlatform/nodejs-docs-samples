@@ -66,7 +66,7 @@ io.on('connection', socket => {
       addUser(socket.id, user, room);
       socket.join(room);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   });
   // [END cloudrun_websockets_update_socket]

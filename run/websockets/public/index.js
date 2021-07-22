@@ -41,7 +41,7 @@ $('#signin').submit(e => {
   // Emit "signin" event with user name and chat room
   socket.emit('signin', {user, room}, (error, history) => {
     if (error) {
-      console.log(error);
+      console.error(error);
     } else {
       // The history callback includes message history
       if (history) addHistory(history.messages);
@@ -62,7 +62,7 @@ $('#chat').submit(e => {
   // Emit "sendMessage" event with message
   socket.emit('sendMessage', msg, error => {
     if (error) {
-      console.log(error);
+      console.error(error);
     } else {
       // Clear message
       $('#msg').val('');
@@ -104,7 +104,7 @@ socket.io.on('reconnect', () => {
   // Emit "updateSocketId" event to update the recorded socket ID with user and room
   socket.emit('updateSocketId', {user, room}, error => {
     if (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 });

@@ -10,9 +10,6 @@
     "system-test": "mocha test/system.test.js --timeout=420000 --exit"
   },
   "dependencies": {
-    "@material/button": "^11.0.0",
-    "@material/ripple": "^11.0.0",
-    "@material/textfield": "^11.0.0",
     "@socket.io/redis-adapter": "^7.0.0",
     "express": "^4.17.1",
     "pug": "^3.0.2",

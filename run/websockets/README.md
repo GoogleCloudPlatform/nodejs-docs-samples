@@ -5,7 +5,7 @@ This sample demonstrates how to use WebSockets on
 
 * [Setup](#setup)
 * [Running locally](#running-locally)
-* [Deploying to App Engine](#deploying-to-app-engine)
+* [Deploying to Cloud Run](#deploying-to-Cloud-Run)
 * [Running the tests](#running-the-tests)
 
 ## Setup

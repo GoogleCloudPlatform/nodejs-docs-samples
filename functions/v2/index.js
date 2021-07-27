@@ -23,7 +23,7 @@
  * @param {object} cloudevent A CloudEvent containing the Pub/Sub message.
  * @param {object} cloudevent.data.message The Pub/Sub message itself.
  */
-exports.helloPubSub = (cloudevent) => {
+exports.helloPubSub = cloudevent => {
   const base64name = cloudevent.data.message.data;
 
   const name = base64name

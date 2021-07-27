@@ -17,8 +17,6 @@ const {request} = require('gaxios');
 const {exec} = require('child_process');
 const waitPort = require('wait-port');
 
-const program = require('..');
-
 const startFF = async (target, signature, port) => {
   const ff = exec(
     `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
@@ -53,26 +51,27 @@ describe('functions_cloudevents_pubsub', () => {
         code === 0 ? resolve(stdout) : reject(stderr);
       });
     });
-
   });
 
   after(() => {
     // Stop any residual Functions Framework instances
     try {
-      ffProc.kill()
-    } catch (err) {}
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
   });
 
   it('should process a CloudEvent', async () => {
     const event = {
       data: {
-        message: 'd29ybGQ=' // 'World' in base 64
-      }
+        message: 'd29ybGQ=', // 'World' in base 64
+      },
     };
     const response = await invocation(PORT, event);
     ffProc.kill();
 
-    const output = await ffProcHandler
+    const output = await ffProcHandler;
 
     assert.strictEqual(response.status, 204);
     assert.strictEqual(output.includes('Hello, World!'), true);

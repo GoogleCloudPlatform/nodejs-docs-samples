@@ -34,7 +34,7 @@ const invocation = (port, event) => {
   });
 };
 
-describe('functions_cloudevents_pubsub', () => {
+describe('functions_cloudevent_pubsub', () => {
   const PORT = 9081;
   let ffProc;
   let ffProcHandler;

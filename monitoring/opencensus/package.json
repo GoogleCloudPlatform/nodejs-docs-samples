@@ -10,7 +10,7 @@
   "author": "Yuri Grinshteyn",
   "license": "Apache-2.0",
   "dependencies": {
-    "@opencensus/core": "^0.0.22",
+    "@opencensus/core": "^0.1.0",
     "@opencensus/exporter-stackdriver": "^0.0.22",
     "express": "^4.17.1",
     "node-stopwatch": "^0.0.1"

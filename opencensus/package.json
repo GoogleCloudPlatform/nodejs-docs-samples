@@ -17,7 +17,7 @@
     "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
-    "@opencensus/core": "^0.0.22",
+    "@opencensus/core": "^0.1.0",
     "@opencensus/exporter-stackdriver": "^0.0.22"
   },
   "devDependencies": {

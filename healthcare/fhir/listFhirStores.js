@@ -38,7 +38,7 @@ const main = (
 
     const fhirStores =
       await healthcare.projects.locations.datasets.fhirStores.list(request);
-    console.log(fhirStores.data);
+    console.log(JSON.stringify(fhirStores.data));
   };
 
   listFhirStores();

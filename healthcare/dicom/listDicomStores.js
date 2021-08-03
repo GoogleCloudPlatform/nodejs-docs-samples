@@ -38,7 +38,7 @@ const main = (
 
     const dicomStores =
       await healthcare.projects.locations.datasets.dicomStores.list(request);
-    console.log(dicomStores.data);
+    console.log(JSON.stringify(dicomStores.data));
   };
 
   listDicomStores();

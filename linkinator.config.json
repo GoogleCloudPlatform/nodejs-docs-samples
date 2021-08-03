@@ -1,7 +1,7 @@
 {
   "recurse": true,
   "skip": [
-    "http://localhost:8080",
+    "http://localhost:8080*",
     "\/node_modules\/"
   ],
   "silent": true,

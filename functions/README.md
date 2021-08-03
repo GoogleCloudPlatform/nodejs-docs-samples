@@ -20,7 +20,6 @@ environment.
 ## Samples
 
 * [Hello World](helloworld/)
-* [Background](background/)
 * [Cloud Pub/Sub](pubsub/)
 * [Cloud Spanner](spanner/)
 * [HTTP](http/)

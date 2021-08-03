@@ -46,7 +46,7 @@ The App Engine Node.js samples typically require that you do the following:
         npm start
 
 
-1.  Visit the application at http://localhost:8080][].
+1.  Visit the application at http://localhost:8080.
 
 ## Deploying
 

@@ -6,7 +6,7 @@ are referenced from the documentation on [cloud.google.com][appengine].
 
 There are also samples [submitted by the community][community_samples].
 
-See our other [Google Cloud Platform GitHub repositories](/GoogleCloudPlatform)
+See our other [Google Cloud Platform GitHub repositories](https://github.com/GoogleCloudPlatform)
 for sample applications and scaffolding for other frameworks and use cases.
 
 * [Run Locally](#run-locally)
@@ -46,7 +46,7 @@ The App Engine Node.js samples typically require that you do the following:
         npm start
 
 
-1.  Visit the application at [http://localhost:8080][].
+1.  Visit the application at http://localhost:8080][].
 
 ## Deploying
 

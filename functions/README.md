@@ -21,13 +21,9 @@ environment.
 
 * [Hello World](helloworld/)
 * [Background](background/)
-* [Callbacks](messages/)
 * [Cloud Pub/Sub](pubsub/)
 * [Cloud Spanner](spanner/)
-* [Dependencies](uuid/)
-* [Error Reporting](errorreporting/)
 * [HTTP](http/)
 * [Logging & Monitoring](log/)
 * [OCR (Optical Character Recognition)](ocr/)
-* [SendGrid](sendgrid/)
 * [Slack](slack/)

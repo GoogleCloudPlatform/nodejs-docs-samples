@@ -33,10 +33,10 @@ With `npm`:
 1. Create a [VPC connector.](https://cloud.google.com/vpc/docs/configure-serverless-vpc-access#creating_a_connector). This will let our Cloud Run service connect to Redis over the VPC network. After it’s created, note its name.
 
 1. Deploy to Cloud Run:
-
+    ```
     export REGION=us-central1
     export CONNECTOR_NAME=<CONNECTOR>
-    export REDISHOST=<REDIS_IP>
+    export REDISHOST=$(gcloud redis instances describe INSTANCE_ID --region REGION --format "value(host)")
 
     gcloud beta run deploy websockets --source . \
     --allow-unauthenticated \
@@ -44,7 +44,7 @@ With `npm`:
     --timeout 3600 \
     --vpc-connector $CONNECTOR_NAME \
     --set-env-vars REDISHOST=$REDISHOST
-
+    ```
 
 ## Running the tests
 

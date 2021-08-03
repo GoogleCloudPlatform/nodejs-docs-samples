@@ -7,7 +7,7 @@ Use it with the [End user Authentication for Cloud Run](http://cloud.google.com/
 
 For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/idp-sql)
 
 ## Dependencies
 
@@ -49,7 +49,7 @@ Other environment variables:
 
 * Saving credentials directly as environment variables is convenient for local testing,
   but not secure for production; therefore using `CLOUD_SQL_CREDENTIALS_SECRET`
-  in combination with the Cloud Secrets Manager is recommended.  
+  in combination with the Cloud Secrets Manager is recommended.
 
 ## Running Locally
 

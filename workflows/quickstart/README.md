@@ -17,11 +17,11 @@ This sample shows how to execute a Cloud Workflow and wait for the workflow exec
 ## Run the Quickstart
 
 1. Run the script, either with environment variables or command-line arguments:
-  
+
     `node . <projectId> [cloudRegion] [workflowName]`.
-  
+
     _or_
-    
+
     `GOOGLE_CLOUD_PROJECT=... node .`: The Cloud project with the workflow `myFirstWorkflow`.
 
 1. Observe the results:
@@ -32,4 +32,4 @@ This sample shows how to execute a Cloud Workflow and wait for the workflow exec
     ["Wednesday","Wednesday Night Wars","Wednesday 13","Wednesday Addams","Wednesday Campanella","Wednesdayite","Wednesday Martin","Wednesday Campanella discography","Wednesday Night Hockey (American TV program)","Wednesday Morning, 3 A.M."]
     ```
 
-[prereq]: ../README.md#prerequisities
+[prereq]: ../../README.md#prerequisities

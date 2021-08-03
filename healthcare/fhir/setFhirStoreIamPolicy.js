@@ -36,6 +36,7 @@ const main = (
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
+    // const fhirStoreId = 'my-fhir-store';
     // const member = 'user:example@gmail.com';
     // const role = 'roles/healthcare.fhirStoreViewer';
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;

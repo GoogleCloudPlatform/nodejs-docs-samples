@@ -38,7 +38,7 @@ const main = (
     // const datasetId = 'my-dataset';
     // const fhirStoreId = 'my-fhir-store';
     // const resourceType = 'Patient';
-    // const resourceId = '9a664e07-79a4-4c2e-04ed-e996c75484e1;
+    // const resourceId = '9a664e07-79a4-4c2e-04ed-e996c75484e1';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
     const request = {name};
 

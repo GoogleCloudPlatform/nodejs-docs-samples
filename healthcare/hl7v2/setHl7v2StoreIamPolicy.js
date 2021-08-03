@@ -36,6 +36,7 @@ const main = (
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
+    // const dicomStoreId = 'my-dicom-store';
     // const member = 'user:example@gmail.com';
     // const role = 'roles/healthcare.hl7V2StoreViewer';
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;

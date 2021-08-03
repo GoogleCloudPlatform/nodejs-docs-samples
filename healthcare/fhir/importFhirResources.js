@@ -29,7 +29,9 @@ const main = (
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
   });
-  const sleep = require('../sleep');
+  const sleep = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  };
 
   const importFhirResources = async () => {
     // TODO(developer): uncomment these lines before running the sample

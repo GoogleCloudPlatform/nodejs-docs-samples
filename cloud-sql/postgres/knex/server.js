@@ -155,7 +155,7 @@ const ensureSchema = async pool => {
       table.specificType('candidate', 'CHAR(6)').notNullable();
     });
   }
-  console.log("Ensured that table 'votes' exists");
+  logger.info("Ensured that table 'votes' exists");
 };
 
 const createPoolAndEnsureSchema = async () =>

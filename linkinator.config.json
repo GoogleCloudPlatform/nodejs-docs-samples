@@ -1,0 +1,10 @@
+{
+  "recurse": true,
+  "skip": [
+    "http://localhost:8080*",
+    "\/node_modules\/"
+  ],
+  "silent": true,
+  "concurrency": 10,
+  "directoryListing": true
+}

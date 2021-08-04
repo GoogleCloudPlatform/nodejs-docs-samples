@@ -17,7 +17,7 @@ Then, deploy the sample using `gcloud`:
 
     gcloud beta app deploy
 
-Once deployed, you can access the application at https://YOUR-PROJECT-ID.appspot.com/.
+Once deployed, you can access the application at `https://YOUR-PROJECT-ID.appspot.com/`.
 
 ## Send an echo request
 

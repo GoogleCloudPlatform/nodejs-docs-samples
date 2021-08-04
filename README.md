@@ -7,7 +7,7 @@ Node.js samples for [Google Cloud Platform products][cloud].
 See [cloud.google.com/nodejs][cloud_nodejs] to get up and running with Node.js
 on Google Cloud Platform.
 
-[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg	
+[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
 [slack_link]: https://googlecloud-community.slack.com/
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
@@ -61,17 +61,6 @@ View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 
 [bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
 [bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
-
-### Node.js Codelab
-
-In the [Node.js Web App Google Cloud Platform][codelab_docs] codelab, you learn
-how to integrate Google Cloud Platform services into a Node.js web application
-to store data, upload images, and authenticate users.
-
-View the [tutorial][codelab_docs] or the [source code][codelab_code].
-
-[codelab_docs]: https://gcplab.me/codelabs/cloud-nodejs/index.html
-[codelab_code]: https://github.com/googlecodelabs/cloud-nodejs
 
 ## Contributing
 

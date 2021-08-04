@@ -16,8 +16,8 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 
         npm install
 
-[prereq]: ../README.md#prerequisites
-[run]: ../README.md#how-to-run-a-sample
+[prereq]: ../../README.md#prerequisites
+[run]: ../../README.md#how-to-run-a-sample
 
 ## Samples
 
@@ -26,9 +26,9 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 View the [documentation][prometheus_0_docs] or the [source code][prometheus_0_code].
 
 Start the server locally by running
-  
+
  node app.js
-  
+
 and send requests to it at
 
     http://localhost:8080

@@ -10,7 +10,11 @@
 
 FROM node:slim
 =======
+
+FROM node:slim
+=======
 FROM node:16.5.0-slim
+
 
 
 # Create and change to the app directory.

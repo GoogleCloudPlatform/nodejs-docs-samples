@@ -17,8 +17,8 @@ OpenCensus is a toolkit for collecting application performance and behavior data
         npm install
 
 
-[prereq]: ../README.md#prerequisites
-[run]: ../README.md#how-to-run-a-sample
+[prereq]: ../../README.md#prerequisites
+[run]: ../../README.md#how-to-run-a-sample
 
 ## Samples
 
@@ -26,11 +26,11 @@ OpenCensus is a toolkit for collecting application performance and behavior data
 
 View the [documentation][stats_0_docs] or the [source code][stats_0_code].
 
-Start the server locally by running 
-    
+Start the server locally by running
+
     node app.js
-    
-and send requests to it at 
+
+and send requests to it at
 
     http://localhost:8080
 

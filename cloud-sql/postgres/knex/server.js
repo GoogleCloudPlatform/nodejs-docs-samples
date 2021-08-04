@@ -146,20 +146,20 @@ const createPool = async () => {
   }
 };
 
-const ensureSchema = async pool => {  
+const ensureSchema = async pool => {
   const hasTable = await pool.schema.hasTable('votes');
   if (!hasTable) {
-    return pool.schema.createTable("votes", (table) => {
-      table.increments("vote_id").primary();
-      table.timestamp("time_cast", 30).notNullable();
+    return pool.schema.createTable('votes', table => {
+      table.increments('vote_id').primary();
+      table.timestamp('time_cast', 30).notNullable();
       table.specificType('candidate', 'CHAR(6)').notNullable();
-    })
+    });
   }
-   console.log("Ensured that table 'votes' exists");
+  console.log("Ensured that table 'votes' exists");
 };
 
 const createPoolAndEnsureSchema = async () =>
-   await createPool()
+  await createPool()
     .then(async pool => {
       await ensureSchema(pool);
       return pool;

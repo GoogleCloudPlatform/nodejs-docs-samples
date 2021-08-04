@@ -106,20 +106,13 @@ Then use this command to launch the proxy in the background:
 
 ### Testing the application
 
-2. Next, install the Node.js packages necessary to run the app locally by running the following command:
+1. Next, install the Node.js packages necessary to run the app locally by running the following command:
 
     ```
     npm install
     ```
 
-3. Run `createTable.js` to create the database table the app requires and to ensure that the database is properly configured.
-With the Cloud SQL proxy running, run the following command to create the sample app's table in your Cloud SQL PostgreSQL database:
-
-    ```
-    node createTable.js $DB_USER $DB_PW $DB_NAME $CLOUD_SQL_CONNECTION_NAME
-    ```
-
-4. Run the sample app locally with the following command:
+2. Run the sample app locally with the following command:
 
     ```
     npm start

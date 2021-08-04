@@ -26,10 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new monitoring.AlertPolicyServiceClient();
 const channelClient = new monitoring.NotificationChannelServiceClient();
-const projectId =
-  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
-const cmd = 'node alerts';
-
+let projectId;
 let policyOneName, policyTwoName, channelName;
 const testPrefix = `gcloud-test-${uuid.v4().split('-')[0]}`;
 
@@ -48,6 +45,7 @@ const delay = async test => {
 
 describe('alerts', () => {
   before(async () => {
+    projectId = await client.getProjectId();
     await reapPolicies();
     let results = await client.createAlertPolicy({
       name: client.projectPath(projectId),
@@ -179,16 +177,22 @@ describe('alerts', () => {
   it('should replace notification channels', async function () {
     this.retries(8);
     await delay(this.test);
-    const stdout = execSync(`${cmd} replace ${policyOneName} ${channelName}`);
+    const parts = policyOneName.split('/');
+    const projectId = parts[1];
+    const alertPolicyId = parts[3];
+    const channelId = channelName.split('/')[3];
+    const stdout = execSync(
+      `node alerts.replaceChannels.js ${projectId} ${alertPolicyId} ${channelId}`
+    );
     assert.include(stdout, 'Updated projects');
     assert.include(stdout, policyOneName);
   });
 
   it('should disable policies', async function () {
-    this.retries(8);
+    //this.retries(8);
     await delay(this.test);
     const stdout = execSync(
-      `${cmd} disable ${projectId} 'display_name.size < 28'`
+      `node alerts.enablePolicies.js ${projectId} false 'display_name.size < 28'`
     );
     assert.include(stdout, 'Disabled projects');
     assert.notInclude(stdout, policyOneName);
@@ -199,7 +203,7 @@ describe('alerts', () => {
     this.retries(8);
     await delay(this.test);
     const stdout = execSync(
-      `${cmd} enable ${projectId} 'display_name.size < 28'`
+      `node alerts.enablePolicies.js ${projectId} true 'display_name.size < 28'`
     );
     assert.include(stdout, 'Enabled projects');
     assert.notInclude(stdout, policyOneName);
@@ -207,7 +211,7 @@ describe('alerts', () => {
   });
 
   it('should list policies', () => {
-    const stdout = execSync(`${cmd} list ${projectId}`);
+    const stdout = execSync(`node alerts.listPolicies.js ${projectId}`);
     assert.include(stdout, 'Policies:');
     assert.include(stdout, 'first-policy');
     assert.include(stdout, 'Test');
@@ -217,7 +221,7 @@ describe('alerts', () => {
   it('should backup all policies', async function () {
     this.retries(8);
     await delay(this.test);
-    const output = execSync(`${cmd} backup ${projectId}`);
+    const output = execSync(`node alerts.backupPolicies.js ${projectId}`);
     assert.include(output, 'Saved policies to ./policies_backup.json');
     assert.ok(fs.existsSync(path.join(__dirname, '../policies_backup.json')));
     await client.deleteAlertPolicy({name: policyOneName});
@@ -226,7 +230,7 @@ describe('alerts', () => {
   it('should restore policies', async function () {
     this.retries(8);
     await delay(this.test);
-    const output = execSync(`${cmd} restore ${projectId}`);
+    const output = execSync(`node alerts.restorePolicies.js ${projectId}`);
     assert.include(output, 'Loading policies from ./policies_backup.json');
     const matches = output.match(
       /projects\/[A-Za-z0-9-]+\/alertPolicies\/([\d]+)/gi

@@ -70,7 +70,7 @@ function main(
     // Send create task request.
     console.log('Sending task:');
     console.log(task);
-    const request = {parent, task};
+    const request = {parent: parent, task: task};
     const [response] = await client.createTask(request);
     console.log(`Created task ${response.name}`);
   }

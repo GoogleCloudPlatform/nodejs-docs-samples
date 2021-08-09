@@ -1,7 +1,7 @@
 const {expect} = require('chai');
 const waitPort = require('wait-port');
 
-const PORT = parseInt(process.env.PORT) || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
 
 describe('gae_flex_redislabs_memcache', () => {
   it('should be listening', async () => {

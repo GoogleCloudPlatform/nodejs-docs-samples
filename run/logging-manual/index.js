@@ -4,7 +4,7 @@
 
 const app = require('./app');
 const metadata = require('./metadata');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 const SERVICE = require('./package').name;
 
 const startServer = () => {

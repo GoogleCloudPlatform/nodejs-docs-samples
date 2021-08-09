@@ -47,7 +47,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
 
     console.log('Starting Cloud Build...');
-    // execSync(buildCmd);
+    execSync(buildCmd);
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
@@ -82,7 +82,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
 
-    // exec(cleanUpCmd);
+    exec(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {
@@ -124,10 +124,10 @@ describe('End-to-End Tests', () => {
 
     // Confirm message
     let itemText;
-    for (i=0; i < 5; i++ ) {
+    for (let i = 0; i < 5; i++) {
       itemText = await browserPage.evaluate(() => {
-        return document.querySelector('#messages li')
-      })
+        return document.querySelector('#messages li');
+      });
       if (itemText) return;
       sleep(i * 1000); // Linear delay
     }

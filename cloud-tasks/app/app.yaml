@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # [START cloud_tasks_app_yaml]
-runtime: nodejs10
+runtime: nodejs14
 
 # [START cloud_tasks_app_env_vars]
 env_variables:

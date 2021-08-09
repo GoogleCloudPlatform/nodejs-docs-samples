@@ -47,7 +47,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd);
+    // execSync(buildCmd);
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
@@ -82,7 +82,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
 
-    exec(cleanUpCmd);
+    // exec(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {
@@ -123,12 +123,23 @@ describe('End-to-End Tests', () => {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Confirm message
-    const list = await browserPage.$('#messages li');
-    const itemText = await browserPage.evaluate(el => el.textContent, list);
-    assert.strictEqual(itemText.trim(), 'Sundar: Welcome!');
+    let itemText;
+    for (i=0; i < 5; i++ ) {
+      itemText = await browserPage.evaluate(() => {
+        return document.querySelector('#messages li')
+      })
+      if (itemText) return;
+      sleep(i * 1000); // Linear delay
+    }
+    assert.ok(itemText);
+    assert.strictEqual(itemText.innerText.trim(), 'Sundar: Welcome!');
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
     assert.strictEqual(roomText, 'Google');
   });
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 });

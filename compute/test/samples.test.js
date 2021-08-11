@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,69 +14,160 @@
 
 'use strict';
 
+const compute = require('@google-cloud/compute');
+const {Storage} = require('@google-cloud/storage');
+
+const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {assert} = require('chai');
-const Compute = require('@google-cloud/compute');
+
+const instancesClient = new compute.InstancesClient({fallback: 'rest'});
+const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const compute = new Compute();
-
 describe('samples', () => {
-  describe('quickstart', () => {
-    const name = `gcloud-ubuntu-${uuid.v4().split('-')[0]}`;
-    after(async () => deleteVM(name));
-    it('should run the quickstart', () => {
-      const output = execSync(`node quickstart ${name}`);
-      assert.match(output, /Virtual machine created!/);
+  const instanceName = `gcloud-test-intance-${uuid.v4().split('-')[0]}`;
+  const zone = 'europe-central2-b';
+  const bucketName = `test-bucket-name-${uuid.v4().split('-')[0]}`;
+
+  const storage = new Storage();
+
+  it('should create instance', async () => {
+    const projectId = await instancesClient.getProjectId();
+    const output = execSync(
+      `node createInstance ${projectId} ${zone} ${instanceName}`
+    );
+    assert.match(output, /Instance created./);
+  });
+
+  it('should print instances list', async () => {
+    const projectId = await instancesClient.getProjectId();
+    const output = execSync(`node listInstances ${projectId} ${zone}`);
+    assert.match(output, /Instances found in zone/);
+  });
+
+  it('should print all instances list', async () => {
+    const projectId = await instancesClient.getProjectId();
+    const output = execSync(`node listAllInstances ${projectId}`);
+    assert.match(output, /Instances found:/);
+  });
+
+  it('should delete instance', async () => {
+    const projectId = await instancesClient.getProjectId();
+    const output = execSync(
+      `node deleteInstance ${projectId} ${zone} ${instanceName}`
+    );
+    assert.match(output, /Instance deleted./);
+  });
+
+  it('should wait for operation', async () => {
+    const projectId = await instancesClient.getProjectId();
+
+    const newinstanceName = `gcloud-test-intance-${uuid.v4().split('-')[0]}`;
+
+    execSync(`node createInstance ${projectId} ${zone} ${newinstanceName}`);
+
+    const [operation] = await instancesClient.delete({
+      project: projectId,
+      zone,
+      instance: newinstanceName,
+    });
+
+    const operationString = JSON.stringify(operation);
+
+    const output = execSync(
+      `node waitForOperation ${projectId} '${operationString}'`
+    );
+    assert.match(output, /Operation finished./);
+  });
+
+  describe('usage export', () => {
+    before(async () => {
+      await storage.createBucket(bucketName);
+    });
+
+    after(async () => {
+      const projectId = await instancesClient.getProjectId();
+
+      await projectsClient.setUsageExportBucket({
+        project: projectId,
+        usageExportLocationResource: {},
+      });
+
+      await storage.bucket(bucketName).delete();
+    });
+
+    it('should set empty default value in reportNamePrefix', async () => {
+      const projectId = await instancesClient.getProjectId();
+
+      const output = execSync(
+        `node setUsageExportBucket ${projectId} ${bucketName}`
+      );
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      assert.match(
+        output,
+        /Setting reportNamePrefix to empty value causes the report to have the default prefix value `usage_gce`./
+      );
+
+      const [project] = await projectsClient.get({
+        project: projectId,
+      });
+
+      const usageExportLocation = project.usageExportLocation;
+
+      assert.equal(usageExportLocation.bucketName, bucketName);
+      assert.equal(usageExportLocation.reportNamePrefix, '');
+    });
+
+    it('should get current default value in reportNamePrefix', async () => {
+      const projectId = await instancesClient.getProjectId();
+
+      execSync(`node setUsageExportBucket ${projectId} ${bucketName}`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      const output = execSync(`node getUsageExportBucket ${projectId}`);
+
+      assert.match(
+        output,
+        /Report name prefix not set, replacing with default value of `usage_gce`./
+      );
+
+      assert.match(output, /Returned reportNamePrefix: usage_gce/);
+    });
+
+    it('should disable usage export', async () => {
+      const projectId = await instancesClient.getProjectId();
+
+      execSync(`node setUsageExportBucket ${projectId} ${bucketName}`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      execSync(`node disableUsageExport ${projectId}`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
+      const [project] = await projectsClient.get({
+        project: projectId,
+      });
+
+      assert.isUndefined(project.usageExportLocation);
     });
   });
 
-  describe('lifecycle', () => {
-    const name = `gcloud-ubuntu-${uuid.v4().split('-')[0]}`;
+  describe('pagination', () => {
+    const projectId = 'windows-sql-cloud';
 
-    it('should create a VM', () => {
-      const output = execSync(`node createVM ${name}`);
-      assert.match(output, /Virtual machine created!/);
+    it('should automatically iterate throught the pages', async () => {
+      const output = execSync(`node listImages ${projectId}`);
+      const lines = output.split(' - ');
+
+      assert(lines.length > 3);
     });
 
-    it('should list the VMs', () => {
-      const output = execSync('node listVMs');
-      assert.match(output, /Found \d+ VMs!/);
-    });
+    it('should iterate page by page granularly', async () => {
+      const output = execSync(`node listImagesByPage ${projectId}`);
 
-    it('should delete the VM', () => {
-      const output = execSync(`node deleteVM ${name}`);
-      assert.match(output, /VM deleted!/);
-    });
-  });
-
-  describe('start-up script', () => {
-    const name = `gcloud-apache-${uuid.v4().split('-')[0]}`;
-    after(async () => deleteVM(name));
-    it('should create vm with startup script', function (done) {
-      this.timeout(280000);
-      this.retries(3);
-      const {spawn} = require('child_process');
-      const startupScript = spawn('node', ['startupScript', name], {
-        stdio: 'inherit',
-      });
-      startupScript.on('close', code => {
-        assert.strictEqual(code, 0);
-        return done();
-      });
+      assert.match(output, /Page 1/);
+      assert.match(output, /Page 2/);
     });
   });
 });
-
-/**
- * Utility function to delete a VM.
- * @param {string} name
- */
-async function deleteVM(name) {
-  const zone = compute.zone('us-central1-c');
-  const vm = zone.vm(name);
-  const [operation] = await vm.delete();
-  await operation.promise();
-}

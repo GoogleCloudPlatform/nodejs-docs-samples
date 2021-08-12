@@ -45,10 +45,21 @@ function main(projectId, bucketName, reportNamePrefix = '') {
 
     // Set the usage export location.
     const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
-    projectsClient.setUsageExportBucket({
+    const operationsClient = new compute.GlobalOperationsClient({
+      fallback: 'rest',
+    });
+
+    let [operation] = await projectsClient.setUsageExportBucket({
       project: projectId,
       usageExportLocationResource,
     });
+
+    while (operation.status !== 'DONE') {
+      [operation] = await operationsClient.wait({
+        operation: operation.name,
+        project: projectId,
+      });
+    }
   }
 
   setUsageExportBucket();

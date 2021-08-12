@@ -83,19 +83,19 @@ function main(
 
     console.log(`Creating the ${instanceName} instance in ${zone}...`);
 
-    // Wait for the create operation to complete.
-    const [operation] = await instancesClient.insert({
+    let [operation] = await instancesClient.insert({
       instanceResource: instance,
       project: projectId,
       zone,
     });
 
-    if (operation.status === 'RUNNING') {
-      const operationsClient = new compute.ZoneOperationsClient({
-        fallback: 'rest',
-      });
+    const operationsClient = new compute.ZoneOperationsClient({
+      fallback: 'rest',
+    });
 
-      await operationsClient.wait({
+    // Wait for the create operation to complete.
+    while (operation.status !== 'DONE') {
+      [operation] = await operationsClient.wait({
         operation: operation.name,
         project: projectId,
         zone: operation.zone.split('/').pop(),

@@ -28,15 +28,15 @@ function main(projectId, operationString) {
   const compute = require('@google-cloud/compute');
 
   // Parse stringified operation to the object instance.
-  const operation = JSON.parse(operationString);
+  let operation = JSON.parse(operationString);
 
   async function waitForOperation() {
-    if (operation.status === 'RUNNING') {
-      const operationsClient = new compute.ZoneOperationsClient({
-        fallback: 'rest',
-      });
+    const operationsClient = new compute.ZoneOperationsClient({
+      fallback: 'rest',
+    });
 
-      await operationsClient.wait({
+    while (operation.status !== 'DONE') {
+      [operation] = await operationsClient.wait({
         operation: operation.name,
         project: projectId,
         zone: operation.zone.split('/').pop(),

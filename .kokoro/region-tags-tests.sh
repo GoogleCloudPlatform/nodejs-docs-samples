@@ -26,7 +26,7 @@ echo '================================================================='
 
 # Fetch XUnit CI enforcer script
 #  curl-ing it ensures we get the latest version
-curl "https://raw.githubusercontent.com/GoogleCloudPlatform/repo-automation-playground/main/xunit-ci-enforcer/region_tag_enforcer.sh" > enforcer.sh
+curl "https://raw.githubusercontent.com/GoogleCloudPlatform/repo-automation-playground/master/xunit-ci-enforcer/region_tag_enforcer.sh" > enforcer.sh
 chmod +x enforcer.sh
 
 # Run enforcer on appropriate directories

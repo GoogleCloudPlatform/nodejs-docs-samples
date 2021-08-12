@@ -51,4 +51,4 @@ See [Contributing][contributing].
 [std-tutorial]: https://cloud.google.com/appengine/docs/standard/nodejs/integrating-with-analytics
 [readme]: ../README.md
 [tracking]: https://support.google.com/analytics/answer/1042508
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md

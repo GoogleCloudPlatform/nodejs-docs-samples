@@ -52,5 +52,5 @@ See [Contributing][contributing].
 
 [run]: https://cloud.google.com/run/docs
 [readme]: ../README.md
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md
 

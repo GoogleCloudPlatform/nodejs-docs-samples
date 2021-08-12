@@ -26,7 +26,7 @@ need to enable the appropriate APIs in the [Cloud Console](https://console.cloud
 
 All samples must have tests. We use `mocha` as testing framework.
 
-Add a **build configuration file (`.cfg`)** for your samples in **[`.kokoro/`](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/.kokoro)**. Check existing config files for the right format.
+Add a **build configuration file (`.cfg`)** for your samples in **[`.kokoro/`](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/.kokoro)**. Check existing config files for the right format.
 
 All tests need a corresponding job file outside of GitHub. If you are a Googler, please provide the CL alongside your PR. See the internal codelab for Kokoro for details. If you don't work at Google, the person reviewing your PR will create the job config for you.
 

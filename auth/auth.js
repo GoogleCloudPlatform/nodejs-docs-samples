@@ -54,7 +54,7 @@ const authCloudExplicit = async ({projectId, keyFilename}) => {
 
   // Instantiates a client. Explicitly use service account credentials by
   // specifying the private key file. All clients in google-cloud-node have this
-  // helper, see https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/docs/authentication.md
+  // helper, see https://github.com/GoogleCloudPlatform/google-cloud-node/blob/main/docs/authentication.md
   // const projectId = 'project-id'
   // const keyFilename = '/path/to/keyfile.json'
   const storage = new Storage({projectId, keyFilename});

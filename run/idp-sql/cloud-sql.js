@@ -20,7 +20,7 @@ const TABLE = process.env.TABLE || 'pet_votes';
 let knex, credConfig;
 
 // Connection pooling config
-// See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/cloud-sql/postgres/knex
+// See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/cloud-sql/postgres/knex
 // to learn more about this configuration
 const config = {
   pool: {

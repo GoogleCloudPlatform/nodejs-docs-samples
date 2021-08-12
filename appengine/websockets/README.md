@@ -38,5 +38,5 @@ See [Contributing][contributing].
 
 [appengine]: https://cloud.google.com/appengine/docs/flexible/nodejs
 [readme]: ../README.md
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
 

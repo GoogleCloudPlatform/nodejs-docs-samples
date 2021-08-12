@@ -144,7 +144,7 @@ for more information.
 [mysql]: ../cloud-sql/mysql/mysql
 [postgres]: ../cloud-sql/postgres/knex
 [hello_broken]: hello-broken/
-[idtoken]: https://github.com/googleapis/google-auth-library-nodejs/blob/main/samples/idtokens-serverless.js
+[idtoken]: https://github.com/googleapis/google-auth-library-nodejs/blob/master/samples/idtokens-serverless.js
 [preview]: markdown-preview/
 [idp-sql]: idp-sql/
 

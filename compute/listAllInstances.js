@@ -28,7 +28,7 @@ function main(projectId) {
 
   // List all instances in the specified project.
   async function listAllInstances() {
-    const instancesClient = new compute.InstancesClient({fallback: 'rest'});
+    const instancesClient = new compute.InstancesClient();
 
     //Use the `maxResults` parameter to limit the number of results that the API returns per response page.
     const aggListRequest = instancesClient.aggregatedListAsync({

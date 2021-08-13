@@ -28,7 +28,7 @@ function main(projectId) {
 
   async function getUsageExportBucket() {
     // Get the usage export location for the project from the server.
-    const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
+    const projectsClient = new compute.ProjectsClient();
     const [project] = await projectsClient.get({
       project: projectId,
     });

@@ -29,7 +29,7 @@ app.post('/', (req, res) => {
   try {
     // Get the Markdown text and convert it into HTML using markdown-it.
     // For details about XSS prevention in markdown-it,
-    // see https://github.com/markdown-it/markdown-it/blob/main/docs/security.md
+    // see https://github.com/markdown-it/markdown-it/blob/master/docs/security.md
     const md = new MarkdownIt();
     const html = md.render(markdown);
     res.status(200).send(html);

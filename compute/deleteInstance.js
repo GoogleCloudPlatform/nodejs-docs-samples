@@ -32,7 +32,7 @@ function main(projectId, zone, instanceName) {
 
   // Delete the instance specified by `instanceName` if it's present in the given project and zone.
   async function deleteInstance() {
-    const instancesClient = new compute.InstancesClient({fallback: 'rest'});
+    const instancesClient = new compute.InstancesClient();
 
     console.log(`Deleting ${instanceName} from ${zone}...`);
 
@@ -42,9 +42,7 @@ function main(projectId, zone, instanceName) {
       instance: instanceName,
     });
 
-    const operationsClient = new compute.ZoneOperationsClient({
-      fallback: 'rest',
-    });
+    const operationsClient = new compute.ZoneOperationsClient();
 
     // Wait for the delete operation to complete.
     while (operation.status !== 'DONE') {

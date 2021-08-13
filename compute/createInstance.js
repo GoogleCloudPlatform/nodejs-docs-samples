@@ -52,46 +52,42 @@ function main(
   // const networkName = 'global/networks/default';
 
   const compute = require('@google-cloud/compute');
-  const compute_protos = compute.protos.google.cloud.compute.v1;
+  const computeProtos = compute.protos.google.cloud.compute.v1;
 
   // Create a new instance with the values provided above in the specified project and zone.
   async function createInstance() {
-    const instancesClient = new compute.InstancesClient({fallback: 'rest'});
-
-    // Describe the size and source image of the boot disk to attach to the instance.
-    const attachedDisk = new compute_protos.AttachedDisk();
-    const initializeParams = new compute_protos.AttachedDiskInitializeParams();
-
-    initializeParams.diskSizeGb = '10';
-    initializeParams.sourceImage = sourceImage;
-
-    attachedDisk.initializeParams = initializeParams;
-    attachedDisk.autoDelete = true;
-    attachedDisk.boot = true;
-    attachedDisk.type = compute_protos.AttachedDisk.Type.PERSISTENT;
-
-    // Use the network interface provided in the networkName argument.
-    const networkInterface = new compute_protos.NetworkInterface();
-    networkInterface.name = networkName;
-
-    // Collect information into the Instance object.
-    const instance = new compute_protos.Instance();
-    instance.name = instanceName;
-    instance.disks = [attachedDisk];
-    instance.machineType = `zones/${zone}/machineTypes/${machineType}`;
-    instance.networkInterfaces = [networkInterface];
+    const instancesClient = new compute.InstancesClient();
 
     console.log(`Creating the ${instanceName} instance in ${zone}...`);
 
     let [operation] = await instancesClient.insert({
-      instanceResource: instance,
+      instanceResource: {
+        name: instanceName,
+        disks: [
+          {
+            // Describe the size and source image of the boot disk to attach to the instance.
+            initializeParams: {
+              diskSizeGb: '10',
+              sourceImage,
+            },
+            autoDelete: true,
+            boot: true,
+            type: computeProtos.AttachedDisk.Type.PERSISTENT,
+          },
+        ],
+        machineType: `zones/${zone}/machineTypes/${machineType}`,
+        networkInterfaces: [
+          {
+            // Use the network interface provided in the networkName argument.
+            name: networkName,
+          },
+        ],
+      },
       project: projectId,
       zone,
     });
 
-    const operationsClient = new compute.ZoneOperationsClient({
-      fallback: 'rest',
-    });
+    const operationsClient = new compute.ZoneOperationsClient();
 
     // Wait for the create operation to complete.
     while (operation.status !== 'DONE') {

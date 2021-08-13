@@ -31,9 +31,7 @@ function main(projectId, operationString) {
   let operation = JSON.parse(operationString);
 
   async function waitForOperation() {
-    const operationsClient = new compute.ZoneOperationsClient({
-      fallback: 'rest',
-    });
+    const operationsClient = new compute.ZoneOperationsClient();
 
     while (operation.status !== 'DONE') {
       [operation] = await operationsClient.wait({

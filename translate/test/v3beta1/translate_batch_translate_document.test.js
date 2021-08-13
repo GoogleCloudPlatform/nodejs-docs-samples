@@ -61,7 +61,7 @@ describe(REGION_TAG, () => {
     );
     assert.match(output, /Total Pages: /);
 
-    this.timeout(500000);
+    this.timeout(750000);
   });
 
   // Delete the folder from GCS for cleanup

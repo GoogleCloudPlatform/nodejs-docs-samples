@@ -42,7 +42,7 @@ function main(
       payload: {
         textSnippet: {
           content: content,
-          mimeType: 'text/plain', // Types: 'test/plain', 'text/html'
+          mimeType: 'text/plain', // Types: 'text/plain', 'text/html'
         },
       },
     };

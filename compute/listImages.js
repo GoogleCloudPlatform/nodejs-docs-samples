@@ -27,7 +27,7 @@ function main(projectId) {
   const compute = require('@google-cloud/compute');
 
   async function listImages() {
-    const imagesClient = new compute.ImagesClient({fallback: 'rest'});
+    const imagesClient = new compute.ImagesClient();
 
     // Listing only non-deprecated images to reduce the size of the reply.
     const images = imagesClient.listAsync({

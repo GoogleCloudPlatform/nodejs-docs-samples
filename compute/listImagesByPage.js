@@ -29,7 +29,7 @@ function main(projectId, pageSize = 10) {
   const compute = require('@google-cloud/compute');
 
   async function listImagesByPage() {
-    const imagesClient = new compute.ImagesClient({fallback: 'rest'});
+    const imagesClient = new compute.ImagesClient();
 
     // Listing only non-deprecated images to reduce the size of the reply.
     const listRequest = {

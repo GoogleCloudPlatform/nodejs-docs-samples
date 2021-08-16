@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,21 +15,25 @@
 'use strict';
 
 async function main(
-  projectId = 'my-project',
+  projectId = 'your-project-id',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
   keyId = 'my-key',
-  versionId = '123'
+  versionId = '123',
+  data = Buffer.from('...'),
+  signature = Buffer.from('...')
 ) {
-  // [START kms_update_key_set_primary]
+  // [START kms_verify_mac]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
-  // const projectId = 'my-project';
+  // const projectId = 'your-project-id';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
   // const keyId = 'my-key';
   // const versionId = '123';
+  // const data = Buffer.from('...');
+  // const signature = Buffer.from('...');
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -37,21 +41,29 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key name
-  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
+  // Build the version name
+  const versionName = client.cryptoKeyVersionPath(
+    projectId,
+    locationId,
+    keyRingId,
+    keyId,
+    versionId
+  );
 
-  async function updateKeySetPrimary() {
-    const [key] = await client.updateCryptoKeyPrimaryVersion({
-      name: keyName,
-      cryptoKeyVersionId: versionId,
+  async function verifyMac() {
+    // Verify the data with Cloud KMS
+    const [verifyResponse] = await client.macVerify({
+      name: versionName,
+      data: data,
+      mac: signature,
     });
 
-    console.log(`Set primary to ${versionId}`);
-    return key;
+    console.log(`Verified: ${verifyResponse.success}`);
+    return verifyResponse;
   }
 
-  return updateKeySetPrimary();
-  // [END kms_update_key_set_primary]
+  return verifyMac();
+  // [END kms_verify_mac]
 }
 module.exports.main = main;
 

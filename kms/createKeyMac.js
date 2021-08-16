@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,19 +18,16 @@ async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
   keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  ciphertext = Buffer.from('...')
+  id = 'my-mac-key'
 ) {
-  // [START kms_decrypt_symmetric]
+  // [START kms_create_key_mac]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
   // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
-  // Ciphertext must be either a Buffer object or a base-64 encoded string
-  // const ciphertext = Buffer.from('...');
+  // const id = 'my-mac-key';
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -38,40 +35,31 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key name
-  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
+  // Build the parent key ring name
+  const keyRingName = client.keyRingPath(projectId, locationId, keyRingId);
 
-  // Optional, but recommended: compute ciphertext's CRC32C.
-  const crc32c = require('fast-crc32c');
-  const ciphertextCrc32c = crc32c.calculate(ciphertext);
+  async function createKeyMac() {
+    const [key] = await client.createCryptoKey({
+      parent: keyRingName,
+      cryptoKeyId: id,
+      cryptoKey: {
+        purpose: 'MAC',
+        versionTemplate: {
+          algorithm: 'HMAC_SHA256',
+        },
 
-  async function decryptSymmetric() {
-    const [decryptResponse] = await client.decrypt({
-      name: keyName,
-      ciphertext: ciphertext,
-      ciphertextCrc32c: {
-        value: ciphertextCrc32c,
+        // Optional: customize how long key versions should be kept before
+        // destroying.
+        destroyScheduledDuration: {seconds: 60 * 60 * 24},
       },
     });
 
-    // Optional, but recommended: perform integrity verification on decryptResponse.
-    // For more details on ensuring E2E in-transit integrity to and from Cloud KMS visit:
-    // https://cloud.google.com/kms/docs/data-integrity-guidelines
-    if (
-      crc32c.calculate(decryptResponse.plaintext) !==
-      Number(decryptResponse.plaintextCrc32c.value)
-    ) {
-      throw new Error('Decrypt: response corrupted in-transit');
-    }
-
-    const plaintext = decryptResponse.plaintext.toString();
-
-    console.log(`Plaintext: ${plaintext}`);
-    return plaintext;
+    console.log(`Created mac key: ${key.name}`);
+    return key;
   }
 
-  return decryptSymmetric();
-  // [END kms_decrypt_symmetric]
+  return createKeyMac();
+  // [END kms_create_key_mac]
 }
 module.exports.main = main;
 

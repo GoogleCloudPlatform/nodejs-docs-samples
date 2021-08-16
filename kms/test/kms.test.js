@@ -30,6 +30,7 @@ const asymmetricSignEcKeyId = v4();
 const asymmetricSignRsaKeyId = v4();
 const hsmKeyId = v4();
 const symmetricKeyId = v4();
+const hmacKeyId = v4();
 
 const nodeMajorVersion = parseInt(process.version.match(/v?(\d+).*/)[1]);
 
@@ -181,6 +182,31 @@ describe('Cloud KMS samples', () => {
       ),
       'ENABLED'
     );
+
+    await client.createCryptoKey({
+      parent: client.keyRingPath(projectId, locationId, keyRingId),
+      cryptoKeyId: hmacKeyId,
+      cryptoKey: {
+        purpose: 'MAC',
+        versionTemplate: {
+          algorithm: 'HMAC_SHA256',
+        },
+        labels: {
+          foo: 'bar',
+          zip: 'zap',
+        },
+      },
+    });
+    await waitForState(
+      client.cryptoKeyVersionPath(
+        projectId,
+        locationId,
+        keyRingId,
+        hmacKeyId,
+        1
+      ),
+      'ENABLED'
+    );
   });
 
   beforeEach(async () => {
@@ -253,6 +279,13 @@ describe('Cloud KMS samples', () => {
     const key = await sample.main(projectId, locationId, keyRingId, v4());
     assert.equal(key.labels.team, 'alpha');
     assert.equal(key.labels.cost_center, 'cc1234');
+  });
+
+  it('creates mac keys', async () => {
+    const sample = require('../createKeyMac');
+    const key = await sample.main(projectId, locationId, keyRingId, v4());
+    assert.equal(key.purpose, 'MAC');
+    assert.equal(key.versionTemplate.algorithm, 'HMAC_SHA256');
   });
 
   it('creates key rings', async () => {
@@ -452,6 +485,12 @@ describe('Cloud KMS samples', () => {
     assert.equal(decryptResponse.plaintext.toString('utf8'), plaintext);
   });
 
+  it('generates random bytes', async () => {
+    const sample = require('../generateRandomBytes');
+    const result = await sample.main(projectId, locationId, 256);
+    assert.equal(result.data.length, 256);
+  });
+
   it('gets keys with labels', async () => {
     const sample = require('../getKeyLabels');
     const key = await sample.main(
@@ -626,6 +665,34 @@ describe('Cloud KMS samples', () => {
     assert.isTrue(verified);
   });
 
+  it('signs with mac keys', async () => {
+    const data = 'my data';
+
+    const sample = require('../signMac');
+    const result = await sample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      hmacKeyId,
+      1,
+      Buffer.from(data)
+    );
+
+    const [verifyResponse] = await client.macVerify({
+      name: client.cryptoKeyVersionPath(
+        projectId,
+        locationId,
+        keyRingId,
+        hmacKeyId,
+        1
+      ),
+      data: Buffer.from(data),
+      mac: result.mac,
+    });
+
+    assert.isTrue(verifyResponse.success);
+  });
+
   it('adds rotation schedules', async () => {
     const sample = require('../updateKeyAddRotation');
     const key = await sample.main(
@@ -756,5 +823,33 @@ describe('Cloud KMS samples', () => {
     );
 
     assert.isTrue(verified);
+  });
+
+  it('verifies with mac keys', async () => {
+    const data = 'my data';
+
+    const [signResponse] = await client.macSign({
+      name: client.cryptoKeyVersionPath(
+        projectId,
+        locationId,
+        keyRingId,
+        hmacKeyId,
+        1
+      ),
+      data: Buffer.from(data),
+    });
+
+    const sample = require('../verifyMac');
+    const result = await sample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      hmacKeyId,
+      1,
+      Buffer.from(data),
+      signResponse.mac
+    );
+
+    assert.isTrue(result.success);
   });
 });

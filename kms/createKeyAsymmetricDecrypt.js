@@ -47,6 +47,10 @@ async function main(
         versionTemplate: {
           algorithm: 'RSA_DECRYPT_OAEP_2048_SHA256',
         },
+
+        // Optional: customize how long key versions should be kept before
+        // destroying.
+        destroyScheduledDuration: {seconds: 60 * 60 * 24},
       },
     });
 
@@ -59,8 +63,14 @@ async function main(
 }
 module.exports.main = main;
 
-/* c8 ignore next 4 */
+/* c8 ignore next 10 */
 if (require.main === module) {
-  const args = process.argv.slice(2);
-  main(...args).catch(console.error);
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
 }

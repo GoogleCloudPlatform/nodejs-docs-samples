@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,19 +17,15 @@
 async function main(
   projectId = 'my-project',
   locationId = 'us-east1',
-  keyRingId = 'my-key-ring',
-  keyId = 'my-key',
-  versionId = '123'
+  numBytes = 256
 ) {
-  // [START kms_update_key_set_primary]
+  // [START kms_generate_random_bytes]
   //
   // TODO(developer): Uncomment these variables before running the sample.
   //
   // const projectId = 'my-project';
   // const locationId = 'us-east1';
-  // const keyRingId = 'my-key-ring';
-  // const keyId = 'my-key';
-  // const versionId = '123';
+  // const numBytes = 256;
 
   // Imports the Cloud KMS library
   const {KeyManagementServiceClient} = require('@google-cloud/kms');
@@ -37,21 +33,22 @@ async function main(
   // Instantiates a client
   const client = new KeyManagementServiceClient();
 
-  // Build the key name
-  const keyName = client.cryptoKeyPath(projectId, locationId, keyRingId, keyId);
+  // Build the location name
+  const locationName = client.locationPath(projectId, locationId);
 
-  async function updateKeySetPrimary() {
-    const [key] = await client.updateCryptoKeyPrimaryVersion({
-      name: keyName,
-      cryptoKeyVersionId: versionId,
+  async function generateRandomBytes() {
+    const [randomBytesResponse] = await client.generateRandomBytes({
+      location: locationName,
+      lengthBytes: numBytes,
+      protectionLevel: 'HSM',
     });
 
-    console.log(`Set primary to ${versionId}`);
-    return key;
+    console.log(`Random bytes: ${randomBytesResponse.data.toString('base64')}`);
+    return randomBytesResponse;
   }
 
-  return updateKeySetPrimary();
-  // [END kms_update_key_set_primary]
+  return generateRandomBytes();
+  // [END kms_generate_random_bytes]
 }
 module.exports.main = main;
 

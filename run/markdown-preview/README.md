@@ -2,7 +2,7 @@
 
 [Securing Cloud Run services tutorial](https://cloud.google.com/run/docs/tutorials/secure-services) walks through how to create a secure two-service application running on Cloud Run. This application is a Markdown editor which includes a public "frontend" service which anyone can use to compose Markdown text and a private "backend" service which renders Markdown text to HTML.
 
-For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/run).
 
 ## Environment Variables
 

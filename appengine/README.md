@@ -22,7 +22,7 @@ sample.
 
 The App Engine Node.js samples typically require that you do the following:
 
-1.  [Setup your environment for Node.js developement][nodejs_dev].
+1.  [Setup your environment for Node.js development][nodejs_dev].
 1.  [Install the Google Cloud SDK][sdk].
 1.  Acquire local credentials for authenticating with Google Cloud Platform APIs:
 
@@ -36,7 +36,7 @@ The App Engine Node.js samples typically require that you do the following:
 
         cd appengine/sample-folder/
 
-1.  Install depedencies:
+1.  Install dependencies:
 
         npm install
 

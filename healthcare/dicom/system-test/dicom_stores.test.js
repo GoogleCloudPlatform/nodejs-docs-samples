@@ -50,6 +50,7 @@ assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(async () => {
   projectId = await storage.getProjectId();
+  console.log(`THE PROJECT ID IS ${projectId}`);
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
   console.log(`Bucket ${bucketName} created.`);

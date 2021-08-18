@@ -52,6 +52,7 @@ assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
 before(async () => {
   projectId = await google.auth.getProjectId();
+  console.log(`THE PROJECT ID IS ${projectId}`);
   execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
     cwd: cwdDatasets,
   });

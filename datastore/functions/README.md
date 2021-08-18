@@ -21,7 +21,7 @@ Functions for your project.
 
 1. Ensure the Cloud Datastore API is enabled:
 
-  [Click here to enable the Cloud Datastore API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com&redirect=https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/functions/datastore)
+  [Click here to enable the Cloud Datastore API](https://console.cloud.google.com/flows/enableapi?apiid=datastore.googleapis.com&redirect=https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/functions/datastore)
 
 1. Deploy the "get" function with an HTTP trigger:
 

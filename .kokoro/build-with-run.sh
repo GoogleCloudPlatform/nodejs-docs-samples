@@ -62,7 +62,7 @@ export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export NODE_ENV=development
 npm install
 
-# If tests are running against master, configure FlakyBot
+# If tests are running against main, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}

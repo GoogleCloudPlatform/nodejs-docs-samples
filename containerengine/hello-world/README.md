@@ -26,4 +26,4 @@ View the [documentation][docs] or the [source code][code].
 
 See [Contributing][contributing].
 
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md

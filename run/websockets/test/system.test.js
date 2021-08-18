@@ -129,7 +129,7 @@ describe('End-to-End Tests', () => {
         return document.querySelector('#messages li');
       });
       if (itemText) return;
-      sleep(i * 1000); // Linear delay
+      await sleep(i * 1000); // Linear delay
     }
     assert.ok(itemText);
     assert.strictEqual(itemText.innerText.trim(), 'Sundar: Welcome!');

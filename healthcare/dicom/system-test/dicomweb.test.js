@@ -18,8 +18,9 @@ const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
+const google = require('@googleapis/healthcare');
 
-const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+let projectId;
 const cloudRegion = 'us-central1';
 
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -49,15 +50,8 @@ const installDeps = 'npm install';
 // to install dependencies from the datasets directory.
 assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
 
-before(() => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
+before(async () => {
+  projectId = await google.auth.getProjectId();
   execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
     cwd: cwdDatasets,
   });

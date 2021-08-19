@@ -50,11 +50,4 @@ const createTable = async config => {
   }
 };
 
-require('yargs')
-  .command(
-    '* <user> <password> <database> <connectionName> <tableName> [dbHost]',
-    'Create a table',
-    {},
-    createTable
-  )
-  .help().argv;
+

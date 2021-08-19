@@ -64,11 +64,7 @@ exports.stopBilling = async pubsubEvent => {
 
   _setAuthCredential();
   const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
-  if (billingEnabled) {
-    return _disableBillingForProject(PROJECT_NAME);
-  } else {
-    return 'Billing already disabled';
-  }
+  return billingEnabled ? _disableBillingForProject(PROJECT_NAME) : 'Billing already disabled';
 };
 
 // [START functions_billing_limit]

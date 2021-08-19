@@ -38,11 +38,7 @@ before(async () => {
         const result = await listRunningInstances(emptyMessage);
 
         console.log(`${n}: ${result}`);
-        if (result.length > 0) {
-          return Promise.resolve();
-        } else {
-          return retry();
-        }
+        return result.length > 0 ? Promise.resolve() : retry();
       },
       {retries: 8}
     );

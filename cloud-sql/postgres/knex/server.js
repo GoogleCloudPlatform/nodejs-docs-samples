@@ -126,11 +126,7 @@ const createPool = () => {
   config.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
-  if (process.env.DB_HOST) {
-    return createTcpPool(config);
-  } else {
-    return createUnixSocketPool(config);
-  }
+  return process.env.DB_HOST ? createTcpPool(config) : createUnixSocketPool(config);
 };
 
 // [START cloud_sql_postgres_knex_connection]

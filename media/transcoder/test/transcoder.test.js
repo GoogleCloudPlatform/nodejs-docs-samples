@@ -105,12 +105,17 @@ after(async () => {
 describe('Job template functions', () => {
   before(() => {
     // Delete the job template if it already exists
-    execSync(
-      `node deleteJobTemplate.js ${projectId} ${location} ${templateId}`,
-      {
-        cwd,
-      }
-    );
+    try {
+      execSync(
+        `node deleteJobTemplate.js ${projectId} ${location} ${templateId}`,
+        {
+          cwd,
+        }
+      );
+    } catch (err) {
+      // ignore not found error
+    }
+
     const output = execSync(
       `node createJobTemplate.js ${projectId} ${location} ${templateId}`,
       {cwd}

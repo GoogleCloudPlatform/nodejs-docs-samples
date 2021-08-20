@@ -25,7 +25,8 @@ function main(projectId, location, templateId) {
   // templateId = 'my-job-template';
 
   // Imports the Transcoder library
-  const {TranscoderServiceClient} = require('@google-cloud/video-transcoder');
+  const {TranscoderServiceClient} =
+    require('@google-cloud/video-transcoder').v1;
 
   // Instantiates a client
   const transcoderServiceClient = new TranscoderServiceClient();
@@ -41,21 +42,23 @@ function main(projectId, location, templateId) {
             {
               key: 'video-stream0',
               videoStream: {
-                codec: 'h264',
-                heightPixels: 360,
-                widthPixels: 640,
-                bitrateBps: 550000,
-                frameRate: 60,
+                h264: {
+                  heightPixels: 360,
+                  widthPixels: 640,
+                  bitrateBps: 550000,
+                  frameRate: 60,
+                },
               },
             },
             {
               key: 'video-stream1',
               videoStream: {
-                codec: 'h264',
-                heightPixels: 720,
-                widthPixels: 1280,
-                bitrateBps: 2500000,
-                frameRate: 60,
+                h264: {
+                  heightPixels: 720,
+                  widthPixels: 1280,
+                  bitrateBps: 2500000,
+                  frameRate: 60,
+                },
               },
             },
             {

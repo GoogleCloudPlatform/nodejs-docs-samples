@@ -27,7 +27,8 @@ function main(projectId, location, inputUri, overlayImageUri, outputUri) {
   // outputUri = 'gs://my-bucket/my-output-folder/';
 
   // Imports the Transcoder library
-  const {TranscoderServiceClient} = require('@google-cloud/video-transcoder');
+  const {TranscoderServiceClient} =
+    require('@google-cloud/video-transcoder').v1;
 
   // Instantiates a client
   const transcoderServiceClient = new TranscoderServiceClient();
@@ -44,11 +45,12 @@ function main(projectId, location, inputUri, overlayImageUri, outputUri) {
             {
               key: 'video-stream0',
               videoStream: {
-                codec: 'h264',
-                heightPixels: 360,
-                widthPixels: 640,
-                bitrateBps: 550000,
-                frameRate: 60,
+                h264: {
+                  heightPixels: 360,
+                  widthPixels: 640,
+                  bitrateBps: 550000,
+                  frameRate: 60,
+                },
               },
             },
             {

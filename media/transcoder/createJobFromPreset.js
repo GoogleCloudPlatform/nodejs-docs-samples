@@ -27,7 +27,8 @@ function main(projectId, location, inputUri, outputUri, preset) {
   // preset = 'preset/web-hd';
 
   // Imports the Transcoder library
-  const {TranscoderServiceClient} = require('@google-cloud/video-transcoder');
+  const {TranscoderServiceClient} =
+    require('@google-cloud/video-transcoder').v1;
 
   // Instantiates a client
   const transcoderServiceClient = new TranscoderServiceClient();

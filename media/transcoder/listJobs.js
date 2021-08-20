@@ -24,7 +24,8 @@ function main(projectId, location) {
   // location = 'us-central1';
 
   // Imports the Transcoder library
-  const {TranscoderServiceClient} = require('@google-cloud/video-transcoder');
+  const {TranscoderServiceClient} =
+    require('@google-cloud/video-transcoder').v1;
 
   // Instantiates a client
   const transcoderServiceClient = new TranscoderServiceClient();

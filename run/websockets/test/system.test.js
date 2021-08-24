@@ -123,12 +123,23 @@ describe('End-to-End Tests', () => {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Confirm message
-    const list = await browserPage.$('#messages li');
-    const itemText = await browserPage.evaluate(el => el.textContent, list);
-    assert.strictEqual(itemText.trim(), 'Sundar: Welcome!');
+    let itemText;
+    for (let i = 0; i < 5; i++) {
+      itemText = await browserPage.evaluate(() => {
+        return document.querySelector('#messages li');
+      });
+      if (itemText) return;
+      await sleep(i * 1000); // Linear delay
+    }
+    assert.ok(itemText);
+    assert.strictEqual(itemText.innerText.trim(), 'Sundar: Welcome!');
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
     assert.strictEqual(roomText, 'Google');
   });
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 });

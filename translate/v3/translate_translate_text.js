@@ -27,12 +27,18 @@ function main(
   // const location = 'global';
   // const text = 'text to translate';
 
+  // [START translate_v3_translate_text_0]
   // Imports the Google Cloud Translation library
   const {TranslationServiceClient} = require('@google-cloud/translate');
+  // [END translate_v3_translate_text_0]
 
+  // [START translate_v3_translate_text_1]
   // Instantiates a client
   const translationClient = new TranslationServiceClient();
+  // [END translate_v3_translate_text_1]
+
   async function translateText() {
+    // [START translate_v3_translate_text_2]
     // Construct request
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
@@ -41,13 +47,16 @@ function main(
       sourceLanguageCode: 'en',
       targetLanguageCode: 'sr-Latn',
     };
+    // [END translate_v3_translate_text_2]
 
+    // [START translate_v3_translate_text_3]
     // Run request
     const [response] = await translationClient.translateText(request);
 
     for (const translation of response.translations) {
       console.log(`Translation: ${translation.translatedText}`);
     }
+    // [END translate_v3_translate_text_3]
   }
 
   translateText();

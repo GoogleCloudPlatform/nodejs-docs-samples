@@ -84,11 +84,7 @@ const connectWithTcp = credConfig => {
  */
 const connect = async () => {
   if (!credConfig) credConfig = await getCredConfig();
-  if (process.env.DB_HOST) {
-    return connectWithTcp(credConfig);
-  } else {
-    return connectWithUnixSockets(credConfig);
-  }
+  return process.env.DB_HOST ? connectWithTcp(credConfig) : connectWithUnixSockets(credConfig);
 };
 
 /**

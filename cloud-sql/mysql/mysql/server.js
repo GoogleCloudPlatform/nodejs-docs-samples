@@ -105,11 +105,7 @@ const createPool = async () => {
     // connection attempts.
     // [END cloud_sql_mysql_mysql_backoff]
   };
-  if (process.env.DB_HOST) {
-    return await createTcpPool(config);
-  } else {
-    return await createUnixSocketPool(config);
-  }
+  return await (process.env.DB_HOST ? createTcpPool(config) : createUnixSocketPool(config));
 };
 
 const ensureSchema = async pool => {

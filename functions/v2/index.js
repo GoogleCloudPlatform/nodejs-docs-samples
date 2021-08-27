@@ -16,7 +16,7 @@
 
 // [START functions_cloudevent_pubsub]
 /**
- * Background Cloud Function to be triggered by Pub/Sub.
+ * CloudEvent function to be triggered by Pub/Sub.
  * This function is exported by index.js, and executed when
  * the trigger topic receives a message.
  *
@@ -33,3 +33,23 @@ exports.helloPubSub = cloudevent => {
   console.log(`Hello, ${name}!`);
 };
 // [END functions_cloudevent_pubsub]
+
+// [START functions_cloudevent_storage]
+/**
+ * CloudEvent function to be triggered by Cloud Storage.
+ *
+ * @param {object} cloudevent A CloudEvent containing the Cloud Storage event.
+ * @param {object} cloudevent.data The Cloud Storage event itself.
+ */
+exports.helloGCS = cloudevent => {
+  console.log(`Event ID: ${cloudevent.id}`);
+  console.log(`Event Type: ${cloudevent.type}`);
+
+  const file = cloudevent.data;
+  console.log(`Bucket: ${file.bucket}`);
+  console.log(`File: ${file.name}`);
+  console.log(`Metageneration: ${file.metageneration}`);
+  console.log(`Created: ${file.timeCreated}`);
+  console.log(`Updated: ${file.updated}`);
+};
+// [END functions_cloudevent_storage]

@@ -25,7 +25,7 @@ const startFF = async (target, signature, port) => {
   return ff;
 };
 
-const getFFOutput = (ffProc) => {
+const getFFOutput = ffProc => {
   return new Promise((resolve, reject) => {
     let stdout = '';
     let stderr = '';
@@ -35,7 +35,7 @@ const getFFOutput = (ffProc) => {
       code === 0 ? resolve(stdout) : reject(stderr);
     });
   });
-}
+};
 
 const invocation = (port, event) => {
   const baseUrl = `http://localhost:${port}`;
@@ -106,7 +106,7 @@ describe('functions_cloudevent_storage', () => {
       type: 'mock-gcs-event',
       data: {
         bucket: 'my-bucket',
-        name: 'my-file.txt'
+        name: 'my-file.txt',
       },
     };
     const response = await invocation(PORT, event);
@@ -116,8 +116,8 @@ describe('functions_cloudevent_storage', () => {
 
     assert.strictEqual(response.status, 204);
     assert.match(output, /Event ID: 1234/);
-    assert.match(output, /Event Type: mock\-gcs\-event/);
-    assert.match(output, /Bucket: my\-bucket/);
-    assert.match(output, /File: my\-file\.txt/);
+    assert.match(output, /Event Type: mock-gcs-event/);
+    assert.match(output, /Bucket: my-bucket/);
+    assert.match(output, /File: my-file\.txt/);
   });
 });

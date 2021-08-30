@@ -16,19 +16,17 @@
 
 const monitoring = require('@google-cloud/monitoring');
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new monitoring.MetricServiceClient();
-const cmd = 'node metrics.js';
 const customMetricId = 'custom.googleapis.com/stores/daily_sales';
 const computeMetricId = 'compute.googleapis.com/instance/cpu/utilization';
 const filter = `metric.type="${computeMetricId}"`;
-const projectId =
-  process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT;
 const resourceId = 'cloudsql_database';
+let projectId;
 
 // A helper for delaying integration tests with an exponential backoff.
 // See examples like: https://github.com/googleapis/nodejs-monitoring/issues/190,
@@ -43,11 +41,16 @@ const delay = async test => {
     setTimeout(done, ms);
   });
 };
+
 describe('metrics', async () => {
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
+
   it('should create a metric descriptors', async function () {
     this.retries(8);
     await delay(this.test);
-    const output = execSync(`${cmd} create`);
+    const output = execSync(`node metrics.createDescriptor.js ${projectId}`);
     assert.include(output, 'Created custom Metric');
     assert.include(output, `Type: ${customMetricId}`);
   });
@@ -55,32 +58,38 @@ describe('metrics', async () => {
   it('should list metric descriptors, including the new custom one', async function () {
     this.retries(8);
     await delay(this.test);
-    const output = execSync(`${cmd} list`);
+    const output = execSync(`node metrics.listDescriptors.js ${projectId}`);
     assert.include(output, customMetricId);
     assert.include(output, computeMetricId);
   });
 
   it('should get a metric descriptor', () => {
-    const output = execSync(`${cmd} get ${customMetricId}`);
+    const output = execSync(
+      `node metrics.getDescriptor.js ${projectId} ${customMetricId}`
+    );
     assert.include(output, `Type: ${customMetricId}`);
   });
 
   it('should write time series data', async function () {
     this.retries(5);
     await delay(this.test);
-    const output = execSync(`${cmd} write`);
+    const output = execSync(`node metrics.writeTimeSeriesData.js ${projectId}`);
     assert.include(output, 'Done writing time series data.');
   });
 
   it('should delete a metric descriptor', async function () {
     this.retries(5);
     await delay(this.test);
-    const output = execSync(`${cmd} delete ${customMetricId}`);
+    const output = execSync(
+      `node metrics.deleteDescriptor.js ${projectId} ${customMetricId}`
+    );
     assert.include(output, `Deleted ${customMetricId}`);
   });
 
   it('should list monitored resource descriptors', () => {
-    const output = execSync(`${cmd} list-resources`);
+    const output = execSync(
+      `node metrics.listMonitoredResourceDescriptors.js ${projectId}`
+    );
     assert.include(
       output,
       `projects/${projectId}/monitoredResourceDescriptors/${resourceId}`
@@ -88,7 +97,9 @@ describe('metrics', async () => {
   });
 
   it('should get a monitored resource descriptor', () => {
-    const output = execSync(`${cmd} get-resource ${resourceId}`);
+    const output = execSync(
+      `node metrics.getMonitoredResourceDescriptor.js ${projectId} ${resourceId}`
+    );
     assert.include(output, `Type: ${resourceId}`);
   });
 
@@ -106,7 +117,9 @@ describe('metrics', async () => {
         },
       },
     });
-    const output = execSync(`${cmd} read '${filter}'`);
+    const output = execSync(
+      `node metrics.readTimeSeriesData ${projectId} '${filter}'`
+    );
     //t.true(true); // Do not fail if there is simply no data to return.
     timeSeries.forEach(data => {
       assert.include(output, `${data.metric.labels.instance_name}:`);
@@ -133,7 +146,9 @@ describe('metrics', async () => {
       // the metrics that match the filter
       view: 'HEADERS',
     });
-    const output = execSync(`${cmd} read-fields`);
+    const output = execSync(
+      `node metrics.readTimeSeriesFields.js ${projectId}`
+    );
     assert.include(output, 'Found data points for the following instances');
     timeSeries.forEach(data => {
       assert.include(output, data.metric.labels.instance_name);
@@ -165,7 +180,7 @@ describe('metrics', async () => {
     });
     let output;
     try {
-      output = execSync(`${cmd} read-aggregate`);
+      output = execSync(`node metrics.readTimeSeriesAggregate.js ${projectId}`);
     } catch (e) {
       console.error(e);
       throw e;
@@ -204,7 +219,9 @@ describe('metrics', async () => {
         perSeriesAligner: 'ALIGN_MEAN',
       },
     });
-    const output = execSync(`${cmd} read-reduce`);
+    const output = execSync(
+      `node metrics.readTimeSeriesReduce.js ${projectId}`
+    );
     // Special case: No output.
     if (output.indexOf('No data') < 0) {
       assert.include(

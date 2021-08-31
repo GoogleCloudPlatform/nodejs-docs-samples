@@ -25,6 +25,18 @@ const startFF = async (target, signature, port) => {
   return ff;
 };
 
+const getFFOutput = ffProc => {
+  return new Promise((resolve, reject) => {
+    let stdout = '';
+    let stderr = '';
+    ffProc.stdout.on('data', data => (stdout += data));
+    ffProc.stderr.on('data', data => (stderr += data));
+    ffProc.on('error', reject).on('exit', code => {
+      code === 0 ? resolve(stdout) : reject(stderr);
+    });
+  });
+};
+
 const invocation = (port, event) => {
   const baseUrl = `http://localhost:${port}`;
   return request({
@@ -41,16 +53,7 @@ describe('functions_cloudevent_pubsub', () => {
 
   before(async () => {
     ffProc = await startFF('helloPubSub', 'cloudevent', PORT);
-
-    ffProcHandler = new Promise((resolve, reject) => {
-      let stdout = '';
-      let stderr = '';
-      ffProc.stdout.on('data', data => (stdout += data));
-      ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject).on('exit', code => {
-        code === 0 ? resolve(stdout) : reject(stderr);
-      });
-    });
+    ffProcHandler = getFFOutput(ffProc);
   });
 
   after(() => {
@@ -75,5 +78,46 @@ describe('functions_cloudevent_pubsub', () => {
 
     assert.strictEqual(response.status, 204);
     assert.strictEqual(output.includes('Hello, World!'), true);
+  });
+});
+
+describe('functions_cloudevent_storage', () => {
+  const PORT = 9082;
+  let ffProc;
+  let ffProcHandler;
+
+  before(async () => {
+    ffProc = await startFF('helloGCS', 'cloudevent', PORT);
+    ffProcHandler = getFFOutput(ffProc);
+  });
+
+  after(() => {
+    // Stop any residual Functions Framework instances
+    try {
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
+  });
+
+  it('should process a CloudEvent', async () => {
+    const event = {
+      id: '1234',
+      type: 'mock-gcs-event',
+      data: {
+        bucket: 'my-bucket',
+        name: 'my-file.txt',
+      },
+    };
+    const response = await invocation(PORT, event);
+    ffProc.kill();
+
+    const output = await ffProcHandler;
+
+    assert.strictEqual(response.status, 204);
+    assert.match(output, /Event ID: 1234/);
+    assert.match(output, /Event Type: mock-gcs-event/);
+    assert.match(output, /Bucket: my-bucket/);
+    assert.match(output, /File: my-file\.txt/);
   });
 });

@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
   // Serialize to a JSON string and output.
   console.log(JSON.stringify(entry));
 
-  // [START functions_manual_logging]
+  // [END functions_manual_logging]
   // [END run_manual_logging]
   // [END cloudrun_manual_logging]
 

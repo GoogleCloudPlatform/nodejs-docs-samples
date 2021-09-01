@@ -8,6 +8,7 @@ const app = express();
 app.get('/', (req, res) => {
   const project = process.env.GOOGLE_CLOUD_PROJECT;
 
+  // [START functions_manual_logging]
   // [START cloudrun_manual_logging]
   // [START run_manual_logging]
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 
   // Build structured log messages as an object.
   const globalLogFields = {};
+  // [END functions_manual_logging]
 
   // Add log correlation to nest all log messages beneath request log in Log Viewer.
   const traceHeader = req.header('X-Cloud-Trace-Context');
@@ -26,6 +28,7 @@ app.get('/', (req, res) => {
     ] = `projects/${project}/traces/${trace}`;
   }
 
+  // [START functions_manual_logging]
   // Complete a structured log entry.
   const entry = Object.assign(
     {
@@ -40,6 +43,7 @@ app.get('/', (req, res) => {
   // Serialize to a JSON string and output.
   console.log(JSON.stringify(entry));
 
+  // [START functions_manual_logging]
   // [END run_manual_logging]
   // [END cloudrun_manual_logging]
 

@@ -49,6 +49,7 @@ async function main(
         realmId,
         gameClusterId
       ),
+      view: 'FULL',
     };
 
     const [cluster] = await client.getGameServerCluster(request);
@@ -56,6 +57,15 @@ async function main(
     console.log('Game Server Cluster:');
     console.log(`\tCluster name: ${cluster.name}`);
     console.log(`\tCluster description: ${cluster.description}`);
+    console.log(
+      `\tCluster installed Agones version: ${cluster.clusterState.agonesVersionInstalled}`
+    );
+    console.log(
+      `\tCluster installed Kubernetes version: ${cluster.clusterState.kubernetesVersionInstalled}`
+    );
+    console.log(
+      `\tCluster installation state: ${cluster.clusterState.installationState}`
+    );
     console.log(
       `\tGKE cluster: ${cluster.connectionInfo.gkeClusterReference.cluster}`
     );

@@ -46,13 +46,13 @@ const invocation = (port, event) => {
   });
 };
 
-describe('functions_cloudevent_pubsub', () => {
-  const PORT = 9081;
+describe('functions_cloudevent_storage', () => {
+  const PORT = 9082;
   let ffProc;
   let ffProcHandler;
 
   before(async () => {
-    ffProc = await startFF('helloPubSub', 'cloudevent', PORT);
+    ffProc = await startFF('helloGCS', 'cloudevent', PORT);
     ffProcHandler = getFFOutput(ffProc);
   });
 
@@ -67,8 +67,11 @@ describe('functions_cloudevent_pubsub', () => {
 
   it('should process a CloudEvent', async () => {
     const event = {
+      id: '1234',
+      type: 'mock-gcs-event',
       data: {
-        message: 'd29ybGQ=', // 'World' in base 64
+        bucket: 'my-bucket',
+        name: 'my-file.txt',
       },
     };
     const response = await invocation(PORT, event);
@@ -77,6 +80,9 @@ describe('functions_cloudevent_pubsub', () => {
     const output = await ffProcHandler;
 
     assert.strictEqual(response.status, 204);
-    assert.strictEqual(output.includes('Hello, World!'), true);
+    assert.match(output, /Event ID: 1234/);
+    assert.match(output, /Event Type: mock-gcs-event/);
+    assert.match(output, /Bucket: my-bucket/);
+    assert.match(output, /File: my-file\.txt/);
   });
 });

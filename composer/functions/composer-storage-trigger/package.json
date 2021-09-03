@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "form-data": "^4.0.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^3.0.0"
   },
   "engines": {
     "node": ">=8.0.0"

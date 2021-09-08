@@ -8,27 +8,27 @@ const app = express();
 app.get('/', (req, res) => {
   const project = process.env.GOOGLE_CLOUD_PROJECT;
 
-  // [START functions_manual_logging]
   // [START cloudrun_manual_logging]
   // [START run_manual_logging]
 
   // Uncomment and populate this variable in your code:
-  // $project = 'The project ID of your Cloud Run service';
+  // $project = 'The project ID of your function or Cloud Run service';
 
   // Build structured log messages as an object.
   const globalLogFields = {};
-  // [END functions_manual_logging]
 
   // Add log correlation to nest all log messages beneath request log in Log Viewer.
-  const traceHeader = req.header('X-Cloud-Trace-Context');
-  if (traceHeader && project) {
-    const [trace] = traceHeader.split('/');
-    globalLogFields[
-      'logging.googleapis.com/trace'
-    ] = `projects/${project}/traces/${trace}`;
+  // (This only works for HTTP-based invocations where `req` is defined.)
+  if (typeof req !== 'undefined') {
+    const traceHeader = req.header('X-Cloud-Trace-Context');
+    if (traceHeader && project) {
+      const [trace] = traceHeader.split('/');
+      globalLogFields[
+        'logging.googleapis.com/trace'
+      ] = `projects/${project}/traces/${trace}`;
+    }
   }
 
-  // [START functions_manual_logging]
   // Complete a structured log entry.
   const entry = Object.assign(
     {
@@ -43,7 +43,6 @@ app.get('/', (req, res) => {
   // Serialize to a JSON string and output.
   console.log(JSON.stringify(entry));
 
-  // [END functions_manual_logging]
   // [END run_manual_logging]
   // [END cloudrun_manual_logging]
 

@@ -42,9 +42,6 @@ describe(REGION_TAG, () => {
     const projectId = await translationClient.getProjectId();
     const output = execSync(`node hybridGlossaries.js ${projectId}`);
     assert(output.includes(glossaryId));
-    assert(
-      output.includes('Audio content written to file resources/example.mp3')
-    );
     assert.strictEqual(fs.existsSync(outputFile), true);
   });
 

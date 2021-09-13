@@ -60,7 +60,7 @@ function main(
 
     console.log(`Creating the ${instanceName} instance in ${zone}...`);
 
-    let [operation] = await instancesClient.insert({
+    const [response] = await instancesClient.insert({
       instanceResource: {
         name: instanceName,
         disks: [
@@ -86,7 +86,7 @@ function main(
       project: projectId,
       zone,
     });
-
+    let operation = response.latestResponse;
     const operationsClient = new compute.ZoneOperationsClient();
 
     // Wait for the create operation to complete.

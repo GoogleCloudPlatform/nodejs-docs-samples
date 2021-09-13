@@ -36,12 +36,12 @@ function main(projectId, zone, instanceName) {
 
     console.log(`Deleting ${instanceName} from ${zone}...`);
 
-    let [operation] = await instancesClient.delete({
+    const [response] = await instancesClient.delete({
       project: projectId,
       zone,
       instance: instanceName,
     });
-
+    let operation = response.latestResponse;
     const operationsClient = new compute.ZoneOperationsClient();
 
     // Wait for the delete operation to complete.

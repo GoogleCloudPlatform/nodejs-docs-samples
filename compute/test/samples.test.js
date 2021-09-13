@@ -69,13 +69,13 @@ describe('samples', () => {
 
     execSync(`node createInstance ${projectId} ${zone} ${newinstanceName}`);
 
-    const [operation] = await instancesClient.delete({
+    const [response] = await instancesClient.delete({
       project: projectId,
       zone,
       instance: newinstanceName,
     });
 
-    const operationString = JSON.stringify(operation);
+    const operationString = JSON.stringify(response.latestResponse);
 
     const output = execSync(
       `node waitForOperation ${projectId} '${operationString}'`

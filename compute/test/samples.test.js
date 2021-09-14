@@ -27,6 +27,20 @@ const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+// A helper for delaying integration tests with an exponential backoff.
+// See examples like: https://github.com/googleapis/nodejs-monitoring/issues/190,
+// https://github.com/googleapis/nodejs-monitoring/issues/191.
+const delay = async test => {
+  const retries = test.currentRetry();
+  if (retries === 0) return; // no retry on the first failure.
+  // see: https://cloud.google.com/storage/docs/exponential-backoff:
+  const ms = Math.pow(2, retries) * 500 + Math.random() * 1000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('samples', () => {
   const instanceName = `gcloud-test-intance-${uuid.v4().split('-')[0]}`;
   const zone = 'europe-central2-b';
@@ -85,7 +99,11 @@ describe('samples', () => {
 
   describe('usage export', () => {
     before(async () => {
-      await storage.createBucket(bucketName);
+      try {
+        await storage.createBucket(bucketName);
+      } catch (err) {
+        // Resource likely already existed due to retry.
+      }
     });
 
     after(async () => {
@@ -99,7 +117,9 @@ describe('samples', () => {
       await storage.bucket(bucketName).delete();
     });
 
-    it('should set empty default value in reportNamePrefix', async () => {
+    it('should set empty default value in reportNamePrefix', async function () {
+      this.retries(3);
+      await delay(this.test);
       const projectId = await instancesClient.getProjectId();
 
       const output = execSync(
@@ -118,11 +138,13 @@ describe('samples', () => {
 
       const usageExportLocation = project.usageExportLocation;
 
-      assert.equal(usageExportLocation.bucketName, bucketName);
+      assert.match(usageExportLocation.bucketName, /test-bucket-name/);
       assert.equal(usageExportLocation.reportNamePrefix, '');
     });
 
-    it('should get current default value in reportNamePrefix', async () => {
+    it('should get current default value in reportNamePrefix', async function () {
+      this.retries(3);
+      await delay(this.test);
       const projectId = await instancesClient.getProjectId();
 
       execSync(`node setUsageExportBucket ${projectId} ${bucketName}`);
@@ -137,7 +159,9 @@ describe('samples', () => {
       assert.match(output, /Returned reportNamePrefix: usage_gce/);
     });
 
-    it('should disable usage export', async () => {
+    it('should disable usage export', async function () {
+      this.retries(3);
+      await delay(this.test);
       const projectId = await instancesClient.getProjectId();
 
       execSync(`node setUsageExportBucket ${projectId} ${bucketName}`);

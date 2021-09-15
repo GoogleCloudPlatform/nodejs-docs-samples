@@ -33,7 +33,8 @@ const location = process.env.LOCATION;
 
 let datasetId;
 
-describe('AI platform create dataset tabular bigquery', () => {
+// Refs: https://github.com/googleapis/nodejs-ai-platform/issues/187
+describe.skip('AI platform create dataset tabular bigquery', () => {
   it('should create a new bigquery tabular dataset in the parent resource', async () => {
     const stdout = execSync(
       `node ./create-dataset-tabular-bigquery.js ${datasetDisplayName} \

@@ -17,6 +17,7 @@
 process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 async function main(projectId, intentId, displayName) {
+  // [START dialogflow_update_intent_sample]
   const {IntentsClient} = require('@google-cloud/dialogflow');
 
   const intentClient = new IntentsClient();
@@ -39,6 +40,7 @@ async function main(projectId, intentId, displayName) {
   //Send the request for update the intent.
   const result = await intentClient.updateIntent(updateIntentRequest);
   console.log(result);
+  // [END dialogflow_update_intent_sample]
 }
 
 process.on('unhandledRejection', err => {

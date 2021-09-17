@@ -48,7 +48,7 @@ function main(
         },
         medium: 'CHAT',
         ttl: {
-          seconds: 600,
+          seconds: 86400,
         },
       },
     });

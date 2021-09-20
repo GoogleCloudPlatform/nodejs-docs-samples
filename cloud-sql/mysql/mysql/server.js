@@ -147,7 +147,7 @@ const createPool = async () => {
     const secrets = await accessSecretVersion(CLOUD_SQL_CREDENTIALS_SECRET);
     try {
       process.env.DB_PASS = secrets.toString();
-    } catch(err) {
+    } catch (err) {
       throw Error(
         `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`
       );

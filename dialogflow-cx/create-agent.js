@@ -21,7 +21,7 @@ async function main(projectId, displayName) {
 
   const parent = 'projects/' + projectId + '/locations/global';
 
-  const api_endpoint = 'global-dialogflow.googleapis.com:443';
+  const api_endpoint = 'global-dialogflow.googleapis.com';
 
   const agent = {
     displayName: displayName,
@@ -31,7 +31,7 @@ async function main(projectId, displayName) {
 
   const {AgentsClient} = require('@google-cloud/dialogflow-cx');
 
-  const client = new AgentsClient({api_endpoint: api_endpoint});
+  const client = new AgentsClient({apiEndpoint: api_endpoint});
 
   async function setAgentSample() {
     const request = {

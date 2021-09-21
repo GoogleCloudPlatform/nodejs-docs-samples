@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",
+    "@google-cloud/secret-manager": "^3.10.0",
     "express": "^4.16.2",
     "knex": "^1.0.0",
     "pg": "^8.0.0",

@@ -1,4 +1,4 @@
-// Copyright 2016 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ app.get('/*', function (req, res) {
 });
 
 // Start the server
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on http://localhost:${PORT}`);
   console.log('Press Ctrl+C to quit.');

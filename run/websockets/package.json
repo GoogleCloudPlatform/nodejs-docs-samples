@@ -1,0 +1,23 @@
+{
+  "name": "websockets",
+  "description": "Node.js websockets sample for Cloud Run",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache Version 2.0",
+  "author": "Google LLC",
+  "scripts": {
+    "start": "node index.js",
+    "system-test": "mocha test/system.test.js --timeout=420000 --exit"
+  },
+  "dependencies": {
+    "@socket.io/redis-adapter": "^7.0.0",
+    "express": "^4.17.1",
+    "redis": "^3.1.2",
+    "socket.io": "^4.1.2"
+  },
+  "devDependencies": {
+    "google-auth-library": "^7.1.2",
+    "got": "^11.8.2",
+    "puppeteer": "^10.0.0"
+  }
+}

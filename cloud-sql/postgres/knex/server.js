@@ -49,8 +49,21 @@ const logger = winston.createLogger({
 // testing different configurations.
 let pool;
 
+app.use(async (req, res, next) => {
+  if (pool) {
+    return next();
+  }
+  try {
+    pool = await createPoolAndEnsureSchema();
+    next();
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+});
+
 // [START cloud_sql_postgres_knex_create_tcp]
-const createTcpPool = config => {
+const createTcpPool = async config => {
   // Extract host and port from socket address
   const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
 
@@ -71,7 +84,7 @@ const createTcpPool = config => {
 // [END cloud_sql_postgres_knex_create_tcp]
 
 // [START cloud_sql_postgres_knex_create_socket]
-const createUnixSocketPool = config => {
+const createUnixSocketPool = async config => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
@@ -90,7 +103,7 @@ const createUnixSocketPool = config => {
 // [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const createPool = () => {
+const createPool = async () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
@@ -114,16 +127,16 @@ const createPool = () => {
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
   // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  config.createTimeoutMillis = 30000; // 30 seconds
+  config.pool.createTimeoutMillis = 30000; // 30 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
-  config.idleTimeoutMillis = 600000; // 10 minutes
+  config.pool.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
   // 'knex' uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
-  config.createRetryIntervalMillis = 200; // 0.2 seconds
+  config.pool.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
   if (process.env.DB_HOST) {
@@ -132,6 +145,29 @@ const createPool = () => {
     return createUnixSocketPool(config);
   }
 };
+
+const ensureSchema = async pool => {
+  const hasTable = await pool.schema.hasTable('votes');
+  if (!hasTable) {
+    return pool.schema.createTable('votes', table => {
+      table.increments('vote_id').primary();
+      table.timestamp('time_cast', 30).notNullable();
+      table.specificType('candidate', 'CHAR(6)').notNullable();
+    });
+  }
+  logger.info("Ensured that table 'votes' exists");
+};
+
+const createPoolAndEnsureSchema = async () =>
+  await createPool()
+    .then(async pool => {
+      await ensureSchema(pool);
+      return pool;
+    })
+    .catch(err => {
+      logger.error(err);
+      throw err;
+    });
 
 // [START cloud_sql_postgres_knex_connection]
 /**
@@ -177,7 +213,7 @@ const getVoteCount = async (pool, candidate) => {
 };
 
 app.get('/', async (req, res) => {
-  pool = pool || createPool();
+  pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(pool, 'TABS');
@@ -222,7 +258,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-  pool = pool || createPool();
+  pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
   const timestamp = new Date();

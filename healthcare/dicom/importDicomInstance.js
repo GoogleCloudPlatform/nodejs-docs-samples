@@ -22,16 +22,18 @@ const main = (
   gcsUri
 ) => {
   // [START healthcare_import_dicom_instance]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
-  const sleep = require('../sleep');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
+  const sleep = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  };
 
   const importDicomInstance = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';

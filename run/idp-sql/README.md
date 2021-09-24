@@ -5,15 +5,14 @@ application and connects to a Cloud SQL postgreSQL database for data storage.
 
 Use it with the [End user Authentication for Cloud Run](http://cloud.google.com/run/docs/tutorials/identity-platform).
 
-For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/run).
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/idp-sql)
 
 ## Dependencies
 
 * **express**: Web server framework
 * **winston**: Logging library
-* **@google-cloud/secret-manager**: Google Secret Manager client library
 * **firebase-admin**: Verifying JWT token
 * **knex** + **pg**: A postgreSQL query builder library
 * **handlebars.js**: Template engine
@@ -25,7 +24,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 Cloud Run services can be [configured with Environment Variables](https://cloud.google.com/run/docs/configuring/environment-variables).
 Required variables for this sample include:
 
-* `CLOUD_SQL_CREDENTIALS_SECRET`: the resource ID of the secret, in format: `projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION`. See [postgres-secrets.json](postgres-secrets.json) for secret content.
+* `CLOUD_SQL_CREDENTIALS_SECRET`: the resource ID of the secret, in format: `projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION` when deployed to Cloud Run. At runtime, Cloud Run will inject the secret value as an environment variable, for more info see [Using secrets](https://cloud.google.com/run/docs/configuring/secrets#command-line). See [postgres-secrets.json](postgres-secrets.json) for secret content.
 
 OR
 
@@ -50,7 +49,7 @@ Other environment variables:
 
 * Saving credentials directly as environment variables is convenient for local testing,
   but not secure for production; therefore using `CLOUD_SQL_CREDENTIALS_SECRET`
-  in combination with the Cloud Secrets Manager is recommended.  
+  in combination with the Cloud Secrets Manager is recommended.
 
 ## Running Locally
 

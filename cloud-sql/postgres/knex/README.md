@@ -26,7 +26,7 @@ export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
 Note: Saving credentials in environment variables is convenient, but not secure - consider a more
-secure solution such as [Cloud KMS](https://cloud.google.com/kms/) to help keep secrets safe.
+secure solution such as [Cloud KMS](https://cloud.google.com/kms/) or [Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
 
 ## Initialize the Cloud SQL database
 
@@ -106,20 +106,13 @@ Then use this command to launch the proxy in the background:
 
 ### Testing the application
 
-2. Next, install the Node.js packages necessary to run the app locally by running the following command:
+1. Next, install the Node.js packages necessary to run the app locally by running the following command:
 
     ```
     npm install
     ```
 
-3. Run `createTable.js` to create the database table the app requires and to ensure that the database is properly configured.
-With the Cloud SQL proxy running, run the following command to create the sample app's table in your Cloud SQL PostgreSQL database:
-
-    ```
-    node createTable.js $DB_USER $DB_PW $DB_NAME $CLOUD_SQL_CONNECTION_NAME
-    ```
-
-4. Run the sample app locally with the following command:
+2. Run the sample app locally with the following command:
 
     ```
     npm start
@@ -208,6 +201,26 @@ Replace environment variables with the correct values for your Cloud SQL
 instance configuration.
 
 This step can be done as part of deployment but is separated for clarity.
+
+It is recommended to use the [Secret Manager integration](https://cloud.google.com/run/docs/configuring/secrets) for Cloud Run instead
+of using environment variables for the SQL configuration. The service injects the SQL credentials from
+Secret Manager at runtime via an environment variable.
+
+Create secrets via the command line:
+```sh
+echo -n $CLOUD_SQL_CONNECTION_NAME | \
+    gcloud secrets create [CLOUD_SQL_CONNECTION_NAME_SECRET] --data-file=-
+```
+
+Deploy the service to Cloud Run specifying the env var name and secret name:
+```sh
+gcloud beta run deploy SERVICE --image gcr.io/[YOUR_PROJECT_ID]/run-sql \
+    --add-cloudsql-instances $CLOUD_SQL_CONNECTION_NAME \
+    --update-secrets CLOUD_SQL_CONNECTION_NAME=[CLOUD_SQL_CONNECTION_NAME_SECRET]:latest,\
+      DB_USER=[DB_USER_SECRET]:latest, \
+      DB_PASS=[DB_PASS_SECRET]:latest, \
+      DB_NAME=[DB_NAME_SECRET]:latest
+```
 
 4. Navigate your browser to the URL noted in step 2.
 

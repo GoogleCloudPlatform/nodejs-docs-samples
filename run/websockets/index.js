@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+const {redisClient} = require('./redis');
+const pkg = require('./package');
+const server = require('./app');
 
-const sleep = ms => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-};
+const PORT = process.env.PORT || 8080;
 
-module.exports = sleep;
+// Start server
+server.listen(PORT, () =>
+  console.log(`${pkg.name}: listening on port ${PORT}`)
+);
+
+// Clean up resources on shutdown
+process.on('SIGTERM', () => {
+  console.log(`${pkg.name}: received SIGTERM`);
+  redisClient.quit();
+  process.exit(0);
+});
+
+module.exports = server;

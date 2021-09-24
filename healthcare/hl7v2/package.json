@@ -13,11 +13,10 @@
   },
   "devDependencies": {
     "@google-cloud/pubsub": "^2.0.0",
-    "mocha": "^8.0.0"
+    "mocha": "^9.0.0"
   },
   "dependencies": {
-    "googleapis": "^75.0.0",
-    "uuid": "^8.0.0",
-    "yargs": "^17.0.0"
+    "@googleapis/healthcare": "^1.0.2",
+    "uuid": "^8.0.0"
   }
 }

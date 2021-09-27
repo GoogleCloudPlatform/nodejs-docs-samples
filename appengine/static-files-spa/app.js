@@ -31,6 +31,8 @@ app.get('/*', function (req, res) {
   res.sendFile('index.html', { root:  staticFilesDir });
 });
 
+// [END gae_flex_node_static_files_spa]
+
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
@@ -38,5 +40,4 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-// [END gae_flex_node_static_files_spa]
 module.exports = app;

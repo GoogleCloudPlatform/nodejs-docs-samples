@@ -23,18 +23,17 @@ limitations under the License.
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="main.css">
   <script type='text/javascript'>
-
-  function onNavigate(page) {
-    window.history.pushState({urlPath: page},"",page)
-    console.log('Navigated to ' + page);
-    return false;
-  }
+    function onNavigate(page) {
+      window.history.pushState({urlPath: page},"",page)
+      console.log('Navigated to ' + page);
+      return false;
+    }
   </script>
 </head>
 <body>
   <p>This is a static file serving example with SPA support.</p>
-  <p>Mind the absence of page reloads on activating pages via the menu</p>
-  <p>
+  <p>Clicking links in the menu will <em>not</em>cause a page reload.</p>
+  <br>
   <ul>
     <li><a href="/home" onclick="return onNavigate('home');">Home</a></li>
     <li><a href="/about" onclick="return onNavigate('about');">About</a></li>

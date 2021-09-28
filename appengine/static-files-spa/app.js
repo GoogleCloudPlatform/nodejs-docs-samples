@@ -24,9 +24,9 @@ const staticFilesDir = path.join(__dirname, STATIC_DIR);
 // Use the built-in express middleware for serving static files
 app.use(express.static(staticFilesDir));
 
-// All api routes go here
+// All api routes (e.g. "/api/*) go here
 
-// support of client-side routing in SPA apps (all routes that are not api lead to root)
+// Support client-side routing in SPA apps (all routes that other than `/api` lead to root)
 app.get('/*', function (req, res) {
   res.sendFile('index.html', { root:  staticFilesDir });
 });

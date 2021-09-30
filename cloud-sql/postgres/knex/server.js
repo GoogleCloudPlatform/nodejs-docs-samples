@@ -168,7 +168,7 @@ const createPool = async () => {
   // [END cloud_sql_postgres_knex_backoff]
 
   if (process.env.DB_HOST) {
-    if  (process.env.DB_ROOT_CERT) { 
+    if (process.env.DB_ROOT_CERT) {
       return createTcpPoolSslCerts(config);
     } else {
       return createTcpPool(config);

@@ -88,7 +88,7 @@ const createTcpPoolSslCerts = async config => {
     ...config,
   });
 };
-// [END cloud_sql_postgres_knex_create_tcp_private_ip_sslcerts]
+// [END cloud_sql_postgres_knex_create_tcp_sslcerts]
 
 // [START cloud_sql_postgres_knex_create_tcp]
 const createTcpPool = async config => {

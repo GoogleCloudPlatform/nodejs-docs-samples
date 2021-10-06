@@ -7,7 +7,7 @@
 FROM node:10-slim
 
 # Create and change to the app directory.
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure both package.json AND package-lock.json are copied.
@@ -20,7 +20,7 @@ COPY package*.json ./
 RUN npm install --production
 
 # Copy any certificates if present.
-COPY ./certs /usr/src/app/certs
+COPY ./certs /app/certs
 
 # Copy local code to the container image.
 COPY . ./

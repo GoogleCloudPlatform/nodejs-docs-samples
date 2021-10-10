@@ -16,4 +16,6 @@ jobs:
         with:
           node-version: 14
       - run: npm install
+        working-directory: healthcare/datasets
       - run: npm test
+        working-directory: healthcare/datasets

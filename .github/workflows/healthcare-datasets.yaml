@@ -1,3 +1,4 @@
+name: healthcare-datasets
 on:
   push:
     branches:

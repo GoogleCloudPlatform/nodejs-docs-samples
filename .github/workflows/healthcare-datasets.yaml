@@ -1,21 +1,26 @@
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'healthcare/datasets/**'
+    - 'healthcare/datasets/**'
   pull_request:
   schedule:
-    - cron:  '0 2 * * *'
+  - cron:  '0 2 * * *'
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14
-      - run: npm install
-        working-directory: healthcare/datasets
-      - run: npm test
-        working-directory: healthcare/datasets
+    - uses: 'google-github-actions/auth@v0.3.1'
+      with:
+        create_credentials_file: true
+        workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - run: npm install
+      working-directory: healthcare/datasets
+    - run: npm test
+      working-directory: healthcare/datasets

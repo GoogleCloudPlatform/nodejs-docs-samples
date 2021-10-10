@@ -1,8 +1,11 @@
 on:
-  pull_request:
+  push:
+    branches:
+      - main
     paths:
       - 'healthcare/datasets/**'
-   schedule:
+  pull_request:
+  schedule:
     - cron:  '0 2 * * *'
 jobs:
   test:

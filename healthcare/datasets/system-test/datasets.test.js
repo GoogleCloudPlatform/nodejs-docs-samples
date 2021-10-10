@@ -17,34 +17,27 @@
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
+const healthcare = require('@googleapis/healthcare');
 
-const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const datasetId = `dataset-${uuid.v4()}`.replace(/-/gi, '_');
 const destinationDatasetId = `destination-${uuid.v4()}`.replace(/-/gi, '_');
 const keeplistTags = 'PatientID';
 const cloudRegion = 'us-central1';
-
-before(() => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
-});
-after(() => {
-  try {
-    execSync(
-      `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`
-    );
-  } catch (err) {
-    // Ignore error
-  }
-});
+let projectId;
 
 describe('run datasets tests with 5 retries', function () {
+  before(async () => {
+    projectId = await healthcare.auth.getProjectId();
+  });
+  after(() => {
+    try {
+      execSync(
+        `node deleteDataset.js ${projectId} ${cloudRegion} ${destinationDatasetId}`
+      );
+    } catch (err) {
+      // Ignore error
+    }
+  });
   // Retry every test in this suite 5 times.
   this.retries(5);
   it('should create a dataset', () => {

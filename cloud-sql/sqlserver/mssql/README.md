@@ -47,7 +47,7 @@ following the instructions [here](https://cloud.google.com/sql/docs/mysql/sql-pr
 Then, use the following command to start the proxy in the
 background using TCP:
 ```bash
-./cloud_sql_proxy -instances=${CLOUD_SQL_CONNECTION_NAME}=tcp:1433 sqlserver -u ${DB_USER} --host 127.0.0.1
+./cloud_sql_proxy -instances=${INSTANCE_CONNECTION_NAME}=tcp:1433 sqlserver -u ${DB_USER} --host 127.0.0.1
 ```
 
 Next, setup install the requirements with `npm`:

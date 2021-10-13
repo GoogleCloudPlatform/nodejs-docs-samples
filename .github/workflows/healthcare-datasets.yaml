@@ -20,6 +20,7 @@ jobs:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
+        access_token_lifetime: 600s
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:

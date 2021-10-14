@@ -11,7 +11,7 @@ on:
   - cron:  '0 2 * * *'
 jobs:
   test:
-    if: ${{ github.event.action !== 'labeled' || github.event.label.name == 'kokoro:force-run' }}
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'kokoro:force-run' }}
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'

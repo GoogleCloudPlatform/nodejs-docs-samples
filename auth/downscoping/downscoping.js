@@ -17,7 +17,7 @@ const downscopingWithCredentialAccessBoundary = async ({
   bucketName,
   objectName,
 }) => {
-  // [START auth_downscoping_with_user_credential]
+  // [START auth_downscoping_with_credential_access_boundary]
   // Imports the Google Auth and Google Cloud libraries.
   const {
     OAuth2Client,

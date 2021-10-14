@@ -6,10 +6,12 @@ on:
     paths:
     - 'healthcare/datasets/**'
   pull_request:
+    types: [labeled, opened, synchronize, reopened]
   schedule:
   - cron:  '0 2 * * *'
 jobs:
   test:
+    if: ${{ github.event.action !== 'labeled' || github.event.label.name == 'kokoro:force-run' }}
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'

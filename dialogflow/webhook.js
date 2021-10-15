@@ -16,6 +16,7 @@
 
 // [START dialogflow_es_webhook]
 
+// TODO: Add handleWebhook to 'Entry point' in the Google Cloud Function
 exports.handleWebhook = (request, response) => {
   const tag = request.body.queryResult.intent.displayName;
 

@@ -15,6 +15,7 @@
 'use strict';
 
 const compute = require('@google-cloud/compute');
+const computeProtos = compute.protos.google.cloud.compute.v1;
 const {Storage} = require('@google-cloud/storage');
 
 const {describe, it} = require('mocha');
@@ -192,6 +193,124 @@ describe('samples', () => {
 
       assert.match(output, /Page 1/);
       assert.match(output, /Page 2/);
+    });
+  });
+
+  const getInstance = async (projectId, zone, instanceName) => {
+    const [instance] = await instancesClient.get({
+      project: projectId,
+      zone,
+      instance: instanceName,
+    });
+    return instance;
+  };
+
+  describe('start/stop instances', () => {
+    it('should start/stop instances', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const newInstanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
+
+      execSync(`node createInstance ${projectId} ${zone} ${newInstanceName}`);
+
+      let instance = await getInstance(projectId, zone, newInstanceName);
+      assert.equal(instance.status, 'RUNNING');
+
+      const stopOutput = execSync(
+        `node stopInstance ${projectId} ${zone} ${newInstanceName}`
+      );
+      assert.match(stopOutput, /Instance stopped/);
+
+      instance = await getInstance(projectId, zone, newInstanceName);
+      assert.equal(instance.status, 'TERMINATED');
+
+      const startOutput = execSync(
+        `node startInstance ${projectId} ${zone} ${newInstanceName}`
+      );
+      assert.match(startOutput, /Instance started/);
+
+      instance = await getInstance(projectId, zone, newInstanceName);
+      assert.equal(instance.status, 'RUNNING');
+
+      execSync(`node deleteInstance ${projectId} ${zone} ${newInstanceName}`);
+    });
+
+    it('should start/stop instances with encrypted disks', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const newInstanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
+
+      const KEY = uuid.v4().split('-').join('');
+      const KEY_BASE64 = Buffer.from(KEY).toString('base64');
+
+      const [response] = await instancesClient.insert({
+        instanceResource: {
+          name: newInstanceName,
+          disks: [
+            {
+              initializeParams: {
+                diskSizeGb: '10',
+                sourceImage:
+                  'projects/debian-cloud/global/images/family/debian-10',
+              },
+              autoDelete: true,
+              boot: true,
+              type: computeProtos.AttachedDisk.Type.PERSISTENT,
+              diskEncryptionKey: {
+                rawKey: KEY_BASE64,
+              },
+            },
+          ],
+          machineType: `zones/${zone}/machineTypes/n1-standard-1`,
+          networkInterfaces: [
+            {
+              name: 'global/networks/default',
+            },
+          ],
+        },
+        project: projectId,
+        zone,
+      });
+      let operation = response.latestResponse;
+      const operationsClient = new compute.ZoneOperationsClient();
+
+      while (operation.status !== 'DONE') {
+        [operation] = await operationsClient.wait({
+          operation: operation.name,
+          project: projectId,
+          zone: operation.zone.split('/').pop(),
+        });
+      }
+
+      const stopOutput = execSync(
+        `node stopInstance ${projectId} ${zone} ${newInstanceName}`
+      );
+      assert.match(stopOutput, /Instance stopped/);
+
+      let instance = await getInstance(projectId, zone, newInstanceName);
+      assert.equal(instance.status, 'TERMINATED');
+
+      const startOutput = execSync(
+        `node startInstanceWithEncKey ${projectId} ${zone} ${newInstanceName} ${KEY_BASE64}`
+      );
+      assert.match(startOutput, /Instance with encryption key started/);
+
+      instance = await getInstance(projectId, zone, newInstanceName);
+      assert.equal(instance.status, 'RUNNING');
+
+      execSync(`node deleteInstance ${projectId} ${zone} ${newInstanceName}`);
+    });
+
+    it('should reset instance', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const newInstanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
+
+      execSync(`node createInstance ${projectId} ${zone} ${newInstanceName}`);
+
+      const resetOutput = execSync(
+        `node resetInstance ${projectId} ${zone} ${newInstanceName}`
+      );
+      assert.match(resetOutput, /Instance reset/);
+
+      execSync(`node deleteInstance ${projectId} ${zone} ${newInstanceName}`);
     });
   });
 });

@@ -15,7 +15,7 @@
     "test": "mocha -T 30s test/*.test.js"
   },
   "devDependencies": {
-    "mocha": "^8.0.0",
+    "mocha": "^9.1.2",
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",
     "supertest": "^6.0.0",

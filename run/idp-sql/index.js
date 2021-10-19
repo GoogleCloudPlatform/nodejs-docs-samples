@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/* eslint-disable no-process-exit */
+
 const app = require('./app');
 const pkg = require('./package.json');
 const {logger} = require('./logging');

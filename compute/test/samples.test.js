@@ -25,6 +25,7 @@ const {assert} = require('chai');
 
 const instancesClient = new compute.InstancesClient({fallback: 'rest'});
 const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
+const firewallsClient = new compute.FirewallsClient({fallback: 'rest'});
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -311,6 +312,70 @@ describe('samples', () => {
       assert.match(resetOutput, /Instance reset/);
 
       execSync(`node deleteInstance ${projectId} ${zone} ${newInstanceName}`);
+    });
+  });
+
+  describe('firewall', () => {
+    it('should create and delete firewall rule', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
+
+      let output = execSync(
+        `node firewall/createFirewallRule ${projectId} ${firewallRuleName}`
+      );
+      assert.match(output, /Firewall rule created/);
+
+      output = execSync(
+        `node firewall/deleteFirewallRule ${projectId} ${firewallRuleName}`
+      );
+      assert.match(output, /Firewall rule deleted/);
+    });
+
+    it('should list firewall rules', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
+
+      execSync(
+        `node firewall/createFirewallRule ${projectId} ${firewallRuleName}`
+      );
+      const output = execSync(`node firewall/listFirewallRules ${projectId}`);
+      assert.isTrue(output.includes(`- ${firewallRuleName}:`));
+
+      execSync(
+        `node firewall/deleteFirewallRule ${projectId} ${firewallRuleName}`
+      );
+    });
+
+    it('should patch firewall rule', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
+
+      execSync(
+        `node firewall/createFirewallRule ${projectId} ${firewallRuleName}`
+      );
+
+      let [firewallRule] = await firewallsClient.get({
+        project: projectId,
+        firewall: firewallRuleName,
+      });
+
+      assert.equal(firewallRule.priority, 1000);
+
+      const output = execSync(
+        `node firewall/patchFirewallPriority ${projectId} ${firewallRuleName} 500`
+      );
+      assert.match(output, /Firewall rule updated/);
+
+      [firewallRule] = await firewallsClient.get({
+        project: projectId,
+        firewall: firewallRuleName,
+      });
+
+      assert.equal(firewallRule.priority, 500);
+
+      execSync(
+        `node firewall/deleteFirewallRule ${projectId} ${firewallRuleName}`
+      );
     });
   });
 });

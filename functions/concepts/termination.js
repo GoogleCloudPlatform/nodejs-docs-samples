@@ -14,17 +14,17 @@
 
 'use strict';
 
-/* eslint-disable */
+/* eslint-disable no-unused-vars, no-unreachable */
 
 exports.backgroundTermination = async (event, context) => {
   // [START functions_concepts_node_termination]
   // Await-ing promises within functions is OK if you don't return anything
   await Promise.resolve();
-  
+
   // These will cause background tasks to stop executing immediately
   return 1; // OK: returning a value
-  return (await Promise.resolve()); // WRONG: returning the result of a promise
-  return (await Promise.reject()); // WRONG: same behavior as resolved promises
+  return await Promise.resolve(); // WRONG: returning the result of a promise
+  return await Promise.reject(); // WRONG: same behavior as resolved promises
 
   // These will wait until the related background task finishes
   return Promise.resolve(); // OK: returning the promise itself
@@ -33,21 +33,21 @@ exports.backgroundTermination = async (event, context) => {
 };
 
 exports.httpTermination = async (req, res) => {
-    // [START functions_concepts_node_termination_http]
-    // OK: await-ing a Promise before sending an HTTP response
-    await Promise.resolve();
-  
-    // WRONG: HTTP functions should send an
-    // HTTP response instead of returning.
-    return Promise.resolve()
+  // [START functions_concepts_node_termination_http]
+  // OK: await-ing a Promise before sending an HTTP response
+  await Promise.resolve();
 
-    // HTTP functions should signal termination by returning an HTTP response.
-    // This should not be done until all background tasks are complete.
-    res.send(200);
-    res.end();
+  // WRONG: HTTP functions should send an
+  // HTTP response instead of returning.
+  return Promise.resolve();
 
-    // WRONG: this may not execute since an
-    // HTTP response has already been sent.
-    return Promise.resolve()
-    // [END functions_concepts_node_termination_http]
-}
+  // HTTP functions should signal termination by returning an HTTP response.
+  // This should not be done until all background tasks are complete.
+  res.send(200);
+  res.end();
+
+  // WRONG: this may not execute since an
+  // HTTP response has already been sent.
+  return Promise.resolve();
+  // [END functions_concepts_node_termination_http]
+};

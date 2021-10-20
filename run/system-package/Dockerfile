@@ -14,7 +14,7 @@
 
 # Use the official super-lightweight Node image.
 # https://hub.docker.com/_/node
-FROM node:10-alpine
+FROM node:17-alpine
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

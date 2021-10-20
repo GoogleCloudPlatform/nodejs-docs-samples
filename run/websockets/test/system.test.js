@@ -82,7 +82,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
 
-    exec(cleanUpCmd);
+    await exec(cleanUpCmd);
   });
 
   it('can be reached by an HTTP request', async () => {

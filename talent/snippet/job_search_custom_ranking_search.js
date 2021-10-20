@@ -55,13 +55,14 @@ function sampleSearchJobs(projectId, tenantId) {
   client
     .searchJobs(request)
     .then(responses => {
-      const resources = responses[0];
-      for (const resource of resources.matchingJobs) {
-        console.log(`Job summary: ${resource.jobSummary}`);
-        console.log(`Job title snippet: ${resource.jobTitleSnippet}`);
-        const job = resource.job;
-        console.log(`Job name: ${job.name}`);
-        console.log(`Job title: ${job.title}`);
+      for (const resources of responses) {
+        for (const resource of resources.matchingJobs) {
+          console.log(`Job summary: ${resource.jobSummary}`);
+          console.log(`Job title snippet: ${resource.jobTitleSnippet}`);
+          const job = resource.job;
+          console.log(`Job name: ${job.name}`);
+          console.log(`Job title: ${job.title}`);
+        }
       }
     })
     .catch(err => {

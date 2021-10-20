@@ -17,9 +17,9 @@ See the [documentation][auth-docs] for more information about authenticating for
 
 2. Set the environment variable `GOOGLE_CLOUD_PROJECT` to the project ID, and set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the credential you're using.
 
-3. To run the individual auth.ts test, you can change the `system-test` parameter in `package.json` to `mocha system-test/auth.test.js --timeout=30000` and run:
+3. To run the individual auth.js test, you can do:
 
-        $ npm run test
+        $ MATCH=auth npm run test-single
 
 ## Downscoping with Credential Access Boundaries
 
@@ -37,9 +37,9 @@ information](https://developers.google.com/identity/protocols/application-defaul
 
 3. Set the environment variable `GOOGLE_CLOUD_PROJECT` to the project ID.
 
-4. To run the individual downscoping.ts test, the application default credentials principal should have the ability to create and delete a Cloud Storage bucket, you can change the `system-test` parameter in `package.json` to `mocha system-test/downscoping.test.js --timeout=30000` and run:
+4. To run the individual downscoping.js test, you can do:
 
-        $ npm run test
+        $ MATCH=downscoping npm run test-single
 
 ### Additional resources
 

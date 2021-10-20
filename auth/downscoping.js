@@ -17,7 +17,6 @@ const downscopingWithCredentialAccessBoundary = async ({
   bucketName,
   objectName,
 }) => {
-  // [START auth_downscoping_with_credential_access_boundary]
   // Imports the Google Auth and Google Cloud libraries.
   const {
     OAuth2Client,
@@ -26,8 +25,16 @@ const downscopingWithCredentialAccessBoundary = async ({
   } = require('google-auth-library');
   const {Storage} = require('@google-cloud/storage');
 
-  async function getTokenFromBroker(bucketName, objectName) {
-    // [START auth_downscoping_token_broker]
+  // [START auth_downscoping_token_broker]
+  /**
+   * Simulates token broker generating downscoped tokens for specified bucket.
+   *
+   * @param bucketName The name of the Cloud Storage bucket.
+   * @param objectPrefix The prefix string of the object name. This is used
+   *        to ensure access is restricted to only objects starting with this
+   *        prefix string.
+   */
+  async function getTokenFromBroker(bucketName, objectPrefix) {
     const googleAuth = new GoogleAuth({
       scopes: 'https://www.googleapis.com/auth/cloud-platform',
     });
@@ -35,9 +42,9 @@ const downscopingWithCredentialAccessBoundary = async ({
     // [START auth_downscoping_rules]
     // Define the Credential Access Boundary object.
     const cab = {
-      // Define the single access boundary rule with below properties.
+      // Define the access boundary.
       accessBoundary: {
-        // Initialize the Credential Access Boundary rules.
+        // Define the single access boundary rule.
         accessBoundaryRules: [
           {
             availableResource: `//storage.googleapis.com/projects/_/buckets/${bucketName}`,
@@ -48,7 +55,7 @@ const downscopingWithCredentialAccessBoundary = async ({
             availabilityCondition: {
               expression:
                 "resource.name.startsWith('projects/_/buckets/" +
-                `${bucketName}/objects/${objectName}')`,
+                `${bucketName}/objects/${objectPrefix}')`,
             },
           },
         ],
@@ -57,23 +64,51 @@ const downscopingWithCredentialAccessBoundary = async ({
     // [END auth_downscoping_rules]
 
     // [START auth_downscoping_initialize_downscoped_cred]
-    // Obtain an authenticated client.
+    // Obtain an authenticated client via ADC.
     const client = await googleAuth.getClient();
+
     // Use the client to generate a DownscopedClient.
     const cabClient = new DownscopedClient(client, cab);
+
+    // Refresh the tokens.
     const refreshedAccessToken = await cabClient.getAccessToken();
     // [END auth_downscoping_initialize_downscoped_cred]
-    return refreshedAccessToken;
-    // [END auth_downscoping_token_broker]
-  }
 
+    // This will need to be passed to the token consumer.
+    return refreshedAccessToken;
+  }
+  // [END auth_downscoping_token_broker]
+
+  // [START auth_downscoping_token_consumer]
+  /**
+   * Simulates token consumer generating calling GCS APIs using generated
+   * downscoped tokens for specified bucket.
+   *
+   * @param bucketName The name of the Cloud Storage bucket.
+   * @param objectName The name of the object in the Cloud Storage bucket
+   *        to read.
+   */
   async function tokenConsumer(bucketName, objectName) {
-    // [START auth_downscoping_token_consumer]
+    // Create the OAuth credentials (the consumer).
     const oauth2Client = new OAuth2Client();
+    // We are defining a refresh handler instead of a one-time access
+    // token/expiry pair.
+    // This will allow the consumer to obtain new downscoped tokens on
+    // demand every time a token is expired, without any additional code
+    // changes.
     oauth2Client.refreshHandler = async () => {
+      // The common pattern of usage is to have a token broker pass the
+      // downscoped short-lived access tokens to a token consumer via some
+      // secure authenticated channel. For illustration purposes, we are
+      // generating the downscoped token locally. We want to test the ability
+      // to limit access to objects with a certain prefix string in the
+      // resource bucket. objectName.substring(0, 3) is the prefix here. This
+      // field is not required if access to all bucket resources are allowed.
+      // If access to limited resources in the bucket is needed, this mechanism
+      // can be used.
       const refreshedAccessToken = await getTokenFromBroker(
         bucketName,
-        objectName
+        objectName.substring(0, 3)
       );
       return {
         access_token: refreshedAccessToken.token,
@@ -84,7 +119,9 @@ const downscopingWithCredentialAccessBoundary = async ({
     const storageOptions = {
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
       authClient: {
-        getClient: () => oauth2Client,
+        sign: () => {
+          Promise.reject('unsupported');
+        },
         getCredentials: async () => {
           Promise.reject();
         },
@@ -107,42 +144,47 @@ const downscopingWithCredentialAccessBoundary = async ({
       .file(objectName)
       .download();
     console.log(downloadFile.toString('utf8'));
-    // [END auth_downscoping_token_consumer]
   }
+  // [END auth_downscoping_token_consumer]
 
   try {
     tokenConsumer(bucketName, objectName);
   } catch (error) {
     console.log(error);
   }
-  // [END auth_downscoping_with_credential_access_boundary]
 };
+
+// TODO(developer): Replace these variables before running the sample.
+// The Cloud Storage bucket name.
+const bucketName = 'your-gcs-bucket-name';
+// The Cloud Storage object name that resides in the specified bucket.
+const objectName = 'your-gcs-object-name';
 
 const cli = require('yargs')
   .demand(2)
   .command(
     'auth-downscoping-with-credential-access-boundary',
-    'Loads Application Default Credentials.',
+    'Loads Downscoped Credentials.',
     {
       bucketName: {
         alias: 'b',
-        default: 'bucket-downscoping-test',
+        default: bucketName,
       },
       objectName: {
         alias: 'o',
-        default: 'object-downscoping-test',
+        default: objectName,
       },
     },
     downscopingWithCredentialAccessBoundary
   )
   .example(
-    'node $0 auth-downscoping-with-credential-access-boundary',
-    'Loads Application Default Credentials.'
+    'node $0 auth-downscoping-with-credential-access-boundary -b your-gcs-bucket-name -o your-gcs-object-name',
+    'Loads Downscoped Credentials.'
   )
   .wrap(120)
   .recommendCommands()
   .epilogue(
-    'For more information, see https://cloud.google.com/docs/authentication'
+    'For more information, see https://cloud.google.com/iam/docs/downscoping-short-lived-credentials'
   )
   .help()
   .strict();

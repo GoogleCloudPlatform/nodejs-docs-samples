@@ -18,7 +18,6 @@ const path = require('path');
 const assert = require('assert');
 const {execSync} = require('child_process');
 const {v4: uuidv4} = require('uuid');
-const {GoogleAuth} = require('google-auth-library');
 const {Storage} = require('@google-cloud/storage');
 
 const cwd = path.join(__dirname, '..');
@@ -36,15 +35,7 @@ before(async () => {
     'Must set GOOGLE_CLOUD_PROJECT environment variable!'
   );
 
-  const googleAuth = new GoogleAuth({
-    scopes: 'https://www.googleapis.com/auth/cloud-platform',
-  });
-  const storageOptions = {
-    projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    authClient: googleAuth,
-  };
-  const storage = new Storage(storageOptions);
-
+  const storage = new Storage({projectId: process.env.GOOGLE_CLOUD_PROJECT});
   bucketName = 'bucket-downscoping-test-' + uuidv4();
   objectName = 'object-downscoping-test-' + uuidv4();
 
@@ -71,5 +62,5 @@ it('should downscope with credential access boundary and call storage apis', () 
     `${cmd} auth-downscoping-with-credential-access-boundary -b ${bucketName} -o ${objectName}`,
     {cwd, shell: true}
   );
-  assert.strictEqual(output.toString('utf8'), 'helloworld\n');
+  assert.strictEqual(output.toString('utf8').includes(CONTENTS), true);
 });

@@ -22,6 +22,26 @@ const {describe, it, before, after} = require('mocha');
 const talent = require('@google-cloud/talent').v4;
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+/**
+ * For eventually consistent APIs, retry the test after a few seconds, up to 3 times.
+ * @param {function} testFunction the test function to retry.
+ * @returns {function}
+ */
+function eventually(testFunction) {
+  return async () => {
+    let delayMs = 2000;
+    for (let i = 0; i < 2; ++i) {
+      try {
+        return await testFunction();
+      } catch (e) {
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        delayMs *= 2;
+      }
+    }
+    return await testFunction();
+  };
+}
+
 describe('Talent Solution Jobs API v4 samples', () => {
   const projectId = process.env.GCLOUD_PROJECT;
   const tenantService = new talent.TenantServiceClient();
@@ -118,23 +138,29 @@ describe('Talent Solution Jobs API v4 samples', () => {
     assert.match(output, new RegExp('Name'));
   });
 
-  it('Searches for a job with custom ranking search', async () => {
-    console.log(
-      `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
-    );
-    const output = execSync(
-      `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
-    );
-    assert.match(output, new RegExp('Job summary'));
-  });
+  it(
+    'Searches for a job with custom ranking search',
+    eventually(async () => {
+      console.log(
+        `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
+      );
+      const output = execSync(
+        `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
+      );
+      assert.match(output, new RegExp('Job summary'));
+    })
+  );
 
-  it('Searches for a job with histogram', async () => {
-    console.log(
-      `node snippet/job_search_histogram_search.js --project_id=${projectId} --tenant_id=${tenantId}`
-    );
-    const output = execSync(
-      `node snippet/job_search_histogram_search.js --project_id=${projectId} --tenant_id=${tenantId}`
-    );
-    assert.match(output, new RegExp('Job summary'));
-  });
+  it(
+    'Searches for a job with histogram',
+    eventually(async () => {
+      console.log(
+        `node snippet/job_search_histogram_search.js --project_id=${projectId} --tenant_id=${tenantId}`
+      );
+      const output = execSync(
+        `node snippet/job_search_histogram_search.js --project_id=${projectId} --tenant_id=${tenantId}`
+      );
+      assert.match(output, new RegExp('Job summary'));
+    })
+  );
 });

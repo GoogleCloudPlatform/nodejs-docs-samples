@@ -81,8 +81,9 @@ describe('End-to-End Tests', () => {
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
-
+    console.log('Starting Cleanup...');
     await exec(cleanUpCmd);
+    console.log('Cleanup complete.');
   });
 
   it('can be reached by an HTTP request', async () => {

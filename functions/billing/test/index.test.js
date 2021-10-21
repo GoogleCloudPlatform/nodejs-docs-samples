@@ -139,7 +139,7 @@ describe('functions/billing tests', () => {
         const instances = [{name: 'test-instance-1', status: 'RUNNING'}];
         const listStub = sinon
           .stub(sample.getInstancesClient(), 'list')
-          .resolves(instances);
+          .resolves([instances]);
         const stopStub = sinon
           .stub(sample.getInstancesClient(), 'stop')
           .resolves({});

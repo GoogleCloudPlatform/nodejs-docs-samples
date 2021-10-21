@@ -12,29 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const proxyquire = require('proxyquire');
 const {exec} = require('child_process');
 const {request} = require('gaxios');
 const assert = require('assert');
 const sinon = require('sinon');
 const waitPort = require('wait-port');
+const {InstancesClient} = require('@google-cloud/compute');
+const sample = require('../index.js');
 
-const PROJECT_NAME = process.env.GOOGLE_CLOUD_PROJECT;
 const {BILLING_ACCOUNT} = process.env;
 
 describe('functions/billing tests', () => {
+  let projectId;
+  before(async () => {
+    const client = new InstancesClient();
+    projectId = await client.getProjectId();
+  });
   after(async () => {
     // Re-enable billing using the sample file itself
     // Invoking the file directly is more concise vs. re-implementing billing setup here
     const jsonData = {
       billingAccountName: `billingAccounts/${BILLING_ACCOUNT}`,
-      projectName: `projects/${PROJECT_NAME}`,
+      projectName: `projects/${projectId}`,
     };
     const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
       'base64'
     );
     const pubsubMessage = {data: encodedData, attributes: {}};
-
     await require('../').startBilling(pubsubMessage);
   });
 
@@ -126,40 +130,22 @@ describe('functions/billing tests', () => {
   describe('shuts down GCE instances', () => {
     describe('functions_billing_limit', () => {
       it('should attempt to shut down GCE instances when budget is exceeded', async () => {
-        // Mock GCE (because real GCE instances take too long to start/stop)
-        const listInstancesResponseMock = {
-          data: {
-            items: [{name: 'test-instance-1', status: 'RUNNING'}],
-          },
-        };
-
-        const computeMock = {
-          instances: {
-            list: sinon.stub().returns(listInstancesResponseMock),
-            stop: sinon.stub().resolves({data: {}}),
-          },
-        };
-
-        const googleapisMock = {
-          compute: sinon.stub().returns(computeMock),
-          options: sinon.stub().returns(),
-        };
-
-        // Run test
         const jsonData = {costAmount: 500, budgetAmount: 400};
         const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
           'base64'
         );
         const pubsubMessage = {data: encodedData, attributes: {}};
-
-        const sample = proxyquire('../', {
-          'googleapis/build/src/apis/compute': googleapisMock,
-        }); // kokoro-allow-mock
-
+        // Mock GCE (because real GCE instances take too long to start/stop)
+        const instances = [{name: 'test-instance-1', status: 'RUNNING'}];
+        const listStub = sinon
+          .stub(sample.getInstancesClient(), 'list')
+          .resolves(instances);
+        const stopStub = sinon
+          .stub(sample.getInstancesClient(), 'stop')
+          .resolves({});
         await sample.limitUse(pubsubMessage);
-
-        assert.strictEqual(computeMock.instances.list.calledOnce, true);
-        assert.ok(computeMock.instances.stop.calledOnce);
+        assert.strictEqual(listStub.calledOnce, true);
+        assert.ok(stopStub.calledOnce);
       });
     });
   });

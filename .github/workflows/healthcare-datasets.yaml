@@ -32,3 +32,4 @@ jobs:
       working-directory: healthcare/datasets
     - run: npm test
       working-directory: healthcare/datasets
+    - run: echo ${{github.event.action}}

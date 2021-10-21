@@ -26,15 +26,13 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 const datasetDisplayName = `temp_create_dataset_tables_bigquery_test_${uuid()}`;
-const bigquerySourceUri =
-  'bq://prj-ucaip-tutorials.bigquery_dataset.walmart_triptrain_train';
+const bigquerySourceUri = 'bq://ucaip-sample-tests.table_test.all_bq_types';
 const project = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 
 let datasetId;
 
-// Refs: https://github.com/googleapis/nodejs-ai-platform/issues/187
-describe.skip('AI platform create dataset tabular bigquery', () => {
+describe('AI platform create dataset tabular bigquery', () => {
   it('should create a new bigquery tabular dataset in the parent resource', async () => {
     const stdout = execSync(
       `node ./create-dataset-tabular-bigquery.js ${datasetDisplayName} \
@@ -46,7 +44,7 @@ describe.skip('AI platform create dataset tabular bigquery', () => {
     );
     assert.match(stdout, /Create dataset tabular bigquery response/);
     datasetId = stdout
-      .split('/locations/us-central1/datasets/')[1]
+      .split(`/locations/${location}/datasets/`)[1]
       .split('/')[0]
       .split('/')[0];
   });

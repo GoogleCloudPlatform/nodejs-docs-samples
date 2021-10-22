@@ -38,6 +38,6 @@ jobs:
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |
-        curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s
+        curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot
         ./flakybot

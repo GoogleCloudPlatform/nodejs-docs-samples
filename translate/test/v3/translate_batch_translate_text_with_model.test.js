@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
+const {describe, it, before, afterEach} = require('mocha');
 const {TranslationServiceClient} = require('@google-cloud/translate');
 const {Storage} = require('@google-cloud/storage');
 const cp = require('child_process');
@@ -80,7 +80,7 @@ describe(REGION_TAG, () => {
   });
 
   // Delete the folder from GCS for cleanup
-  after(async () => {
+  afterEach(async () => {
     const projectId = await translationClient.getProjectId();
     const options = {
       prefix: `translation-${bucketUuid}`,

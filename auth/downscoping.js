@@ -18,7 +18,7 @@ const downscopingWithCredentialAccessBoundary = async ({
   objectName,
 }) => {
   // [START auth_downscoping_token_broker]
-  // Imports the Google Auth and Google Cloud libraries.
+  // Imports the Google Auth libraries.
   const {GoogleAuth, DownscopedClient} = require('google-auth-library');
   /**
    * Simulates token broker generating downscoped tokens for specified bucket.
@@ -74,6 +74,7 @@ const downscopingWithCredentialAccessBoundary = async ({
   // [END auth_downscoping_token_broker]
 
   // [START auth_downscoping_token_consumer]
+  // Imports the Google Auth and Google Cloud libraries.
   const {OAuth2Client} = require('google-auth-library');
   const {Storage} = require('@google-cloud/storage');
   /**

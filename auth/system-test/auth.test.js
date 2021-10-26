@@ -32,6 +32,7 @@ before(() => {
     process.env.GOOGLE_APPLICATION_CREDENTIALS,
     'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
   );
+  assert(process.env.BUCKET_NAME, 'Must set BUCKET_NAME environment variable!');
 });
 
 it('should load credentials implicitly', () => {

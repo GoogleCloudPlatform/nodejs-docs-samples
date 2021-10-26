@@ -15,11 +15,12 @@ See the [documentation][auth-docs] for more information about authenticating for
 
         $ npm install
 
-2. Set the environment variable `GOOGLE_CLOUD_PROJECT` to the project ID, and set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the credential you're using.
+2. Set the environment variable `GOOGLE_CLOUD_PROJECT` to the project ID, set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the credential you're using,
+and set the environment variable `BUCKET_NAME` to a bucket you created in the project.
 
 3. To run the individual auth.js test, you can do:
 
-        $ MATCH=auth npm run test-single
+        $ npm run test:auth
 
 ## Downscoping with Credential Access Boundaries
 
@@ -39,7 +40,7 @@ information](https://developers.google.com/identity/protocols/application-defaul
 
 4. To run the individual downscoping.js test, you can do:
 
-        $ MATCH=downscoping npm run test-single
+        $ npm run test:downscoping
 
 ### Additional resources
 

@@ -12,7 +12,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "test-single": "mocha system-test/$MATCH$*.test.js --timeout=30000",
+    "test:auth": "mocha system-test/auth.test.js --timeout=30000",
+    "test:downscoping": "mocha system-test/downscoping.test.js --timeout=30000",
     "test": "npm -- run system-test",
     "system-test": "mocha system-test/*.test.js --timeout=30000"
   },

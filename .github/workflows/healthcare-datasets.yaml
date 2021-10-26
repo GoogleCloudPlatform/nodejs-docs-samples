@@ -32,3 +32,12 @@ jobs:
       working-directory: healthcare/datasets
     - run: npm test
       working-directory: healthcare/datasets
+      env:
+        MOCHA_REPORTER_SUITENAME: healthcare_datasets
+        MOCHA_REPORTER_OUTPUT: healthcare_datasets_sponge_log.xml
+        MOCHA_REPORTER: xunit
+    - if: ${{ github.event_name == 'schedule'}}
+      run: |
+        curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
+        chmod +x ./flakybot
+        ./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

@@ -6,6 +6,8 @@ on:
     paths:
     - 'healthcare/dicom/**'
   pull_request:
+    paths:
+    - 'healthcare/dicom/**'
   pull_request_target:
     types: [labeled]
   schedule:

@@ -6,6 +6,8 @@ on:
     paths:
     - 'healthcare/fhir/**'
   pull_request:
+    paths:
+    - 'healthcare/fhir/**'
   pull_request_target:
     types: [labeled]
   schedule:

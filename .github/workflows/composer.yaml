@@ -6,6 +6,8 @@ on:
     paths:
     - 'composer/**'
   pull_request:
+    paths:
+    - 'composer/**'
   pull_request_target:
     types: [labeled]
   schedule:

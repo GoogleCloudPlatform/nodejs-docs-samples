@@ -6,6 +6,8 @@ on:
     paths:
     - 'composer/functions/composer-storage-trigger/**'
   pull_request:
+    paths:
+    - 'composer/functions/composer-storage-trigger/**'
   pull_request_target:
     types: [labeled]
   schedule:

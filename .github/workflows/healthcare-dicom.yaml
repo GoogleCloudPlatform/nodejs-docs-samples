@@ -1,10 +1,10 @@
-name: healthcare-datasets
+name: healthcare-dicom
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/datasets/**'
+    - 'healthcare/dicom/**'
   pull_request:
   pull_request_target:
     types: [labeled]
@@ -29,12 +29,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/datasets
+      working-directory: healthcare/dicom
     - run: npm test
-      working-directory: healthcare/datasets
+      working-directory: healthcare/dicom
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_datasets
-        MOCHA_REPORTER_OUTPUT: healthcare_datasets_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: healthcare_dicom
+        MOCHA_REPORTER_OUTPUT: healthcare_dicom_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |

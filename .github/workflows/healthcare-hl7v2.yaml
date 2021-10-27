@@ -1,10 +1,10 @@
-name: healthcare-datasets
+name: healthcare-hl7v2
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/datasets/**'
+    - 'healthcare/hl7v2/**'
   pull_request:
   pull_request_target:
     types: [labeled]
@@ -29,12 +29,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/datasets
+      working-directory: healthcare/hl7v2
     - run: npm test
-      working-directory: healthcare/datasets
+      working-directory: healthcare/hl7v2
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_datasets
-        MOCHA_REPORTER_OUTPUT: healthcare_datasets_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: healthcare_hl7v2
+        MOCHA_REPORTER_OUTPUT: healthcare_hl7v2_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |

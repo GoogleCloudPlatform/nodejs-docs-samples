@@ -184,9 +184,8 @@ const createPool = async () => {
     try {
       process.env.DB_PASS = secrets.toString();
     } catch (err) {
-      throw Error(
-        `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: ${err}`
-      );
+        err.message = `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: \n ${err.message} `;
+        throw err;
     }
   }
 

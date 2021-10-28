@@ -121,3 +121,48 @@ describe('functions_cloudevent_storage', () => {
     assert.match(output, /File: my-file\.txt/);
   });
 });
+
+describe('functions_log_cloudevent', () => {
+  const PORT = 9083;
+  let ffProc;
+  let ffProcHandler;
+
+  before(async () => {
+    ffProc = await startFF('helloAuditLog', 'cloudevent', PORT);
+    ffProcHandler = getFFOutput(ffProc);
+  });
+
+  after(() => {
+    // Stop any residual Functions Framework instances
+    try {
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
+  });
+
+  it('should process a CloudEvent', async () => {
+    const event = {
+      methodname: 'storage.objects.create',
+      type: 'google.cloud.audit.log.v1.written',
+      subject: 'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
+      data: {
+        protoPayload: {
+          authenticationInfo: {
+            principalEmail: 'nobody@example.com'
+          }
+        }
+      },
+    };
+    const response = await invocation(PORT, event);
+    ffProc.kill();
+
+    const output = await ffProcHandler;
+
+    assert.strictEqual(response.status, 204);
+    assert.match(output, /API method: storage\.objects\.create/);
+    assert.match(output, /Event type: google.cloud.audit.log.v1.written/);
+    assert.match(output, /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/);
+    assert.match(output, /Principal: nobody@example\.com/);
+  });
+});

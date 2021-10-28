@@ -6,6 +6,8 @@ on:
     paths:
     - 'healthcare/datasets/**'
   pull_request:
+    paths:
+    - 'healthcare/datasets/**'
   pull_request_target:
     types: [labeled]
   schedule:

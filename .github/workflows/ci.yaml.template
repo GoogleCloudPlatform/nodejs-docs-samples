@@ -6,6 +6,8 @@ on:
     paths:
     - '{{path}}/**'
   pull_request:
+    paths:
+    - '{{path}}/**'
   pull_request_target:
     types: [labeled]
   schedule:

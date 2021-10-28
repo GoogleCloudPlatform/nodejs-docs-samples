@@ -20,8 +20,8 @@ async function main() {
   nunjucks.configure('.github/workflows', { autoescape: true });
   for (const workflow of workflows) {
     const path = workflow;
-    const name = workflow.replace('/', '-');
-    const suite = workflow.replace('/', '_');
+    const name = workflow.split('/').join('-');
+    const suite = name.split('-').join('_');
     const data = nunjucks.render('ci.yaml.template', {path, name, suite});
     await fs.writeFile(`.github/workflows/${name}.yaml`, data);
   }

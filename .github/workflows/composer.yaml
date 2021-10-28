@@ -1,13 +1,13 @@
-name: healthcare-fhir
+name: composer
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/fhir/**'
+    - 'composer/**'
   pull_request:
     paths:
-    - 'healthcare/fhir/**'
+    - 'composer/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -31,12 +31,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/fhir
+      working-directory: composer
     - run: npm test
-      working-directory: healthcare/fhir
+      working-directory: composer
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_fhir
-        MOCHA_REPORTER_OUTPUT: healthcare_fhir_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: composer
+        MOCHA_REPORTER_OUTPUT: composer_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |

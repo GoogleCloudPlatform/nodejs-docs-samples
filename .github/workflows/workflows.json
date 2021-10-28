@@ -1,4 +1,6 @@
 [
+  "composer",
+  "composer/functions/composer-storage-trigger",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",

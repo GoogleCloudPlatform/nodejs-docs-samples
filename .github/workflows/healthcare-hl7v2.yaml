@@ -6,6 +6,8 @@ on:
     paths:
     - 'healthcare/hl7v2/**'
   pull_request:
+    paths:
+    - 'healthcare/hl7v2/**'
   pull_request_target:
     types: [labeled]
   schedule:

@@ -1,13 +1,13 @@
-name: healthcare-fhir
+name: composer-functions-composer-storage-trigger
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/fhir/**'
+    - 'composer/functions/composer-storage-trigger/**'
   pull_request:
     paths:
-    - 'healthcare/fhir/**'
+    - 'composer/functions/composer-storage-trigger/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -31,12 +31,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/fhir
+      working-directory: composer/functions/composer-storage-trigger
     - run: npm test
-      working-directory: healthcare/fhir
+      working-directory: composer/functions/composer-storage-trigger
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_fhir
-        MOCHA_REPORTER_OUTPUT: healthcare_fhir_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: composer_functions_composer_storage_trigger
+        MOCHA_REPORTER_OUTPUT: composer_functions_composer_storage_trigger_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |

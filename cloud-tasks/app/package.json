@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha"
+    "test": "mocha --timeout 60000"
   },
   "dependencies": {
     "@google-cloud/tasks": "^2.0.0",

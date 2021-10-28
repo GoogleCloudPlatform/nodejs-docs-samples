@@ -145,13 +145,14 @@ describe('functions_log_cloudevent', () => {
     const event = {
       methodname: 'storage.objects.create',
       type: 'google.cloud.audit.log.v1.written',
-      subject: 'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
+      subject:
+        'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
       data: {
         protoPayload: {
           authenticationInfo: {
             principalEmail: 'nobody@example.com'
-          }
-        }
+          },
+        },
       },
     };
     const response = await invocation(PORT, event);
@@ -162,7 +163,10 @@ describe('functions_log_cloudevent', () => {
     assert.strictEqual(response.status, 204);
     assert.match(output, /API method: storage\.objects\.create/);
     assert.match(output, /Event type: google.cloud.audit.log.v1.written/);
-    assert.match(output, /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/);
+    assert.match(
+      output,
+      /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/
+    );
     assert.match(output, /Principal: nobody@example\.com/);
   });
 });

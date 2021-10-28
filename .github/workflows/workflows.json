@@ -1,4 +1,6 @@
 [
+  "cloud-tasks/app",
+  "cloud-tasks/function",
   "composer",
   "composer/functions/composer-storage-trigger",
   "healthcare/datasets",

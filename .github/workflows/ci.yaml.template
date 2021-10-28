@@ -10,6 +10,7 @@ on:
     - '{{path}}/**'
   pull_request_target:
     types: [labeled]
+    paths:
     - '{{path}}/**'
   schedule:
   - cron:  '0 2 * * *'

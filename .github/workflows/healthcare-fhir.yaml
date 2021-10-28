@@ -10,6 +10,7 @@ on:
     - 'healthcare/fhir/**'
   pull_request_target:
     types: [labeled]
+    paths:
     - 'healthcare/fhir/**'
   schedule:
   - cron:  '0 2 * * *'

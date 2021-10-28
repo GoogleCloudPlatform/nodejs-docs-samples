@@ -10,6 +10,7 @@ on:
     - 'healthcare/datasets/**'
   pull_request_target:
     types: [labeled]
+    paths:
     - 'healthcare/datasets/**'
   schedule:
   - cron:  '0 2 * * *'

@@ -10,6 +10,7 @@ on:
     - 'cloud-tasks/function/**'
   pull_request_target:
     types: [labeled]
+    - 'cloud-tasks/function/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

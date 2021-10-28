@@ -10,6 +10,7 @@ on:
     - 'composer/**'
   pull_request_target:
     types: [labeled]
+    - 'composer/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

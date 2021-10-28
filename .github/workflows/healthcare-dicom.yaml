@@ -10,6 +10,7 @@ on:
     - 'healthcare/dicom/**'
   pull_request_target:
     types: [labeled]
+    - 'healthcare/dicom/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

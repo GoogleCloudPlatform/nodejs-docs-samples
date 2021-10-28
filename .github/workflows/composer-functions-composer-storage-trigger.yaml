@@ -10,6 +10,7 @@ on:
     - 'composer/functions/composer-storage-trigger/**'
   pull_request_target:
     types: [labeled]
+    - 'composer/functions/composer-storage-trigger/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

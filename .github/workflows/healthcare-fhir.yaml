@@ -10,6 +10,7 @@ on:
     - 'healthcare/fhir/**'
   pull_request_target:
     types: [labeled]
+    - 'healthcare/fhir/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

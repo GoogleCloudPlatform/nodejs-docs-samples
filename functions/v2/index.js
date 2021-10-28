@@ -61,7 +61,7 @@ exports.helloGCS = cloudevent => {
  * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
  * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
  */
-exports.helloAuditLog = (cloudevent) => {
+exports.helloAuditLog = cloudevent => {
   // Print out details from the CloudEvent itself
   console.log('API method:', cloudevent.methodname);
   console.log('Event type:', cloudevent.type);

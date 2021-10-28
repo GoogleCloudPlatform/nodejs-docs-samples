@@ -150,7 +150,7 @@ describe('functions_log_cloudevent', () => {
       data: {
         protoPayload: {
           authenticationInfo: {
-            principalEmail: 'nobody@example.com'
+            principalEmail: 'nobody@example.com',
           },
         },
       },

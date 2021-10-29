@@ -18,6 +18,10 @@ const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 const childProcess = require('child_process');
 
+if (!process.env.GCF_REGION) {
+  throw new Error('"GCF_REGION" env var must be set.');
+}
+
 describe('system tests', () => {
   // [END functions_http_system_test]
   before(() => {
@@ -28,7 +32,7 @@ describe('system tests', () => {
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloHttp --region=${process.env.GCF_REGION}`
+      `gcloud functions delete helloHttp --region=${process.env.GCF_REGION} --quiet`
     );
   });
   // [START functions_http_system_test]

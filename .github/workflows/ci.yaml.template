@@ -1,20 +1,20 @@
-name: healthcare-datasets
+name: {{name}}
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/datasets/**'
+    - '{{path}}/**'
   pull_request:
     paths:
-    - 'healthcare/datasets/**'
+    - '{{path}}/**'
   pull_request_target:
     types: [labeled]
   schedule:
   - cron:  '0 2 * * *'
 jobs:
   test:
-    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
+    if: {% raw %}${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}{% endraw %}
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -31,15 +31,15 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/datasets
+      working-directory: {{path}}
     - run: npm test
-      working-directory: healthcare/datasets
+      working-directory: {{path}}
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_datasets
-        MOCHA_REPORTER_OUTPUT: healthcare_datasets_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: {{suite}}
+        MOCHA_REPORTER_OUTPUT: {{suite}}_sponge_log.xml
         MOCHA_REPORTER: xunit
-    - if: ${{ github.event_name == 'schedule'}}
+    - if: {% raw %}${{ github.event_name == 'schedule'}}{% endraw %}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot
-        ./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+        {% raw %}./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}{% endraw %}

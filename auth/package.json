@@ -12,14 +12,18 @@
     "node": ">=8.0.0"
   },
   "scripts": {
+    "test:auth": "mocha system-test/auth.test.js --timeout=30000",
+    "test:downscoping": "mocha system-test/downscoping.test.js --timeout=30000",
     "test": "npm -- run system-test",
     "system-test": "mocha system-test/*.test.js --timeout=30000"
   },
   "dependencies": {
-    "@google-cloud/storage": "^5.0.0",
+    "@google-cloud/storage": "^5.14.0",
+    "google-auth-library": "^7.9.1",
     "yargs": "^17.0.0"
   },
   "devDependencies": {
+    "uuid": "^8.3.2",
     "mocha": "^9.0.0"
   }
 }

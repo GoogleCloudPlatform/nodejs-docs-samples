@@ -53,3 +53,22 @@ exports.helloGCS = cloudevent => {
   console.log(`Updated: ${file.updated}`);
 };
 // [END functions_cloudevent_storage]
+
+// [START functions_log_cloudevent]
+/**
+ * CloudEvent function to be triggered by Cloud Audit Logging
+ *
+ * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
+ * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
+ */
+exports.helloAuditLog = cloudevent => {
+  // Print out details from the CloudEvent itself
+  console.log('API method:', cloudevent.methodname);
+  console.log('Event type:', cloudevent.type);
+  console.log('Subject:', cloudevent.subject);
+
+  // Print out details from the Cloud Audit Logging entry
+  const payload = cloudevent.data.protoPayload;
+  console.log('Principal:', payload.authenticationInfo.principalEmail);
+};
+// [END functions_log_cloudevent]

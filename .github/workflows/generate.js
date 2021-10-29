@@ -12,24 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable no-process-exit */
+const nunjucks = require('nunjucks');
+const workflows = require('./workflows.json');
+const fs = require('fs').promises;
 
-const {redisClient} = require('./redis');
-const pkg = require('./package');
-const server = require('./app');
+async function main() {
+  nunjucks.configure('.github/workflows', { autoescape: true });
+  for (const workflow of workflows) {
+    const path = workflow;
+    const name = workflow.split('/').join('-');
+    const suite = name.split('-').join('_');
+    const data = nunjucks.render('ci.yaml.template', {path, name, suite});
+    await fs.writeFile(`.github/workflows/${name}.yaml`, data);
+  }
+}
 
-const PORT = process.env.PORT || 8080;
-
-// Start server
-server.listen(PORT, () =>
-  console.log(`${pkg.name}: listening on port ${PORT}`)
-);
-
-// Clean up resources on shutdown
-process.on('SIGTERM', () => {
-  console.log(`${pkg.name}: received SIGTERM`);
-  redisClient.quit();
-  process.exit(0);
-});
-
-module.exports = server;
+main();

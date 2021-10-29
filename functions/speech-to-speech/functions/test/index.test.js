@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-env node, mocha */
-
 const uuid = require('uuid');
 const assert = require('assert');
 const fs = require('fs');

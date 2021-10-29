@@ -18,7 +18,9 @@ const Supertest = require('supertest');
 const supertest = Supertest(process.env.BASE_URL);
 const childProcess = require('child_process');
 
-if (!process.env.GCF_REGION) throw new Error('"GCF_REGION" env var must be set.');
+if (!process.env.GCF_REGION) {
+  throw new Error('"GCF_REGION" env var must be set.');
+}
 
 describe('system tests', () => {
   // [END functions_http_system_test]

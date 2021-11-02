@@ -18,9 +18,6 @@ const {exec} = require('child_process');
 const waitPort = require('wait-port');
 
 const startFF = async (target, signature, port) => {
-  console.log(
-    `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
-  );
   const ff = exec(
     `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
   );

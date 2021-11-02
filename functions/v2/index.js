@@ -72,3 +72,46 @@ exports.helloAuditLog = cloudevent => {
   console.log('Principal:', payload.authenticationInfo.principalEmail);
 };
 // [END functions_log_cloudevent]
+
+// [START functions_label_gce_instance]
+const compute = require('@google-cloud/compute');
+const instancesClient = new compute.InstancesClient();
+
+/**
+ * CloudEvent function that labels newly-created GCE instances with the entity
+ * (person or service account) that created them.
+ *
+ * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
+ * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
+ */
+exports.autoLabelInstance = async cloudevent => {
+  // Extract parameters from the CloudEvent + Cloud Audit Log data
+  let creator = cloudevent.data.protoPayload.authenticationInfo.principalEmail;
+  const params = cloudevent.subject.split('/');
+
+  // Format the 'creator' parameter to match GCE label validation requirements
+  creator = creator.toLowerCase().replace(/\W/g, '_');
+
+  // Get the newly-created VM instance's label fingerprint
+  // This is required by the Compute Engine API to prevent duplicate labels
+  const getInstanceRequest = {
+    project: params[2],
+    zone: params[4],
+    instance: params[6],
+  };
+  const [instance] = await instancesClient.get(getInstanceRequest);
+
+  // Label the instance with its creator
+  const setLabelsRequest = Object.assign(
+    {
+      instancesSetLabelsRequestResource: {
+        labels: {creator},
+        labelFingerprint: instance.labelFingerprint,
+      },
+    },
+    getInstanceRequest
+  );
+
+  return instancesClient.setLabels(setLabelsRequest);
+};
+// [END functions_label_gce_instance]

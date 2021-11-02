@@ -35,7 +35,7 @@ const MACHINE_TYPE = 'n1-standard-1';
 
 const instanceName = `ace-test-${uuid()}`;
 
-describe('Auto-label instance test', () => {
+describe('functions_label_gce_instance', () => {
   before(async () => {
     // Create a Compute Engine instance
     const [response] = await instancesClient.insert({

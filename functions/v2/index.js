@@ -93,8 +93,8 @@ const instancesClient = new compute.InstancesClient();
  */
 exports.autoLabelInstance = async cloudevent => {
   // Extract parameters from the CloudEvent + Cloud Audit Log data
-  let payload = cloudevent.data && cloudevent.data.protoPayload;
-  let authInfo = payload && payload.authenticationInfo;
+  const payload = cloudevent.data && cloudevent.data.protoPayload;
+  const authInfo = payload && payload.authenticationInfo;
   let creator = authInfo && authInfo.principalEmail;
 
   // Get relevant VM instance details from the cloudevent's `subject` property
@@ -103,7 +103,7 @@ exports.autoLabelInstance = async cloudevent => {
   const params = cloudevent.subject && cloudevent.subject.split('/');
 
   // Validate data
-  if (!creator || !params || params.length != 7) {
+  if (!creator || !params || params.length !== 7) {
     throw new Error('Invalid event structure');
   }
 

@@ -178,7 +178,7 @@ describe('functions_log_cloudevent', () => {
   });
 });
 
-describe.only('functions_label_gce_instance', () => {
+describe('functions_label_gce_instance', () => {
   const PORT = 9084;
   let ffProc;
   let ffProcHandler;
@@ -204,7 +204,7 @@ describe.only('functions_label_gce_instance', () => {
     const response = await invocation(PORT, event);
     ffProc.kill();
 
-    const output = await ffProcHandler;
+    await ffProcHandler;
     assert.match(response.data, /Invalid event structure/);
   });
 });

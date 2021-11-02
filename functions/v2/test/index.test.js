@@ -18,6 +18,9 @@ const {exec} = require('child_process');
 const waitPort = require('wait-port');
 
 const startFF = async (target, signature, port) => {
+  console.log(
+    `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
+  );
   const ff = exec(
     `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
   );
@@ -31,8 +34,10 @@ const getFFOutput = ffProc => {
     let stderr = '';
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
+
+    const stdall = stdout + stderr;
     ffProc.on('error', reject).on('exit', code => {
-      code === 0 ? resolve(stdout) : reject(stderr);
+      code === 0 ? resolve(stdall) : reject(stdall);
     });
   });
 };
@@ -149,8 +154,9 @@ describe('functions_log_cloudevent', () => {
         'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
       data: {
         protoPayload: {
-          authenticationInfo: {
-            principalEmail: 'nobody@example.com',
+          requestMetadata: {
+            callerIp: '8.8.8.8',
+            callerSuppliedUserAgent: 'example-user-agent',
           },
         },
       },
@@ -167,6 +173,38 @@ describe('functions_log_cloudevent', () => {
       output,
       /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/
     );
-    assert.match(output, /Principal: nobody@example\.com/);
+    assert.match(output, /Caller IP: 8\.8\.8\.8/);
+    assert.match(output, /User Agent: example-user-agent/);
+  });
+});
+
+describe.only('functions_label_gce_instance', () => {
+  const PORT = 9084;
+  let ffProc;
+  let ffProcHandler;
+
+  before(async () => {
+    ffProc = await startFF('autoLabelInstance', 'cloudevent', PORT);
+    ffProcHandler = getFFOutput(ffProc);
+  });
+
+  after(() => {
+    // Stop any residual Functions Framework instances
+    try {
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
+  });
+
+  it('should validate data', async () => {
+    const event = {
+      subject: 'invalid/subject/example',
+    };
+    const response = await invocation(PORT, event);
+    ffProc.kill();
+
+    const output = await ffProcHandler;
+    assert.match(response.data, /Invalid event structure/);
   });
 });

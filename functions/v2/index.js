@@ -56,7 +56,8 @@ exports.helloGCS = cloudevent => {
 
 // [START functions_log_cloudevent]
 /**
- * CloudEvent function to be triggered by Cloud Audit Logging
+ * CloudEvent function to be triggered by an Eventarc Cloud Audit Logging trigger
+ * Note: this is NOT designed for second-party (Cloud Audit Logs -> Pub/Sub) triggers!
  *
  * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
  * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
@@ -68,8 +69,14 @@ exports.helloAuditLog = cloudevent => {
   console.log('Subject:', cloudevent.subject);
 
   // Print out details from the Cloud Audit Logging entry
-  const payload = cloudevent.data.protoPayload;
-  console.log('Principal:', payload.authenticationInfo.principalEmail);
+  const metadata =
+    cloudevent.data &&
+    cloudevent.data.protoPayload &&
+    cloudevent.data.protoPayload.requestMetadata;
+  if (metadata) {
+    console.log('Caller IP:', metadata.callerIp);
+    console.log('User Agent:', metadata.callerSuppliedUserAgent);
+  }
 };
 // [END functions_log_cloudevent]
 
@@ -86,12 +93,19 @@ const instancesClient = new compute.InstancesClient();
  */
 exports.autoLabelInstance = async cloudevent => {
   // Extract parameters from the CloudEvent + Cloud Audit Log data
-  let creator = cloudevent.data.protoPayload.authenticationInfo.principalEmail;
+  let payload = cloudevent.data && cloudevent.data.protoPayload;
+  let authInfo = payload && payload.authenticationInfo;
+  let creator = authInfo && authInfo.principalEmail;
 
   // Get relevant VM instance details from the cloudevent's `subject` property
   // Example value:
   //   compute.googleapis.com/projects/<PROJECT>/zones/<ZONE>/instances/<INSTANCE>
-  const params = cloudevent.subject.split('/');
+  const params = cloudevent.subject && cloudevent.subject.split('/');
+
+  // Validate data
+  if (!creator || !params || params.length != 7) {
+    throw new Error('Invalid event structure');
+  }
 
   // Format the 'creator' parameter to match GCE label validation requirements
   creator = creator.toLowerCase().replace(/\W/g, '_');

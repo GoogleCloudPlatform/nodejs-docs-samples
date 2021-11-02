@@ -32,7 +32,6 @@ const getFFOutput = ffProc => {
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
 
-    const stdall = stdout + stderr;
     ffProc.on('error', reject).on('exit', code => {
       code === 0 ? resolve(stdout) : reject(stderr);
     });

@@ -69,13 +69,20 @@ exports.helloAuditLog = cloudevent => {
   console.log('Subject:', cloudevent.subject);
 
   // Print out details from the Cloud Audit Logging entry
-  const metadata =
-    cloudevent.data &&
-    cloudevent.data.protoPayload &&
-    cloudevent.data.protoPayload.requestMetadata;
+  const payload = cloudevent.data && cloudevent.data.protoPayload;
+  if (payload) {
+    console.log('Resource name:', payload.resourceName);
+  }
+
+  const request = payload.request;
+  if (request) {
+    console.log('Request type:', request['@type']);
+  }
+
+  const metadata = payload && payload.requestMetadata;
   if (metadata) {
     console.log('Caller IP:', metadata.callerIp);
-    console.log('User Agent:', metadata.callerSuppliedUserAgent);
+    console.log('User agent:', metadata.callerSuppliedUserAgent);
   }
 };
 // [END functions_log_cloudevent]

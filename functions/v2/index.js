@@ -87,6 +87,10 @@ const instancesClient = new compute.InstancesClient();
 exports.autoLabelInstance = async cloudevent => {
   // Extract parameters from the CloudEvent + Cloud Audit Log data
   let creator = cloudevent.data.protoPayload.authenticationInfo.principalEmail;
+
+  // Get relevant VM instance details from the cloudevent's `subject` property
+  // Example value:
+  //   compute.googleapis.com/projects/<PROJECT>/zones/<ZONE>/instances/<INSTANCE>
   const params = cloudevent.subject.split('/');
 
   // Format the 'creator' parameter to match GCE label validation requirements

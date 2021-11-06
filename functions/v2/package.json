@@ -12,8 +12,8 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha test/index.test.js",
-    "e2e-test": "mocha test/*.test.js"
+    "test": "mocha --timeout 30s test/index.test.js",
+    "e2e-test": "mocha --timeout 60s test/*.test.js"
   },
   "dependencies": {
     "@google-cloud/compute": "^3.0.0-alpha.4"

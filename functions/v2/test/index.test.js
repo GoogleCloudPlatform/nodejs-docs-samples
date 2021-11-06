@@ -31,6 +31,7 @@ const getFFOutput = ffProc => {
     let stderr = '';
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
+
     ffProc.on('error', reject).on('exit', code => {
       code === 0 ? resolve(stdout) : reject(stderr);
     });
@@ -113,11 +114,103 @@ describe('functions_cloudevent_storage', () => {
     ffProc.kill();
 
     const output = await ffProcHandler;
+    console.log();
 
     assert.strictEqual(response.status, 204);
     assert.match(output, /Event ID: 1234/);
     assert.match(output, /Event Type: mock-gcs-event/);
     assert.match(output, /Bucket: my-bucket/);
     assert.match(output, /File: my-file\.txt/);
+  });
+});
+
+describe('functions_log_cloudevent', () => {
+  const PORT = 9083;
+  let ffProc;
+  let ffProcHandler;
+
+  before(async () => {
+    ffProc = await startFF('helloAuditLog', 'cloudevent', PORT);
+    ffProcHandler = getFFOutput(ffProc);
+  });
+
+  after(() => {
+    // Stop any residual Functions Framework instances
+    try {
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
+  });
+
+  it('should process a CloudEvent', async () => {
+    const event = {
+      methodname: 'storage.objects.write',
+      type: 'google.cloud.audit.log.v1.written',
+      subject:
+        'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
+      data: {
+        protoPayload: {
+          requestMetadata: {
+            callerIp: '8.8.8.8',
+            callerSuppliedUserAgent: 'example-user-agent',
+          },
+          request: {
+            '@type': 'type.googleapis.com/storage.objects.write',
+          },
+          resourceName: 'some-resource',
+        },
+      },
+    };
+    const response = await invocation(PORT, event);
+    ffProc.kill();
+
+    const output = await ffProcHandler;
+
+    assert.strictEqual(response.status, 204);
+    assert.match(output, /API method: storage\.objects\.write/);
+    assert.match(output, /Event type: google.cloud.audit.log.v1.written/);
+    assert.match(
+      output,
+      /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/
+    );
+    assert.match(output, /Resource name: some-resource/);
+    assert.match(
+      output,
+      /Request type: type\.googleapis\.com\/storage\.objects.write/
+    );
+    assert.match(output, /Caller IP: 8\.8\.8\.8/);
+    assert.match(output, /User agent: example-user-agent/);
+  });
+});
+
+describe('functions_label_gce_instance', () => {
+  const PORT = 9084;
+  let ffProc;
+  let ffProcHandler;
+
+  before(async () => {
+    ffProc = await startFF('autoLabelInstance', 'cloudevent', PORT);
+    ffProcHandler = getFFOutput(ffProc);
+  });
+
+  after(() => {
+    // Stop any residual Functions Framework instances
+    try {
+      ffProc.kill();
+    } finally {
+      /* Do nothing */
+    }
+  });
+
+  it('should validate data', async () => {
+    const event = {
+      subject: 'invalid/subject/example',
+    };
+    const response = await invocation(PORT, event);
+    ffProc.kill();
+
+    await ffProcHandler;
+    assert.match(response.data, /Invalid event structure/);
   });
 });

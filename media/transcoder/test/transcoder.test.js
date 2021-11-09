@@ -19,7 +19,7 @@ const path = require('path');
 const assert = require('assert');
 const {v4: uuidv4} = require('uuid');
 const {execSync} = require('child_process');
-const {describe, it, before, after} = require('mocha');
+const {describe, it, before, after, afterEach} = require('mocha');
 
 const {Storage} = require('@google-cloud/storage');
 const uniqueID = uuidv4().split('-')[0];
@@ -151,7 +151,8 @@ describe('Job template functions', () => {
 });
 
 describe('Job functions preset', () => {
-  before(function () {
+  let presetJobId;
+  function createJobFromPreset() {
     const output = execSync(
       `node createJobFromPreset.js ${projectId} ${location} ${inputUri} ${outputUriForPreset} ${preset}`,
       {cwd}
@@ -159,39 +160,42 @@ describe('Job functions preset', () => {
     assert.ok(
       output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
     );
-    this.presetJobId = output.toString().split('/').pop();
-  });
+    presetJobId = output.toString().split('/').pop();
+  }
 
-  after(function () {
+  afterEach(() => {
     const output = execSync(
-      `node deleteJob.js ${projectId} ${location} ${this.presetJobId}`,
+      `node deleteJob.js ${projectId} ${location} ${presetJobId}`,
       {cwd}
     );
     assert.ok(output.includes('Deleted job'));
   });
 
-  it('should get a job', function () {
+  it('should get a job', () => {
+    createJobFromPreset();
     const output = execSync(
-      `node getJob.js ${projectId} ${location} ${this.presetJobId}`,
+      `node getJob.js ${projectId} ${location} ${presetJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.presetJobId}`;
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${presetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
-  it('should show a list of jobs', function () {
+  it('should show a list of jobs', () => {
+    createJobFromPreset();
     const output = execSync(`node listJobs.js ${projectId} ${location}`, {
       cwd,
     });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.presetJobId}`;
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${presetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
+    createJobFromPreset();
     await wait(90000);
     const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.presetJobId}`,
+      `node getJobState.js ${projectId} ${location} ${presetJobId}`,
       {cwd}
     );
     assert.ok(output.includes('Job state: SUCCEEDED'));

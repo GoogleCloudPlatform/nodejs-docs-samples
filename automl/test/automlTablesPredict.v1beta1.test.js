@@ -16,6 +16,7 @@
 'use strict';
 
 const {assert} = require('chai');
+const {delay} = require('./util');
 const {describe, it} = require('mocha');
 const {execSync} = require('child_process');
 
@@ -62,7 +63,10 @@ describe('Tables PredictionAPI', () => {
   });
 
   it(`should perform batch prediction using GCS as source and
-    GCS as destination`, async () => {
+    GCS as destination`, async function () {
+    this.retries(5);
+    await delay(this.test);
+
     // Run batch prediction using GCS as source and GCS as destination
     const output = exec(
       `node tables/predict-gcs-source-gcs-dest.v1beta1.js "${projectId}" "${region}" "${modelId}" "${gcsInputUri}" "${gcsOutputUriPrefix}"`
@@ -71,7 +75,10 @@ describe('Tables PredictionAPI', () => {
   });
 
   it.skip(`should perform batch prediction using BQ as source and
-    GCS as destination`, async () => {
+    GCS as destination`, async function () {
+    this.retries(5);
+    await delay(this.test);
+
     //  Run batch prediction using BQ as source and GCS as destination
     const output = exec(
       `node tables/predict-gcs-source-bq-dest.v1beta1.js predict-using-bq-source-and-gcs-dest "${modelId}"` +
@@ -81,7 +88,10 @@ describe('Tables PredictionAPI', () => {
   });
 
   it(`should perform batch prediction using GCS as source and
-    BQ as destination`, async () => {
+    BQ as destination`, async function () {
+    this.retries(5);
+    await delay(this.test);
+
     // Run batch prediction using GCS as source and BQ as destination
     const output = exec(
       `node tables/predict-gcs-source-bq-dest.v1beta1.js "${projectId}" "${region}" "${modelId}" ` +
@@ -91,7 +101,10 @@ describe('Tables PredictionAPI', () => {
   });
 
   it(`should perform batch prediction using BQ as source and
-    BQ as destination`, async () => {
+    BQ as destination`, async function () {
+    this.retries(5);
+    await delay(this.test);
+
     // Run batch prediction using BQ as source and BQ as destination
     const output = exec(
       `node tables/predict-bq-source-bq-dest.v1beta1.js "${projectId}" "${region}" "${modelId}"` +

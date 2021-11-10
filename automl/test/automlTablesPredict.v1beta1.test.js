@@ -33,7 +33,10 @@ const bqOutputUriPrefix = `bq://${projectId}`;
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 describe('Tables PredictionAPI', () => {
-  it('should perform single prediction', async () => {
+  it('should perform single prediction', async function () {
+    this.retries(5);
+    await delay(this.test);
+
     const inputs = [
       {numberValue: 39}, // Age
       {stringValue: 'technician'}, // Job

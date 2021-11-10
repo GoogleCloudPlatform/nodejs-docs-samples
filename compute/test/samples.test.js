@@ -23,9 +23,10 @@ const uuid = require('uuid');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const instancesClient = new compute.InstancesClient({fallback: 'rest'});
-const projectsClient = new compute.ProjectsClient({fallback: 'rest'});
-const firewallsClient = new compute.FirewallsClient({fallback: 'rest'});
+const instancesClient = new compute.InstancesClient();
+const projectsClient = new compute.ProjectsClient();
+const firewallsClient = new compute.FirewallsClient();
+const instanceTemplatesClient = new compute.InstanceTemplatesClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -41,6 +42,15 @@ const delay = async test => {
     console.info(`retrying "${test.title}" in ${ms}ms`);
     setTimeout(done, ms);
   });
+};
+
+const getInstance = async (projectId, zone, instanceName) => {
+  const [instance] = await instancesClient.get({
+    project: projectId,
+    zone,
+    instance: instanceName,
+  });
+  return instance;
 };
 
 describe('samples', () => {
@@ -196,15 +206,6 @@ describe('samples', () => {
       assert.match(output, /Page 2/);
     });
   });
-
-  const getInstance = async (projectId, zone, instanceName) => {
-    const [instance] = await instancesClient.get({
-      project: projectId,
-      zone,
-      instance: instanceName,
-    });
-    return instance;
-  };
 
   describe('start/stop instances', () => {
     it('should start/stop instances', async () => {
@@ -376,6 +377,98 @@ describe('samples', () => {
       execSync(
         `node firewall/deleteFirewallRule ${projectId} ${firewallRuleName}`
       );
+    });
+  });
+
+  describe('instance template', () => {
+    const instanceTemplateName = `instance-template-${uuid.v4().split('-')[0]}`;
+    const zone = 'europe-central2-b';
+
+    before(async () => {
+      const projectId = await instancesClient.getProjectId();
+      const [response] = await instanceTemplatesClient.insert({
+        project: projectId,
+        instanceTemplateResource: {
+          name: instanceTemplateName,
+          properties: {
+            machineType: 'n1-standard-1',
+            disks: [
+              {
+                initializeParams: {
+                  diskSizeGb: '10',
+                  sourceImage:
+                    'projects/debian-cloud/global/images/family/debian-10',
+                },
+                autoDelete: true,
+                boot: true,
+                type: computeProtos.AttachedDisk.Type.PERSISTENT,
+              },
+            ],
+            networkInterfaces: [
+              {
+                name: 'global/networks/default',
+              },
+            ],
+          },
+        },
+      });
+
+      let operation = response.latestResponse;
+      const operationsClient = new compute.GlobalOperationsClient();
+
+      // Wait for the create operation to complete.
+      while (operation.status !== 'DONE') {
+        [operation] = await operationsClient.wait({
+          operation: operation.name,
+          project: projectId,
+        });
+      }
+    });
+
+    after(async () => {
+      const projectId = await instancesClient.getProjectId();
+      const [response] = await instanceTemplatesClient.delete({
+        project: projectId,
+        instanceTemplate: instanceTemplateName,
+      });
+
+      let operation = response.latestResponse;
+      const operationsClient = new compute.GlobalOperationsClient();
+
+      // Wait for the create operation to complete.
+      while (operation.status !== 'DONE') {
+        [operation] = await operationsClient.wait({
+          operation: operation.name,
+          project: projectId,
+        });
+      }
+    });
+
+    it('should create instance from template', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const instanceName = `instance-${uuid.v4().split('-')[0]}`;
+
+      const output = execSync(
+        `node createInstanceFromTemplate ${projectId} ${zone} ${instanceName} global/instanceTemplates/${instanceTemplateName}`
+      );
+      assert.include(output, 'Instance created.');
+
+      execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+    });
+
+    it('should create instance from template with overrides', async () => {
+      const projectId = await instancesClient.getProjectId();
+      const instanceName = `instance-${uuid.v4().split('-')[0]}`;
+
+      const output = execSync(
+        `node createInstanceFromTemplateWithOverrides ${projectId} ${zone} ${instanceName} ${instanceTemplateName}`
+      );
+      assert.include(output, 'Instance created.');
+
+      const instance = await getInstance(projectId, zone, instanceName);
+      assert.equal(instance.disks.length, 2);
+
+      execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
     });
   });
 });

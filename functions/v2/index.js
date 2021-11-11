@@ -14,16 +14,13 @@
 
 'use strict';
 
+const functions = require('@google-cloud/functions-framework');
+
 // [START functions_cloudevent_pubsub]
-/**
- * CloudEvent function to be triggered by Pub/Sub.
- * This function is exported by index.js, and executed when
- * the trigger topic receives a message.
- *
- * @param {object} cloudevent A CloudEvent containing the Pub/Sub message.
- * @param {object} cloudevent.data.message The Pub/Sub message itself.
- */
-exports.helloPubSub = cloudevent => {
+// Register a CloudEvent callback with the Functions Framework that will
+// be executed when the Pub/Sub trigger topic receives a message.
+functions.cloudEvent('helloPubSub', cloudevent => {
+  // The Pub/Sub message is passed as the CloudEvent's data payload.
   const base64name = cloudevent.data.message.data;
 
   const name = base64name
@@ -31,7 +28,7 @@ exports.helloPubSub = cloudevent => {
     : 'World';
 
   console.log(`Hello, ${name}!`);
-};
+});
 // [END functions_cloudevent_pubsub]
 
 // [START functions_cloudevent_storage]

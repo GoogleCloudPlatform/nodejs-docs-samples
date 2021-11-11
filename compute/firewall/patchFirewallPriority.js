@@ -63,3 +63,7 @@ function main(projectId, firewallRuleName, priority = 10) {
 }
 
 main(...process.argv.slice(2));
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

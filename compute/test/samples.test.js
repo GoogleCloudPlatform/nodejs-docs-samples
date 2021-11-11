@@ -317,7 +317,33 @@ describe('samples', () => {
   });
 
   describe('firewall', () => {
-    it('should create and delete firewall rule', async () => {
+    // Clean stale firewall rules, in case prior test runs have failed.
+    before(async () => {
+      const FOUR_HOURS = 1000 * 60 * 60 * 4;
+      const projectId = await instancesClient.getProjectId();
+      for await (const rule of firewallsClient.listAsync({
+        project: projectId,
+      })) {
+        const created = new Date(rule.creationTimestamp).getTime();
+        // Delete firewalls that are older than 4 hours and match our
+        // test prefix.
+        if (
+          created < Date.now() - FOUR_HOURS &&
+          rule.name.startsWith('test-firewall-rule')
+        ) {
+          console.info(`deleting stale firewall ${rule.name}`);
+          await firewallsClient.delete({
+            project: projectId,
+            firewall: rule.name,
+          });
+        }
+      }
+    });
+
+    it('should create and delete firewall rule', async function () {
+      this.retries(3);
+      await delay(this.test);
+
       const projectId = await instancesClient.getProjectId();
       const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
 
@@ -332,7 +358,10 @@ describe('samples', () => {
       assert.match(output, /Firewall rule deleted/);
     });
 
-    it('should list firewall rules', async () => {
+    it('should list firewall rules', async function () {
+      this.retries(3);
+      await delay(this.test);
+
       const projectId = await instancesClient.getProjectId();
       const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
 
@@ -347,7 +376,10 @@ describe('samples', () => {
       );
     });
 
-    it('should patch firewall rule', async () => {
+    it('should patch firewall rule', async function () {
+      this.retries(3);
+      await delay(this.test);
+
       const projectId = await instancesClient.getProjectId();
       const firewallRuleName = `test-firewall-rule-${uuid.v4().split('-')[0]}`;
 

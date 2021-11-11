@@ -54,3 +54,7 @@ function main(projectId, firewallRuleName) {
 }
 
 main(...process.argv.slice(2));
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

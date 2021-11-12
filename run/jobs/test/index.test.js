@@ -22,18 +22,18 @@ describe('Unit Tests', () => {
   process.env.ATTEMPT_NUM = 1;
 
   it('should run successfully', async () => {
-    const stdout = exec(`node index`);
-    assert.match(stdout, /Starting Task \#/);
-    assert.match(stdout, /Completed Task \#/);
+    const stdout = exec('node index');
+    assert.match(stdout, /Starting Task #/);
+    assert.match(stdout, /Completed Task #/);
   });
 
   it('should fail with high fail rate', async () => {
-      process.env.FAIL_RATE = 0.9999;
-      try {
-          const stdout = exec(`node index`);
-          assert.ok(false);
-      } catch (err) {
-          assert.match(err.message, /failed./)
-      }
+    process.env.FAIL_RATE = 0.9999;
+    try {
+      const stdout = exec('node index');
+      assert.ok(false);
+    } catch (err) {
+      assert.match(err.message, /failed./);
+    }
   });
 });

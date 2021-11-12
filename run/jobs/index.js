@@ -59,7 +59,7 @@ const randomFailure = rate => {
 };
 
 // Start script
-main().catch((err) => {
+main().catch(err => {
   console.error(err);
   process.exit(1); // Trigger Task retry by exiting the process
 });

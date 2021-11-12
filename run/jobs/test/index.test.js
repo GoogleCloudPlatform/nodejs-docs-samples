@@ -30,7 +30,7 @@ describe('Unit Tests', () => {
   it('should fail with high fail rate', async () => {
     process.env.FAIL_RATE = 0.9999;
     try {
-      const stdout = exec('node index');
+      exec('node index');
       assert.ok(false);
     } catch (err) {
       assert.match(err.message, /failed./);

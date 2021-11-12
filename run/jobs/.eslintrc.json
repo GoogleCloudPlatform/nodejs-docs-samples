@@ -1,0 +1,10 @@
+{
+    "env": {
+        "mocha": true
+    },
+    "rules": {
+        "node/no-process-exit": [
+            "off"
+        ]
+    }
+}

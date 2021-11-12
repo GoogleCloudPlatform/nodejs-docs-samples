@@ -1,8 +1,6 @@
 {
-    "env": {
-        "node": true
-    },
     "rules": {
+        "no-process-exit": "off",
         "node/no-process-exit": "off"
     }
 }

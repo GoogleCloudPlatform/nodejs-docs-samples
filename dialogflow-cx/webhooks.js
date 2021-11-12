@@ -16,6 +16,8 @@
 
 // [START dialogflow_cx_webhook]
 
+// TODO: change entry point to exports.handleWebhook in cloud function
+
 exports.handleWebhook = (request, response) => {
   const tag = request.body.fulfillmentInfo.tag;
   let text = '';

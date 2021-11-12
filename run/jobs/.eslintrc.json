@@ -3,8 +3,6 @@
         "mocha": true
     },
     "rules": {
-        "node/no-process-exit": [
-            "off"
-        ]
+        "node/no-process-exit": "off"
     }
 }

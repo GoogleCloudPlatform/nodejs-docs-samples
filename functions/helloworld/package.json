@@ -22,7 +22,7 @@
     "escape-html": "^1.0.3"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.1.1",
+    "@google-cloud/functions-framework": "^2.0.0",
     "@google-cloud/pubsub": "^2.0.0",
     "@google-cloud/storage": "^5.0.0",
     "gaxios": "^4.3.0",

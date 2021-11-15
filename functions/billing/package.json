@@ -19,7 +19,7 @@
     "slack": "^11.0.1"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.1.1",
+    "@google-cloud/functions-framework": "^2.0.0",
     "gaxios": "^4.3.0",
     "mocha": "^9.0.0",
     "promise-retry": "^2.0.0",

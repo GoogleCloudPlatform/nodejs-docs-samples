@@ -50,7 +50,7 @@ describe('Speech-to-Text export to Cloud Storage ', () => {
 
   it('should export transcriptions', async () => {
     const stdout = execSync(
-      `node export-to-storage.v1p1beta1.js ${storageUri} ${outputStorageUri} ${encoding} ${sampleRateHertz} ${languageCode}`
+      `node export-to-storage.v1p1beta1.js ${storageUri} ${outputStorageUri} ${encoding} ${sampleRateHertz} ${languageCode} ${bucketName} ${bucketPrefix}`
     );
     assert.match(stdout, /Transcription/);
   });

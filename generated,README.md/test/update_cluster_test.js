@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,17 +32,17 @@ const GKE_CLUSTER_NAME =
   process.env.SAMPLE_CLUSTER_NAME ||
   'projects/217093627905/locations/us-central1/clusters/gke-shared-default';
 
-describe('Game Servers List Clusters Test', () => {
+describe('Game Servers Update Cluster Test', () => {
   const realmsClient = new RealmsServiceClient();
   const gameClustersClient = new GameServerClustersServiceClient();
-  let realmId, gameClusterId;
+  let realmId, gameClusterId, projectId;
 
   before(async () => {
     await cleanup();
 
     // Create a realm
-    const projectId = await realmsClient.getProjectId();
-    realmId = `list-realm-${uuid.v4()}`;
+    projectId = await realmsClient.getProjectId();
+    realmId = `update-realm-${uuid.v4()}`;
     gameClusterId = `test-${uuid.v4()}`;
 
     const createRealmRequest = {
@@ -79,18 +79,22 @@ describe('Game Servers List Clusters Test', () => {
     await operation2.promise();
   });
 
-  it('should list Game Server clusters in a realm', async () => {
-    const projectId = await realmsClient.getProjectId();
-
-    const create_output = execSync(
-      `node list_clusters.js ${projectId} ${LOCATION} ${realmId}`
+  it('should update a Game Server cluster in a realm', async () => {
+    const update_output = execSync(
+      `node update_cluster.js ${projectId} ${LOCATION} ${realmId} ${gameClusterId}`
     );
-    assert.match(create_output, /Cluster name:/);
+    assert.match(update_output, /Cluster updated:/);
+
+    const get_output = execSync(
+      `node get_cluster.js ${projectId} ${LOCATION} ${realmId} ${gameClusterId}`
+    );
+    assert.match(
+      get_output,
+      /Cluster description: My updated Game Server Cluster/
+    );
   });
 
   after(async () => {
-    const projectId = await realmsClient.getProjectId();
-
     // Delete the Game Server cluster
     const deleteClusterRequest = {
       // Provide full resource name of a Game Server Realm

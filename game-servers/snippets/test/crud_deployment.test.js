@@ -45,11 +45,22 @@ describe('Game Server Deployment Test', () => {
     assert.match(create_output, /Deployment name:/);
   });
 
+  it('should update a game server deployment', async () => {
+    const update_output = execSync(
+      `node update_deployment.js ${projectId} ${deploymentId}`
+    );
+    assert.match(update_output, /Deployment updated:/);
+  });
+
   it('should get a game server deployment', async () => {
     const get_output = execSync(
       `node get_deployment.js ${projectId} ${deploymentId}`
     );
     assert.match(get_output, /Deployment name:/);
+    assert.match(
+      get_output,
+      /Deployment description: My updated Game Server deployment/
+    );
   });
 
   it('should list a game server deployment', async () => {

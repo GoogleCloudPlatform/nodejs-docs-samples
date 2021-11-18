@@ -56,7 +56,8 @@ exports.helloGCS = cloudevent => {
 
 // [START functions_log_cloudevent]
 /**
- * CloudEvent function to be triggered by Cloud Audit Logging
+ * CloudEvent function to be triggered by an Eventarc Cloud Audit Logging trigger
+ * Note: this is NOT designed for second-party (Cloud Audit Logs -> Pub/Sub) triggers!
  *
  * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
  * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
@@ -68,7 +69,74 @@ exports.helloAuditLog = cloudevent => {
   console.log('Subject:', cloudevent.subject);
 
   // Print out details from the Cloud Audit Logging entry
-  const payload = cloudevent.data.protoPayload;
-  console.log('Principal:', payload.authenticationInfo.principalEmail);
+  const payload = cloudevent.data && cloudevent.data.protoPayload;
+  if (payload) {
+    console.log('Resource name:', payload.resourceName);
+  }
+
+  const request = payload.request;
+  if (request) {
+    console.log('Request type:', request['@type']);
+  }
+
+  const metadata = payload && payload.requestMetadata;
+  if (metadata) {
+    console.log('Caller IP:', metadata.callerIp);
+    console.log('User agent:', metadata.callerSuppliedUserAgent);
+  }
 };
 // [END functions_log_cloudevent]
+
+// [START functions_label_gce_instance]
+const compute = require('@google-cloud/compute');
+const instancesClient = new compute.InstancesClient();
+
+/**
+ * CloudEvent function that labels newly-created GCE instances with the entity
+ * (person or service account) that created them.
+ *
+ * @param {object} cloudevent A CloudEvent containing the Cloud Audit Log entry.
+ * @param {object} cloudevent.data.protoPayload The Cloud Audit Log entry itself.
+ */
+exports.autoLabelInstance = async cloudevent => {
+  // Extract parameters from the CloudEvent + Cloud Audit Log data
+  const payload = cloudevent.data && cloudevent.data.protoPayload;
+  const authInfo = payload && payload.authenticationInfo;
+  let creator = authInfo && authInfo.principalEmail;
+
+  // Get relevant VM instance details from the cloudevent's `subject` property
+  // Example value:
+  //   compute.googleapis.com/projects/<PROJECT>/zones/<ZONE>/instances/<INSTANCE>
+  const params = cloudevent.subject && cloudevent.subject.split('/');
+
+  // Validate data
+  if (!creator || !params || params.length !== 7) {
+    throw new Error('Invalid event structure');
+  }
+
+  // Format the 'creator' parameter to match GCE label validation requirements
+  creator = creator.toLowerCase().replace(/\W/g, '_');
+
+  // Get the newly-created VM instance's label fingerprint
+  // This is required by the Compute Engine API to prevent duplicate labels
+  const getInstanceRequest = {
+    project: params[2],
+    zone: params[4],
+    instance: params[6],
+  };
+  const [instance] = await instancesClient.get(getInstanceRequest);
+
+  // Label the instance with its creator
+  const setLabelsRequest = Object.assign(
+    {
+      instancesSetLabelsRequestResource: {
+        labels: {creator},
+        labelFingerprint: instance.labelFingerprint,
+      },
+    },
+    getInstanceRequest
+  );
+
+  return instancesClient.setLabels(setLabelsRequest);
+};
+// [END functions_label_gce_instance]

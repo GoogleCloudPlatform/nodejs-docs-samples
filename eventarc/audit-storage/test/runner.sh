@@ -17,6 +17,8 @@
 set -eo pipefail;
 
 export GOOGLE_CLOUD_PROJECT=long-door-651
+gcloud config set project $GOOGLE_CLOUD_PROJECT
+
 export SAMPLE_VERSION="$(uuidgen | awk '{print substr(tolower($0),0,15)}')"
 export SAMPLE_NAME="$(basename $(pwd))"
 export SERVICE_NAME="${SAMPLE_NAME}-$(uuidgen | awk '{print substr(tolower($0),0,15)}')"

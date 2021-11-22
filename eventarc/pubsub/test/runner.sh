@@ -16,10 +16,11 @@
 
 set -eo pipefail;
 
-requireEnv() {
-  test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
-}
-requireEnv SERVICE_NAME
+export GOOGLE_CLOUD_PROJECT=long-door-651
+export SAMPLE_VERSION="$(uuidgen | awk '{print substr(tolower($0),0,15)}')"
+export SAMPLE_NAME="$(basename $(pwd))"
+export SERVICE_NAME="${SAMPLE_NAME}-$(uuidgen | awk '{print substr(tolower($0),0,15)}')"
+export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
 
 echo '---'
 test/deploy.sh

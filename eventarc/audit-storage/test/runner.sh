@@ -24,7 +24,7 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # only set default project and login when running in GitHub Actions
 if [[ $CI = "true" ]]; then
-  gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+  gcloud auth login --brief --cred-file "$GOOGLE_APPLICATION_CREDENTIALS"
   gcloud config set project $GOOGLE_CLOUD_PROJECT
 fi
 

@@ -64,13 +64,18 @@ exports.helloGCS = cloudevent => {
  */
 exports.helloAuditLog = cloudevent => {
   // Print out details from the CloudEvent itself
-  console.log('API method:', cloudevent.methodname);
   console.log('Event type:', cloudevent.type);
+
+  // Print out the CloudEvent's `subject` property
+  // See https://github.com/cloudevents/spec/blob/v1.0.1/spec.md#subject
   console.log('Subject:', cloudevent.subject);
 
-  // Print out details from the Cloud Audit Logging entry
+  // Print out details from the `protoPayload`
+  // This field encapsulates a Cloud Audit Logging entry
+  // See https://cloud.google.com/logging/docs/audit#audit_log_entry_structure
   const payload = cloudevent.data && cloudevent.data.protoPayload;
   if (payload) {
+    console.log('API method:', payload.methodName);
     console.log('Resource name:', payload.resourceName);
   }
 

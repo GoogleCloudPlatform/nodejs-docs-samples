@@ -145,12 +145,12 @@ describe('functions_log_cloudevent', () => {
 
   it('should process a CloudEvent', async () => {
     const event = {
-      methodname: 'storage.objects.write',
       type: 'google.cloud.audit.log.v1.written',
       subject:
         'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt',
       data: {
         protoPayload: {
+          methodName: 'storage.objects.write',
           requestMetadata: {
             callerIp: '8.8.8.8',
             callerSuppliedUserAgent: 'example-user-agent',
@@ -159,6 +159,12 @@ describe('functions_log_cloudevent', () => {
             '@type': 'type.googleapis.com/storage.objects.write',
           },
           resourceName: 'some-resource',
+        },
+        resource: {
+          type: 'some-type',
+          labels: {
+            bar: 'baz',
+          },
         },
       },
     };
@@ -181,6 +187,8 @@ describe('functions_log_cloudevent', () => {
     );
     assert.match(output, /Caller IP: 8\.8\.8\.8/);
     assert.match(output, /User agent: example-user-agent/);
+    assert.match(output, /Resource type: some-type/);
+    assert.match(output, /bar: baz/);
   });
 });
 

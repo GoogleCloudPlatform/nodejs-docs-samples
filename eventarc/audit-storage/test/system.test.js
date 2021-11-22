@@ -13,22 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
-const got = require('got');
-
-const request = (method, route, base_url) => {
-  const {ID_TOKEN} = process.env;
-  if (!ID_TOKEN) {
-    throw Error('"ID_TOKEN" environment variable is required.');
-  }
-
-  return got(new URL(route, base_url.trim()), {
-    headers: {
-      Authorization: `Bearer ${ID_TOKEN.trim()}`,
-    },
-    method: method || 'get',
-    throwHttpErrors: false,
-  });
-};
+const {auth} = require('google-auth-library');
 
 describe('End-to-End Tests', () => {
   const {BASE_URL} = process.env;
@@ -39,11 +24,12 @@ describe('End-to-End Tests', () => {
   }
 
   it('post(/) without request parameters is a bad request', async () => {
-    const response = await request('post', '/', BASE_URL);
-    assert.strictEqual(
-      response.statusCode,
-      400,
-      'Bad Requests status not found'
-    );
+    const client = await auth.getIdTokenClient();
+    const response = await client.request({
+      url: BASE_URL + '/',
+      method: 'post',
+      validateStatus: () => true,
+    });
+    assert.strictEqual(response.status, 400, 'Bad Requests status not found');
   });
 });

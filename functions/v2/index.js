@@ -77,30 +77,7 @@ exports.helloAuditLog = cloudevent => {
   if (payload) {
     console.log('API method:', payload.methodName);
     console.log('Resource name:', payload.resourceName);
-  }
-
-  const request = payload.request;
-  if (request) {
-    console.log('Request type:', request['@type']);
-  }
-
-  const metadata = payload && payload.requestMetadata;
-  if (metadata) {
-    console.log('Caller IP:', metadata.callerIp);
-    console.log('User agent:', metadata.callerSuppliedUserAgent);
-  }
-
-  const resource = cloudevent.data && cloudevent.data.resource;
-  if (resource) {
-    console.log('Resource type:', resource.type);
-  }
-
-  const labels = resource && resource.labels;
-  if (labels) {
-    console.log('Labels');
-    Object.keys(labels).map(label => {
-      console.log(`  ${label}: ${labels[label]}`);
-    });
+    console.log('Principal:', payload.authenticationInfo.principalEmail);
   }
 };
 // [END functions_log_cloudevent]

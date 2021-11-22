@@ -151,20 +151,10 @@ describe('functions_log_cloudevent', () => {
       data: {
         protoPayload: {
           methodName: 'storage.objects.write',
-          requestMetadata: {
-            callerIp: '8.8.8.8',
-            callerSuppliedUserAgent: 'example-user-agent',
-          },
-          request: {
-            '@type': 'type.googleapis.com/storage.objects.write',
+          authenticationInfo: {
+            principalEmail: 'example@example.com',
           },
           resourceName: 'some-resource',
-        },
-        resource: {
-          type: 'some-type',
-          labels: {
-            bar: 'baz',
-          },
         },
       },
     };
@@ -181,14 +171,7 @@ describe('functions_log_cloudevent', () => {
       /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/
     );
     assert.match(output, /Resource name: some-resource/);
-    assert.match(
-      output,
-      /Request type: type\.googleapis\.com\/storage\.objects.write/
-    );
-    assert.match(output, /Caller IP: 8\.8\.8\.8/);
-    assert.match(output, /User agent: example-user-agent/);
-    assert.match(output, /Resource type: some-type/);
-    assert.match(output, /bar: baz/);
+    assert.match(output, /Principal: example@example\.com/);
   });
 });
 

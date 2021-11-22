@@ -1,6 +1,8 @@
 [
   "composer",
   "composer/functions/composer-storage-trigger",
+  "eventarc/audit-storage",
+  "eventarc/pubsub",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",

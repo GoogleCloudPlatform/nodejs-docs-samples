@@ -17,12 +17,16 @@
 set -eo pipefail;
 
 export GOOGLE_CLOUD_PROJECT=long-door-651
-gcloud config set project $GOOGLE_CLOUD_PROJECT
-
 export SAMPLE_VERSION="$(uuidgen | awk '{print substr(tolower($0),0,15)}')"
 export SAMPLE_NAME="$(basename $(pwd))"
 export SERVICE_NAME="${SAMPLE_NAME}-$(uuidgen | awk '{print substr(tolower($0),0,15)}')"
 export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMPLE_VERSION}"
+
+# only set default project and login when running in GitHub Actions
+if [[ $CI = "true" ]]; then
+  gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+  gcloud config set project $GOOGLE_CLOUD_PROJECT
+fi
 
 echo '---'
 test/deploy.sh

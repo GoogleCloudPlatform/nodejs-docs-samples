@@ -1,13 +1,13 @@
-name: healthcare-datasets
+name: healthcare-fhir
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/datasets/**'
+    - 'healthcare/fhir/**'
   pull_request:
     paths:
-    - 'healthcare/datasets/**'
+    - 'healthcare/fhir/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -31,12 +31,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/datasets
+      working-directory: healthcare/fhir
     - run: npm test
-      working-directory: healthcare/datasets
+      working-directory: healthcare/fhir
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_datasets
-        MOCHA_REPORTER_OUTPUT: healthcare_datasets_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: healthcare_fhir
+        MOCHA_REPORTER_OUTPUT: healthcare_fhir_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event_name == 'schedule'}}
       run: |

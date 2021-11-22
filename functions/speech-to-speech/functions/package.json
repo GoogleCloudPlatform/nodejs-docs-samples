@@ -41,7 +41,7 @@
     "firebase-functions": "^3.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.1.1",
+    "@google-cloud/functions-framework": "^2.0.0",
     "child-process-promise": "^2.2.1",
     "gaxios": "^4.3.0",
     "mocha": "^9.0.0",

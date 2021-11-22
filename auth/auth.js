@@ -99,8 +99,8 @@ const cli = require('yargs')
     },
     authCloudExplicit
   )
-  .example('node $0 implicit', 'Loads credentials implicitly.')
-  .example('node $0 explicit', 'Loads credentials explicitly.')
+  .example('node $0 auth-cloud-implicit', 'Loads credentials implicitly.')
+  .example('node $0 auth-cloud-explicit', 'Loads credentials explicitly.')
   .wrap(120)
   .recommendCommands()
   .epilogue(

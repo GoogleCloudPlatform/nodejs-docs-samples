@@ -25,20 +25,28 @@ describe('End-to-End Tests', () => {
 
   it('post(/) without request parameters is a bad request', async () => {
     const account = 'kokoro-system-test@long-door-651.iam.gserviceaccount.com';
-    const {token} = await auth.request({
-      url: `https://iamcredentials.googleapis.com/v1/{name=projects/-/serviceAccounts/${account}}:generateIdToken`,
-      data: {
-        audience: 'account',
-      },
-      method: 'POST',
-    });
+    let token;
+    try {
+      const res = await auth.request({
+        url: `https://iamcredentials.googleapis.com/v1/{name=projects/-/serviceAccounts/${account}}:generateIdToken`,
+        data: {
+          audience: 'account',
+        },
+        method: 'POST',
+      });
+      token = res.data.token;
+      console.log('I actually have a token.  it is good.');
+    } catch (e) {
+      console.log('boo no token');
+      console.error(e);
+    }
     const response = await auth.request({
       url: BASE_URL.trim() + '/',
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      validateStatus: () => false,
+      validateStatus: () => true,
     });
     assert.strictEqual(
       response.status,

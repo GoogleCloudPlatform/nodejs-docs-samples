@@ -28,7 +28,7 @@ describe('End-to-End Tests', () => {
     let token;
     try {
       const res = await auth.request({
-        url: `https://iamcredentials.googleapis.com/v1/{name=projects/-/serviceAccounts/${account}}:generateIdToken`,
+        url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${account}:generateIdToken`,
         params: {
           audience: 'account',
         },

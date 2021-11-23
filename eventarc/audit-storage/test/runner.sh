@@ -24,8 +24,8 @@ export CONTAINER_IMAGE="gcr.io/${GOOGLE_CLOUD_PROJECT}/run-${SAMPLE_NAME}:${SAMP
 
 # only set default project and login when running in GitHub Actions
 if [[ $CI = "true" ]]; then
-  gcloud auth login --brief --cred-file "$GOOGLE_APPLICATION_CREDENTIALS"
   gcloud config set project $GOOGLE_CLOUD_PROJECT
+  gcloud auth login --brief --cred-file "$GOOGLE_APPLICATION_CREDENTIALS"
 fi
 
 echo '---'
@@ -46,6 +46,8 @@ function cleanup {
 }
 trap cleanup EXIT
 
+# TODO: Perform authentication inside the test.
+export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 
 test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1

@@ -29,7 +29,7 @@ describe('End-to-End Tests', () => {
     try {
       const res = await auth.request({
         url: `https://iamcredentials.googleapis.com/v1/{name=projects/-/serviceAccounts/${account}}:generateIdToken`,
-        data: {
+        params: {
           audience: 'account',
         },
         method: 'POST',

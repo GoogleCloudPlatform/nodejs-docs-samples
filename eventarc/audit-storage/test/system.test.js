@@ -13,22 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
-const got = require('got');
-
-const request = (method, route, base_url) => {
-  const {ID_TOKEN} = process.env;
-  if (!ID_TOKEN) {
-    throw Error('"ID_TOKEN" environment variable is required.');
-  }
-
-  return got(new URL(route, base_url.trim()), {
-    headers: {
-      Authorization: `Bearer ${ID_TOKEN.trim()}`,
-    },
-    method: method || 'get',
-    throwHttpErrors: false,
-  });
-};
+const {auth} = require('google-auth-library');
 
 describe('End-to-End Tests', () => {
   const {BASE_URL} = process.env;
@@ -39,9 +24,24 @@ describe('End-to-End Tests', () => {
   }
 
   it('post(/) without request parameters is a bad request', async () => {
-    const response = await request('post', '/', BASE_URL);
+    const account = 'kokoro-system-test@long-door-651.iam.gserviceaccount.com';
+    const {token} = await auth.request({
+      url: `https://iamcredentials.googleapis.com/v1/{name=projects/-/serviceAccounts/${account}}:generateIdToken`,
+      data: {
+        audience: 'account',
+      },
+      method: 'POST',
+    });
+    const response = await auth.request({
+      url: BASE_URL.trim() + '/',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: () => false,
+    });
     assert.strictEqual(
-      response.statusCode,
+      response.status,
       400,
       'Bad Requests status not found'
     );

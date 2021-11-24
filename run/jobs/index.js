@@ -15,7 +15,7 @@
 'use strict';
 
 // Retrieve Job-defined env vars
-const {TASK_NUM, ATTEMPT_NUM} = process.env;
+const {TASK_NUM = 0, ATTEMPT_NUM = 0} = process.env;
 // Retrieve User-defined env vars
 const {SLEEP_MS, FAIL_RATE} = process.env;
 
@@ -31,7 +31,8 @@ const main = async () => {
     try {
       randomFailure(FAIL_RATE);
     } catch (err) {
-      throw new Error(`Task #${TASK_NUM}, Attempt #${ATTEMPT_NUM} failed.`);
+      err.message = `Task #${TASK_NUM}, Attempt #${ATTEMPT_NUM} failed.\n\n${err.message}`;
+      throw err;
     }
   }
   console.log(`Completed Task #${TASK_NUM}.`);
@@ -61,5 +62,5 @@ const randomFailure = rate => {
 // Start script
 main().catch(err => {
   console.error(err);
-  process.exit(1); // Trigger Task retry by exiting the process
+  process.exit(1); // Retry Job Task by exiting the process
 });

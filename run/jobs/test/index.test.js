@@ -29,11 +29,11 @@ describe('Unit Tests', () => {
 
   it('should fail with high fail rate', async () => {
     process.env.FAIL_RATE = 0.9999;
-    try {
-      exec('node index');
-      assert.ok(false);
-    } catch (err) {
-      assert.match(err.message, /failed./);
-    }
+    assert.throws(
+      () => {
+        exec('node index');
+      },
+      {message: /failed./}
+    );
   });
 });

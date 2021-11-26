@@ -22,6 +22,10 @@ const promiseRetry = require('promise-retry');
 
 const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
+if (!topicName) throw new Error('"FUNCTION_TOPIC" env var must be set.');
+if (!process.env.GCF_REGION) {
+  throw new Error('"GCF_REGION" env var must be set.');
+}
 const baseCmd = 'gcloud functions';
 
 describe('system tests', () => {
@@ -34,7 +38,7 @@ describe('system tests', () => {
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloPubSub --region=${process.env.GCF_REGION}`
+      `gcloud functions delete helloPubSub --region=${process.env.GCF_REGION} --quiet`
     );
   });
   // [START functions_pubsub_system_test]

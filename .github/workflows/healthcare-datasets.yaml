@@ -40,14 +40,14 @@ jobs:
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v2
-        with:
-          script: |
-            await client.issues.removeLabel({
-              name: 'actions:force-run',
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number
-            });
+      with:
+        script: |
+          await client.issues.removeLabel({
+            name: 'actions:force-run',
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number
+          });
     - if: ${{ github.event_name == 'schedule'}}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

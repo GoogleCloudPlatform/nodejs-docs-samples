@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "express": "^4.16.2",
-    "firebase-admin": "^9.1.0",
+    "firebase-admin": "^10.0.0",
     "gcp-metadata": "^4.2.0",
     "google-auth-library": "^7.0.0",
     "handlebars": "^4.7.6",

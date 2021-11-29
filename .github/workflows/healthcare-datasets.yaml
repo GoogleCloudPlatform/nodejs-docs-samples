@@ -27,12 +27,11 @@ jobs:
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
     - uses: actions/setup-node@v2
       with:
         node-version: 14
-    - run: git log
-    - run: echo "$GITHUB_REF"
-    - run: echo "$GITHUB_SHA"
     - run: npm install
       working-directory: healthcare/datasets
     - run: npm test

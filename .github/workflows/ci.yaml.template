@@ -27,6 +27,8 @@ jobs:
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
+      with:
+        ref: {% raw %}${{ github.event.pull_request.head.sha }}{% endraw %}
     - uses: actions/setup-node@v2
       with:
         node-version: 14

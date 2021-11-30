@@ -17,7 +17,8 @@ jobs:
     if: {% raw %}${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}{% endraw %}
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
+      contents: 'write'
+      pull-requests: 'write'
       id-token: 'write'
     steps:
     - uses: 'google-github-actions/auth@v0.3.1'

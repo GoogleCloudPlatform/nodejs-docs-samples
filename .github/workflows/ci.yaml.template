@@ -49,8 +49,8 @@ jobs:
         script: |
           await github.rest.issues.removeLabel({
             name: 'actions:force-run',
-            owner: context.repo.owner,
-            repo: context.repo.repo,
+            owner: 'GoogleCloudPlatform'
+            repo: 'nodejs-docs-samples',
             issue_number: context.payload.pull_request.number
           });
     - if: {% raw %}${{ github.event_name == 'schedule'}}{% endraw %}

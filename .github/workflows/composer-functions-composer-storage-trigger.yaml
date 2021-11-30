@@ -49,7 +49,7 @@ jobs:
         script: |
           await github.rest.issues.removeLabel({
             name: 'actions:force-run',
-            owner: 'GoogleCloudPlatform'
+            owner: 'GoogleCloudPlatform',
             repo: 'nodejs-docs-samples',
             issue_number: context.payload.pull_request.number
           });

@@ -28,7 +28,8 @@ jobs:
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
       with:
-        ref: {% raw %}${{ github.event.pull_request.head.sha }}{% endraw %}
+        ref: {% raw %}${{github.event.pull_request.head.ref}}{% endraw %}
+        repository: {% raw %}${{github.event.pull_request.head.repo.full_name}}{% endraw %}
     - uses: actions/setup-node@v2
       with:
         node-version: 14

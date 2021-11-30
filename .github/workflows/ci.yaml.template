@@ -27,6 +27,9 @@ jobs:
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
+      with:
+        ref: {% raw %}${{github.event.pull_request.head.ref}}{% endraw %}
+        repository: {% raw %}${{github.event.pull_request.head.repo.full_name}}{% endraw %}
     - uses: actions/setup-node@v2
       with:
         node-version: 14
@@ -38,6 +41,16 @@ jobs:
         MOCHA_REPORTER_SUITENAME: {{suite}}
         MOCHA_REPORTER_OUTPUT: {{suite}}_sponge_log.xml
         MOCHA_REPORTER: xunit
+    - if: {% raw %}${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}{% endraw %}
+      uses: actions/github-script@v5
+      with:
+        script: |
+          await github.rest.issues.removeLabel({
+            name: 'actions:force-run',
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.pull_request.number
+          });
     - if: {% raw %}${{ github.event_name == 'schedule'}}{% endraw %}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

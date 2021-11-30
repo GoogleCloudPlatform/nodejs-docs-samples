@@ -26,7 +26,12 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
+    - run: echo "ref: {% raw %}${{github.event.pull_request.head.ref}}{% endraw %}"
+    - run: echo "sha: {% raw %}${{github.event.pull_request.head.sha}}{% endraw %}"
     - uses: actions/checkout@v2
+      with:
+        ref: {% raw %}${{github.event.pull_request.head.ref}}{% endraw %}
+        repository: {% raw %}${{github.event.pull_request.head.repo.full_name}}{% endraw %}
     - uses: actions/setup-node@v2
       with:
         node-version: 14
@@ -42,7 +47,7 @@ jobs:
       uses: actions/github-script@v2
       with:
         script: |
-          await client.issues.removeLabel({
+          await github.rest.issues.removeLabel({
             name: 'actions:force-run',
             owner: context.repo.owner,
             repo: context.repo.repo,

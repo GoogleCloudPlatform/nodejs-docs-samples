@@ -42,7 +42,7 @@ jobs:
         MOCHA_REPORTER_OUTPUT: healthcare_fhir_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
-      uses: actions/github-script@v2
+      uses: actions/github-script@v5
       with:
         script: |
           await github.rest.issues.removeLabel({

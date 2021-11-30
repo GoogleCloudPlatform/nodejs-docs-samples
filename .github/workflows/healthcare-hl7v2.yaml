@@ -44,6 +44,7 @@ jobs:
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v5
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.rest.issues.removeLabel({
             name: 'actions:force-run',

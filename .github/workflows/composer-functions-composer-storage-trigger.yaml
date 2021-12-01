@@ -17,7 +17,8 @@ jobs:
     if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
+      contents: 'write'
+      pull-requests: 'write'
       id-token: 'write'
     steps:
     - uses: 'google-github-actions/auth@v0.3.1'
@@ -42,15 +43,22 @@ jobs:
         MOCHA_REPORTER_OUTPUT: composer_functions_composer_storage_trigger_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
-      uses: actions/github-script@v2
+      uses: actions/github-script@v5
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          await github.rest.issues.removeLabel({
-            name: 'actions:force-run',
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.payload.pull_request.number
-          });
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
+            }
+          }
     - if: ${{ github.event_name == 'schedule'}}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

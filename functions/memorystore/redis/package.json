@@ -16,7 +16,7 @@
     "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
-    "redis": "^3.0.0"
+    "redis": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^9.0.0",

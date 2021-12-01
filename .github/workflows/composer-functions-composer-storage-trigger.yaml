@@ -47,12 +47,18 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          await github.rest.issues.removeLabel({
-            name: 'actions:force-run',
-            owner: 'GoogleCloudPlatform',
-            repo: 'nodejs-docs-samples',
-            issue_number: context.payload.pull_request.number
-          });
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
+            }
+          }
     - if: ${{ github.event_name == 'schedule'}}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

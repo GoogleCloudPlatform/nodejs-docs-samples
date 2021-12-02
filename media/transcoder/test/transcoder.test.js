@@ -58,6 +58,19 @@ const cwd = path.join(__dirname, '..');
 const videoFile = `testdata/${testFileName}`;
 const overlayFile = `testdata/${testOverlayFileName}`;
 
+const delay = async (test, addMs) => {
+  const retries = test.currentRetry();
+  await new Promise(r => setTimeout(r, addMs));
+  // No retry on the first failure.
+  if (retries === 0) return;
+  // See: https://cloud.google.com/storage/docs/exponential-backoff
+  const ms = Math.pow(2, retries) * 10000 + Math.random() * 1000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 function wait(ms) {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -193,12 +206,23 @@ describe('Job functions preset', () => {
   it('should check that the job succeeded', async function () {
     this.retries(5);
     createJobFromPreset();
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${presetJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${presetJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });
 
@@ -251,12 +275,23 @@ describe('Job functions template', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.templateJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.templateJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });
 
@@ -299,12 +334,23 @@ describe('Job functions adhoc', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.adhocJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.adhocJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });
 
@@ -339,12 +385,23 @@ describe('Job with static overlay functions', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.staticOverlayJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.staticOverlayJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });
 
@@ -379,12 +436,23 @@ describe('Job with animated overlay functions', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.animatedOverlayJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.animatedOverlayJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });
 
@@ -419,12 +487,23 @@ describe('Job with set number of images spritesheet', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 
   it('should check that the spritesheet files exist in the bucket', async () => {
@@ -476,12 +555,23 @@ describe('Job with periodic images spritesheet', () => {
 
   it('should check that the job succeeded', async function () {
     this.retries(5);
-    await wait(90000);
-    const output = execSync(
-      `node getJobState.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Job state: SUCCEEDED'));
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 
   it('should check that the spritesheet files exist in the bucket', async () => {

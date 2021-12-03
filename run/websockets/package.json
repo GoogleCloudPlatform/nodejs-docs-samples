@@ -12,12 +12,12 @@
   "dependencies": {
     "@socket.io/redis-adapter": "^7.0.0",
     "express": "^4.17.1",
-    "redis": "^3.1.2",
+    "redis": "^4.0.0",
     "socket.io": "^4.1.2"
   },
   "devDependencies": {
     "google-auth-library": "^7.1.2",
     "got": "^11.8.2",
-    "puppeteer": "^11.0.0"
+    "puppeteer": "^12.0.0"
   }
 }

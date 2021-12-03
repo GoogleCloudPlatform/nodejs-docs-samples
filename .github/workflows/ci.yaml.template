@@ -17,7 +17,8 @@ jobs:
     if: {% raw %}${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}{% endraw %}
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
+      contents: 'write'
+      pull-requests: 'write'
       id-token: 'write'
     steps:
     - uses: 'google-github-actions/auth@v0.3.1'
@@ -44,13 +45,20 @@ jobs:
     - if: {% raw %}${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}{% endraw %}
       uses: actions/github-script@v5
       with:
+        github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
         script: |
-          await github.rest.issues.removeLabel({
-            name: 'actions:force-run',
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.payload.pull_request.number
-          });
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
+            }
+          }
     - if: {% raw %}${{ github.event_name == 'schedule'}}{% endraw %}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

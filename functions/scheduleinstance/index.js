@@ -42,17 +42,15 @@ exports.startInstancePubSub = async (event, context, callback) => {
 
     const [instances] = await instancesClient.list(options);
 
-    if (instances.items) {
-      await Promise.all(
-        instances.items.map(async instance => {
-          return instancesClient.start({
-            project,
-            zone: payload.zone,
-            instance: instance.name,
-          });
-        })
-      );
-    }
+    await Promise.all(
+      instances.map(async instance => {
+        return instancesClient.start({
+          project,
+          zone: payload.zone,
+          instance: instance.name,
+        });
+      })
+    );
 
     // Operation complete. Instance successfully started.
     const message = 'Successfully started instance(s)';
@@ -89,17 +87,15 @@ exports.stopInstancePubSub = async (event, context, callback) => {
 
     const [instances] = await instancesClient.list(options);
 
-    if (instances.items) {
-      await Promise.all(
-        instances.items.map(async instance => {
-          return instancesClient.stop({
-            project,
-            zone: payload.zone,
-            instance: instance.name,
-          });
-        })
-      );
-    }
+    await Promise.all(
+      instances.map(async instance => {
+        return instancesClient.stop({
+          project,
+          zone: payload.zone,
+          instance: instance.name,
+        });
+      })
+    );
 
     // Operation complete. Instance successfully stopped.
     const message = 'Successfully stopped instance(s)';

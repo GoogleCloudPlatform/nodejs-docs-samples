@@ -3,3 +3,5 @@ annotations:
     text: "/gcbrun"
   - type: label
     text: "kokoro:force-run"
+  - type: label
+    text: "actions:force-run"

@@ -4,5 +4,7 @@
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",
-  "healthcare/hl7v2"
+  "healthcare/hl7v2",
+  "monitoring/opencensus",
+  "monitoring/prometheus"
 ]

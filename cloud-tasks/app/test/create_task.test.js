@@ -16,8 +16,8 @@
 
 const createHttpTaskWithToken = require('../createTask');
 const {assert} = require('chai');
+const {CloudTasksClient} = require('@google-cloud/tasks');
 
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const QUEUE_ID = 'default';
 const LOCATION_ID = 'us-central1';
 const SERVICE_ACCOUNT =
@@ -25,10 +25,15 @@ const SERVICE_ACCOUNT =
 const URL = 'https://example.com/'; // Fake endpoint that returns status 200.
 
 describe('Cloud Task Sample Tests', () => {
+  let projectId;
+  before(async () => {
+    const client = new CloudTasksClient();
+    projectId = await client.getProjectId();
+  });
   it('should create a task', async () => {
     const date = new Date();
     const response = await createHttpTaskWithToken(
-      PROJECT_ID,
+      projectId,
       QUEUE_ID,
       LOCATION_ID,
       URL,
@@ -37,7 +42,7 @@ describe('Cloud Task Sample Tests', () => {
     );
 
     const regex_output = new RegExp(
-      `projects/${PROJECT_ID}/locations/${LOCATION_ID}/queues/${QUEUE_ID}/tasks/`
+      `projects/${projectId}/locations/${LOCATION_ID}/queues/${QUEUE_ID}/tasks/`
     );
     assert.match(response, regex_output);
   });

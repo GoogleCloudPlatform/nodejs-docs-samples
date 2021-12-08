@@ -42,7 +42,8 @@ async function speechTranscribeDiarization(fileName) {
     sampleRateHertz: 8000,
     languageCode: 'en-US',
     enableSpeakerDiarization: true,
-    diarizationSpeakerCount: 2,
+    minSpeakerCount: 2,
+    maxSpeakerCount: 2,
     model: 'phone_call',
   };
 
@@ -91,7 +92,8 @@ async function asyncSpeechTranscribeDiarizationGCS(gcsUri) {
     sampleRateHertz: 8000,
     languageCode: 'en-US',
     enableSpeakerDiarization: true,
-    diarizationSpeakerCount: 2,
+    minSpeakerCount: 2,
+    maxSpeakerCount: 2,
     model: 'phone_call',
   };
 

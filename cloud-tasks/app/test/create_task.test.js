@@ -20,8 +20,7 @@ const {CloudTasksClient} = require('@google-cloud/tasks');
 
 const QUEUE_ID = 'default';
 const LOCATION_ID = 'us-central1';
-const SERVICE_ACCOUNT =
-  'test-invoker@nodejs-docs-samples-tests.iam.gserviceaccount.com'; // Service account for test project.
+const SERVICE_ACCOUNT = 'test-invoker@long-door-651.iam.gserviceaccount.com'; // Service account for test project.
 const URL = 'https://example.com/'; // Fake endpoint that returns status 200.
 
 describe('Cloud Task Sample Tests', () => {

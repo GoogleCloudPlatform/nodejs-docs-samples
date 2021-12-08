@@ -29,7 +29,8 @@ describe('Cloud Task Sample Tests', () => {
   before(async () => {
     const client = new CloudTasksClient();
     projectId = await client.getProjectId();
-  }).timeout(10000);
+  });
+
   it('should create a task', async () => {
     const date = new Date();
     const response = await createHttpTaskWithToken(

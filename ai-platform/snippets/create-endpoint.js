@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(endpointDisplayName, project, location = 'us-central1') {
-  // [START aiplatform_create_endpoint]
+  // [START aiplatform_create_endpoint_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -66,7 +66,7 @@ async function main(endpointDisplayName, project, location = 'us-central1') {
     console.log(`\tUpdate time : ${JSON.stringify(result.updateTime)}`);
   }
   createEndpoint();
-  // [END aiplatform_create_endpoint]
+  // [END aiplatform_create_endpoint_sample]
 }
 
 process.on('unhandledRejection', err => {

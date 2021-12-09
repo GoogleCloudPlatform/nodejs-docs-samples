@@ -23,7 +23,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data]
+  // [START aiplatform_import_data_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -68,7 +68,7 @@ async function main(
     console.log(`Import data response : ${JSON.stringify(response.result)}`);
   }
   importData();
-  // [END aiplatform_import_data]
+  // [END aiplatform_import_data_sample]
 }
 
 process.on('unhandledRejection', err => {

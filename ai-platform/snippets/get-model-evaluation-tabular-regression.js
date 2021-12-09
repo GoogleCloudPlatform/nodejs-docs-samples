@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, evaluationId, project, location = 'us-central1') {
-  // [START aiplatform_get_model_evaluation_tabular_regression]
+  // [START aiplatform_get_model_evaluation_tabular_regression_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    * (not necessary if passing values as arguments). To obtain evaluationId,
@@ -100,7 +100,7 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
     }
   }
   getModelEvaluationTabularRegression();
-  // [END aiplatform_get_model_evaluation_tabular_regression]
+  // [END aiplatform_get_model_evaluation_tabular_regression_sample]
 }
 
 process.on('unhandledRejection', err => {

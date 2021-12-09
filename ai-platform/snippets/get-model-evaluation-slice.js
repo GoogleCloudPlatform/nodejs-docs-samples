@@ -23,7 +23,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_get_model_evaluation_slice]
+  // [START aiplatform_get_model_evaluation_slice_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    * (not necessary if passing values as arguments). To obtain evaluationId,
@@ -75,7 +75,7 @@ async function main(
     console.log(`\tValue :${slice.value}`);
   }
   getModelEvaluationSlice();
-  // [END aiplatform_get_model_evaluation_slice]
+  // [END aiplatform_get_model_evaluation_slice_sample]
 }
 
 process.on('unhandledRejection', err => {

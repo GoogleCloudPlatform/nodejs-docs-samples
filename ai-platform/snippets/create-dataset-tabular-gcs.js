@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_dataset_tabular_gcs]
+  // [START aiplatform_create_dataset_tabular_gcs_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -97,7 +97,7 @@ async function main(
     console.log(`\tMetadata : ${JSON.stringify(result.metadata)}`);
   }
   createDatasetTabularGcs();
-  // [END aiplatform_create_dataset_tabular_gcs]
+  // [END aiplatform_create_dataset_tabular_gcs_sample]
 }
 
 process.on('unhandledRejection', err => {

@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(datasetId, project, location = 'us-central1') {
-  // [START aiplatform_delete_dataset]
+  // [START aiplatform_delete_dataset_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -54,7 +54,7 @@ async function main(datasetId, project, location = 'us-central1') {
     console.log('Delete dataset response:\n', result);
   }
   deleteDataset();
-  // [END aiplatform_delete_dataset]
+  // [END aiplatform_delete_dataset_sample]
 }
 
 process.on('unhandledRejection', err => {

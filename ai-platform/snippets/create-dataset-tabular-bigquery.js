@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_dataset_tabular_bigquery]
+  // [START aiplatform_create_dataset_tabular_bigquery_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -97,7 +97,7 @@ async function main(
     console.log(`\tMetadata : ${JSON.stringify(result.metadata)}`);
   }
   createDatasetTabularBigquery();
-  // [END aiplatform_create_dataset_tabular_bigquery]
+  // [END aiplatform_create_dataset_tabular_bigquery_sample]
 }
 
 process.on('unhandledRejection', err => {

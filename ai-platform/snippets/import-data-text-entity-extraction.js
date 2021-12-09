@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data_text_entity_extraction]
+  // [START aiplatform_import_data_text_entity_extraction_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -70,7 +70,7 @@ async function main(
     );
   }
   importDataTextEntityExtraction();
-  // [END aiplatform_import_data_text_entity_extraction]
+  // [END aiplatform_import_data_text_entity_extraction_sample]
 }
 
 process.on('unhandledRejection', err => {

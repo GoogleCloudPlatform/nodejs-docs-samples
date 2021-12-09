@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_dataset]
+  // [START aiplatform_create_dataset_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -78,7 +78,7 @@ async function main(
     console.log(`\tLabels : ${JSON.stringify(createDatasetResponse.labels)}`);
   }
   createDataset();
-  // [END aiplatform_create_dataset]
+  // [END aiplatform_create_dataset_sample]
 }
 
 process.on('unhandledRejection', err => {

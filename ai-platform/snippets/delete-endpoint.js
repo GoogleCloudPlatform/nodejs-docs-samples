@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(endpointId, project, location = 'us-central1') {
-  // [START aiplatform_delete_endpoint]
+  // [START aiplatform_delete_endpoint_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -55,7 +55,7 @@ async function main(endpointId, project, location = 'us-central1') {
     console.log('Delete endpoint response:\n', result);
   }
   deleteEndpoint();
-  // [END aiplatform_delete_endpoint]
+  // [END aiplatform_delete_endpoint_sample]
 }
 
 process.on('unhandledRejection', err => {

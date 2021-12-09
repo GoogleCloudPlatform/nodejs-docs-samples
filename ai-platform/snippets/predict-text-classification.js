@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(text, endpointId, project, location) {
-  // [START aiplatform_predict_text_classification]
+  // [START aiplatform_predict_text_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -78,7 +78,7 @@ async function main(text, endpointId, project, location) {
     }
   }
   predictTextClassification();
-  // [END aiplatform_predict_text_classification]
+  // [END aiplatform_predict_text_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

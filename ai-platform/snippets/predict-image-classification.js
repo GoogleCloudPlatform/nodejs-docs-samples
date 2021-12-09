@@ -17,7 +17,7 @@
 'use strict';
 
 function main(filename, endpointId, project, location = 'us-central1') {
-  // [START aiplatform_predict_image_classification]
+  // [START aiplatform_predict_image_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -84,7 +84,7 @@ function main(filename, endpointId, project, location = 'us-central1') {
     }
   }
   predictImageClassification();
-  // [END aiplatform_predict_image_classification]
+  // [END aiplatform_predict_image_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

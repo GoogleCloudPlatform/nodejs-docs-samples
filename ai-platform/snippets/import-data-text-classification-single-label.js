@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data_text_classification_single_label]
+  // [START aiplatform_import_data_text_classification_single_label_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -71,7 +71,7 @@ async function main(
     );
   }
   importDataTextClassificationSingleLabel();
-  // [END aiplatform_import_data_text_classification_single_label]
+  // [END aiplatform_import_data_text_classification_single_label_sample]
 }
 
 process.on('unhandledRejection', err => {

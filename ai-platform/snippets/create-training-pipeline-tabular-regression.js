@@ -24,7 +24,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_training_pipeline_tables_regression]
+  // [START aiplatform_create_training_pipeline_tabular_regression_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -128,7 +128,7 @@ async function main(
     console.log(JSON.stringify(response, null, 2));
   }
   createTrainingPipelineTablesRegression();
-  // [END aiplatform_create_training_pipeline_tables_regression]
+  // [END aiplatform_create_training_pipeline_tabular_regression_sample]
 }
 
 process.on('unhandledRejection', err => {

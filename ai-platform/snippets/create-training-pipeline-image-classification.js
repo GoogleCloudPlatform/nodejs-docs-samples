@@ -23,7 +23,7 @@ function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_training_pipeline_image_classification]
+  // [START aiplatform_create_training_pipeline_image_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    * (Not necessary if passing values as arguments)
@@ -92,7 +92,7 @@ function main(
   }
 
   createTrainingPipelineImageClassification();
-  // [END aiplatform_create_training_pipeline_image_classification]
+  // [END aiplatform_create_training_pipeline_image_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

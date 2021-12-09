@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(filename, endpointId, project, location = 'us-central1') {
-  // [START aiplatform_predict_custom_trained_model]
+  // [START aiplatform_predict_custom_trained_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -94,7 +94,7 @@ async function main(filename, endpointId, project, location = 'us-central1') {
     }
   }
   predictCustomTrainedModel();
-  // [END aiplatform_predict_custom_trained_model]
+  // [END aiplatform_predict_custom_trained_model_sample]
 }
 
 process.on('unhandledRejection', err => {

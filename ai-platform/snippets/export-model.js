@@ -23,7 +23,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_export_model]
+  // [START aiplatform_export_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
      (Not necessary if passing values as arguments)
@@ -73,7 +73,7 @@ async function main(
     console.log(`Export model response : ${JSON.stringify(result)}`);
   }
   exportModel();
-  // [END aiplatform_export_model]
+  // [END aiplatform_export_model_sample]
 }
 
 process.on('unhandledRejection', err => {

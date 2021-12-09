@@ -24,7 +24,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_batch_prediction_job_video_classification]
+  // [START aiplatform_create_batch_prediction_job_video_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -97,7 +97,7 @@ async function main(
     console.log(JSON.stringify(response, null, 2));
   }
   createBatchPredictionJobVideoClassification();
-  // [END aiplatform_create_batch_prediction_job_video_classification]
+  // [END aiplatform_create_batch_prediction_job_video_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

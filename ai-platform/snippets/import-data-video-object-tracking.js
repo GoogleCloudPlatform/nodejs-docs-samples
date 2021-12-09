@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data_video_object_tracking]
+  // [START aiplatform_import_data_video_object_tracking_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -70,7 +70,7 @@ async function main(
     );
   }
   importDataVideoObjectTracking();
-  // [END aiplatform_import_data_video_object_tracking]
+  // [END aiplatform_import_data_video_object_tracking_sample]
 }
 
 process.on('unhandledRejection', err => {

@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data_video_action_recognition]
+  // [START aiplatform_import_data_video_action_recognition_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -71,7 +71,7 @@ async function main(
     );
   }
   importDataVideoActionRecognition();
-  // [END aiplatform_import_data_video_action_recognition]
+  // [END aiplatform_import_data_video_action_recognition_sample]
 }
 
 process.on('unhandledRejection', err => {

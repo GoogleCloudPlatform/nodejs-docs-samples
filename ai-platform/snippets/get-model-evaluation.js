@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, evaluationId, project, location = 'us-central1') {
-  // [START aiplatform_get_model_evaluation]
+  // [START aiplatform_get_model_evaluation_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
      (Not necessary if passing values as arguments)
@@ -56,7 +56,7 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
     console.log(`\tSlice dimensions : ${response.sliceDimensions}`);
   }
   getModelEvaluation();
-  // [END aiplatform_get_model_evaluation]
+  // [END aiplatform_get_model_evaluation_sample]
 }
 
 process.on('unhandledRejection', err => {

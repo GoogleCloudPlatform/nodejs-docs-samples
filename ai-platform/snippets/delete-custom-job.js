@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(customJobId, project, location = 'us-central1') {
-  // [START aiplatform_delete_custom_job]
+  // [START aiplatform_delete_custom_job_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -51,7 +51,7 @@ async function main(customJobId, project, location = 'us-central1') {
     console.log('Delete custom job response:\n', response);
   }
   setTimeout(deleteCustomJob, 60000);
-  // [END aiplatform_delete_custom_job]
+  // [END aiplatform_delete_custom_job_sample]
 }
 
 process.on('unhandledRejection', err => {

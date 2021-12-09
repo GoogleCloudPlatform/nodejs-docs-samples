@@ -42,7 +42,7 @@ function main(
       model: {
         displayName: displayName,
         datasetId: datasetId,
-        translationModelMetadata: {}, // Leave unset, to use the default base model
+        translationModelMetadata: {},
       },
     };
 

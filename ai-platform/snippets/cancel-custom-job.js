@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(customJobId, project, location = 'us-central1') {
-  // [START aiplatform_cancel_custom_job]
+  // [START aiplatform_cancel_custom_job_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -50,7 +50,7 @@ async function main(customJobId, project, location = 'us-central1') {
     console.log('Cancel custom job response:\n', response);
   }
   cancelCustomJob();
-  // [END aiplatform_cancel_custom_job]
+  // [END aiplatform_cancel_custom_job_sample]
 }
 
 process.on('unhandledRejection', err => {

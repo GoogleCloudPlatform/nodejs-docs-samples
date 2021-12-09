@@ -16,7 +16,7 @@
 'use strict';
 
 async function main(batchPredictionJobId, project, location = 'us-central1') {
-  // [START aiplatform_get_batch_prediction_job]
+  // [START aiplatform_get_batch_prediction_job_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -140,7 +140,7 @@ async function main(batchPredictionJobId, project, location = 'us-central1') {
     }
   }
   getBatchPredictionJob();
-  // [END aiplatform_get_batch_prediction_job]
+  // [END aiplatform_get_batch_prediction_job_sample]
 }
 
 process.on('unhandledRejection', err => {

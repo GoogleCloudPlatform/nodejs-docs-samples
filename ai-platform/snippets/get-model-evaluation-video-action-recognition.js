@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, evaluationId, project, location = 'us-central1') {
-  // [START aiplatform_get_model_evaluation_video_action_recognition]
+  // [START aiplatform_get_model_evaluation_video_action_recognition_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    * (not necessary if passing values as arguments). To obtain evaluationId,
@@ -69,7 +69,7 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
     console.log(`\tSlice dimensions : ${response.sliceDimensions}`);
   }
   getModelEvaluationVideoActionRecognition();
-  // [END aiplatform_get_model_evaluation_video_action_recognition]
+  // [END aiplatform_get_model_evaluation_video_action_recognition_sample]
 }
 
 process.on('unhandledRejection', err => {

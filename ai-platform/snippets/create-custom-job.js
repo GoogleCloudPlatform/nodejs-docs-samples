@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_custom_job]
+  // [START aiplatform_create_custom_job_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -75,7 +75,7 @@ async function main(
     console.log('Create custom job response:\n', JSON.stringify(response));
   }
   createCustomJob();
-  // [END aiplatform_create_custom_job]
+  // [END aiplatform_create_custom_job_sample]
 }
 
 process.on('unhandledRejection', err => {

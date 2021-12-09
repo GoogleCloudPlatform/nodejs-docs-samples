@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(datasetDisplayName, project, location = 'us-central1') {
-  // [START aiplatform_create_dataset_image]
+  // [START aiplatform_create_dataset_image_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -68,7 +68,7 @@ async function main(datasetDisplayName, project, location = 'us-central1') {
     console.log(`Labels : ${JSON.stringify(result.labels)}`);
   }
   createDatasetImage();
-  // [END aiplatform_create_dataset_image]
+  // [END aiplatform_create_dataset_image_sample]
 }
 
 process.on('unhandledRejection', err => {

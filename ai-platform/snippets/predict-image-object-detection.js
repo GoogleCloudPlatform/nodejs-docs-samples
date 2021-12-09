@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(filename, endpointId, project, location = 'us-central1') {
-  // [START aiplatform_predict_image_object_detection]
+  // [START aiplatform_predict_image_object_detection_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -87,7 +87,7 @@ async function main(filename, endpointId, project, location = 'us-central1') {
     }
   }
   predictImageObjectDetection();
-  // [END aiplatform_predict_image_object_detection]
+  // [END aiplatform_predict_image_object_detection_sample]
 }
 
 process.on('unhandledRejection', err => {

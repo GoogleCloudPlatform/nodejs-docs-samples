@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, evaluationId, project, location = 'us-central1') {
-  // [START aiplatform_get_model_evaluation_image_classification]
+  // [START aiplatform_get_model_evaluation_image_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample
    * (not necessary if passing values as arguments). To obtain evaluationId,
@@ -95,7 +95,7 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
     }
   }
   getModelEvaluationImageClassification();
-  // [END aiplatform_get_model_evaluation_image_classification]
+  // [END aiplatform_get_model_evaluation_image_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

@@ -23,7 +23,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_deploy_model]
+  // [START aiplatform_deploy_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -143,7 +143,7 @@ async function main(
     }
   }
   deployModel();
-  // [END aiplatform_deploy_model]
+  // [END aiplatform_deploy_model_sample]
 }
 
 process.on('unhandledRejection', err => {

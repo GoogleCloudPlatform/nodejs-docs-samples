@@ -24,7 +24,7 @@ function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_create_batch_prediction_job_video_action_recognition]
+  // [START aiplatform_create_batch_prediction_job_video_action_recognition_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -95,7 +95,7 @@ function main(
     console.log(JSON.stringify(response, null, 2));
   }
   createBatchPredictionJobVideoActionRecognition();
-  // [END aiplatform_create_batch_prediction_job_video_action_recognition]
+  // [END aiplatform_create_batch_prediction_job_video_action_recognition_sample]
 }
 
 process.on('unhandledRejection', err => {

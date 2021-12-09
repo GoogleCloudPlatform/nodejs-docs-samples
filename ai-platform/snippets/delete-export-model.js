@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(bucketName, uriPrefix) {
-  // [START aiplatform_delete_export_model]
+  // [START aiplatform_delete_export_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -45,7 +45,7 @@ async function main(bucketName, uriPrefix) {
     console.log('Export model deleted');
   }
   deleteExportModel();
-  // [END aiplatform_delete_export_model]
+  // [END aiplatform_delete_export_model_sample]
 }
 
 process.on('unhandledRejection', err => {

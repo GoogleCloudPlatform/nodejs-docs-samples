@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, project, location = 'us-central1') {
-  // [START aiplatform_delete_model]
+  // [START aiplatform_delete_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -53,7 +53,7 @@ async function main(modelId, project, location = 'us-central1') {
     console.log('Delete model response:\n', result);
   }
   deleteModel();
-  // [END aiplatform_delete_model]
+  // [END aiplatform_delete_model_sample]
 }
 
 process.on('unhandledRejection', err => {

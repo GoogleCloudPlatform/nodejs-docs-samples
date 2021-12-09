@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_export_model_tabular_classification]
+  // [START aiplatform_export_model_tabular_classification_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -69,7 +69,7 @@ async function main(
     console.log(`Export model response : ${JSON.stringify(response.result)}`);
   }
   exportModelTabularClassification();
-  // [END aiplatform_export_model_tabular_classification]
+  // [END aiplatform_export_model_tabular_classification_sample]
 }
 
 process.on('unhandledRejection', err => {

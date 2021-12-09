@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(modelId, project, location = 'us-central1') {
-  // [START aiplatform_get_model]
+  // [START aiplatform_get_model_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -118,7 +118,7 @@ async function main(modelId, project, location = 'us-central1') {
     console.log('\t\t', deployedModels);
   }
   getModel();
-  // [END aiplatform_get_model]
+  // [END aiplatform_get_model_sample]
 }
 
 process.on('unhandledRejection', err => {

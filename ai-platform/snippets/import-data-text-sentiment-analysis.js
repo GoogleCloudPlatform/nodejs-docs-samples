@@ -22,7 +22,7 @@ async function main(
   project,
   location = 'us-central1'
 ) {
-  // [START aiplatform_import_data_text_sentiment_analysis]
+  // [START aiplatform_import_data_text_sentiment_analysis_sample]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    */
@@ -70,7 +70,7 @@ async function main(
     );
   }
   importDataTextSentimentAnalysis();
-  // [END aiplatform_import_data_text_sentiment_analysis]
+  // [END aiplatform_import_data_text_sentiment_analysis_sample]
 }
 
 process.on('unhandledRejection', err => {

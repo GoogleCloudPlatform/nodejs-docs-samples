@@ -29,7 +29,7 @@ function main(projectId, location, gcsUri) {
      */
     // const projectId = 'Your Google Cloud project Id';
     // const location = 'A compute region name';
-    // const gcsUri = 'Google Cloud Storage path of the input image'';
+    // const gcsUri = 'Google Cloud Storage URI. Target files must be in Product Search CSV format';
 
     // A resource that represents Google Cloud Platform location.
     const projectLocation = client.locationPath(projectId, location);

@@ -26,7 +26,7 @@ describe('system tests', () => {
   // [END functions_http_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs10 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
+      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs16 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
     );
   });
 

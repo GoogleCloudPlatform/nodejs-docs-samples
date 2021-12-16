@@ -40,7 +40,7 @@ describe('system tests', () => {
   // [END functions_storage_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy helloGCS --runtime nodejs16 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
     );
   });
 

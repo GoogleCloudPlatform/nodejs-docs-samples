@@ -32,7 +32,7 @@ describe('system tests', () => {
   // [END functions_pubsub_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloPubSub --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy helloPubSub --runtime nodejs16 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
     );
   });
 

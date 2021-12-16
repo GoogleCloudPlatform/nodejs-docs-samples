@@ -90,7 +90,7 @@ export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 # Replace system test's URL with the correct value
 # (Required because the integration tests ALSO use the BASE_URL variable, but for a different value)
 pushd github/nodejs-docs-samples
-sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/helloworld/test/sample.system.http.test.js
+sed -i "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/helloworld/test/sample.system.http.test.js
 popd
 
 # Activate mocha config

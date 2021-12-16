@@ -49,8 +49,13 @@ describe('functions_helloworld_pubsub integration test', () => {
       let stderr = '';
       ffProc.stdout.on('data', data => (stdout += data));
       ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject).on('exit', code => {
-        code === 0 ? resolve(stdout) : reject(stderr);
+      ffProc.on('exit', code => {
+        if (code === 0) {
+          resolve(stdout)
+        } else {
+          stderr = `Error code: ${code}\n${stderr}`;
+          reject(stderr);
+        }
       });
     });
     await waitPort({host: 'localhost', port: PORT});

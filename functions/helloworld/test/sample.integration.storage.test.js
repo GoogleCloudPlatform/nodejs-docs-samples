@@ -61,7 +61,7 @@ describe('functions_helloworld_storage integration test', () => {
       ffProc.stderr.on('data', data => (stderr += data));
       ffProc.on('exit', code => {
         if (code === 0) {
-          resolve(stdout)
+          resolve(stdout);
         } else {
           stderr = `Error code: ${code}\n${stderr}`;
           reject(stderr);

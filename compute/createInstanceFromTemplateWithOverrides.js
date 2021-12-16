@@ -51,9 +51,9 @@ function main(
   // const newDiskSourceImage = 'projects/debian-cloud/global/images/family/debian-10';
 
   const compute = require('@google-cloud/compute');
-  const computeProtos = compute.protos.google.cloud.compute.v1;
 
-  // Creates a new instance in the specified project and zone using a selected template, but overrides the disk and machine type options in the template.
+  // Creates a new instance in the specified project and zone using a selected template,
+  // but overrides the disk and machine type options in the template.
   async function createInstanceFromTemplateWithOverrides() {
     const instancesClient = new compute.InstancesClient();
     const instanceTemplatesClient = new compute.InstanceTemplatesClient();
@@ -96,7 +96,7 @@ function main(
             },
             autoDelete: true,
             boot: false,
-            type: computeProtos.AttachedDisk.Type.PERSISTENT,
+            type: 'PERSISTENT',
           },
         ],
       },

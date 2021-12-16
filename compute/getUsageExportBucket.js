@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * Retrieve Compute Engine usage export bucket for the Cloud project. Replaces the empty value returned by the API with the default value used to generate report file names.
+ * Retrieve Compute Engine usage export bucket for the Cloud project.
+ * Replaces the empty value returned by the API with the default value used to generate report file names.
  *
  * @param {string} projectId - ID or number of the project you want to use.
  */
@@ -41,7 +42,9 @@ function main(projectId) {
     }
 
     if (!usageExportLocation.reportNamePrefix) {
-      // Although the server explicitly sent the empty string value, the next usage report generated with these settings still has the default prefix value `usage_gce`. (see https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
+      // Although the server explicitly sent the empty string value,
+      // the next usage report generated with these settings still has the default prefix value `usage_gce`.
+      // (see https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
       console.log(
         'Report name prefix not set, replacing with default value of `usage_gce`.'
       );

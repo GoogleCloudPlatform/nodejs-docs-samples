@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * Set Compute Engine usage export bucket for the Cloud project. This sample presents how to interpret the default value for the report name prefix parameter.
+ * Set Compute Engine usage export bucket for the Cloud project.
+ * This sample presents how to interpret the default value for the report name prefix parameter.
  *
  * @param {string} projectId - ID or number of the project you want to use.
  * @param {string} bucketName - Google Cloud Storage Bucket used to store Compute Engine usage reports. An existing Google Cloud Storage bucket is required.
@@ -28,16 +29,16 @@ function main(projectId, bucketName, reportNamePrefix = '') {
   // const bucketName = 'YOUR_BUCKET_NAME';
 
   const compute = require('@google-cloud/compute');
-  const compute_protos = compute.protos.google.cloud.compute.v1;
+  const computeProtos = compute.protos.google.cloud.compute.v1;
 
   async function setUsageExportBucket() {
-    const usageExportLocationResource =
-      new compute_protos.UsageExportLocation();
+    const usageExportLocationResource = new computeProtos.UsageExportLocation();
     usageExportLocationResource.bucketName = bucketName;
     usageExportLocationResource.reportNamePrefix = reportNamePrefix;
 
     if (!reportNamePrefix) {
-      // Sending an empty value for reportNamePrefix results in the next usage report being generated with the default prefix value "usage_gce". (see: https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
+      // Sending an empty value for reportNamePrefix results in the next usage report being generated with the default prefix value "usage_gce".
+      // (see: https://cloud.google.com/compute/docs/reference/rest/v1/projects/get)
       console.log(
         'Setting reportNamePrefix to empty value causes the report to have the default prefix value `usage_gce`.'
       );

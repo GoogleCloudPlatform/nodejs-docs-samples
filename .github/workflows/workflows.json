@@ -1,8 +1,14 @@
 [
+  "cloud-tasks/app",
+  "cloud-tasks/function",
   "composer",
   "composer/functions/composer-storage-trigger",
+  "endpoints/getting-started",
+  "endpoints/getting-started-grpc",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",
-  "healthcare/hl7v2"
+  "healthcare/hl7v2",
+  "monitoring/opencensus",
+  "monitoring/prometheus"
 ]

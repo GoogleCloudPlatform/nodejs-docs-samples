@@ -1,13 +1,13 @@
-name: healthcare-dicom
+name: endpoints-getting-started-grpc
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/dicom/**'
+    - 'endpoints/getting-started-grpc/**'
   pull_request:
     paths:
-    - 'healthcare/dicom/**'
+    - 'endpoints/getting-started-grpc/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -35,12 +35,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/dicom
+      working-directory: endpoints/getting-started-grpc
     - run: npm test
-      working-directory: healthcare/dicom
+      working-directory: endpoints/getting-started-grpc
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_dicom
-        MOCHA_REPORTER_OUTPUT: healthcare_dicom_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: endpoints_getting_started_grpc
+        MOCHA_REPORTER_OUTPUT: endpoints_getting_started_grpc_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v5

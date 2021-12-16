@@ -1,13 +1,13 @@
-name: healthcare-dicom
+name: monitoring-opencensus
 on:
   push:
     branches:
     - main
     paths:
-    - 'healthcare/dicom/**'
+    - 'monitoring/opencensus/**'
   pull_request:
     paths:
-    - 'healthcare/dicom/**'
+    - 'monitoring/opencensus/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -35,12 +35,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: healthcare/dicom
+      working-directory: monitoring/opencensus
     - run: npm test
-      working-directory: healthcare/dicom
+      working-directory: monitoring/opencensus
       env:
-        MOCHA_REPORTER_SUITENAME: healthcare_dicom
-        MOCHA_REPORTER_OUTPUT: healthcare_dicom_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: monitoring_opencensus
+        MOCHA_REPORTER_OUTPUT: monitoring_opencensus_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v5

@@ -36,15 +36,15 @@ function main(
   // const networkName = 'global/networks/default'
 
   const compute = require('@google-cloud/compute');
-  const compute_protos = compute.protos.google.cloud.compute.v1;
+  const computeProtos = compute.protos.google.cloud.compute.v1;
 
   async function createFirewallRule() {
     const firewallsClient = new compute.FirewallsClient();
     const operationsClient = new compute.GlobalOperationsClient();
 
-    const firewallRule = new compute_protos.Firewall();
+    const firewallRule = new computeProtos.Firewall();
     firewallRule.name = firewallRuleName;
-    firewallRule.direction = compute_protos.Firewall.Direction.INGRESS;
+    firewallRule.direction = 'INGRESS';
     firewallRule.allowed = [
       {
         IPProtocol: 'tcp',

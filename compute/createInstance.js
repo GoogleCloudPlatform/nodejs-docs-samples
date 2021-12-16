@@ -52,7 +52,6 @@ function main(
   // const networkName = 'global/networks/default';
 
   const compute = require('@google-cloud/compute');
-  const computeProtos = compute.protos.google.cloud.compute.v1;
 
   // Create a new instance with the values provided above in the specified project and zone.
   async function createInstance() {
@@ -72,7 +71,7 @@ function main(
             },
             autoDelete: true,
             boot: true,
-            type: computeProtos.AttachedDisk.Type.PERSISTENT,
+            type: 'PERSISTENT',
           },
         ],
         machineType: `zones/${zone}/machineTypes/${machineType}`,

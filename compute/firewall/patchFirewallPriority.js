@@ -29,13 +29,13 @@ function main(projectId, firewallRuleName, priority = 10) {
   // const priority = 10;
 
   const compute = require('@google-cloud/compute');
-  const compute_protos = compute.protos.google.cloud.compute.v1;
+  const computeProtos = compute.protos.google.cloud.compute.v1;
 
   async function patchFirewallPriority() {
     const firewallsClient = new compute.FirewallsClient();
     const operationsClient = new compute.GlobalOperationsClient();
 
-    const firewallRule = new compute_protos.Firewall();
+    const firewallRule = new computeProtos.Firewall();
     firewallRule.priority = priority;
 
     // The patch operation doesn't require the full definition of a Firewall object. It will only update

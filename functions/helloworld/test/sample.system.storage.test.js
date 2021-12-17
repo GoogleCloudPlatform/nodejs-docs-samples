@@ -70,6 +70,7 @@ describe('system tests', () => {
         assert.ok(logs.includes(`File: ${gcsFileName}`));
         assert.ok(logs.includes('Event Type: google.storage.object.finalize'));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });

@@ -63,6 +63,7 @@ describe('system tests', () => {
       try {
         assert.ok(logs.includes(`Hello, ${name}!`));
       } catch (err) {
+        console.log('An error occurred, retrying:', err)
         retry(err);
       }
     });
@@ -86,6 +87,7 @@ describe('system tests', () => {
       try {
         assert.ok(logs.includes('Hello, World!'));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });

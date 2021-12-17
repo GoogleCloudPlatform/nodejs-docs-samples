@@ -45,7 +45,7 @@ describe('system tests', () => {
     const response = await request({
       url: FUNCTION_URL,
       method: 'POST',
-      data: {name: 'John'}
+      data: {name: 'John'},
     });
     assert.strictEqual(response.data, 'Hello John!');
   });

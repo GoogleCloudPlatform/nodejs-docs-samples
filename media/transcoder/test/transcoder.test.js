@@ -35,9 +35,13 @@ const templateName = `projects/${projectNumber}/locations/${location}/jobTemplat
 
 const testFileName = 'ChromeCast.mp4';
 const testOverlayFileName = 'overlay.jpg';
+const testConcat1FileName = 'ForBiggerEscapes.mp4';
+const testConcat2FileName = 'ForBiggerJoyrides.mp4';
 
 const inputUri = `gs://${bucketName}/${testFileName}`;
 const overlayUri = `gs://${bucketName}/${testOverlayFileName}`;
+const concat1Uri = `gs://${bucketName}/${testConcat1FileName}`;
+const concat2Uri = `gs://${bucketName}/${testConcat2FileName}`;
 const outputUriForPreset = `gs://${bucketName}/test-output-preset/`;
 const outputUriForTemplate = `gs://${bucketName}/test-output-template/`;
 const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
@@ -53,10 +57,13 @@ const outputUriForPeriodicImagesSpritesheet = `gs://${bucketName}/${outputDirFor
 // Spritesheets use the following file naming conventions:
 const smallSpriteSheetFileName = 'small-sprite-sheet0000000000.jpeg';
 const largeSpriteSheetFileName = 'large-sprite-sheet0000000000.jpeg';
+const outputUriForConcatenated = `gs://${bucketName}/test-output-concat/`;
 
 const cwd = path.join(__dirname, '..');
 const videoFile = `testdata/${testFileName}`;
 const overlayFile = `testdata/${testOverlayFileName}`;
+const concat1File = `testdata/${testConcat1FileName}`;
+const concat2File = `testdata/${testConcat2FileName}`;
 
 const delay = async (test, addMs) => {
   const retries = test.currentRetry();
@@ -98,6 +105,8 @@ before(async () => {
   await storage.createBucket(bucketName);
   await storage.bucket(bucketName).upload(videoFile);
   await storage.bucket(bucketName).upload(overlayFile);
+  await storage.bucket(bucketName).upload(concat1File);
+  await storage.bucket(bucketName).upload(concat2File);
 });
 
 after(async () => {
@@ -589,5 +598,56 @@ describe('Job with periodic images spritesheet', () => {
       ),
       true
     );
+  });
+});
+
+describe('Job with concatenated inputs functions', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobWithConcatenatedInputs.js ${projectId} ${location} ${concat1Uri} 0 8.1 ${concat2Uri} 3.5 15 ${outputUriForConcatenated}`,
+      {cwd}
+    );
+    assert.ok(
+      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+    );
+    this.concatenatedJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.concatenatedJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.concatenatedJobId}`,
+      {cwd}
+    );
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.concatenatedJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.concatenatedJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
   });
 });

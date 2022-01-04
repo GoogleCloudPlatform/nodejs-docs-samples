@@ -6,7 +6,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud compute networks vpc-access connectors create my-connector \
+    gcloud compute networks vpc-access connectors create ${_SERVICE} \
       --region ${_REGION} \
       --range 10.8.0.0/28 \
       --network default
@@ -16,7 +16,7 @@ steps:
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
-      --vpc-connector my-connector"
+      --vpc-connector ${_SERVICE}"
 
 substitutions:
   _SERVICE: websockets

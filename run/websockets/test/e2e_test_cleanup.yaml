@@ -11,9 +11,10 @@ steps:
       ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}" \
         "gcloud run services delete ${_SERVICE} --region ${_REGION} --quiet"
 
-      ./test/retry.sh "gcloud compute networks vpc-access connectors describe ${_SERVICE} --region ${_REGION}" \
-        "gcloud compute networks vpc-access connectors delete ${_SERVICE} --region ${_REGION} --quiet"
+      ./test/retry.sh "gcloud compute networks vpc-access connectors describe ${_CONNECTOR} --region ${_REGION}" \
+        "gcloud compute networks vpc-access connectors delete ${_CONNECTOR} --region ${_REGION} --quiet"
 
 substitutions:
   _SERVICE: websockets
+  _CONNECTOR: my-connector
   _REGION: us-central1

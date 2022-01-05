@@ -97,7 +97,7 @@ describe('functions_helloworld_pubsub integration test', () => {
       '--port',
       PORT,
     ]);
-    
+
     try {
       const ffProcHandler = new Promise((resolve, reject) => {
         let stdout = '';

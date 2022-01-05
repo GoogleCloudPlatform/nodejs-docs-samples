@@ -79,6 +79,12 @@ describe('functions_helloworld_pubsub integration test', () => {
   });
   // [END functions_pubsub_integration_test]
 
+  let ffProc2;
+  afterEach(() => {
+    if (ffProc2) {
+      ffProc2.kill();
+    }
+  });
   it('helloPubSub: should print hello world', async () => {
     const pubsubMessage = {data: {}};
     const PORT = 8089; // Each running framework instance needs a unique port
@@ -91,6 +97,7 @@ describe('functions_helloworld_pubsub integration test', () => {
       '--port',
       PORT,
     ]);
+    
     try {
       const ffProcHandler = new Promise((resolve, reject) => {
         let stdout = '';

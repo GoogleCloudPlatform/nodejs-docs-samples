@@ -14,19 +14,24 @@
 
 // [START functions_http_system_test]
 const assert = require('assert');
-const Supertest = require('supertest');
-const supertest = Supertest(process.env.BASE_URL);
+const {request} = require('gaxios');
 const childProcess = require('child_process');
+
+if (!process.env.BASE_URL) {
+  throw new Error('"BASE_URL" env var must be set.');
+}
 
 if (!process.env.GCF_REGION) {
   throw new Error('"GCF_REGION" env var must be set.');
 }
 
+const FUNCTION_URL = `${process.env.BASE_URL}/helloHttp`;
+
 describe('system tests', () => {
   // [END functions_http_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs10 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}; gcloud functions add-iam-policy-binding helloHttp --region=${process.env.GCF_REGION} --member="allUsers" --role=roles/cloudfunctions.invoker`
+      `gcloud functions deploy helloHttp --allow-unauthenticated --runtime nodejs16 --trigger-http --ingress-settings=all --region=${process.env.GCF_REGION}`
     );
   });
 
@@ -37,22 +42,20 @@ describe('system tests', () => {
   });
   // [START functions_http_system_test]
   it('helloHttp: should print a name', async () => {
-    await supertest
-      .post('/helloHttp')
-      .send({name: 'John'})
-      .expect(200)
-      .expect(response => {
-        assert.strictEqual(response.text, 'Hello John!');
-      });
+    const response = await request({
+      url: FUNCTION_URL,
+      method: 'POST',
+      data: {name: 'John'},
+    });
+    assert.strictEqual(response.data, 'Hello John!');
   });
   // [END functions_http_system_test]
 
   it('helloHttp: should print hello world', async () => {
-    await supertest
-      .get('/helloHttp')
-      .expect(200)
-      .expect(response => {
-        assert.strictEqual(response.text, 'Hello World!');
-      });
+    const response = await request({
+      url: FUNCTION_URL,
+      method: 'POST',
+    });
+    assert.strictEqual(response.data, 'Hello World!');
   });
 });

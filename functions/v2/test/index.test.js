@@ -13,94 +13,45 @@
 // limitations under the License.
 
 const assert = require('assert');
-const {request} = require('gaxios');
-const {exec} = require('child_process');
-const waitPort = require('wait-port');
+const sinon = require('sinon');
+const supertest = require('supertest');
 
-const startFF = async (target, signature, port) => {
-  const ff = exec(
-    `npx functions-framework --target=${target} --signature-type=${signature} --port=${port}`
-  );
-  await waitPort({host: 'localhost', port});
-  return ff;
-};
+const functionsFramework = require('@google-cloud/functions-framework/testing');
 
-const getFFOutput = ffProc => {
-  return new Promise((resolve, reject) => {
-    let stdout = '';
-    let stderr = '';
-    ffProc.stdout.on('data', data => (stdout += data));
-    ffProc.stderr.on('data', data => (stderr += data));
+beforeEach(() => {
+  // require the module that includes the functions we are testing
+  require('../index');
 
-    ffProc.on('error', reject).on('exit', code => {
-      code === 0 ? resolve(stdout) : reject(stderr);
-    });
-  });
-};
+  // stub the console so we can use it for side effect assertions
+  sinon.stub(console, 'log');
+  sinon.stub(console, 'error');
+});
 
-const invocation = (port, event) => {
-  const baseUrl = `http://localhost:${port}`;
-  return request({
-    url: `${baseUrl}/`,
-    method: 'POST',
-    data: event,
-  });
-};
+afterEach(() => {
+  // restore the console stub
+  console.log.restore();
+  console.error.restore();
+});
 
 describe('functions_cloudevent_pubsub', () => {
-  const PORT = 9081;
-  let ffProc;
-  let ffProcHandler;
-
-  before(async () => {
-    ffProc = await startFF('helloPubSub', 'cloudevent', PORT);
-    ffProcHandler = getFFOutput(ffProc);
-  });
-
-  after(() => {
-    // Stop any residual Functions Framework instances
-    try {
-      ffProc.kill();
-    } finally {
-      /* Do nothing */
-    }
-  });
-
   it('should process a CloudEvent', async () => {
     const event = {
       data: {
         message: 'd29ybGQ=', // 'World' in base 64
       },
     };
-    const response = await invocation(PORT, event);
-    ffProc.kill();
 
-    const output = await ffProcHandler;
-
-    assert.strictEqual(response.status, 204);
-    assert.strictEqual(output.includes('Hello, World!'), true);
+    const server = functionsFramework.getTestServer('helloPubSub');
+    await supertest(server)
+      .post('/')
+      .send(event)
+      .set('Content-Type', 'application/json')
+      .expect(204);
+    assert(console.log.calledWith('Hello, World!'));
   });
 });
 
 describe('functions_cloudevent_storage', () => {
-  const PORT = 9082;
-  let ffProc;
-  let ffProcHandler;
-
-  before(async () => {
-    ffProc = await startFF('helloGCS', 'cloudevent', PORT);
-    ffProcHandler = getFFOutput(ffProc);
-  });
-
-  after(() => {
-    // Stop any residual Functions Framework instances
-    try {
-      ffProc.kill();
-    } finally {
-      /* Do nothing */
-    }
-  });
-
   it('should process a CloudEvent', async () => {
     const event = {
       id: '1234',
@@ -110,39 +61,21 @@ describe('functions_cloudevent_storage', () => {
         name: 'my-file.txt',
       },
     };
-    const response = await invocation(PORT, event);
-    ffProc.kill();
+    const server = functionsFramework.getTestServer('helloGCS');
+    await supertest(server)
+      .post('/')
+      .send(event)
+      .set('Content-Type', 'application/json')
+      .expect(204);
 
-    const output = await ffProcHandler;
-    console.log();
-
-    assert.strictEqual(response.status, 204);
-    assert.match(output, /Event ID: 1234/);
-    assert.match(output, /Event Type: mock-gcs-event/);
-    assert.match(output, /Bucket: my-bucket/);
-    assert.match(output, /File: my-file\.txt/);
+    assert(console.log.calledWith('Event ID: 1234'));
+    assert(console.log.calledWith('Event Type: mock-gcs-event'));
+    assert(console.log.calledWith('Bucket: my-bucket'));
+    assert(console.log.calledWith('File: my-file.txt'));
   });
 });
 
 describe('functions_log_cloudevent', () => {
-  const PORT = 9083;
-  let ffProc;
-  let ffProcHandler;
-
-  before(async () => {
-    ffProc = await startFF('helloAuditLog', 'cloudevent', PORT);
-    ffProcHandler = getFFOutput(ffProc);
-  });
-
-  after(() => {
-    // Stop any residual Functions Framework instances
-    try {
-      ffProc.kill();
-    } finally {
-      /* Do nothing */
-    }
-  });
-
   it('should process a CloudEvent', async () => {
     const event = {
       type: 'google.cloud.audit.log.v1.written',
@@ -158,50 +91,38 @@ describe('functions_log_cloudevent', () => {
         },
       },
     };
-    const response = await invocation(PORT, event);
-    ffProc.kill();
+    const server = functionsFramework.getTestServer('helloAuditLog');
+    await supertest(server)
+      .post('/')
+      .send(event)
+      .set('Content-Type', 'application/json')
+      .expect(204);
 
-    const output = await ffProcHandler;
-
-    assert.strictEqual(response.status, 204);
-    assert.match(output, /API method: storage\.objects\.write/);
-    assert.match(output, /Event type: google.cloud.audit.log.v1.written/);
-    assert.match(
-      output,
-      /Subject: storage.googleapis.com\/projects\/_\/buckets\/my-bucket\/objects\/test\.txt/
+    assert(console.log.calledWith('API method:', 'storage.objects.write'));
+    assert(
+      console.log.calledWith('Event type:', 'google.cloud.audit.log.v1.written')
     );
-    assert.match(output, /Resource name: some-resource/);
-    assert.match(output, /Principal: example@example\.com/);
+    assert(
+      console.log.calledWith(
+        'Subject:',
+        'storage.googleapis.com/projects/_/buckets/my-bucket/objects/test.txt'
+      )
+    );
+    assert(console.log.calledWith('Resource name:', 'some-resource'));
+    assert(console.log.calledWith('Principal:', 'example@example.com'));
   });
 });
 
 describe('functions_label_gce_instance', () => {
-  const PORT = 9084;
-  let ffProc;
-  let ffProcHandler;
-
-  before(async () => {
-    ffProc = await startFF('autoLabelInstance', 'cloudevent', PORT);
-    ffProcHandler = getFFOutput(ffProc);
-  });
-
-  after(() => {
-    // Stop any residual Functions Framework instances
-    try {
-      ffProc.kill();
-    } finally {
-      /* Do nothing */
-    }
-  });
-
   it('should validate data', async () => {
     const event = {
       subject: 'invalid/subject/example',
     };
-    const response = await invocation(PORT, event);
-    ffProc.kill();
-
-    await ffProcHandler;
-    assert.match(response.data, /Invalid event structure/);
+    const server = functionsFramework.getTestServer('autoLabelInstance');
+    await supertest(server)
+      .post('/')
+      .send(event)
+      .set('Content-Type', 'application/json')
+      .expect(/Invalid event structure/);
   });
 });

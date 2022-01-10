@@ -22,7 +22,7 @@ const promiseRetry = require('promise-retry');
 
 const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
-if (!topicName) throw new Error('"FUNCTION_TOPIC" env var must be set.');
+if (!topicName) throw new Error('"FUNCTIONS_TOPIC" env var must be set.');
 if (!process.env.GCF_REGION) {
   throw new Error('"GCF_REGION" env var must be set.');
 }

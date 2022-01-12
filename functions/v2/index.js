@@ -14,7 +14,12 @@
 
 'use strict';
 
+// [START functions_cloudevent_pubsub]
+// [START functions_cloudevent_storage]
 const functions = require('@google-cloud/functions-framework');
+
+// [END functions_cloudevent_pubsub]
+// [END functions_cloudevent_storage]
 
 // [START functions_cloudevent_pubsub]
 // Register a CloudEvent callback with the Functions Framework that will

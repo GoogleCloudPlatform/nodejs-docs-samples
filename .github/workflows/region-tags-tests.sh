@@ -13,11 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-      
+
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 export NODE_ENV=development
-
-cd github/nodejs-docs-samples/
 
 # Display link to docs
 echo '================================================================='

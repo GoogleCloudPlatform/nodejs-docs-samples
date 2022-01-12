@@ -21,3 +21,8 @@ jobs:
       - uses: JustinBeckwith/linkinator-action@v1
         with:
           paths: "**/*.md"
+  region-tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: ./region-tags-tests.sh

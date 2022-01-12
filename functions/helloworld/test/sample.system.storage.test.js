@@ -40,7 +40,7 @@ describe('system tests', () => {
   // [END functions_storage_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy helloGCS --runtime nodejs16 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
     );
   });
 
@@ -70,6 +70,7 @@ describe('system tests', () => {
         assert.ok(logs.includes(`File: ${gcsFileName}`));
         assert.ok(logs.includes('Event Type: google.storage.object.finalize'));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });

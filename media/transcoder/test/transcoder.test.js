@@ -37,11 +37,12 @@ const testFileName = 'ChromeCast.mp4';
 const testOverlayFileName = 'overlay.jpg';
 const testConcat1FileName = 'ForBiggerEscapes.mp4';
 const testConcat2FileName = 'ForBiggerJoyrides.mp4';
-
+const testCaptionFileName = 'caption.srt';
 const inputUri = `gs://${bucketName}/${testFileName}`;
 const overlayUri = `gs://${bucketName}/${testOverlayFileName}`;
 const concat1Uri = `gs://${bucketName}/${testConcat1FileName}`;
 const concat2Uri = `gs://${bucketName}/${testConcat2FileName}`;
+const captionsUri = `gs://${bucketName}/${testCaptionFileName}`;
 const outputUriForPreset = `gs://${bucketName}/test-output-preset/`;
 const outputUriForTemplate = `gs://${bucketName}/test-output-template/`;
 const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
@@ -58,12 +59,15 @@ const outputUriForPeriodicImagesSpritesheet = `gs://${bucketName}/${outputDirFor
 const smallSpriteSheetFileName = 'small-sprite-sheet0000000000.jpeg';
 const largeSpriteSheetFileName = 'large-sprite-sheet0000000000.jpeg';
 const outputUriForConcatenated = `gs://${bucketName}/test-output-concat/`;
+const outputUriForEmbeddedCaptions = `gs://${bucketName}/test-output-embedded-captions/`;
+const outputUriForStandaloneCaptions = `gs://${bucketName}/test-output-standalone-captions/`;
 
 const cwd = path.join(__dirname, '..');
 const videoFile = `testdata/${testFileName}`;
 const overlayFile = `testdata/${testOverlayFileName}`;
 const concat1File = `testdata/${testConcat1FileName}`;
 const concat2File = `testdata/${testConcat2FileName}`;
+const captionFile = `testdata/${testCaptionFileName}`;
 
 const delay = async (test, addMs) => {
   const retries = test.currentRetry();
@@ -107,6 +111,7 @@ before(async () => {
   await storage.bucket(bucketName).upload(overlayFile);
   await storage.bucket(bucketName).upload(concat1File);
   await storage.bucket(bucketName).upload(concat2File);
+  await storage.bucket(bucketName).upload(captionFile);
 });
 
 after(async () => {
@@ -640,6 +645,108 @@ describe('Job with concatenated inputs functions', () => {
       await wait(ms);
       const output = execSync(
         `node getJobState.js ${projectId} ${location} ${this.concatenatedJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
+  });
+});
+
+describe('Job with embedded captions', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobWithEmbeddedCaptions.js ${projectId} ${location} ${inputUri} ${captionsUri} ${outputUriForEmbeddedCaptions}`,
+      {cwd}
+    );
+    assert.ok(
+      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+    );
+    this.embeddedCaptionsJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.embeddedCaptionsJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.embeddedCaptionsJobId}`,
+      {cwd}
+    );
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.embeddedCaptionsJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.embeddedCaptionsJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
+  });
+});
+
+describe('Job with standalone captions', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobWithStandaloneCaptions.js ${projectId} ${location} ${inputUri} ${captionsUri} ${outputUriForStandaloneCaptions}`,
+      {cwd}
+    );
+    assert.ok(
+      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+    );
+    this.standaloneCaptionsJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.standaloneCaptionsJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.standaloneCaptionsJobId}`,
+      {cwd}
+    );
+    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.standaloneCaptionsJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.standaloneCaptionsJobId}`,
         {cwd}
       );
       if (output.includes('Job state: SUCCEEDED')) {

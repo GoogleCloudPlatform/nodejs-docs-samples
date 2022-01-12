@@ -1,5 +1,6 @@
 {
   "name": "cloud-functions-billing",
+  "private": "true",
   "version": "0.0.1",
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
@@ -14,6 +15,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/billing": "^2.2.2",
+    "@google-cloud/compute": "^3.1.0",
     "google-auth-library": "^7.0.0",
     "googleapis": "^92.0.0",
     "slack": "^11.0.1"

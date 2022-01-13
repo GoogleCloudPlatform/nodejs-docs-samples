@@ -15,8 +15,7 @@
 // [START functions_billing_limit]
 // [START functions_billing_stop]
 const {CloudBillingClient} = require('@google-cloud/billing');
-const google_compute = require('googleapis/build/src/apis/compute');
-const {GoogleAuth} = require('google-auth-library');
+const {InstancesClient} = require('@google-cloud/compute');
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const PROJECT_NAME = `projects/${PROJECT_ID}`;
@@ -63,7 +62,6 @@ exports.stopBilling = async pubsubEvent => {
     return 'No project specified';
   }
 
-  _setAuthCredential();
   const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
   if (billingEnabled) {
     return _disableBillingForProject(PROJECT_NAME);
@@ -71,23 +69,6 @@ exports.stopBilling = async pubsubEvent => {
     return 'Billing already disabled';
   }
 };
-
-// [START functions_billing_limit]
-/**
- * @return {Promise} Credentials set globally
- */
-const _setAuthCredential = () => {
-  const client = new GoogleAuth({
-    scopes: [
-      'https://www.googleapis.com/auth/cloud-billing',
-      'https://www.googleapis.com/auth/cloud-platform',
-    ],
-  });
-
-  // Set credentials
-  google_compute.auth = client;
-};
-// [END functions_billing_limit]
 
 /**
  * Determine whether billing is enabled for a project
@@ -126,7 +107,6 @@ exports.startBilling = async pubsubEvent => {
     Buffer.from(pubsubEvent.data, 'base64').toString()
   );
 
-  _setAuthCredential();
   if (!(await _isBillingEnabled(PROJECT_NAME))) {
     // Enable billing
 
@@ -144,7 +124,7 @@ exports.startBilling = async pubsubEvent => {
 };
 
 // [START functions_billing_limit]
-const compute = google_compute.compute('v1');
+const instancesClient = new InstancesClient();
 const ZONE = 'us-central1-a';
 
 exports.limitUse = async pubsubEvent => {
@@ -154,8 +134,6 @@ exports.limitUse = async pubsubEvent => {
   if (pubsubData.costAmount <= pubsubData.budgetAmount) {
     return `No action necessary. (Current cost: ${pubsubData.costAmount})`;
   }
-
-  _setAuthCredential();
 
   const instanceNames = await _listRunningInstances(PROJECT_ID, ZONE);
   if (!instanceNames.length) {
@@ -170,14 +148,13 @@ exports.limitUse = async pubsubEvent => {
  * @return {Promise} Array of names of running instances
  */
 const _listRunningInstances = async (projectId, zone) => {
-  const res = await compute.instances.list({
+  const [instances] = await instancesClient.list({
     project: projectId,
     zone: zone,
   });
-
-  const instances = res.data.items || [];
-  const ranInstances = instances.filter(item => item.status === 'RUNNING');
-  return ranInstances.map(item => item.name);
+  return instances
+    .filter(item => item.status === 'RUNNING')
+    .map(item => item.name);
 };
 
 /**
@@ -187,15 +164,14 @@ const _listRunningInstances = async (projectId, zone) => {
 const _stopInstances = async (projectId, zone, instanceNames) => {
   await Promise.all(
     instanceNames.map(instanceName => {
-      return compute.instances
+      return instancesClient
         .stop({
           project: projectId,
           zone: zone,
           instance: instanceName,
         })
-        .then(res => {
+        .then(() => {
           console.log(`Instance stopped successfully: ${instanceName}`);
-          return res.data;
         });
     })
   );
@@ -204,9 +180,7 @@ const _stopInstances = async (projectId, zone, instanceNames) => {
 
 // Helper function to restart instances (used in tests)
 exports.startInstances = async () => {
-  _setAuthCredential();
   const instanceNames = await _listStoppedInstances(PROJECT_ID, ZONE);
-
   if (!instanceNames.length) {
     return 'No stopped instances were found.';
   }
@@ -219,12 +193,10 @@ exports.startInstances = async () => {
  * @return {Promise} Array of names of running instances
  */
 const _listStoppedInstances = async (projectId, zone) => {
-  const res = await compute.instances.list({
+  const [instances] = await instancesClient.list({
     project: projectId,
     zone: zone,
   });
-
-  const instances = res.data.items || [];
   const stoppedInstances = instances.filter(item => item.status !== 'RUNNING');
   return stoppedInstances.map(item => item.name);
 };
@@ -239,7 +211,7 @@ const _startInstances = async (projectId, zone, instanceNames) => {
   }
   await Promise.all(
     instanceNames.map(instanceName => {
-      return compute.instances.start({
+      return instancesClient.start({
         project: projectId,
         zone: zone,
         instance: instanceName,
@@ -250,7 +222,11 @@ const _startInstances = async (projectId, zone, instanceNames) => {
 
 // Helper function used in tests
 exports.listRunningInstances = async () => {
-  _setAuthCredential();
   console.log(PROJECT_ID, ZONE);
   return _listRunningInstances(PROJECT_ID, ZONE);
+};
+
+// export for mocking purposes
+exports.getInstancesClient = () => {
+  return instancesClient;
 };

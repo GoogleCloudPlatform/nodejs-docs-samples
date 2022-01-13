@@ -157,7 +157,8 @@ exports.retryPromise = event => {
   if (tryAgain) {
     throw new Error('Retrying...');
   } else {
-    return Promise.reject(new Error('Not retrying...'));
+    console.error('Not retrying...');
+    return Promise.resolve();
   }
 };
 

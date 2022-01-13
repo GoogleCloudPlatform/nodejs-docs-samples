@@ -72,10 +72,16 @@ describe('functions_helloworld_pubsub integration test', () => {
   });
   // [END functions_pubsub_integration_test]
 
+  let ffProc2;
+  afterEach(() => {
+    if (ffProc2) {
+      ffProc2.kill();
+    }
+  });
   it('helloPubSub: should print hello world', async () => {
     const pubsubMessage = {data: {}};
     const PORT = 8089; // Each running framework instance needs a unique port
-    ffProc = spawn('npx', [
+    ffProc2 = spawn('npx', [
       'functions-framework',
       '--target',
       'helloPubSub',
@@ -87,10 +93,10 @@ describe('functions_helloworld_pubsub integration test', () => {
     const ffProcHandler = new Promise((resolve, reject) => {
       let stdout = '';
       let stderr = '';
-      ffProc.stdout.on('data', data => (stdout += data));
-      ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject);
-      ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
+      ffProc2.stdout.on('data', data => (stdout += data));
+      ffProc2.stderr.on('data', data => (stderr += data));
+      ffProc2.on('error', reject);
+      ffProc2.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
     });
     await waitPort({host: 'localhost', port: PORT});
 
@@ -101,7 +107,7 @@ describe('functions_helloworld_pubsub integration test', () => {
       method: 'POST',
       data: pubsubMessage,
     });
-    ffProc.kill();
+    ffProc2.kill();
 
     assert.strictEqual(response.status, 204);
 

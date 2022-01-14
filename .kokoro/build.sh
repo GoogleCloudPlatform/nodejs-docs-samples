@@ -125,6 +125,13 @@ if [[ $SQL_CLIENT ]]; then
 	fi
 fi
 
+# Print out log files (for discoverability)
+print_logfile() {
+	echo '----- Printing: ${MOCHA_REPORTER_OUTPUT} -----'
+	cat $MOCHA_REPORTER_OUTPUT
+	echo '----- End ${MOCHA_REPORTER_OUTPUT} -----'
+}
+
 # If tests are running against main, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
@@ -132,17 +139,14 @@ if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	cleanup() {
 	chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
 	$KOKORO_GFILE_DIR/linux_amd64/flakybot
+
+	# We can only set one trap per signal, so run print_logfile() here
+	print_logfile()
 	}
 	trap cleanup EXIT HUP
+else
+	trap print_logfile EXIT HUP
 fi
-
-# Print out log files (for discoverability)
-print_logfile() {
-	echo '----- Printing: ${MOCHA_REPORTER_OUTPUT} -----'
-	cat $MOCHA_REPORTER_OUTPUT
-	echo '----- End ${MOCHA_REPORTER_OUTPUT} -----'
-}
-trap print_logfile EXIT HUP
 
 npm test
 

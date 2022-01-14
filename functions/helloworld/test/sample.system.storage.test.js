@@ -28,7 +28,7 @@ const gcsFileName = `test-${uuid.v4()}.txt`;
 const localFileName = 'test.txt';
 const bucketName = process.env.FUNCTIONS_DELETABLE_BUCKET;
 if (!bucketName) {
-  throw new Error('"FUNCTION_DELETABLE_BUCKET" env var must be set.');
+  throw new Error('"FUNCTIONS_DELETABLE_BUCKET" env var must be set.');
 }
 if (!process.env.GCF_REGION) {
   throw new Error('"GCF_REGION" env var must be set.');

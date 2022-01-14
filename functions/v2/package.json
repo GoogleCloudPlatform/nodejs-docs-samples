@@ -16,7 +16,7 @@
     "e2e-test": "mocha --timeout 60s test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/compute": "^3.0.0-alpha.4",
+    "@google-cloud/compute": "^3.1.0",
     "@google-cloud/functions-framework": "^2.1.0"
   },
   "devDependencies": {

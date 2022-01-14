@@ -64,7 +64,7 @@ describe('functions_helloworld_storage integration test', () => {
           resolve(stdout);
         } else {
           stderr = `Error code: ${code}\n${stderr}`;
-          reject(stderr);
+          reject(new Error(stderr));
         }
       });
     });

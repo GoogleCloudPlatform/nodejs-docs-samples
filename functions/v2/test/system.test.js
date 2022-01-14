@@ -33,7 +33,7 @@ const PROJECT = process.env.GCLOUD_PROJECT;
 const ZONE = 'us-central1-a';
 const MACHINE_TYPE = 'n1-standard-1';
 
-const instanceName = `ace-test-${uuid()}`;
+const instanceName = `gcf-test-${uuid()}`;
 
 describe('functions_label_gce_instance', () => {
   before(async () => {

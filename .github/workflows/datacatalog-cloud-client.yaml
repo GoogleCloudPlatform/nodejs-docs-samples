@@ -1,13 +1,13 @@
-name: datacatalog
+name: datacatalog-cloud-client
 on:
   push:
     branches:
     - main
     paths:
-    - 'datacatalog/**'
+    - 'datacatalog/cloud-client/**'
   pull_request:
     paths:
-    - 'datacatalog/**'
+    - 'datacatalog/cloud-client/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -35,12 +35,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: datacatalog
+      working-directory: datacatalog/cloud-client
     - run: npm test
-      working-directory: datacatalog
+      working-directory: datacatalog/cloud-client
       env:
-        MOCHA_REPORTER_SUITENAME: datacatalog
-        MOCHA_REPORTER_OUTPUT: datacatalog_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: datacatalog_cloud_client
+        MOCHA_REPORTER_OUTPUT: datacatalog_cloud_client_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v5

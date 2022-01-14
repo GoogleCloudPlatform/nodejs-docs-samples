@@ -11,5 +11,6 @@
   "healthcare/hl7v2",
   "monitoring/opencensus",
   "monitoring/prometheus",
-  "datacatalog"
+  "datacatalog/cloud-client",
+  "datacatalog/quickstart"
 ]

@@ -31,7 +31,7 @@ describe('functions_helloworld_storage integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCSGeneric: should print GCS event', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-    const PORT = 9000; // Each running framework instance needs a unique port
+    const PORT = 9009; // Each running framework instance needs a unique port
 
     const eventType = 'google.storage.object.finalize';
 

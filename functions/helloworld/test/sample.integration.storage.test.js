@@ -60,7 +60,9 @@ describe('functions_helloworld_storage integration test', () => {
       ffProc.stdout.on('data', data => (stdout += data));
       ffProc.stderr.on('data', data => (stderr += data));
       ffProc.on('exit', code => {
-        if (code === 0) {
+        if (code === 0 || code === null) {
+          // code === null corresponds to a signal-kill
+          // (which doesn't necessarily indicate a test failure)
           resolve(stdout);
         } else {
           stderr = `Error code: ${code}\n${stderr}`;

@@ -22,12 +22,6 @@ const waitPort = require('wait-port');
 // [END functions_storage_integration_test]
 
 describe('functions_helloworld_storage integration test', () => {
-  let ffProc;
-  afterEach(() => {
-    if (ffProc) {
-      ffProc.kill();
-    }
-  });
   // [START functions_storage_integration_test]
   it('helloGCSGeneric: should print GCS event', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
@@ -45,7 +39,7 @@ describe('functions_helloworld_storage integration test', () => {
         eventType: eventType,
       },
     };
-    ffProc = spawn('npx', [
+    const ffProc = spawn('npx', [
       'functions-framework',
       '--target',
       'helloGCS',

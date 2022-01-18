@@ -16,10 +16,14 @@
 
 // [START functions_cloudevent_pubsub]
 // [START functions_cloudevent_storage]
+// [START functions_log_cloudevent]
+// [START functions_label_gce_instance]
 const functions = require('@google-cloud/functions-framework');
 
 // [END functions_cloudevent_pubsub]
 // [END functions_cloudevent_storage]
+// [END functions_log_cloudevent]
+// [END functions_label_gce_instance]
 
 // [START functions_cloudevent_pubsub]
 // Register a CloudEvent callback with the Functions Framework that will

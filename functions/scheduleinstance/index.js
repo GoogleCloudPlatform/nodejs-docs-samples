@@ -18,7 +18,7 @@ const compute = require('@google-cloud/compute');
 const instancesClient = new compute.InstancesClient();
 const operationsClient = new compute.ZoneOperationsClient();
 
-async function waitForOperation(operation) {
+async function waitForOperation(projectId, operation) {
   while (operation.status !== 'DONE') {
     [operation] = await operationsClient.wait({
       operation: operation.name,
@@ -62,7 +62,7 @@ exports.startInstancePubSub = async (event, context, callback) => {
             instance: instance.name,
           });
 
-          return waitForOperation(response.latestResponse);
+          return waitForOperation(project, response.latestResponse);
         })
       );
     }
@@ -111,7 +111,7 @@ exports.stopInstancePubSub = async (event, context, callback) => {
             instance: instance.name,
           });
 
-          return waitForOperation(response.latestResponse);
+          return waitForOperation(project, response.latestResponse);
         })
       );
     }

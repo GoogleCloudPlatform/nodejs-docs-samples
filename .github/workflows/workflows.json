@@ -3,6 +3,7 @@
   "cloud-tasks/function",
   "composer",
   "composer/functions/composer-storage-trigger",
+  "containerengine/hello-world",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "healthcare/datasets",

@@ -3,6 +3,7 @@
   "cloud-tasks/function",
   "composer",
   "composer/functions/composer-storage-trigger",
+  "containerengine/hello-world",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "healthcare/datasets",
@@ -10,5 +11,7 @@
   "healthcare/fhir",
   "healthcare/hl7v2",
   "monitoring/opencensus",
-  "monitoring/prometheus"
+  "monitoring/prometheus",
+  "datacatalog/cloud-client",
+  "datacatalog/quickstart"
 ]

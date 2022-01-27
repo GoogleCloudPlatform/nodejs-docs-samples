@@ -1,10 +1,19 @@
 [
+  "cloud-tasks/app",
+  "cloud-tasks/function",
   "composer",
   "composer/functions/composer-storage-trigger",
   "eventarc/audit-storage",
   "eventarc/pubsub",
+  "containerengine/hello-world",
+  "endpoints/getting-started",
+  "endpoints/getting-started-grpc",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",
-  "healthcare/hl7v2"
+  "healthcare/hl7v2",
+  "monitoring/opencensus",
+  "monitoring/prometheus",
+  "datacatalog/cloud-client",
+  "datacatalog/quickstart"
 ]

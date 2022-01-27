@@ -22,16 +22,10 @@ const waitPort = require('wait-port');
 // [END functions_storage_integration_test]
 
 describe('functions_helloworld_storage integration test', () => {
-  let ffProc;
-  afterEach(() => {
-    if (ffProc) {
-      ffProc.kill();
-    }
-  });
   // [START functions_storage_integration_test]
   it('helloGCSGeneric: should print GCS event', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-    const PORT = 9000; // Each running framework instance needs a unique port
+    const PORT = 9009; // Each running framework instance needs a unique port
 
     const eventType = 'google.storage.object.finalize';
 
@@ -45,7 +39,7 @@ describe('functions_helloworld_storage integration test', () => {
         eventType: eventType,
       },
     };
-    ffProc = spawn('npx', [
+    const ffProc = spawn('npx', [
       'functions-framework',
       '--target',
       'helloGCS',
@@ -59,8 +53,15 @@ describe('functions_helloworld_storage integration test', () => {
       let stderr = '';
       ffProc.stdout.on('data', data => (stdout += data));
       ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject).on('exit', code => {
-        code === 0 ? resolve(stdout) : reject(stderr);
+      ffProc.on('exit', code => {
+        if (code === 0 || code === null) {
+          // code === null corresponds to a signal-kill
+          // (which doesn't necessarily indicate a test failure)
+          resolve(stdout);
+        } else {
+          stderr = `Error code: ${code}\n${stderr}`;
+          reject(new Error(stderr));
+        }
       });
     });
     await waitPort({host: 'localhost', port: PORT});

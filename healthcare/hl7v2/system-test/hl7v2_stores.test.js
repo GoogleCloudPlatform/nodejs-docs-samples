@@ -18,10 +18,10 @@ const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
+const healthcare = require('@googleapis/healthcare');
 
-const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const {PubSub} = require('@google-cloud/pubsub');
-const pubSubClient = new PubSub({projectId});
+const pubSubClient = new PubSub();
 const cloudRegion = 'us-central1';
 
 const cwdDatasets = path.join(__dirname, '../../datasets');
@@ -38,16 +38,9 @@ const installDeps = 'npm install';
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
 assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
-
+let projectId;
 before(async () => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
+  projectId = await healthcare.auth.getProjectId();
   // Create a Pub/Sub topic to be used for testing.
   const [topic] = await pubSubClient.createTopic(topicName);
   console.log(`Topic ${topic.name} created.`);

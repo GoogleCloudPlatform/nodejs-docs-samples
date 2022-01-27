@@ -10,14 +10,7 @@
 
 1.  Under the instance's "USERS" tab, create a new user. Note the "User name" and "Password".
 
-1.  Create a new database in your Google Cloud SQL instance.
-    
-    1.  List your database instances in [Cloud Cloud Console](
-        https://console.cloud.google.com/sql/instances/).
-    
-    1.  Click your Instance Id to see Instance details.
-
-    1.  Click DATABASES.
+1.  Under the instance's "DATABASES" tab, create a new database.
 
     1.  Click **Create database**.
 
@@ -34,6 +27,7 @@ Download a JSON key to use to authenticate your connection.
 Use the information noted in the previous steps to set the following environment variables:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
+export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
@@ -47,7 +41,7 @@ following the instructions [here](https://cloud.google.com/sql/docs/mysql/sql-pr
 Then, use the following command to start the proxy in the
 background using TCP:
 ```bash
-./cloud_sql_proxy -instances=${CLOUD_SQL_CONNECTION_NAME}=tcp:1433 sqlserver -u ${DB_USER} --host 127.0.0.1
+./cloud_sql_proxy -instances=${INSTANCE_CONNECTION_NAME}=tcp:1433 sqlserver -u ${DB_USER} --host 127.0.0.1
 ```
 
 Next, setup install the requirements with `npm`:

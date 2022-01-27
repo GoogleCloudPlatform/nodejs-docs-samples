@@ -14,10 +14,12 @@
   "scripts": {
     "lint": "gts check",
     "fix": "gts fix",
-    "test": "echo 'Please run tests in each sample directory.' && exit 1"
+    "test": "echo 'Please run tests in each sample directory.' && exit 1",
+    "generate-ci": "node .github/workflows/generate.js"
   },
   "devDependencies": {
     "gts": "^3.0.0",
+    "nunjucks": "^3.2.3",
     "typescript": "^4.0.5"
   }
 }

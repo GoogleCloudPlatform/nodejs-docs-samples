@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync, exec} = require('child_process');
+const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
 const auth = new GoogleAuth();
@@ -33,6 +33,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
+  const CONNECTOR = `test-${process.env.SUFFIX}`;
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
@@ -44,7 +45,7 @@ describe('End-to-End Tests', () => {
     const buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST},_CONNECTOR=${CONNECTOR}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);
@@ -80,9 +81,10 @@ describe('End-to-End Tests', () => {
     const cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
-
-    exec(cleanUpCmd);
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_CONNECTOR=${CONNECTOR}`;
+    console.log('Starting Cleanup...');
+    execSync(cleanUpCmd);
+    console.log('Cleanup complete.');
   });
 
   it('can be reached by an HTTP request', async () => {

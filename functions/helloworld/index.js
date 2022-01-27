@@ -14,6 +14,8 @@
 
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 // [START functions_helloworld_http]
 const escapeHtml = require('escape-html');
 
@@ -96,8 +98,6 @@ exports.helloGCS = (file, context) => {
 exports.helloError = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Stackdriver Error Reporting
-  console.error(new Error('I failed you'));
-  console.error('I failed you', new Error('I failed you too'));
   throw new Error('I failed you'); // Will cause a cold start if not caught
 
   // [END functions_helloworld_error]
@@ -110,17 +110,14 @@ exports.helloError = (event, context, callback) => {
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
-/* eslint-disable no-throw-literal */
-
 exports.helloError2 = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These will NOT be reported to Stackdriver Error Reporting
-  console.info(new Error('I failed you')); // Logging an Error object at the info level
+  console.error(new Error('I failed you')); // Logging an Error object
   console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object
   // [END functions_helloworld_error]
 };
-/* eslint-enable no-throw-literal */
 
 /**
  * Background Cloud Function that returns an error.
@@ -129,14 +126,12 @@ exports.helloError2 = (event, context, callback) => {
  * @param {object} context The event metadata.
  * @param {function} callback The callback function.
  */
-/* eslint-disable */
 exports.helloError3 = (event, context, callback) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');
   // [END functions_helloworld_error]
 };
-/* eslint-enable */
 
 /**
  * HTTP Cloud Function that returns an error.

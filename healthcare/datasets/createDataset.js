@@ -44,5 +44,10 @@ const main = (
   // [END healthcare_create_dataset]
 };
 
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+
 // node createDataset.js <projectId> <cloudRegion> <datasetId>
 main(...process.argv.slice(2));

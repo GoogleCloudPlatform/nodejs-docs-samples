@@ -1,4 +1,5 @@
 [
+  "appengine/analytics",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

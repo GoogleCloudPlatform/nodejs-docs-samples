@@ -20,7 +20,9 @@ const assert = require('assert');
 const supertest = require('supertest');
 const proxyquire = require('proxyquire').noPreserveCache();
 
-const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
+const bucketName =
+  process.env.GCLOUD_STORAGE_BUCKET ||
+  'nodejs-docs-samples-test-appengine-storage-std';
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');

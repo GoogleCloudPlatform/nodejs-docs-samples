@@ -1,4 +1,6 @@
 [
+  "appengine/storage/flexible",
+  "appengine/storage/standard",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

@@ -45,8 +45,8 @@ const tokens = [];
 
 // The following environment variables are set by app.yaml when running on GAE,
 // but will need to be manually set when running locally.
-const {PUBSUB_VERIFICATION_TOKEN} = process.env;
-const TOPIC = process.env.PUBSUB_TOPIC;
+const {PUBSUB_VERIFICATION_TOKEN} = process.env || '123456abcdef';
+const TOPIC = process.env.PUBSUB_TOPIC || 'integration-tests-instance';
 
 const topic = pubsub.topic(TOPIC);
 

@@ -1,4 +1,5 @@
 [
+  "cloud-sql/sqlserver/mssql",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

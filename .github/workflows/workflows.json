@@ -1,4 +1,5 @@
 [
+  "appengine/pubsub",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

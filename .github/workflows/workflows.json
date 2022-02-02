@@ -1,4 +1,5 @@
 [
+  "appengine/static-files",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

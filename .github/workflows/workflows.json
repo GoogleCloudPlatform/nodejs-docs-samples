@@ -1,4 +1,6 @@
 [
+  "appengine/hello-world/flexible",
+  "appengine/hello-world/standard",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

@@ -1,4 +1,6 @@
 [
+  "apengine/metadata/flexible",
+  "appengine/metadata/standard",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

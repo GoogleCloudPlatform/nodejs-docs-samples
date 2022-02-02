@@ -13,9 +13,8 @@
 // limitations under the License.
 
 'use strict';
-
-const assert = require('assert');
 const Supertest = require('supertest');
+const assert = require('assert');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 

@@ -47,10 +47,7 @@ const multer = Multer({
 });
 
 // A bucket is a container for objects (files).
-const bucket = storage.bucket(
-  process.env.GCLOUD_STORAGE_BUCKET ||
-    'nodejs-docs-samples-test-appengine-storage-std'
-);
+const bucket = storage.bucket(process.env.GCLOUD_STORAGE_BUCKET);
 
 // Display a form for uploading files.
 app.get('/', (req, res) => {

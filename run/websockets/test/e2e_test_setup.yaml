@@ -1,16 +1,22 @@
 steps:
 
+- id: 'Create VPC Access connector'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    ./test/retry.sh "gcloud compute networks vpc-access connectors create ${_CONNECTOR} \
+      --region ${_REGION} \
+      --range 10.8.0.0/28 \
+      --network default"
+
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
-    gcloud compute networks vpc-access connectors create ${_CONNECTOR} \
-      --region ${_REGION} \
-      --range 10.8.0.0/28 \
-      --network default
-    
     ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
       --source . \
       --allow-unauthenticated \

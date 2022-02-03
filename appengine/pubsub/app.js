@@ -63,7 +63,9 @@ app.post('/', formBodyParser, async (req, res, next) => {
 
   const data = Buffer.from(req.body.payload);
   try {
-    const messageId = await topic.publish(data);
+    const messageId = await topic.publish(data, {
+      key: 'value',
+    });
     res.status(200).send(`Message ${messageId} sent.`);
   } catch (error) {
     next(error);

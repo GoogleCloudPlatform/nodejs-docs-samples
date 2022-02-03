@@ -23,6 +23,7 @@ const proxyquire = require('proxyquire').noPreserveCache();
 process.env.GCLOUD_STORAGE_BUCKET =
   'nodejs-docs-samples-test-appengine-storage-std';
 const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
+//process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');

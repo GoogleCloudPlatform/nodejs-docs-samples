@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
 const request = require('got');
+const assert = require('assert');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();

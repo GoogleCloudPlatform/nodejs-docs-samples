@@ -17,7 +17,10 @@
 const path = require('path');
 const assert = require('assert');
 const request = require('supertest');
-
+process.env.DB_NAME = 'kokoro_ci';
+process.env.DB_USER = 'kokoro_ci';
+process.env.DB_PASS = 'password';
+process.env.INSTANCE_CONNECTION_NAME = 'connection-name';
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
 const server = require(SAMPLE_PATH);

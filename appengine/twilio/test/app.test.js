@@ -18,6 +18,10 @@ const assert = require('assert');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 
+process.env.TWILIO_NUMBER = '+15005550006';
+process.env.TWILIO_ACCOUNT_SID = 'test';
+process.env.TWILIO_AUTH_TOKEN = 'test';
+
 const getSample = () => {
   const twilioMock = {
     messages: {

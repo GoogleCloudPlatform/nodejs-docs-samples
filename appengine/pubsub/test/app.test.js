@@ -30,6 +30,8 @@ const proxyquire = require('proxyquire').noPreserveCache();
 const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
+process.env.PUBSUB_VERIFICATION_TOKEN = '123456abcdef';
+process.env.PUBSUB_TOPIC = 'integration-tests-instance';
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 

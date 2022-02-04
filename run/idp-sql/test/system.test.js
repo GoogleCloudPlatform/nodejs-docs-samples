@@ -15,8 +15,8 @@
 'use strict';
 
 const assert = require('assert');
-const admin = require('firebase-admin');
 const got = require('got');
+const admin = require('firebase-admin');
 const {execSync} = require('child_process');
 
 admin.initializeApp();

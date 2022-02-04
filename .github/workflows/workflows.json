@@ -2,6 +2,7 @@
   "appengine/analytics",
   "appengine/building-an-app/build",
   "appengine/building-an-app/update",
+  "appengine/datastore",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

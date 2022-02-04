@@ -33,7 +33,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  const CONNECTOR = `test-${process.env.SUFFIX}`;
+  const CONNECTOR = `my-connector`;
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
@@ -81,7 +81,7 @@ describe('End-to-End Tests', () => {
     const cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_CONNECTOR=${CONNECTOR}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     console.log('Starting Cleanup...');
     execSync(cleanUpCmd);
     console.log('Cleanup complete.');

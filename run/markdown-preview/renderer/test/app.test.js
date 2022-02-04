@@ -16,8 +16,8 @@
 
 const assert = require('assert');
 const path = require('path');
-const sinon = require('sinon');
 const supertest = require('supertest');
+const sinon = require('sinon');
 
 let request;
 

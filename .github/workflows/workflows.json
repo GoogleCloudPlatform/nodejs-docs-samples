@@ -13,5 +13,7 @@
   "monitoring/opencensus",
   "monitoring/prometheus",
   "datacatalog/cloud-client",
-  "datacatalog/quickstart"
+  "datacatalog/quickstart",
+  "run/markdown-preview/editor",
+  "run/markdown-preview/renderer"
 ]

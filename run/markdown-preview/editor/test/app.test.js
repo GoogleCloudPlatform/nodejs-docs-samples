@@ -15,8 +15,8 @@
 'use strict';
 
 const assert = require('assert');
-const path = require('path');
 const supertest = require('supertest');
+const path = require('path');
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {

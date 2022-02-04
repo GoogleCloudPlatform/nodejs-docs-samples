@@ -1,4 +1,6 @@
 [
+  "appengine/building-an-app/build",
+  "appengine/building-an-app/update",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",
@@ -6,6 +8,7 @@
   "containerengine/hello-world",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "functions/firebase",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",

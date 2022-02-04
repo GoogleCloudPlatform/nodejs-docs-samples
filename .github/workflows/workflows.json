@@ -9,6 +9,7 @@
   "appengine/memcached",
   "apengine/metadata/flexible",
   "appengine/metadata/standard",
+  "appengine/pubsub",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

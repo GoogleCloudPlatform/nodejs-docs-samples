@@ -4,6 +4,8 @@
   "appengine/building-an-app/update",
   "appengine/datastore",
   "appengine/endpoints",
+  "apengine/metadata/flexible",
+  "appengine/metadata/standard",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

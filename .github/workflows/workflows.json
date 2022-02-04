@@ -1,4 +1,5 @@
 [
+  "appengine/analytics",
   "appengine/building-an-app/build",
   "appengine/building-an-app/update",
   "cloud-tasks/app",

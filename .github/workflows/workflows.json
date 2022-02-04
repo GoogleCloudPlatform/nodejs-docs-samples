@@ -4,6 +4,8 @@
   "appengine/building-an-app/update",
   "appengine/datastore",
   "appengine/endpoints",
+  "appengine/hello-world/flexible",
+  "appengine/hello-world/standard",
   "apengine/metadata/flexible",
   "appengine/metadata/standard",
   "cloud-tasks/app",

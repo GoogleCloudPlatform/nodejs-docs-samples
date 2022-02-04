@@ -13,6 +13,7 @@
   "appengine/static-files",
   "appengine/storage/flexible",
   "appengine/storage/standard",
+  "appengine/websockets",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

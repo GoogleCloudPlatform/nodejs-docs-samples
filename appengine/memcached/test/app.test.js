@@ -1,5 +1,5 @@
-const waitPort = require('wait-port');
 const {expect} = require('chai');
+const waitPort = require('wait-port');
 
 const PORT = process.env.PORT || 8080;
 

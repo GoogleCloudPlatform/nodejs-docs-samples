@@ -10,6 +10,7 @@
   "apengine/metadata/flexible",
   "appengine/metadata/standard",
   "appengine/pubsub",
+  "appengine/static-files",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

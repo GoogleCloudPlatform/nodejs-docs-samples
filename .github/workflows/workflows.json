@@ -1,4 +1,9 @@
 [
+  "appengine/analytics",
+  "appengine/building-an-app/build",
+  "appengine/building-an-app/update",
+  "appengine/datastore",
+  "appengine/endpoints",
   "apengine/metadata/flexible",
   "appengine/metadata/standard",
   "cloud-tasks/app",
@@ -8,6 +13,7 @@
   "containerengine/hello-world",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "functions/firebase",
   "healthcare/datasets",
   "healthcare/dicom",
   "healthcare/fhir",

@@ -29,7 +29,9 @@ app.enable('trust proxy');
 const {Datastore} = require('@google-cloud/datastore');
 
 // Instantiate a datastore client
-const datastore = new Datastore();
+const datastore = new Datastore({
+  projectId: 'long-door-651',
+});
 
 /**
  * Insert a visit record into the database.

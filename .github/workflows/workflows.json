@@ -1,4 +1,6 @@
 [
+  "appengine/building-an-app/build",
+  "appengine/building-an-app/update",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

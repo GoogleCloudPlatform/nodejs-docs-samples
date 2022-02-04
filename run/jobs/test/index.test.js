@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
 const {execSync} = require('child_process');
+const assert = require('assert');
 const exec = cmd => execSync(cmd, {encoding: 'utf-8'});
 
 describe('Unit Tests', () => {

@@ -15,6 +15,7 @@
   "appengine/storage/standard",
   "appengine/typescript",
   "appengine/websockets",
+  "appengine/twilio",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

@@ -3,6 +3,7 @@
   "appengine/building-an-app/build",
   "appengine/building-an-app/update",
   "appengine/datastore",
+  "appengine/endpoints",
   "cloud-tasks/app",
   "cloud-tasks/function",
   "composer",

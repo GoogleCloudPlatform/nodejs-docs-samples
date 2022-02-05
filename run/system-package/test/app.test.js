@@ -18,8 +18,7 @@ const path = require('path');
 const supertest = require('supertest');
 
 describe('Unit Tests', () => {
-  const app = require(path.join(__dirname, '..', 'app'));
-  const request = supertest(app);
+  const request = supertest(require(path.join(__dirname, '..', 'app')));
 
   describe('should fail', () => {
     const errorContentType = 'text/html; charset=utf-8';

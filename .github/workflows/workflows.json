@@ -31,5 +31,6 @@
   "monitoring/opencensus",
   "monitoring/prometheus",
   "datacatalog/cloud-client",
-  "datacatalog/quickstart"
+  "datacatalog/quickstart",
+  "datastore/functions"
 ]

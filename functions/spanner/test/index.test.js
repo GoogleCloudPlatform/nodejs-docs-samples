@@ -14,8 +14,8 @@
 
 'use strict';
 
-const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
 const assert = require('assert');
 
 const entities = [

@@ -17,6 +17,9 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const path = require('path');
+process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
+const {app} = require(path.join(__dirname, '..', 'app'));
+const request = supertest(app);
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
@@ -44,14 +47,6 @@ describe('Editor unit tests', () => {
 
 describe('Integration tests', () => {
   describe('Render request', () => {
-    let request;
-
-    before(async () => {
-      process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app} = require(path.join(__dirname, '..', 'app'));
-      request = supertest(app);
-    });
-
     it('responds 404 Not Found on "GET /render"', async () => {
       await request.get('/render').expect(404);
     });

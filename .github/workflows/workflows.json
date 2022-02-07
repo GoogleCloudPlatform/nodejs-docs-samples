@@ -23,6 +23,7 @@
   "containerengine/hello-world",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "functions/security",
   "functions/firebase",
   "healthcare/datasets",
   "healthcare/dicom",

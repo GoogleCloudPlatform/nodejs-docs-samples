@@ -16,7 +16,6 @@
 
 const path = require('path');
 const supertest = require('supertest');
-const sinon = require('sinon');
 
 describe('Unit Tests', () => {
   const app = require(path.join(__dirname, '..', 'app'));
@@ -53,7 +52,6 @@ describe('Unit Tests', () => {
     });
 
     it('should fail on a Bad Request with an invalid payload', async () => {
-      const createDiagramStub = sinon.stub(app, 'createDiagram');
       await request
         .get('/diagram.png')
         .type('text')
@@ -65,8 +63,6 @@ describe('Unit Tests', () => {
             throw new Error('No such file or directory');
           }
         });
-
-      createDiagramStub.calledOnce();
     });
   });
 

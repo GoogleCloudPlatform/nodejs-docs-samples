@@ -51,7 +51,7 @@ describe('Unit Tests', () => {
         });
     });
 
-    it('should fail on a Bad Request with an invalid payload', async () => {
+    it.only('should fail on a Bad Request with an invalid payload', async () => {
       await request
         .get('/diagram.png')
         .type('text')

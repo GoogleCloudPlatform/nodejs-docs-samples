@@ -17,6 +17,11 @@ const got = require('got');
 const {execSync} = require('child_process');
 const auth = new GoogleAuth();
 const {GoogleAuth} = require('google-auth-library');
+const uuid = require('uuid');
+
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
+process.env.SERVICE_NAME = uuid.v4()[0];
+process.env.SAMPLE_VERSION = 'latest';
 
 const request = (method, route, base_url, id_token) => {
   return got(new URL(route, base_url.trim()), {

@@ -56,7 +56,7 @@ describe('Unit Tests', () => {
         .get('/diagram.png')
         .type('text')
         .query({dot: 'digraph'})
-        .expect(500)
+        .expect(400)
         .expect('Content-Type', errorContentType)
         .expect(res => {
           if (res.headers['cache-control']) {

@@ -121,7 +121,7 @@ exports.helloError3 = (event, context, callback) => {
 };
 
 // HTTP Cloud Function that returns an error.
-functions.http("helloError4", (req, res) => {
+functions.http('helloError4', (req, res) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   res.status(500).send('I failed you');

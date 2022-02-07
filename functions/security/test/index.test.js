@@ -14,8 +14,8 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
+const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const getSample = () => {

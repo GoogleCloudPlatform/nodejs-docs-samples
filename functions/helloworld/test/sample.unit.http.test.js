@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+
 describe('functions_helloworld_http', () => {
   // [START functions_http_unit_test]
   const assert = require('assert');
   const sinon = require('sinon');
   const uuid = require('uuid');
 
-  const {helloHttp} = require('..');
+  require('..');
+  const helloHttp = getFunction('helloHttp');
 
   it('helloHttp: should print a name', () => {
     // Mock ExpressJS 'req' and 'res' parameters

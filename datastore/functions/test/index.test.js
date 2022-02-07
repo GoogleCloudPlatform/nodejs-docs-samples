@@ -15,12 +15,12 @@
 'use strict';
 
 const assert = require('assert');
+const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const uuid = require('uuid');
 const sinon = require('sinon');
 const fetch = require('node-fetch');
 const isReachable = require('is-reachable');
-const execPromise = require('child-process-promise').exec;
 const {Datastore} = require('@google-cloud/datastore');
 
 const datastore = new Datastore();

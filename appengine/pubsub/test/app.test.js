@@ -30,6 +30,8 @@ const proxyquire = require('proxyquire').noPreserveCache();
 const message = 'This is a test message sent at: ';
 const payload = message + Date.now();
 
+process.env.PUBSUB_VERIFICATION_TOKEN = '123456abcdef';
+process.env.PUBSUB_TOPIC = 'integration-tests-instance';
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
@@ -38,6 +40,7 @@ const privateKey = fs.readFileSync(path.join(fixtures, 'privatekey.pem'));
 const publicCert = fs.readFileSync(path.join(fixtures, 'public_cert.pem'));
 
 const sandbox = sinon.createSandbox();
+const pubsubVerificationToken = '123456abcdef';
 
 const createFakeToken = () => {
   const now = Date.now() / 1000;
@@ -93,7 +96,7 @@ describe('gae_flex_pubsub_push', () => {
   it('should receive incoming Pub/Sub messages', async () => {
     await requestObj
       .post('/pubsub/push')
-      .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
+      .query({token: pubsubVerificationToken})
       .send({
         message: {
           data: payload,
@@ -120,7 +123,7 @@ describe('gae_flex_pubsub_auth_push', () => {
     await requestObj
       .post('/pubsub/authenticated-push')
       .set('Authorization', `Bearer ${createFakeToken()}`)
-      .query({token: process.env.PUBSUB_VERIFICATION_TOKEN})
+      .query({token: pubsubVerificationToken})
       .send({
         message: {
           data: Buffer.from(payload).toString('base64'),

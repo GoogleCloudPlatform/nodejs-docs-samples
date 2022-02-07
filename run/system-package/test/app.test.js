@@ -54,14 +54,17 @@ describe('Unit Tests', () => {
 
     it('should fail on a Bad Request with an invalid payload', async () => {
       const createDiagramStub = sinon.stub(app, 'createDiagram');
-      await request.get('/diagram.png').type('text').query({dot: 'digraph'});
-      // .expect(500)
-      // .expect('Content-Type', errorContentType)
-      // .expect(res => {
-      //   if (res.headers['cache-control']) {
-      //     throw new Error('No such file or directory');
-      //   }
-      // });
+      await request
+        .get('/diagram.png')
+        .type('text')
+        .query({dot: 'digraph'})
+        .expect(500)
+        .expect('Content-Type', errorContentType)
+        .expect(res => {
+          if (res.headers['cache-control']) {
+            throw new Error('No such file or directory');
+          }
+        });
 
       createDiagramStub.calledOnce();
     });

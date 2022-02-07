@@ -36,7 +36,7 @@ jobs:
         node-version: 14
     - run: npm install
       working-directory: run/system-package
-    - run: npm install graphviz
+    - run: sudo apt-get install -y graphviz
       working-directory: run/system-package
     - run: npm test
       working-directory: run/system-package

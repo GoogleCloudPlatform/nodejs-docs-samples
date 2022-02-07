@@ -21,9 +21,13 @@
   "composer",
   "composer/functions/composer-storage-trigger",
   "containerengine/hello-world",
+  "datacatalog/cloud-client",
+  "datastore/functions",
+  "datacatalog/quickstart",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "functions/firebase",
+  "functions/http",
   "functions/security",
   "functions/slack",
   "functions/spanner",
@@ -32,8 +36,5 @@
   "healthcare/fhir",
   "healthcare/hl7v2",
   "monitoring/opencensus",
-  "monitoring/prometheus",
-  "datacatalog/cloud-client",
-  "datacatalog/quickstart",
-  "datastore/functions"
+  "monitoring/prometheus"
 ]

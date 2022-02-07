@@ -60,7 +60,7 @@ describe('Unit Tests', () => {
         .expect('Content-Type', errorContentType)
         .expect(res => {
           if (res.headers['cache-control']) {
-            throw new Error('No such file or directory');
+            throw new Error('Found cache header on uncached response');
           }
         });
     });

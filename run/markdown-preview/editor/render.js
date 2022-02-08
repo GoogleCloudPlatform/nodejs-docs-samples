@@ -48,6 +48,7 @@ const renderRequest = async markdown => {
   } catch (err) {
     console.log(err.message);
     console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    console.log(require(process.env.GOOGLE_APPLICATION_CREDENTIALS).type);
     console.log(
       Object.keys(require(process.env.GOOGLE_APPLICATION_CREDENTIALS))
     );

@@ -41,6 +41,7 @@ app.get('/', async (req, res) => {
     if (!renderedHtml) renderedHtml = await buildRenderedHtml();
     res.status(200).send(renderedHtml);
   } catch (err) {
+    console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
     console.log('Error loading the Editor service: ', err);
     res.status(500).send(err);
   }

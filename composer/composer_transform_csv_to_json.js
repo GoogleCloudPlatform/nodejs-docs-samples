@@ -15,7 +15,7 @@
 module.exports = function main(
   line = 'tampa, 106, january, null, null, 08-17-2019'
 ) {
-  // NOTE TO MAINTAINERS: This MUST use const and let
+  // NOTE TO MAINTAINERS: This MUST use var
   // otherwise it will not work in Dataflow
   // [START composer_transform_csv_to_json]
 

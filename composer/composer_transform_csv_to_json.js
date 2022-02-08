@@ -20,8 +20,8 @@ module.exports = function main(
   // [START composer_transform_csv_to_json]
 
   function transformCSVtoJSON(line) {
-    const values = line.split(',');
-    const properties = [
+    var values = line.split(',');
+    var properties = [
       'location',
       'average_temperature',
       'month',
@@ -29,9 +29,9 @@ module.exports = function main(
       'is_current',
       'latest_measurement',
     ];
-    const weatherInCity = {};
+    var weatherInCity = {};
 
-    for (let count = 0; count < values.length; count++) {
+    for (var count = 0; count < values.length; count++) {
       if (values[count] !== 'null') {
         weatherInCity[properties[count]] = values[count];
       }

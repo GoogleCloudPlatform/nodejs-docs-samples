@@ -21,6 +21,19 @@ process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
 const {app} = require(path.join(__dirname, '..', 'app'));
 const request = supertest(app);
 
+const delay = async (test, addMs) => {
+  const retries = test.currentRetry();
+  await new Promise(r => setTimeout(r, addMs));
+  // No retry on the first failure.
+  if (retries === 0) return;
+  // See: https://cloud.google.com/storage/docs/exponential-backoff
+  const ms = Math.pow(2, retries) + Math.random() * 1000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
     it('should successfully load the index page', async () => {
@@ -51,9 +64,11 @@ describe('Integration tests', () => {
       await request.get('/render').expect(404);
     });
 
-    it('responds 200 OK on "POST /render" with valid JSON', async () => {
+    it('responds 200 OK on "POST /render" with valid JSON', async function () {
       // A valid type will make a request to the /render endpoint.
       // TODO: This test outputs a JSON parsing SyntaxError from supertest but does not fail the assert.
+      this.retries(4);
+      await delay(this.test, 4000);
       await request
         .post('/render')
         .type('json')

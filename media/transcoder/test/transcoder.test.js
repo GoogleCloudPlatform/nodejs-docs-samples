@@ -127,6 +127,24 @@ after(async () => {
   } catch (err) {
     console.log('Cannot delete bucket');
   }
+  // Delete outstanding jobs created more than 3 days ago
+  const {TranscoderServiceClient} =
+    require('@google-cloud/video-transcoder').v1;
+  const transcoderServiceClient = new TranscoderServiceClient();
+  const [jobs] = await transcoderServiceClient.listJobs({
+    parent: transcoderServiceClient.locationPath(projectId, location),
+  });
+  const THREE_DAYS_IN_SEC = 60 * 60 * 24 * 3;
+  const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+
+  for (const job of jobs) {
+    if (job.createTime.seconds < DATE_NOW_SEC - THREE_DAYS_IN_SEC) {
+      const request = {
+        name: job.name,
+      };
+      await transcoderServiceClient.deleteJob(request);
+    }
+  }
 });
 
 describe('Job template functions', () => {

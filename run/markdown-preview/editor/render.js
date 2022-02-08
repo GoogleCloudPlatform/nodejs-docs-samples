@@ -47,6 +47,7 @@ const renderRequest = async markdown => {
       clientHeaders['Authorization'];
   } catch (err) {
     console.log(err.message);
+    console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
     throw Error('could not create an identity token: ', err.message);
   }
 

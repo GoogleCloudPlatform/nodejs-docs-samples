@@ -17,11 +17,13 @@
 module.exports = function main(
   line = 'tampa, 106, january, null, null, 08-17-2019'
 ) {
+  // NOTE TO MAINTAINERS: This MUST use const and let
+  // otherwise it will not work in Dataflow
   // [START composer_transform_csv_to_json]
 
   function transformCSVtoJSON(line) {
-    var values = line.split(',');
-    var properties = [
+    const values = line.split(',');
+    const properties = [
       'location',
       'average_temperature',
       'month',
@@ -29,15 +31,15 @@ module.exports = function main(
       'is_current',
       'latest_measurement',
     ];
-    var weatherInCity = {};
+    const weatherInCity = {};
 
-    for (var count = 0; count < values.length; count++) {
+    for (let count = 0; count < values.length; count++) {
       if (values[count] !== 'null') {
         weatherInCity[properties[count]] = values[count];
       }
     }
 
-    var jsonString = JSON.stringify(weatherInCity);
+    const jsonString = JSON.stringify(weatherInCity);
     return jsonString;
   }
 

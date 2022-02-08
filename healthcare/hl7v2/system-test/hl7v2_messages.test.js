@@ -18,10 +18,9 @@ const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
 const {execSync} = require('child_process');
+const healthcare = require('@googleapis/healthcare');
 
-const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const cloudRegion = 'us-central1';
-
 const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
@@ -40,16 +39,9 @@ const installDeps = 'npm install';
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
 assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
-
-before(() => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
+let projectId;
+before(async () => {
+  projectId = await healthcare.auth.getProjectId();
   execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
     cwd: cwdDatasets,
   });

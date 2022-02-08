@@ -6,7 +6,7 @@ are referenced from the documentation on [cloud.google.com][appengine].
 
 There are also samples [submitted by the community][community_samples].
 
-See our other [Google Cloud Platform GitHub repositories](/GoogleCloudPlatform)
+See our other [Google Cloud Platform GitHub repositories](https://github.com/GoogleCloudPlatform)
 for sample applications and scaffolding for other frameworks and use cases.
 
 * [Run Locally](#run-locally)
@@ -22,7 +22,7 @@ sample.
 
 The App Engine Node.js samples typically require that you do the following:
 
-1.  [Setup your environment for Node.js developement][nodejs_dev].
+1.  [Setup your environment for Node.js development][nodejs_dev].
 1.  [Install the Google Cloud SDK][sdk].
 1.  Acquire local credentials for authenticating with Google Cloud Platform APIs:
 
@@ -36,7 +36,7 @@ The App Engine Node.js samples typically require that you do the following:
 
         cd appengine/sample-folder/
 
-1.  Install depedencies:
+1.  Install dependencies:
 
         npm install
 
@@ -46,7 +46,7 @@ The App Engine Node.js samples typically require that you do the following:
         npm start
 
 
-1.  Visit the application at [http://localhost:8080][].
+1.  Visit the application at http://localhost:8080.
 
 ## Deploying
 
@@ -102,5 +102,5 @@ View the [Community-contributed App Engine Node.js samples][community_samples].
 [sdk]: https://cloud.google.com/sdk/
 [console]: https://console.cloud.google.com
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-[official_samples]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/appengine
+[official_samples]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/appengine
 [community_samples]: https://cloud.google.com/community/tutorials/?q=%22Node.js%22

@@ -43,4 +43,4 @@ See [Contributing][contributing].
 [tutorial-std]: https://cloud.google.com/appengine/docs/standard/nodejs/using-cloud-datastore
 [tutorial-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs/using-cloud-datastore
 [readme]: ../README.md
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md

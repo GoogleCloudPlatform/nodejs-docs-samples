@@ -89,7 +89,9 @@ export CHANNEL=${KOKORO_GFILE_DIR}/secrets-slack-channel-id.txt
 
 # Replace system test's URL with the correct value
 # (Required because the integration tests ALSO use the BASE_URL variable, but for a different value)
-sed "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/**/sample.system.http.test.js
+pushd github/nodejs-docs-samples
+sed -i "s/process.env.BASE_URL/'http:\/\/us-central1-nodejs-docs-samples-tests.cloudfunctions.net'/" functions/helloworld/test/sample.system.http.test.js
+popd
 
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
@@ -109,7 +111,6 @@ gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
 export DB_SOCKET_PATH=$KOKORO_GFILE_DIR
-export CLOUD_SQL_CONNECTION_NAME=$INSTANCE_CONNECTION_NAME
 
 # Download and run the proxy if testing a Cloud SQL sample
 if [[ $SQL_CLIENT ]]; then
@@ -126,15 +127,27 @@ if [[ $SQL_CLIENT ]]; then
 	fi
 fi
 
-# If tests are running against master, configure FlakyBot
+# Print out log files (for discoverability)
+print_logfile() {
+	echo '----- Printing: ${MOCHA_REPORTER_OUTPUT} -----'
+	cat $MOCHA_REPORTER_OUTPUT
+	echo '----- End ${MOCHA_REPORTER_OUTPUT} -----'
+}
+
+# If tests are running against main, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}
 	cleanup() {
 	chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
 	$KOKORO_GFILE_DIR/linux_amd64/flakybot
+
+	# We can only set one trap per signal, so run `print_logfile` here
+	print_logfile
 	}
 	trap cleanup EXIT HUP
+else
+	trap print_logfile EXIT HUP
 fi
 
 npm test

@@ -13,21 +13,20 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$CLOUD_SQL_CONNECTION_NAME &",
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
     "test": "mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",
-    "body-parser": "^1.18.3",
     "express": "^4.16.2",
     "knex": "^0.95.0",
     "pg": "^8.0.0",
     "pug": "^3.0.0",
     "winston": "^3.1.0",
-    "yargs": "^16.0.0"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "supertest": "^6.0.0"
   }
 }

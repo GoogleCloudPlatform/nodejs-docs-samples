@@ -16,7 +16,7 @@
 
 const express = require('express');
 const path = require('path');
-const proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noPreserveCache();
 const request = require('supertest');
 const sinon = require('sinon');
 const assert = require('assert');

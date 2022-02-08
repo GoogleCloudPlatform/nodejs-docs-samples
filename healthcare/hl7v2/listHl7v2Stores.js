@@ -20,15 +20,15 @@ const main = (
   datasetId
 ) => {
   // [START healthcare_list_hl7v2_stores]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const listHl7v2Stores = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -36,9 +36,8 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {parent};
 
-    const hl7v2Stores = await healthcare.projects.locations.datasets.hl7V2Stores.list(
-      request
-    );
+    const hl7v2Stores =
+      await healthcare.projects.locations.datasets.hl7V2Stores.list(request);
     console.log(hl7v2Stores.data);
   };
 

@@ -104,7 +104,11 @@ describe('System Tests', () => {
   it('Can successfully make a request', async () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
-      retry: 3,
+      retry: {
+        limit: 5,
+        statusCodes: [404, 401, 403, 500],
+        methods: ['GET', 'POST'],
+      },
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -118,7 +122,11 @@ describe('System Tests', () => {
       headers: {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
-      retry: 3,
+      retry: {
+        limit: 5,
+        statusCodes: [404, 401, 403, 500],
+        methods: ['GET', 'POST'],
+      },
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);
@@ -132,7 +140,11 @@ describe('System Tests', () => {
       headers: {
         Authorization: 'Bearer iam-a-token',
       },
-      retry: 3,
+      retry: {
+        limit: 5,
+        statusCodes: [404, 401, 500],
+        methods: ['GET', 'POST'],
+      },
     };
     let err;
     try {
@@ -148,7 +160,11 @@ describe('System Tests', () => {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
       form: {team: 'DOGS'},
-      retry: 3,
+      retry: {
+        limit: 5,
+        statusCodes: [404, 401, 403, 500],
+        methods: ['GET', 'POST'],
+      },
     };
     let err;
     try {

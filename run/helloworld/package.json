@@ -7,9 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/index.test.js --exit",
-    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=180000",
-    "lint": "eslint '**/*.js'",
-    "fix": "eslint --fix '**/*.js'"
+    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=180000"
   },
   "engines": {
     "node": ">= 12.0.0"
@@ -22,7 +20,7 @@
   "devDependencies": {
     "google-auth-library": "^7.0.0",
     "got": "^11.0.0",
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "supertest": "^6.0.0"
   }
 }

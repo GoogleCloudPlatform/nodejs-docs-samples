@@ -75,12 +75,15 @@ describe('functions_tips_retry', () => {
 
 describe('functions_tips_gcp_apis', () => {
   it('should call a GCP API', async () => {
+    const {FUNCTIONS_TOPIC} = process.env;
+    if (!FUNCTIONS_TOPIC) {
+      throw new Error('FUNCTIONS_TOPIC env var must be set.');
+    }
     const reqMock = {
       body: {
-        topic: process.env.FUNCTIONS_TOPIC,
+        topic: FUNCTIONS_TOPIC,
       },
     };
-
     const resMock = {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis(),

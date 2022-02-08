@@ -21,23 +21,15 @@ const main = (
   dicomStoreId
 ) => {
   // [START healthcare_dicomweb_search_studies]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const dicomWebSearchStudies = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-
-    google.options({
-      auth,
-      // Refine your search by appending DICOM tags to the
-      // request in the form of query parameters. This sample
-      // searches for studies containing a patient's name.
-      params: {PatientName: 'Sally Zhang'},
-      headers: {Accept: 'application/dicom+json'},
-    });
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -47,9 +39,17 @@ const main = (
     const dicomWebPath = 'studies';
     const request = {parent, dicomWebPath};
 
-    const studies = await healthcare.projects.locations.datasets.dicomStores.searchForStudies(
-      request
-    );
+    const studies =
+      await healthcare.projects.locations.datasets.dicomStores.searchForStudies(
+        request,
+        {
+          // Refine your search by appending DICOM tags to the
+          // request in the form of query parameters. This sample
+          // searches for studies containing a patient's name.
+          params: {PatientName: 'Sally Zhang'},
+          headers: {Accept: 'application/dicom+json'},
+        }
+      );
     console.log(studies);
 
     console.log(`Found ${studies.data.length} studies:`);

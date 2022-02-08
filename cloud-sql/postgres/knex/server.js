@@ -18,16 +18,17 @@
 const process = require('process');
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const Knex = require('knex');
+const fs = require('fs');
 
 const app = express();
 app.set('view engine', 'pug');
 app.enable('trust proxy');
 
 // Automatically parse request body as form data.
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json());
 
 // Set Content-Type for all responses for these routes.
 app.use((req, res, next) => {
@@ -49,8 +50,48 @@ const logger = winston.createLogger({
 // testing different configurations.
 let pool;
 
+app.use(async (req, res, next) => {
+  if (pool) {
+    return next();
+  }
+  try {
+    pool = await createPoolAndEnsureSchema();
+    next();
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+});
+
+// [START cloud_sql_postgres_knex_create_tcp_sslcerts]
+const createTcpPoolSslCerts = async config => {
+  // Extract host and port from socket address
+  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
+
+  // Establish a connection to the database
+  return Knex({
+    client: 'pg',
+    connection: {
+      user: process.env.DB_USER, // e.g. 'my-user'
+      password: process.env.DB_PASS, // e.g. 'my-user-password'
+      database: process.env.DB_NAME, // e.g. 'my-database'
+      host: dbSocketAddr[0], // e.g. '127.0.0.1'
+      port: dbSocketAddr[1], // e.g. '5432'
+      ssl: {
+        rejectUnauthorized: false,
+        ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
+        key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'
+        cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
+      },
+    },
+    // ... Specify additional properties here.
+    ...config,
+  });
+};
+// [END cloud_sql_postgres_knex_create_tcp_sslcerts]
+
 // [START cloud_sql_postgres_knex_create_tcp]
-const createTcpPool = config => {
+const createTcpPool = async config => {
   // Extract host and port from socket address
   const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
 
@@ -71,7 +112,7 @@ const createTcpPool = config => {
 // [END cloud_sql_postgres_knex_create_tcp]
 
 // [START cloud_sql_postgres_knex_create_socket]
-const createUnixSocketPool = config => {
+const createUnixSocketPool = async config => {
   const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
 
   // Establish a connection to the database
@@ -81,7 +122,7 @@ const createUnixSocketPool = config => {
       user: process.env.DB_USER, // e.g. 'my-user'
       password: process.env.DB_PASS, // e.g. 'my-user-password'
       database: process.env.DB_NAME, // e.g. 'my-database'
-      host: `${dbSocketPath}/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
+      host: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
     },
     // ... Specify additional properties here.
     ...config,
@@ -90,7 +131,7 @@ const createUnixSocketPool = config => {
 // [END cloud_sql_postgres_knex_create_socket]
 
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
-const createPool = () => {
+const createPool = async () => {
   // Configure which instance and what database user to connect with.
   // Remember - storing secrets in plaintext is potentially unsafe. Consider using
   // something like https://cloud.google.com/kms/ to help keep secrets secret.
@@ -114,24 +155,51 @@ const createPool = () => {
   // 'createTimeoutMillis` is the maximum number of milliseconds to wait trying to establish an
   // initial connection before retrying.
   // After acquireTimeoutMillis has passed, a timeout exception will be thrown.
-  config.createTimeoutMillis = 30000; // 30 seconds
+  config.pool.createTimeoutMillis = 30000; // 30 seconds
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed.
-  config.idleTimeoutMillis = 600000; // 10 minutes
+  config.pool.idleTimeoutMillis = 600000; // 10 minutes
   // [END cloud_sql_postgres_knex_timeout]
 
   // [START cloud_sql_postgres_knex_backoff]
   // 'knex' uses a built-in retry strategy which does not implement backoff.
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
-  config.createRetryIntervalMillis = 200; // 0.2 seconds
+  config.pool.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
 
   if (process.env.DB_HOST) {
-    return createTcpPool(config);
+    if (process.env.DB_ROOT_CERT) {
+      return createTcpPoolSslCerts(config);
+    } else {
+      return createTcpPool(config);
+    }
   } else {
     return createUnixSocketPool(config);
   }
 };
+
+const ensureSchema = async pool => {
+  const hasTable = await pool.schema.hasTable('votes');
+  if (!hasTable) {
+    return pool.schema.createTable('votes', table => {
+      table.increments('vote_id').primary();
+      table.timestamp('time_cast', 30).notNullable();
+      table.specificType('candidate', 'CHAR(6)').notNullable();
+    });
+  }
+  logger.info("Ensured that table 'votes' exists");
+};
+
+const createPoolAndEnsureSchema = async () =>
+  await createPool()
+    .then(async pool => {
+      await ensureSchema(pool);
+      return pool;
+    })
+    .catch(err => {
+      logger.error(err);
+      throw err;
+    });
 
 // [START cloud_sql_postgres_knex_connection]
 /**
@@ -177,7 +245,7 @@ const getVoteCount = async (pool, candidate) => {
 };
 
 app.get('/', async (req, res) => {
-  pool = pool || createPool();
+  pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.
     const tabsResult = await getVoteCount(pool, 'TABS');
@@ -222,7 +290,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/', async (req, res) => {
-  pool = pool || createPool();
+  pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
   const timestamp = new Date();

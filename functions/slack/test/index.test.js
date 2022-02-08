@@ -14,8 +14,8 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
+const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const method = 'POST';
@@ -42,7 +42,7 @@ const getSample = () => {
 
   return {
     program: proxyquire('../', {
-      'googleapis/build/src/apis/kgsearch': googleapis,
+      '@googleapis/kgsearch': googleapis,
       process: {env: config},
       '@slack/events-api': eventsApi,
     }),

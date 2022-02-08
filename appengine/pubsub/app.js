@@ -15,7 +15,6 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const {OAuth2Client} = require('google-auth-library');
 const path = require('path');
 const process = require('process'); // Required for mocking environment variables
@@ -35,8 +34,9 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-const formBodyParser = bodyParser.urlencoded({extended: false});
-const jsonBodyParser = bodyParser.json();
+// This middleware is available in Express v4.16.0 onwards
+const formBodyParser = express.urlencoded({extended: false});
+const jsonBodyParser = express.json();
 
 // List of all messages received by this instance
 const messages = [];
@@ -117,6 +117,13 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
     });
 
     const claim = ticket.getPayload();
+
+    // IMPORTANT: you should validate claim details not covered
+    // by signature and audience verification above, including:
+    //   - Ensure that `claim.email` is equal to the expected service
+    //     account set up in the push subscription settings.
+    //   - Ensure that `claim.email_verified` is set to true.
+
     claims.push(claim);
   } catch (e) {
     res.status(400).send('Invalid token');

@@ -20,7 +20,6 @@ const process = require('process'); // Required to mock environment variables
 const {format} = require('util');
 const express = require('express');
 const Multer = require('multer');
-const bodyParser = require('body-parser');
 
 // By default, the client will authenticate using the service account file
 // specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable and use
@@ -34,7 +33,9 @@ const storage = new Storage();
 
 const app = express();
 app.set('view engine', 'pug');
-app.use(bodyParser.json());
+
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json());
 
 // Multer is required to process file uploads and make them available via
 // req.files.

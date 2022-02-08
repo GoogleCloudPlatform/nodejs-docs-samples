@@ -20,15 +20,15 @@ const main = (
   datasetId
 ) => {
   // [START healthcare_create_dataset]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const createDataset = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -43,6 +43,11 @@ const main = (
   createDataset();
   // [END healthcare_create_dataset]
 };
+
+process.on('unhandledRejection', err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 
 // node createDataset.js <projectId> <cloudRegion> <datasetId>
 main(...process.argv.slice(2));

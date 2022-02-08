@@ -3,9 +3,12 @@
   "description": "Creates Cloud Tasks from form submission",
   "main": "index.js",
   "private": true,
+  "engines": {
+    "node": ">= 14.0.0"
+  },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha"
+    "test": "mocha --timeout 10000"
   },
   "dependencies": {
     "@google-cloud/tasks": "^2.0.0",
@@ -13,6 +16,6 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^8.0.0"
+    "mocha": "^9.0.0"
   }
 }

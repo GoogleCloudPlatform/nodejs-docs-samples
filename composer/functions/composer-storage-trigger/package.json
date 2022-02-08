@@ -16,9 +16,9 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "devDependencies": {
-    "mocha": "^8.0.0",
+    "mocha": "^9.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^10.0.0"
+    "sinon": "^12.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

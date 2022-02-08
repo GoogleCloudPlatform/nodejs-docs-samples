@@ -1,0 +1,80 @@
+<!--
+Copyright 2021 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Socket.IO chat on Cloud Run</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="index.css">
+    <link rel="shortcut icon" href="https://material.io/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link href="https://unpkg.com/material-components-web@11.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@11.0.0/dist/material-components-web.min.js"></script>
+</head>
+
+<body>
+    <!-- Sign in form -->
+    <form id="signin">
+        <h1>Please sign in</h1>
+        <label class="name mdc-text-field mdc-text-field--filled">
+            <span class="mdc-text-field__ripple"></span>
+            <input class="mdc-text-field__input" id="name" name="name" type="text" aria-labelledby="name-label" required>
+            <span class="mdc-floating-label" id="name-label">Name</span>
+            <span class="mdc-line-ripple"></span>
+        </label>
+        <label class="room mdc-text-field mdc-text-field--filled">
+            <span class="mdc-text-field__ripple"></span>
+            <input class="mdc-text-field__input" id="room" name="room" type="text" aria-labelledby="room-label" required>
+            <span class="mdc-floating-label" id="room-label">Room</span>
+            <span class="mdc-line-ripple"></span>
+        </label>
+        <div class="button-container">
+            <button class="mdc-button signin" type="submit">
+                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__label">Join</span>
+            </button>
+        </div>
+    </form>
+    <!-- Chat room -->
+    <div class="page-wrap" id="chatroom">
+        <h1></h1>
+        <ul id="messages"></ul>
+        <footer class="site-footer">
+            <form id="chat">
+                <label class="mdc-text-field mdc-text-field--filled">
+                    <span class="mdc-text-field__ripple"></span>
+                    <input class="mdc-text-field__input" id="msg" type="text" autocomplete="off">
+                    <span class="mdc-line-ripple"></span>
+                </label>
+                <div class="button-container">
+                    <button class="mdc-button send" type="submit">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Send</span>
+                    </button>
+                </div>
+            </form>
+        </footer>
+    </div>
+    <!-- [START cloudrun_websockets_client] -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- [END cloudrun_websockets_client] -->
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/index.js"></script>
+</body>
+
+</html>

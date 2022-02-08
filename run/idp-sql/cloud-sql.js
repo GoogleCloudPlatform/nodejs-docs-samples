@@ -20,7 +20,7 @@ const TABLE = process.env.TABLE || 'pet_votes';
 let knex, credConfig;
 
 // Connection pooling config
-// See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/cloud-sql/postgres/knex
+// See Cloud SQL sample https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/cloud-sql/postgres/knex
 // to learn more about this configuration
 const config = {
   pool: {
@@ -83,7 +83,7 @@ const connectWithTcp = credConfig => {
  * @returns {object} Knex's PostgreSQL client
  */
 const connect = async () => {
-  if (!credConfig) credConfig = await getCredConfig();
+  if (!credConfig) credConfig = getCredConfig();
   if (process.env.DB_HOST) {
     return connectWithTcp(credConfig);
   } else {

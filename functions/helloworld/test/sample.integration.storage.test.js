@@ -14,12 +14,10 @@
 
 // [START functions_storage_integration_test]
 const assert = require('assert');
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
+const {spawn} = require('child_process');
 const uuid = require('uuid');
-
-const requestRetry = require('requestretry');
-const cwd = path.join(__dirname, '..');
+const {request} = require('gaxios');
+const waitPort = require('wait-port');
 
 // [END functions_storage_integration_test]
 
@@ -27,7 +25,7 @@ describe('functions_helloworld_storage integration test', () => {
   // [START functions_storage_integration_test]
   it('helloGCSGeneric: should print GCS event', async () => {
     const filename = uuid.v4(); // Use a unique filename to avoid conflicts
-    const PORT = 9000; // Each running framework instance needs a unique port
+    const PORT = 9009; // Each running framework instance needs a unique port
 
     const eventType = 'google.storage.object.finalize';
 
@@ -41,29 +39,44 @@ describe('functions_helloworld_storage integration test', () => {
         eventType: eventType,
       },
     };
-
-    // Run the functions-framework instance to host functions locally
-    //   exec's 'timeout' param won't kill children of "shim" /bin/sh process
-    //   Workaround: include "& sleep <TIMEOUT>; kill $!" in executed command
-    const proc = execPromise(
-      `functions-framework --target=helloGCS --signature-type=event --port=${PORT} & sleep 1; kill $!`,
-      {shell: true, cwd}
-    );
+    const ffProc = spawn('npx', [
+      'functions-framework',
+      '--target',
+      'helloGCS',
+      '--signature-type',
+      'event',
+      '--port',
+      PORT,
+    ]);
+    const ffProcHandler = new Promise((resolve, reject) => {
+      let stdout = '';
+      let stderr = '';
+      ffProc.stdout.on('data', data => (stdout += data));
+      ffProc.stderr.on('data', data => (stderr += data));
+      ffProc.on('exit', code => {
+        if (code === 0 || code === null) {
+          // code === null corresponds to a signal-kill
+          // (which doesn't necessarily indicate a test failure)
+          resolve(stdout);
+        } else {
+          stderr = `Error code: ${code}\n${stderr}`;
+          reject(new Error(stderr));
+        }
+      });
+    });
+    await waitPort({host: 'localhost', port: PORT});
 
     // Send HTTP request simulating GCS change notification
     // (GCF translates GCS notifications to HTTP requests internally)
-    const response = await requestRetry({
+    const response = await request({
       url: `http://localhost:${PORT}/`,
       method: 'POST',
-      body: data,
-      retryDelay: 200,
-      json: true,
+      data,
     });
+    assert.strictEqual(response.status, 204);
 
-    assert.strictEqual(response.statusCode, 204);
-
-    // Wait for functions-framework process to exit
-    const {stdout} = await proc;
+    ffProc.kill();
+    const stdout = await ffProcHandler;
     assert.ok(stdout.includes(`File: ${filename}`));
     assert.ok(stdout.includes(`Event Type: ${eventType}`));
   });

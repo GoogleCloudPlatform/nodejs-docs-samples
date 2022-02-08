@@ -22,18 +22,18 @@ const main = (
   hl7v2MessageFile
 ) => {
   // [START healthcare_ingest_hl7v2_message]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const fs = require('fs');
   const util = require('util');
   const readFile = util.promisify(fs.readFile);
 
   const ingestHl7v2Message = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -45,9 +45,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {parent, resource: hl7v2Message};
 
-    const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.ingest(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.ingest(
+        request
+      );
     const data = response.data.hl7Ack;
     const buff = new Buffer.from(data, 'base64');
     const hl7Ack = buff.toString('ascii');

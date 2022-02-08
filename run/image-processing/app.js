@@ -6,10 +6,10 @@
 // [START run_imageproc_controller]
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
 
-app.use(bodyParser.json());
+// This middleware is available in Express v4.16.0 onwards
+app.use(express.json());
 
 const image = require('./image');
 

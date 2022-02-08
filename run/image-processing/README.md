@@ -4,12 +4,11 @@ This sample service applies [Cloud Storage](https://cloud.google.com/storage/doc
 
 Use it with the [Image Processing with Cloud Run tutorial](http://cloud.google.com/run/docs/tutorials/image-processing).
 
-For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/run).
+For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/run).
 
 ## Dependencies
 
 * **express**: Web server framework
-* **body-parser**: express middleware for request payload processing
 * **[gm](https://github.com/aheckmann/gm#readme)**: ImageMagick integration library.
 * **@google-cloud/storage**: Google Cloud Storage client library.
 * **@google-cloud/vision**: Cloud Vision API client library.

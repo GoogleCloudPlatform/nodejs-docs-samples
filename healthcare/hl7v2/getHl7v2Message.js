@@ -22,15 +22,15 @@ const main = (
   hl7v2MessageId
 ) => {
   // [START healthcare_get_hl7v2_message]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const getHl7v2Message = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -41,9 +41,10 @@ const main = (
     const view = 'FULL';
     const request = {name, view};
 
-    const hl7v2Message = await healthcare.projects.locations.datasets.hl7V2Stores.messages.get(
-      request
-    );
+    const hl7v2Message =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.get(
+        request
+      );
     console.log('Got HL7v2 message:\n', hl7v2Message.data);
   };
 

@@ -22,18 +22,18 @@ const main = (
   hl7v2MessageFile
 ) => {
   // [START healthcare_create_hl7v2_message]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
   const fs = require('fs');
   const util = require('util');
   const readFile = util.promisify(fs.readFile);
 
   const createHl7v2Message = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -45,9 +45,10 @@ const main = (
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}`;
     const request = {parent, resource: hl7v2Message};
 
-    const response = await healthcare.projects.locations.datasets.hl7V2Stores.messages.create(
-      request
-    );
+    const response =
+      await healthcare.projects.locations.datasets.hl7V2Stores.messages.create(
+        request
+      );
     const {data} = response;
     console.log('Created HL7v2 message with data:\n', data);
   };

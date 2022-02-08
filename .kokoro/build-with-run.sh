@@ -41,6 +41,10 @@ export GOOGLE_APPLICATION_CREDENTIALS=${KOKORO_GFILE_DIR}/secrets-key.json
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 gcloud config set project $GOOGLE_CLOUD_PROJECT
 
+#  run/websockets
+export REDISHOST=$(cat $KOKORO_GFILE_DIR/secrets-memorystore-redis-ip.txt)
+export REDISPORT=6379
+
 # Version is in the format <PR#>-<GIT COMMIT SHA>.
 # Ensures PR-based triggers of the same branch don't collide if Kokoro attempts
 # to run them concurrently. Defaults to 'latest'.
@@ -58,7 +62,7 @@ export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 export NODE_ENV=development
 npm install
 
-# If tests are running against master, configure FlakyBot
+# If tests are running against main, configure FlakyBot
 # to open issues on failures:
 if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
 	export MOCHA_REPORTER_SUITENAME=${PROJECT}

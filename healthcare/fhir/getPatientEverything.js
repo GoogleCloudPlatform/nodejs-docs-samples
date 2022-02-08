@@ -22,15 +22,15 @@ const main = (
   patientId
 ) => {
   // [START healthcare_get_patient_everything]
-  const {google} = require('googleapis');
-  const healthcare = google.healthcare('v1');
+  const google = require('@googleapis/healthcare');
+  const healthcare = google.healthcare({
+    version: 'v1',
+    auth: new google.auth.GoogleAuth({
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    }),
+  });
 
   const getPatientEverything = async () => {
-    const auth = await google.auth.getClient({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    google.options({auth});
-
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
@@ -40,9 +40,10 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${patientId}`;
     const request = {name};
 
-    const patientEverything = await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
-      request
-    );
+    const patientEverything =
+      await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
+        request
+      );
     console.log(
       `Got all resources in patient ${patientId} compartment:\n`,
       JSON.stringify(patientEverything)

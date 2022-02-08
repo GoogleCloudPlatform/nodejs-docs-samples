@@ -1,2 +1,31 @@
 assign_issues:
-  -sofisl
+  - sofisl
+  
+assign_issues_by:
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes
+- labels:
+  - 'api: run'
+  - 'api: cloudfunctions'
+  to:
+  - GoogleCloudPlatform/aap-dpes
+
+assign_prs_by:
+- labels:
+  - 'api: bigtable'
+  - 'api: datastore'
+  - 'api: firestore'
+  to:
+  - GoogleCloudPlatform/cloud-native-db-dpes
+- labels:
+  - 'api: cloudsql'
+  to:
+  - GoogleCloudPlatform/infra-db-dpes

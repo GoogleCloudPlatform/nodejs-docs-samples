@@ -67,7 +67,7 @@ describe('Integration tests', () => {
     it('responds 200 OK on "POST /render" with valid JSON', async function () {
       // A valid type will make a request to the /render endpoint.
       // TODO: This test outputs a JSON parsing SyntaxError from supertest but does not fail the assert.
-      this.retries(4);
+      this.retries(6);
       await delay(this.test, 4000);
       await request
         .post('/render')

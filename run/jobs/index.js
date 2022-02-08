@@ -13,11 +13,12 @@
 // limitations under the License.
 
 'use strict';
-
+// [START cloudrun_jobs_env_vars]
 // Retrieve Job-defined env vars
 const {TASK_NUM = 0, ATTEMPT_NUM = 0} = process.env;
 // Retrieve User-defined env vars
 const {SLEEP_MS, FAIL_RATE} = process.env;
+// [END cloudrun_jobs_env_vars]
 
 // Define main script
 const main = async () => {
@@ -62,5 +63,7 @@ const randomFailure = rate => {
 // Start script
 main().catch(err => {
   console.error(err);
+  // [START cloudrun_jobs_exit_process]
   process.exit(1); // Retry Job Task by exiting the process
+  // [END cloudrun_jobs_exit_process]
 });

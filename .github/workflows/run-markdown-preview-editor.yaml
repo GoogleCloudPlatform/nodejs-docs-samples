@@ -28,7 +28,7 @@ jobs:
         create_credentials_file: 'true'
         token_format: 'id_token'
         id_token_audience: 'https://www.example.com/'
-        id_token_include_email: true
+        id_token_include_email: 'true'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
       with:

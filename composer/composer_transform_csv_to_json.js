@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//Note to maintainers: Skipping these lint rules
+//Is required to make code run in Dataflow
+/* eslint-disable func-style */
+/* eslint-disable no-var */
 module.exports = function main(
   line = 'tampa, 106, january, null, null, 08-17-2019'
 ) {
-  // NOTE TO MAINTAINERS: This MUST use var
-  // otherwise it will not work in Dataflow
   // [START composer_transform_csv_to_json]
 
   function transformCSVtoJSON(line) {

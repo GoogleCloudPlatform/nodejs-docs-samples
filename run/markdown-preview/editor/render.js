@@ -46,10 +46,8 @@ const renderRequest = async markdown => {
     serviceRequestOptions.headers['Authorization'] =
       clientHeaders['Authorization'];
   } catch (err) {
-    throw Error(
-      'could not create an identity token: ',
-      JSON.stringify(err.message)
-    );
+    console.log(err.message);
+    throw Error('could not create an identity token: ', err.message);
   }
 
   try {

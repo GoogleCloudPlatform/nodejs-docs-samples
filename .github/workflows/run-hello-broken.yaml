@@ -36,7 +36,7 @@ jobs:
         node-version: 14
     - run: npm install
       working-directory: run/hello-broken
-    - run: npm system-test
+    - run: npm run system-test
       working-directory: run/hello-broken
       env:
         MOCHA_REPORTER_SUITENAME: run_hello_broken

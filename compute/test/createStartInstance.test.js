@@ -21,6 +21,8 @@ const uuid = require('uuid');
 const cp = require('child_process');
 const {assert} = require('chai');
 
+const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+
 const instancesClient = new compute.InstancesClient();
 const imagesClient = new compute.ImagesClient();
 const snapshotsClient = new compute.SnapshotsClient();
@@ -109,12 +111,21 @@ const deleteDiskSnapshot = async (projectId, snapshotName) => {
 };
 
 describe('create start instance tests', () => {
-  const instanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
+  const instanceName = generateTestId();
   const networkName = 'global/networks/default-compute';
   const subnetworkName = 'regions/europe-central2/subnetworks/default-compute';
   const diskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
   const snapshotName = `gcloud-test-snapshot-${uuid.v4().split('-')[0]}`;
   const zone = 'europe-central2-b';
+
+  after(async () => {
+    const instances = await getStaleVMInstances();
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
+  });
 
   it('should create instance from public image', async () => {
     const projectId = await instancesClient.getProjectId();

@@ -23,6 +23,8 @@ const uuid = require('uuid');
 const cp = require('child_process');
 const {assert} = require('chai');
 
+const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+
 const instancesClient = new compute.InstancesClient();
 const projectsClient = new compute.ProjectsClient();
 const firewallsClient = new compute.FirewallsClient();
@@ -54,11 +56,20 @@ const getInstance = async (projectId, zone, instanceName) => {
 };
 
 describe('samples', () => {
-  const instanceName = `gcloud-test-intance-${uuid.v4().split('-')[0]}`;
+  const instanceName = generateTestId();
   const zone = 'europe-central2-b';
   const bucketName = `test-bucket-name-${uuid.v4().split('-')[0]}`;
 
   const storage = new Storage();
+
+  after(async () => {
+    const instances = await getStaleVMInstances();
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
+  });
 
   it('should create instance', async () => {
     const projectId = await instancesClient.getProjectId();

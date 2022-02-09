@@ -85,8 +85,8 @@ app.get('/', async (req, res, next) => {
   }
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(process.env.PORT || 8080, () => {
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });

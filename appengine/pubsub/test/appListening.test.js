@@ -17,7 +17,7 @@ const assert = require('assert');
 const {spawn} = require('child_process');
 const path = require('path');
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 const appPath = path.join(__dirname, '../app.js');
 

@@ -14,7 +14,7 @@
 
 // [START eventarc_audit_storage_server]
 const app = require('./app.js');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 app.listen(PORT, () =>
   console.log(`nodejs-events-storage listening on port ${PORT}`)

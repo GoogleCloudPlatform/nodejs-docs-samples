@@ -14,7 +14,7 @@
 
 import express = require('express');
 
-const PORT = Number(process.env.PORT) || 8080;
+const PORT = Number(parseInt(process.env.PORT)) || 8080;
 const app = express();
 
 app.get('/', (req, res) => {

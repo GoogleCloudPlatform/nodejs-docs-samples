@@ -29,6 +29,7 @@
   "functions/firebase",
   "functions/http",
   "functions/security",
+  "functions/scheduleinstance",
   "functions/slack",
   "functions/spanner",
   "healthcare/datasets",

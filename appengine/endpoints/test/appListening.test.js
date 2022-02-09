@@ -1,6 +1,6 @@
 const waitPort = require('wait-port');
 const {expect} = require('chai');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
 const childProcess = require('child_process');
 const path = require('path');
 const appPath = path.join(__dirname, '../app.js');

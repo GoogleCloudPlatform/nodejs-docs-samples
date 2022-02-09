@@ -1,7 +1,7 @@
-const waitPort = require('wait-port');
 const {expect} = require('chai');
+const waitPort = require('wait-port');
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 describe('server listening', () => {
   it('should be listening', async () => {

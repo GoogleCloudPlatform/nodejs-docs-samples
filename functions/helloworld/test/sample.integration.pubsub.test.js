@@ -22,12 +22,6 @@ const waitPort = require('wait-port');
 // [END functions_pubsub_integration_test]
 
 describe('functions_helloworld_pubsub integration test', () => {
-  let ffProc;
-  afterEach(() => {
-    if (ffProc) {
-      ffProc.kill();
-    }
-  });
   // [START functions_pubsub_integration_test]
   it('helloPubSub: should print a name', async () => {
     const name = uuid.v4();
@@ -35,7 +29,7 @@ describe('functions_helloworld_pubsub integration test', () => {
 
     const encodedName = Buffer.from(name).toString('base64');
     const pubsubMessage = {data: {data: encodedName}};
-    ffProc = spawn('npx', [
+    const ffProc = spawn('npx', [
       'functions-framework',
       '--target',
       'helloPubSub',
@@ -44,38 +38,53 @@ describe('functions_helloworld_pubsub integration test', () => {
       '--port',
       PORT,
     ]);
-    const ffProcHandler = new Promise((resolve, reject) => {
-      let stdout = '';
-      let stderr = '';
-      ffProc.stdout.on('data', data => (stdout += data));
-      ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject).on('exit', code => {
-        code === 0 ? resolve(stdout) : reject(stderr);
+
+    try {
+      const ffProcHandler = new Promise((resolve, reject) => {
+        let stdout = '';
+        let stderr = '';
+        ffProc.stdout.on('data', data => (stdout += data));
+        ffProc.stderr.on('data', data => (stderr += data));
+        ffProc.on('exit', code => {
+          if (code === 0 || code === null) {
+            // code === null corresponds to a signal-kill
+            // (which doesn't necessarily indicate a test failure)
+            resolve(stdout);
+          } else {
+            stderr = `Error code: ${code}\n${stderr}`;
+            reject(new Error(stderr));
+          }
+        });
       });
-    });
-    await waitPort({host: 'localhost', port: PORT});
+      await waitPort({host: 'localhost', port: PORT});
 
-    // Send HTTP request simulating Pub/Sub message
-    // (GCF translates Pub/Sub messages to HTTP requests internally)
-    const response = await request({
-      url: `http://localhost:${PORT}/`,
-      method: 'POST',
-      data: pubsubMessage,
-    });
-    ffProc.kill();
+      // Send HTTP request simulating Pub/Sub message
+      // (GCF translates Pub/Sub messages to HTTP requests internally)
+      const response = await request({
+        url: `http://localhost:${PORT}/`,
+        method: 'POST',
+        data: pubsubMessage,
+      });
+      ffProc.kill();
 
-    assert.strictEqual(response.status, 204);
+      assert.strictEqual(response.status, 204);
 
-    // Wait for the functions framework to stop
-    const stdout = await ffProcHandler;
-    assert.match(stdout, new RegExp(`Hello, ${name}!`));
+      // Wait for the functions framework to stop
+      const stdout = await ffProcHandler;
+      assert.match(stdout, new RegExp(`Hello, ${name}!`));
+    } catch {
+      if (ffProc) {
+        // Make sure the functions framework is stopped
+        ffProc.kill();
+      }
+    }
   });
   // [END functions_pubsub_integration_test]
 
   it('helloPubSub: should print hello world', async () => {
     const pubsubMessage = {data: {}};
     const PORT = 8089; // Each running framework instance needs a unique port
-    ffProc = spawn('npx', [
+    const ffProc = spawn('npx', [
       'functions-framework',
       '--target',
       'helloPubSub',
@@ -84,30 +93,47 @@ describe('functions_helloworld_pubsub integration test', () => {
       '--port',
       PORT,
     ]);
-    const ffProcHandler = new Promise((resolve, reject) => {
-      let stdout = '';
-      let stderr = '';
-      ffProc.stdout.on('data', data => (stdout += data));
-      ffProc.stderr.on('data', data => (stderr += data));
-      ffProc.on('error', reject);
-      ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
-    });
-    await waitPort({host: 'localhost', port: PORT});
 
-    // Send HTTP request simulating Pub/Sub message
-    // (GCF translates Pub/Sub messages to HTTP requests internally)
-    const response = await request({
-      url: `http://localhost:${PORT}/`,
-      method: 'POST',
-      data: pubsubMessage,
-    });
-    ffProc.kill();
+    try {
+      const ffProcHandler = new Promise((resolve, reject) => {
+        let stdout = '';
+        let stderr = '';
+        ffProc.stdout.on('data', data => (stdout += data));
+        ffProc.stderr.on('data', data => (stderr += data));
+        ffProc.on('error', reject);
+        ffProc.on('exit', code => {
+          if (code === 0 || code === null) {
+            // code === null corresponds to a signal-kill
+            // (which doesn't necessarily indicate a test failure)
+            resolve(stdout);
+          } else {
+            stderr = `Error code: ${code}\n${stderr}`;
+            reject(new Error(stderr));
+          }
+        });
+      });
+      await waitPort({host: 'localhost', port: PORT});
 
-    assert.strictEqual(response.status, 204);
+      // Send HTTP request simulating Pub/Sub message
+      // (GCF translates Pub/Sub messages to HTTP requests internally)
+      const response = await request({
+        url: `http://localhost:${PORT}/`,
+        method: 'POST',
+        data: pubsubMessage,
+      });
+      ffProc.kill();
 
-    // Wait for functions-framework process to exit
-    const stdout = await ffProcHandler;
-    assert.match(stdout, /Hello, World!/);
+      assert.strictEqual(response.status, 204);
+
+      // Wait for functions-framework process to exit
+      const stdout = await ffProcHandler;
+      assert.match(stdout, /Hello, World!/);
+    } catch {
+      if (ffProc) {
+        // Make sure the functions framework is stopped
+        ffProc.kill();
+      }
+    }
   });
   // [START functions_pubsub_integration_test]
 });

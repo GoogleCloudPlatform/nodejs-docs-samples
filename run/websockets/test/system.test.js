@@ -33,6 +33,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
+  const CONNECTOR = `my-connector`;
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
@@ -44,7 +45,7 @@ describe('End-to-End Tests', () => {
     const buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST},_CONNECTOR=${CONNECTOR}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd);

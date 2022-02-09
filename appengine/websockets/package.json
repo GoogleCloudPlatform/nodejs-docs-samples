@@ -22,6 +22,6 @@
   },
   "devDependencies": {
     "mocha": "^9.0.0",
-    "puppeteer": "^12.0.0"
+    "puppeteer": "^13.0.0"
   }
 }

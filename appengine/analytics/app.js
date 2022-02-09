@@ -69,11 +69,12 @@ app.get('/', async (req, res, next) => {
   }
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
 // [END gae_flex_analytics_track_event]
+
 module.exports = app;

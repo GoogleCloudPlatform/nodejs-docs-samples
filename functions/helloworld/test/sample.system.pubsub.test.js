@@ -22,7 +22,7 @@ const promiseRetry = require('promise-retry');
 
 const pubsub = new PubSub();
 const topicName = process.env.FUNCTIONS_TOPIC;
-if (!topicName) throw new Error('"FUNCTION_TOPIC" env var must be set.');
+if (!topicName) throw new Error('"FUNCTIONS_TOPIC" env var must be set.');
 if (!process.env.GCF_REGION) {
   throw new Error('"GCF_REGION" env var must be set.');
 }
@@ -32,7 +32,7 @@ describe('system tests', () => {
   // [END functions_pubsub_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloPubSub --runtime nodejs10 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy helloPubSub --runtime nodejs16 --trigger-topic ${topicName} --region=${process.env.GCF_REGION}`
     );
   });
 
@@ -63,6 +63,7 @@ describe('system tests', () => {
       try {
         assert.ok(logs.includes(`Hello, ${name}!`));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });
@@ -86,6 +87,7 @@ describe('system tests', () => {
       try {
         assert.ok(logs.includes('Hello, World!'));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });

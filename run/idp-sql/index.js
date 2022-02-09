@@ -23,7 +23,7 @@ const {createTable, closeConnection} = require('./cloud-sql');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 const startServer = () => {
   app.listen(PORT, () => logger.info(`${pkg.name}: listening on port ${PORT}`));

@@ -37,5 +37,6 @@
   "healthcare/fhir",
   "healthcare/hl7v2",
   "monitoring/opencensus",
-  "monitoring/prometheus"
+  "monitoring/prometheus",
+  "run/helloworld"
 ]

@@ -22,7 +22,7 @@ const path = require('path');
 
 const appPath = path.join(__dirname, '../server.js');
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 describe('server listening', () => {
   it('should be listening', async () => {

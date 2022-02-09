@@ -38,5 +38,9 @@
   "healthcare/hl7v2",
   "monitoring/opencensus",
   "monitoring/prometheus",
-  "run/helloworld"
+  "datacatalog/cloud-client",
+  "datacatalog/quickstart",
+  "datastore/functions",
+  "run/helloworld",
+  "run/idp-sql"
 ]

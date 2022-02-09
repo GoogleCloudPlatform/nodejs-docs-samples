@@ -22,33 +22,20 @@ const escapeHtml = require('escape-html');
 // [END functions_helloworld_http]
 
 // [START functions_helloworld_get]
-/**
- * HTTP Cloud Function.
- * This function is exported by index.js, and is executed when
- * you make an HTTP request to the deployed function's endpoint.
- *
- * @param {Object} req Cloud Function request context.
- *                     More info: https://expressjs.com/en/api.html#req
- * @param {Object} res Cloud Function response context.
- *                     More info: https://expressjs.com/en/api.html#res
- */
-exports.helloGET = (req, res) => {
+const functions = require('@google-cloud/functions-framework');
+
+// Register an HTTP function with the Functions Framework that will be executed
+// when you make an HTTP request to the deployed function's endpoint.
+functions.http('helloGET', (req, res) => {
   res.send('Hello World!');
-};
+});
 // [END functions_helloworld_get]
 
 // [START functions_helloworld_http]
-/**
- * HTTP Cloud Function.
- *
- * @param {Object} req Cloud Function request context.
- *                     More info: https://expressjs.com/en/api.html#req
- * @param {Object} res Cloud Function response context.
- *                     More info: https://expressjs.com/en/api.html#res
- */
-exports.helloHttp = (req, res) => {
+// HTTP Cloud Function.
+functions.http('helloHttp', (req, res) => {
   res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
-};
+});
 // [END functions_helloworld_http]
 
 // [START functions_helloworld_pubsub]
@@ -133,15 +120,10 @@ exports.helloError3 = (event, context, callback) => {
   // [END functions_helloworld_error]
 };
 
-/**
- * HTTP Cloud Function that returns an error.
- *
- * @param {Object} req Cloud Function request context.
- * @param {Object} res Cloud Function response context.
- */
-exports.helloError4 = (req, res) => {
+// HTTP Cloud Function that returns an error.
+functions.http('helloError4', (req, res) => {
   // This will NOT be reported to Stackdriver Error Reporting
   // [START functions_helloworld_error]
   res.status(500).send('I failed you');
   // [END functions_helloworld_error]
-};
+});

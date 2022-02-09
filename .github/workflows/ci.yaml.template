@@ -1,0 +1,66 @@
+name: {{name}}
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - '{{path}}/**'
+  pull_request:
+    paths:
+    - '{{path}}/**'
+  pull_request_target:
+    types: [labeled]
+  schedule:
+  - cron:  '0 2 * * *'
+jobs:
+  test:
+    if: {% raw %}${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}{% endraw %}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'write'
+      pull-requests: 'write'
+      id-token: 'write'
+    steps:
+    - uses: 'google-github-actions/auth@v0.3.1'
+      with:
+        workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+        create_credentials_file: 'true'
+        access_token_lifetime: 600s
+    - uses: actions/checkout@v2
+      with:
+        ref: {% raw %}${{github.event.pull_request.head.ref}}{% endraw %}
+        repository: {% raw %}${{github.event.pull_request.head.repo.full_name}}{% endraw %}
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - run: npm install
+      working-directory: {{path}}
+    - run: npm test
+      working-directory: {{path}}
+      env:
+        MOCHA_REPORTER_SUITENAME: {{suite}}
+        MOCHA_REPORTER_OUTPUT: {{suite}}_sponge_log.xml
+        MOCHA_REPORTER: xunit
+    - if: {% raw %}${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}{% endraw %}
+      uses: actions/github-script@v5
+      with:
+        github-token: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
+        script: |
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
+            }
+          }
+    - if: {% raw %}${{ github.event_name == 'schedule'}}{% endraw %}
+      run: |
+        curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
+        chmod +x ./flakybot
+        {% raw %}./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}{% endraw %}

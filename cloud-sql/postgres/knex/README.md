@@ -20,7 +20,7 @@ Download a JSON key to use to authenticate your connection.
 5. Use the information noted in the previous steps:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>'
+export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
@@ -130,7 +130,7 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
       DB_PASS: MY_DB_PASSWORD
       DB_NAME: MY_DATABASE
       # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
+      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
     ```
 
 2. To deploy to App Engine Standard, run the following command:
@@ -155,7 +155,7 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
       DB_PASS: MY_DB_PASSWORD
       DB_NAME: MY_DATABASE
       # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<MY-DATABASE>
+      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
     ```
 
 2. To deploy to App Engine Node.js Flexible Environment, run the following command:

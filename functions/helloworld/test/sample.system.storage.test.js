@@ -27,6 +27,12 @@ const gcsFileName = `test-${uuid.v4()}.txt`;
 
 const localFileName = 'test.txt';
 const bucketName = process.env.FUNCTIONS_DELETABLE_BUCKET;
+if (!bucketName) {
+  throw new Error('"FUNCTIONS_DELETABLE_BUCKET" env var must be set.');
+}
+if (!process.env.GCF_REGION) {
+  throw new Error('"GCF_REGION" env var must be set.');
+}
 const bucket = storage.bucket(bucketName);
 const baseCmd = 'gcloud functions';
 
@@ -34,13 +40,13 @@ describe('system tests', () => {
   // [END functions_storage_system_test]
   before(() => {
     childProcess.execSync(
-      `gcloud functions deploy helloGCS --runtime nodejs10 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
+      `gcloud functions deploy helloGCS --runtime nodejs16 --trigger-bucket=${bucketName} --region=${process.env.GCF_REGION}`
     );
   });
 
   after(() => {
     childProcess.execSync(
-      `gcloud functions delete helloGCS --region=${process.env.GCF_REGION}`
+      `gcloud functions delete helloGCS --region=${process.env.GCF_REGION} --quiet`
     );
   });
   // [START functions_storage_system_test]
@@ -64,6 +70,7 @@ describe('system tests', () => {
         assert.ok(logs.includes(`File: ${gcsFileName}`));
         assert.ok(logs.includes('Event Type: google.storage.object.finalize'));
       } catch (err) {
+        console.log('An error occurred, retrying:', err);
         retry(err);
       }
     });

@@ -10,11 +10,12 @@
     "test": "mocha test/*.test.js --timeout=60000"
   },
   "dependencies": {
+    "@google-cloud/secret-manager": "^3.10.1",
     "@sendgrid/mail": "^7.0.0"
   },
   "devDependencies": {
     "mocha": "^9.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^11.0.0"
+    "sinon": "^12.0.0"
   }
 }

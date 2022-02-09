@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --timeout=60000 --exit",
+    "test": "mocha test/app.test.js --timeout=120000 --exit",
     "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {

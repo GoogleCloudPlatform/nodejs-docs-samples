@@ -40,8 +40,9 @@
   "monitoring/prometheus",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
-  "datastore/functions", 
+  "datastore/functions",
   "run/helloworld",
   "run/image-processing",
-  "run/idp-sql"
+  "run/idp-sql",
+  "run/system-package"
 ]

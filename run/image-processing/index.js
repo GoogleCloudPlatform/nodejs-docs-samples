@@ -5,7 +5,7 @@
 // [START cloudrun_imageproc_server]
 // [START run_imageproc_server]
 const app = require('./app.js');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
 
 app.listen(PORT, () =>
   console.log(`nodejs-image-processing listening on port ${PORT}`)

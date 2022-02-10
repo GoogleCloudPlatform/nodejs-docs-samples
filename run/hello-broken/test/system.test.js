@@ -29,7 +29,7 @@ const get = (route, base_url, id_token, retry = 3) => {
 };
 
 describe('End-to-End Tests', () => {
-  const {GOOGLE_CLOUD_PROJECT} = process.env;
+  const GOOGLE_CLOUD_PROJECT = 'long-door-651';
   if (!GOOGLE_CLOUD_PROJECT) {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
@@ -46,7 +46,6 @@ describe('End-to-End Tests', () => {
     throw Error(`"NAME" env var is required. Defaulting to "${NAME}"`);
   }
 
-  const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
   describe('Service relying on defaults', () => {
@@ -57,7 +56,6 @@ describe('End-to-End Tests', () => {
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_setup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-      if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       console.log('Starting Cloud Build...');
       execSync(buildCmd);
@@ -80,11 +78,10 @@ describe('End-to-End Tests', () => {
     });
 
     after(() => {
-      let cleanUpCmd =
+      const cleanUpCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_cleanup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-      if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       execSync(cleanUpCmd);
     });
@@ -118,12 +115,11 @@ describe('End-to-End Tests', () => {
     let BASE_URL_OVERRIDE, ID_TOKEN_OVERRIDE;
     before(async () => {
       // Deploy service using Cloud Build
-      let buildCmd =
+      const buildCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_setup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME_OVERRIDE},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
         `,_NAME=${NAME}`;
-      if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       console.log('Starting Cloud Build...');
       execSync(buildCmd);
@@ -146,11 +142,10 @@ describe('End-to-End Tests', () => {
     });
 
     after(() => {
-      let cleanUpCmd =
+      const cleanUpCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_cleanup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME_OVERRIDE},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
-      if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       execSync(cleanUpCmd);
     });

@@ -44,5 +44,6 @@
   "run/helloworld",
   "run/image-processing",
   "run/idp-sql",
+  "run/pubsub",
   "run/system-package"
 ]

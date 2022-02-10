@@ -63,10 +63,11 @@ describe('End-to-End Tests', () => {
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
     });
 
-    const preparedFilter = `resource.type = "cloud_run_revision" ` +
+    const preparedFilter =
+      'resource.type = "cloud_run_revision" ' +
       `resource.labels.service_name = "${SERVICE_NAME}" ` +
       `resource.labels.location = "${REGION}" ` +
-      `timestamp>="${dateMinutesAgo(new Date(),5)}"`
+      `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
 
     const entries = await logging.getEntries({
       filter: preparedFilter,
@@ -77,7 +78,9 @@ describe('End-to-End Tests', () => {
     assert(entries[0]);
     assert(entries[0].length > 0);
     const found = entries[0].find(entry => {
-      return typeof entry.data == 'string' ? entry.data.includes("Task") : false;
+      return typeof entry.data === 'string'
+        ? entry.data.includes('Task')
+        : false;
     });
     assert(found);
   });

@@ -13,7 +13,7 @@ on:
   schedule:
   - cron:  '0 2 * * *'
 jobs:
-  test:
+  run-system-package:
     if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
     runs-on: ubuntu-latest
     permissions:

@@ -52,7 +52,7 @@ describe('End-to-End Tests', () => {
     let BASE_URL, ID_TOKEN;
     before(async () => {
       // Deploy service using Cloud Build
-      let buildCmd =
+      const buildCmd =
         `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
         '--config ./test/e2e_test_setup.yaml ' +
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;

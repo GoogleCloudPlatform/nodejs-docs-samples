@@ -21,7 +21,7 @@ const handleRequest = function (req, res) {
   res.end('Hello Kubernetes!');
 };
 const www = http.createServer(handleRequest);
-www.listen(process.env.PORT || 8080);
+www.listen(parseInt(process.env.PORT) || 8080);
 
 // [END all]
 module.exports = www;

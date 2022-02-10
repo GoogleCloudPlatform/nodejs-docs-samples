@@ -42,6 +42,15 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
+// Retrieve and return a specified secret from Secret Manager
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const client = new SecretManagerServiceClient();
+
+async function accessSecretVersion(secretName) {
+  const [version] = await client.accessSecretVersion({name: secretName});
+  return version.payload.data;
+}
+
 // [START cloud_sql_mysql_mysql_create_tcp_sslcerts]
 const createTcpPoolSslCerts = async config => {
   // Extract host and port from socket address
@@ -130,6 +139,20 @@ const createPool = async () => {
     // connection attempts.
     // [END cloud_sql_mysql_mysql_backoff]
   };
+
+  // Check if a Secret Manager secret version is defined
+  // If a version is defined, retrieve the secret from Secret Manager and set as the DB_PASS
+  const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
+  if (CLOUD_SQL_CREDENTIALS_SECRET) {
+    const secrets = await accessSecretVersion(CLOUD_SQL_CREDENTIALS_SECRET);
+    try {
+      process.env.DB_PASS = secrets.toString();
+    } catch (err) {
+      err.message = `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: \n ${err.message} `;
+      throw err;
+    }
+  }
+
   if (process.env.DB_HOST) {
     if (process.env.DB_ROOT_CERT) {
       return createTcpPoolSslCerts(config);
@@ -250,7 +273,7 @@ app.post('/', async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');

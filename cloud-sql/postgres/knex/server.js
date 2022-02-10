@@ -45,6 +45,15 @@ const logger = winston.createLogger({
   transports: [new winston.transports.Console(), loggingWinston],
 });
 
+// Retrieve and return a specified secret from Secret Manager
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const client = new SecretManagerServiceClient();
+
+async function accessSecretVersion(secretName) {
+  const [version] = await client.accessSecretVersion({name: secretName});
+  return version.payload.data;
+}
+
 // Set up a variable to hold our connection pool. It would be safe to
 // initialize this right away, but we defer its instantiation to ease
 // testing different configurations.
@@ -166,6 +175,19 @@ const createPool = async () => {
   // 'createRetryIntervalMillis' is how long to idle after failed connection creation before trying again
   config.pool.createRetryIntervalMillis = 200; // 0.2 seconds
   // [END cloud_sql_postgres_knex_backoff]
+
+  // Check if a Secret Manager secret version is defined
+  // If a version is defined, retrieve the secret from Secret Manager and set as the DB_PASS
+  const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
+  if (CLOUD_SQL_CREDENTIALS_SECRET) {
+    const secrets = await accessSecretVersion(CLOUD_SQL_CREDENTIALS_SECRET);
+    try {
+      process.env.DB_PASS = secrets.toString();
+    } catch (err) {
+      err.message = `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: \n ${err.message} `;
+      throw err;
+    }
+  }
 
   if (process.env.DB_HOST) {
     if (process.env.DB_ROOT_CERT) {
@@ -320,7 +342,7 @@ app.post('/', async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');

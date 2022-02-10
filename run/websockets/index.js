@@ -18,7 +18,7 @@ const {redisClient} = require('./redis');
 const pkg = require('./package');
 const server = require('./app');
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 // Start server
 server.listen(PORT, () =>

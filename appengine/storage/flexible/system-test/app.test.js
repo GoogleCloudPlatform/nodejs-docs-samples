@@ -20,21 +20,15 @@ const assert = require('assert');
 const supertest = require('supertest');
 const proxyquire = require('proxyquire').noPreserveCache();
 
-const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
+process.env.GCLOUD_STORAGE_BUCKET =
+  'nodejs-docs-samples-test-appengine-storage-std';
+const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
 before(async () => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
   await bucket.create(bucket).then(() => {
     return bucket.acl.add({
       entity: 'allUsers',

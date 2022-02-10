@@ -23,7 +23,7 @@ const app = require(path.join(path.dirname(__dirname), 'app.js'));
 let browser, browserPage;
 
 before(async () => {
-  const PORT = process.env.PORT || 8080;
+  const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {});
 
   browser = await puppeteer.launch({

@@ -21,8 +21,8 @@
 const assert = require('assert');
 const path = require('path');
 const supertest = require('supertest');
-const sinon = require('sinon');
 const uuid = require('uuid');
+const sinon = require('sinon');
 
 let request;
 

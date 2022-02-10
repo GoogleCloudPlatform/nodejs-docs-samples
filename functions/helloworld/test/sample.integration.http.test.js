@@ -19,7 +19,7 @@ const {request} = require('gaxios');
 const uuid = require('uuid');
 const waitPort = require('wait-port');
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
 const BASE_URL = `http://localhost:${PORT}`;
 
 // [END functions_http_integration_test]

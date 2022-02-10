@@ -57,7 +57,7 @@ app.get('/improved', (req, res) => {
 
 // [START cloudrun_broken_service]
 // [START run_broken_service]
-const port = process.env.PORT || 8080;
+const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`hello: listening on port ${port}`);
 });

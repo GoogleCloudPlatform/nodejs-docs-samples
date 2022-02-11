@@ -23,6 +23,7 @@ const cmd = 'node auth.js';
 
 const BUCKET_NAME = 'long-door-651';
 const GOOGLE_CLOUD_PROJECT = 'long-door-651';
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 it('should load credentials implicitly', () => {
   const output = execSync(`${cmd} auth-cloud-implicit`, {cwd, shell: true});

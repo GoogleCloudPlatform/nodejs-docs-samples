@@ -22,6 +22,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const cwd = path.join(__dirname, '..');
 const cmd = 'node downscoping.js';
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 const CONTENTS = 'helloworld';
 let bucket;

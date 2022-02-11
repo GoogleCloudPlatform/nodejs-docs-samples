@@ -14,8 +14,8 @@
 
 const {exec} = require('child_process');
 const {request} = require('gaxios');
-const assert = require('assert');
 const promiseRetry = require('promise-retry');
+const assert = require('assert');
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 

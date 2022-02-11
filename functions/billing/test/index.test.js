@@ -17,8 +17,8 @@ const {request} = require('gaxios');
 const assert = require('assert');
 const sinon = require('sinon');
 const waitPort = require('wait-port');
-const {InstancesClient} = require('@google-cloud/compute');
 const sample = require('../index.js');
+const {InstancesClient} = require('@google-cloud/compute');
 
 const {BILLING_ACCOUNT} = process.env;
 

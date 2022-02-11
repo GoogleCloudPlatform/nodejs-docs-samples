@@ -20,8 +20,8 @@ const assert = require('assert');
 
 const SAMPLE_PATH = path.join(__dirname, '../server.js');
 
-const _db_host_backup = process.env.DB_HOST;
-delete process.env.DB_HOST;
+const _db_host_backup = '127.0.0.1:3306';
+//delete process.env.DB_HOST;
 
 const serverUnix = require(SAMPLE_PATH);
 

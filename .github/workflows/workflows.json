@@ -41,10 +41,5 @@
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions",
-  "run/helloworld",
-  "run/image-processing",
-  "run/idp-sql",
-  "run/logging-manual",
-  "run/pubsub",
-  "run/system-package"
+  "run/jobs"
 ]

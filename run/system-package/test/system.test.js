@@ -15,8 +15,8 @@
 const assert = require('assert');
 const got = require('got');
 const {execSync} = require('child_process');
-const auth = new GoogleAuth();
 const {GoogleAuth} = require('google-auth-library');
+const auth = new GoogleAuth();
 
 const request = (method, route, base_url, id_token) => {
   return got(new URL(route, base_url.trim()), {

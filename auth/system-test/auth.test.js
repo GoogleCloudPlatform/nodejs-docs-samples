@@ -14,8 +14,8 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
+const path = require('path');
 const {execSync} = require('child_process');
 
 const cwd = path.join(__dirname, '..');

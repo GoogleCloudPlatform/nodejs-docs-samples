@@ -36,6 +36,10 @@ jobs:
         node-version: 14
     - run: npm install
       working-directory: cloud-sql/sqlserver/mssql
+    - name: wget
+      uses: wei/wget@v1
+      with:
+        args: --quiet https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
     - run: npm test
       working-directory: cloud-sql/sqlserver/mssql
       env:

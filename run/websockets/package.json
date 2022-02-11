@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "google-auth-library": "^7.1.2",
-    "got": "^12.0.0",
+    "got": "^11.8.2",
     "puppeteer": "^13.0.0"
   }
 }

@@ -14,8 +14,8 @@
 
 'use strict';
 
-const assert = require('assert');
 const path = require('path');
+const assert = require('assert');
 const supertest = require('supertest');
 const {buildRenderedHtml} = require('../handlebars');
 

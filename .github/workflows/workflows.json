@@ -26,6 +26,7 @@
   "datacatalog/quickstart",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "functions/imagemagick",
   "functions/firebase",
   "functions/http",
   "functions/security",
@@ -40,6 +41,5 @@
   "monitoring/prometheus",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
-  "datastore/functions",
-  "run/jobs"
+  "datastore/functions"
 ]

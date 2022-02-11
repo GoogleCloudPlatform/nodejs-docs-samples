@@ -23,8 +23,8 @@ const waitPort = require('wait-port');
 
 const storage = new Storage();
 
-const BUCKET_NAME = process.env.FUNCTIONS_BUCKET;
-const {BLURRED_BUCKET_NAME} = process.env;
+const BLURRED_BUCKET_NAME = 'long-door-651-imagick';
+const BUCKET_NAME = 'long-door-651';
 const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 
 const testFiles = {

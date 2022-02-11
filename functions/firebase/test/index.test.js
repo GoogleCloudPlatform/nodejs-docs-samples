@@ -92,8 +92,8 @@ describe('functions_firebase_firestore', () => {
     };
     const context = {
       resource: 'resource',
-      eventType: 'type'
-    }
+      eventType: 'type',
+    };
 
     sample.program.helloFirestore(event, context);
 

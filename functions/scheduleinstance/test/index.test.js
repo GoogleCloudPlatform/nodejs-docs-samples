@@ -31,6 +31,9 @@ const getSample = () => {
           this.start = () => new Promise(resolve => resolve('request sent'));
           this.getProjectId = () => 'project';
         },
+        ZoneOperationsClient: function client() {
+          this.wait = () => new Promise(resolve => resolve('request sent'));
+        },
       },
     }),
     mocks: {

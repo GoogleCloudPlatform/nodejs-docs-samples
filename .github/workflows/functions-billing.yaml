@@ -31,6 +31,7 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         token_format: 'access_token'
         create_credentials_file: 'true'
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
     - uses: actions/setup-node@v2
       with:

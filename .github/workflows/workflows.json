@@ -27,6 +27,7 @@
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "functions/firebase",
+  "functions/helloworld",
   "functions/http",
   "functions/security",
   "functions/scheduleinstance",

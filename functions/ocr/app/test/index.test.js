@@ -20,12 +20,16 @@ const sinon = require('sinon');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const bucketName = process.env.FUNCTIONS_BUCKET;
+const bucketName = 'long-door-651';
 const filename = 'wakeupcat.jpg';
 const text = 'Wake up human!';
 const lang = 'en';
 
-const {RESULT_BUCKET} = process.env;
+const {RESULT_BUCKET} = 'long-door-651';
+process.env.TO_LANG = 'en,es';
+process.env.TRANSLATE_TOPIC = 'integration-tests-instance';
+process.env.RESULT_TOPIC = 'integration-tests-instance';
+process.env.RESULT_BUCKET = 'long-door-651';
 
 const program = require('..');
 

@@ -26,7 +26,7 @@ const text = 'Wake up human!';
 const lang = 'en';
 
 const {RESULT_BUCKET} = 'long-door-651';
-process.env.TO_LANG = 'en,es';
+process.env.TO_LANG = "en,es";
 process.env.TRANSLATE_TOPIC = 'integration-tests-instance';
 process.env.RESULT_TOPIC = 'integration-tests-instance';
 process.env.RESULT_BUCKET = 'long-door-651';

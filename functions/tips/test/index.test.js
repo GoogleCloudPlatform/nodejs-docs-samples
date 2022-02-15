@@ -76,9 +76,7 @@ describe('functions_tips_retry', () => {
 describe('functions_tips_gcp_apis', () => {
   it('should call a GCP API', async () => {
     const functionsTopic = 'integration-tests-instance';
-    if (!functionsTopic) {
-      throw new Error('FUNCTIONS_TOPIC env var must be set.');
-    }
+
     const reqMock = {
       body: {
         topic: functionsTopic,

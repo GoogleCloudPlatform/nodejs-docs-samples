@@ -14,8 +14,8 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
+const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const getSample = () => {
@@ -30,6 +30,9 @@ const getSample = () => {
           this.list = () => new Promise(resolve => resolve('request sent'));
           this.start = () => new Promise(resolve => resolve('request sent'));
           this.getProjectId = () => 'project';
+        },
+        ZoneOperationsClient: function client() {
+          this.wait = () => new Promise(resolve => resolve('request sent'));
         },
       },
     }),

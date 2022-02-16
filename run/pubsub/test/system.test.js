@@ -14,9 +14,9 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
+const {execSync} = require('child_process');
 
 let BASE_URL, ID_TOKEN;
 describe('End-to-End Tests', () => {

@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --timeout=60000 --exit",
+    "test": "mocha test/app.test.js --timeout=120000 --exit",
     "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {
@@ -23,15 +23,15 @@
     "gcp-metadata": "^4.2.0",
     "google-auth-library": "^7.0.0",
     "handlebars": "^4.7.6",
-    "knex": "^0.95.0",
+    "knex": "^1.0.0",
     "pg": "^8.0.0",
-    "winston": "3.4.0"
+    "winston": "3.5.1"
   },
   "devDependencies": {
     "got": "^11.7.0",
     "mocha": "^9.0.0",
     "short-uuid": "^4.1.0",
-    "sinon": "^12.0.0",
+    "sinon": "^13.0.0",
     "supertest": "^6.0.0"
   }
 }

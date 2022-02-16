@@ -33,12 +33,13 @@ exports.helloRTDB = event => {
  * Triggered by a change to a Firestore document.
  *
  * @param {!Object} event The Cloud Functions event.
+ * @param {!Object} context Cloud Functions event metadata.
  */
-exports.helloFirestore = event => {
-  const triggerResource = event.resource;
+exports.helloFirestore = (event, context) => {
+  const triggerResource = context.resource;
 
   console.log(`Function triggered by event on: ${triggerResource}`);
-  console.log(`Event type: ${event.eventType}`);
+  console.log(`Event type: ${context.eventType}`);
 
   if (event.oldValue && Object.keys(event.oldValue).length) {
     console.log('\nOld value:');

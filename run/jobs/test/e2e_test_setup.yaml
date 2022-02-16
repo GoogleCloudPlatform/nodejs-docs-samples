@@ -14,6 +14,7 @@ steps:
   args:
   - '-c'
   - |
+    gcloud components update --quiet
     ./test/retry.sh "gcloud alpha run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --project ${PROJECT_ID} \

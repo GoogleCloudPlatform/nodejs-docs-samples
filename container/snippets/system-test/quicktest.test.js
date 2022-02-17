@@ -20,7 +20,7 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('container samples', () => {
+describe('container samples - quickstart', () => {
   it('should run the quickstart', async () => {
     const stdout = execSync('node quickstart');
     assert.match(stdout, /Clusters:/);

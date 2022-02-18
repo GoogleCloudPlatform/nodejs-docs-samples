@@ -18,23 +18,94 @@ const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
-const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
+const {DataCatalogClient, PolicyTagManagerClient} =
+  require('@google-cloud/datacatalog').v1;
 const datacatalog = new DataCatalogClient();
+const policyTagManager = new PolicyTagManagerClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const GCLOUD_TESTS_PREFIX = 'nodejs_samples';
+const GCLOUD_TESTS_PREFIX = 'nodejs_samples_';
 const generateUuid = () =>
   `${GCLOUD_TESTS_PREFIX}_${uuid.v4()}`.replace(/-/gi, '_');
 
-describe('Samples', async () => {
-  const TAG_TEMPLATE_ID = `${GCLOUD_TESTS_PREFIX}_test_tag_template`;
-  const projectId = process.env.GCLOUD_PROJECT;
-  const location = 'us-central1';
+const TAG_TEMPLATE_ID = `${GCLOUD_TESTS_PREFIX}_test_tag_template`;
+const projectId = process.env.GCLOUD_PROJECT;
+const location = 'us-central1';
+let taxonomyName;
 
+describe('Samples', async () => {
   before(async () => {
     // Delete stale resources from samples tests.
     await deleteEntryGroups();
+    await deleteTaxonomies();
+
+    // Create taxonomy resource
+    const parent = datacatalog.locationPath(projectId, 'us');
+    const taxRequest = {
+      parent,
+      taxonomy: {
+        displayName: generateUuid(),
+        activatedPolicyTypes: ['FINE_GRAINED_ACCESS_CONTROL'],
+      },
+    };
+    const [taxonomy] = await policyTagManager.createTaxonomy(taxRequest);
+    taxonomyName = taxonomy.name;
+  });
+
+  describe('policyTagManager', async () => {
+    it('should create a taxonomy', async () => {
+      const taxLocation = 'us';
+      const displayName = generateUuid();
+      const output = execSync(
+        `node policyTagManager/createTaxonomy ${projectId} ${taxLocation} ${displayName}`
+      );
+      assert.include(output, 'Created taxonomy:');
+    });
+
+    it('should get a taxonomy', async () => {
+      const output = execSync(
+        `node policyTagManager/getTaxonomy ${taxonomyName}`
+      );
+      assert.include(output, `Retrieved taxonomy: ${taxonomyName}`);
+    });
+
+    it('should list taxonomies', async () => {
+      const taxLocation = 'us';
+      const output = execSync(
+        `node policyTagManager/listTaxonomies ${projectId} ${taxLocation}`
+      );
+      assert.include(output, 'Taxonomies:');
+    });
+
+    it('should delete a taxonomy', async () => {
+      const output = execSync(
+        `node policyTagManager/deleteTaxonomy ${taxonomyName}`
+      );
+      assert.include(output, 'Deleted taxonomy:');
+    });
+
+    it('should create a policy tag', async () => {
+      const tagLocation = 'us';
+      const displayName = generateUuid();
+      const parent = datacatalog.locationPath(projectId, tagLocation);
+
+      const request = {
+        parent: parent,
+        taxonomy: {
+          displayName: displayName,
+          activatedPolicyTypes: ['FINE_GRAINED_ACCESS_CONTROL'],
+        },
+      };
+
+      const [taxonomy] = await policyTagManager.createTaxonomy(request);
+
+      const output = execSync(
+        `node policyTagManager/createPolicyTag ${taxonomy.name}`
+      );
+      assert.include(output, 'Created policy tag:');
+      assert.include(output, taxonomy.name);
+    });
   });
 
   it('should create a custom entry', async () => {
@@ -87,6 +158,33 @@ describe('Samples', async () => {
     const now = new Date();
     const created = new Date(creationTime * 1000);
     return now.getTime() - created.getTime() >= oneDayMs;
+  }
+
+  async function deleteTaxonomies() {
+    const projectId = await policyTagManager.getProjectId();
+    const location = 'us';
+
+    const listTaxonomiesRequest = {
+      parent: datacatalog.locationPath(projectId, location),
+    };
+
+    let [taxonomies] = await policyTagManager.listTaxonomies(
+      listTaxonomiesRequest
+    );
+
+    taxonomies = taxonomies.filter(taxonomy => {
+      return taxonomy.displayName.includes(GCLOUD_TESTS_PREFIX);
+    });
+
+    taxonomies.forEach(async taxonomy => {
+      if (isResourceStale(taxonomy.taxonomyTimestamps.createTime.seconds)) {
+        try {
+          await policyTagManager.deleteTaxonomy({name: taxonomy.name});
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
   }
 
   async function deleteEntries(entryGroupId) {

@@ -20,7 +20,7 @@
 //  usage: node deidentifyWithMask.js my-project string replacement
 
 function main(projectId, string, replacement) {
-  // [START dlp_deidentify_replacement]
+  // [START dlp_deidentify_replace]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -66,7 +66,7 @@ function main(projectId, string, replacement) {
   }
 
   deidentifyWithReplacement();
-  // [END dlp_deidentify_replacement]
+  // [END dlp_deidentify_replace]
 }
 
 main(...process.argv.slice(2));

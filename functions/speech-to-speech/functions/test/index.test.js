@@ -25,6 +25,10 @@ const cwd = path.join(__dirname, '..');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
+process.env.OUTPUT_BUCKET = 'long-door-651';
+process.env.SUPPORTED_LANGUAGE_CODES = 'en,es';
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
+
 const BASE_URL = 'http://localhost:8080';
 const outputBucket = storage.bucket(process.env.OUTPUT_BUCKET);
 

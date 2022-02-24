@@ -115,24 +115,7 @@ const downscopingWithCredentialAccessBoundary = async ({
 
     const storageOptions = {
       projectId: process.env.GOOGLE_CLOUD_PROJECT,
-      authClient: {
-        sign: () => {
-          Promise.reject('unsupported');
-        },
-        getCredentials: async () => {
-          Promise.reject();
-        },
-        request: opts => {
-          return oauth2Client.request(opts);
-        },
-        authorizeRequest: async opts => {
-          opts = opts || {};
-          const url = opts.url || opts.uri;
-          const headers = await oauth2Client.getRequestHeaders(url);
-          opts.headers = Object.assign(opts.headers || {}, headers);
-          return opts;
-        },
-      },
+      authClient: oauth2Client,
     };
 
     const storage = new Storage(storageOptions);

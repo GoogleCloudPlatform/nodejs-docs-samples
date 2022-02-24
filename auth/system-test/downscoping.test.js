@@ -22,6 +22,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const cwd = path.join(__dirname, '..');
 const cmd = 'node downscoping.js';
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 const CONTENTS = 'helloworld';
 let bucket;
@@ -29,13 +30,10 @@ let file;
 let bucketName;
 let objectName;
 
-before(async () => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
+const GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
-  const storage = new Storage({projectId: process.env.GOOGLE_CLOUD_PROJECT});
+before(async () => {
+  const storage = new Storage({projectId: GOOGLE_CLOUD_PROJECT});
   bucketName = 'bucket-downscoping-test-' + uuidv4();
   objectName = 'object-downscoping-test-' + uuidv4();
 

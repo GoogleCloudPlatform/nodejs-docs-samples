@@ -13,6 +13,7 @@
   "appengine/static-files",
   "appengine/storage/flexible",
   "appengine/storage/standard",
+  "auth",
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",
@@ -41,6 +42,5 @@
   "monitoring/prometheus",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
-  "datastore/functions",
-  "run/jobs"
+  "datastore/functions"
 ]

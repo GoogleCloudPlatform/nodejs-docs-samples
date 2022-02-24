@@ -33,7 +33,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  const CONNECTOR = `my-connector`;
+  const CONNECTOR = 'my-connector';
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;

@@ -34,7 +34,7 @@ function main(projectId, zone, instanceName, customImageLink) {
   const compute = require('@google-cloud/compute');
 
   // Creates a new VM instance with custom image used as its boot disk.
-  async function createInstanceFromSnapshot() {
+  async function createInstanceFromCustomImage() {
     const instancesClient = new compute.InstancesClient();
 
     const [response] = await instancesClient.insert({
@@ -77,7 +77,7 @@ function main(projectId, zone, instanceName, customImageLink) {
     console.log('Instance created.');
   }
 
-  createInstanceFromSnapshot();
+  createInstanceFromCustomImage();
   // [END compute_instances_create_from_custom_image]
 }
 

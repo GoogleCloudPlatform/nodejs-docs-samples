@@ -13,6 +13,7 @@
   "appengine/static-files",
   "appengine/storage/flexible",
   "appengine/storage/standard",
+  "auth",
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",
@@ -27,6 +28,7 @@
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "functions/firebase",
+  "functions/helloworld",
   "functions/http",
   "functions/security",
   "functions/scheduleinstance",
@@ -40,6 +42,5 @@
   "monitoring/prometheus",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
-  "datastore/functions",
-  "run/jobs"
+  "datastore/functions"
 ]

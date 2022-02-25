@@ -13,8 +13,8 @@
 // limitations under the License.
 
 const assert = require('assert');
-const {request} = require('gaxios');
 const sinon = require('sinon');
+const {request} = require('gaxios');
 const {exec} = require('child_process');
 const waitPort = require('wait-port');
 

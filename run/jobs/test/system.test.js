@@ -87,8 +87,8 @@ describe('End-to-End Tests', () => {
             : false;
         });
       }
-      if (found) { 
-        break; 
+      if (found) {
+        break;
       }
       await sleep(i * 1000);
     }

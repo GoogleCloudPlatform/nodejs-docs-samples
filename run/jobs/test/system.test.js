@@ -88,7 +88,7 @@ describe('End-to-End Tests', () => {
       if (found) {
         break;
       }
-      await delay(i*1000);
+      await delay(i * 1000);
     }
     assert(found);
   });

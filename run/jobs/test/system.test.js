@@ -13,6 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
+const delay = require('delay');
 const {execSync} = require('child_process');
 const {Logging} = require('@google-cloud/logging');
 
@@ -57,9 +58,6 @@ describe('End-to-End Tests', () => {
     date.setMinutes(date.getMinutes() - min_ago);
     return date.toISOString();
   };
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   it('generates logs in Cloud Logging', async () => {
     const logging = new Logging({
@@ -88,7 +86,7 @@ describe('End-to-End Tests', () => {
         });
       }
       if (found) { break; }
-      await sleep(i*1000);
+      await delay(i*1000);
     }
     assert(found);
   });

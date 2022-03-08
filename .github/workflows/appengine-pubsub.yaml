@@ -31,7 +31,7 @@ jobs:
         token_format: 'id_token'
         id_token_include_email: true
         access_token_lifetime: 600s
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}

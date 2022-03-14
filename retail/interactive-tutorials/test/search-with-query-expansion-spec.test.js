@@ -96,7 +96,6 @@ describe('Search with query expansion spec', () => {
 
     it('should contain expanded query', () => {
       const searchResponse = response[IResponseParams.ISearchResponse];
-      console.log(response);
       expect(
         searchResponse.queryExpansionInfo,
         'Search response does not contain query expansion info'

@@ -72,7 +72,7 @@ describe('End-to-End Tests', () => {
 
     let found = false;
     for (let i = 0; i < 5; i++) {
-      let entries = await logging.getEntries({
+      const entries = await logging.getEntries({
         filter: preparedFilter,
         autoPaginate: false,
         pageSize: 3,

@@ -72,7 +72,7 @@ describe('End-to-End Tests', () => {
 
     let found = false;
     for (let i = 0; i < 5; i++) {
-      const entries = await logging.getEntries({
+      let entries = await logging.getEntries({
         filter: preparedFilter,
         autoPaginate: false,
         pageSize: 3,
@@ -88,7 +88,7 @@ describe('End-to-End Tests', () => {
       if (found) {
         break;
       }
-      await delay(i * 1000);
+      await delay(i * 3000);
     }
     assert(found);
   });

@@ -21,11 +21,14 @@ async function main(generatedProductId) {
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // Create product
   const createdProduct = await utils.createProduct(
-    projectNumber,
+    projectId,
     generatedProductId,
     true
   );
@@ -46,9 +49,6 @@ async function main(generatedProductId) {
   const removeTime = {
     seconds: Math.round(Date.now() / 1000),
   };
-
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
 
   const callRemoveFulfillmentPlaces = async () => {
     // Construct request

@@ -47,16 +47,8 @@ describe('Search with query expansion spec', () => {
 
   describe('Search with query expansion spec sample result', () => {
     const retailClient = new SearchServiceClient();
-    const projectNumber = process.env['GCLOUD_PROJECT'];
-    const request = {
-      placement: `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`,
-      query: 'Google Youth Hero Tee Grey',
-      visitorId: '12345',
-      queryExpansionSpec: {
-        condition: 'AUTO',
-      },
-      pageSize: 10,
-    };
+    let projectId;
+    let request;
     const IResponseParams = {
       ISearchResult: 0,
       ISearchRequest: 1,
@@ -65,6 +57,16 @@ describe('Search with query expansion spec', () => {
     let response = [];
 
     before(async () => {
+      projectId = await retailClient.getProjectId();
+      request = {
+        placement: `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`,
+        query: 'Google Youth Hero Tee Grey',
+        visitorId: '12345',
+        queryExpansionSpec: {
+          condition: 'AUTO',
+        },
+        pageSize: 10,
+      };
       response = await retailClient.search(request, {autoPaginate: false});
     });
 

@@ -20,10 +20,13 @@ async function main() {
   // Imports the Google Cloud client library.
   const {SearchServiceClient} = require('@google-cloud/retail');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new SearchServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // Placement is used to identify the Serving Config name.
-  const placement = `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`;
+  const placement = `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`;
 
   // Raw search query.
   const query = 'Google Youth Hero Tee Grey';
@@ -39,9 +42,6 @@ async function main() {
 
   //Maximum number of products to return
   const pageSize = 10;
-
-  // Instantiates a client.
-  const retailClient = new SearchServiceClient();
 
   const IResponseParams = {
     ISearchResult: 0,

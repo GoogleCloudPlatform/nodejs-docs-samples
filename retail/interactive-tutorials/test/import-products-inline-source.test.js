@@ -26,24 +26,27 @@ const cwd = path.join(__dirname, '..');
 
 describe('Import product from inline source', () => {
   const retailClient = new ProductServiceClient();
-  const projectNumber = process.env['GCLOUD_PROJECT'];
 
   const id1 = Math.random().toString(36).slice(2).toUpperCase();
   const id2 = Math.random().toString(36).slice(2).toUpperCase();
 
-  const product1 = {
-    id: id1,
-    name: `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch/products/${id1}`,
-  };
-
-  const product2 = {
-    id: id2,
-    name: `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch/products/${id2}`,
-  };
-
+  let projectId;
+  let product1;
+  let product2;
   let stdout;
 
   before(async () => {
+    projectId = await retailClient.getProjectId();
+    product1 = {
+      id: id1,
+      name: `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch/products/${id1}`,
+    };
+
+    product2 = {
+      id: id2,
+      name: `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch/products/${id2}`,
+    };
+
     stdout = execSync(
       `node interactive-tutorials/product/import-products-inline-source.js ${product1.id} ${product2.id}`,
       {cwd}

@@ -21,11 +21,14 @@ async function main() {
   const {UserEventServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new UserEventServiceClient();
+
+  const projectId = await retailClient.getProjectId();
   const visitorId = 'test_visitor_id';
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
 
   const UserEventRejoinScope = {
     USER_EVENT_REJOIN_SCOPE_UNSPECIFIED: 0,
@@ -35,9 +38,6 @@ async function main() {
   // The type of the user event rejoin to define the scope and range of the user
   // events to be rejoined with the latest product catalog
   const userEventRejoinScope = UserEventRejoinScope.UNJOINED_EVENTS;
-
-  // Instantiates a client.
-  const retailClient = new UserEventServiceClient();
 
   const callRejoinUserEvents = async () => {
     // Construct request

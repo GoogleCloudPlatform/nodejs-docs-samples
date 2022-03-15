@@ -18,7 +18,8 @@ async function main() {
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  const retailClient = new ProductServiceClient();
+  const projectId = await retailClient.getProjectId();
 
   const productsBucketName = process.env['BUCKET_NAME'];
   const eventsBucketName = process.env['EVENTS_BUCKET_NAME'];
@@ -37,7 +38,7 @@ async function main() {
   const productsSourceFile = 'interactive-tutorials/resources/products.json';
   const eventsSourceFile = 'interactive-tutorials/resources/user_events.json';
 
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch`;
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch`;
 
   const inputConfig = {
     gcsSource: {
@@ -55,8 +56,6 @@ async function main() {
     IImportMetadata: 1,
     IOperation: 2,
   };
-
-  const retailClient = new ProductServiceClient();
 
   const importProducts = async () => {
     // Construct request

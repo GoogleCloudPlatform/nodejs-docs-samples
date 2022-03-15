@@ -20,14 +20,17 @@ async function main(bucketName) {
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   const gcsBucket = `gs://${bucketName}`;
   const gcsErrorsBucket = `gs://${bucketName}/error`;
   const gcsProductsObject = 'products.json'; // TO CHECK ERROR HANDLING USE THE JSON WITH INVALID PRODUCT
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch`; //TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch`; //TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
 
   // The desired input location of the data.
   const inputConfig = {
@@ -47,9 +50,6 @@ async function main(bucketName) {
     IImportMetadata: 1,
     IOperation: 2,
   };
-
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
 
   const callImportProducts = async () => {
     // Construct request

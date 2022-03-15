@@ -45,14 +45,8 @@ describe('Search with facet spec', () => {
 
   describe('Search with facet spec result', () => {
     const retailClient = new SearchServiceClient();
-    const projectNumber = process.env['GCLOUD_PROJECT'];
-    const request = {
-      placement: `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`,
-      query: 'Tee',
-      visitorId: '12345',
-      facetSpecs: [{facetKey: {key: 'colorFamilies'}}],
-      pageSize: 10,
-    };
+    let projectId;
+    let request;
     const IResponseParams = {
       ISearchResult: 0,
       ISearchRequest: 1,
@@ -61,6 +55,14 @@ describe('Search with facet spec', () => {
     let response = [];
 
     before(async () => {
+      projectId = await retailClient.getProjectId();
+      request = {
+        placement: `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`,
+        query: 'Tee',
+        visitorId: '12345',
+        facetSpecs: [{facetKey: {key: 'colorFamilies'}}],
+        pageSize: 10,
+      };
       response = await retailClient.search(request, {autoPaginate: false});
     });
 

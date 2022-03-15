@@ -49,18 +49,11 @@ describe('Search with pagination', () => {
 
   describe('Search with pagination sample result', () => {
     const retailClient = new SearchServiceClient();
-    const projectNumber = process.env['GCLOUD_PROJECT'];
+    let projectId;
     const pageSize = 2;
     const offset = 0;
     const pageToken = '';
-    const request = {
-      placement: `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`,
-      query: 'Hoodie',
-      visitorId: '12345',
-      pageSize,
-      offset,
-      pageToken,
-    };
+    let request;
     let response;
 
     const IResponseParams = {
@@ -70,6 +63,15 @@ describe('Search with pagination', () => {
     };
 
     before(async () => {
+      projectId = await retailClient.getProjectId();
+      request = {
+        placement: `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`,
+        query: 'Hoodie',
+        visitorId: '12345',
+        pageSize,
+        offset,
+        pageToken,
+      };
       response = await retailClient.search(request, {autoPaginate: false});
     });
 

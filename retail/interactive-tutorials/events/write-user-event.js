@@ -21,11 +21,14 @@ async function main() {
   const {UserEventServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new UserEventServiceClient();
+
+  const projectId = await retailClient.getProjectId();
   const visitorId = 'test_visitor_id';
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
 
   // User event to write
   const userEvent = {
@@ -35,9 +38,6 @@ async function main() {
       seconds: Math.round(Date.now() / 1000),
     },
   };
-
-  // Instantiates a client.
-  const retailClient = new UserEventServiceClient();
 
   const callWriteUserEvent = async () => {
     // Construct request

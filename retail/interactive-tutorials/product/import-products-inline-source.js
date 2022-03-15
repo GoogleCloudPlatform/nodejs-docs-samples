@@ -21,10 +21,13 @@ async function main(id1, id2) {
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch`;
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch`;
 
   const product1 = {
     id: id1 ? id1 : Math.random().toString(36).slice(2).toUpperCase(),
@@ -89,9 +92,6 @@ async function main(id1, id2) {
     IOperation: 2,
   };
 
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
-
   const callImportProducts = async () => {
     // Construct request
     const request = {
@@ -118,7 +118,7 @@ async function main(id1, id2) {
   console.log('Import products finished');
 
   // Delete imported products
-  await utils.deleteProductsByIds(projectNumber, [product1.id, product2.id]);
+  await utils.deleteProductsByIds(projectId, [product1.id, product2.id]);
   console.log('Products deleted');
   // [END retail_import_products_from_inline_source]
 }

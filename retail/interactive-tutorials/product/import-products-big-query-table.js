@@ -20,15 +20,17 @@ async function main() {
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
-  const projectId = process.env['PROJECT_ID'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   const datasetId = 'products';
   const tableId = 'products'; // TO CHECK ERROR HANDLING USE THE TABLE WITH INVALID PRODUCTS
   const dataSchema = 'product';
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch`; // TO CHECK ERROR HANDLING PASTE THE INVALID CATALOG NAME HERE
 
   // The desired input location of the data.
   const inputConfig = {
@@ -54,9 +56,6 @@ async function main() {
 
   // The mode of reconciliation between existing products and the products to be imported.
   const reconciliationMode = reconciliationModes.INCREMENTAL;
-
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
 
   const callImportProducts = async () => {
     // Construct request

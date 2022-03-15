@@ -45,13 +45,8 @@ describe('Search with ordering', () => {
 
   describe('Search with ordering sample result', () => {
     const retailClient = new SearchServiceClient();
-    const projectNumber = process.env['GCLOUD_PROJECT'];
-    const request = {
-      placement: `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`,
-      query: 'Hoodie',
-      visitorId: '12345',
-      orderBy: 'price desc',
-    };
+    let projectId;
+    let request;
     const IResponseParams = {
       ISearchResult: 0,
       ISearchRequest: 1,
@@ -60,6 +55,13 @@ describe('Search with ordering', () => {
     let response = [];
 
     before(async () => {
+      projectId = await retailClient.getProjectId();
+      request = {
+        placement: `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`,
+        query: 'Hoodie',
+        visitorId: '12345',
+        orderBy: 'price desc',
+      };
       response = await retailClient.search(request, {autoPaginate: false});
     });
 

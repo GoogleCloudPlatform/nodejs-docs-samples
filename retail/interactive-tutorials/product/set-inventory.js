@@ -21,11 +21,14 @@ async function main(generatedProductId) {
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // Create product
   const createdProduct = await utils.createProduct(
-    projectNumber,
+    projectId,
     generatedProductId
   );
 
@@ -60,9 +63,6 @@ async function main(generatedProductId) {
   // If set to true, and the product with name is not found, the
   // inventory update will still be processed and retained for at most 1 day until the product is created
   const allowMissing = true;
-
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
 
   const callSetInventory = async () => {
     // Construct request

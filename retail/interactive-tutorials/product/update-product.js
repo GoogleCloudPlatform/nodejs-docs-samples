@@ -21,11 +21,14 @@ async function main(generatedProductId) {
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // Create product
   const createdProduct = await utils.createProduct(
-    projectNumber,
+    projectId,
     generatedProductId
   );
 
@@ -50,9 +53,6 @@ async function main(generatedProductId) {
     },
     availability: 'OUT_OF_STOCK',
   };
-
-  // Instantiates a client.
-  const retailClient = new ProductServiceClient();
 
   const callUpdateProduct = async () => {
     // Construct request

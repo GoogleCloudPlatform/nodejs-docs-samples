@@ -21,11 +21,14 @@ async function main() {
   const {UserEventServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  // Instantiates a client.
+  const retailClient = new UserEventServiceClient();
+
+  const projectId = await retailClient.getProjectId();
   const visitorId = 'test_visitor_id';
 
   // Placement
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog`;
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog`;
 
   // The filter string to specify the events to be deleted with a
   // length limit of 5,000 characters.
@@ -33,9 +36,6 @@ async function main() {
 
   // Actually perform the purge.
   const force = true;
-
-  // Instantiates a client.
-  const retailClient = new UserEventServiceClient();
 
   const callPurgeUserEvents = async () => {
     // Construct request

@@ -15,9 +15,11 @@
 'use strict';
 
 async function main() {
+  const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
 
-  const projectNumber = process.env['GCLOUD_PROJECT'];
+  const retailClient = new ProductServiceClient();
+  const projectId = await retailClient.getProjectId();
 
   const productsBucketName = process.env['BUCKET_NAME'];
   const eventsBucketName = process.env['EVENTS_BUCKET_NAME'];
@@ -25,7 +27,7 @@ async function main() {
   const productsDataset = 'products';
   const eventsDataset = 'user_events';
 
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch`;
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch`;
 
   await utils.deleteBucket(productsBucketName);
   await utils.deleteBucket(eventsBucketName);

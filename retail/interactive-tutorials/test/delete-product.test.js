@@ -27,11 +27,14 @@ const cwd = path.join(__dirname, '..');
 describe('Delete product', () => {
   const retailClient = new ProductServiceClient();
   const productId = Math.random().toString(36).slice(2).toUpperCase();
-  const projectNumber = process.env['GCLOUD_PROJECT'];
-  const name = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch/products/${productId}`;
+  let projectId;
+  let name;
   let stdout;
 
   before(async () => {
+    projectId = await retailClient.getProjectId();
+    name = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch/products/${productId}`;
+
     stdout = execSync(
       `node interactive-tutorials/product/delete-product.js ${productId}`,
       {cwd}

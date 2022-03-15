@@ -280,9 +280,9 @@ const uploadDataToBqTable = async (datasetId, tableId, source, schemaFile) => {
 };
 
 const writeUserEvent = async visitorId => {
-  const projectNumber = process.env['GCLOUD_PROJECT'];
-  const parent = `projects/${projectNumber}/locations/global/catalogs/default_catalog`;
   const retailClient = new UserEventServiceClient();
+  const projectId = await retailClient.getProjectId();
+  const parent = `projects/${projectId}/locations/global/catalogs/default_catalog`;
 
   const userEvent = {
     eventType: 'detail-page-view',

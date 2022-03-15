@@ -45,13 +45,8 @@ describe('Search with filtering', () => {
 
   describe('Search with filtering sample result', () => {
     const retailClient = new SearchServiceClient();
-    const projectNumber = process.env['GCLOUD_PROJECT'];
-    const request = {
-      placement: `projects/${projectNumber}/locations/global/catalogs/default_catalog/placements/default_search`,
-      query: 'Tee',
-      visitorId: '12345',
-      filter: '(colorFamilies: ANY("Black"))',
-    };
+    let projectId;
+    let request;
     const IResponseParams = {
       ISearchResult: 0,
       ISearchRequest: 1,
@@ -60,6 +55,13 @@ describe('Search with filtering', () => {
     let response = [];
 
     before(async () => {
+      projectId = await retailClient.getProjectId();
+      request = {
+        placement: `projects/${projectId}/locations/global/catalogs/default_catalog/placements/default_search`,
+        query: 'Tee',
+        visitorId: '12345',
+        filter: '(colorFamilies: ANY("Black"))',
+      };
       response = await retailClient.search(request, {autoPaginate: false});
     });
 

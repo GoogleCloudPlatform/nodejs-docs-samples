@@ -27,25 +27,29 @@ const cwd = path.join(__dirname, '..');
 describe('Update product', () => {
   const retailClient = new ProductServiceClient();
   const productId = Math.random().toString(36).slice(2).toUpperCase();
-  const projectNumber = process.env['GCLOUD_PROJECT'];
-  const name = `projects/${projectNumber}/locations/global/catalogs/default_catalog/branches/default_branch/products/${productId}`;
-  const product = {
-    productId,
-    name,
-    title: 'Updated Nest Mini',
-    type: 'PRIMARY',
-    categories: ['Updated Speakers and displays'],
-    brands: ['Updated Google'],
-    priceInfo: {
-      price: 20.0,
-      originalPrice: 25.5,
-      currencyCode: 'EUR',
-    },
-    availability: 'OUT_OF_STOCK',
-  };
+  let projectId;
+  let name;
+  let product;
   let stdout;
 
   before(async () => {
+    projectId = await retailClient.getProjectId();
+    name = `projects/${projectId}/locations/global/catalogs/default_catalog/branches/default_branch/products/${productId}`;
+    product = {
+      productId,
+      name,
+      title: 'Updated Nest Mini',
+      type: 'PRIMARY',
+      categories: ['Updated Speakers and displays'],
+      brands: ['Updated Google'],
+      priceInfo: {
+        price: 20.0,
+        originalPrice: 25.5,
+        currencyCode: 'EUR',
+      },
+      availability: 'OUT_OF_STOCK',
+    };
+
     stdout = execSync(
       `node interactive-tutorials/product/update-product.js ${productId}`,
       {cwd}

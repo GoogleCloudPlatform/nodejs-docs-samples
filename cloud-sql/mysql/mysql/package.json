@@ -12,6 +12,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
+    "start": "node server/server.js",
     "system-test": "mocha test/server.test.js --timeout=60000 --exit",
     "system-test-unix": "mocha test/server-unix.test.js --timeout=60000 --exit",
     "test": "npm run system-test && npm run system-test-unix"

@@ -17,6 +17,9 @@
 const express = require('express');
 const mysql = require('promise-mysql');
 const fs = require('fs');
+const createTcpPool = require('./connect-tcp.js');
+const createTcpPoolSslCerts = require('./connect-tcp-sslcerts.js');
+const createUnixSocketPool = require('./connect-unix.js');
 
 const app = express();
 app.set('view engine', 'pug');
@@ -50,65 +53,6 @@ async function accessSecretVersion(secretName) {
   const [version] = await client.accessSecretVersion({name: secretName});
   return version.payload.data;
 }
-
-// [START cloud_sql_mysql_mysql_create_tcp_sslcerts]
-const createTcpPoolSslCerts = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':');
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    host: dbSocketAddr[0], // e.g. '127.0.0.1'
-    port: dbSocketAddr[1], // e.g. '3306'
-    ssl: {
-      sslmode: 'verify-full',
-      ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
-      key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'
-      cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_tcp_sslcerts]
-
-// [START cloud_sql_mysql_mysql_create_tcp]
-const createTcpPool = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':');
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    host: dbSocketAddr[0], // e.g. '127.0.0.1'
-    port: dbSocketAddr[1], // e.g. '3306'
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_tcp]
-
-// [START cloud_sql_mysql_mysql_create_socket]
-const createUnixSocketPool = async config => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    // If connecting via unix domain socket, specify the path
-    socketPath: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
-    // Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_socket]
 
 const createPool = async () => {
   const config = {
@@ -153,7 +97,7 @@ const createPool = async () => {
     }
   }
 
-  if (process.env.DB_HOST) {
+  if (process.env.INSTANCE_HOST) {
     if (process.env.DB_ROOT_CERT) {
       return createTcpPoolSslCerts(config);
     } else {
@@ -204,7 +148,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res) => {
+exports.httpget = app.get('/', async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Get the 5 most recent votes.
@@ -222,11 +166,13 @@ app.get('/', async (req, res) => {
     const recentVotes = await recentVotesQuery;
     const [tabsVotes] = await tabsQuery;
     const [spacesVotes] = await spacesQuery;
-
+    const templatePath = process.env.CLOUD_FUNCTION_NAME ? process.env.CLOUD_FUNCTION_NAME : "";
+    
     res.render('index.pug', {
       recentVotes,
       tabCount: tabsVotes.count,
       spaceCount: spacesVotes.count,
+      templatePath: templatePath,
     });
   } catch (err) {
     logger.error(err);
@@ -240,7 +186,7 @@ app.get('/', async (req, res) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res) => {
+exports.httppost = app.post('/', async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -274,14 +220,15 @@ app.post('/', async (req, res) => {
 });
 
 const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
+if (!process.env.CLOUD_FUNCTION_NAME) {
+  const server = app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
-});
+  });
+  module.exports = server;
+}
 
 process.on('unhandledRejection', err => {
   console.error(err);
   throw err;
 });
-
-module.exports = server;

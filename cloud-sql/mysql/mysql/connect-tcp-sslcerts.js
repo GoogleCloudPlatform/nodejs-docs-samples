@@ -39,6 +39,6 @@ const createTcpPoolSslCerts = async config => {
     ...config,
   });
 };
-// [END cloud_sql_mysql_mysql_connect_tcp_sslcerts]  
+// [END cloud_sql_mysql_mysql_connect_tcp_sslcerts]
 // [END cloud_sql_mysql_mysql_create_tcp_sslcerts]
 module.exports = createTcpPoolSslCerts;

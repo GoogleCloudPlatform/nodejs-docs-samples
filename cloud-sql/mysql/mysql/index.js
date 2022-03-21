@@ -164,7 +164,7 @@ const httpget = app.get('/', async (req, res) => {
     const recentVotes = await recentVotesQuery;
     const [tabsVotes] = await tabsQuery;
     const [spacesVotes] = await spacesQuery;
-    
+
     res.render('index.pug', {
       recentVotes,
       tabCount: tabsVotes.count,
@@ -232,7 +232,7 @@ exports.votes = (req, res) => {
     default:
       res.status(405).send({error: 'Something blew up!'});
       break;
-  } 
+  }
 };
 
 module.exports = app;

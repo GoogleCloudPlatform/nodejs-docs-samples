@@ -143,6 +143,13 @@ it('should patch a FHIR resource', () => {
   );
 });
 
+it('should search for FHIR resources using GET', () => {
+  const output = execSync(
+    `node searchFhirResourcesGet.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`
+  );
+  assert.strictEqual(new RegExp('Resources found').test(output), true);
+});
+
 it('should search for FHIR resources using POST', () => {
   const output = execSync(
     `node searchFhirResourcesPost.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType}`

@@ -29,8 +29,8 @@ const main = (
     const auth = new GoogleAuth({
       scopes: 'https://www.googleapis.com/auth/cloud-platform',
       // Set application/fhir+json header because this is a POST request.
-      headers: {'Content-Type': 'application/fhir+json'}
-    })
+      headers: {'Content-Type': 'application/fhir+json'},
+    });
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';

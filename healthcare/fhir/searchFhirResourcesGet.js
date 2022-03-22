@@ -27,8 +27,8 @@ const main = (
 
   const searchFhirResourcesGet = async () => {
     const auth = new GoogleAuth({
-      scopes: 'https://www.googleapis.com/auth/cloud-platform'
-    })
+      scopes: 'https://www.googleapis.com/auth/cloud-platform',
+    });
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';

@@ -52,6 +52,7 @@ const main = (
   };
 
   searchFhirResourcesPost();
+  // [END healthcare_search_resources_post]
 };
 
 // node searchFhirResourcesPost.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType>

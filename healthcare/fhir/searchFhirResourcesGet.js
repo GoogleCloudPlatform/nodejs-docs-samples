@@ -50,6 +50,7 @@ const main = (
   };
 
   searchFhirResourcesGet();
+  // [END healthcare_search_resources_get]
 };
 
 // node searchFhirResourcesGet.js <projectId> <cloudRegion> <datasetId> <fhirStoreId> <resourceType>

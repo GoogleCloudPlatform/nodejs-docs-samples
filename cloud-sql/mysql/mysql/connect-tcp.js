@@ -20,14 +20,14 @@ const fs = require('fs');
 const createTcpPool = async config => {
   // Extract host and port from socket address
   const dbSocketAddr = process.env.INSTANCE_HOST.split(':');
-  let dbConfig = { 
+  const dbConfig = {
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'
     host: dbSocketAddr[0], // e.g. '127.0.0.1'
     port: dbSocketAddr[1], // e.g. '3306'
     // ... Specify additional properties here.
-    ...config
+    ...config,
   };
   // [START_EXCLUDE]
   // [START cloud_sql_mysql_mysql_connect_tcp_sslcerts]
@@ -36,15 +36,15 @@ const createTcpPool = async config => {
   // using the Cloud SQL Proxy, configuring SSL certificates will ensure the
   // connection is encrypted. This step is entirely OPTIONAL.
   if (process.env.DB_ROOT_CERT) {
-    dbConfig.ssl = { 
+    dbConfig.ssl = {
       sslmode: 'verify-full',
       ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
       key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'
       cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
-     };
+    };
   }
   // [END cloud_sql_mysql_mysql_connect_tcp_sslcerts]
-	// [END_EXCLUDE]
+  // [END_EXCLUDE]
   // Establish a connection to the database
   return mysql.createPool(dbConfig);
 };

@@ -16,7 +16,6 @@
 
 const express = require('express');
 const createTcpPool = require('./connect-tcp.js');
-const createTcpPoolSslCerts = require('./connect-tcp-sslcerts.js');
 const createUnixSocketPool = require('./connect-unix.js');
 
 const app = express();

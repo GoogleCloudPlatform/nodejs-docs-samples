@@ -96,12 +96,10 @@ const createPool = async () => {
   }
 
   if (process.env.INSTANCE_HOST) {
-    if (process.env.DB_ROOT_CERT) {
-      return createTcpPoolSslCerts(config);
-    } else {
-      return createTcpPool(config);
-    }
+    // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
+    return createTcpPool(config);
   } else {
+    // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
     return createUnixSocketPool(config);
   }
 };

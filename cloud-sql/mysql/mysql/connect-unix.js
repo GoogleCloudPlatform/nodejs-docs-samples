@@ -13,7 +13,6 @@
 // limitations under the License.
 
 'use strict';
-// [START cloud_sql_mysql_mysql_create_socket]
 // [START cloud_sql_mysql_mysql_connect_unix]
 const mysql = require('promise-mysql');
 
@@ -34,5 +33,4 @@ const createUnixSocketPool = async config => {
   });
 };
 // [END cloud_sql_mysql_mysql_connect_unix]
-// [END cloud_sql_mysql_mysql_create_socket]
 module.exports = createUnixSocketPool;

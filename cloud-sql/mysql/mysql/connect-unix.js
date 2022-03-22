@@ -17,9 +17,7 @@
 const mysql = require('promise-mysql');
 
 const createUnixSocketPool = async config => {
-  const dbSocketPath = process.env.INSTANCE_UNIX_SOCKET
-    ? process.env.INSTANCE_UNIX_SOCKET
-    : `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`;
+  const dbSocketPath = process.env.INSTANCE_UNIX_SOCKET;
 
   // Establish a connection to the database
   return mysql.createPool({

@@ -72,7 +72,7 @@ function main(
                 name: 'External NAT',
               },
             ],
-            // If you going you use custom VPC network, it must be configured to allow access to kms.windows.googlecloud.com.
+            // If you are using a custom VPC network it must be configured to allow access to kms.windows.googlecloud.com.
             // https://cloud.google.com/compute/docs/instances/windows/creating-managing-windows-instances#kms-server.
             name: 'global/networks/default',
           },

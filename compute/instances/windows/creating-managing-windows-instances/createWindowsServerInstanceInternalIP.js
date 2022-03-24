@@ -16,7 +16,7 @@
  * Creates a new Windows Server instance that has only an internal IP address.
  *
  * @param {string} projectId - ID or number of the project you want to use.
- * @param {string} zone - Name of the zone you want to use, for example: us-west3-b
+ * @param {string} zone - Name of the zone in which your instance is located, for example: us-west3-b
  * @param {string} instanceName - Name of the new machine.
  * @param {string} machineType - Machine type you want to create in following format:
  *    "zones/{zone}/machineTypes/{type_name}". For example:

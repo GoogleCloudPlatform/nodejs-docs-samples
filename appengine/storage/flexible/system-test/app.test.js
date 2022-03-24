@@ -15,9 +15,8 @@
 
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
 const supertest = require('supertest');
-
+const storage = new Storage();
 const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
 
@@ -25,6 +24,8 @@ process.env.GCLOUD_STORAGE_BUCKET =
   'nodejs-docs-samples-test-appengine-storage-std';
 const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
 const bucket = storage.bucket(bucketName);
+
+console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));

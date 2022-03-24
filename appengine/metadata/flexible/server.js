@@ -15,8 +15,8 @@
 'use strict';
 
 // [START gae_flex_metadata]
-const express = require('express');
 const fetch = require('node-fetch');
+const express = require('express');
 
 const app = express();
 app.enable('trust proxy');

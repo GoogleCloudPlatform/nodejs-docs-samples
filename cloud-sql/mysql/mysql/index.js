@@ -101,7 +101,7 @@ const createPool = async () => {
     // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
     return createUnixSocketPool(config);
   } else {
-    throw 'One of INSTANCE_HOST or INSTANCE_UNIX_SOCKET` is required.';
+    throw 'Set either the `INSTANCE_HOST` or `INSTANCE_UNIX_SOCKET` environment variable.';
   }
 };
 
@@ -145,7 +145,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-const httpget = app.get('/', async (req, res) => {
+const httpGet = app.get('/', async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Get the 5 most recent votes.
@@ -181,7 +181,7 @@ const httpget = app.get('/', async (req, res) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-const httppost = app.post('*', async (req, res) => {
+const httpPost = app.post('*', async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -223,10 +223,10 @@ const httppost = app.post('*', async (req, res) => {
 exports.votes = (req, res) => {
   switch (req.method) {
     case 'GET':
-      httpget(req, res);
+      httpGet(req, res);
       break;
     case 'POST':
-      httppost(req, res);
+      httpPost(req, res);
       break;
     default:
       res.status(405).send({error: 'Something blew up!'});

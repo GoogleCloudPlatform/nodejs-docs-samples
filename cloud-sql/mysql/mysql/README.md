@@ -50,7 +50,8 @@ shown below.
 Use these terminal commands to initialize environment variables:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export INSTANCE_HOST='127.0.0.1:3306'
+export INSTANCE_HOST='127.0.0.1'
+export DB_PORT='3306'
 export DB_USER='<DB_USER_NAME>'
 export DB_PASS='<DB_PASSWORD>'
 export DB_NAME='<DB_NAME>'
@@ -65,7 +66,8 @@ Then use this command to launch the proxy in the background:
 Use these PowerShell commands to initialize environment variables:
 ```powershell
 $env:GOOGLE_APPLICATION_CREDENTIALS="<CREDENTIALS_JSON_FILE>"
-$env:INSTANCE_HOST="127.0.0.1:3306"
+$env:INSTANCE_HOST="127.0.0.1"
+$env:DB_PORT="3306"
 $env:DB_USER="<DB_USER_NAME>"
 $env:DB_PASS="<DB_PASSWORD>"
 $env:DB_NAME="<DB_NAME>"

@@ -122,12 +122,10 @@ if [[ $SQL_CLIENT ]]; then
 		export DB_PORT=1433
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:1433 &>> cloud_sql_proxy.log &
 	elif [[ $SQL_CLIENT == 'mysql' ]]; then
-		export INSTANCE_HOST=127.0.0.1
-		export DB_PORT=3306
+		export DB_HOST=127.0.0.1:3306
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:3306,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	else
-		export INSTANCE_HOST=127.0.0.1
-		export DB_PORT=5432
+		export DB_HOST=127.0.0.1:5432
 		./cloud_sql_proxy -instances="${INSTANCE_CONNECTION_NAME}"=tcp:5432,${INSTANCE_CONNECTION_NAME} -dir "${KOKORO_GFILE_DIR}" &>> cloud_sql_proxy.log &
 	fi
 fi

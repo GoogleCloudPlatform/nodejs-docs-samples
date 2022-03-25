@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 'use strict';
 
 const express = require('express');
+const createTcpPool = require('./connect-tcp.js');
 const mssql = require('mssql');
 
 const app = express();
@@ -50,9 +51,33 @@ async function accessSecretVersion(secretName) {
   return version.payload.data;
 }
 
-// [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
   const config = {pool: {}, options: {}};
+  // [START cloud_sql_sqlserver_mssql_timeout]
+  // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
+  // initial connection. After the specified amount of time, an exception will be thrown.
+  config.connectionTimeout = 30000;
+  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
+  // connection from the pool.
+  config.pool.acquireTimeoutMillis = 30000;
+  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
+  // and not be checked out before it is automatically closed
+  (config.pool.idleTimeoutMillis = 600000),
+  // [END cloud_sql_sqlserver_mssql_timeout]
+  // [START cloud_sql_sqlserver_mssql_limit]
+  // 'max' limits the total number of concurrent connections this pool will keep. Ideal
+  // values for this setting are highly variable on app design, infrastructure, and database.
+  (config.pool.max = 5);
+  // 'min' is the minimum number of idle connections maintained in the pool.
+  // Additional connections will be established to meet this value unless the pool is full.
+  config.pool.min = 1;
+  // [END cloud_sql_sqlserver_mssql_limit]
+
+  // [START cloud_sql_sqlserver_mssql_backoff]
+  // The node-mssql module uses a built-in retry strategy which does not implement backoff.
+  // 'createRetryIntervalMillis' is the number of milliseconds to wait in between retries.
+  config.pool.createRetryIntervalMillis = 200;
+  // [END cloud_sql_sqlserver_mssql_backoff]
 
   // Check if a Secret Manager secret version is defined
   // If a version is defined, retrieve the secret from Secret Manager and set as the DB_PASS
@@ -67,47 +92,8 @@ const createPool = async () => {
     }
   }
 
-  config.user = process.env.DB_USER; // e.g. 'my-db-user'
-  config.password = process.env.DB_PASS; // e.g. 'my-db-password'
-  config.database = process.env.DB_NAME; // e.g. 'my-database'
-  // set the server to '172.17.0.1' when connecting from App Engine Flex
-  config.server = process.env.DEPLOYED ? '172.17.0.1' : '127.0.0.1';
-  config.port = 1433;
-
-  // [START_EXCLUDE]
-
-  // [START cloud_sql_sqlserver_mssql_timeout]
-  // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
-  // initial connection. After the specified amount of time, an exception will be thrown.
-  config.connectionTimeout = 30000;
-  // 'acquireTimeoutMillis' is the number of milliseconds before a timeout occurs when acquiring a
-  // connection from the pool.
-  config.pool.acquireTimeoutMillis = 30000;
-  // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
-  // and not be checked out before it is automatically closed
-  (config.pool.idleTimeoutMillis = 600000),
-    // [END cloud_sql_sqlserver_mssql_timeout]
-
-    // [START cloud_sql_sqlserver_mssql_limit]
-    // 'max' limits the total number of concurrent connections this pool will keep. Ideal
-    // values for this setting are highly variable on app design, infrastructure, and database.
-    (config.pool.max = 5);
-  // 'min' is the minimum number of idle connections maintained in the pool.
-  // Additional connections will be established to meet this value unless the pool is full.
-  config.pool.min = 1;
-  // [END cloud_sql_sqlserver_mssql_limit]
-
-  // [START cloud_sql_sqlserver_mssql_backoff]
-  // The node-mssql module uses a built-in retry strategy which does not implement backoff.
-  // 'createRetryIntervalMillis' is the number of milliseconds to wait in between retries.
-  config.pool.createRetryIntervalMillis = 200;
-  // [END cloud_sql_sqlserver_mssql_backoff]
-
-  // [END_EXCLUDE]
-  config.options.trustServerCertificate = true;
-  return await mssql.connect(config);
+  return createTcpPool(config);
 };
-// [END cloud_sql_sqlserver_mssql_create]
 
 const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
@@ -148,7 +134,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res) => {
+const httpGet = app.get('/', async (req, res) => {
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool
@@ -195,7 +181,7 @@ app.get('/', async (req, res) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res) => {
+const httpPost = app.post('*', async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -238,18 +224,24 @@ app.post('/', async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+/**
+ * Responds to GET and POST requests for TABS vs SPACES sample app.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+ exports.votes = (req, res) => {
+    switch (req.method) {
+      case 'GET':
+        httpGet(req, res);
+        break;
+      case 'POST':
+        httpPost(req, res);
+        break;
+      default:
+        res.status(405).send({error: 'Something blew up!'});
+        break;
+    }
+  };
 
-const environment = process.env.NODE_ENV || 'development';
-if (environment === 'development') {
-  process.on('unhandledRejection', err => {
-    console.error(err);
-    throw err;
-  });
-}
-
-module.exports = server;
+module.exports = app;

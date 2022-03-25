@@ -18,7 +18,7 @@ const path = require('path');
 const request = require('supertest');
 const assert = require('assert');
 
-const SAMPLE_PATH = path.join(__dirname, '../server.js');
+const SAMPLE_PATH = path.join(__dirname, '../server/server.js');
 
 const server = require(SAMPLE_PATH);
 

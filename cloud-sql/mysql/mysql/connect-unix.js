@@ -16,10 +16,12 @@
 // [START cloud_sql_mysql_mysql_connect_unix]
 const mysql = require('promise-mysql');
 
+// createUnixSocketPool initializes a Unix socket connection pool for
+// a Cloud SQL instance of SQL Server.
 const createUnixSocketPool = async config => {
   const dbSocketPath = process.env.INSTANCE_UNIX_SOCKET;
 
-  // Establish a connection to the database
+  // Establish a connection to the database.
   return mysql.createPool({
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'

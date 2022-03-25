@@ -14,11 +14,18 @@
 
 'use strict';
 // [START cloud_sql_mysql_mysql_connect_tcp]
+// [START cloud_sql_mysql_mysql_connect_tcp_sslcerts]
 const mysql = require('promise-mysql');
 const fs = require('fs');
 
+// connectTcpPool initializes a TCP connection pool for a Cloud SQL
+// instance of SQL Server.
 const createTcpPool = async config => {
   // Extract host and port from socket address
+  // Note: Saving credentials in environment variables is convenient, but not
+	// secure - consider a more secure solution such as
+	// Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
+	// keep secrets safe.
   const dbSocketAddr = process.env.INSTANCE_HOST.split(':');
   const dbConfig = {
     user: process.env.DB_USER, // e.g. 'my-db-user'
@@ -29,12 +36,12 @@ const createTcpPool = async config => {
     // ... Specify additional properties here.
     ...config,
   };
-  // [START_EXCLUDE]
-  // [START cloud_sql_mysql_mysql_connect_tcp_sslcerts]
+  // [END cloud_sql_mysql_mysql_connect_tcp]
+
   // (OPTIONAL) Configure SSL certificates
   // For deployments that connect directly to a Cloud SQL instance without
   // using the Cloud SQL Proxy, configuring SSL certificates will ensure the
-  // connection is encrypted. This step is entirely OPTIONAL.
+  // connection is encrypted.
   if (process.env.DB_ROOT_CERT) {
     dbConfig.ssl = {
       sslmode: 'verify-full',
@@ -43,10 +50,11 @@ const createTcpPool = async config => {
       cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
     };
   }
-  // [END cloud_sql_mysql_mysql_connect_tcp_sslcerts]
-  // [END_EXCLUDE]
-  // Establish a connection to the database
+
+  // [START cloud_sql_mysql_mysql_connect_tcp]
+  // Establish a connection to the database.
   return mysql.createPool(dbConfig);
 };
+// [END cloud_sql_mysql_mysql_connect_tcp_sslcerts]
 // [END cloud_sql_mysql_mysql_connect_tcp]
 module.exports = createTcpPool;

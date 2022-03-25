@@ -17,20 +17,20 @@
 const Knex = require('knex');
 
 const createUnixSocketPool = async config => {
-    const dbSocketPath = INSTANCE_UNIX_SOCKET;
-  
-    // Establish a connection to the database
-    return Knex({
-      client: 'pg',
-      connection: {
-        user: process.env.DB_USER, // e.g. 'my-user'
-        password: process.env.DB_PASS, // e.g. 'my-user-password'
-        database: process.env.DB_NAME, // e.g. 'my-database'
-        host: dbSocketPath,
-      },
-      // ... Specify additional properties here.
-      ...config,
-    });
-  };
-  // [END cloud_sql_postgres_knex_connect_unix]
-  module.exports = createUnixSocketPool;
+  const dbSocketPath = process.env.INSTANCE_UNIX_SOCKET;
+
+  // Establish a connection to the database
+  return Knex({
+    client: 'pg',
+    connection: {
+      user: process.env.DB_USER, // e.g. 'my-user'
+      password: process.env.DB_PASS, // e.g. 'my-user-password'
+      database: process.env.DB_NAME, // e.g. 'my-database'
+      host: dbSocketPath,
+    },
+    // ... Specify additional properties here.
+    ...config,
+  });
+};
+// [END cloud_sql_postgres_knex_connect_unix]
+module.exports = createUnixSocketPool;

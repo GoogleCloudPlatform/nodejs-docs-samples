@@ -36,7 +36,7 @@ const createTcpPool = async config => {
     },
     // ... Specify additional properties here.
     ...config,
-  }
+  };
   // [END cloud_sql_postgres_knex_connect_tcp]
 
   // (OPTIONAL) Configure SSL certificates

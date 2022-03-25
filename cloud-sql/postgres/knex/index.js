@@ -195,7 +195,7 @@ const getVoteCount = async (pool, candidate) => {
   return await pool('votes').count('vote_id').where('candidate', candidate);
 };
 
-const httpget = app.get('/', async (req, res) => {
+const httpGet = app.get('/', async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.
@@ -240,7 +240,7 @@ const httpget = app.get('/', async (req, res) => {
   }
 });
 
-const httppost = app.post('*', async (req, res) => {
+const httpPost = app.post('*', async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
@@ -277,18 +277,18 @@ const httppost = app.post('*', async (req, res) => {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
- exports.votes = (req, res) => {
-    switch (req.method) {
-      case 'GET':
-        httpget(req, res);
-        break;
-      case 'POST':
-        httppost(req, res);
-        break;
-      default:
-        res.status(405).send({error: 'Something blew up!'});
-        break;
-    }
-  };
+exports.votes = (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      httpGet(req, res);
+      break;
+    case 'POST':
+      httpPost(req, res);
+      break;
+    default:
+      res.status(405).send({error: 'Something blew up!'});
+      break;
+  }
+};
 
 module.exports = app;

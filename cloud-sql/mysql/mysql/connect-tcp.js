@@ -23,9 +23,9 @@ const fs = require('fs');
 const createTcpPool = async config => {
   // Extract host and port from socket address
   // Note: Saving credentials in environment variables is convenient, but not
-	// secure - consider a more secure solution such as
-	// Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
-	// keep secrets safe.
+  // secure - consider a more secure solution such as
+  // Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
+  // keep secrets safe.
   const dbSocketAddr = process.env.INSTANCE_HOST.split(':');
   const dbConfig = {
     user: process.env.DB_USER, // e.g. 'my-db-user'

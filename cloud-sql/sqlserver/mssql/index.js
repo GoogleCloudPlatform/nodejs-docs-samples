@@ -230,18 +230,18 @@ const httpPost = app.post('*', async (req, res) => {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
- exports.votes = (req, res) => {
-    switch (req.method) {
-      case 'GET':
-        httpGet(req, res);
-        break;
-      case 'POST':
-        httpPost(req, res);
-        break;
-      default:
-        res.status(405).send({error: 'Something blew up!'});
-        break;
-    }
-  };
+exports.votes = (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      httpGet(req, res);
+      break;
+    case 'POST':
+      httpPost(req, res);
+      break;
+    default:
+      res.status(405).send({error: 'Something blew up!'});
+      break;
+  }
+};
 
 module.exports = app;

@@ -34,7 +34,7 @@ const createTcpPool = async config => {
     },
     // ... Specify additional properties here.
     ...config,
-  }
+  };
   return await mssql.connect(dbConfig);
 };
 // [END cloud_sql_sqlserver_mssql_connect_tcp]

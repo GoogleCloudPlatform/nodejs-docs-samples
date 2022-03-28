@@ -53,7 +53,7 @@ Run the following command to install the library dependencies for Node.js:
         <fhirStoreId> <patientId>
         listFhirResourceHistory.js <projectId> <cloudRegion> <datasetId>      Lists all the versions of a resource
         <fhirStoreId> <resourceType> <resourceId>                             (including the current version and deleted versions) from the FHIR store.
-        searchFhirResourcesGet.js <projectId> <cloudRegion> <datasetId>       Searches for FHIR resources using GET methods.
+        searchFhirResourcesGet.js <projectId> <cloudRegion> <datasetId>       Searches for FHIR resources using the GET method.
         <fhirStoreId> <resourceType>
         searchFhirResourcesPost.js <projectId> <cloudRegion> <datasetId>      Searches for FHIR resources using the POST method.
         <fhirStoreId> <resourceType>

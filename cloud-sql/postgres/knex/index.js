@@ -195,7 +195,7 @@ const getVoteCount = async (pool, candidate) => {
   return await pool('votes').count('vote_id').where('candidate', candidate);
 };
 
-const httpGet = async(req, res) => {
+const httpGet = async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.

@@ -7,7 +7,7 @@
 
 1. [Create a Google Cloud SQL "SQL Server" instance](
     https://cloud.google.com/sql/docs/sqlserver/create-instance). Note the instance `connection name` of the instance that you create,
-and password that you specify for the default 'sqlserver' user.
+    and password that you specify for the default 'sqlserver' user.
 
 1.  Under the instance's "DATABASES" tab, create a new database.
 

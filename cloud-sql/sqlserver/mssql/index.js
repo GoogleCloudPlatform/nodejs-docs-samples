@@ -134,7 +134,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-const httpGet = app.get('/', async (req, res) => {
+const httpGet = async(req, res) => {
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool
@@ -178,10 +178,12 @@ const httpGet = app.get('/', async (req, res) => {
       )
       .end();
   }
-});
+};
+
+app.get('/', httpGet);
 
 // Handle incoming vote requests and inserting them into the database.
-const httpPost = app.post('*', async (req, res) => {
+const httpPost = async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -222,7 +224,9 @@ const httpPost = app.post('*', async (req, res) => {
   // [END cloud_sql_sqlserver_mssql_connection]
 
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
-});
+};
+
+app.post('*', httpPost);
 
 /**
  * Responds to GET and POST requests for TABS vs SPACES sample app.

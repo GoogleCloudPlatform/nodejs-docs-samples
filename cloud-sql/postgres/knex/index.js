@@ -195,7 +195,7 @@ const getVoteCount = async (pool, candidate) => {
   return await pool('votes').count('vote_id').where('candidate', candidate);
 };
 
-const httpGet = app.get('/', async (req, res) => {
+const httpGet = async(req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.
@@ -238,9 +238,11 @@ const httpGet = app.get('/', async (req, res) => {
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-});
+};
 
-const httpPost = app.post('*', async (req, res) => {
+app.get('/', httpGet);
+
+const httpPost = async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
@@ -269,7 +271,9 @@ const httpPost = app.post('*', async (req, res) => {
     return;
   }
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
-});
+};
+
+app.post('*', httpPost);
 
 /**
  * Responds to GET and POST requests for TABS vs SPACES sample app.

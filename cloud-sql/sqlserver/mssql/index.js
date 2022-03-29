@@ -134,7 +134,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-const httpGet = async(req, res) => {
+const httpGet = async (req, res) => {
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool

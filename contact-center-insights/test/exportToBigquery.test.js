@@ -36,6 +36,22 @@ const bigquery = new BigQuery();
 const bigqueryDataset = generateUuid();
 const bigqueryTable = generateUuid();
 
+const delay = async (test, addMs) => {
+  if (!test) {
+    return;
+  }
+  const retries = test.currentRetry();
+  await new Promise(r => setTimeout(r, addMs));
+  // No retry on the first failure.
+  if (retries === 0) return;
+  // See: https://cloud.google.com/storage/docs/exponential-backoff
+  const ms = Math.pow(2, retries) + Math.random() * 1000;
+  return new Promise(done => {
+    console.info(`retrying "${test.title}" in ${ms}ms`);
+    setTimeout(done, ms);
+  });
+};
+
 describe('ExportToBigQuery', () => {
   let projectId;
   let bigqueryProjectId;
@@ -62,7 +78,9 @@ describe('ExportToBigQuery', () => {
       .catch(console.warn);
   });
 
-  it('should export data to BigQuery', async () => {
+  it('should export data to BigQuery', async function () {
+    this.retries(2);
+    await delay(this.test, 4000);
     const stdout = execSync(`node ./exportToBigquery.js \
                              ${projectId} ${bigqueryProjectId} ${bigqueryDataset} ${bigqueryTable}`);
     assert.match(stdout, new RegExp('Exported data to BigQuery'));

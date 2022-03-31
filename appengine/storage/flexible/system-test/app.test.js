@@ -25,8 +25,6 @@ process.env.GCLOUD_STORAGE_BUCKET =
 const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
 const bucket = storage.bucket(bucketName);
 
-console.log(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 

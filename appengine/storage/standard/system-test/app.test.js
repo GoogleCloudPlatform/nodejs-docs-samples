@@ -16,8 +16,8 @@
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const assert = require('assert');
 const supertest = require('supertest');
+const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
 
 process.env.GCLOUD_STORAGE_BUCKET =

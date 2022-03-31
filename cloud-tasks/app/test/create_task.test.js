@@ -25,10 +25,10 @@ const SERVICE_ACCOUNT =
   'test-run-invoker@long-door-651.iam.gserviceaccount.com'; // Service account for test project.
 
 describe('Cloud Task Sample Tests', () => {
-  const projectId = 'long-door-651';
+  let projectId;
   before(async () => {
-    // const client = new CloudTasksClient();
-    // projectId = await client.getProjectId();
+    const client = new CloudTasksClient();
+    projectId = await client.getProjectId();
   });
 
   it('should create a task', async () => {

@@ -1,13 +1,13 @@
-name: apengine-metadata-flexible
+name: appengine-metadata-flexible
 on:
   push:
     branches:
     - main
     paths:
-    - 'apengine/metadata/flexible/**'
+    - 'appengine/metadata/flexible/**'
   pull_request:
     paths:
-    - 'apengine/metadata/flexible/**'
+    - 'appengine/metadata/flexible/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -21,30 +21,30 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: 'google-github-actions/auth@v0.3.1'
+    - uses: 'google-github-actions/auth@v0.6.0'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: 14
     - run: npm install
-      working-directory: apengine/metadata/flexible
+      working-directory: appengine/metadata/flexible
     - run: npm test
-      working-directory: apengine/metadata/flexible
+      working-directory: appengine/metadata/flexible
       env:
-        MOCHA_REPORTER_SUITENAME: apengine_metadata_flexible
-        MOCHA_REPORTER_OUTPUT: apengine_metadata_flexible_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: appengine_metadata_flexible
+        MOCHA_REPORTER_OUTPUT: appengine_metadata_flexible_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

@@ -15,9 +15,9 @@
 
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
+const supertest = require('supertest');
 const storage = new Storage();
 const assert = require('assert');
-const supertest = require('supertest');
 const proxyquire = require('proxyquire').noPreserveCache();
 
 process.env.GCLOUD_STORAGE_BUCKET =
@@ -29,12 +29,22 @@ const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
 before(async () => {
-  await bucket.create(bucket).then(() => {
-    return bucket.acl.add({
-      entity: 'allUsers',
-      role: Storage.acl.READER_ROLE,
+  try {
+    await bucket.create(bucket).then(() => {
+      return bucket.acl.add({
+        entity: 'allUsers',
+        role: Storage.acl.READER_ROLE,
+      });
     });
-  });
+  } catch (err) {
+    if (
+      !err.message.match(
+        /Your previous request to create the named bucket succeeded and you already own it./
+      )
+    ) {
+      throw err;
+    }
+  }
 });
 after(async () => {
   try {

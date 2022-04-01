@@ -13,6 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
+const delay = require('delay');
 const {execSync} = require('child_process');
 const {Logging} = require('@google-cloud/logging');
 
@@ -69,19 +70,26 @@ describe('End-to-End Tests', () => {
       `resource.labels.location = "${REGION}" ` +
       `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
 
-    const entries = await logging.getEntries({
-      filter: preparedFilter,
-      autoPaginate: false,
-      pageSize: 3,
-    });
+    let found = false;
+    for (let i = 0; i < 5; i++) {
+      const entries = await logging.getEntries({
+        filter: preparedFilter,
+        autoPaginate: false,
+        pageSize: 3,
+      });
 
-    assert(entries[0]);
-    assert(entries[0].length > 0);
-    const found = entries[0].find(entry => {
-      return typeof entry.data === 'string'
-        ? entry.data.includes('Task')
-        : false;
-    });
+      if (entries[0] && entries[0].length > 0) {
+        found = entries[0].find(entry => {
+          return typeof entry.data === 'string'
+            ? entry.data.includes('Task')
+            : false;
+        });
+      }
+      if (found) {
+        break;
+      }
+      await delay(i * 3000);
+    }
     assert(found);
   });
 });

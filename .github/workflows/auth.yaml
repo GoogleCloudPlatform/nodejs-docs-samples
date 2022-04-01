@@ -1,13 +1,13 @@
-name: appengine-twilio
+name: auth
 on:
   push:
     branches:
     - main
     paths:
-    - 'appengine/twilio/**'
+    - 'auth/**'
   pull_request:
     paths:
-    - 'appengine/twilio/**'
+    - 'auth/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -26,6 +26,7 @@ jobs:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
+        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
       with:
@@ -35,12 +36,12 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: appengine/twilio
+      working-directory: auth
     - run: npm test
-      working-directory: appengine/twilio
+      working-directory: auth
       env:
-        MOCHA_REPORTER_SUITENAME: appengine_twilio
-        MOCHA_REPORTER_OUTPUT: appengine_twilio_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: auth
+        MOCHA_REPORTER_OUTPUT: auth_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6

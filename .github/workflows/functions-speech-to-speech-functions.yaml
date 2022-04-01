@@ -1,13 +1,13 @@
-name: apengine-metadata-flexible
+name: functions-speech-to-speech-functions
 on:
   push:
     branches:
     - main
     paths:
-    - 'apengine/metadata/flexible/**'
+    - 'functions/speech-to-speech/functions/**'
   pull_request:
     paths:
-    - 'apengine/metadata/flexible/**'
+    - 'functions/speech-to-speech/functions/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -26,7 +26,6 @@ jobs:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
-        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
     - uses: actions/checkout@v2
       with:
@@ -36,15 +35,15 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: apengine/metadata/flexible
+      working-directory: functions/speech-to-speech/functions
     - run: npm test
-      working-directory: apengine/metadata/flexible
+      working-directory: functions/speech-to-speech/functions
       env:
-        MOCHA_REPORTER_SUITENAME: apengine_metadata_flexible
-        MOCHA_REPORTER_OUTPUT: apengine_metadata_flexible_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: functions_speech_to_speech_functions
+        MOCHA_REPORTER_OUTPUT: functions_speech_to_speech_functions_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

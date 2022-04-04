@@ -31,6 +31,10 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         token_format: 'access_token'
         access_token_lifetime: 600s
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{github.event.pull_request.head.ref}}
+        repository: ${{github.event.pull_request.head.repo.full_name}}
     - uses: actions/setup-node@v3
       with:
         node-version: 14

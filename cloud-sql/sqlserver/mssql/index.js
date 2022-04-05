@@ -52,7 +52,7 @@ async function accessSecretVersion(secretName) {
 }
 
 const createPool = async () => {
-  const config = {pool: {}, options: {}};
+  const config = {pool: {}};
   // [START cloud_sql_sqlserver_mssql_timeout]
   // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.

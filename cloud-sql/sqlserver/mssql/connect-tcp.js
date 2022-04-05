@@ -25,7 +25,7 @@ const createTcpPool = async config => {
   // keep secrets safe.
   const dbConfig = {
     server: process.env.INSTANCE_HOST, // e.g. '127.0.0.1'
-    port: process.env.DB_PORT, // e.g. '1433'
+    port: parseInt(process.env.DB_PORT), // e.g. 1433
     user: process.env.DB_USER, // e.g. 'my-db-user'
     password: process.env.DB_PASS, // e.g. 'my-db-password'
     database: process.env.DB_NAME, // e.g. 'my-database'

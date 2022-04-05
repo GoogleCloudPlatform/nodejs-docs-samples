@@ -6,7 +6,7 @@
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
 2. Create a Cloud SQL for PostgreSQL instance by following these
-[instructions](https://cloud.google.com/sql/docs/postgres/create-instance). Note the instance name that you create,
+[instructions](https://cloud.google.com/sql/docs/postgres/create-instance). Note the instance `connection name` of the instance that you create,
 and password that you specify for the default 'postgres' user.
 
     * If you don't want to use the default user to connect, [create a user](https://cloud.google.com/sql/docs/postgres/create-manage-users#creating).
@@ -51,7 +51,8 @@ shown below.
 Use these terminal commands to initialize environment variables:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export DB_HOST='127.0.0.1:5432'
+export INSTANCE_HOST='127.0.0.1'
+export DB_PORT='5432'
 export DB_USER='<DB_USER_NAME>'
 export DB_PASS='<DB_PASSWORD>'
 export DB_NAME='<DB_NAME>'
@@ -66,7 +67,8 @@ Then use this command to launch the proxy in the background:
 Use these PowerShell commands to initialize environment variables:
 ```powershell
 $env:GOOGLE_APPLICATION_CREDENTIALS="<CREDENTIALS_JSON_FILE>"
-$env:DB_HOST="127.0.0.1:5432"
+$env:INSTANCE_HOST="127.0.0.1"
+$env:DB_PORT="5432"
 $env:DB_USER="<DB_USER_NAME>"
 $env:DB_PASS="<DB_PASSWORD>"
 $env:DB_NAME="<DB_NAME>"
@@ -84,18 +86,14 @@ NOTE: this option is currently only supported on Linux and Mac OS. Windows users
 To use a Unix socket, you'll need to create a directory and give write access to the user running
 the proxy. For example:
 ```bash
-sudo mkdir /path/to/the/new/directory
-sudo chown -R $USER /path/to/the/new/directory
-```
-You'll also need to initialize an environment variable containing the directory you just created:
-```bash
-export DB_SOCKET_PATH=/path/to/the/new/directory
+sudo mkdir ./cloudsql
+sudo chown -R $USER ./cloudsql
 ```
 
 Use these terminal commands to initialize other environment variables as well:
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
+export INSTANCE_UNIX_SOCKET='./cloudsql/<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='<DB_USER_NAME>'
 export DB_PASS='<DB_PASSWORD>'
 export DB_NAME='<DB_NAME>'
@@ -104,7 +102,7 @@ export DB_NAME='<DB_NAME>'
 Then use this command to launch the proxy in the background:
 
 ```bash
-./cloud_sql_proxy -dir=$DB_SOCKET_PATH --instances=$INSTANCE_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+./cloud_sql_proxy -dir=$INSTANCE_UNIX_SOCKET --instances=$INSTANCE_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
 ```
 
 ### Testing the application

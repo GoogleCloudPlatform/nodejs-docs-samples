@@ -124,7 +124,7 @@ exports.uploadFile = (req, res) => {
     // Return a "method not allowed" error
     return res.status(405).end();
   }
-  const busboy = new Busboy({headers: req.headers});
+  const busboy = Busboy({headers: req.headers});
   const tmpdir = os.tmpdir();
 
   // This object will accumulate all the fields, keyed by their name

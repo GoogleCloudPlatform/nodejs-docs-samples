@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^5.0.0",
-    "@google-cloud/functions-framework": "^2.0.0",
+    "@google-cloud/functions-framework": "^3.0.0",
     "escape-html": "^1.0.3"
   },
   "devDependencies": {

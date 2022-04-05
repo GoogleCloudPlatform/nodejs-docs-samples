@@ -6,9 +6,8 @@
 [create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
 1. [Create a Google Cloud SQL "SQL Server" instance](
-    https://console.cloud.google.com/sql/choose-instance-engine).
-
-1.  Under the instance's "USERS" tab, create a new user. Note the "User name" and "Password".
+    https://cloud.google.com/sql/docs/sqlserver/create-instance). Note the instance `connection name` of the instance that you create,
+    and password that you specify for the default 'sqlserver' user.
 
 1.  Under the instance's "DATABASES" tab, create a new database.
 
@@ -28,6 +27,8 @@ Use the information noted in the previous steps to set the following environment
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
+export INSTANCE_HOST='127.0.0.1'
+export DB_PORT='1433'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'

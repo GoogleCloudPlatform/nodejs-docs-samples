@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@google-cloud/compute": "^3.1.0",
-    "@google-cloud/functions-framework": "^2.1.0"
+    "@google-cloud/functions-framework": "^3.0.0"
   },
   "devDependencies": {
     "mocha": "^9.1.3",

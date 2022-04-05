@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,15 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 'use strict';
 
-// Require process, so we can mock environment variables.
-const process = require('process');
-
 const express = require('express');
-const Knex = require('knex');
-const fs = require('fs');
+const createTcpPool = require('./connect-tcp.js');
+const createUnixSocketPool = require('./connect-unix.js');
 
 const app = express();
 app.set('view engine', 'pug');
@@ -72,73 +68,6 @@ app.use(async (req, res, next) => {
   }
 });
 
-// [START cloud_sql_postgres_knex_create_tcp_sslcerts]
-const createTcpPoolSslCerts = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
-
-  // Establish a connection to the database
-  return Knex({
-    client: 'pg',
-    connection: {
-      user: process.env.DB_USER, // e.g. 'my-user'
-      password: process.env.DB_PASS, // e.g. 'my-user-password'
-      database: process.env.DB_NAME, // e.g. 'my-database'
-      host: dbSocketAddr[0], // e.g. '127.0.0.1'
-      port: dbSocketAddr[1], // e.g. '5432'
-      ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
-        key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'
-        cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
-      },
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_postgres_knex_create_tcp_sslcerts]
-
-// [START cloud_sql_postgres_knex_create_tcp]
-const createTcpPool = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':'); // e.g. '127.0.0.1:5432'
-
-  // Establish a connection to the database
-  return Knex({
-    client: 'pg',
-    connection: {
-      user: process.env.DB_USER, // e.g. 'my-user'
-      password: process.env.DB_PASS, // e.g. 'my-user-password'
-      database: process.env.DB_NAME, // e.g. 'my-database'
-      host: dbSocketAddr[0], // e.g. '127.0.0.1'
-      port: dbSocketAddr[1], // e.g. '5432'
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_postgres_knex_create_tcp]
-
-// [START cloud_sql_postgres_knex_create_socket]
-const createUnixSocketPool = async config => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
-
-  // Establish a connection to the database
-  return Knex({
-    client: 'pg',
-    connection: {
-      user: process.env.DB_USER, // e.g. 'my-user'
-      password: process.env.DB_PASS, // e.g. 'my-user-password'
-      database: process.env.DB_NAME, // e.g. 'my-database'
-      host: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_postgres_knex_create_socket]
-
 // Initialize Knex, a Node.js SQL query builder library with built-in connection pooling.
 const createPool = async () => {
   // Configure which instance and what database user to connect with.
@@ -189,14 +118,14 @@ const createPool = async () => {
     }
   }
 
-  if (process.env.DB_HOST) {
-    if (process.env.DB_ROOT_CERT) {
-      return createTcpPoolSslCerts(config);
-    } else {
-      return createTcpPool(config);
-    }
-  } else {
+  if (process.env.INSTANCE_HOST) {
+    // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
+    return createTcpPool(config);
+  } else if (process.env.INSTANCE_UNIX_SOCKET) {
+    // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
     return createUnixSocketPool(config);
+  } else {
+    throw 'One of INSTANCE_HOST or INSTANCE_UNIX_SOCKET` is required.';
   }
 };
 
@@ -266,7 +195,7 @@ const getVoteCount = async (pool, candidate) => {
   return await pool('votes').count('vote_id').where('candidate', candidate);
 };
 
-app.get('/', async (req, res) => {
+const httpGet = async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Query the total count of "TABS" from the database.
@@ -309,9 +238,11 @@ app.get('/', async (req, res) => {
       .send('Unable to load page; see logs for more details.')
       .end();
   }
-});
+};
 
-app.post('/', async (req, res) => {
+app.get('/', httpGet);
+
+const httpPost = async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
   const {team} = req.body;
@@ -340,12 +271,28 @@ app.post('/', async (req, res) => {
     return;
   }
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
-});
+};
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+app.post('*', httpPost);
 
-module.exports = server;
+/**
+ * Responds to GET and POST requests for TABS vs SPACES sample app.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.votes = (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      httpGet(req, res);
+      break;
+    case 'POST':
+      httpPost(req, res);
+      break;
+    default:
+      res.status(405).send({error: 'Something blew up!'});
+      break;
+  }
+};
+
+module.exports = app;

@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 'use strict';
 
 const express = require('express');
-const mysql = require('promise-mysql');
-const fs = require('fs');
+const createTcpPool = require('./connect-tcp.js');
+const createUnixSocketPool = require('./connect-unix.js');
 
 const app = express();
 app.set('view engine', 'pug');
@@ -50,65 +50,6 @@ async function accessSecretVersion(secretName) {
   const [version] = await client.accessSecretVersion({name: secretName});
   return version.payload.data;
 }
-
-// [START cloud_sql_mysql_mysql_create_tcp_sslcerts]
-const createTcpPoolSslCerts = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':');
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    host: dbSocketAddr[0], // e.g. '127.0.0.1'
-    port: dbSocketAddr[1], // e.g. '3306'
-    ssl: {
-      sslmode: 'verify-full',
-      ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
-      key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'
-      cert: fs.readFileSync(process.env.DB_CERT), // e.g. '/path/to/my/client-cert.pem'
-    },
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_tcp_sslcerts]
-
-// [START cloud_sql_mysql_mysql_create_tcp]
-const createTcpPool = async config => {
-  // Extract host and port from socket address
-  const dbSocketAddr = process.env.DB_HOST.split(':');
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    host: dbSocketAddr[0], // e.g. '127.0.0.1'
-    port: dbSocketAddr[1], // e.g. '3306'
-    // ... Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_tcp]
-
-// [START cloud_sql_mysql_mysql_create_socket]
-const createUnixSocketPool = async config => {
-  const dbSocketPath = process.env.DB_SOCKET_PATH || '/cloudsql';
-
-  // Establish a connection to the database
-  return mysql.createPool({
-    user: process.env.DB_USER, // e.g. 'my-db-user'
-    password: process.env.DB_PASS, // e.g. 'my-db-password'
-    database: process.env.DB_NAME, // e.g. 'my-database'
-    // If connecting via unix domain socket, specify the path
-    socketPath: `${dbSocketPath}/${process.env.INSTANCE_CONNECTION_NAME}`,
-    // Specify additional properties here.
-    ...config,
-  });
-};
-// [END cloud_sql_mysql_mysql_create_socket]
 
 const createPool = async () => {
   const config = {
@@ -153,14 +94,14 @@ const createPool = async () => {
     }
   }
 
-  if (process.env.DB_HOST) {
-    if (process.env.DB_ROOT_CERT) {
-      return createTcpPoolSslCerts(config);
-    } else {
-      return createTcpPool(config);
-    }
-  } else {
+  if (process.env.INSTANCE_HOST) {
+    // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
+    return createTcpPool(config);
+  } else if (process.env.INSTANCE_UNIX_SOCKET) {
+    // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
     return createUnixSocketPool(config);
+  } else {
+    throw 'Set either the `INSTANCE_HOST` or `INSTANCE_UNIX_SOCKET` environment variable.';
   }
 };
 
@@ -204,7 +145,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res) => {
+const httpGet = app.get('/', async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   try {
     // Get the 5 most recent votes.
@@ -240,7 +181,7 @@ app.get('/', async (req, res) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res) => {
+const httpPost = app.post('*', async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -273,15 +214,24 @@ app.post('/', async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 });
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+/**
+ * Responds to GET and POST requests for TABS vs SPACES sample app.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.votes = (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      httpGet(req, res);
+      break;
+    case 'POST':
+      httpPost(req, res);
+      break;
+    default:
+      res.status(405).send({error: 'Something blew up!'});
+      break;
+  }
+};
 
-process.on('unhandledRejection', err => {
-  console.error(err);
-  throw err;
-});
-
-module.exports = server;
+module.exports = app;

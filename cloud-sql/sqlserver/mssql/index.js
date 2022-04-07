@@ -15,6 +15,7 @@
 'use strict';
 
 const express = require('express');
+const createTcpPool = require('./connect-tcp.js');
 const mssql = require('mssql');
 
 const app = express();
@@ -50,32 +51,8 @@ async function accessSecretVersion(secretName) {
   return version.payload.data;
 }
 
-// [START cloud_sql_sqlserver_mssql_create]
 const createPool = async () => {
-  const config = {pool: {}, options: {}};
-
-  // Check if a Secret Manager secret version is defined
-  // If a version is defined, retrieve the secret from Secret Manager and set as the DB_PASS
-  const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
-  if (CLOUD_SQL_CREDENTIALS_SECRET) {
-    const secrets = await accessSecretVersion(CLOUD_SQL_CREDENTIALS_SECRET);
-    try {
-      process.env.DB_PASS = secrets.toString();
-    } catch (err) {
-      err.message = `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: \n ${err.message} `;
-      throw err;
-    }
-  }
-
-  config.user = process.env.DB_USER; // e.g. 'my-db-user'
-  config.password = process.env.DB_PASS; // e.g. 'my-db-password'
-  config.database = process.env.DB_NAME; // e.g. 'my-database'
-  // set the server to '172.17.0.1' when connecting from App Engine Flex
-  config.server = process.env.DEPLOYED ? '172.17.0.1' : '127.0.0.1';
-  config.port = 1433;
-
-  // [START_EXCLUDE]
-
+  const config = {pool: {}};
   // [START cloud_sql_sqlserver_mssql_timeout]
   // 'connectionTimeout` is the maximum number of milliseconds to wait trying to establish an
   // initial connection. After the specified amount of time, an exception will be thrown.
@@ -87,7 +64,6 @@ const createPool = async () => {
   // and not be checked out before it is automatically closed
   (config.pool.idleTimeoutMillis = 600000),
     // [END cloud_sql_sqlserver_mssql_timeout]
-
     // [START cloud_sql_sqlserver_mssql_limit]
     // 'max' limits the total number of concurrent connections this pool will keep. Ideal
     // values for this setting are highly variable on app design, infrastructure, and database.
@@ -103,11 +79,21 @@ const createPool = async () => {
   config.pool.createRetryIntervalMillis = 200;
   // [END cloud_sql_sqlserver_mssql_backoff]
 
-  // [END_EXCLUDE]
-  config.options.trustServerCertificate = true;
-  return await mssql.connect(config);
+  // Check if a Secret Manager secret version is defined
+  // If a version is defined, retrieve the secret from Secret Manager and set as the DB_PASS
+  const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
+  if (CLOUD_SQL_CREDENTIALS_SECRET) {
+    const secrets = await accessSecretVersion(CLOUD_SQL_CREDENTIALS_SECRET);
+    try {
+      process.env.DB_PASS = secrets.toString();
+    } catch (err) {
+      err.message = `Unable to parse secret from Secret Manager. Make sure that the secret is JSON formatted: \n ${err.message} `;
+      throw err;
+    }
+  }
+
+  return createTcpPool(config);
 };
-// [END cloud_sql_sqlserver_mssql_create]
 
 const ensureSchema = async pool => {
   // Wait for tables to be created (if they don't already exist).
@@ -148,7 +134,7 @@ app.use(async (req, res, next) => {
 });
 
 // Serve the index page, showing vote tallies.
-app.get('/', async (req, res) => {
+const httpGet = async (req, res) => {
   try {
     // Get the 5 most recent votes.
     const recentVotesQuery = pool
@@ -192,10 +178,12 @@ app.get('/', async (req, res) => {
       )
       .end();
   }
-});
+};
+
+app.get('/', httpGet);
 
 // Handle incoming vote requests and inserting them into the database.
-app.post('/', async (req, res) => {
+const httpPost = async (req, res) => {
   const {team} = req.body;
   const timestamp = new Date();
 
@@ -236,20 +224,28 @@ app.post('/', async (req, res) => {
   // [END cloud_sql_sqlserver_mssql_connection]
 
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
-});
+};
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+app.post('*', httpPost);
 
-const environment = process.env.NODE_ENV || 'development';
-if (environment === 'development') {
-  process.on('unhandledRejection', err => {
-    console.error(err);
-    throw err;
-  });
-}
+/**
+ * Responds to GET and POST requests for TABS vs SPACES sample app.
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+exports.votes = (req, res) => {
+  switch (req.method) {
+    case 'GET':
+      httpGet(req, res);
+      break;
+    case 'POST':
+      httpPost(req, res);
+      break;
+    default:
+      res.status(405).send({error: 'Something blew up!'});
+      break;
+  }
+};
 
-module.exports = server;
+module.exports = app;

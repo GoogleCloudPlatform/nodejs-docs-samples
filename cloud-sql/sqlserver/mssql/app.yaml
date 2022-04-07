@@ -20,7 +20,8 @@ env_variables:
   DB_USER: MY_DB_USER
   DB_PASS: MY_DB_PASSWORD
   DB_NAME: MY_DATABASE
-  DEPLOYED: true
+  INSTANCE_HOST: '172.17.0.1'
+  DB_PORT: '1433'
 
 beta_settings:
   # The connection name of your instance, available by using

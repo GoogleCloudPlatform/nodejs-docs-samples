@@ -57,6 +57,7 @@ async function main(
     const digest = hash.digest();
 
     // Optional but recommended: Compute digest's CRC32C.
+    // Ensure fast-crc32c has been installed, `npm i fast-crc32c`.
     const crc32c = require('fast-crc32c');
     const digestCrc32c = crc32c.calculate(digest);
 

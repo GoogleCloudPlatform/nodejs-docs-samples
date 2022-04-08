@@ -231,26 +231,25 @@ const isTableExist = async (datasetId, tableId) => {
 
 const createBqTable = async (datasetId, tableId, schemaFile) => {
   if (await isTableExist(datasetId, tableId)) {
-    console.log(`Table ${tableId} already exists`);
-    return false;
-  } else {
-    const schemaFileData = fs.readFileSync(schemaFile);
-    const schema = JSON.parse(schemaFileData);
-
-    const bigquery = new BigQuery();
-    const options = {
-      schema: schema,
-      location: 'US',
-    };
-
-    //Create a new table in the dataset
-    const [table] = await bigquery
-      .dataset(datasetId)
-      .createTable(tableId, options);
-
-    console.log(`Table ${table.id} created.`);
-    return true;
+    console.log(`Table ${tableId} exists and will be removed`);
+    await deleteBqTable(datasetId, tableId);
   }
+  console.log(`Table name ${tableId} is unique for the dataset ${datasetId}`);
+  //Create a new table in the dataset
+  const schemaFileData = fs.readFileSync(schemaFile);
+  const schema = JSON.parse(schemaFileData);
+  const bigquery = new BigQuery();
+  const options = {
+    schema: schema,
+    location: 'US',
+  };
+
+  const [table] = await bigquery
+    .dataset(datasetId)
+    .createTable(tableId, options);
+
+  console.log(`Table ${table.id} created.`);
+  return true;
 };
 
 const deleteBqTable = async (datasetId, tableId) => {

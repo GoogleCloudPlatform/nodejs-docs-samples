@@ -61,6 +61,7 @@ exports.helloPubSub = (message, context) => {
 // [START functions_helloworld_storage]
 /**
  * Generic background Cloud Function to be triggered by Cloud Storage.
+ * This sample works for all Cloud Storage CRUD operations.
  *
  * @param {object} file The Cloud Storage file metadata.
  * @param {object} context The event metadata.

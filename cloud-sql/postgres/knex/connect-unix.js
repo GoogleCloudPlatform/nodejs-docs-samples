@@ -16,6 +16,8 @@
 // [START cloud_sql_postgres_knex_connect_unix]
 const Knex = require('knex');
 
+// createUnixSocketPool initializes a Unix socket connection pool for
+// a Cloud SQL instance of Postgres.
 const createUnixSocketPool = async config => {
   const dbSocketPath = process.env.INSTANCE_UNIX_SOCKET;
 

@@ -18,8 +18,8 @@
 const Knex = require('knex');
 const fs = require('fs');
 
-// connectTcpPool initializes a TCP connection pool for a Cloud SQL
-// instance of SQL Server.
+// createTcpPool initializes a TCP connection pool for a Cloud SQL
+// instance of Postgres.
 const createTcpPool = async config => {
   // Note: Saving credentials in environment variables is convenient, but not
   // secure - consider a more secure solution such as

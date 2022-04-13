@@ -51,7 +51,7 @@ describe('Delete product', () => {
   });
 
   it('should check that product deleted', async () => {
-    const regex = new RegExp(`Product ${productId} deleted`, 'g');
+    const regex = new RegExp(`Product .*${productId} deleted`, 'g');
     assert.match(stdout, regex);
   });
 

@@ -17,8 +17,11 @@
 async function main(generatedBucketName) {
   const utils = require('./setup-cleanup');
 
-  //Get your project ID
-  const projectId = process.env['PROJECT_ID'];
+  // Instantiates a client.
+  const {ProductServiceClient} = require('@google-cloud/retail').v2;
+  const retailClient = new ProductServiceClient();
+
+  const projectId = await retailClient.getProjectId();
 
   // The ID of your GCS bucket
   const bucketName = generatedBucketName

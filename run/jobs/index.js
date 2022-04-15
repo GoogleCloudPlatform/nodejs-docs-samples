@@ -23,7 +23,9 @@ const {SLEEP_MS, FAIL_RATE} = process.env;
 
 // Define main script
 const main = async () => {
-  console.log(`Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`);
+  console.log(
+    `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
+  );
   // Simulate work
   if (SLEEP_MS) {
     await sleep(SLEEP_MS);

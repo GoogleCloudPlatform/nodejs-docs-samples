@@ -39,8 +39,8 @@ jobs:
     - run: npm test
       working-directory: functions/v2/autoLabelInstance
       env:
-        MOCHA_REPORTER_SUITENAME: functions_helloworld
-        MOCHA_REPORTER_OUTPUT: functions_helloworld_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: functions_autoLabelInstance
+        MOCHA_REPORTER_OUTPUT: functions_autoLabelInstance_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6

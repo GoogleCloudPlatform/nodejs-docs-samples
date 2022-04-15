@@ -42,7 +42,7 @@ runIfSuccessful() {
 
 # Define max retries
 max_attempts=3;
-CLOUD_RUN_TASK_ATTEMPT=1;
+attempt_num=1;
 
 arg1="$1"
 arg2="$2"
@@ -56,12 +56,12 @@ fi
 
 until eval $cmd
 do
-    if ((CLOUD_RUN_TASK_ATTEMPT==max_attempts))
+    if ((attempt_num==max_attempts))
     then
-        echo "Attempt $CLOUD_RUN_TASK_ATTEMPT / $max_attempts failed! No more retries left!"
+        echo "Attempt $attempt_num / $max_attempts failed! No more retries left!"
         exit 1
     else
-        echo "Attempt $CLOUD_RUN_TASK_ATTEMPT / $max_attempts failed!"
-        sleep $((CLOUD_RUN_TASK_ATTEMPT++))
+        echo "Attempt $attempt_num / $max_attempts failed!"
+        sleep $((attempt_num++))
     fi
 done

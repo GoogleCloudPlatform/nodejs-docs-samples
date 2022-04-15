@@ -63,7 +63,7 @@ describe('functions_firebase_rtdb', () => {
       auth: {
         admin: true,
       },
-    }
+    };
 
     sample.program.helloRTDB(event, context);
 

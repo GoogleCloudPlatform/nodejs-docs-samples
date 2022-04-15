@@ -17,12 +17,13 @@
  * Triggered by a change to a Firebase RTDB reference.
  *
  * @param {!Object} event The Cloud Functions event.
+ * @param {!Object} context The Cloud Functions event context.
  */
-exports.helloRTDB = event => {
-  const triggerResource = event.resource;
+exports.helloRTDB = (event, context) => {
+  const triggerResource = context.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
-  console.log(`Admin?: ${!!event.auth.admin}`);
+  console.log(`Admin?: ${!!context.auth.admin}`);
   console.log('Delta:');
   console.log(JSON.stringify(event.delta, null, 2));
 };

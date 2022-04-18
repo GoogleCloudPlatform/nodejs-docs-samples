@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
 const sinon = require('sinon');
 const supertest = require('supertest');
 

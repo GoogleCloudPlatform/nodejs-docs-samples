@@ -20,21 +20,20 @@ const functions = require('@google-cloud/functions-framework');
 const pkg = require('./package.json');
 
 functions.cloudEvent('structuredLoggingEvent', async () => {
-  const projectId = 'MY_PROJECT';
   // Initialize the logging client
   const logging = new Logging();
   // Create a LogSync transport, defaulting to process.stdout
   const log = logging.logSync(pkg.name);
   // Required to capture your project id
-  await logging.setProjectId(projectId);
+  await logging.setProjectId();
   const text = 'Hello, world!';
   const entry = log.entry(
     {
-      severity: 'NOTICE',
       component: 'arbitrary-property',
     },
     text
   );
-  log.write(entry);
+  // Indicates severity using error()
+  log.error(entry);
 });
 // [END functions_structured_logging_event]

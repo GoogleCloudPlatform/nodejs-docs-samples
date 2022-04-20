@@ -321,7 +321,7 @@ describe('pubsub', () => {
         await pubsub.createTopic(topicName);
       } catch (err) {
         console.log(`topic creation failed: ${topicName} ${err.message}`);
-        if (!err.message.includes('ALREADY_EXISTS')) {
+        if (!err.details.includes('Resource already exists')) {
           throw err;
         }
       }
@@ -331,7 +331,7 @@ describe('pubsub', () => {
         console.log(
           `subscription creation failed: ${subscriptionId} ${err.message}`
         );
-        if (!err.message.includes('ALREADY_EXISTS')) {
+        if (!err.details.includes('Resource already exists')) {
           throw err;
         }
       }

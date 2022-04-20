@@ -13,16 +13,19 @@
 // limitations under the License.
 
 'use strict';
+// [START cloudrun_jobs_quickstart]
 // [START cloudrun_jobs_env_vars]
 // Retrieve Job-defined env vars
-const {TASK_NUM = 0, ATTEMPT_NUM = 0} = process.env;
+const {CLOUD_RUN_TASK_INDEX = 0, CLOUD_RUN_TASK_ATTEMPT = 0} = process.env;
 // Retrieve User-defined env vars
 const {SLEEP_MS, FAIL_RATE} = process.env;
 // [END cloudrun_jobs_env_vars]
 
 // Define main script
 const main = async () => {
-  console.log(`Starting Task #${TASK_NUM}, Attempt #${ATTEMPT_NUM}...`);
+  console.log(
+    `Starting Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT}...`
+  );
   // Simulate work
   if (SLEEP_MS) {
     await sleep(SLEEP_MS);
@@ -32,11 +35,11 @@ const main = async () => {
     try {
       randomFailure(FAIL_RATE);
     } catch (err) {
-      err.message = `Task #${TASK_NUM}, Attempt #${ATTEMPT_NUM} failed.\n\n${err.message}`;
+      err.message = `Task #${CLOUD_RUN_TASK_INDEX}, Attempt #${CLOUD_RUN_TASK_ATTEMPT} failed.\n\n${err.message}`;
       throw err;
     }
   }
-  console.log(`Completed Task #${TASK_NUM}.`);
+  console.log(`Completed Task #${CLOUD_RUN_TASK_INDEX}.`);
 };
 
 // Wait for a specific amount of time
@@ -67,3 +70,4 @@ main().catch(err => {
   process.exit(1); // Retry Job Task by exiting the process
   // [END cloudrun_jobs_exit_process]
 });
+// [END cloudrun_jobs_quickstart]

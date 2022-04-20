@@ -15,15 +15,19 @@ steps:
   args:
   - '-c'
   - |
-    gcloud components update --quiet
+    gcloud components install alpha --quiet
     
-    ./test/retry.sh "gcloud alpha run jobs create ${_SERVICE} \
+    gcloud alpha run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --project ${PROJECT_ID} \
       --region ${_REGION} \
-      --tasks 2 \
+      --tasks 10 \
       --set-env-vars=SLEEP_MS=100 \
-      --max-retries 0 \
+      --max-retries 0
+
+    ./test/retry.sh "gcloud alpha run jobs execute ${_SERVICE} \
+      --project ${PROJECT_ID} \
+      --region ${_REGION} \
       --wait"
 
 substitutions:

@@ -18,8 +18,8 @@ const exec = cmd => execSync(cmd, {encoding: 'utf-8'});
 
 describe('Unit Tests', () => {
   process.env.SLEEP_MS = 0;
-  process.env.TASK_NUM = 1;
-  process.env.ATTEMPT_NUM = 1;
+  process.env.CLOUD_RUN_TASK_INDEX = 1;
+  process.env.CLOUD_RUN_TASK_ATTEMPT = 1;
 
   it('should run successfully', async () => {
     const stdout = exec('node index');

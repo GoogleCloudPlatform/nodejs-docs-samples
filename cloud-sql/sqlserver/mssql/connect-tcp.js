@@ -16,7 +16,7 @@
 // [START cloud_sql_sqlserver_mssql_connect_tcp]
 const mssql = require('mssql');
 
-// connectTcpPool initializes a TCP connection pool for a Cloud SQL
+// createTcpPool initializes a TCP connection pool for a Cloud SQL
 // instance of SQL Server.
 const createTcpPool = async config => {
   // Note: Saving credentials in environment variables is convenient, but not

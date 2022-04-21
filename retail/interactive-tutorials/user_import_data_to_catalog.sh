@@ -18,6 +18,7 @@
 export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
 
 # Create a GCS bucket and upload the product data to the bucket
+cd ~/cloudshell_open/nodejs-retail/samples
 output=$(node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/setup/create-gcs-bucket.js)
 
 # Get the bucket name and store it in the env variable BUCKET_NAME

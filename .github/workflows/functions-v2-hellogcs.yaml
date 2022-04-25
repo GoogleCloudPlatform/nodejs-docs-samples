@@ -35,9 +35,9 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: functions/v2/hellogcs
+      working-directory: functions/v2/helloGCS
     - run: npm test
-      working-directory: functions/v2/hellogcs
+      working-directory: functions/v2/helloGCS
       env:
         MOCHA_REPORTER_SUITENAME: functions_v2_hellogcs
         MOCHA_REPORTER_OUTPUT: functions_v2_hellogcs_sponge_log.xml

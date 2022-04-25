@@ -65,8 +65,8 @@ describe('End-to-End Tests', () => {
     });
 
     const preparedFilter =
-      'resource.type = "cloud_run_revision" ' +
-      `resource.labels.service_name = "${SERVICE_NAME}" ` +
+      'resource.type = "cloud_run_job" ' +
+      `resource.labels.job_name = "${SERVICE_NAME}" ` +
       `resource.labels.location = "${REGION}" ` +
       `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
 

@@ -66,17 +66,22 @@ class BucketManager {
    * Configures permissions for STS to read/write to the bucket.
    *
    * @param {Bucket} bucket
+   * @param {number} waitForPropagation the time in milliseconds, if any, to wait
+   *   for the policy to propigate (default 7 minutes). See for details:
+   *   - https://cloud.google.com/iam/docs/faq#access_revoke
+   *   - https://cloud.google.com/iam/docs/policies#structure
    */
-  async grantSTSPermissions(bucket) {
+  async grantSTSPermissions(bucket, waitForPropagation = 7 * 60 * 1000) {
     const [serviceAccount] = await this.client.getGoogleServiceAccount({
       projectId: await this.getProjectId(),
     });
-    const email = serviceAccount.accountEmail;
+
+    const member = `serviceAccount:${serviceAccount.accountEmail}`;
 
     const objectViewer = 'roles/storage.objectViewer';
     const bucketReader = 'roles/storage.legacyBucketReader';
     const bucketWriter = 'roles/storage.legacyBucketWriter';
-    const members = [`serviceAccount:${email}`];
+    const members = [member];
 
     const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
 
@@ -96,6 +101,51 @@ class BucketManager {
     });
 
     await bucket.iam.setPolicy(policy);
+
+    if (waitForPropagation) {
+      const limit = Date.now() + waitForPropagation;
+
+      let hasObjectViewer = false;
+      let hasBucketReader = false;
+      let hasBucketWriter = false;
+
+      let attempts = 0;
+
+      // Using do/while to ensure this runs at least once
+      do {
+        const [policy] = await bucket.iam.getPolicy({
+          requestedPolicyVersion: 3,
+        });
+
+        for (const item of policy.bindings) {
+          if (item.members.includes(member)) {
+            switch (item.role) {
+              case objectViewer:
+                hasObjectViewer = true;
+                break;
+              case bucketReader:
+                hasBucketReader = true;
+                break;
+              case bucketWriter:
+                hasBucketWriter = true;
+                break;
+            }
+          }
+        }
+
+        if (!hasObjectViewer || !hasBucketReader || !hasBucketWriter) {
+          await Promise(resolve => setTimeout(resolve, 1000 * ++attempts));
+        } else {
+          break;
+        }
+      } while (Date.now() < limit);
+
+      if (!hasObjectViewer || !hasBucketReader || !hasBucketWriter) {
+        throw new RangeError(
+          `'${member}' is missing the required permissions for bucket '${bucket.name()}'`
+        );
+      }
+    }
   }
 
   /**

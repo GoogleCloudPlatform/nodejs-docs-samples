@@ -14,15 +14,16 @@
 
 // [START functions_firebase_rtdb]
 /**
- * Triggered by a change to a Firebase RTDB reference.
+ * Background Function triggered by a change to a Firebase RTDB reference.
  *
  * @param {!Object} event The Cloud Functions event.
+ * @param {!Object} context The Cloud Functions event context.
  */
-exports.helloRTDB = event => {
-  const triggerResource = event.resource;
+exports.helloRTDB = (event, context) => {
+  const triggerResource = context.resource;
 
   console.log(`Function triggered by change to: ${triggerResource}`);
-  console.log(`Admin?: ${!!event.auth.admin}`);
+  console.log(`Admin?: ${!!context.auth.admin}`);
   console.log('Delta:');
   console.log(JSON.stringify(event.delta, null, 2));
 };
@@ -30,7 +31,7 @@ exports.helloRTDB = event => {
 
 // [START functions_firebase_firestore]
 /**
- * Triggered by a change to a Firestore document.
+ * Background Function triggered by a change to a Firestore document.
  *
  * @param {!Object} event The Cloud Functions event.
  * @param {!Object} context Cloud Functions event metadata.
@@ -55,7 +56,7 @@ exports.helloFirestore = (event, context) => {
 
 // [START functions_firebase_auth]
 /**
- * Triggered by a change to a Firebase Auth user object.
+ * Background Function triggered by a change to a Firebase Auth user object.
  *
  * @param {!Object} event The Cloud Functions event.
  */
@@ -104,7 +105,7 @@ exports.makeUpperCase = event => {
 
 // [START functions_firebase_analytics]
 /**
- * Triggered by a Google Analytics for Firebase log event.
+ * Background Function triggered by a Google Analytics for Firebase log event.
  *
  * @param {!Object} event The Cloud Functions event.
  */
@@ -124,7 +125,7 @@ exports.helloAnalytics = event => {
 
 // [START functions_firebase_remote_config]
 /**
- * Triggered by a change to a Firebase Remote Config value.
+ * Background Function triggered by a change to a Firebase Remote Config value.
  *
  * @param {object} event The Cloud Functions event.
  */

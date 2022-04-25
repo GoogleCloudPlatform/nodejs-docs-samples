@@ -87,7 +87,7 @@ exports.helloGCS = (file, context) => {
 
 exports.helloError = (event, context, callback) => {
   // [START functions_helloworld_error]
-  // These WILL be reported to Stackdriver Error Reporting
+  // These WILL be reported to Error Reporting
   throw new Error('I failed you'); // Will cause a cold start if not caught
 
   // [END functions_helloworld_error]
@@ -102,7 +102,7 @@ exports.helloError = (event, context, callback) => {
  */
 exports.helloError2 = (event, context, callback) => {
   // [START functions_helloworld_error]
-  // These will NOT be reported to Stackdriver Error Reporting
+  // These will NOT be reported to Error Reporting
   console.error(new Error('I failed you')); // Logging an Error object
   console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object
@@ -117,7 +117,7 @@ exports.helloError2 = (event, context, callback) => {
  * @param {function} callback The callback function.
  */
 exports.helloError3 = (event, context, callback) => {
-  // This will NOT be reported to Stackdriver Error Reporting
+  // This will NOT be reported to Error Reporting
   // [START functions_helloworld_error]
   callback('I failed you');
   // [END functions_helloworld_error]
@@ -125,7 +125,7 @@ exports.helloError3 = (event, context, callback) => {
 
 // HTTP Cloud Function that returns an error.
 functions.http('helloError4', (req, res) => {
-  // This will NOT be reported to Stackdriver Error Reporting
+  // This will NOT be reported to Error Reporting
   // [START functions_helloworld_error]
   res.status(500).send('I failed you');
   // [END functions_helloworld_error]

@@ -54,15 +54,18 @@ describe('functions_firebase_rtdb', () => {
     const delta = {
       foo: 'bar',
     };
+
     const event = {
+      delta: delta,
+    };
+    const context = {
       resource: 'resource',
       auth: {
         admin: true,
       },
-      delta: delta,
     };
 
-    sample.program.helloRTDB(event, {});
+    sample.program.helloRTDB(event, context);
 
     assert.strictEqual(
       console.log.calledWith('Function triggered by change to: resource'),

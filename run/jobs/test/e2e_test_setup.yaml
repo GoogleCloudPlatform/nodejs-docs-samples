@@ -1,8 +1,13 @@
 steps:
 
 - id: 'Build Container Image'
-  name: 'gcr.io/k8s-skaffold/pack:latest'
-  args: ['build', '--builder', 'gcr.io/buildpacks/builder:v1', 'gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}']
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+    - '-c'
+    - |
+      ./test/retry.sh "gcloud builds submit \
+        --pack image=gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --timeout=2m"
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:latest'

@@ -35,12 +35,12 @@ describe('End-to-End Tests', () => {
     // Deploy service using Cloud Build
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      '--config ./test/e2e_test_setup.yaml ' +
+      '--config ./test/e2e_test_setup.yaml --timeout="15m" ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+    execSync(buildCmd, {stdio: 'inherit'});
     console.log('Cloud Build completed.');
   });
 

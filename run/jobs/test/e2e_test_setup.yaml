@@ -7,7 +7,7 @@ steps:
     - '-c'
     - |
       ./test/retry.sh "gcloud builds submit \
-        --pack image=gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --timeout=2m"
+        --pack image=gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:latest'
@@ -16,12 +16,13 @@ steps:
   - '-c'
   - |
     gcloud components install alpha --quiet
+    gcloud version
     
     gcloud alpha run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --project ${PROJECT_ID} \
       --region ${_REGION} \
-      --tasks 10 \
+      --tasks 2 \
       --set-env-vars=SLEEP_MS=100 \
       --max-retries 0
 

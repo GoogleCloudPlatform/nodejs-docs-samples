@@ -17,6 +17,25 @@
 const express = require('express');
 const app = express();
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBvOCVNfO75zBbV0AZzcOXEmdcmMfTYZCQ",
+  authDomain: "starter-akitsch.firebaseapp.com",
+  databaseURL: "https://starter-akitsch.firebaseio.com",
+  projectId: "starter-akitsch",
+  storageBucket: "starter-akitsch.appspot.com",
+  messagingSenderId: "182397877917",
+  appId: "1:182397877917:web:8091a152535edac871de74"
+};
+
+// Initialize Firebase
+const firebase = initializeApp(firebaseConfig);
+
 app.get('/', (req, res) => {
   const name = process.env.NAME || 'World';
   res.send(`Hello ${name}!`);

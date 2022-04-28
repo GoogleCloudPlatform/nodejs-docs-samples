@@ -30,7 +30,7 @@ describe('End-to-End Tests', () => {
     );
   }
   const {SAMPLE_VERSION} = process.env;
-  const REGION = 'us-central1';
+  const REGION = 'us-west1';
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =

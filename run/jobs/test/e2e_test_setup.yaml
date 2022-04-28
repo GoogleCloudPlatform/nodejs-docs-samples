@@ -15,7 +15,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud components install alpha --quiet
+    gcloud components update --quiet
     gcloud version
     
     gcloud alpha run jobs create ${_SERVICE} \

@@ -16,7 +16,7 @@
     "socket.io": "^4.1.2"
   },
   "devDependencies": {
-    "google-auth-library": "^7.1.2",
+    "google-auth-library": "^8.0.0",
     "got": "^11.8.2",
     "puppeteer": "^13.0.0"
   }

@@ -15,8 +15,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud components update --quiet
-    gcloud version
+    gcloud components install alpha --quiet
     
     gcloud alpha run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \

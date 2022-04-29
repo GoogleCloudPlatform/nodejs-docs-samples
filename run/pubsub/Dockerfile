@@ -13,7 +13,7 @@ FROM node:slim
 
 FROM node:slim
 =======
-FROM node:16.11-slim
+FROM node:16.14.0-slim
 
 
 

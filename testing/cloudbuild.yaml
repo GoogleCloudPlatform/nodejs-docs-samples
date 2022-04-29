@@ -13,21 +13,22 @@
 # limitations under the License.
 
 substitutions:
-  _GIT_HISTORY_DEPTH: "200"
+  _NODE_VERSION: "14"
   _BUILD_TYPE: "presubmit"
 steps:
   - name: 'gcr.io/kaniko-project/executor:v1.8.1'
     args: [
     '--log-format=text',
     '--context=dir:///workspace/testing',
+    '--build-arg=NODE_VERSION=${_NODE_VERSION}'
     '--dockerfile=testing/Dockerfile',
     '--cache=true',
-    '--destination=gcr.io/${PROJECT_ID}/nodejs-docs-samples-test',
+    '--destination=gcr.io/${PROJECT_ID}/nodejs-docs-samples-test-node${_NODE_VERSION}',
     '--push-retry=3',
     '--image-fs-extract-retry=3'
   ]
 
-  - name: gcr.io/${PROJECT_ID}/nodejs-docs-samples-test
+  - name: gcr.io/${PROJECT_ID}/nodejs-docs-samples-test-node${_NODE_VERSION}
     id: "test-driver"
     entrypoint: "bash"
     env:

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:14-alpine
+ARG NODE_VERSION=14
+FROM node:${NODE_VERSION}-alpine
 
 RUN apk add --no-cache git bash

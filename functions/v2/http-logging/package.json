@@ -1,0 +1,25 @@
+{
+  "name": "structured-logging-http",
+  "version": "0.0.1",
+  "description": "Simple structured logging http example",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "main": "index.js",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "mocha test/*.test.js",
+    "start": "npx @google-cloud/functions-framework --target=structuredLogging"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.0",
+    "@google-cloud/logging": "^9.8.0"
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "child_process": "^1.0.2",
+    "mocha": "^9.2.2",
+    "sinon": "^13.0.1"
+  }
+}

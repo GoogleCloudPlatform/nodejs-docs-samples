@@ -18,8 +18,6 @@
 
 // [START dialogflow_cx_v3_webhook_configure_session_parameters_enable_agent_response]
 
-// TODO (developer): change entry point to enableAgentResponse in Cloud Function
-
 exports.enableAgentResponse = (request, response) => {
   const tag = request.body.fulfillmentInfo.tag;
   // The value of the parameter used to enable agent response

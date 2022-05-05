@@ -32,22 +32,21 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const webhook = require('../webhook-configure-optional-or-required-form-parameters');
-const number = 100;
+const webhook = require('../configure-webhook-to-set-form-parameter-as-optional-or-required');
 
 describe('configure optional or required form parameter', () => {
   it('should test that webhook sets parameter as required', async () => {
     const request = {
       body: {
         fulfillmentInfo: {
-          tag: 'required',
+          tag: 'optional-or-required',
         },
         pageInfo: {
           formInfo: {
             parameterInfo: [
               {
                 displayName: 'number',
-                value: number,
+                value: 100,
               },
             ],
           },
@@ -64,37 +63,6 @@ describe('configure optional or required form parameter', () => {
     };
 
     webhook.configureOptionalFormParam(JSON.parse(temp), res);
-    assert.include(response, 'This parameter is required.');
-  });
-
-  it('should test that webhook sets parameter as optional', async () => {
-    const request = {
-      body: {
-        fulfillmentInfo: {
-          tag: 'optional',
-        },
-        pageInfo: {
-          formInfo: {
-            parameterInfo: [
-              {
-                displayName: 'number',
-                value: number,
-              },
-            ],
-          },
-        },
-      },
-    };
-    const temp = JSON.stringify(request);
-    let response = '';
-
-    const res = {
-      send: function (s) {
-        response = JSON.stringify(s);
-      },
-    };
-
-    webhook.configureOptionalFormParam(JSON.parse(temp), res);
-    assert.include(response, 'This parameter is optional.');
+    assert.include(response, '"required":true');
   });
 });

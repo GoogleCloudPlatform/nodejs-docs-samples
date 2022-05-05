@@ -18,8 +18,6 @@
 
 // [START dialogflow_cx_v3_webhook_configure_session_parameters_trigger_transition]
 
-// TODO (developer): change entry point to triggerTransition in Cloud Function
-
 exports.triggerTransition = (request, response) => {
   // The target page to transition to.
   const targetPage = request.body.targetPage; // Must be format projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow ID>/pages/<Page ID>

@@ -18,8 +18,6 @@
 
 // [START dialogflow_cx_v3_webhook_configure_session_parameters]
 
-// TODO (developer): change entry point to configureSessionParams in Cloud Function
-
 exports.configureSessionParams = (request, response) => {
   const tag = request.body.fulfillmentInfo.tag;
   let newSessionParameter;

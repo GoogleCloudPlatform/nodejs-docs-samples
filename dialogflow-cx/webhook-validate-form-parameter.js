@@ -18,8 +18,6 @@
 
 // [START dialogflow_cx_v3_webhook_validate_form_parameter]
 
-// TODO (developer): change entry point to validateParameter in Cloud Function
-
 exports.validateParameter = (request, response) => {
   // The value of the parameter to validate
   let paramToValidate = request.body.pageInfo.formInfo.parameterInfo[0].value;

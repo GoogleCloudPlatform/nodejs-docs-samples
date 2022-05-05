@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "markdown-it": "^12.0.0"
+    "markdown-it": "^13.0.0"
   },
   "devDependencies": {
     "google-auth-library": "^7.0.0",

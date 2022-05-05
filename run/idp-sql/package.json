@@ -23,7 +23,7 @@
     "gcp-metadata": "^4.2.0",
     "google-auth-library": "^7.0.0",
     "handlebars": "^4.7.6",
-    "knex": "^1.0.0",
+    "knex": "^2.0.0",
     "pg": "^8.0.0",
     "winston": "3.7.2"
   },

@@ -59,7 +59,7 @@ const detectText = async (bucketName, filename) => {
     `gs://${bucketName}/${filename}`
   );
   const [annotation] = textDetections.textAnnotations;
-  const text = annotation ? annotation.description : '';
+  const text = annotation ? annotation.description.trim() : '';
   console.log('Extracted text from image:', text);
 
   let [translateDetection] = await translate.detect(text);

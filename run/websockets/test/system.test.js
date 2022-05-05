@@ -48,7 +48,7 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST},_CONNECTOR=${CONNECTOR}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd);
+    execSync(buildCmd, {stdio: 'inherit'}); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service

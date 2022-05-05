@@ -54,7 +54,7 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build for Editor service...');
-    execSync(buildCmd);
+    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
     console.log('Cloud Build completed.\n');
 
     // Retrieve URL of Cloud Run service

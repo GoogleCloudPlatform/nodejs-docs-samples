@@ -22,7 +22,7 @@ const {getFunction} = require('@google-cloud/functions-framework/testing');
 // Importing our target file
 require('../index.js');
 
-describe('structured logging: functions http', () => {
+describe('functions_structured_logging', () => {
   let mockReq;
   let mockRes;
   let projectId;
@@ -52,7 +52,7 @@ describe('structured logging: functions http', () => {
     process.stdout.write.restore();
   });
 
-  it('structuredLogging: should correctly print logs', async () => {
+  it('structuredLogging functions http: should correctly print logs', async () => {
     const structuredLogging = getFunction('structuredLogging');
 
     // Call our function with dummy request and response objects

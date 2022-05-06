@@ -23,7 +23,7 @@ const pkg = require('../package.json');
 // Importing our target file
 require('../index.js');
 
-describe('structured logging: functions cloudevent', () => {
+describe('functions_structured_logging_event', () => {
   let projectId;
 
   before(async () => {

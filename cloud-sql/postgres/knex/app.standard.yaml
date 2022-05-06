@@ -16,11 +16,10 @@ runtime: nodejs16
 # The following env variables may contain sensitive information that grants
 # anyone access to your database. Do not add this file to your source control.
 env_variables:
+  INSTANCE_UNIX_SOCKET: /cloudsql/<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
   DB_USER: MY_DB_USER
   DB_PASS: MY_DB_PASSWORD
   DB_NAME: MY_DATABASE
-  # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-  INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
 
 beta_settings:
   # The connection name of your instance, available by using

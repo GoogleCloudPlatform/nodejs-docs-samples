@@ -123,15 +123,14 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 ## Deploy to Google App Engine Standard
 
-1. To allow your app to connect to your Cloud SQL instance when the app is deployed, add the user, password, database, and instance connection name variables from Cloud SQL to the related environment variables in the `app.standard.yaml` file. The deployed application will connect via unix sockets.
+1. To allow your app to connect to your Cloud SQL instance when the app is deployed, add the user, password, database, and instance unix socket variables from Cloud SQL to the related environment variables in the `app.standard.yaml` file. The deployed application will connect via unix sockets.
 
-    ```
+    ```yaml
     env_variables:
+      INSTANCE_UNIX_SOCKET: /cloudsql/<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
       DB_USER: MY_DB_USER
       DB_PASS: MY_DB_PASSWORD
       DB_NAME: MY_DATABASE
-      # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
     ```
 
 2. To deploy to App Engine Standard, run the following command:
@@ -148,15 +147,14 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 ## Deploy to Google App Engine Flexible
 
-1. Add the user, password, database, and instance connection name variables from Cloud SQL to the related environment variables in the `app.flexible.yaml` file. The deployed application will connect via unix sockets.
+1. Add the user, password, database, and instance unix socket variables from Cloud SQL to the related environment variables in the `app.flexible.yaml` file. The deployed application will connect via unix sockets.
 
-    ```
+    ```yaml
     env_variables:
+      INSTANCE_UNIX_SOCKET: /cloudsql/<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
       DB_USER: MY_DB_USER
       DB_PASS: MY_DB_PASSWORD
       DB_NAME: MY_DATABASE
-      # e.g. my-awesome-project:us-central1:my-cloud-sql-instance
-      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
     ```
 
 2. To deploy to App Engine Node.js Flexible Environment, run the following command:
@@ -195,7 +193,7 @@ Take note of the URL output at the end of the deployment process.
 ```sh
 gcloud run services update run-sql \
     --add-cloudsql-instances [INSTANCE_CONNECTION_NAME] \
-    --set-env-vars INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+    --set-env-vars INSTANCE_UNIX_SOCKET=[INSTANCE_UNIX_SOCKET],\
       DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
 ```
 Replace environment variables with the correct values for your Cloud SQL
@@ -209,15 +207,15 @@ Secret Manager at runtime via an environment variable.
 
 Create secrets via the command line:
 ```sh
-echo -n $INSTANCE_CONNECTION_NAME | \
-    gcloud secrets create [INSTANCE_CONNECTION_NAME_SECRET] --data-file=-
+echo -n $INSTANCE_UNIX_SOCKET | \
+    gcloud secrets create [INSTANCE_UNIX_SOCKET_SECRET] --data-file=-
 ```
 
 Deploy the service to Cloud Run specifying the env var name and secret name:
 ```sh
 gcloud beta run deploy SERVICE --image gcr.io/[YOUR_PROJECT_ID]/run-sql \
     --add-cloudsql-instances $INSTANCE_CONNECTION_NAME \
-    --update-secrets INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME_SECRET]:latest,\
+    --update-secrets INSTANCE_UNIX_SOCKET=[INSTANCE_UNIX_SOCKET_SECRET]:latest,\
       DB_USER=[DB_USER_SECRET]:latest, \
       DB_PASS=[DB_PASS_SECRET]:latest, \
       DB_NAME=[DB_NAME_SECRET]:latest

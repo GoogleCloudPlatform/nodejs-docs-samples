@@ -145,7 +145,7 @@ exports.uploadFile = (req, res) => {
   const fileWrites = [];
 
   // This code will process each file uploaded.
-  busboy.on('file', (fieldname, file, filename) => {
+  busboy.on('file', (fieldname, file, {filename}) => {
     // Note: os.tmpdir() points to an in-memory file system on GCF
     // Thus, any files in it must fit in the instance's memory.
     console.log(`Processed file ${filename}`);

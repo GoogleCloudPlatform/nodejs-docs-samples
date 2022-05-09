@@ -21,14 +21,13 @@
 exports.configureOptionalFormParam = (request, response) => {
   // The value of the parameter that the webhook will set as optional or required.
   // Note that the webhook cannot add or remove any form parameter
-  const parameter = request.body.pageInfo.formInfo.parameterInfo[0].value;
 
   const jsonResponse = {
     pageInfo: {
       formInfo: {
         parameterInfo: [
           {
-            displayName: parameter,
+            displayName: 'order-number',
             // if required: false, the agent will not reprompt for this parameter, even if the state is 'INVALID'
             required: true,
             state: 'VALID',

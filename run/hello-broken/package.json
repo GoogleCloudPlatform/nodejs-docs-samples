@@ -10,7 +10,7 @@
     "system-test": "NAME=Cloud mocha test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
-    "node": ">= 10.0.0"
+    "node": ">=12.0.0"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",

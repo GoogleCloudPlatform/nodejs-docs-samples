@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "test": "mocha tests/*-tests.js --timeout=60000"
+  },
+  "devDependencies": {
+    "mocha": "^9.0.0",
+    "sinon": "^13.0.0",
+    "supertest": "^6.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.0"
+  }
+}

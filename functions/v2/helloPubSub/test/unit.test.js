@@ -15,7 +15,7 @@
 const {getFunction} = require('@google-cloud/functions-framework/testing');
 require('..');
 
-describe('functions_helloworld_pubsub', () => {
+describe('functions_cloudevent_pubsub', () => {
   const assert = require('assert');
   const uuid = require('uuid');
   const sinon = require('sinon');

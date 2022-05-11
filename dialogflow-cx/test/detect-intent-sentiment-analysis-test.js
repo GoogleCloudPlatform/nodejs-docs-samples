@@ -24,7 +24,7 @@ describe('detect intent with sentiment analysis', () => {
 
   const projectId = process.env.GCLOUD_PROJECT;
   const location = 'global';
-  const agentId = '5d23f659-cd71-43e9-8fb2-b69cd9896370';
+  const agentId = 'b1808233-450b-4065-9492-bc9b40151641';
   const languageCode = 'en';
 
   it('should detect negative sentiment score of user query', async () => {

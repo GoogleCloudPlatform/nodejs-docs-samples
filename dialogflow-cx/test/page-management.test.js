@@ -25,7 +25,7 @@ describe('should test page management functions', async () => {
   const projectId = process.env.GCLOUD_PROJECT;
   const flowId = '00000000-0000-0000-0000-000000000000';
   const pageName = `temp_page_${uuid.v4()}`;
-  const agentID = '4e2cb784-012c-48b2-9d8c-a877d3be3437';
+  const agentID = 'b1808233-450b-4065-9492-bc9b40151641';
   let pageID = '';
 
   it('should create a page', async () => {

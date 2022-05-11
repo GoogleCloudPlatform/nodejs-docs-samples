@@ -41,6 +41,9 @@ async function main(projectId, displayName) {
 
     const [response] = await client.createAgent(request);
     console.log(`response: ${JSON.stringify(response, null, 2)}`);
+
+    // Delete created agent resource
+    client.deleteAgent({name: response.name});
   }
   await setAgentSample();
   // [END dialogflow_set_agent_sample]

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { getFunction } = require('@google-cloud/functions-framework/testing');
-const { helloPubSub } = require('..');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+require('..');
 
 describe('functions_helloworld_pubsub', () => {
   const assert = require('assert');
@@ -33,9 +33,9 @@ describe('functions_helloworld_pubsub', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should print a name from the pubsub message', () => {    
+  it('should print a name from the pubsub message', () => {
     // Create mock Pub/Sub event
-    let cloudEvent = { data: { message: { }}};
+    const cloudEvent = {data: {message: {}}};
     const name = uuid.v4();
     cloudEvent.data.message = {
       data: Buffer.from(name).toString('base64'),
@@ -48,9 +48,9 @@ describe('functions_helloworld_pubsub', () => {
   });
 
   it('helloPubSub: should print hello world', () => {
-    // Create mock Pub/Sub event, in the event where a 
+    // Create mock Pub/Sub event, in the event where a
     // PubSub message is empty but message has an attribute
-    let cloudEvent = {data: {message: { data:null }}};
+    const cloudEvent = {data: {message: {data: null}}};
 
     // Call tested function and verify its behavior
     const helloPubSub = getFunction('helloPubSub');

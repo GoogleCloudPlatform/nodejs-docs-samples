@@ -35,18 +35,19 @@ afterEach(() => {
 
 describe('functions_cloudevent_pubsub', () => {
   it('should process a CloudEvent', async () => {
-    const event = {
-      data: {
-        message: 'd29ybGQ=', // 'World' in base 64
-      },
+    const cloudEventData = {data: {message: {}}};
+
+    const name = 'Cecil';
+    cloudEventData.data.message = {
+      data: Buffer.from(name).toString('base64'),
     };
 
     const server = functionsFramework.getTestServer('helloPubSub');
     await supertest(server)
       .post('/')
-      .send(event)
+      .send(cloudEventData)
       .set('Content-Type', 'application/json')
       .expect(204);
-    assert(console.log.calledWith('Hello, World!'));
+    assert(console.log.calledWith('Hello, Cecil!'));
   });
 });

@@ -17,8 +17,7 @@ const {getFunction} = require('@google-cloud/functions-framework/testing');
 describe('functions_cloudevent_storage', () => {
   const assert = require('assert');
   const sinon = require('sinon');
-
-  const {helloGCS} = require('..');
+  require('..');
 
   const stubConsole = function () {
     sinon.stub(console, 'error');
@@ -39,7 +38,7 @@ describe('functions_cloudevent_storage', () => {
       type: 'mock-gcs-event',
       data: {
         bucket: 'my-bucket',
-          name: 'my-file.txt'
+        name: 'my-file.txt'
       },
     };
 

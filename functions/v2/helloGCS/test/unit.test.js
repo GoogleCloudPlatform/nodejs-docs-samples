@@ -38,7 +38,7 @@ describe('functions_cloudevent_storage', () => {
       type: 'mock-gcs-event',
       data: {
         bucket: 'my-bucket',
-        name: 'my-file.txt'
+        name: 'my-file.txt',
       },
     };
 

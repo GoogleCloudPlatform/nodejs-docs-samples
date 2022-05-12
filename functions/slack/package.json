@@ -15,6 +15,7 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.0",
     "@googleapis/kgsearch": "^0.2.0",
     "@slack/events-api": "^3.0.0"
   },

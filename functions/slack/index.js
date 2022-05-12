@@ -1,4 +1,4 @@
-// Copyright 2016 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 'use strict';
 
 // [START functions_slack_setup]
+const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
 const {verifyRequestSignature} = require('@slack/events-api');
 
@@ -137,16 +138,16 @@ const makeSearchRequest = query => {
 /**
  * Receive a Slash Command request from Slack.
  *
- * Trigger this function by creating a Slack slash command with this URL:
- * https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/kgSearch
- *
+ * Trigger this function by creating a Slack slash command with the HTTP Trigger URL.
+ * You can find the HTTP URL in the Cloud Console or using `gcloud functions describe`
+ * 
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.
  * @param {string} req.rawBody Raw request payload used to validate Slack's message signature.
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-exports.kgSearch = async (req, res) => {
+functions.http('kgSearch', async (req, res) => {
   try {
     if (req.method !== 'POST') {
       const error = new Error('Only POST requests are accepted');
@@ -169,5 +170,5 @@ exports.kgSearch = async (req, res) => {
     res.status(err.code || 500).send(err);
     return Promise.reject(err);
   }
-};
+});
 // [END functions_slack_search]

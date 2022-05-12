@@ -14,7 +14,7 @@
 
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
-require('../index')
+require('../index');
 
 describe('functions_log_cloudevent', () => {
   it('should process a CloudEvent', async () => {
@@ -38,6 +38,5 @@ describe('functions_log_cloudevent', () => {
       .send(event)
       .set('Content-Type', 'application/json')
       .expect(204);
-
   });
 });

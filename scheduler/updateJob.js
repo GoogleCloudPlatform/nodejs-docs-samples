@@ -36,9 +36,13 @@ async function updateJob(projectId, locationId, jobId) {
     job: {
       name: job,
       description: 'Hello World example.',
+      timeZone: 'Australia/Perth',
+      httpTarget: {uri: 'http://example.com'},
     },
     updateMask: {
-      paths: ['description'],
+      //  Fields name in each path must use lower-camel naming conventions.
+      // https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask
+      paths: ['description', 'time_zone', 'http_target'],
     },
   };
 

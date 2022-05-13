@@ -31,9 +31,7 @@ const testFiles = {
   offensive: 'zombie.jpg',
 };
 
-
 require('../index');
-
 
 describe('functions/imagemagick tests', () => {
   before(async () => {
@@ -58,11 +56,6 @@ describe('functions/imagemagick tests', () => {
 
   describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
-      const body = {
-        bucket: BUCKET_NAME,
-        name: testFiles.safe,
-      };
-
       const event = {
         id: '1234',
         type: 'mock-gcs-event',
@@ -81,7 +74,7 @@ describe('functions/imagemagick tests', () => {
     });
 
     it('blurOffensiveImages successfully blurs offensive images', async () => {
-       const event = {
+      const event = {
         id: '1234',
         type: 'mock-gcs-event',
         data: {

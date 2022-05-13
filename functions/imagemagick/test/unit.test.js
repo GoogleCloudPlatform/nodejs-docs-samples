@@ -22,11 +22,13 @@ const loadSample = (adultResult, fileName) => {
   vision.ImageAnnotatorClient = function client() {
     return {
       safeSearchDetection: () => {
-        return [{
-          safeSearchAnnotation: {
-            adult: adultResult
-          }
-        }];
+        return [
+          {
+            safeSearchAnnotation: {
+              adult: adultResult
+            }
+          },
+        ];
       }
     };
   };
@@ -38,7 +40,7 @@ const loadSample = (adultResult, fileName) => {
         file: sinon.stub().returnsThis(),
         upload: sinon.stub().returnsThis(),
         download: sinon.stub().returnsThis(),
-        name: fileName
+        name: fileName,
       };
     }
   };
@@ -101,7 +103,7 @@ describe('functions_imagemagick_setup functions_imagemagick_analyze functions_im
 
     await blurOffensiveImages(event);
 
-    assert(console.log.calledWith(`Detected safe.jpg as OK.`));
+    assert(console.log.calledWith('Detected safe.jpg as OK.'));
   });
 
   it('blurOffensiveImages successfully blurs offensive images', async () => {
@@ -122,6 +124,6 @@ describe('functions_imagemagick_setup functions_imagemagick_analyze functions_im
 
     await blurOffensiveImages(event);
 
-    assert(console.log.calledWith(`Detected offensive.jpg as inappropriate.`));
+    assert(console.log.calledWith('Detected offensive.jpg as inappropriate.'));
   });
 });

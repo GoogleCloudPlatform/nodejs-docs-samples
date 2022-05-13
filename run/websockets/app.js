@@ -36,11 +36,11 @@ const subClient = redisClient.duplicate();
 io.adapter(redisAdapter(redisClient, subClient));
 // [END cloudrun_websockets_redis_adapter]
 // Add error handlers
-redisClient.on("error", (err) => {
+redisClient.on('error', err => {
   console.error(err.message);
 });
 
-subClient.on("error", (err) => {
+subClient.on('error', err => {
   console.error(err.message);
 });
 

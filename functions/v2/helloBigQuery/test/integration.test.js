@@ -16,7 +16,7 @@ const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
 require('../index');
 
-describe('bigquery function integration-tests', () => {
+describe('cloudfunctions_hello_bigquery', () => {
   it('should return the top occurring word in shakespeare public data set', async () => {
     const results = 'top result is the word: the, occurring 614 times.';
     const server = getTestServer('helloBigQuery');

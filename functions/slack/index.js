@@ -140,7 +140,7 @@ const makeSearchRequest = query => {
  *
  * Trigger this function by creating a Slack slash command with the HTTP Trigger URL.
  * You can find the HTTP URL in the Cloud Console or using `gcloud functions describe`
- * 
+ *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.
  * @param {string} req.rawBody Raw request payload used to validate Slack's message signature.

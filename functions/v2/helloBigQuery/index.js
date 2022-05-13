@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START cloudfunctions_hello_bigquery]
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
 
@@ -48,3 +49,4 @@ functions.http('helloBigQuery', async (req, res) => {
   // Return a 200 response to acknowledge receipt of the event
   res.status(200).send(results);
 });
+// [END cloudfunctions_hello_bigquery]

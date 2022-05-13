@@ -25,11 +25,11 @@ const loadSample = (adultResult, fileName) => {
         return [
           {
             safeSearchAnnotation: {
-              adult: adultResult
-            }
+              adult: adultResult,
+            },
           },
         ];
-      }
+      },
     };
   };
 
@@ -42,31 +42,30 @@ const loadSample = (adultResult, fileName) => {
         download: sinon.stub().returnsThis(),
         name: fileName,
       };
-    }
+    },
   };
 
   const gm = () => {
     return {
       blur: sinon.stub().returnsThis(),
-      write: sinon.stub().yields()
+      write: sinon.stub().yields(),
     };
   };
   gm.subClass = sinon.stub().returnsThis();
 
   const fs = {
     promises: {
-      unlink: sinon.stub()
-    }
+      unlink: sinon.stub(),
+    },
   };
 
   return proxyquire('..', {
     '@google-cloud/vision': vision,
     '@google-cloud/storage': storage,
-    'gm': gm,
-    'fs': fs
-  })
-}
-
+    gm: gm,
+    fs: fs,
+  });
+};
 
 describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
   const assert = require('assert');

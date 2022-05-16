@@ -48,7 +48,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
       .post('/')
       .set({
         'x-slack-signature': generateSignature(query),
-        'X-Slack-request-timestamp': SLACK_TIMESTAMP,
+        'x-slack-request-timestamp': SLACK_TIMESTAMP,
       })
       .send({text: query})
       .expect(200);

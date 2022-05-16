@@ -18,6 +18,8 @@ const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+
 const method = 'POST';
 const query = 'giraffe';
 const SLACK_TOKEN = 'slack-token';
@@ -107,8 +109,10 @@ describe('functions_slack_search', () => {
     const mocks = getMocks();
     const sample = getSample();
 
+    const kgSearch = getFunction('kgSearch');
+
     try {
-      await sample.program.kgSearch(mocks.req, mocks.res);
+      await kgSearch(mocks.req, mocks.res);
     } catch (err) {
       assert.deepStrictEqual(err, error);
       assert.strictEqual(mocks.res.status.callCount, 1);
@@ -129,10 +133,13 @@ describe('functions_slack_search functions_verify_webhook', () => {
     const sample = getSample();
 
     mocks.req.method = method;
+    mocks.req.body.text = 'not empty';
     sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
 
+    const kgSearch = getFunction('kgSearch');
+
     try {
-      await sample.program.kgSearch(mocks.req, mocks.res);
+      await kgSearch(mocks.req, mocks.res);
     } catch (err) {
       assert.deepStrictEqual(err, error);
       assert.strictEqual(mocks.res.status.callCount, 1);
@@ -156,8 +163,10 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
     mocks.req.body.text = query;
     sample.mocks.kgsearch.entities.search.yields(error);
 
+    const kgSearch = getFunction('kgSearch');
+
     try {
-      await sample.program.kgSearch(mocks.req, mocks.res);
+      await kgSearch(mocks.req, mocks.res);
     } catch (err) {
       assert.deepStrictEqual(err, error);
       assert.strictEqual(mocks.res.status.callCount, 1);
@@ -182,7 +191,9 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
       data: {itemListElement: []},
     });
 
-    await sample.program.kgSearch(mocks.req, mocks.res);
+    const kgSearch = getFunction('kgSearch');
+
+    await kgSearch(mocks.req, mocks.res);
     assert.strictEqual(mocks.res.json.callCount, 1);
     assert.deepStrictEqual(mocks.res.json.firstCall.args, [
       {
@@ -224,7 +235,9 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
       },
     });
 
-    await sample.program.kgSearch(mocks.req, mocks.res);
+    const kgSearch = getFunction('kgSearch');
+
+    await kgSearch(mocks.req, mocks.res);
     assert.strictEqual(mocks.res.json.callCount, 1);
     assert.deepStrictEqual(mocks.res.json.firstCall.args, [
       {
@@ -264,7 +277,9 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
       },
     });
 
-    await sample.program.kgSearch(mocks.req, mocks.res);
+    const kgSearch = getFunction('kgSearch');
+
+    await kgSearch(mocks.req, mocks.res);
     assert.strictEqual(mocks.res.json.callCount, 1);
     assert.deepStrictEqual(mocks.res.json.firstCall.args, [
       {

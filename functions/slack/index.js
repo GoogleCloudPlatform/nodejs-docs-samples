@@ -155,6 +155,12 @@ functions.http('kgSearch', async (req, res) => {
       throw error;
     }
 
+    if (!req.body.text) {
+      const error = new Error('No text found in body.');
+      error.code = 400;
+      throw error;
+    }
+
     // Verify that this request came from Slack
     verifyWebhook(req);
 

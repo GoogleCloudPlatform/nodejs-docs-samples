@@ -45,7 +45,7 @@ function main(
 
   const compute = require('@google-cloud/compute');
 
-  async function createWndowsServerInstanceExpernalIP() {
+  async function createWindowsServerInstanceExpernalIP() {
     const instancesClient = new compute.InstancesClient();
 
     const [response] = await instancesClient.insert({
@@ -102,7 +102,7 @@ function main(
     console.log('Instance created.');
   }
 
-  createWndowsServerInstanceExpernalIP();
+  createWindowsServerInstanceExpernalIP();
   // [END compute_create_windows_instance_external_ip]
 }
 

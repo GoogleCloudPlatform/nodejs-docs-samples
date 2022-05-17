@@ -20,8 +20,7 @@ const sinon = require('sinon');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
-const {SLACK_SECRET, SLACK_TOKEN, KG_API_KEY} = process.env;
-
+const {SLACK_SECRET} = process.env;
 const SLACK_TIMESTAMP = Date.now();
 
 require('../index');
@@ -88,7 +87,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const query = '';
 
     const server = functionsFramework.getTestServer('kgSearch');
-    const res = await supertest(server)
+    await supertest(server)
       .post('/')
       .set({
         'x-slack-signature': generateSignature(query),
@@ -102,7 +101,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const query = 'kolach';
 
     const server = functionsFramework.getTestServer('kgSearch');
-    const response = await supertest(server)
+    await supertest(server)
       .post('/')
       .send({text: query})
       .expect(500);

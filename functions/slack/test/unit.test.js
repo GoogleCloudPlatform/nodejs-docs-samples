@@ -107,7 +107,6 @@ describe('functions_slack_search', () => {
     const error = new Error('Only POST requests are accepted');
     error.code = 405;
     const mocks = getMocks();
-    const sample = getSample();
 
     const kgSearch = getFunction('kgSearch');
 

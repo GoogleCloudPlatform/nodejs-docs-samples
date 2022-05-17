@@ -44,7 +44,7 @@ describe('functions_cloudevent_storage', () => {
 
     // Call tested function and verify its behavior
     const helloGCS = getFunction('helloGCS');
-    helloGCS(event, context);
+    helloGCS(event);
 
     assert(console.log.calledWith('Event ID: 1234'));
     assert(console.log.calledWith('Event Type: mock-gcs-event'));

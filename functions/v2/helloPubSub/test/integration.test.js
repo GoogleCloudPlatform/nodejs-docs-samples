@@ -12,41 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const sinon = require('sinon');
 const supertest = require('supertest');
-
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
-beforeEach(() => {
-  // require the module that includes the functions we are testing
-  require('../index');
-
-  // stub the console so we can use it for side effect assertions
-  sinon.stub(console, 'log');
-  sinon.stub(console, 'error');
-});
-
-afterEach(() => {
-  // restore the console stub
-  console.log.restore();
-  console.error.restore();
-});
+require('../index');
 
 describe('functions_cloudevent_pubsub', () => {
   it('should process a CloudEvent', async () => {
-    const event = {
-      data: {
-        message: 'd29ybGQ=', // 'World' in base 64
-      },
+    const cloudEventData = {data: {message: {}}};
+
+    const name = 'Cecil';
+    cloudEventData.data.message = {
+      data: Buffer.from(name).toString('base64'),
     };
 
     const server = functionsFramework.getTestServer('helloPubSub');
     await supertest(server)
       .post('/')
-      .send(event)
+      .send(cloudEventData)
       .set('Content-Type', 'application/json')
       .expect(204);
-    assert(console.log.calledWith('Hello, World!'));
   });
 });

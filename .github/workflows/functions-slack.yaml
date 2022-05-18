@@ -42,6 +42,8 @@ jobs:
         MOCHA_REPORTER_SUITENAME: functions_slack
         MOCHA_REPORTER_OUTPUT: functions_slack_sponge_log.xml
         MOCHA_REPORTER: xunit
+        SLACK_SECRET: ${{ secrets.SLACK_SECRET }}
+        SLACK_TEST_SIGNATURE: ${{ secrets.SLACK_TEST_SIGNATURE }}
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

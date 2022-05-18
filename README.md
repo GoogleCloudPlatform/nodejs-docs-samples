@@ -12,6 +12,9 @@ on Google Cloud Platform.
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
 
+## Google Cloud Samples
+
+To browse ready to use code samples check [Google Cloud Samples](https://cloud.google.com/docs/samples?l=nodejs).
 
 ## Setup
 

@@ -30,6 +30,7 @@
   "functions/firebase",
   "functions/helloworld",
   "functions/http",
+  "functions/imagemagick",
   "functions/security",
   "functions/scheduleinstance",
   "functions/slack",

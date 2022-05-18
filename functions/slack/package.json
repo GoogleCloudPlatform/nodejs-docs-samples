@@ -20,7 +20,6 @@
     "@slack/events-api": "^3.0.0"
   },
   "devDependencies": {
-    "crypto": "^1.0.1",
     "mocha": "^9.0.0",
     "proxyquire": "^2.1.0",
     "sinon": "^13.0.0",

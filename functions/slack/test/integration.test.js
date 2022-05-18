@@ -16,7 +16,6 @@
 
 const assert = require('assert');
 const crypto = require('crypto');
-const sinon = require('sinon');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
@@ -101,9 +100,6 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const query = 'kolach';
 
     const server = functionsFramework.getTestServer('kgSearch');
-    await supertest(server)
-      .post('/')
-      .send({text: query})
-      .expect(500);
+    await supertest(server).post('/').send({text: query}).expect(500);
   });
 });

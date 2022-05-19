@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START functions_http_integration_test]
-const sinon = require('sinon');
 const supertest = require('supertest');
 
 const {getTestServer} = require('@google-cloud/functions-framework/testing');

@@ -38,7 +38,7 @@ const generateSignature = query => {
 };
 
 describe('functions_slack_format functions_slack_request functions_slack_search functions_verify_webhook', () => {
-  process.env.KG_API_KEY=API_KEY;
+  process.env.KG_API_KEY = API_KEY;
   it('returns search results', async () => {
     const query = 'kolach';
     const server = functionsFramework.getTestServer('kgSearch');

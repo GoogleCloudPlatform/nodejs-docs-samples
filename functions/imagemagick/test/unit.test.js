@@ -16,7 +16,7 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
 const {getFunction} = require('@google-cloud/functions-framework/testing');
-
+require('../')
 const loadSample = (adultResult, fileName) => {
   const vision = sinon.stub();
   vision.ImageAnnotatorClient = function client() {

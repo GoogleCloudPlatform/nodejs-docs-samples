@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START cloudfunctions_hello_bigquery]
+// [START functions_hello_bigquery]
+// Import the Google Cloud client library
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
 
 const functions = require('@google-cloud/functions-framework');
 
+/**
+ * HTTP Cloud Function that returns BigQuery query results
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
 functions.http('helloBigQuery', async (req, res) => {
+  // Define the SQL query
+  // Queries the public Shakespeare dataset using named query parameter
   const sqlQuery = `
       SELECT word, word_count
             FROM \`bigquery-public-data.samples.shakespeare\`
@@ -33,20 +42,14 @@ functions.http('helloBigQuery', async (req, res) => {
     params: {corpus: 'romeoandjuliet', min_word_count: 400},
   };
 
-  // Run the query
-  const [rows] = await bigquery.query(options);
-
-  console.log('Rows:');
-  rows.forEach(row => console.log(row));
-
-  const results =
-    'top result is the word: ' +
-    rows[0].word +
-    ', occurring ' +
-    rows[0].word_count +
-    ' times.';
-
-  // Return a 200 response to acknowledge receipt of the event
-  res.status(200).send(results);
+  // Execute the query
+  try {
+    const [rows] = await bigquery.query(options);
+    // Send the results
+    res.status(200).send(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(`Error querying BigQuery: ${err}`);
+  }
 });
-// [END cloudfunctions_hello_bigquery]
+// [END functions_hello_bigquery]

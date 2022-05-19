@@ -16,10 +16,13 @@ const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
 require('../index');
 
-describe('cloudfunctions_hello_bigquery', () => {
-  it('should return the top occurring word in shakespeare public data set', async () => {
-    const results = 'top result is the word: the, occurring 614 times.';
+describe('functions_hello_bigquery', () => {
+  it('helloBigQuery: returns results', async () => {
+    const results = [{"word":"the","word_count":614},{"word":"I","word_count":577},{"word":"and","word_count":490},{"word":"to","word_count":486},{"word":"a","word_count":407}];
     const server = getTestServer('helloBigQuery');
-    await supertest(server).post('/').send().expect(200).expect(results);
+    await supertest(server)
+      .get('/')
+      .expect(200)
+      .expect(results);
   });
 });

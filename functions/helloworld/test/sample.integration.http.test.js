@@ -13,52 +13,35 @@
 // limitations under the License.
 
 // [START functions_http_integration_test]
-const assert = require('assert');
-const {exec} = require('child_process');
-const {request} = require('gaxios');
-const uuid = require('uuid');
-const waitPort = require('wait-port');
+const supertest = require('supertest');
 
-const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
-const BASE_URL = `http://localhost:${PORT}`;
-
+const {getTestServer} = require('@google-cloud/functions-framework/testing');
 // [END functions_http_integration_test]
+
+require('../');
 
 describe('functions_helloworld_http HTTP integration test', () => {
   // [START functions_http_integration_test]
-  let ffProc;
-
-  // Run the functions-framework instance to host functions locally
-  before(async () => {
-    ffProc = exec(
-      `npx functions-framework --target=helloHttp --signature-type=http --port ${PORT}`
-    );
-    await waitPort({host: 'localhost', port: PORT});
-  });
-
-  after(() => ffProc.kill());
-
-  it('helloHttp: should print a name', async () => {
-    const name = uuid.v4();
-
-    const response = await request({
-      url: `${BASE_URL}/helloHttp`,
-      method: 'POST',
-      data: {name},
-    });
-
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data, `Hello ${name}!`);
+  it('helloHttp: should print a name with req body', async () => {
+    const server = getTestServer('helloHttp');
+    await supertest(server)
+      .post('/')
+      .send({name: 'John'})
+      .set('Content-Type', 'application/json')
+      .expect(200)
+      .expect('Hello John!');
   });
   // [END functions_http_integration_test]
-
   it('helloHttp: should print hello world', async () => {
-    const response = await request({
-      url: `${BASE_URL}/helloHttp`,
-      method: 'POST',
-      data: {},
-    });
-    assert.strictEqual(response.status, 200);
-    assert.strictEqual(response.data, 'Hello World!');
+    const server = getTestServer('helloHttp');
+    await supertest(server).post('/').send().expect(200).expect('Hello World!');
+  });
+  it('helloHttp: should print a name with query', async () => {
+    const server = getTestServer('helloHttp');
+    await supertest(server)
+      .post('/?name=John')
+      .send()
+      .expect(200)
+      .expect('Hello John!');
   });
 });

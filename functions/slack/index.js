@@ -15,6 +15,7 @@
 'use strict';
 
 // [START functions_slack_setup]
+const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
 const {verifyRequestSignature} = require('@slack/events-api');
 
@@ -137,8 +138,8 @@ const makeSearchRequest = query => {
 /**
  * Receive a Slash Command request from Slack.
  *
- * Trigger this function by creating a Slack slash command with this URL:
- * https://[YOUR_REGION]-[YOUR_PROJECT_ID].cloudfunctions.net/kgSearch
+ * Trigger this function by creating a Slack slash command with the HTTP Trigger URL.
+ * You can find the HTTP URL in the Cloud Console or using `gcloud functions describe`
  *
  * @param {object} req Cloud Function request object.
  * @param {object} req.body The request payload.
@@ -146,11 +147,17 @@ const makeSearchRequest = query => {
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-exports.kgSearch = async (req, res) => {
+functions.http('kgSearch', async (req, res) => {
   try {
     if (req.method !== 'POST') {
       const error = new Error('Only POST requests are accepted');
       error.code = 405;
+      throw error;
+    }
+
+    if (!req.body.text) {
+      const error = new Error('No text found in body.');
+      error.code = 400;
       throw error;
     }
 
@@ -169,5 +176,5 @@ exports.kgSearch = async (req, res) => {
     res.status(err.code || 500).send(err);
     return Promise.reject(err);
   }
-};
+});
 // [END functions_slack_search]

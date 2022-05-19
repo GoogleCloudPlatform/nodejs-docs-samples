@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@google-cloud/debug-agent": "^5.0.0",
-    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/functions-framework": "^3.1.0",
     "escape-html": "^1.0.3"
   },
   "devDependencies": {
@@ -30,6 +30,7 @@
     "moment": "^2.24.0",
     "promise-retry": "^2.0.0",
     "sinon": "^13.0.0",
+    "supertest": "^6.0.0",
     "uuid": "^8.0.0",
     "wait-port": "^0.2.9"
   }

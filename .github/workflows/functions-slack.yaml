@@ -49,7 +49,7 @@ jobs:
         MOCHA_REPORTER_OUTPUT: functions_slack_sponge_log.xml
         MOCHA_REPORTER: xunit
         SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
-        KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
+        API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

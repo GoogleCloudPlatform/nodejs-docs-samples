@@ -42,6 +42,8 @@ jobs:
         MOCHA_REPORTER_SUITENAME: functions_imagemagick
         MOCHA_REPORTER_OUTPUT: functions_imagemagick_sponge_log.xml
         MOCHA_REPORTER: xunit
+        FUNCTIONS_BUCKET: nodejs-functions-bucket
+        BLURRED_BUCKET_NAME: nodejs-functions-output-bucket
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

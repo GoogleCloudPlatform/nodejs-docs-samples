@@ -31,11 +31,12 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - id: secret
+    - id: secrets
       uses: 'google-github-actions/get-secretmanager-secrets@v0'
       with:
         secrets: |-
           slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
+          kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
     - uses: actions/setup-node@v3
       with:
         node-version: 14
@@ -47,7 +48,8 @@ jobs:
         MOCHA_REPORTER_SUITENAME: functions_slack
         MOCHA_REPORTER_OUTPUT: functions_slack_sponge_log.xml
         MOCHA_REPORTER: xunit
-        SLACK_SECRET: ${{ steps.secret.outputs.slack_secret }}
+        SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
+        KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

@@ -19,7 +19,7 @@ describe('functions_helloworld_http', () => {
   // [START functions_http_unit_test]
   const sinon = require('sinon');
   const assert = require('assert');
-  const functions = require('../');
+  require('../');
 
   const getMocks = () => {
     const req = {body: {}, query: {}};

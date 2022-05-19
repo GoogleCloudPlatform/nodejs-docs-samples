@@ -41,7 +41,7 @@ functions.http('helloGET', (req, res) => {
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
- functions.http('helloHttp', (req, res) => {
+functions.http('helloHttp', (req, res) => {
   res.send(`Hello ${escapeHtml(req.query.name || req.body.name || 'World')}!`);
 });
 // [END functions_helloworld_http]

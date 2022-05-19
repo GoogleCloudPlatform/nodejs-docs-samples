@@ -19,23 +19,10 @@ const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
 // [END functions_http_integration_test]
 
-beforeEach(() => {
-  // require the module that includes the functions we are testing
-  require('../index.js');
-
-  // stub the console so we can use it for side effect assertions
-  sinon.stub(console, 'log');
-  sinon.stub(console, 'error');
-});
-
-afterEach(() => {
-  // restore the console stub
-  console.log.restore();
-  console.error.restore();
-});
+require('../');
 
 describe('functions_helloworld_http HTTP integration test', () => {
-// [START functions_http_integration_test]
+  // [START functions_http_integration_test]
   it('helloHttp: should print a name with req body', async () => {
     const server = getTestServer('helloHttp');
     await supertest(server)
@@ -45,7 +32,7 @@ describe('functions_helloworld_http HTTP integration test', () => {
       .expect(200)
       .expect('Hello John!');
   });
-// [END functions_http_integration_test]
+  // [END functions_http_integration_test]
   it('helloHttp: should print hello world', async () => {
     const server = getTestServer('helloHttp');
     await supertest(server).post('/').send().expect(200).expect('Hello World!');

@@ -1,4 +1,4 @@
-// Copyright 2017 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 'use strict';
 
 // [START functions_imagemagick_setup]
+const functions = require('@google-cloud/functions-framework');
 const gm = require('gm').subClass({imageMagick: true});
 const fs = require('fs').promises;
 const path = require('path');
@@ -29,12 +30,12 @@ const {BLURRED_BUCKET_NAME} = process.env;
 
 // [START functions_imagemagick_analyze]
 // Blurs uploaded images that are flagged as Adult or Violence.
-exports.blurOffensiveImages = async event => {
+functions.cloudEvent('blurOffensiveImages', async cloudEvent => {
   // This event represents the triggering Cloud Storage object.
-  const object = event;
-
-  const file = storage.bucket(object.bucket).file(object.name);
-  const filePath = `gs://${object.bucket}/${object.name}`;
+  const bucket = cloudEvent.data.bucket;
+  const name = cloudEvent.data.name;
+  const file = storage.bucket(bucket).file(name);
+  const filePath = `gs://${bucket}/${name}`;
 
   console.log(`Analyzing ${file.name}.`);
 
@@ -56,7 +57,7 @@ exports.blurOffensiveImages = async event => {
     console.error(`Failed to analyze ${file.name}.`, err);
     throw err;
   }
-};
+});
 // [END functions_imagemagick_analyze]
 
 // [START functions_imagemagick_blur]

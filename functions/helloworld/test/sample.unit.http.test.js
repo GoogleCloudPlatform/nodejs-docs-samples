@@ -12,50 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// FF testing layer for declarative signatures
 const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 describe('functions_helloworld_http', () => {
   // [START functions_http_unit_test]
-  const assert = require('assert');
   const sinon = require('sinon');
-  const uuid = require('uuid');
+  const assert = require('assert');
+  require('../');
 
-  require('..');
-  const helloHttp = getFunction('helloHttp');
+  const getMocks = () => {
+    const req = {body: {}, query: {}};
 
-  it('helloHttp: should print a name', () => {
-    // Mock ExpressJS 'req' and 'res' parameters
-    const name = uuid.v4();
-    const req = {
-      query: {},
-      body: {
-        name: name,
+    return {
+      req: req,
+      res: {
+        send: sinon.stub().returnsThis(),
       },
     };
-    const res = {send: sinon.stub()};
+  };
 
-    // Call tested function
-    helloHttp(req, res);
+  it('helloHttp: should print a name', () => {
+    const mocks = getMocks();
 
-    // Verify behavior of tested function
-    assert.ok(res.send.calledOnce);
-    assert.deepStrictEqual(res.send.firstCall.args, [`Hello ${name}!`]);
+    const helloHttp = getFunction('helloHttp');
+    helloHttp(mocks.req, mocks.res);
+
+    assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
   });
   // [END functions_http_unit_test]
+  it('helloHttp: should print a name with query', () => {
+    const mocks = getMocks();
+    mocks.req.query = {name: 'John'};
 
-  it('helloHttp: should print hello world', () => {
-    // Mock ExpressJS 'req' and 'res' parameters
-    const req = {
-      query: {},
-      body: {},
-    };
-    const res = {send: sinon.stub()};
+    const helloHttp = getFunction('helloHttp');
+    helloHttp(mocks.req, mocks.res);
 
-    // Call tested function
-    helloHttp(req, res);
+    assert.strictEqual(mocks.res.send.calledOnceWith('Hello John!'), true);
+  });
 
-    // Verify behavior of tested function
-    assert.ok(res.send.calledOnce);
-    assert.deepStrictEqual(res.send.firstCall.args, ['Hello World!']);
+  it('helloHttp: should print a name with req body', () => {
+    const mocks = getMocks();
+    mocks.req.body = {name: 'John'};
+
+    const helloHttp = getFunction('helloHttp');
+    helloHttp(mocks.req, mocks.res);
+
+    assert.strictEqual(mocks.res.send.calledOnceWith('Hello John!'), true);
   });
 });

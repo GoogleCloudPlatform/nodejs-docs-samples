@@ -1,9 +1,9 @@
 {
-  "name": "nodejs-docs-samples-functions-slack",
+  "name": "nodejs-docs-samples-functions-v2-hello-big-query",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -15,14 +15,11 @@
     "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.0",
-    "@googleapis/kgsearch": "^0.2.0",
-    "@slack/events-api": "^3.0.0"
+    "@google-cloud/bigquery": "^5.12.0",
+    "@google-cloud/functions-framework": "^3.1.0"
   },
   "devDependencies": {
-    "mocha": "^9.0.0",
-    "proxyquire": "^2.1.0",
-    "sinon": "^13.0.0",
-    "supertest": "^6.2.3"
+    "mocha": "^9.1.3",
+    "supertest": "^6.0.0"
   }
 }

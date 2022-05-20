@@ -15,10 +15,11 @@
 'use strict';
 
 const assert = require('assert');
+const {spawn} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
-const supertest = require('supertest');
-const functionsFramework = require('@google-cloud/functions-framework/testing');
+const {request} = require('gaxios');
+const waitPort = require('wait-port');
 
 const storage = new Storage();
 
@@ -27,11 +28,31 @@ const {BLURRED_BUCKET_NAME} = process.env;
 const blurredBucket = storage.bucket(BLURRED_BUCKET_NAME);
 
 const testFiles = {
-  safe: 'wakeupcat.jpg',
+  safe: 'bicycle.jpg',
   offensive: 'zombie.jpg',
 };
 
-require('../index');
+async function startFF(port) {
+  const ffProc = spawn('npx', [
+    'functions-framework',
+    '--target',
+    'blurOffensiveImages',
+    '--signature-type',
+    'event',
+    '--port',
+    port,
+  ]);
+  const ffProcHandler = new Promise((resolve, reject) => {
+    let stdout = '';
+    let stderr = '';
+    ffProc.stdout.on('data', data => (stdout += data));
+    ffProc.stderr.on('data', data => (stderr += data));
+    ffProc.on('error', reject);
+    ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
+  });
+  await waitPort({host: 'localhost', port});
+  return {ffProc, ffProcHandler};
+}
 
 describe('functions/imagemagick tests', () => {
   before(async () => {
@@ -51,48 +72,50 @@ describe('functions/imagemagick tests', () => {
     }
   });
 
-  beforeEach(() => sinon.stub(console, 'log'));
-  afterEach(() => console.log.restore());
+  beforeEach(() => sinon.stub(console, 'error'));
+  afterEach(() => console.error.restore());
 
   describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
-      const event = {
-        id: '1234',
-        type: 'mock-gcs-event',
-        data: {
-          bucket: BUCKET_NAME,
-          name: testFiles.safe,
-        },
-      };
+      const PORT = 8080;
+      const {ffProc, ffProcHandler} = await startFF(PORT);
 
-      const server = functionsFramework.getTestServer('blurOffensiveImages');
-      await supertest(server)
-        .post('/')
-        .send(event)
-        .set('Content-Type', 'application/json')
-        .expect(204);
+      await request({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
+        data: {
+          data: {
+            bucket: BUCKET_NAME,
+            name: testFiles.safe,
+          },
+        },
+      });
+      ffProc.kill();
+      const stdout = await ffProcHandler;
+      assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
     });
 
     it('blurOffensiveImages successfully blurs offensive images', async () => {
-      const event = {
-        id: '1234',
-        type: 'mock-gcs-event',
+      const PORT = 8081;
+      const {ffProc, ffProcHandler} = await startFF(PORT);
+
+      await request({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
         data: {
-          bucket: BUCKET_NAME,
-          name: testFiles.offensive,
+          data: {
+            bucket: BUCKET_NAME,
+            name: testFiles.offensive,
+          },
         },
-      };
+      });
 
-      const server = functionsFramework.getTestServer('blurOffensiveImages');
-      await supertest(server)
-        .post('/')
-        .send(event)
-        .set('Content-Type', 'application/json')
-        .expect(204);
+      ffProc.kill();
+      const stdout = await ffProcHandler;
 
-      assert(console.log.calledWith(`Blurred image: ${testFiles.offensive}`));
-      assert(
-        console.log.calledWith(
+      assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
+      assert.ok(
+        stdout.includes(
           `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
         )
       );
@@ -105,24 +128,24 @@ describe('functions/imagemagick tests', () => {
     });
 
     it('blurOffensiveImages detects missing images as safe using Cloud Vision', async () => {
+      const PORT = 8082;
+      const {ffProc, ffProcHandler} = await startFF(PORT);
       const missingFileName = 'file-does-not-exist.jpg';
-      const event = {
-        id: '1234',
-        type: 'mock-gcs-event',
+
+      await request({
+        url: `http://localhost:${PORT}/blurOffensiveImages`,
+        method: 'POST',
         data: {
-          bucket: BUCKET_NAME,
-          name: missingFileName,
+          data: {
+            bucket: BUCKET_NAME,
+            name: missingFileName,
+          },
         },
-      };
+      });
 
-      const server = functionsFramework.getTestServer('blurOffensiveImages');
-      await supertest(server)
-        .post('/')
-        .send(event)
-        .set('Content-Type', 'application/json')
-        .expect(204);
-
-      assert(console.log.calledWith(`Detected ${missingFileName} as OK.`));
+      ffProc.kill();
+      const stdout = await ffProcHandler;
+      assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
     });
   });
 
@@ -130,7 +153,7 @@ describe('functions/imagemagick tests', () => {
     try {
       await blurredBucket.file(testFiles.offensive).delete();
     } catch (err) {
-      console.error('Error deleting uploaded file:', err.message);
+      console.log('Error deleting uploaded file:', err.message);
     }
   });
 });

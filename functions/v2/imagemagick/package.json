@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-docs-samples-functions-slack",
+  "name": "nodejs-docs-samples-functions-imagemagick",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -16,8 +16,9 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.0",
-    "@googleapis/kgsearch": "^0.2.0",
-    "@slack/events-api": "^3.0.0"
+    "@google-cloud/storage": "^5.0.0",
+    "@google-cloud/vision": "^2.0.0",
+    "gm": "^1.23.1"
   },
   "devDependencies": {
     "mocha": "^9.0.0",

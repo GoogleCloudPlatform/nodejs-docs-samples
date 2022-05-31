@@ -12,7 +12,7 @@
     "test": "mocha test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.0",
+    "@google-cloud/functions-framework": "^3.1.1",
     "@google-cloud/logging": "^9.8.0"
   },
   "devDependencies": {

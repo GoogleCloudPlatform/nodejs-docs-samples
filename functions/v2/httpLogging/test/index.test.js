@@ -28,12 +28,12 @@ describe('functions_structured_logging', () => {
   let projectId;
   const mockTraceValue = '15000';
 
+  const writeStub = sinon.stub();
+  const writeOriginal = process.stdout.write;
+
   before(async () => {
     const logging = new Logging();
     projectId = await logging.auth.getProjectId();
-
-    // Adding a spy to the write function in stdout
-    sinon.spy(process.stdout, 'write');
 
     mockReq = {
       requestMethod: 'GET',
@@ -48,15 +48,18 @@ describe('functions_structured_logging', () => {
     };
   });
 
-  afterEach(() => {
-    process.stdout.write.restore();
-  });
-
   it('structuredLogging functions http: should correctly print logs', async () => {
     const structuredLogging = getFunction('structuredLogging');
 
+    // Only stub process.stdout.write for this function
+    // (This stub would otherwise swallow *all* console output)
+    process.stdout.write = writeStub;
+
     // Call our function with dummy request and response objects
     await structuredLogging(mockReq, mockRes);
+
+    // Restore process.stdout.write (to avoid breaking console output)
+    process.stdout.write = writeOriginal;
 
     const expected = {
       severity: 'NOTICE',
@@ -66,11 +69,11 @@ describe('functions_structured_logging', () => {
       'logging.googleapis.com/trace': `projects/${projectId}/traces/${mockTraceValue}`,
     };
 
-    assert.ok(process.stdout.write.calledOnce);
-    assert.ok(process.stdout.write.getCall(0).args.length);
+    assert.ok(writeStub.callCount);
+    assert.ok(writeStub.getCall(0).args.length);
 
     // Capture the string output & parse
-    const result = JSON.parse(process.stdout.write.getCall(0).args[0]);
+    const result = JSON.parse(writeStub.getCall(0).args[0]);
 
     assert.equal(result.message, 'Hello, world!');
     assert.equal(result.severity, expected['severity']);

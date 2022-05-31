@@ -1,5 +1,7 @@
 name: functions-v2-cloudeventlogging
 on:
+  schedule:
+  - cron:  '0 2 * * *'
   push:
     branches:
     - main
@@ -10,8 +12,6 @@ on:
     - 'functions/v2/cloudEventLogging/**'
   pull_request_target:
     types: [labeled]
-  schedule:
-  - cron:  '0 2 * * *'
 jobs:
   test:
     if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}

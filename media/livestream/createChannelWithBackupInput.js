@@ -75,10 +75,10 @@ function main(
             key: 'es_video',
             videoStream: {
               h264: {
-                profile: 'main',
+                profile: 'high',
                 heightPixels: 720,
                 widthPixels: 1280,
-                bitrateBps: 1000000,
+                bitrateBps: 3000000,
                 frameRate: 30,
               },
             },

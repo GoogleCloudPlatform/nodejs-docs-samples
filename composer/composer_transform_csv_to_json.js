@@ -39,7 +39,7 @@ module.exports = function main(
       }
     }
 
-    const jsonString = JSON.stringify(weatherInCity);
+    let jsonString = JSON.stringify(weatherInCity);
     return jsonString;
   }
 

@@ -108,7 +108,7 @@ exports.helloError = (event, context, callback) => {
  */
 exports.helloError2 = (event, context, callback) => {
   // [START functions_helloworld_error]
-  // These will NOT be reported to Error Reporting
+  // These WILL be reported to Error Reporting
   console.error(new Error('I failed you')); // Logging an Error object
   console.error('I failed you'); // Logging something other than an Error object
   throw 1; // Throwing something other than an Error object

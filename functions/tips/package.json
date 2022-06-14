@@ -15,7 +15,7 @@
     "test": "mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^2.0.0",
+    "@google-cloud/pubsub": "^3.0.0",
     "mocha": "^9.0.0"
   },
   "devDependencies": {

@@ -39,8 +39,7 @@ module.exports = function main(
       }
     }
 
-    let jsonString = JSON.stringify(weatherInCity);
-    return jsonString;
+    return (JSON.stringify(weatherInCity));
   }
 
   // [END composer_transform_csv_to_json]

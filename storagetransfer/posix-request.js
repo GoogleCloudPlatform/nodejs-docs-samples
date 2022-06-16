@@ -39,7 +39,7 @@ async function main(
   // const sourceAgentPoolName = 'projects/my-project/agentPools/transfer_service_default'
 
   // The root directory path on the source filesystem
-  // const rootDirectory = '/directory/to/transfer/source',
+  // const rootDirectory = '/directory/to/transfer/source'
 
   // The ID of the GCS bucket to transfer data to
   // const gcsSinkBucket = 'my-sink-bucket'

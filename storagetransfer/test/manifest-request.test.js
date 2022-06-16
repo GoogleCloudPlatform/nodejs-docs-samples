@@ -72,7 +72,7 @@ describe('manifest-request', () => {
     await fs.rmdir(rootDirectory);
   });
 
-  it('should create a transfer job with a manifest from POSIX to GCS', async () => {
+  it('should create a transfer job using a manifest from POSIX to GCS', async () => {
     const output = await runSample('manifest-request', [
       projectId,
       sourceAgentPoolName,

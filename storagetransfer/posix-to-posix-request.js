@@ -44,7 +44,7 @@ async function main(
   // const sinkAgentPoolName = 'projects/my-project/agentPools/transfer_service_default'
 
   // The root directory path on the source filesystem
-  // const rootDirectory = '/directory/to/transfer/source',
+  // const rootDirectory = '/directory/to/transfer/source'
 
   // The root directory path on the sink filesystem
   // const destinationDirectory = '/directory/to/transfer/sink'

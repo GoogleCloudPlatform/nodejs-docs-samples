@@ -40,12 +40,12 @@ async function main(
   // const sourceAgentPoolName = 'projects/my-project/agentPools/transfer_service_default'
 
   // The root directory path on the source filesystem
-  // const rootDirectory = '/directory/to/transfer/source',
+  // const rootDirectory = '/directory/to/transfer/source'
 
   // The ID of the GCS bucket to transfer data to
   // const gcsSinkBucket = 'my-sink-bucket'
 
-  // Transfer manifest location. Must be a
+  // Transfer manifest location. Must be a `gs:` URL
   // const manifestLocation = 'gs://my-bucket/sample_manifest.csv'
 
   // Creates a client
@@ -54,7 +54,7 @@ async function main(
   /**
    * Creates a request to transfer from the local file system to the sink bucket
    */
-  async function transferDirectory() {
+  async function transferViaManifest() {
     const createRequest = {
       transferJob: {
         projectId,
@@ -87,7 +87,7 @@ async function main(
     );
   }
 
-  transferDirectory();
+  transferViaManifest();
   // [END storagetransfer_manifest_request]
 }
 

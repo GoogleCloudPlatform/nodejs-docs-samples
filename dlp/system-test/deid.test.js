@@ -53,18 +53,6 @@ describe('deid', () => {
     assert.include(output, harmlessString);
   });
 
-  it('should handle masking errors', () => {
-    let output;
-    try {
-      output = cp.execSync(
-        `node deidentifyWithMask.js ${projectId} "${harmfulString}" 'a' '-1'`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'INVALID_ARGUMENT');
-  });
-
   // deidentify_fpe
   it('should handle FPE encryption errors', () => {
     let output;

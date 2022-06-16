@@ -14,10 +14,10 @@
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@google-cloud/billing": "^2.2.2",
+    "@google-cloud/billing": "^3.0.0",
     "@google-cloud/compute": "^3.1.0",
     "google-auth-library": "^7.0.0",
-    "googleapis": "^101.0.0",
+    "googleapis": "^102.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {

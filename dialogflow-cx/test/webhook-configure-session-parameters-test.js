@@ -39,7 +39,7 @@ describe('configure session parameters', () => {
     const request = {
       body: {
         fulfillmentInfo: {
-          tag: 'month',
+          tag: 'configure-session-parameter',
         },
       },
     };
@@ -53,27 +53,6 @@ describe('configure session parameters', () => {
     };
 
     webhook.configureSessionParams(JSON.parse(temp), res);
-    assert.include(response, 'January');
-  });
-
-  it('should test that webhook configures session parameter', async () => {
-    const request = {
-      body: {
-        fulfillmentInfo: {
-          tag: 'year',
-        },
-      },
-    };
-    const temp = JSON.stringify(request);
-    let response = '';
-
-    const res = {
-      send: function (s) {
-        response = JSON.stringify(s);
-      },
-    };
-
-    webhook.configureSessionParams(JSON.parse(temp), res);
-    assert.include(response, '1999');
+    assert.include(response, 'orderNumber');
   });
 });

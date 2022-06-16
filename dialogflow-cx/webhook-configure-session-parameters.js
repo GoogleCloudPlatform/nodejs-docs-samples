@@ -13,36 +13,19 @@
 // limitations under the License.
 
 /**
- * Configures a webhook to configure new session parameters
+ * Configures a webhook to set a session parameter
  */
 
 // [START dialogflow_cx_v3_webhook_configure_session_parameters]
 
 exports.configureSessionParams = (request, response) => {
-  const tag = request.body.fulfillmentInfo.tag;
-  let newSessionParameter;
-  const text = `${newSessionParameter}. I'm a session parameter configured by the webhook. The webhook's tag is ${tag}.`;
-
-  if (tag === 'month') {
-    newSessionParameter = 'January';
-  } else if (tag === 'year') {
-    newSessionParameter = '1999';
-  }
+  // Session parameter configured by the webhook
+  const orderNumber = 123;
 
   const jsonResponse = {
-    fulfillment_response: {
-      messages: [
-        {
-          text: {
-            //fulfillment text response to be sent to the agent
-            text: [text],
-          },
-        },
-      ],
-    },
     sessionInfo: {
       parameters: {
-        newSessionParameter: newSessionParameter,
+        orderNumber: orderNumber,
       },
     },
   };

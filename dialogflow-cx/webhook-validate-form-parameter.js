@@ -19,47 +19,26 @@
 // [START dialogflow_cx_v3_webhook_validate_form_parameter]
 
 exports.validateParameter = (request, response) => {
-  // The value of the parameter to validate
-  let paramToValidate = request.body.pageInfo.formInfo.parameterInfo[0].value;
-  let text = '';
-  let paramState;
-
-  // Webhook will validate or invalidate parameter based on conditions configured by the user
-  if (paramToValidate > 15) {
-    text = 'That is too many! Please pick another number.';
-    paramState = 'INVALID';
-    paramToValidate = null;
-  } else {
-    text = 'That is a number I can work with!';
-    paramState = 'VALID';
-  }
+  // Webhook will validate or invalidate parameter based on logic configured by the user.
+  // Access parameter values through the webhook request via `request.body.pageInfo.formInfo.parameterInfo[]`
 
   const jsonResponse = {
-    fulfillment_response: {
-      messages: [
-        {
-          text: {
-            //fulfillment text response to be sent to the agent
-            text: [text],
-          },
-        },
-      ],
-    },
     page_info: {
       form_info: {
         parameter_info: [
           {
-            displayName: 'paramToValidate',
+            displayName: 'orderNumber',
             required: true,
-            state: paramState,
+            state: 'INVALID',
+            value: 123,
           },
         ],
       },
     },
     sessionInfo: {
       parameters: {
-        // Set session parameter to null if your agent needs to reprompt the user
-        paramToValidate: paramToValidate,
+        // Set session parameter to null if the form parameter is 'INVALID' and your agent needs to reprompt the user
+        orderNumber: null,
       },
     },
   };

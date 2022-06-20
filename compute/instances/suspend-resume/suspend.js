@@ -17,7 +17,7 @@
  *
  * @param {string} projectId - Project ID or project number of the Cloud project you want to use.
  * @param {string} zone - Name of the zone to create the instance in. For example: "us-west3-b"
- * @param {string} instanceName - Name of the new virtual machine (VM) instance.
+ * @param {string} instanceName - Name of the virtual machine (VM) instance that you want to suspend.
  */
 function main(projectId, zone, instanceName) {
   // [START compute_suspend_instance]

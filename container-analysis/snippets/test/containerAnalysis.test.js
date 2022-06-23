@@ -405,10 +405,19 @@ describe('pubsub', () => {
       this.retries(3);
       await delay(this.test);
 
-      await client
-        .getGrafeasClient()
-        .deleteNote({name: `${formattedNoteName}-pubsub`});
-      await pubsub.subscription(subscriptionId).delete();
+      try {
+        await client
+          .getGrafeasClient()
+          .deleteNote({name: `${formattedNoteName}-pubsub`});
+      } catch (err) {
+        assert.fail(err);
+      }
+
+      try {
+        await pubsub.subscription(subscriptionId).delete();
+      } catch (err) {
+        assert.fail(err);
+      }
     });
   });
 });

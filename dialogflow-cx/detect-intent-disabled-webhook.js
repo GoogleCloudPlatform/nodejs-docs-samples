@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 'use strict';
 
 async function main(projectId, location, agentId, query, languageCode) {
-  // [START dialogflow_cx_detect_intent_text]
+  // [START dialogflow_cx_detect_intent_with_disabled_webhook]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -25,7 +25,6 @@ async function main(projectId, location, agentId, query, languageCode) {
   // const query = 'Hello';
   // const languageCode = 'en'
 
-  // Imports the Google Cloud Some API library
   const {SessionsClient} = require('@google-cloud/dialogflow-cx');
   /**
    * Example for regional endpoint:
@@ -42,8 +41,13 @@ async function main(projectId, location, agentId, query, languageCode) {
       agentId,
       sessionId
     );
+    console.info(sessionPath);
+
     const request = {
       session: sessionPath,
+      queryParams: {
+        disableWebhook: true,
+      },
       queryInput: {
         text: {
           text: query,
@@ -52,23 +56,16 @@ async function main(projectId, location, agentId, query, languageCode) {
       },
     };
     const [response] = await client.detectIntent(request);
+    console.log(`Detect Intent Request: ${request.queryParams.disableWebhook}`);
     for (const message of response.queryResult.responseMessages) {
       if (message.text) {
         console.log(`Agent Response: ${message.text.text}`);
       }
     }
-    if (response.queryResult.match.intent) {
-      console.log(
-        `Matched Intent: ${response.queryResult.match.intent.displayName}`
-      );
-    }
-    console.log(
-      `Current Page: ${response.queryResult.currentPage.displayName}`
-    );
   }
 
   detectIntentText();
-  // [END dialogflow_cx_detect_intent_text]
+  // [END dialogflow_cx_detect_intent_with_disabled_webhook]
 }
 
 main(...process.argv.slice(2));

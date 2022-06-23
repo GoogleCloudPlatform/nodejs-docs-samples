@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,25 +19,18 @@ const {describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-describe('detect intent with text input', () => {
-  const cmd = 'node detect-intent-text.js';
+describe('detect intent with disabled webhook', () => {
+  const cmd = 'node detect-intent-disabled-webhook.js';
 
   const projectId = process.env.GCLOUD_PROJECT;
   const location = 'global';
   const agentId = 'b1808233-450b-4065-9492-bc9b40151641';
   const languageCode = 'en';
 
-  it('should respond to "hello"', async () => {
+  it('should have disableWebhook set to "true"', async () => {
     const output = exec(
       `${cmd} ${projectId} ${location} ${agentId} 'hello' ${languageCode}`
     );
-    assert.include(output, 'How can I assist you today?');
-  });
-
-  it('should respond to "reserve a van"', async () => {
-    const output = exec(
-      `${cmd} ${projectId} ${location} ${agentId} 'i need to reserve a van' ${languageCode}`
-    );
-    assert.include(output, 'Where would you like ');
+    assert.include(output, 'true');
   });
 });

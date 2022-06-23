@@ -17,11 +17,9 @@
 
 const path = require('path');
 const assert = require('assert');
-const {v4: uuidv4} = require('uuid');
 const {execSync} = require('child_process');
 const {describe, it, before, after} = require('mocha');
 
-const uniqueId = uuidv4().split('-')[0];
 const bucketName = 'cloud-samples-data/media';
 const vodFileName = 'hls-vod/manifest.m3u8';
 const liveFileName = 'hls-live/manifest.m3u8';
@@ -29,16 +27,10 @@ const liveFileName = 'hls-live/manifest.m3u8';
 const projectId = process.env.GCLOUD_PROJECT;
 const location = 'us-central1';
 const slateIdPrefix = 'nodejs-test-stitcher-slate-';
-const slateId = `${slateIdPrefix}${uniqueId}`;
 const slateUri = `https://storage.googleapis.com/${bucketName}/ForBiggerEscapes.mp4`;
-const slateName = `/locations/${location}/slates/${slateId}`;
 
 const akamaiCdnKeyIdPrefix = 'nodejs-test-stitcher-akamai-key-';
-const akamaiCdnKeyId = `${akamaiCdnKeyIdPrefix}${uniqueId}`;
-const akamaiCdnKeyName = `/locations/${location}/cdnKeys/${akamaiCdnKeyId}`;
 const googleCdnKeyIdPrefix = 'nodejs-test-stitcher-google-key-';
-const googleCdnKeyId = `${googleCdnKeyIdPrefix}${uniqueId}`;
-const googleCdnKeyName = `/locations/${location}/cdnKeys/${googleCdnKeyId}`;
 
 const hostname = 'cdn.example.com';
 const gCdnKeyname = 'gcdn-test-key';
@@ -75,7 +67,11 @@ async function getPage(url) {
 }
 
 before(() => {
-  // Delete existing test slates
+  // Delete existing test slates more than an hour old.
+
+  const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+  const ONE_HOUR_IN_SEC = 60 * 60 * 1;
+
   const slates = execSync(`node listSlates.js ${projectId} ${location}`, {cwd});
 
   slates
@@ -84,12 +80,27 @@ before(() => {
     .forEach(line => {
       if (line.includes(`locations/${location}/slates/${slateIdPrefix}`)) {
         this.nextId = line.split('/').pop();
-        execSync(
-          `node deleteSlate.js ${projectId} ${location} ${this.nextId}`,
-          {
-            cwd,
+        let createTime = this.nextId.split('-').pop();
+        createTime = parseInt(createTime);
+        if (
+          isNaN(createTime) === false &&
+          createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
+        ) {
+          try {
+            execSync(
+              `node deleteSlate.js ${projectId} ${location} ${this.nextId}`,
+              {
+                cwd,
+              }
+            );
+          } catch (err) {
+            if (err.message.includes('NOT_FOUND')) {
+              // Ignore not found error
+            } else {
+              throw err; // re-throw the error unchanged
+            }
           }
-        );
+        }
       }
     });
 
@@ -107,139 +118,163 @@ before(() => {
         line.includes(`locations/${location}/cdnKeys/${akamaiCdnKeyIdPrefix}`)
       ) {
         this.nextId = line.split('/').pop();
-
-        execSync(
-          `node deleteCdnKey.js ${projectId} ${location} ${this.nextId}`,
-          {
-            cwd,
+        let createTime = this.nextId.split('-').pop();
+        createTime = parseInt(createTime);
+        if (
+          isNaN(createTime) === false &&
+          createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
+        ) {
+          try {
+            execSync(
+              `node deleteCdnKey.js ${projectId} ${location} ${this.nextId}`,
+              {
+                cwd,
+              }
+            );
+          } catch (err) {
+            if (err.message.includes('NOT_FOUND')) {
+              // Ignore not found error
+            } else {
+              throw err; // re-throw the error unchanged
+            }
           }
-        );
+        }
       }
     });
 });
 
 describe('Slate functions', () => {
-  it('should create a slate', () => {
+  before(() => {
+    const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+    this.slateId = `${slateIdPrefix}${DATE_NOW_SEC}`;
+    this.slateName = `/locations/${location}/slates/${this.slateId}`;
+
     const output = execSync(
-      `node createSlate.js ${projectId} ${location} ${slateId} ${slateUri}`,
+      `node createSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
       {cwd}
     );
-    assert.ok(output.includes(slateName));
+    assert.ok(output.includes(this.slateName));
+  });
+
+  after(() => {
+    const output = execSync(
+      `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted slate'));
   });
 
   it('should show a list of slates', () => {
     const output = execSync(`node listSlates.js ${projectId} ${location}`, {
       cwd,
     });
-    assert.ok(output.includes(slateName));
+    assert.ok(output.includes(this.slateName));
   });
 
   it('should update a slate', () => {
     const output = execSync(
-      `node updateSlate.js ${projectId} ${location} ${slateId} ${slateUri}`,
+      `node updateSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
       {cwd}
     );
-    assert.ok(output.includes(slateName));
+    assert.ok(output.includes(this.slateName));
   });
 
   it('should get a slate', () => {
     const output = execSync(
-      `node getSlate.js ${projectId} ${location} ${slateId}`,
+      `node getSlate.js ${projectId} ${location} ${this.slateId}`,
       {cwd}
     );
-    assert.ok(output.includes(slateName));
-  });
-
-  it('should delete a slate', () => {
-    const output = execSync(
-      `node deleteSlate.js ${projectId} ${location} ${slateId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted slate'));
+    assert.ok(output.includes(this.slateName));
   });
 });
 
-describe('CDN key functions', () => {
-  // Google CDN
+describe('Google CDN key functions', () => {
+  before(() => {
+    const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+    this.googleCdnKeyId = `${googleCdnKeyIdPrefix}${DATE_NOW_SEC}`;
+    this.googleCdnKeyName = `/locations/${location}/cdnKeys/${this.googleCdnKeyId}`;
 
-  it('should create a Google CDN key', () => {
     const output = execSync(
-      `node createCdnKey.js ${projectId} ${location} ${googleCdnKeyId} ${hostname} ${gCdnKeyname} ${gCdnPrivateKey} ''`,
+      `node createCdnKey.js ${projectId} ${location} ${this.googleCdnKeyId} ${hostname} ${gCdnKeyname} ${gCdnPrivateKey} ''`,
       {cwd}
     );
-    assert.ok(output.includes(googleCdnKeyName));
+    assert.ok(output.includes(this.googleCdnKeyName));
   });
 
-  it('should show a list of CDN keys', () => {
+  after(() => {
+    const output = execSync(
+      `node deleteCdnKey.js ${projectId} ${location} ${this.googleCdnKeyId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted CDN key'));
+  });
+
+  it('should show a list of Google CDN keys', () => {
     const output = execSync(`node listCdnKeys.js ${projectId} ${location}`, {
       cwd,
     });
-    assert.ok(output.includes(googleCdnKeyName));
+    assert.ok(output.includes(this.googleCdnKeyName));
   });
 
   it('should update a Google CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${location} ${googleCdnKeyId} ${hostname} ${gCdnKeyname} ${gCdnPrivateKey} ''`,
+      `node updateCdnKey.js ${projectId} ${location} ${this.googleCdnKeyId} ${hostname} ${gCdnKeyname} ${gCdnPrivateKey} ''`,
       {cwd}
     );
-    assert.ok(output.includes(googleCdnKeyName));
+    assert.ok(output.includes(this.googleCdnKeyName));
   });
 
   it('should get a Google CDN key', () => {
     const output = execSync(
-      `node getCdnKey.js ${projectId} ${location} ${googleCdnKeyId}`,
+      `node getCdnKey.js ${projectId} ${location} ${this.googleCdnKeyId}`,
       {cwd}
     );
-    assert.ok(output.includes(googleCdnKeyName));
+    assert.ok(output.includes(this.googleCdnKeyName));
+  });
+});
+
+describe('Akamai CDN key functions', () => {
+  before(() => {
+    const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+    this.akamaiCdnKeyId = `${akamaiCdnKeyIdPrefix}${DATE_NOW_SEC}`;
+    this.akamaiCdnKeyName = `/locations/${location}/cdnKeys/${this.akamaiCdnKeyId}`;
+
+    const output = execSync(
+      `node createCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId} ${hostname} '' '' ${akamaiTokenKey}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.akamaiCdnKeyName));
   });
 
-  it('should delete a Google CDN key', () => {
+  after(() => {
     const output = execSync(
-      `node deleteCdnKey.js ${projectId} ${location} ${googleCdnKeyId}`,
+      `node deleteCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId}`,
       {cwd}
     );
     assert.ok(output.includes('Deleted CDN key'));
   });
 
-  // Akamai CDN
-
-  it('should create an Akamai CDN key', () => {
-    const output = execSync(
-      `node createCdnKey.js ${projectId} ${location} ${akamaiCdnKeyId} ${hostname} '' '' ${akamaiTokenKey}`,
-      {cwd}
-    );
-    assert.ok(output.includes(akamaiCdnKeyName));
-  });
-
-  it('should show a list of CDN keys', () => {
+  it('should show a list of Akamai CDN keys', () => {
     const output = execSync(`node listCdnKeys.js ${projectId} ${location}`, {
       cwd,
     });
-    assert.ok(output.includes(akamaiCdnKeyName));
+    assert.ok(output.includes(this.akamaiCdnKeyName));
   });
 
   it('should update an Akamai CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${location} ${akamaiCdnKeyId} ${hostname} '' '' ${akamaiTokenKey}`,
+      `node updateCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId} ${hostname} '' '' ${akamaiTokenKey}`,
       {cwd}
     );
-    assert.ok(output.includes(akamaiCdnKeyName));
+    assert.ok(output.includes(this.akamaiCdnKeyName));
   });
 
   it('should get an Akamai CDN key', () => {
     const output = execSync(
-      `node getCdnKey.js ${projectId} ${location} ${akamaiCdnKeyId}`,
+      `node getCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId}`,
       {cwd}
     );
-    assert.ok(output.includes(akamaiCdnKeyName));
-  });
-
-  it('should delete an Akamai CDN key', () => {
-    const output = execSync(
-      `node deleteCdnKey.js ${projectId} ${location} ${akamaiCdnKeyId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted CDN key'));
+    assert.ok(output.includes(this.akamaiCdnKeyName));
   });
 });
 
@@ -317,27 +352,28 @@ describe('VOD session functions', () => {
 
 describe('Live session functions', () => {
   before(() => {
-    // Delete the slate if it already exists
-    try {
-      execSync(`node deleteSlate.js ${projectId} ${location} ${slateId}`, {
-        cwd,
-      });
-    } catch (err) {
-      // Ignore not found error
-    }
-    execSync(
-      `node createSlate.js ${projectId} ${location} ${slateId} ${slateUri}`,
+    const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+    this.slateId = `${slateIdPrefix}${DATE_NOW_SEC}`;
+    this.slateName = `/locations/${location}/slates/${this.slateId}`;
+
+    const output = execSync(
+      `node createSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
       {cwd}
     );
+    assert.ok(output.includes(this.slateName));
   });
 
   after(() => {
-    execSync(`node deleteSlate.js ${projectId} ${location} ${slateId}`, {cwd});
+    const output = execSync(
+      `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted slate'));
   });
 
   it('should create and get a live session and list and get ad tag details', async function () {
     let output = execSync(
-      `node createLiveSession.js ${projectId} ${location} ${liveUri} ${liveAdTagUri} ${slateId}`,
+      `node createLiveSession.js ${projectId} ${location} ${liveUri} ${liveAdTagUri} ${this.slateId}`,
       {cwd}
     );
     assert.ok(output.includes(liveSessionPrefix));

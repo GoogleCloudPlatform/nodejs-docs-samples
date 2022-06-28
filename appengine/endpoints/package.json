@@ -10,7 +10,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": "12.x.x"
+    "node": "16.x"
   },
   "scripts": {
     "deploy": "gcloud app deploy",

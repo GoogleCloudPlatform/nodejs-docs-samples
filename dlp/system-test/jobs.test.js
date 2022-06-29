@@ -118,7 +118,7 @@ describe('test', () => {
   });
 
   it('should list jobs of a given type', async function () {
-    this.retries(5);
+    this.retries(7);
     await delay(this.test);
     const output = execSync(
       `node listJobs.js ${projectId} 'state=DONE' RISK_ANALYSIS_JOB`

@@ -16,7 +16,7 @@
 
 const vision = require('@google-cloud/vision');
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 const path = require('path');
 
@@ -29,22 +29,29 @@ const gcsUri = 'gs://cloud-samples-data/vision/product_search/shoes_1.jpg';
 
 const productSearch = new vision.ProductSearchClient();
 
-// Shared fixture data for product tests
-//Need to have a product set already imported and indexed
-// (gs://nodejs-docs-samples/product-search/indexed_product_sets.csv)
-const testSimilarProducts = {
-  projectId: process.env.GCLOUD_PROJECT,
-  location: 'us-west1',
-  productSetId: 'indexed_product_set_id_for_testing',
-  productCategory: 'apparel',
-};
-testSimilarProducts.productPath = productSearch.productSetPath(
-  testSimilarProducts.projectId,
-  testSimilarProducts.location,
-  testSimilarProducts.productSetId
-);
+let testSimilarProducts;
 
-describe('similar products', () => {
+// Refs: https://github.com/googleapis/nodejs-vision/issues/1025
+describe.skip('similar products', () => {
+  let projectId;
+  before(async () => {
+    projectId = await productSearch.getProjectId();
+
+    // Shared fixture data for product tests
+    //Need to have a product set already imported and indexed
+    // (gs://nodejs-docs-samples/product-search/indexed_product_sets.csv)
+    testSimilarProducts = {
+      projectId,
+      location: 'us-west1',
+      productSetId: 'indexed_product_set_id_for_testing',
+      productCategory: 'apparel',
+    };
+    testSimilarProducts.productPath = productSearch.productSetPath(
+      testSimilarProducts.projectId,
+      testSimilarProducts.location,
+      testSimilarProducts.productSetId
+    );
+  });
   it('should check if similar product exists to one provided in local file with no filter', async () => {
     const output = execSync(
       `${cmd}/getSimilarProducts "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[0]}"`

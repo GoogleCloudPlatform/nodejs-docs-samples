@@ -21,7 +21,8 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Text Detection', () => {
+// Refs: https://github.com/googleapis/nodejs-vision/issues/1025
+describe.skip('Text Detection', () => {
   it('should detect texts', async () => {
     const inputDir = path.join(__dirname, '../resources');
     try {

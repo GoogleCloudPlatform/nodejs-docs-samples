@@ -15,24 +15,32 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, before} = require('mocha');
 const cp = require('child_process');
+const vision = require('@google-cloud/vision');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node productSearch/importProductSets';
-
-//Shared fixture data for product tests
-const testImportProductSets = {
-  projectId: process.env.GCLOUD_PROJECT,
-  location: 'us-west1',
-  gcsUri: 'gs://cloud-samples-data/vision/product_search/product_sets.csv',
-};
-
+const productSearchClient = new vision.ProductSearchClient();
 describe('import product sets', () => {
+  let testImportProductSets;
+  let projectId;
+
+  before(async () => {
+    projectId = await productSearchClient.getProjectId();
+
+    //Shared fixture data for product tests
+    testImportProductSets = {
+      projectId,
+      location: 'us-west1',
+      gcsUri: 'gs://cloud-samples-data/vision/product_search/product_sets.csv',
+    };
+  });
+
   it('should import a Product Set', async () => {
     const output = execSync(
-      `${cmd} ${testImportProductSets.projectId} ${testImportProductSets.location} ${testImportProductSets.gcsUri}`
+      `${cmd} ${projectId} ${testImportProductSets.location} ${testImportProductSets.gcsUri}`
     );
     assert.match(output, /Processing done./);
   });

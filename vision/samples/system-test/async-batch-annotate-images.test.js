@@ -50,6 +50,6 @@ describe('detect v1 p4 beta1', () => {
     const output = execSync(
       `${cmd} gs://${bucketName}/${files[1].name} gs://${bucketName}/out/`
     );
-    assert.match(output, /Json saved to: gs:\/\//);
+    assert.match(output, /Output written to GCS with prefix: gs:\/\//);
   });
 });

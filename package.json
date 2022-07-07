@@ -17,7 +17,7 @@
     "test": "echo 'Please run tests in each sample directory.' && exit 1"
   },
   "devDependencies": {
-    "gts": "^3.0.0",
+    "gts": "^4.0.0",
     "typescript": "^4.0.5"
   }
 }

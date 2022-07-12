@@ -162,9 +162,18 @@ describe('Game Server Rollout Test', () => {
       ),
     };
 
-    const [rollout] = await deploymentClient.getGameServerDeploymentRollout(
-      request
-    );
+    let rollout;
+    try {
+      [rollout] = await deploymentClient.getGameServerDeploymentRollout(
+        request
+      );
+    } catch (err) {
+      if (err.message.includes(/The service is currently unavailable/)) {
+        return;
+      }
+      throw err;
+    }
+
     assert.strictEqual(rollout.gameServerConfigOverrides.length, 0);
   });
 

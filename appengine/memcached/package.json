@@ -19,6 +19,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^9.0.0",
-    "wait-port": "^0.2.7"
+    "wait-port": "^0.3.0"
   }
 }

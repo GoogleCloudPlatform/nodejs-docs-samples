@@ -267,4 +267,29 @@ describe('create start instance tests', () => {
     assert.match(output, /Instance created./);
     execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
   });
+
+  it('should create instance with existing disks', async () => {
+    const projectId = await instancesClient.getProjectId();
+
+    const [newestDebian] = await imagesClient.getFromFamily({
+      project: 'debian-cloud',
+      family: 'debian-11',
+    });
+
+    const bootDiskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
+    const diskName2 = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
+
+    await createDisk(projectId, zone, bootDiskName, newestDebian.selfLink);
+    await createDisk(projectId, zone, diskName2, newestDebian.selfLink);
+
+    const output = execSync(
+      `node instances/create-start-instance/createInstanceWithExistingDisks ${projectId} ${zone} ${instanceName} ${bootDiskName},${diskName2}`
+    );
+    assert.match(output, /Instance created./);
+
+    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+
+    await deleteDisk(projectId, zone, diskName2);
+    await deleteDisk(projectId, zone, bootDiskName);
+  });
 });

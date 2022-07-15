@@ -31,7 +31,7 @@ function main(projectId, location, channelId) {
   const livestreamServiceClient = new LivestreamServiceClient();
 
   async function listChannelEvents() {
-    const [events] = await livestreamServiceClient.listEvents({
+    const iterable = await livestreamServiceClient.listEventsAsync({
       parent: livestreamServiceClient.channelPath(
         projectId,
         location,
@@ -39,8 +39,8 @@ function main(projectId, location, channelId) {
       ),
     });
     console.info('Channel events:');
-    for (const event of events) {
-      console.info(event.name);
+    for await (const response of iterable) {
+      console.log(response.name);
     }
   }
 

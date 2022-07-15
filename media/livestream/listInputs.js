@@ -30,12 +30,12 @@ function main(projectId, location) {
   const livestreamServiceClient = new LivestreamServiceClient();
 
   async function listInputs() {
-    const [inputs] = await livestreamServiceClient.listInputs({
+    const iterable = await livestreamServiceClient.listInputsAsync({
       parent: livestreamServiceClient.locationPath(projectId, location),
     });
     console.info('Inputs:');
-    for (const input of inputs) {
-      console.info(input.name);
+    for await (const response of iterable) {
+      console.log(response.name);
     }
   }
 

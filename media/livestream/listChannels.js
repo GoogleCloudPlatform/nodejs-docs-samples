@@ -30,12 +30,12 @@ function main(projectId, location) {
   const livestreamServiceClient = new LivestreamServiceClient();
 
   async function listChannels() {
-    const [channels] = await livestreamServiceClient.listChannels({
+    const iterable = await livestreamServiceClient.listChannelsAsync({
       parent: livestreamServiceClient.locationPath(projectId, location),
     });
     console.info('Channels:');
-    for (const channel of channels) {
-      console.info(channel.name);
+    for await (const response of iterable) {
+      console.log(response.name);
     }
   }
 

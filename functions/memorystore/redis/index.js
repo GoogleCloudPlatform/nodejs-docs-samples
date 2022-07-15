@@ -22,7 +22,13 @@ const redis = require('redis');
 const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
-const redisClient = redis.createClient(REDISPORT, REDISHOST);
+const redisClient = redis.createClient({
+  socket: {
+    port: REDISPORT,
+    host: REDISHOST,
+  },
+});
+redisClient.connect();
 redisClient.on('error', err => console.error('ERR:REDIS:', err));
 
 const incrAsync = promisify(redisClient.incr).bind(redisClient);

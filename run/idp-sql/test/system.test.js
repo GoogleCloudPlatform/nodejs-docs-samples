@@ -80,12 +80,18 @@ describe('System Tests', () => {
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
       {
         method: 'POST',
+        retry: {
+          limit: 5,
+          statusCodes: [404, 401, 403, 500],
+          methods: ['POST'],
+        },
         body: JSON.stringify({
           token: customToken,
           returnSecureToken: true,
         }),
       }
     );
+
     const tokens = JSON.parse(response.body);
     ID_TOKEN = tokens.idToken;
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
@@ -115,6 +121,8 @@ describe('System Tests', () => {
   });
 
   it('Can make a POST request with token', async () => {
+    assert(ID_TOKEN && ID_TOKEN.length > 0);
+
     const options = {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
@@ -128,7 +136,14 @@ describe('System Tests', () => {
         methods: ['GET', 'POST'],
       },
     };
-    const response = await got('', options);
+
+    let response = {};
+    try {
+      response = await got('', options);
+    } catch (err) {
+      assert.fail('POST request with token failed with error: ', err);
+    }
+
     assert.strictEqual(response.statusCode, 200);
   });
 

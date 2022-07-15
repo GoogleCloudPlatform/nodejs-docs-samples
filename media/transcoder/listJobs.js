@@ -31,12 +31,12 @@ function main(projectId, location) {
   const transcoderServiceClient = new TranscoderServiceClient();
 
   async function listJobs() {
-    const [jobs] = await transcoderServiceClient.listJobs({
+    const iterable = await transcoderServiceClient.listJobsAsync({
       parent: transcoderServiceClient.locationPath(projectId, location),
     });
     console.info('Jobs:');
-    for (const job of jobs) {
-      console.info(job.name);
+    for await (const response of iterable) {
+      console.log(response.name);
     }
   }
 

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.0",
-    "@googleapis/kgsearch": "^0.2.0",
+    "@googleapis/kgsearch": "^0.3.0",
     "@slack/events-api": "^3.0.0"
   },
   "devDependencies": {

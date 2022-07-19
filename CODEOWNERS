@@ -10,9 +10,9 @@
 .kokoro/functions @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Serverless/CBR
-appengine @engelke @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
-functions @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
-run @GoogleCloudPlatform/cdpe-cbr-containers @GoogleCloudPlatform/nodejs-docs-samples-owners
+appengine @engelke @ace-n @GoogleCloudPlatform/aap-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
+functions @ace-n @GoogleCloudPlatform/aap-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
+run @engelke @averikitsch @GoogleCloudPlatform/aap-dpes @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-docs-samples-owners

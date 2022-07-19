@@ -57,7 +57,7 @@ jobs:
               throw e;
             }
           }
-    - if: ${{ github.event_name == 'schedule'}}
+    - if: ${{ github.event_name == 'schedule' && always() }}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot

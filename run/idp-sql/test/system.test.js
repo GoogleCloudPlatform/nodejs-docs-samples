@@ -69,7 +69,7 @@ describe('System Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`,
       {shell: true}
     );
     BASE_URL = url.toString('utf-8');

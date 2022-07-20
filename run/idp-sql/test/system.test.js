@@ -77,6 +77,8 @@ describe('System Tests', () => {
       throw Error('Cloud Run service URL not found: ' + stderr);
     }
 
+    console.log('DBG', BASE_URL, !!BASE_URL, BASE_URL.length)
+
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');
     const response = await got(

@@ -17,7 +17,7 @@
 const assert = require('assert');
 const got = require('got');
 const admin = require('firebase-admin');
-const {execSync} = require('child_process');
+const {spawnSync, execSync} = require('child_process');
 
 admin.initializeApp();
 
@@ -67,13 +67,15 @@ describe('System Tests', () => {
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
-    const url = execSync(
+    const {stdout, stderr} = spawnSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
         `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`,
       {shell: true}
     );
-    BASE_URL = url.toString('utf-8');
-    if (!BASE_URL) throw Error('Cloud Run service URL not found');
+    BASE_URL = stdout.toString('utf-8').trim();
+    if (!BASE_URL) {
+      throw Error('Cloud Run service URL not found: ' + stderr);
+    }
 
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');

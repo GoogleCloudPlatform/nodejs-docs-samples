@@ -63,13 +63,14 @@ describe('System Tests', () => {
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+    execSync(buildCmd, {timeout: 240000, shell: true}); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
         `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+      {shell: true}
     );
     BASE_URL = url.toString('utf-8');
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
@@ -104,7 +105,7 @@ describe('System Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    execSync(cleanUpCmd);
+    execSync(cleanUpCmd, {shell: true});
   });
 
   it('Can successfully make a request', async () => {

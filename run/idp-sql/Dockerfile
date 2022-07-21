@@ -2,9 +2,9 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
-# Use the official lightweight Node.js 10 image.
+# Use the official lightweight Node.js 14 image.
 # https://hub.docker.com/_/node
-FROM node:12-slim
+FROM node:14-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

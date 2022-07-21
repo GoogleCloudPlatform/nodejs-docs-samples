@@ -17,7 +17,7 @@
 const assert = require('assert');
 const got = require('got');
 const admin = require('firebase-admin');
-const {execSync} = require('child_process');
+const {spawnSync, execSync} = require('child_process');
 
 admin.initializeApp();
 
@@ -63,16 +63,23 @@ describe('System Tests', () => {
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+    execSync(buildCmd, {timeout: 240000, shell: true}); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
-    const url = execSync(
+    const results = spawnSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`,
+      {shell: true}
     );
-    BASE_URL = url.toString('utf-8');
-    if (!BASE_URL) throw Error('Cloud Run service URL not found');
+
+    const stdout = results.stdout && results.stdout.toString('utf-8').trim();
+    const stderr = results.stderr && results.stderr.toString('utf-8').trim();
+
+    BASE_URL = stdout.trim();
+    if (!BASE_URL) {
+      throw Error('Cloud Run service URL not found: ' + stderr);
+    }
 
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');
@@ -104,7 +111,7 @@ describe('System Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    execSync(cleanUpCmd);
+    execSync(cleanUpCmd, {shell: true});
   });
 
   it('Can successfully make a request', async () => {

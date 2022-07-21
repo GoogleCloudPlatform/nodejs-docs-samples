@@ -67,16 +67,16 @@ describe('System Tests', () => {
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
-    const {outBuffer, errBuffer} = spawnSync(
+    const results = spawnSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
         `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`,
       {shell: true}
     );
 
-    const stdout = outBuffer && outBuffer.toString('utf-8').trim();
-    const stderr = errBuffer && errBuffer.toString('utf-8').trim();
+    const stdout = results.stdout && results.stdout.toString('utf-8').trim();
+    const stderr = results.stderr && results.stderr.toString('utf-8').trim();
 
-    BASE_URL = stdout;
+    BASE_URL = stdout.trim();
     if (!BASE_URL) {
       throw Error('Cloud Run service URL not found: ' + stderr);
     }

@@ -15,20 +15,26 @@
 # limitations under the License.
 
 # set the key as GOOGLE_APPLICATION_CREDENTIALS
-export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
+{
+  export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
 
-# Create a GCS bucket and upload the product data to the bucket
-cd ~/cloudshell_open/nodejs-retail/samples
-output=$(node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/setup/create-gcs-bucket.js)
+  # Create a GCS bucket and upload the product data to the bucket
+  cd ~/cloudshell_open/nodejs-retail/samples
+  output=$(node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/setup/create-gcs-bucket.js)
 
-# Get the bucket name and store it in the env variable BUCKET_NAME
-temp="${output#*Bucket }"
-bucket_name="${temp% created*}"
-export BUCKET_NAME=$bucket_name
+  # Get the bucket name and store it in the env variable BUCKET_NAME
+  temp="${output#*Bucket }"
+  bucket_name="${temp% created*}"
+  export BUCKET_NAME=$bucket_name
 
-# Import products to the Retail catalog
-node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/product/import-products-gcs.js
-
-echo "====================================="
-echo "Your Retail catalog is ready to use!"
-echo "====================================="
+  # Import products to the Retail catalog
+  node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/product/import-products-gcs.js
+} && {
+  echo "====================================="
+  echo "Your Retail catalog is ready to use!"
+  echo "====================================="
+} || {
+  echo "================================================================"
+  echo "Your Retail catalog wasn't created! Please fix the errors above!"
+  echo "================================================================"
+}

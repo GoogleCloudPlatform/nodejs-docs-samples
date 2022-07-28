@@ -32,12 +32,19 @@ All tests need a corresponding job file outside of GitHub. If you are a Googler,
 
 ### Style
 
+The [Google Cloud Samples Style Guide][style-guide] is considered the primary
+guidelines for all Google Cloud samples. 
+
+[style-guide]: https://googlecloudplatform.github.io/samples-style-guide/
+
+Samples in this repository also follow the JavaScript coding standards. See instructions below to run the linter to match our JavaScript coding standards:
+
 1. Install dependencies at the root of the `nodejs-docs-samples`
 directory.
 
         npm install
 
-1. Run the linter for all samples, including the ones you're adding, to match our JavaScript coding standards.
+1. Run the linter for all samples, including the ones you're adding.
 
         npm run lint
 

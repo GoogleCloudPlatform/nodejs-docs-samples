@@ -43,7 +43,7 @@ describe('End-to-End Tests', () => {
 
     try {
       response = await request('post', '/', BASE_URL);
-    } catch(err) {
+    } catch (err) {
       throw Error(err);
     }
 

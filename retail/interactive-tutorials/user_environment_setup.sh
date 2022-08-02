@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Copyright 2022 Google Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +13,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+success() {
+    echo "========================================="
+    echo "The Google Cloud setup is completed."
+    echo "Please proceed with the Tutorial steps"
+    echo "========================================="
+    exit 0
+}
+
+failure() {
+    echo "========================================="
+    echo "The Google Cloud setup was not completed."
+    echo "Please fix the errors above!"
+    echo "========================================="
+    exit 1
+}
+
+# catch any error that happened during execution
+trap 'failure' ERR
+
 # set the Google Cloud Project ID
 project_id=$1
 echo "Project ID: $project_id"
 gcloud config set project "$project_id"
 
 timestamp=$(date +%s)
-
 service_account_id="service-acc-$timestamp"
 echo "Service Account: $service_account_id"
-
 # create service account (your service-acc-$timestamp)
 gcloud iam service-accounts create "$service_account_id"
 
 # assign necessary roles to your new service account
 for role in {retail.admin,editor,bigquery.admin}
-  do
+do
     gcloud projects add-iam-policy-binding "$project_id" --member="serviceAccount:$service_account_id@$project_id.iam.gserviceaccount.com" --role=roles/"${role}"
 done
 
 echo "Wait ~60 seconds to be sure the appropriate roles have been assigned to your service account"
 sleep 60
-
 # upload your service account key file
 service_acc_email="$service_account_id@$project_id.iam.gserviceaccount.com"
 gcloud iam service-accounts keys create ~/key.json --iam-account "$service_acc_email"
@@ -44,10 +59,5 @@ gcloud iam service-accounts keys create ~/key.json --iam-account "$service_acc_e
 gcloud auth activate-service-account --key-file ~/key.json
 
 # install needed Google client libraries
-cd ~/cloudshell_open/nodejs-retail/samples || exit
+cd ~/cloudshell_open/nodejs-retail/samples
 npm install
-
-echo "======================================="
-echo "The Google Cloud setup is completed."
-echo "Please proceed with the Tutorial steps"
-echo "======================================="

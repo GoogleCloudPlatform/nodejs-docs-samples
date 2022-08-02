@@ -23,8 +23,14 @@ async function main() {
 
     for (let i = 0; i < events.length - 1; ++i) {
       const event = JSON.parse(`[${events[i]}]`)[0];
-      const date = new Date(event.eventTime);
-      date.setDate(date.getDate() - 1);
+      let date = new Date(event.eventTime);
+      const nowDate = new Date();
+      const timeDiff = nowDate - date;
+
+      if (timeDiff > 1000 * 60 * 60 * 24 * 90) {
+        const yesterday = nowDate - 1000 * 60 * 60 * 24;
+        date = new Date(yesterday);
+      }
       event.eventTime = date.toISOString();
       changedEvents.push(JSON.stringify(event));
     }
@@ -37,6 +43,7 @@ async function main() {
       stream.write(item + '\n');
     });
     stream.close();
+    console.log(`${filePath} is updated`);
   };
 
   updateEventsTimestamp('resources/user_events.json');

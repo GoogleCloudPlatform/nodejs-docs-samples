@@ -39,7 +39,14 @@ describe('End-to-End Tests', () => {
   }
 
   it('post(/) without request parameters is a bad request', async () => {
-    const response = await request('post', '/', BASE_URL);
+    let response;
+
+    try {
+      response = await request('post', '/', BASE_URL);
+    } catch (err) {
+      throw Error(err);
+    }
+
     assert.strictEqual(
       response.statusCode,
       400,

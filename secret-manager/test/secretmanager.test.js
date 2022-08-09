@@ -114,6 +114,11 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
 
+  it('updates a secret with an alias', async () => {
+    const output = execSync(`node updateSecretWithAlias.js ${secret.name}`);
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
+  });
+
   it('deletes a secret', async () => {
     const output = execSync(
       `node deleteSecret.js projects/${projectId}/secrets/${secretId}-2`

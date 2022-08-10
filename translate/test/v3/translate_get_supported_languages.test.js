@@ -28,6 +28,6 @@ describe(REGION_TAG, () => {
     const translationClient = new TranslationServiceClient();
     const projectId = await translationClient.getProjectId();
     const output = execSync(`node v3/${REGION_TAG}.js ${projectId}`);
-    assert.match(output, /zh-CN/);
+    assert.match(output, /zh/);
   });
 });

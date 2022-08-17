@@ -81,6 +81,16 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-3`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -95,6 +105,13 @@ describe('Secret Manager samples', () => {
   it('creates a secret', async () => {
     const output = execSync(
       `node createSecret.js projects/${projectId} ${secretId}-2`
+    );
+    assert.match(output, new RegExp('Created secret'));
+  });
+
+  it('creates a secret with userManaged replication', async () => {
+    const output = execSync(
+      `node createUmmrSecret.js projects/${projectId} ${secretId}-3 us-east1 us-east4`
     );
     assert.match(output, new RegExp('Created secret'));
   });

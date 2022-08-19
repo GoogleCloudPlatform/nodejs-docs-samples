@@ -75,9 +75,8 @@ describe('test', () => {
     };
 
     // Create job
-    return dlp.createDlpJob(request).then(response => {
-      return response[0].name;
-    });
+    const [response] = await dlp.createDlpJob(request);
+    return response.name;
   };
 
   // Create a test job
@@ -110,7 +109,9 @@ describe('test', () => {
   it('should list jobs', async function () {
     this.retries(5);
     await delay(this.test);
-    const output = execSync(`node listJobs.js ${projectId} 'state=DONE'`);
+    const output = execSync(
+      `node listJobs.js ${projectId} 'state=DONE' RISK_ANALYSIS_JOB`
+    );
     assert.match(
       output,
       /Job projects\/(\w|-)+\/locations\/global\/dlpJobs\/\w-\d+ status: DONE/

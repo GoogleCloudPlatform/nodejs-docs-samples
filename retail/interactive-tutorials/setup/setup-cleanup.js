@@ -71,6 +71,16 @@ const createProduct = async (
   // Run request
   const response = await retailClient.createProduct(request);
   console.log(`Product ${response[0].id} created`);
+
+  const createdProduct = {};
+  createdProduct.id = response[0].id;
+  createdProduct.name = response[0].name;
+  createdProduct.priceInfo = response[0].priceInfo;
+  createdProduct.fulfillmentInfo = response[0].fulfillmentInfo;
+  createdProduct.availableQuantity = response[0].availableQuantity;
+  createdProduct.availability = response[0].availability;
+  console.log('Created product: ', createdProduct);
+
   return response[0];
 };
 

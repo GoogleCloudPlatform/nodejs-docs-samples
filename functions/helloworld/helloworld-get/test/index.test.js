@@ -13,12 +13,9 @@
 // limitations under the License.
 
 const assert = require('assert');
-const sinon = require('sinon');
 const {request} = require('gaxios');
 const {exec} = require('child_process');
 const waitPort = require('wait-port');
-
-const program = require('..');
 
 const startFF = async (target, signature, port) => {
   const ff = exec(
@@ -28,9 +25,9 @@ const startFF = async (target, signature, port) => {
   return ff;
 };
 
-const httpInvocation = (fnUrl, port, data) => {
+const httpInvocation = (fnUrl, port) => {
   const baseUrl = `http://localhost:${port}`;
-  
+
   // GET request
   return request({
     url: `${baseUrl}/${fnUrl}`,

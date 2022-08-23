@@ -14,6 +14,8 @@
 
 'use strict';
 
+/* eslint-disable no-unused-vars */
+
 // [START functions_helloworld_pubsub]
 /**
  * Background Cloud Function to be triggered by Pub/Sub.

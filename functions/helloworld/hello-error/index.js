@@ -16,6 +16,8 @@
 
 const functions = require('@google-cloud/functions-framework');
 
+/* eslint-disable no-unused-vars */
+
 /**
  * Background Cloud Function that throws an error.
  *

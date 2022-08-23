@@ -22,9 +22,7 @@ const {request} = require('gaxios');
 
 const PORT = 9020;
 const BASE_URL = `http://localhost:${PORT}`;
-
 const TOPIC = 'integration-tests-instance';
-const MESSAGE = 'Hello, world!';
 
 describe('functions/pubsub', () => {
   const stubConsole = function () {

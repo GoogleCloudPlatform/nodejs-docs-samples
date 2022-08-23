@@ -98,4 +98,3 @@ describe('functions_http_cors_auth', () => {
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
   });
 });
-

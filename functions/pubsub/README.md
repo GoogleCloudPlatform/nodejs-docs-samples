@@ -28,7 +28,7 @@ can skip this step):
 
 1. Deploy the `publish` function with an HTTP trigger:
 
-        cd pubsub-publish/
+        cd publish/
         gcloud functions deploy publish --trigger-http --runtime YOUR_RUNTIME
 
     * Replace `YOUR_RUNTIME` with the name of the runtime you are using. For a
@@ -36,7 +36,7 @@ can skip this step):
 
 1. Deploy the `subscribe` function with the Pub/Sub topic as a trigger:
 
-        cd pubsub-subscribe/
+        cd subscribe/
         gcloud functions deploy subscribe --trigger-topic YOUR_TOPIC_NAME --runtime YOUR_RUNTIME
 
     * Replace `YOUR_TOPIC_NAME` with the name of your Pub/Sub Topic.

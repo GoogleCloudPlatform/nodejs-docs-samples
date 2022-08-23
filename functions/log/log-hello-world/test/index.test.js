@@ -66,4 +66,3 @@ describe('functions_log_helloworld', () => {
     assert.deepStrictEqual(res.end.firstCall.args, []);
   });
 });
-

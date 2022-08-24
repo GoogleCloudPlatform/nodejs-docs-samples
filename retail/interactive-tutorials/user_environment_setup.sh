@@ -61,3 +61,4 @@ gcloud auth activate-service-account --key-file ~/key.json
 # install needed Google client libraries
 cd ~/cloudshell_open/nodejs-retail/samples
 npm install
+'success'

@@ -27,19 +27,23 @@ const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const consentStoreId =
-  `nodejs-docs-samples-test-consent-store-${uuid.v4()}`.replace(/-/gi, '_');
+const consentStoreId = `nodejs-docs-samples-test-consent-store${uuid.v4()}`.replace(
+  /-/gi,
+  '_'
+);
 
 const installDeps = 'npm install';
-let projectId;
 
 // Run npm install on datasets directory because modalities
 // require bootstrapping datasets, and Kokoro needs to know
 // to install dependencies from the datasets directory.
 assert.ok(execSync(installDeps, {cwd: `${cwdDatasets}`, shell: true}));
-
+let projectId;
 before(async () => {
   projectId = await healthcare.auth.getProjectId();
+  execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
+  cwd: cwdDatasets,
+  });
 });
 
 after(async () => {

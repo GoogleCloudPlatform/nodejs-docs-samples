@@ -28,8 +28,6 @@ Run the following command to install the library dependencies for Node.js:
         --cloudRegion, -c                                                                    [string] [default: "us-central1"]
         --projectId, -p       The Project ID to use. Defaults to the value of the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT
                               environment variables.                                                                  [string]
-        --serviceAccount, -s  The path to your service credentials JSON.
-                                             [string]
         --help                Show help                                                                              [boolean]
 
 For more information, see https://cloud.google.com/healthcare-api/docs

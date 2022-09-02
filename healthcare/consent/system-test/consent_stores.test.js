@@ -27,10 +27,8 @@ const cwdDatasets = path.join(__dirname, '../../datasets');
 const cwd = path.join(__dirname, '..');
 
 const datasetId = `nodejs-docs-samples-test-${uuid.v4()}`.replace(/-/gi, '_');
-const consentStoreId = `nodejs-docs-samples-test-consent-store${uuid.v4()}`.replace(
-  /-/gi,
-  '_'
-);
+const consentStoreId =
+  `nodejs-docs-samples-test-consent-store${uuid.v4()}`.replace(/-/gi, '_');
 
 const installDeps = 'npm install';
 

@@ -40,7 +40,7 @@ let projectId;
 before(async () => {
   projectId = await healthcare.auth.getProjectId();
   execSync(`node createDataset.js ${projectId} ${cloudRegion} ${datasetId}`, {
-  cwd: cwdDatasets,
+    cwd: cwdDatasets,
   });
 });
 

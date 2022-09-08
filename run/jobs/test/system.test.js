@@ -69,9 +69,13 @@ describe('End-to-End Tests', () => {
       `resource.labels.job_name = "${SERVICE_NAME}" ` +
       `resource.labels.location = "${REGION}" ` +
       `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
+    console.log(preparedFilter);
+
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    await sleep(120000);  // Wait for 2 minutes for longs to be ingested by Cloud Logging
 
     let found = false;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i <= 10; i++) {
       const entries = await logging.getEntries({
         filter: preparedFilter,
         autoPaginate: false,

@@ -66,23 +66,27 @@ describe('execute the quickstart', () => {
   });
 
   afterEach(async () => {
-    await storage.bucket(bucketName).file(jobFileName).delete();
-    await storage.bucket(bucketName).delete();
+    try {
+      await storage.bucket(bucketName).file(jobFileName).delete();
+      await storage.bucket(bucketName).delete();
 
-    const [clusters] = await clusterClient.listClusters({
-      projectId: projectId,
-      region: region,
-    });
+      const [clusters] = await clusterClient.listClusters({
+        projectId: projectId,
+        region: region,
+      });
 
-    for (const cluster of clusters) {
-      if (cluster.clusterName === clusterName) {
-        await clusterClient.deleteCluster({
-          projectId: projectId,
-          region: region,
-          clusterName: clusterName,
-        });
-        break;
+      for (const cluster of clusters) {
+        if (cluster.clusterName === clusterName) {
+          await clusterClient.deleteCluster({
+            projectId: projectId,
+            region: region,
+            clusterName: clusterName,
+          });
+          break;
+        }
       }
+    } catch (err) {
+      console.error('Cannot clean up resources:', err);
     }
   });
 });

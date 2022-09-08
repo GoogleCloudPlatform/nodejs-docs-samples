@@ -131,7 +131,8 @@ describe('custom machine type tests', () => {
     });
   });
 
-  describe('instances with custom machine type tests', () => {
+  // TODO: move tests to unit tests from integration tests or fix flakes.
+  describe.skip('instances with custom machine type tests', () => {
     after(async () => {
       const instances = await getStaleVMInstances();
       await Promise.all(

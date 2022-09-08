@@ -72,7 +72,7 @@ describe('End-to-End Tests', () => {
     console.log(preparedFilter);
 
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    await sleep(120000);  // Wait for 2 minutes for longs to be ingested by Cloud Logging
+    await sleep(120000); // Wait for 2 minutes for longs to be ingested by Cloud Logging
 
     let found = false;
     for (let i = 1; i <= 10; i++) {

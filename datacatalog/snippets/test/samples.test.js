@@ -146,7 +146,7 @@ describe('Samples', async () => {
     assert.include(output, memberId);
   });
 
-  it('should search data assets in project', async () => {
+  it.skip('should search data assets in project', async () => {
     const output = execSync(`node searchAssets ${projectId}`);
     assert.match(output, /Found [0-9]+ datasets in project/);
   });

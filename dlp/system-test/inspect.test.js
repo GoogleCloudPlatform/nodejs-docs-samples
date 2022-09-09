@@ -242,10 +242,10 @@ describe('inspect', () => {
 
   it('should have a maxFindings option', () => {
     const outputA = execSync(
-      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 2`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 1`
     );
     const outputB = execSync(
-      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 3`
+      `node inspectString.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." LIKELIHOOD_UNSPECIFIED 2`
     );
     assert.notStrictEqual(
       outputA.includes('PHONE_NUMBER'),

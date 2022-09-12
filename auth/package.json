@@ -23,7 +23,7 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "mocha": "^9.0.0"
   }
 }

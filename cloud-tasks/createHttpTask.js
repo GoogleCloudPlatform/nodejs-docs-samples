@@ -63,7 +63,7 @@ function main(
     if (inSeconds) {
       // The time when the task is scheduled to be attempted.
       task.scheduleTime = {
-        seconds: inSeconds + Date.now() / 1000,
+        seconds: parseInt(inSeconds) + Date.now() / 1000,
       };
     }
 

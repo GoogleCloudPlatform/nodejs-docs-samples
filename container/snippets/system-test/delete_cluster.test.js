@@ -35,6 +35,7 @@ const client = new container.v1.ClusterManagerClient();
 const ciNetwork = 'default-compute';
 let projectId;
 let clusterLocation;
+let test = true;
 
 // create a new cluster to test the delete sample on
 before(async () => {
@@ -49,9 +50,23 @@ before(async () => {
       nodeConfig: {machineType: 'e2-standard-2'},
     },
   };
-  const [createOperation] = await client.createCluster(request);
-  const opIdentifier = `${clusterLocation}/operations/${createOperation.name}`;
-  await untilDone(client, opIdentifier);
+  let createOperation;
+  let opIdentifier;
+  try {
+    [createOperation] = await client.createCluster(request);
+    opIdentifier = `${clusterLocation}/operations/${createOperation.name}`;
+    await untilDone(client, opIdentifier);
+  } catch (err) {
+    if (
+      err
+        .toString()
+        .includes('7 PERMISSION_DENIED: Insufficient regional quota')
+    ) {
+      test = false;
+    } else {
+      throw err;
+    }
+  }
 });
 
 // clean up the cluster regardless of whether the test passed or not
@@ -72,25 +87,29 @@ after(async () => {
 // run the tests
 describe('container samples - delete cluster long running op', () => {
   it('should delete cluster and wait for completion', async () => {
-    const stdout = execSync(
-      `node delete_cluster.js ${randomClusterName} ${randomZone}`
-    );
-    assert.match(
-      stdout,
-      /Cluster deletion not complete. will try after .* delay/
-    );
-    assert.match(stdout, /Cluster deletion completed./);
+    if (test) {
+      const stdout = execSync(
+        `node delete_cluster.js ${randomClusterName} ${randomZone}`
+      );
+      assert.match(
+        stdout,
+        /Cluster deletion not complete. will try after .* delay/
+      );
+      assert.match(stdout, /Cluster deletion completed./);
+    }
   });
 
   it('should not see the deleted cluster in the list', async () => {
-    const [response] = await client.listClusters({
-      projectId: projectId,
-      zone: randomZone,
-    });
-    const clustersList = response.clusters.reduce(
-      (acc, curr) => [curr.name, ...acc],
-      []
-    );
-    expect(clustersList).to.not.include(randomClusterName);
+    if (test) {
+      const [response] = await client.listClusters({
+        projectId: projectId,
+        zone: randomZone,
+      });
+      const clustersList = response.clusters.reduce(
+        (acc, curr) => [curr.name, ...acc],
+        []
+      );
+      expect(clustersList).to.not.include(randomClusterName);
+    }
   });
 });

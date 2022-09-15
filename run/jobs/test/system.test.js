@@ -13,9 +13,10 @@
 // limitations under the License.
 
 const assert = require('assert');
-const delay = require('delay');
 const {execSync} = require('child_process');
 const {Logging} = require('@google-cloud/logging');
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
@@ -69,9 +70,12 @@ describe('End-to-End Tests', () => {
       `resource.labels.job_name = "${SERVICE_NAME}" ` +
       `resource.labels.location = "${REGION}" ` +
       `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
+    console.log(preparedFilter);
+
+    await sleep(120000); // Wait for 2 minutes for logs to be ingested by Cloud Logging
 
     let found = false;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i <= 10; i++) {
       const entries = await logging.getEntries({
         filter: preparedFilter,
         autoPaginate: false,
@@ -88,7 +92,7 @@ describe('End-to-End Tests', () => {
       if (found) {
         break;
       }
-      await delay(i * 5000);
+      await sleep(i * 5000);
     }
     assert(found);
   });

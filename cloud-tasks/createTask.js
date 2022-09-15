@@ -48,6 +48,9 @@ function main(
 
     const task = {
       appEngineHttpRequest: {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
         httpMethod: 'POST',
         relativeUri: '/log_payload',
       },
@@ -66,12 +69,14 @@ function main(
 
     console.log('Sending task:');
     console.log(task);
+
     // Send create task request.
     const request = {parent: parent, task: task};
     const [response] = await client.createTask(request);
     const name = response.name;
     console.log(`Created task ${name}`);
   }
+
   createTask();
   // [END cloud_tasks_appengine_create_task]
 }

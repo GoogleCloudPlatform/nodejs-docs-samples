@@ -43,9 +43,6 @@ async function main(generatedProductId) {
 
   // The time when the fulfillment updates are issued, used to prevent
   // out-of-order updates on fulfillment information.
-  const addTime = {
-    seconds: Math.round(Date.now() / 1000),
-  };
 
   //If set to true, and the product is not found, the fulfillment information will still be processed and retained for
   // at most 1 day and processed once the product is created
@@ -57,7 +54,6 @@ async function main(generatedProductId) {
       product,
       type,
       placeIds,
-      addTime,
       allowMissing,
     };
 

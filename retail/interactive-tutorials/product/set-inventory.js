@@ -54,9 +54,6 @@ async function main(generatedProductId) {
 
   // The time when the request is issued, used to prevent
   // out-of-order updates on inventory fields with the last update time recorded.
-  let setTime = {
-    seconds: Math.round(Date.now() / 1000),
-  };
 
   // If set to true, and the product with name is not found, the
   // inventory update will still be processed and retained for at most 1 day until the product is created
@@ -66,7 +63,6 @@ async function main(generatedProductId) {
     // Construct request
     const request = {
       inventory: product,
-      setTime,
       allowMissing,
     };
     console.log('Set inventory request:', request);
@@ -90,7 +86,6 @@ async function main(generatedProductId) {
 
   // Set inventory with outdated time
   product.priceInfo.price = 20.0;
-  setTime = {seconds: Math.round(Date.now() / 1000) - 86400};
   await callSetInventory();
 
   // Get product

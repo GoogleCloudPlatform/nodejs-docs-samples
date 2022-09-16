@@ -18,6 +18,7 @@ const assert = require('assert');
 const path = require('path');
 const cp = require('child_process');
 const {auth} = require('google-auth-library');
+const {describe, it} = require('mocha');
 
 const cwd = path.join(__dirname, '..');
 const cmd = 'node auth.js';
@@ -31,7 +32,7 @@ process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 const keyFile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 
 const execSync = (command, opts) => {
-  return cp.execFile(command, Object.assign({encoding: 'utf-8'}, opts));
+  return cp.execSync(command, Object.assign({encoding: 'utf-8'}, opts));
 };
 
 describe('auth samples', () => {

@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^6.0.0",
-    "google-auth-library": "^7.9.1",
+    "google-auth-library": "^8.4.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

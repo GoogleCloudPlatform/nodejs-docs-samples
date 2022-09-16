@@ -27,7 +27,6 @@ const BUCKET_NAME = 'long-door-651';
 const GOOGLE_CLOUD_PROJECT = 'long-door-651';
 const TARGET_AUDIENCE = 'iap.googleapis.com';
 const ZONE = 'us-central1-a';
-process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 const keyFile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 

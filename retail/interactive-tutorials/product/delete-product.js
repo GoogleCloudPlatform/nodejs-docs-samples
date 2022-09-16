@@ -15,8 +15,6 @@
 'use strict';
 
 async function main(generatedProductId) {
-  // [START retail_delete_product]
-
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
@@ -47,7 +45,6 @@ async function main(generatedProductId) {
   console.log('Start deleting the product');
   await callDeleteProduct();
   console.log(`Product ${product.name} deleted`);
-  // [END retail_delete_product]
 }
 
 process.on('unhandledRejection', err => {

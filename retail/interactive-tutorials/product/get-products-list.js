@@ -15,8 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_get_products_list]
-
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
 
@@ -45,7 +43,6 @@ async function main() {
   }
 
   callListProducts();
-  // [END retail_get_products_list]
 }
 
 process.on('unhandledRejection', err => {

@@ -81,6 +81,7 @@ describe('Search simple query', () => {
             'variantRollupValues',
             'id',
             'product',
+            'personalLabels',
             'matchingVariantCount'
           );
         });

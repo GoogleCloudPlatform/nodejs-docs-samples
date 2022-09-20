@@ -83,6 +83,7 @@ describe('Search with facet spec', () => {
             'variantRollupValues',
             'id',
             'product',
+            'personalLabels',
             'matchingVariantCount'
           );
         });

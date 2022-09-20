@@ -82,6 +82,7 @@ describe('Search with ordering', () => {
             'variantRollupValues',
             'id',
             'product',
+            'personalLabels',
             'matchingVariantCount'
           );
         });

@@ -73,7 +73,11 @@ async function main() {
       autoPaginate: false,
     });
     const searchResponse = response[IResponseParams.ISearchResponse];
-    console.log('Search result: ', JSON.stringify(searchResponse, null, 4));
+    if (searchResponse.totalSize === 0) {
+      console.log('The search operation returned no matching results.');
+    } else {
+      console.log('Search result: ', JSON.stringify(searchResponse, null, 4));
+    }
     console.log('Search end');
   };
 

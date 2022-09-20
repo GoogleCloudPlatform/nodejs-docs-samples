@@ -66,12 +66,16 @@ async function main() {
       autoPaginate: false,
     });
     const searchResponse = response[IResponseParams.ISearchResponse];
-    console.log('Search result: ', JSON.stringify(searchResponse, null, 4));
-    pageToken = response[IResponseParams.ISearchResponse].nextPageToken;
-    console.log(
-      'Next page token:',
-      response[IResponseParams.ISearchResponse].nextPageToken
-    );
+    if (searchResponse.totalSize === 0) {
+      console.log('The search operation returned no matching results.');
+    } else {
+      console.log('Search result: ', JSON.stringify(searchResponse, null, 4));
+      pageToken = response[IResponseParams.ISearchResponse].nextPageToken;
+      console.log(
+        'Next page token:',
+        response[IResponseParams.ISearchResponse].nextPageToken
+      );
+    }
     console.log('Search end');
   };
 

@@ -25,7 +25,7 @@ const modelId = 'VOT409893536788381696';
 const project = process.env.GCLOUD_PROJECT;
 const file = 'resources/googlework_short.mp4';
 
-describe('streaming automl object tracking', function () {
+describe.skip('streaming automl object tracking', function () {
   this.retries(3);
   it('should track an object in a streaming video', async () => {
     const output = execSync(`${cmd} ${file} ${project} ${modelId}`);

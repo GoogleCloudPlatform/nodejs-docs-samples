@@ -24,7 +24,7 @@ const project = process.env.GCLOUD_PROJECT;
 const file = 'resources/googlework_short.mp4';
 const outputUri = 'gs://' + project + '/VIDEO_STREAMING_OUTPUT';
 
-describe('streaming annotation to storage', () => {
+describe.skip('streaming annotation to storage', () => {
   it('should store the annotation results in GCS', async () => {
     const output = execSync(`${cmd} ${file} ${outputUri}`);
     assert.match(output, /The annotation is stored at:/);

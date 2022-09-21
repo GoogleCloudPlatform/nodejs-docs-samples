@@ -205,7 +205,7 @@ describe('detect', () => {
 
     if (webDetection.webEntities.length) {
       assert.match(output, /Web entities found:/);
-      assert.match(output, /Description: Google Cloud Platform/);
+      assert.match(output, /Description:/);
     }
 
     if (webDetection.bestGuessLabels.length) {

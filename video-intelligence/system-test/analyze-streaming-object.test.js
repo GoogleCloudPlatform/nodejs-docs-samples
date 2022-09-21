@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node analyze-streaming-object.js';
 const file = 'resources/googlework_short.mp4';
 
-describe('streaming object', () => {
+describe.skip('streaming object', () => {
   it('should track an object in a streaming video', async () => {
     const output = execSync(`${cmd} ${file}`);
     assert.match(output, /cat/);

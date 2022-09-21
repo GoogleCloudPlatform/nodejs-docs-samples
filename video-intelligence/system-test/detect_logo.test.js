@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node detect_logo.js';
 const file = 'resources/googlework_short.mp4';
 
-describe('analyzing logos in video', () => {
+describe.skip('analyzing logos in video', () => {
   it('should detect a logo in a local file', async () => {
     const output = execSync(`${cmd} ${file}`);
     assert.match(output, /Entity Id/);

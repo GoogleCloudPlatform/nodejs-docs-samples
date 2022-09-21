@@ -29,7 +29,7 @@ const file2 = 'resources/googlework_short.mp4';
 const possibleTexts =
   /Google|GOOGLE|SUR|OMAR|ROTO|Vice President|58oo9|LONDRES|PARIS|METRO|RUE|CARLO/;
 
-describe('analyze samples', () => {
+describe.skip('analyze samples', () => {
   // analyze_labels_local
   it('should analyze labels in a local file', async () => {
     const output = execSync(`${cmd} labels-file ${file}`);

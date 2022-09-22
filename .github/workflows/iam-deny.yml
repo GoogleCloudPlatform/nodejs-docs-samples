@@ -29,7 +29,7 @@ jobs:
     - uses: google-github-actions/auth@v0.8.0
       with:
         workload_identity_provider: 'projects/949737848314/locations/global/workloadIdentityPools/iam-deny-test-pool/providers/iam-deny-test-provider'
-        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+        service_account: 'kokoro-ca@isakovf-iam-deny-samples.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - uses: actions/setup-node@v3

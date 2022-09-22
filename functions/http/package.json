@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^6.0.0",
-    "busboy": "^1.0.0",
+    "busboy": "^1.6.0",
     "escape-html": "^1.0.3"
   }
 }

@@ -163,7 +163,7 @@ exports.uploadFile = (req, res) => {
       file.on('end', () => {
         writeStream.end();
       });
-      writeStream.on('finish', resolve);
+      writeStream.on('close', resolve);
       writeStream.on('error', reject);
     });
     fileWrites.push(promise);

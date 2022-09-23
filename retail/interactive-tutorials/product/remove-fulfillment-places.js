@@ -35,15 +35,12 @@ async function main(generatedProductId) {
   const product = createdProduct.name;
 
   // The fulfillment type, including commonly used types (such as
-  // pickup in store and same day delivery), and custom types.
+  // pickup in store and same-day delivery), and custom types.
   const type = 'same-day-delivery';
 
   // The IDs for this type, such as the store IDs for "pickup-in-store" or the region IDs for
   // "same-day-delivery" to be added for this type.
   const placeIds = ['store1'];
-
-  // The time when the fulfillment updates are issued, used to prevent
-  // out-of-order updates on fulfillment information.
 
   const callRemoveFulfillmentPlaces = async () => {
     // Construct request
@@ -53,15 +50,18 @@ async function main(generatedProductId) {
       placeIds,
     };
 
+    // To send an out-of-order request assign the invalid removeTime here:
+    // request.removeTime = {seconds: Math.round(Date.now() / 1000) - 86400};
+
     console.log('Remove fulfillment request:', request);
+    console.log('Waiting to complete remove operation...');
+
     // Run request
     const [operation] = await retailClient.removeFulfillmentPlaces(request);
     await operation.promise();
-
-    console.log('Waiting to complete remove operation..');
   };
 
-  // Remove fulfillment places with current time
+  // Remove fulfillment places
   console.log('Start remove fulfillment');
   await callRemoveFulfillmentPlaces();
 

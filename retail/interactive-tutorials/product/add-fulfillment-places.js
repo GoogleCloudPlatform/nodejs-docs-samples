@@ -27,22 +27,20 @@ async function main(generatedProductId) {
   // Create product
   const createdProduct = await utils.createProduct(
     projectId,
-    generatedProductId
+    generatedProductId,
+    true
   );
 
   // Full resource name of Product
   const product = createdProduct.name;
 
   // The fulfillment type, including commonly used types (such as
-  // pickup in store and same day delivery), and custom types.
+  // pickup in store and same-day delivery), and custom types.
   const type = 'same-day-delivery';
 
   // The IDs for this type, such as the store IDs for "pickup-in-store" or the region IDs for
   // "same-day-delivery" to be added for this type.
   const placeIds = ['store1', 'store2', 'store3'];
-
-  // The time when the fulfillment updates are issued, used to prevent
-  // out-of-order updates on fulfillment information.
 
   //If set to true, and the product is not found, the fulfillment information will still be processed and retained for
   // at most 1 day and processed once the product is created
@@ -57,16 +55,18 @@ async function main(generatedProductId) {
       allowMissing,
     };
 
+    // To send an out-of-order request assign the invalid addTime here:
+    // request.addTime = {seconds: Math.round(Date.now() / 1000) - 86400};
+
     console.log('Add fulfillment request:', request);
+    console.log('Waiting to complete add operation...');
 
     // Run request
     const [operation] = await retailClient.addFulfillmentPlaces(request);
     await operation.promise();
-
-    console.log('Waiting to complete add operation..');
   };
 
-  // Add fulfillment places with current time
+  // Add fulfillment places
   console.log('Start add fulfillment');
   await calladdFulfillmentPlaces();
 

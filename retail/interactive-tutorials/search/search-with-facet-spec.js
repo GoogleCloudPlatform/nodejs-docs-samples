@@ -15,7 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_search_products_with_facet_spec]
   // Call Retail API to search for a products in a catalog using only search query.
 
   // Imports the Google Cloud client library.
@@ -73,7 +72,6 @@ async function main() {
   };
 
   callSearch();
-  // [END retail_search_products_with_facet_spec]
 }
 
 process.on('unhandledRejection', err => {

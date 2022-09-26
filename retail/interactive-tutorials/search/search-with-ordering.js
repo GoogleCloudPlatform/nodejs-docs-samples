@@ -15,7 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_search_for_products_with_ordering]
   // Call Retail API to search for a products in a catalog, order the results by different product fields.
 
   // Imports the Google Cloud client library.
@@ -74,7 +73,6 @@ async function main() {
   };
 
   callSearch();
-  // [END retail_search_for_products_with_ordering]
 }
 
 process.on('unhandledRejection', err => {

@@ -15,8 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_import_user_events_inline]
-
   // Imports the Google Cloud client library.
   const {UserEventServiceClient} = require('@google-cloud/retail').v2;
 
@@ -81,7 +79,6 @@ async function main() {
   console.log('Start events import');
   await callImportUserEvents();
   console.log('Events import finished');
-  // [END retail_import_user_events_inline]
 }
 
 process.on('unhandledRejection', err => {

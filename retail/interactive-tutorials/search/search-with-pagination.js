@@ -15,8 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_search_for_products_with_pagination]
-
   // Imports the Google Cloud client library.
   const {SearchServiceClient} = require('@google-cloud/retail');
 
@@ -83,8 +81,6 @@ async function main() {
   await callSearch();
 
   //PASTE CALL WITH NEXT PAGE TOKEN HERE:
-
-  // [END retail_search_for_products_with_pagination]
 }
 
 process.on('unhandledRejection', err => {

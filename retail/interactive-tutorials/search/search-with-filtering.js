@@ -15,7 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_search_for_products_with_filter]
   // Call Retail API to search for a products in a catalog, filter the results by different product fields.
 
   // Imports the Google Cloud client library.
@@ -75,7 +74,6 @@ async function main() {
   };
 
   callSearch();
-  // [END retail_search_for_products_with_filter]
 }
 
 process.on('unhandledRejection', err => {

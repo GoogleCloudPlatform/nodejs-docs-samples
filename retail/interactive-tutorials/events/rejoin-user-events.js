@@ -15,8 +15,6 @@
 'use strict';
 
 async function main() {
-  // [START retail_rejoin_user_event]
-
   // Imports the Google Cloud client library.
   const {UserEventServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
@@ -66,7 +64,6 @@ async function main() {
 
   // Purge events
   utils.purgeUserEvents(parent, visitorId);
-  // [END retail_rejoin_user_event]
 }
 
 process.on('unhandledRejection', err => {

@@ -41,7 +41,7 @@ describe('auth samples', () => {
   });
 
   it('should load credentials explicitly', async () => {
-    const project = GOOGLE_CLOUD_PROJECT;
+    const project = process.env.GOOGLE_CLOUD_PROJECT || GOOGLE_CLOUD_PROJECT;
     const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
     console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
     const output = execSync(

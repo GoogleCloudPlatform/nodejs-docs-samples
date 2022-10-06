@@ -14,9 +14,6 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const {Logging} = require('@google-cloud/logging');
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
@@ -43,12 +40,7 @@ describe('End-to-End Tests', () => {
     execSync(cleanUpCmd);
   });
 
-  const dateMinutesAgo = (date, min_ago) => {
-    date.setMinutes(date.getMinutes() - min_ago);
-    return date.toISOString();
-  };
-
-  it('generates logs in Cloud Logging', async () => {
+  it('job runs successfully', async () => {
     // Deploy service using Cloud Build
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +

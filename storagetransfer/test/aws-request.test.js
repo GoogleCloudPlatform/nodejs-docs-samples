@@ -28,16 +28,11 @@ describe('aws-request', () => {
   let projectId;
   let description;
   let awsSourceBucket;
-  let awsAccessKeyId;
-  let awsSecretAccessKey;
   let gcsSinkBucket;
 
   before(async () => {
-    awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID;
-    awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
     assert(
-      awsAccessKeyId && awsSecretAccessKey,
+      process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY,
       'environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required'
     );
 
@@ -57,8 +52,6 @@ describe('aws-request', () => {
       projectId,
       description,
       awsSourceBucket,
-      awsAccessKeyId,
-      awsSecretAccessKey,
       gcsSinkBucket,
     ]);
 

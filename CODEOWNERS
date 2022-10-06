@@ -20,7 +20,7 @@ eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-revi
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-samples-reviewers 
-functions/memorystore @ericschmidtatwork @GoogleCloudPlatform/nodejs-samples-reviewers
+functions/memorystore @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # SoDa teams
@@ -28,7 +28,7 @@ functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-samples-reviewers
 /datastore/**/*.js @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # One-offs
-composer @leahecole @sofisl @yoshi-nodejs @GoogleCloudPlatform/nodejs-samples-reviewers
+composer @leahecole @sofisl @GoogleCloudPlatform/nodejs-samples-reviewers
 healthcare @noerog @GoogleCloudPlatform/nodejs-samples-reviewers
-monitoring/opencensus @yuriatgoogle @GoogleCloudPlatform/nodejs-samples-reviewers
+monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers
 

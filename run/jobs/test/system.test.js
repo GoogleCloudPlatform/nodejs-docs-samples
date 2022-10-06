@@ -32,18 +32,6 @@ describe('End-to-End Tests', () => {
   }
   const {SAMPLE_VERSION} = process.env;
   const REGION = 'us-west1';
-  before(async () => {
-    // Deploy service using Cloud Build
-    let buildCmd =
-      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
-      '--config ./test/e2e_test_setup.yaml --timeout="15m" ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
-    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
-
-    console.log('Starting Cloud Build...');
-    execSync(buildCmd, {stdio: 'inherit'});
-    console.log('Cloud Build completed.');
-  });
 
   after(() => {
     let cleanUpCmd =
@@ -61,39 +49,16 @@ describe('End-to-End Tests', () => {
   };
 
   it('generates logs in Cloud Logging', async () => {
-    const logging = new Logging({
-      projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    });
+    // Deploy service using Cloud Build
+    let buildCmd =
+      `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+      '--config ./test/e2e_test_setup.yaml --timeout="15m" ' +
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    const preparedFilter =
-      'resource.type = "cloud_run_job" ' +
-      `resource.labels.job_name = "${SERVICE_NAME}" ` +
-      `resource.labels.location = "${REGION}" ` +
-      `timestamp>="${dateMinutesAgo(new Date(), 5)}"`;
-    console.log(preparedFilter);
-
-    await sleep(120000); // Wait for 2 minutes for logs to be ingested by Cloud Logging
-
-    let found = false;
-    for (let i = 1; i <= 10; i++) {
-      const entries = await logging.getEntries({
-        filter: preparedFilter,
-        autoPaginate: false,
-        pageSize: 3,
-      });
-
-      if (entries[0] && entries[0].length > 0) {
-        found = entries[0].find(entry => {
-          return typeof entry.data === 'string'
-            ? entry.data.includes('Task')
-            : false;
-        });
-      }
-      if (found) {
-        break;
-      }
-      await sleep(i * 5000);
-    }
-    assert(found);
+    console.log('Starting Cloud Build...');
+    const stdout = execSync(buildCmd, {stdio: 'inherit'});
+    console.log('Cloud Build completed.');
+    assert(!stdout.includes('ERROR') && !stdout.includes('failed'));
   });
 });

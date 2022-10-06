@@ -48,9 +48,13 @@ describe('End-to-End Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    console.log('Starting Cloud Build...');
-    const stdout = execSync(buildCmd, {stdio: 'inherit'});
-    console.log('Cloud Build completed.');
-    assert(!stdout.includes('ERROR') && !stdout.includes('failed'));
+    try {
+      console.log('Starting Cloud Build...');
+      const stdout = execSync(buildCmd);
+      console.log('Cloud Build completed.');
+      assert(true);
+    } catch (err) {
+      assert(false, err);
+    }
   });
 });

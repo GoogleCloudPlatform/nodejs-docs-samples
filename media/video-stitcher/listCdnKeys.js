@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location) {
-  // [START video_stitcher_list_cdn_keys]
+  // [START videostitcher_list_cdn_keys]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location) {
   }
 
   listCdnKeys();
-  // [END video_stitcher_list_cdn_keys]
+  // [END videostitcher_list_cdn_keys]
 }
 
 // node listCdnKeys.js <projectId> <location>

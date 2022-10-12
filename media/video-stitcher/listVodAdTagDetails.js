@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, sessionId) {
-  // [START video_stitcher_list_vod_ad_tag_details]
+  // [START videostitcher_list_vod_ad_tag_details]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -43,7 +43,7 @@ function main(projectId, location, sessionId) {
   }
 
   listVodAdTagDetails();
-  // [END video_stitcher_list_vod_ad_tag_details]
+  // [END videostitcher_list_vod_ad_tag_details]
 }
 
 // node listVodAdTagDetails.js <projectId> <location> <sessionId>

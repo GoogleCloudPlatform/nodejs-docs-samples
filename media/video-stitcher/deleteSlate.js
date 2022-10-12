@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, slateId) {
-  // [START video_stitcher_delete_slate]
+  // [START videostitcher_delete_slate]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location, slateId) {
   }
 
   deleteSlate();
-  // [END video_stitcher_delete_slate]
+  // [END videostitcher_delete_slate]
 }
 
 // node deleteSlate.js <projectId> <location> <slateId>

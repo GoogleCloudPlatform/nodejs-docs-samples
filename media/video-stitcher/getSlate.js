@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, slateId) {
-  // [START video_stitcher_get_slate]
+  // [START videostitcher_get_slate]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location, slateId) {
   }
 
   getSlate();
-  // [END video_stitcher_get_slate]
+  // [END videostitcher_get_slate]
 }
 
 // node getSlate.js <projectId> <location> <slateId>

@@ -24,7 +24,7 @@ function main(
   gCdnPrivateKey,
   akamaiTokenKey = ''
 ) {
-  // [START video_stitcher_update_cdn_key]
+  // [START videostitcher_update_cdn_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -73,7 +73,7 @@ function main(
   }
 
   updateCdnKey();
-  // [END video_stitcher_update_cdn_key]
+  // [END videostitcher_update_cdn_key]
 }
 
 // node updateCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <gCdnKeyname> <gCdnPrivateKey> <akamaiTokenKey>

@@ -18,7 +18,11 @@
 
 const {
   StorageTransferServiceClient,
+  protos,
 } = require('@google-cloud/storage-transfer');
+
+this.protos = protos.google;
+require('@google-cloud/storage-transfer');
 
 const {BucketManager} = require('./bucket');
 
@@ -104,6 +108,10 @@ class TransferJobManager {
    */
   transferJobToCleanUp(jobName) {
     this.transferJobsToCleanup.push(jobName);
+  }
+
+  static get protos() {
+    return protos.google;
   }
 }
 

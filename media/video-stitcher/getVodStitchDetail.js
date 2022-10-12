@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, sessionId, stitchDetailId) {
-  // [START video_stitcher_get_vod_stitch_detail]
+  // [START videostitcher_get_vod_stitch_detail]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -46,7 +46,7 @@ function main(projectId, location, sessionId, stitchDetailId) {
   }
 
   getVodStitchDetail();
-  // [END video_stitcher_get_vod_stitch_detail]
+  // [END videostitcher_get_vod_stitch_detail]
 }
 
 // node getVodStitchDetail.js <projectId> <location> <sessionId> <stitchDetailId>

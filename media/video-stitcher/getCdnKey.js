@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, cdnKeyId) {
-  // [START video_stitcher_get_cdn_key]
+  // [START videostitcher_get_cdn_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location, cdnKeyId) {
   }
 
   getCdnKey();
-  // [END video_stitcher_get_cdn_key]
+  // [END videostitcher_get_cdn_key]
 }
 
 // node getCdnKey.js <projectId> <location> <cdnKeyId>

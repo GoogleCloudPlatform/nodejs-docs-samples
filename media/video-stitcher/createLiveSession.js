@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, sourceUri, adTagUri, slateId) {
-  // [START video_stitcher_create_live_session]
+  // [START videostitcher_create_live_session]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -55,7 +55,7 @@ function main(projectId, location, sourceUri, adTagUri, slateId) {
   }
 
   createLiveSession();
-  // [END video_stitcher_create_live_session]
+  // [END videostitcher_create_live_session]
 }
 
 // node createLiveSession.js <projectId> <location> <sourceUri> <adTagUri> <slateId>

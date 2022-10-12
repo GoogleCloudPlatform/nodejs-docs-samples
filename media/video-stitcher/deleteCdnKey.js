@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, cdnKeyId) {
-  // [START video_stitcher_delete_cdn_key]
+  // [START videostitcher_delete_cdn_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location, cdnKeyId) {
   }
 
   deleteCdnKey();
-  // [END video_stitcher_delete_cdn_key]
+  // [END videostitcher_delete_cdn_key]
 }
 
 // node deleteCdnKey.js <projectId> <location> <cdnKeyId>

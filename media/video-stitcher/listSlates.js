@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location) {
-  // [START video_stitcher_list_slates]
+  // [START videostitcher_list_slates]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -40,7 +40,7 @@ function main(projectId, location) {
   }
 
   listSlates();
-  // [END video_stitcher_list_slates]
+  // [END videostitcher_list_slates]
 }
 
 // node listSlates.js <projectId> <location>

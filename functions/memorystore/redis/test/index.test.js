@@ -14,10 +14,13 @@
 
 'use strict';
 
-const sinon = require('sinon');
 const assert = require('assert');
+const sinon = require('sinon');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
-const getMocks = () => {
+const redis = require('redis');
+
+const getHttpMocks = () => {
   return {
     req: {},
     res: {
@@ -29,13 +32,31 @@ const getMocks = () => {
   };
 };
 
+const stubRedis = () => {
+  sinon.stub(redis, 'createClient').callsFake(() => {
+    return {
+      on: sinon.stub(),
+      connect: sinon.stub(),
+      incr: sinon.stub().resolves(42),
+    };
+  });
+};
+
+const restoreRedis = () => {
+  redis.createClient.restore();
+};
+
 describe('functions_memorystore_redis', () => {
   describe('visitCount', () => {
-    it('should successfully increment the Redis counter', async () => {
-      const program = require('../');
-      const mocks = getMocks();
+    beforeEach(stubRedis);
+    afterEach(restoreRedis);
 
-      await program.visitCount(mocks.req, mocks.res);
+    it('should respond with current visit count', async () => {
+      require('..');
+      const visitCount = getFunction('visitCount');
+      const mocks = getHttpMocks();
+
+      await visitCount(mocks.req, mocks.res);
 
       assert(!mocks.res.status.called);
       assert(!mocks.res.send.called);
@@ -43,7 +64,7 @@ describe('functions_memorystore_redis', () => {
       assert(mocks.res.end.calledOnce);
 
       const [response] = mocks.res.end.firstCall.args;
-      assert(response.startsWith('Visit count:'));
+      assert(response === 'Visit count: 42');
     });
   });
 });

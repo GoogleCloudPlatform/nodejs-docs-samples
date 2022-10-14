@@ -50,7 +50,7 @@ describe('End-to-End Tests', () => {
 
     try {
       console.log('Starting Cloud Build...');
-      const stdout = execSync(buildCmd);
+      execSync(buildCmd);
       console.log('Cloud Build completed.');
       assert(true);
     } catch (err) {

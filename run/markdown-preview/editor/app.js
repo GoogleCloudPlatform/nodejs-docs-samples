@@ -41,7 +41,7 @@ app.get('/', async (req, res) => {
     if (!renderedHtml) renderedHtml = await buildRenderedHtml();
     res.status(200).send(renderedHtml);
   } catch (err) {
-    console.log('Error loading the Editor service: ', err);
+    console.error('Error loading the Editor service: ', err);
     res.status(500).send(err);
   }
 });
@@ -56,7 +56,7 @@ app.post('/render', async (req, res) => {
     const response = await renderRequest(markdown);
     res.status(200).send(response);
   } catch (err) {
-    console.log('error: markdown rendering:', err);
+    console.error('Error rendering markdown:', err);
     res.status(500).send(err);
   }
 });

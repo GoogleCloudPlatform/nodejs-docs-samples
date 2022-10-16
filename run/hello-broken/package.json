@@ -20,8 +20,13 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+snyk-upgrade-c4d719be5f09b32489dc7d7bbba14293
+    "google-auth-library": "^8.0.2",
+    "got": "^11.0.0",
+=======
     "google-auth-library": "^6.1.3",
     "got": "^12.1.0",
+master
     "mocha": "^8.0.0"
   }
 }

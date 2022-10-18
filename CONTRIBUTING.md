@@ -35,11 +35,11 @@ For new samples, a GitHub Actions workflow should be created to run your tests o
         node .github/workflows/generate.js
 
 > **Note**
-> There are some existing samples that use an alternative CI system. It is recommended to use GitHub Actions for new samples, but the instructions are provided below for your reference.
+> There are some existing samples that use an alternative CI system. It is recommended to use GitHub Actions for new samples, but these instructions are provided below for your reference.
 > 
 > Add a **build configuration file (`.cfg`)** for your samples in **[`.kokoro/`](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/.kokoro)**. Check existing config files for the right format.
 > 
-> All tests need a corresponding job file outside of GitHub. If you are a Googler, please provide the CL alongside your PR. See the internal codelab for Kokoro for details. If you don't work at Google, the person reviewing > your PR will create the job config for you.
+> All tests need a corresponding job file outside of GitHub. If you are a Googler, please provide the CL alongside your PR. See the internal codelab for Kokoro for details. If you don't work at Google, the person reviewing your PR will create the job config for you.
 
 
 ### Style

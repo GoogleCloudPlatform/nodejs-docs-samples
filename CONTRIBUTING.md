@@ -24,11 +24,16 @@ need to enable the appropriate APIs in the [Cloud Console](https://console.cloud
 
 ## Adding new samples
 
-All samples must have tests. We use `mocha` as testing framework.
+All samples must have tests. We use `mocha` as testing framework. The package.json file within your sample directory must contain a test script that executes the `mocha` tests via `npm test` ([example](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/batch/package.json#L13)).
 
-Add a **build configuration file (`.cfg`)** for your samples in **[`.kokoro/`](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/.kokoro)**. Check existing config files for the right format.
+A GitHub Actions workflow should be created to run your tests on the CI system:
 
-All tests need a corresponding job file outside of GitHub. If you are a Googler, please provide the CL alongside your PR. See the internal codelab for Kokoro for details. If you don't work at Google, the person reviewing your PR will create the job config for you.
+1. Add an entry to [.github/workflows/workflows.json](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows/workflows.json) matching the directory with your sample code.
+
+1. From the root of the repo, use generate a new workflow in the [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows) directory.
+
+        node .github/workflows/generate.js
+
 
 ### Style
 

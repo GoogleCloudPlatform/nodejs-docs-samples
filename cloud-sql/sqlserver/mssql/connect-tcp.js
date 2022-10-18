@@ -44,7 +44,7 @@ const createTcpPool = async config => {
     };
   }
 
-  // [START cloud_sql_mysql_mysql_connect_tcp]
+  // [START cloud_sql_sqlserver_mssql_connect_tcp]
   // Establish a connection to the database.
   return mssql.connect(dbConfig);
 };

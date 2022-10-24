@@ -41,9 +41,7 @@ const createTcpPool = async config => {
   // For deployments that connect directly to a Cloud SQL instance without
   // using the Cloud SQL Proxy, configure encrypted connection.
   if (process.env.PRIVATE_IP) {
-    dbConfig.options += {
-      encrypt: true,
-    };
+    dbConfig.options.encrypt = true;
   }
 
   // [START cloud_sql_sqlserver_mssql_connect_tcp]

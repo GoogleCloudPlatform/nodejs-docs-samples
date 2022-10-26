@@ -11,7 +11,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 5000",
     "start": "node server.js"
   },
   "dependencies": {

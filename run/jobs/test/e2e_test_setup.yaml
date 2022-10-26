@@ -15,9 +15,9 @@ steps:
   args:
   - '-c'
   - |
-    gcloud components install alpha --quiet
+    gcloud components install beta --quiet
     
-    gcloud alpha run jobs create ${_SERVICE} \
+    gcloud beta run jobs create ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --project ${PROJECT_ID} \
       --region ${_REGION} \
@@ -25,7 +25,7 @@ steps:
       --set-env-vars=SLEEP_MS=100 \
       --max-retries 0
 
-    ./test/retry.sh "gcloud alpha run jobs execute ${_SERVICE} \
+    ./test/retry.sh "gcloud beta run jobs execute ${_SERVICE} \
       --project ${PROJECT_ID} \
       --region ${_REGION} \
       --wait"

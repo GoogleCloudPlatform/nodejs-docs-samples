@@ -64,7 +64,7 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 App Engine Flexible supports connecting to your SQL Server instance through TCP
 
-First, update `app.yaml` with the correct values to pass the environment 
+First, update [`app.yaml`](app.yaml) with the correct values to pass the environment 
 variables and instance name into the runtime.
 
 Then, make sure that the service account `service-{PROJECT_NUMBER}>@gae-api-prod.google.com.iam.gserviceaccount.com` has the IAM role `Cloud SQL Client`.

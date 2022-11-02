@@ -58,7 +58,7 @@ const waitForReady = async baseUrl => {
   }
 };
 
-describe('functions/datastore', () => {
+describe.skip('functions/datastore', () => {
   describe('set', () => {
     let ffProc;
     const PORT = 8080;

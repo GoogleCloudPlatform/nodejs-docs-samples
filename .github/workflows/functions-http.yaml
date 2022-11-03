@@ -20,7 +20,12 @@ jobs:
         # New packages must be manually added to this list.
         package:
           - 'functions/http'
+          - 'functions/http/corsEnabledFunction'
+          - 'functions/http/corsEnabledFunctionAuth'
+          - 'functions/http/httpContent'
           - 'functions/http/httpMethods'
+          - 'functions/http/parseXML'
+          - 'functions/http/uploadFile'
     if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -44,7 +49,7 @@ jobs:
         node-version: 14
     - run: npm install
       working-directory: ${{ matrix.package }}
-    - run: npm test
+    - run: npm test -- --reporter xunit --reporter-option output=sponge_log.xml --reporter-option suiteName="${{ matrix.package }}"
       working-directory: ${{ matrix.package }}
       env:
         MOCHA_REPORTER: xunit

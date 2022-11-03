@@ -12,7 +12,7 @@
 # limitations under the License.
 
 # [START all]
-FROM node:6-alpine
+FROM node:19-alpine
 EXPOSE 8080
 COPY server.js .
 CMD node server.js

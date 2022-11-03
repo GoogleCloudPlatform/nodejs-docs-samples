@@ -44,7 +44,7 @@ jobs:
         node-version: 14
     - run: npm install
       working-directory: ${{ matrix.package }}
-    - run: npm test
+    - run: npm test -- --reporter xunit --reporter-option output=sponge_log.xml --reporter-option suiteName="${{ matrix.package }}"
       working-directory: ${{ matrix.package }}
       env:
         MOCHA_REPORTER: xunit

@@ -4,10 +4,10 @@ on:
     branches:
     - main
     paths:
-    - 'cloud-tasks/*.js'
+    - 'cloud-tasks/snippets/*.js'
   pull_request:
     paths:
-    - 'cloud-tasks/*.js'
+    - 'cloud-tasks/snippets/*.js'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -36,9 +36,9 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: cloud-tasks
+      working-directory: cloud-tasks/snippets
     - run: npm test
-      working-directory: cloud-tasks
+      working-directory: cloud-tasks/snippets
       env:
         MOCHA_REPORTER_SUITENAME: cloud_tasks
         MOCHA_REPORTER_OUTPUT: cloud_tasks_sponge_log.xml

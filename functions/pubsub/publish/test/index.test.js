@@ -19,7 +19,7 @@ const sinon = require('sinon');
 const {spawn} = require('child_process');
 const waitPort = require('wait-port');
 const {request} = require('gaxios');
-const { PubSub } = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 
 const PORT = 9020;
 const BASE_URL = `http://localhost:${PORT}`;
@@ -52,9 +52,9 @@ describe('functions/pubsub', () => {
       PORT,
     ]);
     await waitPort({host: 'localhost', port: PORT});
-    let pubsub = new PubSub();
+    const pubsub = new PubSub();
     // Try to create topic, but ignore failure as it may already exist.
-    pubsub.createTopic(TOPIC).catch(err =>{})
+    pubsub.createTopic(TOPIC).catch(err => {});
   });
 
   after(() => ffProc.kill());

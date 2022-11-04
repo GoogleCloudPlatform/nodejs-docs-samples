@@ -1,4 +1,4 @@
-<img src="https://linuxfoundation.org/wp-content/uploads/prometheus.svg" alt="Prometheus logo" title="Prometheus" align="right" height="96" width="96"/>
+<img src="https://cncf-branding.netlify.app/img/projects/prometheus/icon/color/prometheus-icon-color.svg" alt="Prometheus logo" title="Prometheus" align="right" height="96" width="96"/>
 
 # Prometheus Samples for Node.js - SLIs
 

@@ -12,5 +12,5 @@
 # limitations under the License.
 
 # [START gae_quickstart_yaml]
-runtime: nodejs14
+runtime: nodejs16
 # [END gae_quickstart_yaml]

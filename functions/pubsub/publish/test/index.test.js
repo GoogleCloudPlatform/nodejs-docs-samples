@@ -54,7 +54,7 @@ describe('functions/pubsub', () => {
     await waitPort({host: 'localhost', port: PORT});
     const pubsub = new PubSub();
     // Try to create topic, but ignore failure as it may already exist.
-    pubsub.createTopic(TOPIC).catch(err => {});
+    pubsub.createTopic(TOPIC).catch();
   });
 
   after(() => ffProc.kill());

@@ -19,7 +19,6 @@ jobs:
         # Each package in this list will be tested independently.
         # New packages must be manually added to this list.
         package:
-          - 'functions/tips'
           - 'functions/tips/avoidInfiniteRetries'
           - 'functions/tips/connectionPools'
           # - 'functions/tips/gcpApiCall' # TODO(muncus): reenable once tests are suitable for CI/CD.

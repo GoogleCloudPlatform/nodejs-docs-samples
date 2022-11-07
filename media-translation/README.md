@@ -19,7 +19,7 @@
 ## Before you begin
 
 Before running the samples, make sure you've followed the steps outlined in
-[Using the client library](https://github.com/google-apis/nodejs-media-translation#using-the-client-library).
+[Using the client library](https://github.com/googleapis/nodejs-media-translation#using-the-client-library).
 
 `npm install`
 

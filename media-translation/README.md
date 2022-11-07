@@ -1,8 +1,6 @@
-[//]: # "This README.md file is auto-generated, all changes to this file will be lost."
-[//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Cloud Media Translation: Node.js Samples](https://github.com/googleapis/nodejs-media-translation)
+# [Cloud Media Translation: Node.js Samples](https://github.com/GoogleCloudPlatform/nodejs-docs-samples)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -10,18 +8,18 @@
 
 ## Table of Contents
 
-* [Before you begin](#before-you-begin)
-* [Samples](#samples)
-  * [Quickstart](#quickstart)
-  * [Translate_from_file](#translate_from_file)
-  * [Translate_from_mic](#translate_from_mic)
+- [Cloud Media Translation: Node.js Samples](#cloud-media-translation-nodejs-samples)
+  - [Table of Contents](#table-of-contents)
+  - [Before you begin](#before-you-begin)
+  - [Samples](#samples)
+    - [Quickstart](#quickstart)
+    - [Translate_from_file](#translate_from_file)
+    - [Translate_from_mic](#translate_from_mic)
 
 ## Before you begin
 
 Before running the samples, make sure you've followed the steps outlined in
-[Using the client library](https://github.com/googleapis/nodejs-media-translation#using-the-client-library).
-
-`cd samples`
+[Using the client library](https://github.com/google-apis/nodejs-media-translation#using-the-client-library).
 
 `npm install`
 
@@ -33,14 +31,14 @@ Before running the samples, make sure you've followed the steps outlined in
 
 ### Quickstart
 
-View the [source code](https://github.com/googleapis/nodejs-media-translation/blob/main/samples/quickstart.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/media-translation/quickstart.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/quickstart.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=media-translation/quickstart.js,media-translation/README.md)
 
 __Usage:__
 
 
-`node samples/quickstart.js`
+`node quickstart.js`
 
 
 -----
@@ -50,14 +48,14 @@ __Usage:__
 
 ### Translate_from_file
 
-View the [source code](https://github.com/googleapis/nodejs-media-translation/blob/main/samples/translate_from_file.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/media-translation/translate_from_file.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/translate_from_file.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=media-translation/translate_from_file.js,media-translation/README.md)
 
 __Usage:__
 
 
-`node samples/translate_from_file.js`
+`node translate_from_file.js`
 
 
 -----
@@ -67,14 +65,14 @@ __Usage:__
 
 ### Translate_from_mic
 
-View the [source code](https://github.com/googleapis/nodejs-media-translation/blob/main/samples/translate_from_mic.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/media-translation/translate_from_mic.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/translate_from_mic.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=media-translation/translate_from_mic.js,media-translation/README.md)
 
 __Usage:__
 
 
-`node samples/translate_from_mic.js`
+`node translate_from_mic.js`
 
 
 
@@ -82,5 +80,5 @@ __Usage:__
 
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-media-translation&page=editor&open_in_editor=samples/README.md
+[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=media-translation/README.md
 [product-docs]: https://cloud.google.com/translate/media/docs/

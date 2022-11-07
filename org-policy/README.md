@@ -1,8 +1,6 @@
-[//]: # "This README.md file is auto-generated, all changes to this file will be lost."
-[//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Organization Policy: Node.js Samples](https://github.com/googleapis/nodejs-org-policy)
+# [Organization Policy: Node.js Samples](https://github.com/GoogleCloudPlatform/nodejs-docs-samples)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -10,16 +8,16 @@
 
 ## Table of Contents
 
-* [Before you begin](#before-you-begin)
-* [Samples](#samples)
-  * [Quickstart](#quickstart)
+- [Organization Policy: Node.js Samples](#organization-policy-nodejs-samples)
+  - [Table of Contents](#table-of-contents)
+  - [Before you begin](#before-you-begin)
+  - [Samples](#samples)
+    - [Quickstart](#quickstart)
 
 ## Before you begin
 
 Before running the samples, make sure you've followed the steps outlined in
 [Using the client library](https://github.com/googleapis/nodejs-org-policy#using-the-client-library).
-
-`cd samples`
 
 `npm install`
 
@@ -31,14 +29,14 @@ Before running the samples, make sure you've followed the steps outlined in
 
 ### Quickstart
 
-View the [source code](https://github.com/googleapis/nodejs-org-policy/blob/main/samples/quickstart.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/org-policy/samples/quickstart.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-org-policy&page=editor&open_in_editor=samples/quickstart.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=org-policy/quickstart.js,org-policy/README.md)
 
 __Usage:__
 
 
-`node samples/quickstart.js`
+`node quickstart.js`
 
 
 
@@ -46,5 +44,5 @@ __Usage:__
 
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-org-policy&page=editor&open_in_editor=samples/README.md
+[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=org-policy/README.md
 [product-docs]: https://cloud.google.com/resource-manager/docs/organization-policy/overview

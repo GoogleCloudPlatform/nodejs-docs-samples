@@ -18,7 +18,7 @@ workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-rev
 eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Data & AI
-media-translation @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
+mediatranslation @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers

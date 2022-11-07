@@ -4,10 +4,17 @@ on:
     branches:
       - main
     paths:
+<<<<<<< HEAD
       - "mediatranslation/**"
   pull_request:
     paths:
       - "mediatranslation/**"
+=======
+      - "media-translation/**"
+  pull_request:
+    paths:
+      - "media-translation/**"
+>>>>>>> 5f1e8389 (test: update CI workflow)
   pull_request_target:
     types: [labeled]
   schedule:
@@ -59,6 +66,7 @@ jobs:
               if (!e.message.includes('Label does not exist')) {
                 throw e;
               }
+            }
       - if: ${{ github.event_name == 'schedule'}}
         run: |
           curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L

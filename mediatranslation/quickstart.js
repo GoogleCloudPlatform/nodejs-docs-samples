@@ -21,10 +21,10 @@
  * @param {string} targetLanguage languate translating to, as BCP-47 code
  */
 function main(filename, encoding, sourceLanguage, targetLanguage) {
-  // [START media_translation_quickstart]
+  // [START mediatranslation_quickstart]
   const fs = require('fs');
 
-  // Imports the CLoud Media Translation client library
+  // Imports the Cloud Media Translation client library
   const {
     SpeechTranslationServiceClient,
   } = require('@google-cloud/media-translation');
@@ -93,7 +93,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
       }
     });
 
-    // [END media_translation_quickstart]
+    // [END mediatranslation_quickstart]
   }
   quickstart();
 }

@@ -39,6 +39,7 @@
   "healthcare/dicom",
   "healthcare/fhir",
   "healthcare/hl7v2",
+  "media-translation",
   "monitoring/opencensus",
   "monitoring/prometheus",
   "datacatalog/cloud-client",

@@ -4,17 +4,10 @@ on:
     branches:
       - main
     paths:
-<<<<<<< HEAD
       - "mediatranslation/**"
   pull_request:
     paths:
       - "mediatranslation/**"
-=======
-      - "media-translation/**"
-  pull_request:
-    paths:
-      - "media-translation/**"
->>>>>>> 5f1e8389 (test: update CI workflow)
   pull_request_target:
     types: [labeled]
   schedule:

@@ -17,6 +17,9 @@ cloud-tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-r
 workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 
+# Infrastructure
+org-policy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
+
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-samples-reviewers 

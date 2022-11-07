@@ -1,4 +1,4 @@
-name: mediatranslation
+name: media-translation
 on:
   push:
     branches:
@@ -40,8 +40,8 @@ jobs:
       - run: npm test
         working-directory: mediatranslation
         env:
-          MOCHA_REPORTER_SUITENAME: media_translation
-          MOCHA_REPORTER_OUTPUT: media_translation_sponge_log.xml
+          MOCHA_REPORTER_SUITENAME: mediatranslation
+          MOCHA_REPORTER_OUTPUT: mediatranslation_sponge_log.xml
           MOCHA_REPORTER: xunit
       - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
         uses: actions/github-script@v6

@@ -21,7 +21,7 @@
  * @param {string} targetLanguage languate translating to, as BCP-47 code
  */
 function main(filename, encoding, sourceLanguage, targetLanguage) {
-  // [START media_translation_quickstart]
+  // [START mediatranslation_translate_from_file]
   const fs = require('fs');
 
   // Imports the CLoud Media Translation client library
@@ -32,7 +32,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
   // Creates a client
   const client = new SpeechTranslationServiceClient();
 
-  async function quickstart() {
+  async function translate_from_file() {
     /**
      * TODO(developer): Uncomment the following lines before running the sample.
      */
@@ -47,6 +47,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
         sourceLanguageCode: sourceLanguage,
         targetLanguageCode: targetLanguage,
       },
+      single_utterance: true,
     };
 
     // First request needs to have only a streaming config, no data.
@@ -93,9 +94,9 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
       }
     });
 
-    // [END media_translation_quickstart]
+    // [END mediatranslation_translate_from_file]
   }
-  quickstart();
+  translate_from_file();
 }
 
 main(...process.argv.slice(2));

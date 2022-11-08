@@ -17,12 +17,12 @@ const workflows = require('./workflows.json');
 const fs = require('fs').promises;
 
 async function main() {
-  nunjucks.configure('.github/workflows', { autoescape: true });
+  nunjucks.configure('.github/workflows', {autoescape: true});
   for (const workflow of workflows) {
     const path = workflow;
     const name = workflow.split('/').join('-');
     const suite = name.split('-').join('_');
-    const data = nunjucks.render('ci.yaml.template', {path, name, suite});
+    const data = nunjucks.render('ci.yaml.njk', {path, name, suite});
     await fs.writeFile(`.github/workflows/${name}.yaml`, data);
   }
 }

@@ -37,7 +37,7 @@
 function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
   sampleRateHertz = Number(sampleRateHertz);
 
-  // [START media_translation_translate_from_mic]
+  // [START mediatranslation_translate_from_mic]
 
   // Allow user input from terminal
   const readline = require('readline');
@@ -150,6 +150,6 @@ function main(encoding, sampleRateHertz, sourceLanguage, targetLanguage) {
   }
 
   doTranslationLoop();
-  // [END media_translation_translate_from_mic]
+  // [END mediatranslation_translate_from_mic]
 }
 main(...process.argv.slice(2));

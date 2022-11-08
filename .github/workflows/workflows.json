@@ -23,6 +23,7 @@
   "composer/functions/composer-storage-trigger",
   "containerengine/hello-world",
   "datacatalog/cloud-client",
+  "datalabeling",
   "datastore/functions",
   "datacatalog/quickstart",
   "endpoints/getting-started",

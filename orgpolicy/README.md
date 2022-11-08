@@ -29,9 +29,9 @@ Before running the samples, make sure you've followed the steps outlined in
 
 ### Quickstart
 
-View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/org-policy/quickstart.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/orgpolicy/quickstart.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=org-policy/quickstart.js,org-policy/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=orgpolicy/quickstart.js,orgpolicy/README.md)
 
 __Usage:__
 
@@ -44,5 +44,5 @@ __Usage:__
 
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=org-policy/README.md
+[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=orgpolicy/README.md
 [product-docs]: https://cloud.google.com/resource-manager/docs/organization-policy/overview

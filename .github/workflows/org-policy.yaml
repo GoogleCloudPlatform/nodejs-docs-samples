@@ -1,13 +1,13 @@
-name: org-policy
+name: orgpolicy
 on:
   push:
     branches:
       - main
     paths:
-      - "org-policy/**"
+      - "orgpolicy/**"
   pull_request:
     paths:
-      - "org-policy/**"
+      - "orgpolicy/**"
   pull_request_target:
     types: [labeled]
   schedule:
@@ -36,9 +36,9 @@ jobs:
         with:
           node-version: 16
       - run: npm install
-        working-directory: org-policy
+        working-directory: orgpolicy
       - run: npm test
-        working-directory: org-policy
+        working-directory: orgpolicy
         env:
           MOCHA_REPORTER_SUITENAME: org_policy
           MOCHA_REPORTER_OUTPUT: org_policy_sponge_log.xml

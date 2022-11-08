@@ -21,7 +21,7 @@
  * @param {string} targetLanguage languate translating to, as BCP-47 code
  */
 function main(filename, encoding, sourceLanguage, targetLanguage) {
-  // [START mediatranslation_translate_from_file]
+  // [START media_translation_translate_from_file]
   const fs = require('fs');
 
   // Imports the CLoud Media Translation client library
@@ -94,7 +94,7 @@ function main(filename, encoding, sourceLanguage, targetLanguage) {
       }
     });
 
-    // [END mediatranslation_translate_from_file]
+    // [END media_translation_translate_from_file]
   }
   translate_from_file();
 }

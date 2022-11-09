@@ -35,3 +35,6 @@ composer @leahecole @sofisl @GoogleCloudPlatform/nodejs-samples-reviewers
 healthcare @noerog @GoogleCloudPlatform/nodejs-samples-reviewers
 monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers
 
+# Data & AI
+contact-center-insights @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
+talent @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers

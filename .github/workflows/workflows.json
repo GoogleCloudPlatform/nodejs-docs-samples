@@ -43,7 +43,6 @@
   "mediatranslation",
   "monitoring/opencensus",
   "monitoring/prometheus",
-  "orgpolicy",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions"

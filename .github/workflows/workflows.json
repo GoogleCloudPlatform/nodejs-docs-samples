@@ -46,5 +46,6 @@
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions",
-  "talent"
+  "talent",
+  "contact-center-insights"
 ]

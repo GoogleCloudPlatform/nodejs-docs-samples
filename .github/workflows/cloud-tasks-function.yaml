@@ -4,10 +4,10 @@ on:
     branches:
     - main
     paths:
-    - 'cloud-tasks/function/**'
+    - 'cloud-tasks/tutorial-gcf/function/**'
   pull_request:
     paths:
-    - 'cloud-tasks/function/**'
+    - 'cloud-tasks/tutorial-gcf/function/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -36,9 +36,9 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: cloud-tasks/function
+      working-directory: cloud-tasks/tutorial-gcf/function
     - run: npm test
-      working-directory: cloud-tasks/function
+      working-directory: cloud-tasks/tutorial-gcf/function
       env:
         MOCHA_REPORTER_SUITENAME: cloud_tasks_function
         MOCHA_REPORTER_OUTPUT: cloud_tasks_function_sponge_log.xml

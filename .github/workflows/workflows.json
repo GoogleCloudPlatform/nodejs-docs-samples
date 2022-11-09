@@ -45,5 +45,6 @@
   "monitoring/prometheus",
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
-  "datastore/functions"
+  "datastore/functions",
+  "talent"
 ]

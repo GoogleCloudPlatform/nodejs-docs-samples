@@ -20,7 +20,6 @@
 'use strict';
 
 function manual() {
-  // [START error_reporting_manual]
   // [START error_reporting_setup_nodejs_manual]
   // Imports the Google Cloud client library
   const {ErrorReporting} = require('@google-cloud/error-reporting');
@@ -50,6 +49,5 @@ function manual() {
     console.log('Done reporting error string!');
   });
   // [END error_reporting_setup_nodejs_manual]
-  // [END error_reporting_manual]
 }
 manual();

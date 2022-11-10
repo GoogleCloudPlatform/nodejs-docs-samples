@@ -20,7 +20,6 @@
 'use strict';
 
 function express() {
-  // [START error_reporting_express]
   // [START error_reporting_setup_nodejs_express]
   const express = require('express');
 
@@ -51,6 +50,5 @@ function express() {
     console.log('Press Ctrl+C to quit.');
   });
   // [END error_reporting_setup_nodejs_express]
-  // [END error_reporting_express]
 }
 express();

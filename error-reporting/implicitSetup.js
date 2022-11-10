@@ -20,7 +20,6 @@
 'use strict';
 
 function setupImplicit() {
-  // [START error_reporting_setup_implicit]
   // [START error_reporting_setup_nodejs_implicit]
   // Imports the Google Cloud client library
   const {ErrorReporting} = require('@google-cloud/error-reporting');
@@ -31,7 +30,6 @@ function setupImplicit() {
   // Reports a simple error
   errors.report('Something broke!');
   // [END error_reporting_setup_nodejs_implicit]
-  // [END error_reporting_setup_implicit]
 }
 
 setupImplicit();

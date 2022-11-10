@@ -1,13 +1,13 @@
-name: appengine-static-files
+name: apengine-metadata-flexible
 on:
   push:
     branches:
     - main
     paths:
-    - 'appengine/static-files/**'
+    - 'apengine/metadata/flexible/**'
   pull_request:
     paths:
-    - 'appengine/static-files/**'
+    - 'apengine/metadata/flexible/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -36,12 +36,12 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: appengine/static-files
+      working-directory: apengine/metadata/flexible
     - run: npm test
-      working-directory: appengine/static-files
+      working-directory: apengine/metadata/flexible
       env:
-        MOCHA_REPORTER_SUITENAME: appengine_static_files
-        MOCHA_REPORTER_OUTPUT: appengine_static_files_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: apengine_metadata_flexible
+        MOCHA_REPORTER_OUTPUT: apengine_metadata_flexible_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6

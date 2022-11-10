@@ -22,25 +22,19 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.1.0
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: google-github-actions/auth@v0.8.0
+    - uses: 'google-github-actions/auth@v0.8.3'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - id: secrets
-      uses: 'google-github-actions/get-secretmanager-secrets@v0'
+    - uses: actions/setup-node@v3.5.1
       with:
-        secrets: |-
-          slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
-          kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 14
+        node-version: 16
     - run: npm install
       working-directory: functions/slack
     - run: npm test
@@ -49,8 +43,6 @@ jobs:
         MOCHA_REPORTER_SUITENAME: functions_slack
         MOCHA_REPORTER_OUTPUT: functions_slack_sponge_log.xml
         MOCHA_REPORTER: xunit
-        SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
-        API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:
@@ -68,7 +60,7 @@ jobs:
               throw e;
             }
           }
-    - if: ${{ github.event_name == 'schedule' && always() }}
+    - if: ${{ github.event_name == 'schedule'}}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot

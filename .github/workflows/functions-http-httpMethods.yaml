@@ -1,13 +1,13 @@
-name: appengine-static-files
+name: functions-http-httpMethods
 on:
   push:
     branches:
     - main
     paths:
-    - 'appengine/static-files/**'
+    - 'functions/http/httpMethods/**'
   pull_request:
     paths:
-    - 'appengine/static-files/**'
+    - 'functions/http/httpMethods/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -36,12 +36,12 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: appengine/static-files
+      working-directory: functions/http/httpMethods
     - run: npm test
-      working-directory: appengine/static-files
+      working-directory: functions/http/httpMethods
       env:
-        MOCHA_REPORTER_SUITENAME: appengine_static_files
-        MOCHA_REPORTER_OUTPUT: appengine_static_files_sponge_log.xml
+        MOCHA_REPORTER_SUITENAME: functions_http_httpMethods
+        MOCHA_REPORTER_OUTPUT: functions_http_httpMethods_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6

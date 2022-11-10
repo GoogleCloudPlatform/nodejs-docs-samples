@@ -18,12 +18,18 @@ const fs = require('fs').promises;
 
 async function main() {
   nunjucks.configure('.github/workflows', {autoescape: true});
+
+  // Optional filter to generate one workflow
+  const filter = process.argv.slice(2)[0];
+
   for (const workflow of workflows) {
-    const path = workflow;
-    const name = workflow.split('/').join('-');
-    const suite = name.split('-').join('_');
-    const data = nunjucks.render('ci.yaml.njk', {path, name, suite});
-    await fs.writeFile(`.github/workflows/${name}.yaml`, data);
+    if (!filter || filter === workflow) {
+      const path = workflow;
+      const name = workflow.split('/').join('-');
+      const suite = name.split('-').join('_');
+      const data = nunjucks.render('ci.yaml.njk', {path, name, suite});
+      await fs.writeFile(`.github/workflows/${name}.yaml`, data);
+    }
   }
 }
 

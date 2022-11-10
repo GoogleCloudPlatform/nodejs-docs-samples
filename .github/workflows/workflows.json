@@ -50,5 +50,6 @@
   "datacatalog/quickstart",
   "datastore/functions",
   "talent",
-  "contact-center-insights"
+  "contact-center-insights",
+  "workflows"
 ]

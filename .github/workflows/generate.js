@@ -23,7 +23,7 @@ async function main() {
   const specificWorkflowPath = process.argv.slice(2)[0];
 
   for (const workflow of workflows) {
-    if (!filter || filter === workflow) {
+    if (!specificWorkflowPath || specificWorkflowPath === workflow) {
       const path = workflow;
       const name = workflow.split('/').join('-');
       const suite = name.split('-').join('_');

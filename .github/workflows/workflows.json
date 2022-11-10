@@ -17,6 +17,7 @@
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",
+  "cloud-language",
   "cloud-tasks/tutorial-gcf/app",
   "cloud-tasks/tutorial-gcf/function",
   "composer",

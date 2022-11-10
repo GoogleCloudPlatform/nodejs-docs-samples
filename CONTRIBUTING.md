@@ -30,9 +30,9 @@ For new samples, a GitHub Actions workflow should be created to run your tests o
 
 1. Add an entry to [.github/workflows/workflows.json](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows/workflows.json) matching the directory with your sample code.
 
-1. From the root of the repo, generate a new workflow in the [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows) directory:
+1. From the root of the repo, generate a new workflow in the [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows) directory. You can specify a `path` to only generate the specific workflow, e.g. `cloud-tasks`. If the path is omitted, all workflows will be generated.
 
-        node .github/workflows/generate.js
+        node .github/workflows/generate.js [path]
 
 > **Note**
 > There are some existing samples that use an alternative CI system. It is recommended to use GitHub Actions for new samples, but these instructions are provided below for your reference.

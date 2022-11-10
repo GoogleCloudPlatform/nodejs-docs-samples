@@ -20,7 +20,7 @@ async function main() {
   nunjucks.configure('.github/workflows', {autoescape: true});
 
   // Optional filter to generate one workflow
-  const filter = process.argv.slice(2)[0];
+  const specificWorkflowPath = process.argv.slice(2)[0];
 
   for (const workflow of workflows) {
     if (!filter || filter === workflow) {

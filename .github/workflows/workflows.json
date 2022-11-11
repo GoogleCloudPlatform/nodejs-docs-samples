@@ -44,6 +44,7 @@
   "healthcare/dicom",
   "healthcare/fhir",
   "healthcare/hl7v2",
+  "kms",
   "game-servers/snippets",
   "mediatranslation",
   "monitoring/opencensus",

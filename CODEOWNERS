@@ -21,6 +21,9 @@ cloudbuild @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-re
 # Infrastructure
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 
+# DEE Platform Ops (DEEPO)
+container-analysis @GoogleCloudPlatform/dee-platform-ops
+
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-samples-reviewers 

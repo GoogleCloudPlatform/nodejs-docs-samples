@@ -29,6 +29,7 @@
   "datalabeling",
   "datastore/functions",
   "datacatalog/quickstart",
+  "document-ai",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "error-reporting",

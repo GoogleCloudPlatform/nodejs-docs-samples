@@ -23,6 +23,7 @@
   "cloud-tasks/tutorial-gcf/function",
   "composer",
   "composer/functions/composer-storage-trigger",
+  "container-analysis/snippets",
   "containerengine/hello-world",
   "datacatalog/cloud-client",
   "datalabeling",

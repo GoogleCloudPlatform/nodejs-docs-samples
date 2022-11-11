@@ -43,6 +43,7 @@
   "healthcare/dicom",
   "healthcare/fhir",
   "healthcare/hl7v2",
+  "game-servers/snippets",
   "mediatranslation",
   "monitoring/opencensus",
   "monitoring/prometheus",

@@ -17,12 +17,13 @@ cloud-tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-r
 workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 cloudbuild @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
+container-analysis @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Infrastructure
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # DEE Platform Ops (DEEPO)
-container-analysis @GoogleCloudPlatform/dee-platform-ops
+container @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers

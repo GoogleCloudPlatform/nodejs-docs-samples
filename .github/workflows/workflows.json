@@ -17,6 +17,8 @@
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",
+  "cloudbuild",
+  "cloud-language",
   "cloud-tasks/tutorial-gcf/app",
   "cloud-tasks/tutorial-gcf/function",
   "composer",
@@ -28,6 +30,7 @@
   "datacatalog/quickstart",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "error-reporting",
   "functions/firebase",
   "functions/helloworld",
   "functions/http",
@@ -48,5 +51,6 @@
   "datacatalog/quickstart",
   "datastore/functions",
   "talent",
-  "contact-center-insights"
+  "contact-center-insights",
+  "workflows"
 ]

@@ -23,6 +23,7 @@ orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-rev
 
 # DEE Platform Ops (DEEPO)
 container-analysis @GoogleCloudPlatform/dee-platform-ops
+error-reporting @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers @googleapis/api-logging
 
 # Other functions samples
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -42,6 +43,3 @@ monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers
 # Data & AI
 contact-center-insights @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 talent @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
-
-# DEE-PO
-error-reporting @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers

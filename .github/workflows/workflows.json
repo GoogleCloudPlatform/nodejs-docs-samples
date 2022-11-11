@@ -30,6 +30,7 @@
   "datacatalog/quickstart",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
+  "error-reporting",
   "functions/firebase",
   "functions/helloworld",
   "functions/http",

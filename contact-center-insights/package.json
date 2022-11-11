@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-org-policy",
+  "name": "nodejs-contact-center-insights",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google LLC",
@@ -13,11 +13,14 @@
     "test": "c8 mocha --timeout 600000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/org-policy": "^2.0.2"
+    "@google-cloud/bigquery": "^6.0.0",
+    "@google-cloud/contact-center-insights": "^2.1.1",
+    "@google-cloud/pubsub": "^3.0.0"
   },
   "devDependencies": {
     "c8": "^7.1.0",
     "chai": "^4.2.0",
-    "mocha": "^8.0.0"
+    "mocha": "^9.0.0",
+    "uuid": "^9.0.0"
   }
 }

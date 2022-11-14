@@ -24,7 +24,6 @@ const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
-  let jobName;
   let PROJECT_ID;
 
   before(async () => {
@@ -37,7 +36,5 @@ describe('Cloud Scheduler Sample Tests', () => {
       `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);
-    jobName = stdout.split('/').pop();
   });
 });
-

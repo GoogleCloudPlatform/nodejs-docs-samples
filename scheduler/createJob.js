@@ -21,7 +21,7 @@
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
 async function createJob(projectId, locationId, serviceId) {
-  // [START cloud_scheduler_create_job]
+  // [START cloudscheduler_create_job]
   const scheduler = require('@google-cloud/scheduler');
 
   // Create a client.
@@ -57,7 +57,7 @@ async function createJob(projectId, locationId, serviceId) {
   // Use the client to send the job creation request.
   const [response] = await client.createJob(request);
   console.log(`Created job: ${response.name}`);
-  // [END cloud_scheduler_create_job]
+  // [END cloudscheduler_create_job]
 }
 
 const args = process.argv.slice(2);

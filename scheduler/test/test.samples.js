@@ -19,20 +19,27 @@ const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 
+const client = new CloudSchedulerClient();
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
-  let PROJECT_ID;
+  let PROJECT_ID, stdout;
 
   before(async () => {
-    const client = new CloudSchedulerClient();
     PROJECT_ID = await client.getProjectId();
   });
 
+  after(async () => {
+    let jobName = stdout && stdout.trim().split(' ').slice(-1);
+    if (jobName) {
+      await client.deleteJob({name: jobName});
+    }
+  })
+
   it('should create a scheduler job', async () => {
-    const stdout = execSync(
+    stdout = execSync(
       `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);

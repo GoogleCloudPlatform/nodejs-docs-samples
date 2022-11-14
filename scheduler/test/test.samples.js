@@ -32,11 +32,11 @@ describe('Cloud Scheduler Sample Tests', () => {
   });
 
   after(async () => {
-    let jobName = stdout && stdout.trim().split(' ').slice(-1);
+    const jobName = stdout && stdout.trim().split(' ').slice(-1);
     if (jobName) {
       await client.deleteJob({name: jobName});
     }
-  })
+  });
 
   it('should create a scheduler job', async () => {
     stdout = execSync(

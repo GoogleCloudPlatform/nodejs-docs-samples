@@ -4,10 +4,10 @@ on:
     branches:
     - main
     paths:
-    - 'cloud-tasks/app/**'
+    - 'cloud-tasks/tutorial-gcf/app/**'
   pull_request:
     paths:
-    - 'cloud-tasks/app/**'
+    - 'cloud-tasks/tutorial-gcf/app/**'
   pull_request_target:
     types: [labeled]
   schedule:
@@ -26,7 +26,7 @@ jobs:
       with:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: google-github-actions/auth@v0.8.0
+    - uses: google-github-actions/auth@v1.0.0
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
@@ -34,9 +34,9 @@ jobs:
       with:
         node-version: 14
     - run: npm install
-      working-directory: cloud-tasks/app
+      working-directory: cloud-tasks/tutorial-gcf/app
     - run: npm test
-      working-directory: cloud-tasks/app
+      working-directory: cloud-tasks/tutorial-gcf/app
       env:
         MOCHA_REPORTER_SUITENAME: cloud_tasks_app
         MOCHA_REPORTER_OUTPUT: cloud_tasks_app_sponge_log.xml

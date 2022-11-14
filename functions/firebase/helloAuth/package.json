@@ -1,0 +1,22 @@
+{
+  "name": "nodejs-docs-samples-functions-firebase-auth",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "mocha -T 30s test/*.test.js"
+  },
+  "devDependencies": {
+    "mocha": "^9.0.0",
+    "proxyquire": "^2.1.0",
+    "sinon": "^14.0.0"
+  }
+}

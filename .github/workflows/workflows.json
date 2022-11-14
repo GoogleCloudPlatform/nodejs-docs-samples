@@ -14,6 +14,7 @@
   "appengine/storage/flexible",
   "appengine/storage/standard",
   "auth",
+  "automl",
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",

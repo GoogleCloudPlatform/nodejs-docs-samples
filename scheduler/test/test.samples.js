@@ -18,9 +18,6 @@ const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const cp = require('child_process');
-const supertest = require('supertest');
-const app = require('../app.js');
-const request = supertest(app);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
@@ -35,36 +32,12 @@ describe('Cloud Scheduler Sample Tests', () => {
     PROJECT_ID = await client.getProjectId();
   });
 
-  it('should create and delete a scheduler job', async () => {
+  it('should create a scheduler job', async () => {
     const stdout = execSync(
       `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);
     jobName = stdout.split('/').pop();
   });
-
-  it('should update a scheduler job', async () => {
-    const stdout = execSync(
-      `node updateJob.js ${PROJECT_ID} ${LOCATION_ID} ${jobName}`
-    );
-    assert.match(stdout, /Updated job/);
-  });
-
-  it('should delete a scheduler job', async () => {
-    const stdout = execSync(
-      `node deleteJob.js ${PROJECT_ID} ${LOCATION_ID} ${jobName}`
-    );
-    assert.match(stdout, /Job deleted/);
-  });
 });
 
-describe('Server should respond to /log_payload', () => {
-  it('should log the payload', done => {
-    const body = Buffer.from('test');
-    request
-      .post('/log_payload')
-      .type('raw')
-      .send(body)
-      .expect(200, /Printed job/, done);
-  });
-});

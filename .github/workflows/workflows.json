@@ -24,6 +24,7 @@
   "cloud-tasks/tutorial-gcf/function",
   "composer",
   "composer/functions/composer-storage-trigger",
+  "compute",
   "container-analysis/snippets",
   "containerengine/hello-world",
   "container/snippets",

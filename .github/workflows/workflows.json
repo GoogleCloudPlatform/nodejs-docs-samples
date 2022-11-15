@@ -54,6 +54,7 @@
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions",
+  "scheduler",
   "talent",
   "contact-center-insights",
   "workflows"

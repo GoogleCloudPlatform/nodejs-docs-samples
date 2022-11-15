@@ -160,17 +160,6 @@ describe('disks tests', () => {
     await deleteDisk(projectId, zone, diskName);
   });
 
-  it('should create empty disk', async () => {
-    const projectId = await instancesClient.getProjectId();
-
-    const output = execSync(
-      `node disks/createEmptyDisk ${projectId} ${zone} ${diskName} ${diskType} 10`
-    );
-    assert.match(output, /Disk created./);
-
-    await deleteDisk(projectId, zone, diskName);
-  });
-
   it('should set autodelete field', async () => {
     const projectId = await instancesClient.getProjectId();
 

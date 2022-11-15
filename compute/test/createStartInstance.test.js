@@ -127,24 +127,6 @@ describe('create start instance tests', () => {
     );
   });
 
-  it('should create instance from public image', async () => {
-    const projectId = await instancesClient.getProjectId();
-    let output;
-    try {
-      output = execSync(
-        `node instances/create-start-instance/createInstanceFromPublicImage ${projectId} ${zone} ${instanceName}`
-      );
-    } catch (err) {
-      if (err.message.includes('already exists')) {
-        return;
-      }
-      throw err;
-    }
-    assert.match(output, /Instance created./);
-
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
-  });
-
   it('should create instance from snapshot', async () => {
     const projectId = await instancesClient.getProjectId();
 
@@ -162,37 +144,6 @@ describe('create start instance tests', () => {
     try {
       output = execSync(
         `node instances/create-start-instance/createInstanceFromSnapshot ${projectId} ${zone} ${instanceName} ${diskSnapshotLink}`
-      );
-    } catch (err) {
-      if (err.message.includes('already exists')) {
-        return;
-      }
-      throw err;
-    }
-    assert.match(output, /Instance created./);
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
-
-    await deleteDiskSnapshot(projectId, snapshotName);
-    await deleteDisk(projectId, zone, diskName);
-  });
-
-  it('should create instance with snapshotted data disk', async () => {
-    const projectId = await instancesClient.getProjectId();
-
-    const [newestDebian] = await imagesClient.getFromFamily({
-      project: 'debian-cloud',
-      family: 'debian-10',
-    });
-
-    await createDisk(projectId, zone, diskName, newestDebian.selfLink);
-    await createDiskSnapshot(projectId, zone, diskName, snapshotName);
-
-    const diskSnapshotLink = `projects/${projectId}/global/snapshots/${snapshotName}`;
-
-    let output;
-    try {
-      output = execSync(
-        `node instances/create-start-instance/createInstanceWithSnapshottedDataDisk ${projectId} ${zone} ${instanceName} ${diskSnapshotLink}`
       );
     } catch (err) {
       if (err.message.includes('already exists')) {

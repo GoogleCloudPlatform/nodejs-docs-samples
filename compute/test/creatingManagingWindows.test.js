@@ -101,18 +101,6 @@ describe('creating managing windows instances tests', () => {
 
     assert.match(output, /Instance created./);
 
-    const outputFirewall = execSync(
-      `node instances/windows/creating-managing-windows-instances/createFirewallRuleForWindowsActivationHost ${projectId} ${firewallRuleName} ${networkName}`
-    );
-
-    assert.match(outputFirewall, /Firewall rule created./);
-
-    const outputRoute = execSync(
-      `node instances/windows/creating-managing-windows-instances/createRouteToWindowsActivationHost ${projectId} ${routeName} ${networkName}`
-    );
-
-    assert.match(outputRoute, /Route created./);
-
     await deleteRoute(projectId, routeName);
     await deleteFirewallRule(projectId, firewallRuleName);
     execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);

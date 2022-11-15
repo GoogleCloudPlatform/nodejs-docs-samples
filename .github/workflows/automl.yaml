@@ -33,6 +33,11 @@ jobs:
         create_credentials_file: 'true'
         credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
+    - id: secrets
+      uses: 'google-github-actions/get-secretmanager-secrets@v0'
+      with:
+        secrets: |-
+          table_model_id:nodejs-docs-samples-tests/nodejs-docs-samples-table-model-id
     - uses: actions/setup-node@v3
       with:
         node-version: 14
@@ -44,6 +49,7 @@ jobs:
         MOCHA_REPORTER_SUITENAME: automl
         MOCHA_REPORTER_OUTPUT: automl_sponge_log.xml
         MOCHA_REPORTER: xunit
+        TABLE_MODEL_ID: ${{ steps.secrets.outputs.table_model_id }}
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

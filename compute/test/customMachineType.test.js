@@ -150,21 +150,6 @@ describe('custom machine type tests', () => {
       projectId = await instancesClient.getProjectId();
     });
 
-    it('should create instance with custom machine type', async () => {
-      const customMT = `zones/${zone}/machineTypes/n2-custom-8-10240`;
-
-      const output = execSync(
-        `node instances/custom-machine-type/createCustomMachineType ${projectId} ${zone} ${instanceName} ${customMT}`
-      );
-      assert.match(output, /Instance created./);
-
-      const instance = await getInstance(projectId, zone, instanceName);
-      assert.equal(
-        instance.machineType,
-        `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/machineTypes/n2-custom-8-10240`
-      );
-    });
-
     it('should create instance with custom machine type with helper', async () => {
       const output = execSync(
         `node instances/custom-machine-type/createWithHelper ${projectId} ${zone} ${instanceName} e2-custom 4 8192`
@@ -176,35 +161,6 @@ describe('custom machine type tests', () => {
         instance.machineType,
         `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/machineTypes/e2-custom-4-8192`
       );
-    });
-
-    it('should create instance with custom machine type with shared core', async () => {
-      const output = execSync(
-        `node instances/custom-machine-type/createSharedWithMemory ${projectId} ${zone} ${instanceName} e2-custom-micro 2048`
-      );
-      assert.match(output, /Instance created./);
-
-      const instance = await getInstance(projectId, zone, instanceName);
-      assert.equal(
-        instance.machineType,
-        `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/machineTypes/e2-custom-micro-2048`
-      );
-    });
-
-    it('should create instance with custom machine type and update memory', async () => {
-      const customMT = `zones/${zone}/machineTypes/n2-custom-8-10240`;
-
-      const output = execSync(
-        `node instances/custom-machine-type/createCustomMachineType ${projectId} ${zone} ${instanceName} ${customMT}`
-      );
-      assert.match(output, /Instance created./);
-
-      execSync(
-        `node instances/custom-machine-type/updateMemory ${projectId} ${zone} ${instanceName} 819200`
-      );
-
-      const instance = await getInstance(projectId, zone, instanceName);
-      assert.include(instance.machineType, '819200-ext');
     });
 
     it('should create instance with custom machine type without helper', async () => {

@@ -189,23 +189,6 @@ describe('samples', () => {
 
       assert.match(output, /Returned reportNamePrefix: usage_gce/);
     });
-
-    it('should disable usage export', async function () {
-      this.retries(3);
-      await delay(this.test);
-      const projectId = await instancesClient.getProjectId();
-
-      execSync(`node setUsageExportBucket ${projectId} ${bucketName}`);
-      await new Promise(resolve => setTimeout(resolve, 5000));
-      execSync(`node disableUsageExport ${projectId}`);
-      await new Promise(resolve => setTimeout(resolve, 5000));
-
-      const [project] = await projectsClient.get({
-        project: projectId,
-      });
-
-      assert.isUndefined(project.usageExportLocation);
-    });
   });
 
   describe('pagination', () => {

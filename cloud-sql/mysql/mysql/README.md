@@ -122,7 +122,7 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 To run on GAE-Standard, create an App Engine project by following the setup for these 
 [instructions](https://cloud.google.com/appengine/docs/standard/nodejs/quickstart#before-you-begin).
 
-First, update `app.standard.yaml` with the correct values to pass the environment 
+First, update [`app.standard.yaml`](app.standard.yaml) with the correct values to pass the environment 
 variables into the runtime.
 
 Next, the following command will deploy the application to your Google Cloud project:
@@ -138,7 +138,7 @@ gcloud app browse
 
 ## Deploy to Google App Engine Flexible
 
-First, update `app.flexible.yaml` with the correct values to pass the environment 
+First, update [`app.flexible.yaml`](app.flexible.yaml) with the correct values to pass the environment 
 variables into the runtime.
 
 Next, the following command will deploy the application to your Google Cloud project:

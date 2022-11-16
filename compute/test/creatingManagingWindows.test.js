@@ -101,8 +101,6 @@ describe('creating managing windows instances tests', () => {
 
     assert.match(output, /Instance created./);
 
-    await deleteRoute(projectId, routeName);
-    await deleteFirewallRule(projectId, firewallRuleName);
     execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
   });
 });

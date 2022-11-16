@@ -23,9 +23,6 @@ const {assert} = require('chai');
 const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
-const firewallsClient = new compute.FirewallsClient();
-const routesClient = new compute.RoutesClient();
-const globalOperationsClient = new compute.GlobalOperationsClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

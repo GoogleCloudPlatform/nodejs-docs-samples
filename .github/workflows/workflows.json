@@ -56,6 +56,7 @@
   "datacatalog/quickstart",
   "datastore/functions",
   "scheduler",
+  "speech",
   "talent",
   "video-intelligence",
   "contact-center-insights",

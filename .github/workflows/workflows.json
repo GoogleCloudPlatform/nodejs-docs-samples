@@ -29,6 +29,7 @@
   "datalabeling",
   "datastore/functions",
   "datacatalog/quickstart",
+  "document-ai",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "error-reporting",
@@ -53,6 +54,7 @@
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions",
+  "scheduler",
   "talent",
   "contact-center-insights",
   "workflows"

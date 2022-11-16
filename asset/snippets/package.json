@@ -2,7 +2,7 @@
   "name": "@google-cloud/asset-samples",
   "description": "Samples for the Cloud Asset API Client Library for Node.js.",
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "engines": {
     "node": ">=12.0.0"
   },

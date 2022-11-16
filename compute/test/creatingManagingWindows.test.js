@@ -29,45 +29,10 @@ const globalOperationsClient = new compute.GlobalOperationsClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const deleteFirewallRule = async (projectId, firewallRule) => {
-  const [response] = await firewallsClient.delete({
-    project: projectId,
-    firewall: firewallRule,
-  });
-  let operation = response.latestResponse;
-
-  // Wait for the delete operation to complete.
-  while (operation.status !== 'DONE') {
-    [operation] = await globalOperationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-    });
-  }
-};
-
-const deleteRoute = async (projectId, routeName) => {
-  const [response] = await routesClient.delete({
-    project: projectId,
-    route: routeName,
-  });
-  let operation = response.latestResponse;
-  const operationsClient = new compute.GlobalOperationsClient();
-
-  // Wait for the delete operation to complete.
-  while (operation.status !== 'DONE') {
-    [operation] = await operationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-    });
-  }
-};
-
 describe('creating managing windows instances tests', () => {
   const instanceName = generateTestId();
-  const firewallRuleName = generateTestId();
   const networkName = 'global/networks/default-compute';
   const subnetworkName = 'regions/europe-central2/subnetworks/default-compute';
-  const routeName = generateTestId();
   const zone = 'europe-central2-b';
   const machineType = 'n1-standard-1';
   const sourceImageFamily = 'windows-2012-r2';

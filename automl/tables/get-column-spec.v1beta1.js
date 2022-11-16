@@ -62,6 +62,6 @@ async function main(
     .catch(err => {
       console.error(err);
     });
-  // [END automl_tables_get_column_sspec]
+  // [END automl_tables_get_column_spec]
 }
 main(...process.argv.slice(2)).catch(console.error());

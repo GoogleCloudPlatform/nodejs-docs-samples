@@ -16,6 +16,7 @@
     "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2",
     "redis": "^4.0.0"
   },
   "devDependencies": {

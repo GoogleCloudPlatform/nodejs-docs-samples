@@ -13,7 +13,6 @@
   "appengine/static-files",
   "appengine/storage/flexible",
   "appengine/storage/standard",
-  "asset/snippets",
   "auth",
   "automl",
   "appengine/typescript",

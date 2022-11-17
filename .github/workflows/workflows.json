@@ -14,6 +14,7 @@
   "appengine/storage/flexible",
   "appengine/storage/standard",
   "auth",
+  "automl",
   "appengine/typescript",
   "appengine/websockets",
   "appengine/twilio",
@@ -25,6 +26,7 @@
   "composer/functions/composer-storage-trigger",
   "container-analysis/snippets",
   "containerengine/hello-world",
+  "container/snippets",
   "datacatalog/cloud-client",
   "datalabeling",
   "datastore/functions",
@@ -55,7 +57,9 @@
   "datacatalog/quickstart",
   "datastore/functions",
   "scheduler",
+  "service-directory/snippets",
   "talent",
+  "video-intelligence",
   "contact-center-insights",
   "workflows"
 ]

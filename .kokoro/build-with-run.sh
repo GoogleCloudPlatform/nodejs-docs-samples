@@ -23,14 +23,52 @@ _run_error_log() {
 trap '_run_error_log' ERR
 
 # Activate mocha config
-export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
-export MOCHA_REPORTER=xunit
-pushd github/nodejs-docs-samples
-mv .kokoro/.mocharc.js .
-popd
+# export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
+# export MOCHA_REPORTER=xunit
+# pushd github/nodejs-docs-samples
+# mv .kokoro/.mocharc.js .
+# popd
 
-export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
-pushd github/nodejs-docs-samples/${PROJECT}
+# export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
+# pushd github/nodejs-docs-samples/${PROJECT}
+
+# Verify changes worth testing.
+SIGNIFICANT_CHANGES="$(git --no-pager diff --name-only main..HEAD | grep -Ev '(\.md$|^\.github)' || true)"
+
+# If this is a PR with only insignificant changes, don't run any tests.
+if [[ -n ${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-} ]] && [[ -z "$SIGNIFICANT_CHANGES" ]]; then
+  echo "No big changes. Not running any tests."
+  exit 0
+fi
+
+# CHANGED_DIRS is the list of directories that changed.
+# CHANGED_DIRS will be empty when run on main.
+CHANGED_DIRS=$(echo "$SIGNIFICANT_CHANGES" | tr ' ' '\n' | xargs dirname 2>/dev/null || true)
+
+# Default to not running the test.
+match=0
+
+# If CHANGED_DIRS is empty, default to running the tests.
+# This ensures nightly tests will run.
+if [[ "$CHANGED_DIRS" == "" ]]; then
+  match=1
+fi
+
+# PROJECT is set by Kokoro to the path of the Cloud Run sample under test.
+# If any of our changed directories starts with that path, run the tests.
+# Otherwise, skip running the tests.
+# The asterisk in "$PROJECT"* is what causes the tests to run if any
+# sub-directory carries a change.
+for c in ${CHANGED_DIRS}; do
+  if [[ "$c" == "$PROJECT"* ]]; then
+    match=1
+  fi
+done
+
+if [[ $match == 0 ]]; then
+  echo "Project ${PROJECT} had no changes."
+  exit 0
+fi
 
 # Update gcloud
 gcloud --quiet components update

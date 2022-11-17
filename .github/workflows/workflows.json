@@ -56,9 +56,11 @@
   "datacatalog/cloud-client",
   "datacatalog/quickstart",
   "datastore/functions",
-  "scheduler",
   "service-directory/snippets",
+  "scheduler",
+  "speech",
   "talent",
+  "translate",
   "video-intelligence",
   "contact-center-insights",
   "workflows"

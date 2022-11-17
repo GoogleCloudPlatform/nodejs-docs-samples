@@ -57,6 +57,7 @@
   "datacatalog/quickstart",
   "datastore/functions",
   "scheduler",
+  "security-center/snippets",
   "service-directory/snippets",
   "talent",
   "video-intelligence",

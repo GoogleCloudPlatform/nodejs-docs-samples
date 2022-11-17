@@ -23,14 +23,14 @@ _run_error_log() {
 trap '_run_error_log' ERR
 
 # Activate mocha config
-# export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
-# export MOCHA_REPORTER=xunit
-# pushd github/nodejs-docs-samples
-# mv .kokoro/.mocharc.js .
-# popd
+export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
+export MOCHA_REPORTER=xunit
+pushd github/nodejs-docs-samples
+mv .kokoro/.mocharc.js .
+popd
 
-# export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
-# pushd github/nodejs-docs-samples/${PROJECT}
+export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
+pushd github/nodejs-docs-samples/${PROJECT}
 
 # Verify changes worth testing.
 SIGNIFICANT_CHANGES="$(git --no-pager diff --name-only main..HEAD | grep -Ev '(\.md$|^\.github)' || true)"

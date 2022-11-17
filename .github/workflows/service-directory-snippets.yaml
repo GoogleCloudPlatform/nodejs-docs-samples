@@ -1,0 +1,68 @@
+name: service-directory-snippets
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'service-directory/snippets/**'
+  pull_request:
+    paths:
+    - 'service-directory/snippets/**'
+  pull_request_target:
+    types: [labeled]
+    paths:
+    - 'service-directory/snippets/**'
+  schedule:
+  - cron:  '0 0 * * 0'
+jobs:
+  test:
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: 'write'
+      pull-requests: 'write'
+      id-token: 'write'
+    steps:
+    - uses: actions/checkout@v3.1.0
+      with:
+        ref: ${{github.event.pull_request.head.sha}}
+    - uses: 'google-github-actions/auth@v1.0.0'
+      with:
+        workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+        create_credentials_file: 'true'
+        access_token_lifetime: 600s
+    - uses: actions/setup-node@v3.5.1
+      with:
+        node-version: 16
+    - run: npm install
+      working-directory: service-directory/snippets
+    - run: npm test
+      working-directory: service-directory/snippets
+      env:
+        MOCHA_REPORTER_SUITENAME: service_directory_snippets
+        MOCHA_REPORTER_OUTPUT: service_directory_snippets_sponge_log.xml
+        MOCHA_REPORTER: xunit
+    - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
+            }
+          }
+    - if: ${{ github.event_name == 'schedule'}}
+      run: |
+        curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
+        chmod +x ./flakybot
+        ./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

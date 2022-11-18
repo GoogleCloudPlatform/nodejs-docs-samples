@@ -21,6 +21,7 @@ jobs:
       - uses: JustinBeckwith/linkinator-action@v1
         with:
           paths: "**/*.md"
+          linksToSkip: "localhost"
   region-tags:
     runs-on: ubuntu-latest
     steps:

@@ -33,7 +33,8 @@ export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
 pushd github/nodejs-docs-samples/${PROJECT}
 
 # Verify changes worth testing.
-SIGNIFICANT_CHANGES="$(git --no-pager diff --name-only main..HEAD | grep -Ev '(\.md$|^\.github)' || true)"
+ignore_pattern='\.md$|^\.github|\.gitignore|^LICENSE|^CODEOWNERS|^\.eslint|\.prettier|^linkinator|^renovate'
+SIGNIFICANT_CHANGES="$(git --no-pager diff --name-only main..HEAD | grep -Ev ${ignore_pattern} || true)"
 
 # If this is a PR with only insignificant changes, don't run any tests.
 if [[ -n ${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-} ]] && [[ -z "$SIGNIFICANT_CHANGES" ]]; then

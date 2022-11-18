@@ -1,4 +1,5 @@
 [
+  "ai-platform/snippets",
   "appengine/analytics",
   "appengine/building-an-app/build",
   "appengine/building-an-app/update",

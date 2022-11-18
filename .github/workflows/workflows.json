@@ -59,6 +59,7 @@
   "datastore/functions",
   "service-directory/snippets",
   "scheduler",
+  "secret-manager",
   "speech",
   "talent",
   "translate",

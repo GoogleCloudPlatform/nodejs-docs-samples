@@ -26,7 +26,8 @@ describe('Test filtering results', async () => {
   const testId = process.env.TEST_ID;
   const location = 'global';
   const agentClient = new dialogflow.AgentsClient();
-  const projectId = await agentClient.getProjectId();
+  const projectId =
+    process.env.AGENT_PROJECT_ID || await agentClient.getProjectId();
 
   it('should return filtered test results', async () => {
     const output = exec(`${cmd} ${projectId} ${agentId} ${testId} ${location}`);

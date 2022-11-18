@@ -48,6 +48,7 @@ jobs:
       env:
         AGENT_ID: ${{ steps.secrets.outputs.agent_id }}
         TEST_ID: ${{ steps.secrets.outputs.test_id }}
+        AGENT_PROJECT_ID: nodejs-docs-samples-tests
         MOCHA_REPORTER_SUITENAME: dialogflow-cx
         MOCHA_REPORTER_OUTPUT: dialogflow_cx_sponge_log.xml
         MOCHA_REPORTER: xunit

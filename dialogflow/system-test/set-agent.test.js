@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,14 @@
 
 'use strict';
 
-// [START profiler_setup_nodejs_app_engine]
-require('@google-cloud/profiler').start();
-// [END profiler_setup_nodejs_app_engine]
+const {assert} = require('chai');
+const {describe, it} = require('mocha');
+
+// We cannot test setAgent because Dialogflow ES can only have one agent
+// and if we create a agent it will delete the exisitng testing agent and
+// would cause all tests to fail
+describe('create agent', () => {
+  it('should create an intent', async () => {
+    assert.isTrue(true);
+  });
+});

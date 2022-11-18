@@ -50,9 +50,4 @@ describe('detect v1 p1 beta1', () => {
     const output = execSync(`${cmd} web ${files[2].localPath}`);
     assert.match(output, /Best guess label: palace of fine arts/);
   });
-
-  it('should detect web entities using geographical metadata', async () => {
-    const output = execSync(`${cmd} web-entities-geo ${files[3].localPath}`);
-    assert.match(output, /Score:/);
-  });
 });

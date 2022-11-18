@@ -32,7 +32,6 @@
   "datacatalog/quickstart",
   "datalabeling",
   "datastore/functions",
-  "datastore/functions",
   "document-ai",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
@@ -61,7 +60,7 @@
   "talent",
   "translate",
   "video-intelligence",
-  "vision",
-  "vision/productSearch",
+  "vision/samples",
+  "vision/samples/productSearch",
   "workflows"
 ]

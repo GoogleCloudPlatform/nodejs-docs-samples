@@ -7,7 +7,7 @@
   "appengine/hello-world/flexible",
   "appengine/hello-world/standard",
   "appengine/memcached",
-  "apengine/metadata/flexible",
+  "appengine/metadata/flexible",
   "appengine/metadata/standard",
   "appengine/pubsub",
   "appengine/static-files",

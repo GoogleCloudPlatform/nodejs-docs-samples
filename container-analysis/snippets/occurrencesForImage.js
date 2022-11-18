@@ -20,9 +20,9 @@
 //   usage: node occurrencesForImage.js "project-id" "image-url"
 async function main(
   projectId = 'your-project-id', // Your GCP Project ID
-  imageUrl = 'https://gcr.io/my-project/my-image:123' // Image to attach metadata to
+  imageUrl = 'https://gcr.io/my-project/my-image@sha256:123' // Image to attach metadata to
   // If you are using Google Artifact Registry
-  // imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123' // Image to attach metadata to
 ) {
   // [START containeranalysis_occurrences_for_image]
   /**
@@ -30,9 +30,9 @@ async function main(
    */
   // const projectId = 'your-project-id', // Your GCP Project ID
   // If you are using Google Container Registry
-  // const imageUrl = 'https://gcr.io/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // const imageUrl = 'https://gcr.io/my-project/my-repo/my-image@sha256:123' // Image to attach metadata to
   // If you are using Google Artifact Registry
-  // const imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image:123' // Image to attach metadata to
+  // const imageUrl = 'https://LOCATION-docker.pkg.dev/my-project/my-repo/my-image@sha256:123' // Image to attach metadata to
 
   // Import the library and create a client
   const {ContainerAnalysisClient} = require('@google-cloud/containeranalysis');

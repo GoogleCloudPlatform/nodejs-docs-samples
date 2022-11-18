@@ -60,51 +60,9 @@ async function detectFulltext(fileName) {
   // [END vision_detect_document]
 }
 
-async function detectWebEntitiesIncludingGeoResults(fileName) {
-  // [START vision_web_entities_include_geo_results]
-  // Imports the Google Cloud client library
-  const vision = require('@google-cloud/vision').v1p1beta1;
-
-  // Creates a client
-  const client = new vision.ImageAnnotatorClient();
-
-  /**
-   * TODO(developer): Uncomment the following line before running the sample.
-   */
-  // const fileName = 'Local image file, e.g. /path/to/image.png';
-
-  const request = {
-    image: {
-      source: {
-        filename: fileName,
-      },
-    },
-    imageContext: {
-      webDetectionParams: {
-        includeGeoResults: true,
-      },
-    },
-  };
-
-  // Performs safe search detection on the local file
-  const [result] = await client.webDetection(request);
-  const webDetection = result.webDetection;
-  webDetection.webEntities.forEach(entity => {
-    console.log(`Score: ${entity.score}`);
-    console.log(`Description: ${entity.description}`);
-  });
-  // [END vision_web_entities_include_geo_results]
-}
-
 //.usage('$0 <command> <local-image-file>', 'Cloud Vision Beta API Samples')
 require(`yargs`) // eslint-disable-line
   .demand(1)
-  .command(
-    'web-entities-geo <fileName>',
-    'Detects web entities with improved results using geographic metadata',
-    {},
-    opts => detectWebEntitiesIncludingGeoResults(opts.fileName)
-  )
   .command(
     'fulltext <fileName>',
     'Extracts full text from an image file including new confidence scores',

@@ -4,10 +4,10 @@ on:
     branches:
     - main
     paths:
-    - 'cloud-tasks/snippets/*.js'
+    - 'cloud-tasks/snippets/**'
   pull_request:
     paths:
-    - 'cloud-tasks/snippets/*.js'
+    - 'cloud-tasks/snippets/**'
   pull_request_target:
     types: [labeled]
   schedule:

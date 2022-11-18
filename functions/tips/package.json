@@ -11,6 +11,9 @@
   "engines": {
     "node": ">=12.0.0"
   },
+  "scripts": {
+    "test": "echo \"Notice: tests moved into topic sub-directories\" && exit 0"
+  },
   "dependencies": {
     "@google-cloud/pubsub": "^3.0.0",
     "mocha": "^9.0.0"

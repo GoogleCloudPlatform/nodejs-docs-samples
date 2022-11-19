@@ -10,6 +10,8 @@ on:
     - 'functions/speech-to-speech/functions/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/speech-to-speech/functions/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

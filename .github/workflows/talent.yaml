@@ -10,6 +10,8 @@ on:
     - 'talent/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'talent/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

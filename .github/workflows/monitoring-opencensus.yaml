@@ -10,6 +10,8 @@ on:
     - 'monitoring/opencensus/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'monitoring/opencensus/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

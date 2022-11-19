@@ -23,22 +23,23 @@ _run_error_log() {
 trap '_run_error_log' ERR
 
 # Activate mocha config
-export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
-export MOCHA_REPORTER=xunit
-pushd github/nodejs-docs-samples
-mv .kokoro/.mocharc.js .
-popd
+# export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
+# export MOCHA_REPORTER=xunit
+# pushd github/nodejs-docs-samples
+# mv .kokoro/.mocharc.js .
+# popd
 
-export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
-pushd github/nodejs-docs-samples/${PROJECT}
+# export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests
+# pushd github/nodejs-docs-samples/${PROJECT}
 
-# Verify changes worth testing.
+# Verify changes are worth testing.
+# Identify changes excluding files that have no bearing on sample functionality.
 ignore_pattern='\.md$|^\.github|\.gitignore|^LICENSE|^CODEOWNERS|^\.eslint|\.prettier|^linkinator|^renovate'
 SIGNIFICANT_CHANGES="$(git --no-pager diff --name-only main..HEAD | grep -Ev ${ignore_pattern} || true)"
 
 # If this is a PR with only insignificant changes, don't run any tests.
 if [[ -n ${KOKORO_GITHUB_PULL_REQUEST_NUMBER:-} ]] && [[ -z "$SIGNIFICANT_CHANGES" ]]; then
-  echo "No big changes. Not running any tests."
+  echo "No significant changes. Skipping ${PROJECT} tests."
   exit 0
 fi
 
@@ -52,6 +53,7 @@ match=0
 # If CHANGED_DIRS is empty, default to running the tests.
 # This ensures nightly tests will run.
 if [[ "$CHANGED_DIRS" == "" ]]; then
+  echo "Running the test: Run all tests on the main branch."
   match=1
 fi
 
@@ -62,8 +64,20 @@ fi
 # sub-directory carries a change.
 for c in ${CHANGED_DIRS}; do
   if [[ "$c" == "$PROJECT"* ]]; then
+    echo "Running the test: Changes found inside '{$PROJECT}'"
     match=1
   fi
+done
+
+# If Cloud Run related Kokoro config is changed, run the tests.
+# This matches on all Cloud Run tests if any config is modified.
+for k in '.kokoro/build-with-run.sh' '.kokoro/common.cfg' '.kokoro/.mocharc.js' '.kokoro/run'; do
+  for s in ${SIGNIFICANT_CHANGES}; do
+    if [[ "$s" == "$k"* ]]; then
+      echo "Running the test: Changes to Cloud Run .kokoro configuration detected"
+      match=1
+    fi
+  done
 done
 
 if [[ $match == 0 ]]; then

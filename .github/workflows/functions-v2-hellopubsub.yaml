@@ -10,6 +10,8 @@ on:
     - 'functions/v2/helloPubSub/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/v2/helloPubSub/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

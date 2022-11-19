@@ -10,6 +10,8 @@ on:
     - 'endpoints/getting-started/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'endpoints/getting-started/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

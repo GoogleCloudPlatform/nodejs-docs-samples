@@ -12,4 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+$(dirname $0)/populate-secrets.sh # Secret Manager secrets.
+
 python3 "${KOKORO_GFILE_DIR}/trampoline_v1.py"

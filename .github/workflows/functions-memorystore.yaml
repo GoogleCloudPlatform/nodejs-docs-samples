@@ -10,6 +10,8 @@ on:
     - 'functions/memorystore/redis/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/memorystore/redis/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

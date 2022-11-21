@@ -10,6 +10,8 @@ on:
     - 'containerengine/hello-world/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'containerengine/hello-world/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

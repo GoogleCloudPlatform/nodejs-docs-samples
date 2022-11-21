@@ -10,6 +10,8 @@ on:
     - 'functions/v2/imagemagick/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/v2/imagemagick/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

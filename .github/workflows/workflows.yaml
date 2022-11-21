@@ -10,6 +10,8 @@ on:
     - 'workflows/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'workflows/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

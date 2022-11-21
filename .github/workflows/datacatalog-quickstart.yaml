@@ -10,6 +10,8 @@ on:
     - 'datacatalog/quickstart/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'datacatalog/quickstart/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -10,6 +10,8 @@ on:
     - 'appengine/building-an-app/build/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'appengine/building-an-app/build/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -10,6 +10,8 @@ on:
     - 'appengine/websockets/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'appengine/websockets/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

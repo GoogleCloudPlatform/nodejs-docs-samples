@@ -10,6 +10,8 @@ on:
     - 'cloudbuild/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'cloudbuild/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -10,6 +10,8 @@ on:
     - 'appengine/analytics/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'appengine/analytics/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

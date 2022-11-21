@@ -10,6 +10,8 @@ on:
     - 'datacatalog/cloud-client/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'datacatalog/cloud-client/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

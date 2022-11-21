@@ -33,6 +33,11 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
+    - id: secrets
+      uses: 'google-github-actions/get-secretmanager-secrets@v0'
+      with:
+        secrets: |-
+          caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
     - uses: actions/setup-node@v3.5.1
       with:
         node-version: 16
@@ -41,6 +46,7 @@ jobs:
     - run: npm test
       working-directory: ai-platform/snippets
       env:
+        CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
         MOCHA_REPORTER_SUITENAME: ai_platform_snippets
         MOCHA_REPORTER_OUTPUT: ai_platform_snippets_sponge_log.xml
         MOCHA_REPORTER: xunit

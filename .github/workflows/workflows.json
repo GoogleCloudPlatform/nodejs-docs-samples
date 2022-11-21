@@ -35,6 +35,7 @@
   "datastore/functions",
   "datacatalog/quickstart",
   "dialogflow",
+  "dialogflow-cx",
   "document-ai",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",

@@ -31,7 +31,6 @@ const {Translate} = require('@google-cloud/translate').v2;
 const translate = new Translate();
 
 const functions = require('@google-cloud/functions-framework');
-//const {CloudEvent} = require('cloudevents');
 
 // [END functions_ocr_setup]
 
@@ -144,7 +143,7 @@ functions.cloudEvent('processImage', async cloudEvent => {
  */
 functions.cloudEvent('translateText', async cloudEvent => {
   const pubsubData = cloudEvent.data;
-  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
+  const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
 
   if (!text) {
@@ -190,7 +189,7 @@ functions.cloudEvent('translateText', async cloudEvent => {
  */
 functions.cloudEvent('saveResult', async cloudEvent => {
   const pubsubData = cloudEvent.data;
-  const jsonStr = Buffer.from(pubsubData, 'base64').toString();
+  const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
 
   if (!text) {

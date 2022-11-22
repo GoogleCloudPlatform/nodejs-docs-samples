@@ -14,8 +14,11 @@
 
 'use strict';
 
+require('..');
+
 const assert = require('assert');
 const sinon = require('sinon');
+const {CloudEvent} = require('cloudevent');
 
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
@@ -55,7 +58,9 @@ afterEach(restoreConsole);
 describe('processImage', () => {
   describe('functions_ocr_process', () => {
     it('processImage validates parameters', async () => {
-      const cloudEvent = {data: {}};
+      const cloudEvent = CloudEvent({
+        data: {}
+      });
       const server = getTestServer('processImage');
       await supertest(server)
         .post('/')
@@ -66,12 +71,12 @@ describe('processImage', () => {
   });
   describe('functions_ocr_process functions_ocr_detect', () => {
     it('processImage detects text', async () => {
-      const cloudEvent = {
+      const cloudEvent = CloudEvent({
         data: {
           bucket: bucketName,
           name: filename,
         },
-      };
+    });
 
       const server = getTestServer('processImage');
       await supertest(server).post('/').send(cloudEvent);
@@ -89,9 +94,11 @@ describe('processImage', () => {
 describe('translateText', () => {
   describe('functions_ocr_translate', () => {
     it('translateText validates parameters', async () => {
-      const cloudEvent = {
-        data: Buffer.from(JSON.stringify({})).toString('base64'),
-      };
+      const cloudEvent = CloudEvent({
+        data: {
+          message: Buffer.from(JSON.stringify({})).toString('base64')
+        }
+      });
       const server = getTestServer('translateText');
       await supertest(server)
         .post('/')
@@ -103,29 +110,31 @@ describe('translateText', () => {
 
   describe('functions_ocr_translate', () => {
     it('translateText translates and publishes text', async () => {
-      const cloudEvent = {
-        data: Buffer.from(
-          JSON.stringify({
-            text,
-            filename,
-            lang,
-          })
-        ).toString('base64'),
-      };
+      const cloudEvent = CloudEvent({
+        data: {
+          message: Buffer.from(
+            JSON.stringify({
+              text,
+              filename,
+              lang,
+            })
+          ).toString('base64'),
+        }
+      });
 
       const server = getTestServer('translateText');
       await supertest(server).post('/').send(cloudEvent);
-      //assert.ok(console.log.calledWith(`Translating text into ${lang}`));
-      //assert.ok(console.log.calledWith(`Text translated to ${lang}`));
+      assert.ok(console.log.calledWith(`Translating text into ${lang}`));
+      assert.ok(console.log.calledWith(`Text translated to ${lang}`));
     });
   });
 });
 describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult validates parameters', async () => {
-      const cloudEvent = {
+      const cloudEvent = CloudEvent({
         data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
-      };
+      });
 
       const server = getTestServer('saveResult');
       await supertest(server)
@@ -138,11 +147,11 @@ describe('saveResult', () => {
 
   describe('functions_ocr_save', () => {
     it('saveResult translates and publishes text', async () => {
-      const cloudEvent = {
+      const cloudEvent = CloudEvent({
         data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
           'base64'
         ),
-      };
+      });
 
       const newFilename = `${filename}_to_${lang}.txt`;
 

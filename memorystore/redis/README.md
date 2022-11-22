@@ -1,4 +1,4 @@
-# Getting started with Googe Cloud Memorystore
+# Getting started with Google Cloud Memorystore
 Simple HTTP server example to demonstrate connecting to [Google Cloud Memorystore](https://cloud.google.com/memorystore/docs/redis).
 This sample uses the [node_redis client](https://github.com/NodeRedis/node_redis).
 
@@ -18,7 +18,7 @@ Follow the instructions in [this guide](https://cloud.google.com/memorystore/doc
 
 To run this sample locally, follow these instructions:
 
-In one terminal, [run Redis](https://redis.io/topics/quickstart):
+In one terminal, [run Redis](https://redis.io/docs/getting-started/):
 
 ```sh
 redis-server

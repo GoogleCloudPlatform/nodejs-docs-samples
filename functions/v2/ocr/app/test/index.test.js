@@ -29,20 +29,19 @@ const {RESULT_BUCKET} = process.env;
 
 const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
-const program = require('../index');
 
 const errorMsg = (name, propertyName) => {
   propertyName = propertyName || name.toLowerCase();
   return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
 };
 
-var stubCons;
+let stubCons;
 
 const stubConsole = function () {
   stubCons = {
     error: sinon.stub(console, 'error'),
-    log: sinon.stub(console, 'log')
-  }
+    log: sinon.stub(console, 'log'),
+  };
 };
 
 const restoreConsole = function () {
@@ -56,9 +55,13 @@ afterEach(restoreConsole);
 describe('processImage', () => {
   describe('functions_ocr_process', () => {
     it('processImage validates parameters', async () => {
-        const cloudEvent = { data: {} }
-        const server = getTestServer('processImage');
-        await supertest(server).post('/').send(cloudEvent).expect(500).expect(errorMsg('Bucket'));
+      const cloudEvent = {data: {}};
+      const server = getTestServer('processImage');
+      await supertest(server)
+        .post('/')
+        .send(cloudEvent)
+        .expect(500)
+        .expect(errorMsg('Bucket'));
     });
   });
   describe('functions_ocr_process functions_ocr_detect', () => {
@@ -66,8 +69,8 @@ describe('processImage', () => {
       const cloudEvent = {
         data: {
           bucket: bucketName,
-          name: filename
-        }
+          name: filename,
+        },
       };
 
       const server = getTestServer('processImage');
@@ -90,7 +93,11 @@ describe('translateText', () => {
         data: Buffer.from(JSON.stringify({})).toString('base64'),
       };
       const server = getTestServer('translateText');
-      await supertest(server).post('/').send(cloudEvent).expect(500).expect(errorMsg('Text'));
+      await supertest(server)
+        .post('/')
+        .send(cloudEvent)
+        .expect(500)
+        .expect(errorMsg('Text'));
     });
   });
 
@@ -121,7 +128,11 @@ describe('saveResult', () => {
       };
 
       const server = getTestServer('saveResult');
-      await supertest(server).post('/').send(cloudEvent).expect(500).expect(errorMsg('Language', 'lang'));
+      await supertest(server)
+        .post('/')
+        .send(cloudEvent)
+        .expect(500)
+        .expect(errorMsg('Language', 'lang'));
     });
   });
 

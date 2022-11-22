@@ -31,7 +31,7 @@ const {Translate} = require('@google-cloud/translate').v2;
 const translate = new Translate();
 
 const functions = require('@google-cloud/functions-framework');
-const {CloudEvent} = require('cloudevents');
+//const {CloudEvent} = require('cloudevents');
 
 // [END functions_ocr_setup]
 
@@ -113,7 +113,7 @@ const renameImageForSave = (filename, lang) => {
  *
  * @param {object} cloudEvent A CloudEvent containing the Cloud Storage File object.
  */
-functions.cloudEvent('processImage', async (cloudEvent) => {
+functions.cloudEvent('processImage', async cloudEvent => {
   const {bucket, name} = cloudEvent.data;
 
   if (!bucket) {
@@ -142,7 +142,7 @@ functions.cloudEvent('processImage', async (cloudEvent) => {
  *
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object
  */
-functions.cloudEvent('translateText', async (cloudEvent) => {
+functions.cloudEvent('translateText', async cloudEvent => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);
@@ -188,7 +188,7 @@ functions.cloudEvent('translateText', async (cloudEvent) => {
  *
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object.
  */
-functions.cloudEvent('saveResult', async (cloudEvent) => {
+functions.cloudEvent('saveResult', async cloudEvent => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);

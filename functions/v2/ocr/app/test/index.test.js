@@ -38,13 +38,9 @@ const errorMsg = (name, propertyName) => {
   return `${name} not provided. Make sure you have a "${propertyName}" property in your request`;
 };
 
-let stubCons;
-
 const stubConsole = function () {
-  stubCons = {
-    error: sinon.stub(console, 'error'),
-    log: sinon.stub(console, 'log'),
-  };
+  sinon.stub(console, 'error');
+  sinon.stub(console, 'log');
 };
 
 const restoreConsole = function () {
@@ -81,13 +77,13 @@ describe('processImage', () => {
       const server = getTestServer('processImage');
       await supertest(server).post('/').send(cloudEvent);
       assert.ok(
-        stubCons.log.calledWith(`Looking for text in image ${filename}`)
+        console.log.calledWith(`Looking for text in image ${filename}`)
       );
-      assert.ok(stubCons.log.calledWith('Extracted text from image:', text));
+      assert.ok(console.log.calledWith('Extracted text from image:', text));
       assert.ok(
-        stubCons.log.calledWith(`Detected language "en" for ${filename}`)
+        console.log.calledWith(`Detected language "en" for ${filename}`)
       );
-      assert.ok(stubCons.log.calledWith(`File ${filename} processed.`));
+      assert.ok(console.log.calledWith(`File ${filename} processed.`));
     });
   });
 });

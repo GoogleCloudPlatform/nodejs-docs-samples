@@ -59,7 +59,7 @@ describe('processImage', () => {
   describe('functions_ocr_process', () => {
     it('processImage validates parameters', async () => {
       const cloudEvent = CloudEvent({
-        data: {}
+        data: {},
       });
       const server = getTestServer('processImage');
       await supertest(server)
@@ -76,7 +76,7 @@ describe('processImage', () => {
           bucket: bucketName,
           name: filename,
         },
-    });
+      });
 
       const server = getTestServer('processImage');
       await supertest(server).post('/').send(cloudEvent);
@@ -96,8 +96,8 @@ describe('translateText', () => {
     it('translateText validates parameters', async () => {
       const cloudEvent = CloudEvent({
         data: {
-          message: Buffer.from(JSON.stringify({})).toString('base64')
-        }
+          message: Buffer.from(JSON.stringify({})).toString('base64'),
+        },
       });
       const server = getTestServer('translateText');
       await supertest(server)
@@ -119,7 +119,7 @@ describe('translateText', () => {
               lang,
             })
           ).toString('base64'),
-        }
+        },
       });
 
       const server = getTestServer('translateText');

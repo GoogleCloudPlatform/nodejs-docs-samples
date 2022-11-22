@@ -4,12 +4,14 @@ on:
     branches:
     - main
     paths:
-    - 'cloud-tasks/snippets/*.js'
+    - 'cloud-tasks/snippets/**'
   pull_request:
     paths:
-    - 'cloud-tasks/snippets/*.js'
+    - 'cloud-tasks/snippets/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'cloud-tasks/snippets/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -22,7 +24,7 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: 'google-github-actions/auth@v0.3.1'
+    - uses: 'google-github-actions/auth@v1.0.0'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'

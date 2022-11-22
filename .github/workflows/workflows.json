@@ -71,6 +71,8 @@
   "texttospeech",
   "translate",
   "video-intelligence",
+  "vision",
+  "vision/productSearch",
   "contact-center-insights",
   "workflows"
 ]

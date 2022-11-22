@@ -10,6 +10,8 @@ on:
     - 'monitoring/prometheus/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'monitoring/prometheus/**'
   schedule:
   - cron:  '0 2 * * *'
 jobs:

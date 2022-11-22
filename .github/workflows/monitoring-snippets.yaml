@@ -10,6 +10,8 @@ on:
     - 'monitoring/snippets/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'monitoring/snippets/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

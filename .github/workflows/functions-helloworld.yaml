@@ -10,6 +10,8 @@ on:
     - 'functions/helloworld/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/helloworld/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

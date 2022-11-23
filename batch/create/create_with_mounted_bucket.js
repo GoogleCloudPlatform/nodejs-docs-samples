@@ -58,7 +58,7 @@ function main(projectId, region, jobName, bucketName) {
   const runnable = new batch.Runnable();
   runnable.script = new batch.Runnable.Script();
   runnable.script.text =
-  "echo Hello world from task ${BATCH_TASK_INDEX}. >> /mnt/share/output_task_${BATCH_TASK_INDEX}.txt";
+    'echo Hello world from task ${BATCH_TASK_INDEX}. >> /mnt/share/output_task_${BATCH_TASK_INDEX}.txt';
   // You can also run a script from a file. Just remember, that needs to be a script that's
   // already on the VM that will be running the job. Using runnable.script.text and runnable.script.path is mutually
   // exclusive.

@@ -49,7 +49,7 @@ function main(projectId, region, jobName, templateLink) {
    * "projects/{project_id}/global/instanceTemplates/{template_name}"
    * "{template_name}" - if the template is defined in the same project as used to create the Job.
    */
-    // const templateLink = 'YOUR_TEMPLATE'
+  // const templateLink = 'YOUR_TEMPLATE'
 
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');

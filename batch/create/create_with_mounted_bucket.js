@@ -23,6 +23,7 @@
  *  This field should contain at most 63 characters.
  *  Only alphanumeric characters or '-' are accepted.
  *  The '-' character cannot be the first or the last one.
+ * @param {string} bucketName - The name of the bucket to be mounted.
  */
 function main(projectId, region, jobName, bucketName) {
   // [START batch_create_script_job_with_bucket]

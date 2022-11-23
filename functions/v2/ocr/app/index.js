@@ -128,9 +128,8 @@ functions.cloudEvent('processImage', async cloudEvent => {
     );
   }
 
-  const results = await detectText(bucket, name);
+  await detectText(bucket, name);
   console.log(`File ${name} processed.`);
-  return results;
 });
 // [END functions_ocr_process]
 

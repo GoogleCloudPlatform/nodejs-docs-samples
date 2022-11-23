@@ -60,8 +60,9 @@ function main(projectId, region, jobName, groupName, taskNumber) {
   async function callGetJob() {
     // Construct request
     const request = {
-      name: `projects/${projectId}/locations/${region}/jobs/${jobName}` + 
-            `/taskGroups/${groupName}/tasks/${taskNumber}`,
+      name:
+        `projects/${projectId}/locations/${region}/jobs/${jobName}` +
+        `/taskGroups/${groupName}/tasks/${taskNumber}`,
     };
 
     // Run request

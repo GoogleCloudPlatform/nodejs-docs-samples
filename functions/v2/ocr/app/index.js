@@ -112,6 +112,7 @@ const renameImageForSave = (filename, lang) => {
  * for uploading images.
  *
  * @param {object} cloudEvent A CloudEvent containing the Cloud Storage File object.
+ * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
 functions.cloudEvent('processImage', async cloudEvent => {
   const {bucket, name} = cloudEvent.data;
@@ -141,6 +142,7 @@ functions.cloudEvent('processImage', async cloudEvent => {
  * translates text using the Google Translate API.
  *
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object
+ * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
 functions.cloudEvent('translateText', async cloudEvent => {
   const pubsubData = cloudEvent.data;
@@ -187,6 +189,7 @@ functions.cloudEvent('translateText', async cloudEvent => {
  * the data packet to a file in GCS.
  *
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object.
+ * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
 functions.cloudEvent('saveResult', async cloudEvent => {
   const pubsubData = cloudEvent.data;

@@ -2,11 +2,6 @@
 
 # Google Cloud Functions - OCR (Optical Character Recognition) sample
 
-See:
-
-* [Cloud Functions OCR tutorial][tutorial]
-* [Cloud Functions OCR sample source code][code]
-
 [tutorial]: https://cloud.google.com/functions/docs/tutorials/ocr
 [code]: app/index.js
 

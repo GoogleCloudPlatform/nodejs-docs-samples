@@ -18,6 +18,7 @@
 // Get a reference to the Pub/Sub component
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
+
 // Get a reference to the Cloud Storage component
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();

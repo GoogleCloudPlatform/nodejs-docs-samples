@@ -64,16 +64,22 @@ describe('Create, list and delete jobs', () => {
   it('get task', async () => {
     // the server needs a bit of time to create the objects. 10 seconds is way more than enough.
     await new Promise(resolve => setTimeout(resolve, 10000));
-    const output = execSync(`node get/get_task.js ${projectId} us-central1 test-job-js-script-${testRunId} group0 0`, {
-      cwd,
-    });
+    const output = execSync(
+      `node get/get_task.js ${projectId} us-central1 test-job-js-script-${testRunId} group0 0`,
+      {
+        cwd,
+      }
+    );
     assert(output !== null);
   });
 
   it('list tasks', async () => {
-    const output = execSync(`node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`, {
-      cwd,
-    });
+    const output = execSync(
+      `node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`,
+      {
+        cwd,
+      }
+    );
     assert(output !== null);
   });
 

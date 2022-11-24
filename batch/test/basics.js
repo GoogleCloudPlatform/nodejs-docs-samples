@@ -69,6 +69,20 @@ describe('Create, list and delete jobs', () => {
     assert(output !== null);
   });
 
+  it('get task', async () => {
+    const output = execSync(`node get/get_task.js ${projectId} us-central1 test-job-js-script-${testRunId} group0 0`, {
+      cwd,
+    });
+    assert(output !== null);
+  });
+  
+  it('list tasks', async () => {
+    const output = execSync(`node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`, {
+      cwd,
+    });
+    assert(output !== null);
+  });
+
   it('delete the test job', async () => {
     const output = execSync(
       `node delete/delete_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,

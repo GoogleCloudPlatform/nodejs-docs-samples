@@ -54,7 +54,7 @@ function main(projectId, region, jobName) {
   runnable.container = new batch.Runnable.Container();
   runnable.container.imageUri = 'gcr.io/google-containers/busybox';
   runnable.container.entrypoint = '/bin/sh';
-  runnable.container.commands = [
+  runnable.container.commands = [ '-c',
     'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.',
   ];
   task.runnables = [runnable];

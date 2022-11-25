@@ -14,6 +14,8 @@
 
 'use strict';
 
+const util = require('util');
+const async = require('async');
 const assert = require('assert');
 const path = require('path');
 const cp = require('child_process');
@@ -49,6 +51,7 @@ describe('Create jobs with container, template and bucket', () => {
       {cwd}
     );
     assert(output !== null);
+    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
   });
 
   it('create a job with a GCS bucket', async () => {
@@ -95,3 +98,58 @@ async function deleteFileInBucket(bucketName, fileName) {
     .file(fileName)
     .delete({ignoreNotFound: true});
 }
+
+async function waitForJobToSucceed(projectID, region, jobName) {
+    const maxAttempts = 100;
+    let attempts = 0;
+
+    async function checkIfJobSucceeded() {
+        let jobResponse = await getJob(projectID, region, jobName);
+        let job = jobResponse[0];
+        //console.log(util.inspect(job));
+        if (job.status.state == 'SUCCEEDED') {
+            return true;
+        } else if (job.status.state == 'FAILED') {
+            throw new Error("Test job failed");
+        } else {
+            return false;
+        }
+    }
+
+    async.until(async () => {
+        let result = await checkIfJobSucceeded()
+        if (result === true) {
+            return true; // breaks the loop
+        } else {
+            attempts += 1;
+            if (attempts > maxAttempts) {
+                throw new Error("Timed out waiting for the batch job to succeed after ${attempts} attempts");
+            }
+            return false;
+        }
+    }, async () => {}, async () => {});
+}
+
+async function getJob(projectId, region, jobName) {
+    const request = {
+      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+    };
+    return await batchClient.getJob(request);
+}
+
+// The below is for debugging, because mocha won't show you the errors on test failures :(
+
+// async function main() {
+
+// const projectId = await batchClient.getProjectId();
+
+// const output = execSync(
+//     `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
+//     {cwd}
+//   );
+//   assert(output !== null);
+//   await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
+
+// }
+
+// main();

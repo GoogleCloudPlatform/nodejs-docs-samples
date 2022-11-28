@@ -31,10 +31,7 @@ describe('aws-request', () => {
   let gcsSinkBucket;
 
   before(async () => {
-    assert(
-      process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY,
-      'environment variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required'
-    );
+    testBucketManager.setupS3();
 
     projectId = await testBucketManager.getProjectId();
     awsSourceBucket = await testBucketManager.generateS3Bucket();

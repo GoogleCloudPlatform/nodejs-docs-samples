@@ -27,7 +27,6 @@ const uuid = require('uuid');
 class BucketManager {
   constructor() {
     this.client = new StorageTransferServiceClient();
-    this.s3 = new AWS.S3({apiVersion: '2006-03-01'});
     this.storage = new Storage();
 
     /**
@@ -43,6 +42,10 @@ class BucketManager {
      * @type {string[]}
      */
     this.s3Buckets = [];
+  }
+
+  setupS3(options = {}) {
+    this.s3 = new AWS.S3({apiVersion: '2006-03-01', ...options});
   }
 
   async getProjectId() {

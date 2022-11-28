@@ -50,7 +50,6 @@ describe('Create jobs with container, template and bucket', () => {
       `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
       {cwd}
     );
-    assert(output !== null);
     await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
   });
 
@@ -59,7 +58,7 @@ describe('Create jobs with container, template and bucket', () => {
       `node create/create_with_mounted_bucket.js ${projectId} us-central1 test-job-js-bucket-${testRunId} ${bucketName}`,
       {cwd}
     );
-    assert(output !== null);
+    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-bucket-${testRunId}`);
   });
 
   after(async () => {

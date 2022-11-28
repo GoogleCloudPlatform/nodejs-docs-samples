@@ -101,33 +101,24 @@ async function deleteFileInBucket(bucketName, fileName) {
 
 async function waitForJobToSucceed(projectID, region, jobName) {
     const maxAttempts = 100;
-    let attempts = 0;
+    const pollInterval = 2000; // in milliseconds
+    let succeeded = false;
 
-    async function checkIfJobSucceeded() {
+    for (let i = 0; i < maxAttempts; i++) {
         let jobResponse = await getJob(projectID, region, jobName);
         let job = jobResponse[0];
         //console.log(util.inspect(job));
         if (job.status.state == 'SUCCEEDED') {
-            return true;
+            succeeded = true;
+            break;
         } else if (job.status.state == 'FAILED') {
             throw new Error("Test job failed");
-        } else {
-            return false;
         }
+        await sleep(pollInterval);
     }
-
-    async.until(async () => {
-        let result = await checkIfJobSucceeded()
-        if (result === true) {
-            return true; // breaks the loop
-        } else {
-            attempts += 1;
-            if (attempts > maxAttempts) {
-                throw new Error("Timed out waiting for the batch job to succeed after ${attempts} attempts");
-            }
-            return false;
-        }
-    }, async () => {}, async () => {});
+    if (! succeeded) {
+      throw new Error("Timed out waiting for the batch job to succeed after ${maxAttempts} attempts");
+    }
 }
 
 async function getJob(projectId, region, jobName) {
@@ -135,6 +126,12 @@ async function getJob(projectId, region, jobName) {
       name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
     };
     return await batchClient.getJob(request);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 // The below is for debugging, because mocha won't show you the errors on test failures :(

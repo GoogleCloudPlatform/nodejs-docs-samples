@@ -32,7 +32,7 @@ let recognizerName = `projects/${projectId}/locations/global/recognizers/test-re
 
 describe('Transcribing a local file (v2)', () => {
   it('should transcribe a local file', async () => {
-    const stdout = execSync(`node transcribeFile.v2.js ${recognizerName}`, {cwd});
+    const stdout = execSync(`node transcribeGCS.v2.js ${recognizerName}`, {cwd});
     assert.match(stdout, new RegExp(`Transcript: ${text}`));
   });
 });

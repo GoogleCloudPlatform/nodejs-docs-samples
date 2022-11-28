@@ -12,31 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function main(recognizerName, audioFilePath = 'resources/brooklyn.flac') {
-  // [START speech_transcribe_file_v2]
-
+function main(
+  recognizerName,
+  gcsURI = 'gs://cloud-samples-data/speech/audio.flac'
+) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const recognizerName= "your-recognizer-id";
-  // const audioFilePath = "path/to/audio/file";
+  // const recognizerName = "your-recognizer-id";
+  // const gcsURI = "gs://path/to/file";
 
-  // Import the Cloud Speech-to-Text library
+  // Imports the Google Cloud Speech-to-Text library (v2)
   const speech = require('@google-cloud/speech').v2;
-  const fs = require('fs');
 
-  async function transcribeFile() {
-    // Instantiate the client
+  async function transcribeGCS() {
     const client = new speech.SpeechClient();
 
-    const content = fs.readFileSync(audioFilePath).toString('base64');
     const transcriptionRequest = {
       recognizer: recognizerName,
       config: {
         // Automatically detects audio encoding
         autoDecodingConfig: {},
       },
-      content: content,
+      gcsURI: gcsURI,
     };
 
     const response = await client.recognize(transcriptionRequest);
@@ -45,8 +43,7 @@ function main(recognizerName, audioFilePath = 'resources/brooklyn.flac') {
     }
   }
 
-  transcribeFile();
-  // [END speech_transcribe_file_v2]
+  transcribeGCS();
 }
 
 process.on('unhandledRejection', err => {

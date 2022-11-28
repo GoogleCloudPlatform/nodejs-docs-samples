@@ -22,6 +22,7 @@
   "batch",
   "cloudbuild",
   "cloud-language",
+  "cloud-tasks/snippets",
   "cloud-tasks/tutorial-gcf/app",
   "cloud-tasks/tutorial-gcf/function",
   "composer",

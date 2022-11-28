@@ -10,6 +10,8 @@ on:
     - 'functions/v2/autoLabelInstance/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/v2/autoLabelInstance/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

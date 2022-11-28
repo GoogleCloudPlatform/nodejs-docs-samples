@@ -10,6 +10,8 @@ on:
     - 'functions/security/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/security/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

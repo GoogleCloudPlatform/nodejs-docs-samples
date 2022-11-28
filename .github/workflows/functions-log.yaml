@@ -10,6 +10,8 @@ on:
     - 'functions/log/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/log/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

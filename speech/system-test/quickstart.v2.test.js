@@ -1,4 +1,4 @@
-// Copyright 2017 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,15 +20,26 @@ const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
+const uuid = require('uuid').v4;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 const text = 'how old is the Brooklyn Bridge';
+let recognizerName = `recognizer-test${uuid()}`;
+const projectId = process.env.GCLOUD_PROJECT;
+const speech = require('@google-cloud/speech')
 
 describe('Quickstart', () => {
   it('should run quickstart', async () => {
-    const stdout = execSync('node quickstart.v2.js', {cwd});
+    const stdout = execSync(`node quickstart.v2.js ${projectId} ${recognizerName}`, {cwd});
     assert.match(stdout, new RegExp(`Transcription: ${text}`));
   });
+
+  after(()=>{
+    const client = new speech.v2.SpeechClient();
+    client.deleteRecognizer({
+      name: `projects/${projectId}/locations/global/recognizers/${recognizerName}`
+    })
+  })
 });

@@ -106,7 +106,6 @@ async function waitForJobToSucceed(projectID, region, jobName) {
     for (let i = 0; i < maxAttempts; i++) {
         let jobResponse = await getJob(projectID, region, jobName);
         let job = jobResponse[0];
-        //console.log(util.inspect(job));
         if (job.status.state == 'SUCCEEDED') {
             succeeded = true;
             break;
@@ -132,20 +131,3 @@ function sleep(ms) {
     setTimeout(resolve, ms);
   });
 }
-
-// The below is for debugging, because mocha won't show you the errors on test failures :(
-
-// async function main() {
-
-// const projectId = await batchClient.getProjectId();
-
-// const output = execSync(
-//     `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
-//     {cwd}
-//   );
-//   assert(output !== null);
-//   await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
-
-// }
-
-// main();

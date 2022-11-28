@@ -30,8 +30,8 @@ const projectId = process.env.GCLOUD_PROJECT;
 // TODO(telpirion): Replace with env var / secret
 let recognizerName = `projects/${projectId}/locations/global/recognizers/test-recognizer`;
 
-describe('Transcribing a local file (v2)', () => {
-  it('should transcribe a local file', async () => {
+describe('Transcribing a GCS file (v2)', () => {
+  it('should transcribe a file on Cloud Storage', async () => {
     const stdout = execSync(`node transcribeGCS.v2.js ${recognizerName}`, {cwd});
     assert.match(stdout, new RegExp(`Transcript: ${text}`));
   });

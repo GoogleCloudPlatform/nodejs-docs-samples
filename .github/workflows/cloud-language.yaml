@@ -10,6 +10,8 @@ on:
     - 'cloud-language/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'cloud-language/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

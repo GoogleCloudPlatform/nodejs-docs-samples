@@ -10,6 +10,8 @@ on:
     - 'functions/spanner/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/spanner/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

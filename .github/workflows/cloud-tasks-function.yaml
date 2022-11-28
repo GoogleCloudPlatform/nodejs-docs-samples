@@ -10,6 +10,8 @@ on:
     - 'cloud-tasks/tutorial-gcf/function/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'cloud-tasks/tutorial-gcf/function/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -10,6 +10,8 @@ on:
     - 'scheduler/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'scheduler/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

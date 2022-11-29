@@ -28,13 +28,15 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 const text = 'How old is the Brooklyn Bridge';
 
-let recognizerName;
+let recognizerName, projectId;
 
 describe('Transcribing a local file (v2)', () => {
   before(async ()=>{
     const client = new speech.SpeechClient();
+    projectId = await client.getProjectId();
+
     const recognizerRequest = {
-      parent: `projects/${client.getProjectId()}/locations/global`,
+      parent: `projects/${projectId}/locations/global`,
       recognizerId: `rec-${uuid.v4()}`,
       recognizer: {
         languageCodes: ['en-US'],

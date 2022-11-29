@@ -23,11 +23,11 @@ exports.backgroundTermination = async (event, context) => {
 
   // These will cause background tasks to stop executing immediately
   return 1; // OK: returning a value
-  return await Promise.resolve(); // WRONG: returning the result of a promise
-  return await Promise.reject(); // WRONG: same behavior as resolved promises
 
   // These will wait until the related background task finishes
   return Promise.resolve(); // OK: returning the promise itself
+  return await Promise.resolve(); // Same as above
   return Promise.reject(); // OK: same behavior as to-be-resolved promises
+  return await Promise.reject(); // Same as above
   // [END functions_concepts_node_termination]
 };

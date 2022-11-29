@@ -34,7 +34,7 @@ function main(
         // Automatically detects audio encoding
         autoDecodingConfig: {},
       },
-      gcsURI: gcsURI,
+      uri: gcsURI,
     };
 
     const response = await client.recognize(transcriptionRequest);

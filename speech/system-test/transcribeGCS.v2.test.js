@@ -24,7 +24,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
-const text = 'how old is the Brooklyn Bridge';
+const text = 'How old is the Brooklyn Bridge';
 const projectId = process.env.GCLOUD_PROJECT;
 
 // TODO(telpirion): Replace with env var / secret

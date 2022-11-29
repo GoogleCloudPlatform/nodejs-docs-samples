@@ -24,6 +24,10 @@ const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const batchClient = new BatchServiceClient();
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
+const resourcemanagerClient = new ProjectsClient();
+const compute = require('@google-cloud/compute');
+const instanceTemplatesClient = new compute.InstanceTemplatesClient();
 
 // get a short ID for this test run that only contains characters that are valid in UUID
 // (a plain UUID won't do because we want the "test-job-js" prefix and that would exceed the length limit)
@@ -38,11 +42,14 @@ const cwd = path.join(__dirname, '..');
 describe('Create jobs with container, template and bucket', () => {
   let projectId;
   let bucketName;
+  let templateName;
 
   before(async () => {
     projectId = await batchClient.getProjectId();
     bucketName = `batch-js-test-bucket-${testRunId}`;
+    templateName = `batch-js-test-template-${testRunId}`
     await createBucket(bucketName);
+    await createTemplate(projectId, templateName);
   });
 
   it('create a job with a container payload', async () => {
@@ -59,6 +66,13 @@ describe('Create jobs with container, template and bucket', () => {
     );
   });
 
+  it('create a job with instance template', async () => {
+    const output = execSync(
+      `node create/create_script_job_with_template.js ${projectId} us-central1 test-job-js-template-${testRunId} ${templateName}`,
+      {cwd}
+    );
+  });
+
   // waiting for jobs to succed in separate tests lets us create them all on the server and let them run in parallel,
   // so the tests complete multiple times faster
   
@@ -70,8 +84,13 @@ describe('Create jobs with container, template and bucket', () => {
     await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
   });
 
+  it('wait for a job with an instance template to succeed', async () => {
+    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-template-${testRunId}`);
+  });
+
   after(async () => {
     await cleanupBucket(bucketName);
+    await deleteInstanceTemplate(projectId, templateName);
   });
 });
 
@@ -140,3 +159,106 @@ function sleep(ms) {
     setTimeout(resolve, ms);
   });
 }
+
+async function projectIdToNumber() {
+  // Construct request
+  const request = {
+    name: projectId,
+  };
+
+  // Run request
+  const [response] = await resourcemanagerClient.getProject(request);
+  let projectNumber = response.name.split('/')[1];
+  return projectNumber;
+}
+
+/**
+ * Creates a new instance template with the provided name and a specific instance configuration.
+ * Includes all the stuff neeeded for Batch, such as service accounts.
+ *
+ * @param {string} projectId - Project ID or project number of the Cloud project you use.
+ * @param {string} templateName - Name of the new template to create.
+ */
+  async function createTemplate(projectId, templateName) {
+    const projectNumber = projectIdToNumber(projectId);
+    const serviceAccountAddress = `${projectNumber}-compute@developer.gserviceaccount.com`;
+
+    const [response] = await instanceTemplatesClient.insert({
+      project: projectId,
+      instanceTemplateResource: {
+        name: templateName,
+        properties: {
+          disks: [
+            {
+              // The template describes the size and source image of the boot disk
+              // to attach to the instance.
+              initializeParams: {
+                diskSizeGb: '25',
+                sourceImage:
+                  'projects/debian-cloud/global/images/family/debian-11',
+              },
+              autoDelete: true,
+              boot: true,
+            },
+          ],
+          machineType: 'e2-standard-4',
+          // The template connects the instance to the `default` network,
+          // without specifying a subnetwork.
+          networkInterfaces: [
+            {
+              // Use the network interface provided in the networkName argument.
+              name: 'global/networks/default',
+              // The template lets the instance use an external IP address.
+              accessConfigs: [
+                {
+                  name: 'External NAT',
+                  type: 'ONE_TO_ONE_NAT',
+                  networkTier: 'PREMIUM',
+                },
+              ],
+            },
+          ],
+          serviceAccounts: [{
+            email: serviceAccountAddress,
+            scopes: [
+              "https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/monitoring.write",
+              "https://www.googleapis.com/auth/servicecontrol",
+              "https://www.googleapis.com/auth/service.management.readonly",
+              "https://www.googleapis.com/auth/trace.append",
+            ]
+          }],
+        },
+      },
+    });
+    let operation = response.latestResponse;
+    const operationsClient = new compute.GlobalOperationsClient();
+
+    // Wait for the create operation to complete.
+    while (operation.status !== 'DONE') {
+      [operation] = await operationsClient.wait({
+        operation: operation.name,
+        project: projectId,
+      });
+    }
+  }
+
+
+  // Delete an instance template.
+  async function deleteInstanceTemplate(projectId, templateName) {
+    const [response] = await instanceTemplatesClient.delete({
+      project: projectId,
+      instanceTemplate: templateName,
+    });
+    let operation = response.latestResponse;
+    const operationsClient = new compute.GlobalOperationsClient();
+
+    // Wait for the create operation to complete.
+    while (operation.status !== 'DONE') {
+      [operation] = await operationsClient.wait({
+        operation: operation.name,
+        project: projectId,
+      });
+    }
+  }

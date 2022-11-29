@@ -1,4 +1,4 @@
-// Copyright 2019 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 // sample-metadata:
 //   title: Delete Saved Query
 //   description: Delete Saved Query.
-//   usage: node deleteSavedQuery "project/<PROJECT_NUMBER>/feeds/<FEED_ID>"
+//   usage: node deleteSavedQuery <FULL-QUERY-NAME>
 
-async function main(queryName) {
+async function main(fullQueryName) {
   // [START asset_quickstart_delete_saved_query]
   const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
@@ -28,7 +28,7 @@ async function main(queryName) {
 
   async function deleteSavedQuery() {
     const request = {
-      name: queryName,
+      name: fullQueryName,
     };
 
     // Handle the operation using the promise pattern.

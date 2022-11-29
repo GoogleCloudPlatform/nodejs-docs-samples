@@ -19,6 +19,7 @@ const {after, before, describe, it} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {Storage} = require('@google-cloud/storage');
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -26,6 +27,7 @@ const storage = new Storage();
 const bucketName = `asset-nodejs-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 const fileSuffix = `${uuid.v4()}`;
+const queryId = 'new-query-id';
 
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
@@ -36,6 +38,7 @@ const datasetId = `asset_nodejs_${uuid.v4()}`.replace(/-/gi, '_');
 
 const compute = require('@google-cloud/compute');
 const instancesClient = new compute.InstancesClient();
+const projectClient = new ProjectsClient();
 
 // Some of these tests can take an extremely long time, and occasionally
 // timeout, see:
@@ -46,6 +49,8 @@ function sleep(ms) {
 
 describe('quickstart sample tests', () => {
   let projectId;
+  let projectNumericalId;
+  let savedQueryFullName;
   let zone;
   let instanceName;
   let machineType;
@@ -59,7 +64,12 @@ describe('quickstart sample tests', () => {
       'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts';
     networkName = 'global/networks/default';
     projectId = await instancesClient.getProjectId();
-
+    const projectRequest = {
+      name: `projects/${projectId}`,
+    };
+    const [projectResponse] = await projectClient.getProject(projectRequest);
+    projectNumericalId = projectResponse.name;
+    savedQueryFullName = `${projectNumericalId}/savedQueries/${queryId}`;
     await bucket.create();
     await bigquery.createDataset(datasetId, options);
     await bigquery.dataset(datasetId).exists();
@@ -258,5 +268,47 @@ describe('quickstart sample tests', () => {
     assert.ok(resultsTable_exists);
     await metadataTable.delete();
     await resultsTable.delete();
+  });
+
+  it('should get effective iam policies successfully', async () => {
+    const assetName = `//storage.googleapis.com/${bucketName}`;
+    const stdout = execSync(`node getBatchEffectiveIamPolicies ${assetName}`);
+    assert.include(stdout, assetName);
+  });
+
+  it('should create saved query successfully', async () => {
+    const description = 'description';
+    const stdout = execSync(
+      `node createSavedQuery.js ${queryId} ${description}`
+    );
+    assert.include(stdout, `${savedQueryFullName}`);
+  });
+  it('should list saved queries successfully', async () => {
+    const stdout = execSync(
+      `node listSavedQueries.js ${savedQueryFullName}`
+    );
+    assert.include(stdout, `${savedQueryFullName}`);
+  });
+
+  it('should get saved query successfully', async () => {
+    const stdout = execSync(
+      `node getSavedQuery.js ${savedQueryFullName}`
+    );
+    assert.include(stdout, `${savedQueryFullName}`);
+  });
+
+  it('should update saved query successfully', async () => {
+    const newDescription = 'newDescription';
+    const stdout = execSync(
+      `node updateSavedQuerY.js ${savedQueryFullName} ${newDescription}`
+    );
+    assert.include(stdout, `${newDescription}`);
+  });
+
+  it('should delete saved query successfully', async () => {
+    const stdout = execSync(
+      `node deleteSavedQuery.js ${savedQueryFullName}`
+    );
+    assert.include(stdout, '[ {}, null, null ]');
   });
 });

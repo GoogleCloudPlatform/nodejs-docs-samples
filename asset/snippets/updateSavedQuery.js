@@ -17,30 +17,23 @@
 // sample-metadata:
 //   title: Update Saved Query
 //   description: Update Saved Query.
-//   usage: node updateSavedQuery
+//   usage: node updateSavedQuery <FULL-QUERY-NAME> <QUERY-DESCRIPTION>
 
-async function main() {
+async function main(fullQueryName, description) {
   // [START asset_quickstart_update_feed]
   const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
-
-  // const scope = 'organizations/474566717491'; // change to your own org/project/folder etc
-  // const savedQueryId = 'my-query-id';
-  // const description = 'new description';
-  // const labels = 'key1=val1';
-  // const queryName = 'projects/896190383908/savedQueries/my-query-id';
   async function updateSavedQuery() {
-    const projectId = await client.getProjectId();
-    const request = {      
+    const request = {
       savedQuery: {
-        name: queryName,
-        description: `${description}`
+        name: fullQueryName,
+        description: `${description}`,
       },
       updateMask: {
         paths: ['description'],
-      }
+      },
     };
 
     // Handle the operation using the promise pattern.

@@ -17,9 +17,9 @@
 // sample-metadata:
 //   title: Create SavedQuery
 //   description: Create SavedQuery.
-//   usage: node createSavedQuery savedQueryId description
+//   usage: node createSavedQuery <QUERY-ID> <DESCRIPTION>
 
-async function main(savedQueryId, description) {
+async function main(queryId, description) {
   const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
@@ -30,20 +30,19 @@ async function main(savedQueryId, description) {
     const parent = `projects/${projectId}`;
     const request = {
       parent: `${parent}`,
-      savedQueryId: `${savedQueryId}`,
+      savedQueryId: `${queryId}`,
       savedQuery: {
         content: {
           iamPolicyAnalysisQuery: {
             scope: `${parent}`,
             accessSelector: {
-              permissions:["iam.serviceAccounts.actAs"]
-            }
-          }
+              permissions:['iam.serviceAccounts.actAs'],
+            },
+          },
         },
-        description: `${description}`
-      }
+        description: `${description}`,
+      },
     };
-
 
     // Handle the operation using the promise pattern.
     const result = await client.createSavedQuery(request);

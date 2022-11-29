@@ -13,6 +13,7 @@
 appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers 
 run @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
+scheduler @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 cloud-tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers

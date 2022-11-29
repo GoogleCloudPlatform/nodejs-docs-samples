@@ -14,9 +14,6 @@
 
 'use strict';
 
-const util = require('util');
-const async = require('async');
-const assert = require('assert');
 const path = require('path');
 const cp = require('child_process');
 const {describe, it, before} = require('mocha');
@@ -47,27 +44,27 @@ describe('Create jobs with container, template and bucket', () => {
   before(async () => {
     projectId = await batchClient.getProjectId();
     bucketName = `batch-js-test-bucket-${testRunId}`;
-    templateName = `batch-js-test-template-${testRunId}`
+    templateName = `batch-js-test-template-${testRunId}`;
     await createBucket(bucketName);
     await createTemplate(projectId, templateName);
   });
 
   it('create a job with a container payload', async () => {
-    const output = execSync(
+    execSync(
       `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
       {cwd}
     );
   });
 
   it('create a job with a GCS bucket', async () => {
-    const output = execSync(
+    execSync(
       `node create/create_with_mounted_bucket.js ${projectId} us-central1 test-job-js-bucket-${testRunId} ${bucketName}`,
       {cwd}
     );
   });
 
   it('create a job with instance template', async () => {
-    const output = execSync(
+    execSync(
       `node create/create_script_job_with_template.js ${projectId} us-central1 test-job-js-template-${testRunId} ${templateName}`,
       {cwd}
     );
@@ -75,17 +72,29 @@ describe('Create jobs with container, template and bucket', () => {
 
   // waiting for jobs to succed in separate tests lets us create them all on the server and let them run in parallel,
   // so the tests complete multiple times faster
-  
+
   it('wait for a job with a GCS bucket to succeed', async () => {
-    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-bucket-${testRunId}`);
+    await waitForJobToSucceed(
+      projectId,
+      'us-central1',
+      `test-job-js-bucket-${testRunId}`
+    );
   });
 
   it('wait for a job with a container payload to succeed', async () => {
-    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
+    await waitForJobToSucceed(
+      projectId,
+      'us-central1',
+      `test-job-js-container-${testRunId}`
+    );
   });
 
   it('wait for a job with an instance template to succeed', async () => {
-    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-template-${testRunId}`);
+    await waitForJobToSucceed(
+      projectId,
+      'us-central1',
+      `test-job-js-template-${testRunId}`
+    );
   });
 
   after(async () => {
@@ -127,40 +136,42 @@ async function deleteFileInBucket(bucketName, fileName) {
 }
 
 async function waitForJobToSucceed(projectID, region, jobName) {
-    const maxAttempts = 100;
-    const pollInterval = 2000; // in milliseconds
-    let succeeded = false;
+  const maxAttempts = 100;
+  const pollInterval = 2000; // in milliseconds
+  let succeeded = false;
 
-    for (let i = 0; i < maxAttempts; i++) {
-        let jobResponse = await getJob(projectID, region, jobName);
-        let job = jobResponse[0];
-        if (job.status.state == 'SUCCEEDED') {
-            succeeded = true;
-            break;
-        } else if (job.status.state == 'FAILED') {
-            throw new Error("Test job failed");
-        }
-        await sleep(pollInterval);
+  for (let i = 0; i < maxAttempts; i++) {
+    const jobResponse = await getJob(projectID, region, jobName);
+    const job = jobResponse[0];
+    if (job.status.state === 'SUCCEEDED') {
+      succeeded = true;
+      break;
+    } else if (job.status.state === 'FAILED') {
+      throw new Error('Test job failed');
     }
-    if (! succeeded) {
-      throw new Error("Timed out waiting for the batch job to succeed after ${maxAttempts} attempts");
-    }
+    await sleep(pollInterval);
+  }
+  if (!succeeded) {
+    throw new Error(
+      'Timed out waiting for the batch job to succeed after ${maxAttempts} attempts'
+    );
+  }
 }
 
 async function getJob(projectId, region, jobName) {
-    const request = {
-      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
-    };
-    return await batchClient.getJob(request);
+  const request = {
+    name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+  };
+  return await batchClient.getJob(request);
 }
 
 function sleep(ms) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, ms);
   });
 }
 
-async function projectIdToNumber() {
+async function projectIdToNumber(projectId) {
   // Construct request
   const request = {
     name: projectId,
@@ -168,7 +179,7 @@ async function projectIdToNumber() {
 
   // Run request
   const [response] = await resourcemanagerClient.getProject(request);
-  let projectNumber = response.name.split('/')[1];
+  const projectNumber = response.name.split('/')[1];
   return projectNumber;
 }
 
@@ -179,86 +190,87 @@ async function projectIdToNumber() {
  * @param {string} projectId - Project ID or project number of the Cloud project you use.
  * @param {string} templateName - Name of the new template to create.
  */
-  async function createTemplate(projectId, templateName) {
-    const projectNumber = projectIdToNumber(projectId);
-    const serviceAccountAddress = `${projectNumber}-compute@developer.gserviceaccount.com`;
+async function createTemplate(projectId, templateName) {
+  const projectNumber = projectIdToNumber(projectId);
+  const serviceAccountAddress = `${projectNumber}-compute@developer.gserviceaccount.com`;
 
-    const [response] = await instanceTemplatesClient.insert({
-      project: projectId,
-      instanceTemplateResource: {
-        name: templateName,
-        properties: {
-          disks: [
-            {
-              // The template describes the size and source image of the boot disk
-              // to attach to the instance.
-              initializeParams: {
-                diskSizeGb: '25',
-                sourceImage:
-                  'projects/debian-cloud/global/images/family/debian-11',
+  const [response] = await instanceTemplatesClient.insert({
+    project: projectId,
+    instanceTemplateResource: {
+      name: templateName,
+      properties: {
+        disks: [
+          {
+            // The template describes the size and source image of the boot disk
+            // to attach to the instance.
+            initializeParams: {
+              diskSizeGb: '25',
+              sourceImage:
+                'projects/debian-cloud/global/images/family/debian-11',
+            },
+            autoDelete: true,
+            boot: true,
+          },
+        ],
+        machineType: 'e2-standard-4',
+        // The template connects the instance to the `default` network,
+        // without specifying a subnetwork.
+        networkInterfaces: [
+          {
+            // Use the network interface provided in the networkName argument.
+            name: 'global/networks/default',
+            // The template lets the instance use an external IP address.
+            accessConfigs: [
+              {
+                name: 'External NAT',
+                type: 'ONE_TO_ONE_NAT',
+                networkTier: 'PREMIUM',
               },
-              autoDelete: true,
-              boot: true,
-            },
-          ],
-          machineType: 'e2-standard-4',
-          // The template connects the instance to the `default` network,
-          // without specifying a subnetwork.
-          networkInterfaces: [
-            {
-              // Use the network interface provided in the networkName argument.
-              name: 'global/networks/default',
-              // The template lets the instance use an external IP address.
-              accessConfigs: [
-                {
-                  name: 'External NAT',
-                  type: 'ONE_TO_ONE_NAT',
-                  networkTier: 'PREMIUM',
-                },
-              ],
-            },
-          ],
-          serviceAccounts: [{
+            ],
+          },
+        ],
+        serviceAccounts: [
+          {
             email: serviceAccountAddress,
             scopes: [
-              "https://www.googleapis.com/auth/devstorage.read_only",
-              "https://www.googleapis.com/auth/logging.write",
-              "https://www.googleapis.com/auth/monitoring.write",
-              "https://www.googleapis.com/auth/servicecontrol",
-              "https://www.googleapis.com/auth/service.management.readonly",
-              "https://www.googleapis.com/auth/trace.append",
-            ]
-          }],
-        },
+              'https://www.googleapis.com/auth/devstorage.read_only',
+              'https://www.googleapis.com/auth/logging.write',
+              'https://www.googleapis.com/auth/monitoring.write',
+              'https://www.googleapis.com/auth/servicecontrol',
+              'https://www.googleapis.com/auth/service.management.readonly',
+              'https://www.googleapis.com/auth/trace.append',
+            ],
+          },
+        ],
       },
-    });
-    let operation = response.latestResponse;
-    const operationsClient = new compute.GlobalOperationsClient();
+    },
+  });
+  let operation = response.latestResponse;
+  const operationsClient = new compute.GlobalOperationsClient();
 
-    // Wait for the create operation to complete.
-    while (operation.status !== 'DONE') {
-      [operation] = await operationsClient.wait({
-        operation: operation.name,
-        project: projectId,
-      });
-    }
-  }
-
-
-  // Delete an instance template.
-  async function deleteInstanceTemplate(projectId, templateName) {
-    const [response] = await instanceTemplatesClient.delete({
+  // Wait for the create operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
       project: projectId,
-      instanceTemplate: templateName,
     });
-    let operation = response.latestResponse;
-    const operationsClient = new compute.GlobalOperationsClient();
-
-    // Wait for the create operation to complete.
-    while (operation.status !== 'DONE') {
-      [operation] = await operationsClient.wait({
-        operation: operation.name,
-        project: projectId,
-      });
-    }
   }
+}
+
+// Delete an instance template.
+async function deleteInstanceTemplate(projectId, templateName) {
+  const [response] = await instanceTemplatesClient.delete({
+    project: projectId,
+    instanceTemplate: templateName,
+  });
+  let operation = response.latestResponse;
+  const operationsClient = new compute.GlobalOperationsClient();
+
+  // Wait for the create operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+    });
+  }
+}

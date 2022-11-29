@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'functions/pubsub/**'
+    - '.github/workflows/functions-pubsub.yaml'
   pull_request:
     paths:
     - 'functions/pubsub/**'
+    - '.github/workflows/functions-pubsub.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'functions/pubsub/**'
+    - '.github/workflows/functions-pubsub.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -21,7 +24,6 @@ jobs:
         # Each package in this list will be tested independently.
         # New packages must be manually added to this list.
         package:
-          - 'functions/pubsub'
           - 'functions/pubsub/publish'
           - 'functions/pubsub/subscribe'
     if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
@@ -32,23 +34,26 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.1.0
       with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: google-github-actions/auth@v1.0.0
+        ref: ${{github.event.pull_request.head.sha}}
+    - uses: 'google-github-actions/auth@v1.0.0'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3.5.1
       with:
-        node-version: 14
+        node-version: 16
     - run: npm install
       working-directory: ${{ matrix.package }}
     - run: npm test -- --reporter xunit --reporter-option output=sponge_log.xml --reporter-option suiteName="${{ matrix.package }}"
       working-directory: ${{ matrix.package }}
+      env:
+        MOCHA_REPORTER_SUITENAME: functions_pubsub
+        MOCHA_REPORTER_OUTPUT: functions_pubsub_sponge_log.xml
+        MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6
       with:

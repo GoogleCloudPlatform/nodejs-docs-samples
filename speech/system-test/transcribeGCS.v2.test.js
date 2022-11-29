@@ -36,7 +36,7 @@ describe('Transcribing a GCS file (v2)', () => {
     const client = new speech.SpeechClient();
     const recognizerRequest = {
       parent: `projects/${projectId}/locations/global`,
-      recognizerId: uuid.v4(),
+      recognizerId: `rec-${uuid.v4()}`,
       recognizer: {
         languageCodes: ['en-US'],
         model: 'latest_long',

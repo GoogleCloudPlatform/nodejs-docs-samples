@@ -50,7 +50,6 @@ describe('Create jobs with container, template and bucket', () => {
       `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
       {cwd}
     );
-    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
   });
 
   it('create a job with a GCS bucket', async () => {
@@ -58,7 +57,17 @@ describe('Create jobs with container, template and bucket', () => {
       `node create/create_with_mounted_bucket.js ${projectId} us-central1 test-job-js-bucket-${testRunId} ${bucketName}`,
       {cwd}
     );
+  });
+
+  // waiting for jobs to succed in separate tests lets us create them all on the server and let them run in parallel,
+  // so the tests complete multiple times faster
+  
+  it('wait for a job with a GCS bucket to succeed', async () => {
     await waitForJobToSucceed(projectId, "us-central1", `test-job-js-bucket-${testRunId}`);
+  });
+
+  it('wait for a job with a container payload to succeed', async () => {
+    await waitForJobToSucceed(projectId, "us-central1", `test-job-js-container-${testRunId}`);
   });
 
   after(async () => {

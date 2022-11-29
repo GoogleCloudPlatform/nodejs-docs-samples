@@ -49,7 +49,6 @@
   "functions/firebase",
   "functions/helloworld",
   "functions/http",
-  "functions/log/helloworld",
   "functions/pubsub",
   "functions/security",
   "functions/scheduleinstance",

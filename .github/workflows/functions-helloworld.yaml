@@ -24,7 +24,6 @@ jobs:
         # Each package in this list will be tested independently.
         # New packages must be manually added to this list.
         package:
-          - 'functions/helloworld'
           - 'functions/helloworld/helloError'
           - 'functions/helloworld/helloGCS'
           - 'functions/helloworld/helloPubSub'

@@ -62,7 +62,6 @@
   "functions/v2/helloGCS",
   "functions/v2/helloPubSub",
   "functions/v2/httpLogging",
-  "functions/v2/ocr/app",
   "game-servers/snippets",
   "healthcare/datasets",
   "healthcare/dicom",

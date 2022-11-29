@@ -24,7 +24,6 @@ jobs:
         # Each package in this list will be tested independently.
         # New packages must be manually added to this list.
         package:
-          - 'functions/firebase'
           - 'functions/firebase/helloAnalytics'
           - 'functions/firebase/helloAuth'
           - 'functions/firebase/helloFirestore'

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'mediatranslation/**'
+    - '.github/workflows/mediatranslation.yaml'
   pull_request:
     paths:
     - 'mediatranslation/**'
+    - '.github/workflows/mediatranslation.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'mediatranslation/**'
+    - '.github/workflows/mediatranslation.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'cloud-language/**'
+    - '.github/workflows/cloud-language.yaml'
   pull_request:
     paths:
     - 'cloud-language/**'
+    - '.github/workflows/cloud-language.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'cloud-language/**'
+    - '.github/workflows/cloud-language.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'translate/**'
+    - '.github/workflows/translate.yaml'
   pull_request:
     paths:
     - 'translate/**'
+    - '.github/workflows/translate.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'translate/**'
+    - '.github/workflows/translate.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

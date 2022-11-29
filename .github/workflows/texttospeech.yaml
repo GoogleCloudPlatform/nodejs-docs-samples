@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'texttospeech/**'
+    - '.github/workflows/texttospeech.yaml'
   pull_request:
     paths:
     - 'texttospeech/**'
+    - '.github/workflows/texttospeech.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'texttospeech/**'
+    - '.github/workflows/texttospeech.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

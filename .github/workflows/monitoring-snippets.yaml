@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'monitoring/snippets/**'
+    - '.github/workflows/monitoring-snippets.yaml'
   pull_request:
     paths:
     - 'monitoring/snippets/**'
+    - '.github/workflows/monitoring-snippets.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'monitoring/snippets/**'
+    - '.github/workflows/monitoring-snippets.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

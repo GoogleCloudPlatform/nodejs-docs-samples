@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'video-intelligence/**'
+    - '.github/workflows/video-intelligence.yaml'
   pull_request:
     paths:
     - 'video-intelligence/**'
+    - '.github/workflows/video-intelligence.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'video-intelligence/**'
+    - '.github/workflows/video-intelligence.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

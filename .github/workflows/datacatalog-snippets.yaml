@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'datacatalog/snippets/**'
+    - '.github/workflows/datacatalog-snippets.yaml'
   pull_request:
     paths:
     - 'datacatalog/snippets/**'
+    - '.github/workflows/datacatalog-snippets.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'datacatalog/snippets/**'
+    - '.github/workflows/datacatalog-snippets.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

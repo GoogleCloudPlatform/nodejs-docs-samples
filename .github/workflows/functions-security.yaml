@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'functions/security/**'
+    - '.github/workflows/functions-security.yaml'
   pull_request:
     paths:
     - 'functions/security/**'
+    - '.github/workflows/functions-security.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'functions/security/**'
+    - '.github/workflows/functions-security.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

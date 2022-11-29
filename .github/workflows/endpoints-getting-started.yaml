@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   pull_request:
     paths:
     - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

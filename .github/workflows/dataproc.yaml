@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'dataproc/**'
+    - '.github/workflows/dataproc.yaml'
   pull_request:
     paths:
     - 'dataproc/**'
+    - '.github/workflows/dataproc.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'dataproc/**'
+    - '.github/workflows/dataproc.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

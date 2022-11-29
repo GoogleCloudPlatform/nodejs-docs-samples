@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'containerengine/hello-world/**'
+    - '.github/workflows/containerengine-hello-world.yaml'
   pull_request:
     paths:
     - 'containerengine/hello-world/**'
+    - '.github/workflows/containerengine-hello-world.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'containerengine/hello-world/**'
+    - '.github/workflows/containerengine-hello-world.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

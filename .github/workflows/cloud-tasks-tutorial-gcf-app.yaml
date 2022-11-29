@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'cloud-tasks/tutorial-gcf/app/**'
+    - '.github/workflows/cloud-tasks-tutorial-gcf-app.yaml'
   pull_request:
     paths:
     - 'cloud-tasks/tutorial-gcf/app/**'
+    - '.github/workflows/cloud-tasks-tutorial-gcf-app.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'cloud-tasks/tutorial-gcf/app/**'
+    - '.github/workflows/cloud-tasks-tutorial-gcf-app.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -31,6 +34,8 @@ jobs:
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+        create_credentials_file: 'true'
+        access_token_lifetime: 600s
     - uses: actions/setup-node@v3.5.1
       with:
         node-version: 16

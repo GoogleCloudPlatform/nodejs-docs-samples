@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/typescript/**'
+    - '.github/workflows/appengine-typescript.yaml'
   pull_request:
     paths:
     - 'appengine/typescript/**'
+    - '.github/workflows/appengine-typescript.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/typescript/**'
+    - '.github/workflows/appengine-typescript.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

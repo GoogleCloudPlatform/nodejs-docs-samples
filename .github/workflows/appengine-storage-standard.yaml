@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/storage/standard/**'
+    - '.github/workflows/appengine-storage-standard.yaml'
   pull_request:
     paths:
     - 'appengine/storage/standard/**'
+    - '.github/workflows/appengine-storage-standard.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/storage/standard/**'
+    - '.github/workflows/appengine-storage-standard.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

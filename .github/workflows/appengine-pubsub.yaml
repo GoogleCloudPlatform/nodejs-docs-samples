@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/pubsub/**'
+    - '.github/workflows/appengine-pubsub.yaml'
   pull_request:
     paths:
     - 'appengine/pubsub/**'
+    - '.github/workflows/appengine-pubsub.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/pubsub/**'
+    - '.github/workflows/appengine-pubsub.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -32,10 +35,6 @@ jobs:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
-        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-        id_token_audience: 'example.com'
-        token_format: 'id_token'
-        id_token_include_email: true        
         access_token_lifetime: 600s
     - uses: actions/setup-node@v3.5.1
       with:

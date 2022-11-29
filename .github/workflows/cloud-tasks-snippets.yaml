@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'cloud-tasks/snippets/**'
+    - '.github/workflows/cloud-tasks-snippets.yaml'
   pull_request:
     paths:
     - 'cloud-tasks/snippets/**'
+    - '.github/workflows/cloud-tasks-snippets.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'cloud-tasks/snippets/**'
+    - '.github/workflows/cloud-tasks-snippets.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

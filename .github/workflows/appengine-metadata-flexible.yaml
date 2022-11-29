@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/metadata/flexible/**'
+    - '.github/workflows/appengine-metadata-flexible.yaml'
   pull_request:
     paths:
     - 'appengine/metadata/flexible/**'
+    - '.github/workflows/appengine-metadata-flexible.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/metadata/flexible/**'
+    - '.github/workflows/appengine-metadata-flexible.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -32,7 +35,6 @@ jobs:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
-        credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
         access_token_lifetime: 600s
     - uses: actions/setup-node@v3.5.1
       with:

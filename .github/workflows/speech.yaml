@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'speech/**'
+    - '.github/workflows/speech.yaml'
   pull_request:
     paths:
     - 'speech/**'
+    - '.github/workflows/speech.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'speech/**'
+    - '.github/workflows/speech.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

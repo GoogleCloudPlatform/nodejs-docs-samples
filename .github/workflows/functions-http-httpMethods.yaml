@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'functions/http/httpMethods/**'
+    - '.github/workflows/functions-http-httpMethods.yaml'
   pull_request:
     paths:
     - 'functions/http/httpMethods/**'
+    - '.github/workflows/functions-http-httpMethods.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'functions/http/httpMethods/**'
+    - '.github/workflows/functions-http-httpMethods.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'datalabeling/**'
+    - '.github/workflows/datalabeling.yaml'
   pull_request:
     paths:
     - 'datalabeling/**'
+    - '.github/workflows/datalabeling.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'datalabeling/**'
+    - '.github/workflows/datalabeling.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

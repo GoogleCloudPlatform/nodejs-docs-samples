@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'contact-center-insights/**'
+    - '.github/workflows/contact-center-insights.yaml'
   pull_request:
     paths:
     - 'contact-center-insights/**'
+    - '.github/workflows/contact-center-insights.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'contact-center-insights/**'
+    - '.github/workflows/contact-center-insights.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

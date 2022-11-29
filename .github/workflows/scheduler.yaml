@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'scheduler/**'
+    - '.github/workflows/scheduler.yaml'
   pull_request:
     paths:
     - 'scheduler/**'
+    - '.github/workflows/scheduler.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'scheduler/**'
+    - '.github/workflows/scheduler.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'functions/scheduleinstance/**'
+    - '.github/workflows/functions-scheduleinstance.yaml'
   pull_request:
     paths:
     - 'functions/scheduleinstance/**'
+    - '.github/workflows/functions-scheduleinstance.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'functions/scheduleinstance/**'
+    - '.github/workflows/functions-scheduleinstance.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'cloudbuild/**'
+    - '.github/workflows/cloudbuild.yaml'
   pull_request:
     paths:
     - 'cloudbuild/**'
+    - '.github/workflows/cloudbuild.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'cloudbuild/**'
+    - '.github/workflows/cloudbuild.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

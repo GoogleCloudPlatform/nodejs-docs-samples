@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/building-an-app/build/**'
+    - '.github/workflows/appengine-building-an-app-build.yaml'
   pull_request:
     paths:
     - 'appengine/building-an-app/build/**'
+    - '.github/workflows/appengine-building-an-app-build.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/building-an-app/build/**'
+    - '.github/workflows/appengine-building-an-app-build.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

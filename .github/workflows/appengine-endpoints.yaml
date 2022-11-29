@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/endpoints/**'
+    - '.github/workflows/appengine-endpoints.yaml'
   pull_request:
     paths:
     - 'appengine/endpoints/**'
+    - '.github/workflows/appengine-endpoints.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/endpoints/**'
+    - '.github/workflows/appengine-endpoints.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

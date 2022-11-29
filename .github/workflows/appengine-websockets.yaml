@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/websockets/**'
+    - '.github/workflows/appengine-websockets.yaml'
   pull_request:
     paths:
     - 'appengine/websockets/**'
+    - '.github/workflows/appengine-websockets.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/websockets/**'
+    - '.github/workflows/appengine-websockets.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

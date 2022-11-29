@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/memcached/**'
+    - '.github/workflows/appengine-memcached.yaml'
   pull_request:
     paths:
     - 'appengine/memcached/**'
+    - '.github/workflows/appengine-memcached.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/memcached/**'
+    - '.github/workflows/appengine-memcached.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

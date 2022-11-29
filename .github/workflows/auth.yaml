@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'auth/**'
+    - '.github/workflows/auth.yaml'
   pull_request:
     paths:
     - 'auth/**'
+    - '.github/workflows/auth.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'auth/**'
+    - '.github/workflows/auth.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

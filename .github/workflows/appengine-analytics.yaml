@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'appengine/analytics/**'
+    - '.github/workflows/appengine-analytics.yaml'
   pull_request:
     paths:
     - 'appengine/analytics/**'
+    - '.github/workflows/appengine-analytics.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/analytics/**'
+    - '.github/workflows/appengine-analytics.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

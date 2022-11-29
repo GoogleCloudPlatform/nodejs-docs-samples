@@ -35,6 +35,7 @@ webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-revie
 # DEE Platform Ops (DEEPO)
 container @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 error-reporting @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
+game-servers @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Other functions samples

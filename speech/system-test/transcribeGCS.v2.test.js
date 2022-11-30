@@ -26,7 +26,7 @@ const speech = require('@google-cloud/speech').v2;
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
-const text = 'How old is the Brooklyn Bridge';
+const text = 'how old is the Brooklyn Bridge';
 
 let recognizerName, projectId;
 
@@ -46,7 +46,7 @@ describe('Transcribing a GCS file (v2)', () => {
 
     const operation = await client.createRecognizer(recognizerRequest);
     const recognizer = operation[0].result;
-    recognizerName - recognizer.name;
+    recognizerName = recognizer.name;
   })
 
   it('should transcribe a file on Cloud Storage', async () => {

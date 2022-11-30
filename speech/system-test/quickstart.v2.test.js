@@ -31,7 +31,7 @@ let recognizerName = `recognizer-test${uuid()}`;
 const projectId = process.env.GCLOUD_PROJECT;
 
 
-describe('Quickstart', () => {
+describe('Quickstart v2', () => {
   it('should run quickstart', async () => {
     const stdout = execSync(`node quickstart.v2.js ${projectId} ${recognizerName}`, {cwd});
     assert.match(stdout, new RegExp(`Transcript: ${text}`));

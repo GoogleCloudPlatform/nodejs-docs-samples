@@ -20,11 +20,15 @@
 //   usage: node createSavedQuery <QUERY-ID> <DESCRIPTION>
 
 async function main(queryId, description) {
+  // [START asset_quickstart_create_saved_query]
   const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
 
+  // example inputs:
+  // const queryId = 'my-query-id';
+  // const description = 'description';
   async function createSavedQuery() {
     const projectId = await client.getProjectId();
     const parent = `projects/${projectId}`;
@@ -43,10 +47,8 @@ async function main(queryId, description) {
         description: `${description}`,
       },
     };
-
-    // Handle the operation using the promise pattern.
     const result = await client.createSavedQuery(request);
-    // Do things with with the response.
+    // Handle the operation using the promise pattern.
     console.log(util.inspect(result, {depth: null}));
     // [END asset_quickstart_create_saved_query]
   }

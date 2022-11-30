@@ -26,6 +26,8 @@ async function main(fullQueryName) {
 
   const client = new AssetServiceClient();
 
+  // example inputs:
+  // const fullQueryName = 'projects/<PROJECT_NUMBER>/savedQueries/<QUERY_ID>';
   async function deleteSavedQuery() {
     const request = {
       name: fullQueryName,

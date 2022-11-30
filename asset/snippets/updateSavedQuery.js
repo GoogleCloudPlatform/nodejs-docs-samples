@@ -25,6 +25,9 @@ async function main(fullQueryName, description) {
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
+  // example inputs:
+  // const fullQueryName = 'folders/<FOLDER_NUMBER>/savedQueries/<QUERY_ID>';
+  // const description = 'a new description';
   async function updateSavedQuery() {
     const request = {
       savedQuery: {

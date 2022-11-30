@@ -32,7 +32,6 @@ async function main(fullQueryName) {
     const request = {
       name: fullQueryName,
     };
-
     // Handle the operation using the promise pattern.
     const result = await client.deleteSavedQuery(request);
     // Do things with with the response.

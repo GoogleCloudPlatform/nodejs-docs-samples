@@ -17,7 +17,6 @@
 // sample-metadata:
 //   title: Get Saved Query
 //   description: Get Saved Query.
-//   usage: node getSavedQuery <FULL-QUERY-NAME>
 
 async function main(fullQueryName) {
   // [START asset_quickstart_get_saved_query]
@@ -31,15 +30,30 @@ async function main(fullQueryName) {
     };
 
     // Handle the operation using the promise pattern.
-    const result = await client.getSavedQuery(request);
+    const [query] = await client.getSavedQuery(request);
     // Do things with with the response.
-    console.log(util.inspect(result, {depth: null}));
+    console.log("Query name:", query.name);
+    console.log("Query description:", query.description);
+    console.log("Created time:", query.createTime);
+    console.log("Updated time:", query.lastUpdateTime);
+    console.log("Query type:", query.content.queryContent);
+    console.log("Query content:", JSON.stringify(query.content, null, 4));
+    return query
   }
-  getSavedQuery();
+  return getSavedQuery();
   // [END asset_quickstart_get_saved_query]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+exports.getSavedQuery = main
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

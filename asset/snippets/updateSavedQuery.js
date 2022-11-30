@@ -17,7 +17,6 @@
 // sample-metadata:
 //   title: Update Saved Query
 //   description: Update Saved Query.
-//   usage: node updateSavedQuery <FULL-QUERY-NAME> <QUERY-DESCRIPTION>
 
 async function main(fullQueryName, description) {
   // [START asset_quickstart_update_feed]
@@ -40,15 +39,31 @@ async function main(fullQueryName, description) {
     };
 
     // Handle the operation using the promise pattern.
-    const result = await client.updateSavedQuery(request);
+    const [query] = await client.updateSavedQuery(request);
     // Do things with with the response.
-    console.log(util.inspect(result, {depth: null}));
+    console.log("Query name:", query.name);
+    console.log("Query description:", query.description);
+    console.log("Created time:", query.createTime);
+    console.log("Updated time:", query.lastUpdateTime);
+    console.log("Query type:", query.content.queryContent);
+    console.log("Query content:", JSON.stringify(query.content, null, 4));
     // [END asset_quickstart_update_feed]
+    return query;
   }
-  updateSavedQuery();
+  return updateSavedQuery();
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+exports.updateSavedQuery = main
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}
+

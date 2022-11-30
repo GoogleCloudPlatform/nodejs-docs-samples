@@ -17,7 +17,6 @@
 // sample-metadata:
 //   title: List Saved Queries
 //   description: List Saved Queries in the current project
-//   usage: node listSavedQueries
 
 async function main() {
   // [START asset_quickstart_list_saved_queries]
@@ -34,15 +33,32 @@ async function main() {
     };
 
     // Handle the operation using the promise pattern.
-    const result = await client.listSavedQueries(request);
+    const [queries] = await client.listSavedQueries(request);
     // Do things with with the response.
-    console.log(util.inspect(result, {depth: null}));
+    for(const query of queries) {
+      console.log("Query name:", query.name);
+      console.log("Query description:", query.description);
+      console.log("Created time:", query.createTime);
+      console.log("Updated time:", query.lastUpdateTime);
+      console.log("Query type:", query.content.queryContent);
+      console.log("Query content:", JSON.stringify(query.content, null, 4));
+    }
     // [END asset_quickstart_list_saved_queries]
+    return queries;
   }
-  listSavedQueries();
+  return listSavedQueries();
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+exports.listSavedQueries = main
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

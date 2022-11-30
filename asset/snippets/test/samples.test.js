@@ -19,7 +19,13 @@ const {after, before, describe, it} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {Storage} = require('@google-cloud/storage');
+const {createSavedQuery} = require('../createSavedQuery.js')
+const {deleteSavedQuery} = require('../deleteSavedQuery.js')
+const {getSavedQuery} = require('../getSavedQuery.js')
+const {listSavedQueries} = require('../listSavedQueries.js')
+const {updateSavedQuery} = require('../updateSavedQuery.js')
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
+const util = require('util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -278,37 +284,29 @@ describe('quickstart sample tests', () => {
 
   it('should create saved query successfully', async () => {
     const description = 'description';
-    const stdout = execSync(
-      `node createSavedQuery.js ${queryId} ${description}`
-    );
-    assert.include(stdout, `${savedQueryFullName}`);
+    const result = await createSavedQuery(queryId, description);
+    assert.include(result.name, `${savedQueryFullName}`);
+
   });
+
   it('should list saved queries successfully', async () => {
-    const stdout = execSync(
-      `node listSavedQueries.js ${savedQueryFullName}`
-    );
-    assert.include(stdout, `${savedQueryFullName}`);
+    const result = await listSavedQueries();
+    assert.include(util.inspect(result, {depth: null}), `${savedQueryFullName}`);
   });
 
   it('should get saved query successfully', async () => {
-    const stdout = execSync(
-      `node getSavedQuery.js ${savedQueryFullName}`
-    );
-    assert.include(stdout, `${savedQueryFullName}`);
+    const result = await getSavedQuery(savedQueryFullName);
+    assert.include(result.name, `${savedQueryFullName}`);
   });
 
   it('should update saved query successfully', async () => {
     const newDescription = 'newDescription';
-    const stdout = execSync(
-      `node updateSavedQuerY.js ${savedQueryFullName} ${newDescription}`
-    );
-    assert.include(stdout, `${newDescription}`);
+    const result = await updateSavedQuery(savedQueryFullName, newDescription);
+    assert.include(result.description, `${newDescription}`);
   });
 
   it('should delete saved query successfully', async () => {
-    const stdout = execSync(
-      `node deleteSavedQuery.js ${savedQueryFullName}`
-    );
-    assert.include(stdout, '[ {}, null, null ]');
+    const result = await deleteSavedQuery(savedQueryFullName);
+    assert.include(util.inspect(result, {depth: null}), '[ {}, null, null ]');
   });
 });

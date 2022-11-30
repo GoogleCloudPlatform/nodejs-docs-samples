@@ -17,7 +17,6 @@
 // sample-metadata:
 //   title: Create SavedQuery
 //   description: Create SavedQuery.
-//   usage: node createSavedQuery <QUERY-ID> <DESCRIPTION>
 
 async function main(queryId, description) {
   // [START asset_quickstart_create_saved_query]
@@ -47,15 +46,30 @@ async function main(queryId, description) {
         description: `${description}`,
       },
     };
-    const result = await client.createSavedQuery(request);
+    const [query] = await client.createSavedQuery(request);
     // Handle the operation using the promise pattern.
-    console.log(util.inspect(result, {depth: null}));
+    console.log("Query name:", query.name);
+    console.log("Query description:", query.description);
+    console.log("Created time:", query.createTime);
+    console.log("Updated time:", query.lastUpdateTime);
+    console.log("Query type:", query.content.queryContent);
+    console.log("Query content:", JSON.stringify(query.content, null, 4));
+    return query;
     // [END asset_quickstart_create_saved_query]
   }
-  createSavedQuery();
+  return createSavedQuery();
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+exports.createSavedQuery = main
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

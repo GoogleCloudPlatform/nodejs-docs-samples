@@ -5,11 +5,16 @@ on:
     - main
     paths:
     - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   pull_request:
     paths:
     - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'endpoints/getting-started/**'
+    - '.github/workflows/endpoints-getting-started.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -22,19 +27,18 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.1.0
       with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: google-github-actions/auth@v1.0.0
+        ref: ${{github.event.pull_request.head.sha}}
+    - uses: 'google-github-actions/auth@v1.0.0'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3.5.1
       with:
-        node-version: 14
+        node-version: 16
     - run: npm install
       working-directory: endpoints/getting-started
     - run: npm test

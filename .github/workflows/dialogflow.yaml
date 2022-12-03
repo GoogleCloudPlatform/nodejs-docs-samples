@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'dialogflow/**'
+    - '.github/workflows/dialogflow.yaml'
   pull_request:
     paths:
     - 'dialogflow/**'
+    - '.github/workflows/dialogflow.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'dialogflow/**'
+    - '.github/workflows/dialogflow.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -61,7 +64,7 @@ jobs:
               throw e;
             }
           }
-    - if: ${{ github.event_name == 'schedule'}}
+    - if: ${{ github.event_name == 'schedule' && always() }}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot

@@ -14,7 +14,7 @@
       "test": "mocha test/*.test.js --timeout=5000"
     },
     "dependencies": {
-        "@google-cloud/iam": "^0.1.0"
+        "@google-cloud/iam": "^0.2.0"
     },
     "devDependencies": {
       "chai": "^4.2.0",

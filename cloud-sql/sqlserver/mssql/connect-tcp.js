@@ -35,7 +35,18 @@ const createTcpPool = async config => {
     // ... Specify additional properties here.
     ...config,
   };
-  return await mssql.connect(dbConfig);
+  // [END cloud_sql_sqlserver_mssql_connect_tcp]
+
+  // (OPTIONAL) Configure encrypted connection
+  // For deployments that connect directly to a Cloud SQL instance without
+  // using the Cloud SQL Proxy, configure encrypted connection.
+  if (process.env.PRIVATE_IP) {
+    dbConfig.options.encrypt = true;
+  }
+
+  // [START cloud_sql_sqlserver_mssql_connect_tcp]
+  // Establish a connection to the database.
+  return mssql.connect(dbConfig);
 };
 // [END cloud_sql_sqlserver_mssql_connect_tcp]
 module.exports = createTcpPool;

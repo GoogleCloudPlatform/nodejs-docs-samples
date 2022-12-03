@@ -10,6 +10,8 @@ on:
     - 'iam/deny/**'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'iam/deny/**'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

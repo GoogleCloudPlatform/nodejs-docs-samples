@@ -1,0 +1,3 @@
+---
+rules:
+  node/no-extraneous-require: off

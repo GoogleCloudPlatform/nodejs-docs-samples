@@ -25,7 +25,7 @@
     "handlebars": "^4.7.6",
     "knex": "^2.0.0",
     "pg": "^8.0.0",
-    "winston": "3.8.1"
+    "winston": "3.8.2"
   },
   "devDependencies": {
     "got": "^11.7.0",

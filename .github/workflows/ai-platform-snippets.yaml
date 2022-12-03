@@ -37,7 +37,7 @@ jobs:
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - id: secrets
-      uses: "google-github-actions/get-secretmanager-secrets@v0"
+      uses: "google-github-actions/get-secretmanager-secrets@v1"
       with:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id

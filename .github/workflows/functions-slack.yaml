@@ -5,11 +5,16 @@ on:
     - main
     paths:
     - 'functions/slack/**'
+    - '.github/workflows/functions-slack.yaml'
   pull_request:
     paths:
     - 'functions/slack/**'
+    - '.github/workflows/functions-slack.yaml'
   pull_request_target:
     types: [labeled]
+    paths:
+    - 'functions/slack/**'
+    - '.github/workflows/functions-slack.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -22,11 +27,10 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.1.0
       with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-    - uses: google-github-actions/auth@v0.8.0
+        ref: ${{github.event.pull_request.head.sha}}
+    - uses: 'google-github-actions/auth@v1.0.0'
       with:
         workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
@@ -38,9 +42,9 @@ jobs:
         secrets: |-
           slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
           kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3.5.1
       with:
-        node-version: 14
+        node-version: 16
     - run: npm install
       working-directory: functions/slack
     - run: npm test

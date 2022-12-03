@@ -1,0 +1,18 @@
+{
+  "name": "nodejs-docs-samples-functions-http-upload-file",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^6.0.0",
+    "busboy": "^1.0.0"
+  }
+}

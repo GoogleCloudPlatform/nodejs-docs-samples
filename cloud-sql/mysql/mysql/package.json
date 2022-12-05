@@ -22,7 +22,6 @@
     "@google-cloud/secret-manager": "^4.0.0",
     "express": "^4.17.1",
     "promise-mysql": "^5.0.0",
-    "prompt": "^1.0.0",
     "pug": "^3.0.0",
     "winston": "^3.1.0"
   },

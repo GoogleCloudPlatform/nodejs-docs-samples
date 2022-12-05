@@ -15,11 +15,11 @@
   "dependencies": {
     "@google-cloud/documentai": "^6.1.0",
     "@google-cloud/storage": "^6.0.0",
-    "p-queue": "^6.6.2",
-    "uuid": "^9.0.0"
+    "p-queue": "^6.6.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^8.0.0"
+    "mocha": "^8.0.0",
+    "uuid": "^9.0.0"
   }
 }

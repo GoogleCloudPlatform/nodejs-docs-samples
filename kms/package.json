@@ -15,8 +15,7 @@
   },
   "dependencies": {
     "@google-cloud/kms": "^3.1.0",
-    "fast-crc32c": "^2.0.0",
-    "jslint": "^0.12.1"
+    "fast-crc32c": "^2.0.0"
   },
   "devDependencies": {
     "c8": "^7.0.0",

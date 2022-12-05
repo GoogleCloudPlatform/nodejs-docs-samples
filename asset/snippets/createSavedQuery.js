@@ -32,18 +32,18 @@ async function main(queryId, description) {
     const projectId = await client.getProjectId();
     const parent = `projects/${projectId}`;
     const request = {
-      parent: `${parent}`,
-      savedQueryId: `${queryId}`,
+      parent: parent,
+      savedQueryId: queryId,
       savedQuery: {
         content: {
           iamPolicyAnalysisQuery: {
-            scope: `${parent}`,
+            scope: parent,
             accessSelector: {
               permissions:['iam.serviceAccounts.actAs'],
             },
           },
         },
-        description: `${description}`,
+        description: description,
       },
     };
     const [query] = await client.createSavedQuery(request);

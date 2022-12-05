@@ -31,7 +31,7 @@ async function main(fullQueryName, description) {
     const request = {
       savedQuery: {
         name: fullQueryName,
-        description: `${description}`,
+        description: description,
       },
       updateMask: {
         paths: ['description'],

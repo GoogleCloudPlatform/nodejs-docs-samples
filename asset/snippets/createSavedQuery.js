@@ -54,22 +54,9 @@ async function main(queryId, description) {
     console.log("Updated time:", query.lastUpdateTime);
     console.log("Query type:", query.content.queryContent);
     console.log("Query content:", JSON.stringify(query.content, null, 4));
-    return query;
     // [END asset_quickstart_create_saved_query]
   }
-  return createSavedQuery();
+  await createSavedQuery();
 }
 
 exports.createSavedQuery = main
-
-/* c8 ignore next 10 */
-if (require.main === module) {
-  main(...process.argv.slice(2)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-  process.on('unhandledRejection', err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-}

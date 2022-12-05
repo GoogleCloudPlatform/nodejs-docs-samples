@@ -48,22 +48,8 @@ async function main(fullQueryName, description) {
     console.log("Query type:", query.content.queryContent);
     console.log("Query content:", JSON.stringify(query.content, null, 4));
     // [END asset_quickstart_update_feed]
-    return query;
   }
-  return updateSavedQuery();
+  await updateSavedQuery();
 }
 
 exports.updateSavedQuery = main
-
-/* c8 ignore next 10 */
-if (require.main === module) {
-  main(...process.argv.slice(2)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-  process.on('unhandledRejection', err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-}
-

@@ -16,6 +16,7 @@
 
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
+const sinon = require('sinon');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {Storage} = require('@google-cloud/storage');
@@ -62,6 +63,17 @@ describe('quickstart sample tests', () => {
   let machineType;
   let sourceImage;
   let networkName;
+  const stubConsole = function () {
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
+  };
+
+  //Restore console
+  const restoreConsole = function () {
+    console.log.restore();
+    console.error.restore();
+  };
+
   before(async () => {
     zone = 'us-central1-a';
     instanceName = `asset-nodejs-${uuid.v4()}`;
@@ -79,6 +91,7 @@ describe('quickstart sample tests', () => {
     await bucket.create();
     await bigquery.createDataset(datasetId, options);
     await bigquery.dataset(datasetId).exists();
+    // stubConsole();
 
     const [response] = await instancesClient.insert({
       instanceResource: {
@@ -138,7 +151,10 @@ describe('quickstart sample tests', () => {
         zone: operation.zone.split('/').pop(),
       });
     }
+    // restoreConsole();
   });
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
 
   it('should export assets to specified path', async () => {
     const dumpFilePath = `gs://${bucketName}/my-assets-${fileSuffix}.txt`;
@@ -284,29 +300,33 @@ describe('quickstart sample tests', () => {
 
   it('should create saved query successfully', async () => {
     const description = 'description';
-    const result = await createSavedQuery(queryId, description);
-    assert.include(result.name, `${savedQueryFullName}`);
-
+    await createSavedQuery(queryId, description);
+    assert.strictEqual(console.log.callCount, 6);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
   });
 
   it('should list saved queries successfully', async () => {
-    const result = await listSavedQueries();
-    assert.include(util.inspect(result, {depth: null}), `${savedQueryFullName}`);
+    await listSavedQueries();
+    assert.isTrue(console.log.callCount >= 6);
   });
 
   it('should get saved query successfully', async () => {
-    const result = await getSavedQuery(savedQueryFullName);
-    assert.include(result.name, `${savedQueryFullName}`);
+    await getSavedQuery(savedQueryFullName);
+    assert.strictEqual(console.log.callCount, 6);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
   });
 
   it('should update saved query successfully', async () => {
     const newDescription = 'newDescription';
-    const result = await updateSavedQuery(savedQueryFullName, newDescription);
-    assert.include(result.description, `${newDescription}`);
+    await updateSavedQuery(savedQueryFullName, newDescription);
+    assert.strictEqual(console.log.callCount, 6);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
+    assert.include(console.log.secondCall.args, newDescription);
   });
 
   it('should delete saved query successfully', async () => {
-    const result = await deleteSavedQuery(savedQueryFullName);
-    assert.include(util.inspect(result, {depth: null}), '[ {}, null, null ]');
+    await deleteSavedQuery(savedQueryFullName);
+    assert.strictEqual(console.log.callCount, 1);
+    assert.include(console.log.firstCall.args, '[ {}, null, null ]');
   });
 });

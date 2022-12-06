@@ -304,7 +304,7 @@ describe('quickstart sample tests', () => {
 
   it('should list saved queries successfully', async () => {
     await listSavedQueries();
-    assert.include(console.log.lastCall.args, "List Saved Queries successfully.")
+    assert.include(console.log.lastCall.args, "Listed saved queries successfully.")
   });
 
   it('should get saved query successfully', async () => {
@@ -321,6 +321,6 @@ describe('quickstart sample tests', () => {
 
   it('should delete saved query successfully', async () => {
     await deleteSavedQuery(savedQueryFullName);
-    assert.include(console.log.firstCall.args, "Deletion successfully.");
+    assert.deepEqual(console.log.firstCall.args, ["Deleted saved query:", fullQueryName]);
   });
 });

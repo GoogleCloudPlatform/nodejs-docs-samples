@@ -43,7 +43,7 @@ async function main() {
       console.log("Query type:", query.content.queryContent);
       console.log("Query content:", JSON.stringify(query.content, null, 4));
     }
-    console.log("List Saved Queries successfully.")
+    console.log("Listed saved queries successfully.")
     // [END asset_quickstart_list_saved_queries]
   }
   await listSavedQueries();

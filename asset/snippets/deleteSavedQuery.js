@@ -34,7 +34,7 @@ async function main(fullQueryName) {
     // Handle the operation using the promise pattern.
     const result = await client.deleteSavedQuery(request);
     // Do things with with the response.
-    console.log("Deletion successfully.")
+    console.log("Deleted saved query:", fullQueryName)
     // [END asset_quickstart_delete_saved_query]
   }
   await deleteSavedQuery();

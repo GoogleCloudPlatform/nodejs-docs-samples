@@ -1,0 +1,34 @@
+{
+  "name": "nodejs-docs-samples-functions-hello-world-http",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "unit-test": "mocha test/index.test.js test/*unit*test.js test/*integration*test.js --timeout=6000 --exit",
+    "system-test": "mocha test/*system*test.js --timeout=600000 --exit",
+    "all-test": "npm run unit-test && npm run system-test",
+    "test": "npm -- run unit-test"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.0",
+    "escape-html": "^1.0.3"
+  },
+  "devDependencies": {
+    "gaxios": "^5.0.0",
+    "mocha": "^9.0.0",
+    "moment": "^2.24.0",
+    "promise-retry": "^2.0.0",
+    "sinon": "^15.0.0",
+    "supertest": "^6.0.0",
+    "uuid": "^8.0.0",
+    "wait-port": "^0.3.0"
+  }
+}

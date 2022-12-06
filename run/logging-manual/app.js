@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   // [START run_manual_logging]
 
   // Uncomment and populate this variable in your code:
-  // $project = 'The project ID of your function or Cloud Run service';
+  // const project = 'The project ID of your function or Cloud Run service';
 
   // Build structured log messages as an object.
   const globalLogFields = {};

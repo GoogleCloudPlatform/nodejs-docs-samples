@@ -5,13 +5,16 @@ on:
     - main
     paths:
     - 'document-ai/**'
+    - '.github/workflows/document-ai.yaml'
   pull_request:
     paths:
     - 'document-ai/**'
+    - '.github/workflows/document-ai.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'document-ai/**'
+    - '.github/workflows/document-ai.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -41,7 +44,7 @@ jobs:
     - run: npm test
       working-directory: document-ai
       env:
-        MOCHA_REPORTER_SUITENAME: document-ai
+        MOCHA_REPORTER_SUITENAME: document_ai
         MOCHA_REPORTER_OUTPUT: document_ai_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
@@ -61,7 +64,7 @@ jobs:
               throw e;
             }
           }
-    - if: ${{ github.event_name == 'schedule'}}
+    - if: ${{ github.event_name == 'schedule' && always() }}
       run: |
         curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
         chmod +x ./flakybot

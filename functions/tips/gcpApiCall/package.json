@@ -20,6 +20,6 @@
   "devDependencies": {
     "delay": "^5.0.0",
     "mocha": "^9.0.0",
-    "sinon": "^14.0.0"
+    "sinon": "^15.0.0"
   }
 }

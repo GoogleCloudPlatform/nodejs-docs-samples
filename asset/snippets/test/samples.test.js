@@ -91,7 +91,6 @@ describe('quickstart sample tests', () => {
     await bucket.create();
     await bigquery.createDataset(datasetId, options);
     await bigquery.dataset(datasetId).exists();
-    // stubConsole();
 
     const [response] = await instancesClient.insert({
       instanceResource: {
@@ -151,7 +150,6 @@ describe('quickstart sample tests', () => {
         zone: operation.zone.split('/').pop(),
       });
     }
-    // restoreConsole();
   });
   beforeEach(stubConsole);
   afterEach(restoreConsole);
@@ -301,32 +299,28 @@ describe('quickstart sample tests', () => {
   it('should create saved query successfully', async () => {
     const description = 'description';
     await createSavedQuery(queryId, description);
-    assert.strictEqual(console.log.callCount, 6);
     assert.include(console.log.firstCall.args, savedQueryFullName);
   });
 
   it('should list saved queries successfully', async () => {
     await listSavedQueries();
-    assert.isTrue(console.log.callCount >= 6);
+    assert.include(console.log.lastCall.args, "List Saved Queries successfully.")
   });
 
   it('should get saved query successfully', async () => {
     await getSavedQuery(savedQueryFullName);
-    assert.strictEqual(console.log.callCount, 6);
     assert.include(console.log.firstCall.args, savedQueryFullName);
   });
 
   it('should update saved query successfully', async () => {
     const newDescription = 'newDescription';
     await updateSavedQuery(savedQueryFullName, newDescription);
-    assert.strictEqual(console.log.callCount, 6);
     assert.include(console.log.firstCall.args, savedQueryFullName);
     assert.include(console.log.secondCall.args, newDescription);
   });
 
   it('should delete saved query successfully', async () => {
     await deleteSavedQuery(savedQueryFullName);
-    assert.strictEqual(console.log.callCount, 1);
-    assert.include(console.log.firstCall.args, '[ {}, null, null ]');
+    assert.include(console.log.firstCall.args, "Deletion successfully.");
   });
 });

@@ -19,22 +19,36 @@
 const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const cp = require('child_process');
+const sinon = require('sinon');
 const uuid = require('uuid').v4;
 const speech = require('@google-cloud/speech')
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const {quickstartV2} = require('../quickstart.v2');
+const { recommendCommands } = require('yargs');
 
-const cwd = path.join(__dirname, '..');
+
 const text = 'how old is the Brooklyn Bridge';
 let recognizerName = `recognizer-test${uuid()}`;
 const projectId = process.env.GCLOUD_PROJECT;
 
 
 describe('Quickstart v2', () => {
+  const stubConsole = function () {
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
+  };
+
+  const restoreConsole = function () {
+    console.log.restore();
+    console.error.restore();
+  };
+
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
+
   it('should run quickstart', async () => {
-    const stdout = execSync(`node quickstart.v2.js ${projectId} ${recognizerName}`, {cwd});
-    assert.match(stdout, new RegExp(`Transcript: ${text}`));
+    await quickstartV2(projectId, recognizerName);
+    assert.include(console.log.firstCall.args, 'Transcript: how old is the Brooklyn Bridge')
   });
 
   after(()=>{

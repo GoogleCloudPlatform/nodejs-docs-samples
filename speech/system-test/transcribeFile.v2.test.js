@@ -21,9 +21,10 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid')
+const sinon = require('sinon');
 const speech = require('@google-cloud/speech').v2;
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const {transcribeFileV2} = require('../transcribeFile.v2')
 
 const cwd = path.join(__dirname, '..');
 const text = 'how old is the Brooklyn Bridge';
@@ -31,6 +32,16 @@ const text = 'how old is the Brooklyn Bridge';
 let recognizerName, projectId;
 
 describe('Transcribing a local file (v2)', () => {
+  const stubConsole = function () {
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
+  };
+
+  const restoreConsole = function () {
+    console.log.restore();
+    console.error.restore();
+  };
+
   before(async ()=>{
     const client = new speech.SpeechClient();
     projectId = await client.getProjectId();
@@ -47,11 +58,14 @@ describe('Transcribing a local file (v2)', () => {
     const operation = await client.createRecognizer(recognizerRequest);
     const recognizer = operation[0].result;
     recognizerName = recognizer.name;
-  })
+  });
   
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
+
   it('should transcribe a local file', async () => {
-    const stdout = execSync(`node transcribeFile.v2.js ${recognizerName}`, {cwd});
-    assert.match(stdout, new RegExp(`Transcript: ${text}`));
+    await transcribeFileV2(recognizerName);
+    assert.include(console.log.firstCall.args, 'Transcript: how old is the Brooklyn Bridge')
   });
 
   after(async ()=>{

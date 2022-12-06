@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function main(
+'use strict';
+
+// sample-metadata:
+//   title: Speech-to-Text v2 Quickstart
+//   description: Transcribe a local file using Speech-to-Text v2
+
+async function main(
   projectId,
   recognizerId = 'my-recognizer',
   audioFilePath = 'resources/brooklyn.flac'
@@ -61,12 +67,8 @@ function main(
     }
   }
 
-  quickstartV2();
+  await quickstartV2();
   // [END speech_quickstart_v2]
 }
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
-main(...process.argv.slice(2));
+exports.quickstartV2 = main;

@@ -18,6 +18,7 @@
     "@google-cloud/asset": "^4.5.0",
     "@google-cloud/bigquery": "^6.0.0",
     "@google-cloud/compute": "^3.0.0",
+    "@google-cloud/resource-manager": "^4.1.1",
     "@google-cloud/storage": "^6.0.0",
     "yargs": "^16.0.0"
   },

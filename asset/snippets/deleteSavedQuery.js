@@ -20,7 +20,6 @@
 
 async function main(fullQueryName) {
   // [START asset_quickstart_delete_saved_query]
-  const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
@@ -32,12 +31,12 @@ async function main(fullQueryName) {
       name: fullQueryName,
     };
     // Handle the operation using the promise pattern.
-    const result = await client.deleteSavedQuery(request);
+    await client.deleteSavedQuery(request);
     // Do things with with the response.
-    console.log("Deleted saved query:", fullQueryName)
+    console.log('Deleted saved query:', fullQueryName);
     // [END asset_quickstart_delete_saved_query]
   }
   await deleteSavedQuery();
 }
 
-exports.deleteSavedQuery = main
+exports.deleteSavedQuery = main;

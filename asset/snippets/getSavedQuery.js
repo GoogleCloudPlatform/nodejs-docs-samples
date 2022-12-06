@@ -20,7 +20,6 @@
 
 async function main(fullQueryName) {
   // [START asset_quickstart_get_saved_query]
-  const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
@@ -32,15 +31,15 @@ async function main(fullQueryName) {
     // Handle the operation using the promise pattern.
     const [query] = await client.getSavedQuery(request);
     // Do things with with the response.
-    console.log("Query name:", query.name);
-    console.log("Query description:", query.description);
-    console.log("Created time:", query.createTime);
-    console.log("Updated time:", query.lastUpdateTime);
-    console.log("Query type:", query.content.queryContent);
-    console.log("Query content:", JSON.stringify(query.content, null, 4));
+    console.log('Query name:', query.name);
+    console.log('Query description:', query.description);
+    console.log('Created time:', query.createTime);
+    console.log('Updated time:', query.lastUpdateTime);
+    console.log('Query type:', query.content.queryContent);
+    console.log('Query content:', JSON.stringify(query.content, null, 4));
   }
   await getSavedQuery();
   // [END asset_quickstart_get_saved_query]
 }
 
-exports.getSavedQuery = main
+exports.getSavedQuery = main;

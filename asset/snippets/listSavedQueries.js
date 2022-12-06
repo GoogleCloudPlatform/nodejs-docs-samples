@@ -20,7 +20,6 @@
 
 async function main() {
   // [START asset_quickstart_list_saved_queries]
-  const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
@@ -35,18 +34,18 @@ async function main() {
     // Handle the operation using the promise pattern.
     const [queries] = await client.listSavedQueries(request);
     // Do things with with the response.
-    for(const query of queries) {
-      console.log("Query name:", query.name);
-      console.log("Query description:", query.description);
-      console.log("Created time:", query.createTime);
-      console.log("Updated time:", query.lastUpdateTime);
-      console.log("Query type:", query.content.queryContent);
-      console.log("Query content:", JSON.stringify(query.content, null, 4));
+    for (const query of queries) {
+      console.log('Query name:', query.name);
+      console.log('Query description:', query.description);
+      console.log('Created time:', query.createTime);
+      console.log('Updated time:', query.lastUpdateTime);
+      console.log('Query type:', query.content.queryContent);
+      console.log('Query content:', JSON.stringify(query.content, null, 4));
     }
-    console.log("Listed saved queries successfully.")
+    console.log('Listed saved queries successfully.');
     // [END asset_quickstart_list_saved_queries]
   }
   await listSavedQueries();
 }
 
-exports.listSavedQueries = main
+exports.listSavedQueries = main;

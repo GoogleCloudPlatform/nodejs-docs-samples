@@ -20,7 +20,6 @@
 
 async function main(queryId, description) {
   // [START asset_quickstart_create_saved_query]
-  const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
@@ -39,7 +38,7 @@ async function main(queryId, description) {
           iamPolicyAnalysisQuery: {
             scope: parent,
             accessSelector: {
-              permissions:['iam.serviceAccounts.actAs'],
+              permissions: ['iam.serviceAccounts.actAs'],
             },
           },
         },
@@ -48,15 +47,15 @@ async function main(queryId, description) {
     };
     const [query] = await client.createSavedQuery(request);
     // Handle the operation using the promise pattern.
-    console.log("Query name:", query.name);
-    console.log("Query description:", query.description);
-    console.log("Created time:", query.createTime);
-    console.log("Updated time:", query.lastUpdateTime);
-    console.log("Query type:", query.content.queryContent);
-    console.log("Query content:", JSON.stringify(query.content, null, 4));
+    console.log('Query name:', query.name);
+    console.log('Query description:', query.description);
+    console.log('Created time:', query.createTime);
+    console.log('Updated time:', query.lastUpdateTime);
+    console.log('Query type:', query.content.queryContent);
+    console.log('Query content:', JSON.stringify(query.content, null, 4));
     // [END asset_quickstart_create_saved_query]
   }
   await createSavedQuery();
 }
 
-exports.createSavedQuery = main
+exports.createSavedQuery = main;

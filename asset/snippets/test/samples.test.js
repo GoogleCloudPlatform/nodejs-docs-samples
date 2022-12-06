@@ -20,13 +20,12 @@ const sinon = require('sinon');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {Storage} = require('@google-cloud/storage');
-const {createSavedQuery} = require('../createSavedQuery.js')
-const {deleteSavedQuery} = require('../deleteSavedQuery.js')
-const {getSavedQuery} = require('../getSavedQuery.js')
-const {listSavedQueries} = require('../listSavedQueries.js')
-const {updateSavedQuery} = require('../updateSavedQuery.js')
+const {createSavedQuery} = require('../createSavedQuery.js');
+const {deleteSavedQuery} = require('../deleteSavedQuery.js');
+const {getSavedQuery} = require('../getSavedQuery.js');
+const {listSavedQueries} = require('../listSavedQueries.js');
+const {updateSavedQuery} = require('../updateSavedQuery.js');
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
-const util = require('util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -304,7 +303,10 @@ describe('quickstart sample tests', () => {
 
   it('should list saved queries successfully', async () => {
     await listSavedQueries();
-    assert.include(console.log.lastCall.args, "Listed saved queries successfully.")
+    assert.include(
+      console.log.lastCall.args,
+      'Listed saved queries successfully.'
+    );
   });
 
   it('should get saved query successfully', async () => {
@@ -321,6 +323,9 @@ describe('quickstart sample tests', () => {
 
   it('should delete saved query successfully', async () => {
     await deleteSavedQuery(savedQueryFullName);
-    assert.deepEqual(console.log.firstCall.args, ["Deleted saved query:", fullQueryName]);
+    assert.deepEqual(console.log.firstCall.args, [
+      'Deleted saved query:',
+      savedQueryFullName,
+    ]);
   });
 });

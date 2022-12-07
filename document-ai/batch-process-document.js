@@ -45,7 +45,7 @@ async function main(
   const client = new DocumentProcessorServiceClient();
   const storage = new Storage();
 
-  const PQueue = await import('p-queue');
+  const {default: PQueue} = await import('p-queue');
 
   async function batchProcessDocument() {
     const name = `projects/${projectId}/locations/${location}/processors/${processorId}`;
@@ -91,7 +91,7 @@ async function main(
     const [files] = await storage.bucket(gcsOutputUri).getFiles(query);
 
     // Add all asynchronous downloads to queue for execution.
-    const queue = new PQueue.default({concurrency: 15});
+    const queue = new PQueue({concurrency: 15});
     const tasks = files.map((fileInfo, index) => async () => {
       // Get the file as a buffer
       const [file] = await fileInfo.download();

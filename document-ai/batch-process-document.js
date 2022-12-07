@@ -45,8 +45,8 @@ async function main(
   const client = new DocumentProcessorServiceClient();
   const storage = new Storage();
 
-  const {default: PQueue} = require('p-queue');
-
+  const PQueue = await import('p-queue');
+  
   async function batchProcessDocument() {
     const name = `projects/${projectId}/locations/${location}/processors/${processorId}`;
 

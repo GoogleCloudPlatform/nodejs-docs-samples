@@ -91,7 +91,7 @@ async function main(
     const [files] = await storage.bucket(gcsOutputUri).getFiles(query);
 
     // Add all asynchronous downloads to queue for execution.
-    const queue = new PQueue({concurrency: 15});
+    const queue = new PQueue.default(({concurrency: 15}));
     const tasks = files.map((fileInfo, index) => async () => {
       // Get the file as a buffer
       const [file] = await fileInfo.download();

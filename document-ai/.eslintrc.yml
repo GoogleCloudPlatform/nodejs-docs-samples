@@ -1,4 +1,7 @@
 ---
 rules:
   no-console: off
+  node/no-unsupported-features/es-syntax: off
   node/no-unsupported-features/node-builtins: off
+parserOptions:
+  ecmaVersion: 11

@@ -15,13 +15,15 @@
 'use strict';
 
 // [START functions_http_xml]
+const functions = require('@google-cloud/functions-framework');
+
 /**
  * Parses a document of type 'text/xml'
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.parseXML = (req, res) => {
+functions.http('parseXML', (req, res) => {
   // Convert the request to a Buffer and a string
   // Use whichever one is accepted by your XML parser
   const data = req.rawBody;
@@ -37,5 +39,5 @@ exports.parseXML = (req, res) => {
     }
     res.send(result);
   });
-};
+});
 // [END functions_http_xml]

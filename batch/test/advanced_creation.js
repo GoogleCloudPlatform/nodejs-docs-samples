@@ -70,7 +70,7 @@ describe('Create jobs with container, template and bucket', () => {
     );
   });
 
-  // waiting for jobs to succed in separate tests lets us create them all on the server and let them run in parallel,
+  // waiting for jobs to succeed in separate tests lets us create them all on the server and let them run in parallel,
   // so the tests complete multiple times faster
 
   it('wait for a job with a GCS bucket to succeed', async () => {

@@ -89,7 +89,7 @@ function main(projectId, region, jobName) {
   job.taskGroups = [group];
   job.allocationPolicy = allocationPolicy;
   job.labels = {env: 'testing', type: 'script'};
-  // We use Cloud Logging as it's an out option available out of the box
+  // We use Cloud Logging as it's an option available out of the box
   job.logsPolicy = new batch.LogsPolicy();
   job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
 

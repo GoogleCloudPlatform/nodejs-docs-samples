@@ -42,12 +42,12 @@ function main(projectId, region, jobName, groupName, taskNumber) {
    */
   // const jobName = 'YOUR_JOB_NAME';
   /**
-   * the name of the group that owns the task you want to check.
+   * The name of the group that owns the task you want to check.
    * Usually it's `group0`.
    */
   // const groupName = 'group0';
   /**
-   * number of the task you want to look up.
+   * The number of the task you want to look up.
    */
   // const taskNumber = 0;
 

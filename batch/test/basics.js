@@ -31,14 +31,14 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 
-describe('Create, list and delete jobs', () => {
+describe('Creates, lists and deletes jobs', () => {
   let projectId;
 
   before(async () => {
     projectId = await batchClient.getProjectId();
   });
 
-  it('create a job with a script payload', async () => {
+  it('creates a job with a script payload', async () => {
     const output = execSync(
       `node create/create_with_script_no_mounting.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {cwd}
@@ -46,7 +46,7 @@ describe('Create, list and delete jobs', () => {
     assert(output !== null);
   });
 
-  it('get information about a job', async () => {
+  it('gets information about a job', async () => {
     const output = execSync(
       `node get/get_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {cwd}
@@ -54,14 +54,14 @@ describe('Create, list and delete jobs', () => {
     assert(output !== null);
   });
 
-  it('list jobs', async () => {
+  it('lists jobs', async () => {
     const output = execSync(`node list/list_jobs.js ${projectId} us-central1`, {
       cwd,
     });
     assert(output !== null);
   });
 
-  it('get task', async () => {
+  it('gets a task', async () => {
     // the server needs a bit of time to create the objects. 10 seconds is way more than enough.
     await new Promise(resolve => setTimeout(resolve, 10000));
     const output = execSync(
@@ -73,7 +73,7 @@ describe('Create, list and delete jobs', () => {
     assert(output !== null);
   });
 
-  it('list tasks', async () => {
+  it('lists tasks', async () => {
     const output = execSync(
       `node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`,
       {
@@ -83,7 +83,7 @@ describe('Create, list and delete jobs', () => {
     assert(output !== null);
   });
 
-  it('delete the test job', async () => {
+  it('deletes the test job', async () => {
     const output = execSync(
       `node delete/delete_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {

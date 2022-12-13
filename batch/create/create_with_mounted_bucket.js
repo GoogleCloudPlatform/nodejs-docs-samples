@@ -15,7 +15,7 @@
 'use strict';
 
 /**
- * Creates a new Batch job that runs the specified container on multiple VM instances at once.
+ * Creates a new Batch job that runs the specified script on multiple VM instances at once.
  *
  * @param {string} projectId - ID or number of the Google Cloud project you want to use.
  * @param {string} region - The Google Cloud region to use, e.g. 'us-central1'
@@ -23,9 +23,10 @@
  *  This field should contain at most 63 characters.
  *  Only alphanumeric characters or '-' are accepted.
  *  The '-' character cannot be the first or the last one.
+ * @param {string} bucketName - The name of the bucket to be mounted.
  */
-function main(projectId, region, jobName) {
-  // [START batch_create_container_job]
+function main(projectId, region, jobName, bucketName) {
+  // [START batch_create_script_job_with_bucket]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
    */
@@ -40,6 +41,10 @@ function main(projectId, region, jobName) {
    * It needs to be unique for each project and region pair.
    */
   // const jobName = 'YOUR_JOB_NAME';
+  /**
+   * The name of the bucket to be mounted.
+   */
+  // const bucketName = 'YOUR_BUCKET_NAME';
 
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');
@@ -51,14 +56,21 @@ function main(projectId, region, jobName) {
   // Define what will be done as part of the job.
   const task = new batch.TaskSpec();
   const runnable = new batch.Runnable();
-  runnable.container = new batch.Runnable.Container();
-  runnable.container.imageUri = 'gcr.io/google-containers/busybox';
-  runnable.container.entrypoint = '/bin/sh';
-  runnable.container.commands = [
-    '-c',
-    'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.',
-  ];
+  runnable.script = new batch.Runnable.Script();
+  runnable.script.text =
+    'echo Hello world from task ${BATCH_TASK_INDEX}. >> /mnt/share/output_task_${BATCH_TASK_INDEX}.txt';
+  // You can also run a script from a file. Just remember, that needs to be a script that's
+  // already on the VM that will be running the job. Using runnable.script.text and runnable.script.path is mutually
+  // exclusive.
+  // runnable.script.path = '/tmp/test.sh'
   task.runnables = [runnable];
+
+  const gcsBucket = new batch.GCS();
+  gcsBucket.remotePath = bucketName;
+  const gcsVolume = new batch.Volume();
+  gcsVolume.gcs = gcsBucket;
+  gcsVolume.mountPath = '/mnt/share';
+  task.volumes = [gcsVolume];
 
   // We can specify what resources are requested by each task.
   const resources = new batch.ComputeResource();
@@ -88,7 +100,7 @@ function main(projectId, region, jobName) {
   job.name = jobName;
   job.taskGroups = [group];
   job.allocationPolicy = allocationPolicy;
-  job.labels = {env: 'testing', type: 'container'};
+  job.labels = {env: 'testing', type: 'script'};
   // We use Cloud Logging as it's an option available out of the box
   job.logsPolicy = new batch.LogsPolicy();
   job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
@@ -110,7 +122,7 @@ function main(projectId, region, jobName) {
   }
 
   callCreateJob();
-  // [END batch_create_container_job]
+  // [END batch_create_script_job_with_bucket]
 }
 
 process.on('unhandledRejection', err => {

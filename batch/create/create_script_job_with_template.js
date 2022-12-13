@@ -15,7 +15,7 @@
 'use strict';
 
 /**
- * Creates a new Batch job that runs the specified container on multiple VM instances at once.
+ * Creates a new Batch job that runs the specified script on multiple VM instances at once.
  *
  * @param {string} projectId - ID or number of the Google Cloud project you want to use.
  * @param {string} region - The Google Cloud region to use, e.g. 'us-central1'
@@ -23,9 +23,13 @@
  *  This field should contain at most 63 characters.
  *  Only alphanumeric characters or '-' are accepted.
  *  The '-' character cannot be the first or the last one.
+ * @param {string} templateLink - a link to an existing Instance Template.
+ *   Acceptable formats:
+ *   "projects/{project_id}/global/instanceTemplates/{template_name}"
+ *   "{template_name}" - if the template is defined in the same project as used to create the Job.
  */
-function main(projectId, region, jobName) {
-  // [START batch_create_container_job]
+function main(projectId, region, jobName, templateLink) {
+  // [START batch_create_job_with_template]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
    */
@@ -40,6 +44,12 @@ function main(projectId, region, jobName) {
    * It needs to be unique for each project and region pair.
    */
   // const jobName = 'YOUR_JOB_NAME';
+  /**
+   * a link to an existing Instance Template. Acceptable formats:
+   * "projects/{project_id}/global/instanceTemplates/{template_name}"
+   * "{template_name}" - if the template is defined in the same project as used to create the Job.
+   */
+  // const templateLink = 'YOUR_TEMPLATE'
 
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');
@@ -51,13 +61,13 @@ function main(projectId, region, jobName) {
   // Define what will be done as part of the job.
   const task = new batch.TaskSpec();
   const runnable = new batch.Runnable();
-  runnable.container = new batch.Runnable.Container();
-  runnable.container.imageUri = 'gcr.io/google-containers/busybox';
-  runnable.container.entrypoint = '/bin/sh';
-  runnable.container.commands = [
-    '-c',
-    'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.',
-  ];
+  runnable.script = new batch.Runnable.Script();
+  runnable.script.text =
+    'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.';
+  // You can also run a script from a file. Just remember, that needs to be a script that's
+  // already on the VM that will be running the job. Using runnable.script.text and runnable.script.path is mutually
+  // exclusive.
+  // runnable.script.path = '/tmp/test.sh'
   task.runnables = [runnable];
 
   // We can specify what resources are requested by each task.
@@ -78,17 +88,15 @@ function main(projectId, region, jobName) {
   // In this case, we tell the system to use "e2-standard-4" machine type.
   // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
   const allocationPolicy = new batch.AllocationPolicy();
-  const policy = new batch.AllocationPolicy.InstancePolicy();
-  policy.machineType = 'e2-standard-4';
   const instances = new batch.AllocationPolicy.InstancePolicyOrTemplate();
-  instances.policy = policy;
+  instances.templateLink = templateLink;
   allocationPolicy.instances = [instances];
 
   const job = new batch.Job();
   job.name = jobName;
   job.taskGroups = [group];
   job.allocationPolicy = allocationPolicy;
-  job.labels = {env: 'testing', type: 'container'};
+  job.labels = {env: 'testing', type: 'script'};
   // We use Cloud Logging as it's an option available out of the box
   job.logsPolicy = new batch.LogsPolicy();
   job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
@@ -110,7 +118,7 @@ function main(projectId, region, jobName) {
   }
 
   callCreateJob();
-  // [END batch_create_container_job]
+  // [END batch_create_job_with_template]
 }
 
 process.on('unhandledRejection', err => {

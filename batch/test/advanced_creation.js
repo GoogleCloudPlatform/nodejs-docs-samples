@@ -118,9 +118,11 @@ async function cleanupBucket(bucketName) {
   // There is no 'force=true' argument in the Node GCS client,
   // so we cannot use force deletion here and have to first delete all files,
   // and only then delete the actual bucket.
+  let promises = [];
   for (let i = 0; i <= 3; i++) {
-    await deleteFileInBucket(bucketName, `output_task_${i}.txt`);
+    promises.push(deleteFileInBucket(bucketName, `output_task_${i}.txt`));
   }
+  await Promise.all(promises);
   await deleteBucket(bucketName);
 }
 

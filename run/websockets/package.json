@@ -10,7 +10,7 @@
     "system-test": "mocha test/system.test.js --timeout=420000 --exit"
   },
   "dependencies": {
-    "@socket.io/redis-adapter": "^7.0.0",
+    "@socket.io/redis-adapter": "^8.0.0",
     "express": "^4.17.1",
     "redis": "^3.1.2",
     "socket.io": "^4.1.2"

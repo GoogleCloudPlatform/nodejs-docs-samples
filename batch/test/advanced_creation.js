@@ -49,21 +49,21 @@ describe('Create jobs with container, template and bucket', () => {
     await createTemplate(projectId, templateName);
   });
 
-  it('create a job with a container payload', async () => {
+  it('create a job with a container payload', () => {
     execSync(
       `node create/create_with_container_no_mounting.js ${projectId} us-central1 test-job-js-container-${testRunId}`,
       {cwd}
     );
   });
 
-  it('create a job with a GCS bucket', async () => {
+  it('create a job with a GCS bucket', () => {
     execSync(
       `node create/create_with_mounted_bucket.js ${projectId} us-central1 test-job-js-bucket-${testRunId} ${bucketName}`,
       {cwd}
     );
   });
 
-  it('create a job with instance template', async () => {
+  it('create a job with instance template', () => {
     execSync(
       `node create/create_script_job_with_template.js ${projectId} us-central1 test-job-js-template-${testRunId} ${templateName}`,
       {cwd}

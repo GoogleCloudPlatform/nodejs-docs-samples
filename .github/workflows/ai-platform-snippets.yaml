@@ -19,7 +19,7 @@ on:
   - cron:  '0 0 * * 0'
 jobs:
   test:
-    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' }}
+    if: ${{ github.event.action != 'labeled' || github.event.label.name == 'actions:force-run' || github.event.pull_request.head.repo.full_name == 'GoogleCloudPlatform/nodejs-docs-samples' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:

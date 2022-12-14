@@ -63,4 +63,4 @@ directory.
 [cloud]: https://cloud.google.com/
 
 ## Failing CI
-`Required` tests need to pass. Tests that are not required are expected to fail, they are usually work in progress.
+`Required` tests need to pass. Tests that are not required are expected to fail. They are usually work in progress.

@@ -55,6 +55,7 @@ function main(projectId, region, jobName) {
   runnable.container.imageUri = 'gcr.io/google-containers/busybox';
   runnable.container.entrypoint = '/bin/sh';
   runnable.container.commands = [
+    '-c',
     'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.',
   ];
   task.runnables = [runnable];
@@ -88,7 +89,7 @@ function main(projectId, region, jobName) {
   job.taskGroups = [group];
   job.allocationPolicy = allocationPolicy;
   job.labels = {env: 'testing', type: 'container'};
-  // We use Cloud Logging as it's an out option available out of the box
+  // We use Cloud Logging as it's an option available out of the box
   job.logsPolicy = new batch.LogsPolicy();
   job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
 

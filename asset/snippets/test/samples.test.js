@@ -16,9 +16,16 @@
 
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
+const sinon = require('sinon');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {Storage} = require('@google-cloud/storage');
+const {createSavedQuery} = require('../createSavedQuery.js');
+const {deleteSavedQuery} = require('../deleteSavedQuery.js');
+const {getSavedQuery} = require('../getSavedQuery.js');
+const {listSavedQueries} = require('../listSavedQueries.js');
+const {updateSavedQuery} = require('../updateSavedQuery.js');
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -26,6 +33,7 @@ const storage = new Storage();
 const bucketName = `asset-nodejs-${uuid.v4()}`;
 const bucket = storage.bucket(bucketName);
 const fileSuffix = `${uuid.v4()}`;
+const queryId = 'new-query-id';
 
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
@@ -36,6 +44,7 @@ const datasetId = `asset_nodejs_${uuid.v4()}`.replace(/-/gi, '_');
 
 const compute = require('@google-cloud/compute');
 const instancesClient = new compute.InstancesClient();
+const projectClient = new ProjectsClient();
 
 // Some of these tests can take an extremely long time, and occasionally
 // timeout, see:
@@ -46,11 +55,24 @@ function sleep(ms) {
 
 describe('quickstart sample tests', () => {
   let projectId;
+  let projectNumericalId;
+  let savedQueryFullName;
   let zone;
   let instanceName;
   let machineType;
   let sourceImage;
   let networkName;
+  const stubConsole = function () {
+    sinon.stub(console, 'error');
+    sinon.stub(console, 'log');
+  };
+
+  //Restore console
+  const restoreConsole = function () {
+    console.log.restore();
+    console.error.restore();
+  };
+
   before(async () => {
     zone = 'us-central1-a';
     instanceName = `asset-nodejs-${uuid.v4()}`;
@@ -59,7 +81,12 @@ describe('quickstart sample tests', () => {
       'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts';
     networkName = 'global/networks/default';
     projectId = await instancesClient.getProjectId();
-
+    const projectRequest = {
+      name: `projects/${projectId}`,
+    };
+    const [projectResponse] = await projectClient.getProject(projectRequest);
+    projectNumericalId = projectResponse.name;
+    savedQueryFullName = `${projectNumericalId}/savedQueries/${queryId}`;
     await bucket.create();
     await bigquery.createDataset(datasetId, options);
     await bigquery.dataset(datasetId).exists();
@@ -123,6 +150,8 @@ describe('quickstart sample tests', () => {
       });
     }
   });
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
 
   it('should export assets to specified path', async () => {
     const dumpFilePath = `gs://${bucketName}/my-assets-${fileSuffix}.txt`;
@@ -258,5 +287,45 @@ describe('quickstart sample tests', () => {
     assert.ok(resultsTable_exists);
     await metadataTable.delete();
     await resultsTable.delete();
+  });
+
+  it('should get effective iam policies successfully', async () => {
+    const assetName = `//storage.googleapis.com/${bucketName}`;
+    const stdout = execSync(`node getBatchEffectiveIamPolicies ${assetName}`);
+    assert.include(stdout, assetName);
+  });
+
+  it('should create saved query successfully', async () => {
+    const description = 'description';
+    await createSavedQuery(queryId, description);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
+  });
+
+  it('should list saved queries successfully', async () => {
+    await listSavedQueries();
+    assert.include(
+      console.log.lastCall.args,
+      'Listed saved queries successfully.'
+    );
+  });
+
+  it('should get saved query successfully', async () => {
+    await getSavedQuery(savedQueryFullName);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
+  });
+
+  it('should update saved query successfully', async () => {
+    const newDescription = 'newDescription';
+    await updateSavedQuery(savedQueryFullName, newDescription);
+    assert.include(console.log.firstCall.args, savedQueryFullName);
+    assert.include(console.log.secondCall.args, newDescription);
+  });
+
+  it('should delete saved query successfully', async () => {
+    await deleteSavedQuery(savedQueryFullName);
+    assert.deepEqual(console.log.firstCall.args, [
+      'Deleted saved query:',
+      savedQueryFullName,
+    ]);
   });
 });

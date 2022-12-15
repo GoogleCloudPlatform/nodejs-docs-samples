@@ -22,6 +22,7 @@ const {
   StorageTransferServiceClient,
 } = require('@google-cloud/storage-transfer');
 const AWS = require('aws-sdk');
+const AzureStorageBlob = require('@azure/storage-blob');
 const uuid = require('uuid');
 
 class BucketManager {
@@ -41,7 +42,16 @@ class BucketManager {
     /**
      * @type {string[]}
      */
+    this.blobStorageContainers = [];
+    /**
+     * @type {string[]}
+     */
     this.s3Buckets = [];
+  }
+
+  setupBlobStorageFromConnectionString(connectionString = '') {
+    this.blobStorage =
+      AzureStorageBlob.BlobServiceClient.fromConnectionString(connectionString);
   }
 
   setupS3(options = {}) {
@@ -156,11 +166,9 @@ class BucketManager {
    * Configures STS read/write perms on the bucket.
    *
    * Is cached for easy clean-up via {#deleteBuckets}.
-   *
-   * @returns
    */
   async generateGCSBucket() {
-    const name = await BucketManager.generateBucketName();
+    const name = BucketManager.generateBucketName();
     const bucket = this.storage.bucket(name);
     this.gcsBuckets.push(bucket);
 
@@ -171,16 +179,30 @@ class BucketManager {
   }
 
   /**
-   * Generates a unique GCS bucket for testing.
-   * Configures STS read/write perms on the bucket.
+   * Generates a unique Azure container for testing.
    *
    * Is cached for easy clean-up via {#deleteBuckets}.
+   */
+  async generateBlobStorageContainer() {
+    const name = BucketManager.generateBucketName();
+
+    // Create a container
+    const containerClient = this.blobStorage.getContainerClient(name);
+    await containerClient.create();
+
+    this.blobStorageContainers.push(name);
+
+    return name;
+  }
+
+  /**
+   * Generates a unique S3 bucket for testing.
    *
-   * @returns
+   * Is cached for easy clean-up via {#deleteBuckets}.
    */
 
   async generateS3Bucket() {
-    const name = await BucketManager.generateBucketName();
+    const name = BucketManager.generateBucketName();
 
     await new Promise((resolve, reject) => {
       this.s3.createBucket({Bucket: name}, (error, data) => {
@@ -202,6 +224,14 @@ class BucketManager {
     for (const bucket of this.gcsBuckets) {
       try {
         await bucket.delete();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    for (const container of this.blobStorageContainers) {
+      try {
+        await this.blobStorage.deleteContainer(container);
       } catch (e) {
         console.error(e);
       }

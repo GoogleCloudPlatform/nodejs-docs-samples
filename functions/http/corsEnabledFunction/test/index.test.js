@@ -17,21 +17,7 @@
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
-
-const getSample = () => {
-  const requestPromise = sinon
-    .stub()
-    .returns(new Promise(resolve => resolve('test')));
-
-  return {
-    sample: proxyquire('../', {
-      'request-promise': requestPromise,
-    }),
-    mocks: {
-      requestPromise: requestPromise,
-    },
-  };
-};
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const getMocks = () => {
   const req = {
@@ -75,12 +61,22 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
+beforeEach(() => {
+  const requestPromise = sinon
+    .stub()
+    .returns(new Promise(resolve => resolve('test')));
+
+  proxyquire('../', {
+    'request-promise': requestPromise,
+  });
+});
+
 describe('functions_http_cors', () => {
   it('http:cors: should respond to preflight request (no auth)', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
+    const corsEnabledFunction = getFunction('corsEnabledFunction');
 
-    httpSample.sample.corsEnabledFunction(mocks.corsPreflightReq, mocks.res);
+    corsEnabledFunction(mocks.corsPreflightReq, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnceWith(204), true);
     assert.strictEqual(mocks.res.send.called, true);
@@ -88,9 +84,9 @@ describe('functions_http_cors', () => {
 
   it('http:cors: should respond to main request (no auth)', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
+    const corsEnabledFunction = getFunction('corsEnabledFunction');
 
-    httpSample.sample.corsEnabledFunction(mocks.corsMainReq, mocks.res);
+    corsEnabledFunction(mocks.corsMainReq, mocks.res);
 
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
   });

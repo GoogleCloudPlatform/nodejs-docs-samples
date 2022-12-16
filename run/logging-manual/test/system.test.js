@@ -74,6 +74,12 @@ async function runShellCmd(cmd, opts = {}) {
     try {
       console.log('Running command:', cmd);
       const result = await exec(cmd, opts);
+      
+      // Ensure that `stdout` isn't empty
+      if (!result.stdout) {
+        throw new Error(result.stderr);
+      }
+      
       return result;
     } catch (err) {
       console.log('Shell command failed!');

@@ -15,13 +15,15 @@
 'use strict';
 
 // [START functions_http_cors_auth]
+const functions = require('@google-cloud/functions-framework');
+
 /**
  * HTTP function that supports CORS requests with credentials.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.corsEnabledFunctionAuth = (req, res) => {
+functions.http('corsEnabledFunctionAuth', (req, res) => {
   // Set CORS headers for preflight requests
   // Allows GETs from origin https://mydomain.com with Authorization header
 
@@ -37,5 +39,5 @@ exports.corsEnabledFunctionAuth = (req, res) => {
   } else {
     res.send('Hello World!');
   }
-};
+});
 // [END functions_http_cors_auth]

@@ -16,6 +16,7 @@
 
 // [START functions_http_content]
 const escapeHtml = require('escape-html');
+const functions = require('@google-cloud/functions-framework');
 
 /**
  * Responds to an HTTP request using data from the request body parsed according
@@ -24,7 +25,7 @@ const escapeHtml = require('escape-html');
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.helloContent = (req, res) => {
+functions.http('helloContent', (req, res) => {
   let name;
 
   switch (req.get('content-type')) {
@@ -50,5 +51,5 @@ exports.helloContent = (req, res) => {
   }
 
   res.status(200).send(`Hello ${escapeHtml(name || 'World')}!`);
-};
+});
 // [END functions_http_content]

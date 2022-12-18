@@ -22,7 +22,7 @@ function main(organizationId = 'your-org-id', configId = 'your-config-id') {
 
   // organizationId = "your-org-id";
   // configId = "your-config-id";
-  const formattedConfigName = client.notificationConfigPath(
+  const formattedConfigName = client.organizationNotificationConfigPath(
     organizationId,
     configId
   );

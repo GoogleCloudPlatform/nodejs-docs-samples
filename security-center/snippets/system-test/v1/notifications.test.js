@@ -56,7 +56,7 @@ describe('Client with Notifications', async () => {
   after(async () => {
     const client = new SecurityCenterClient();
     async function deleteNotificationConfig(configId) {
-      const name = client.notificationConfigPath(organizationId, configId);
+      const name = client.organizationNotificationConfigPath(organizationId, configId);
       await client.deleteNotificationConfig({name: name});
     }
 

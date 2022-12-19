@@ -29,7 +29,7 @@ async function main(projectId) {
     // const projectId = 'my_project'; // Google Cloud Platform project
 
     // Set custom query.
-    const query = 'type=dataset';
+    const query = 'type=lake';
 
     // Create request.
     const scope = {

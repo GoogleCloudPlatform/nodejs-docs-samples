@@ -14,12 +14,15 @@
     "publish": "echo 'sample test; do not publish'"
   },
   "dependencies": {
-    "@google-cloud/batch": "^0.1.2"
+    "@google-cloud/batch": "^0.4.0"
   },
   "devDependencies": {
     "c8": "^7.1.0",
     "chai": "^4.2.0",
     "mocha": "^8.0.0",
-    "nanoid": "^3.3.0"
+    "nanoid": "^3.3.0",
+    "@google-cloud/storage": "^6.7.0",
+    "@google-cloud/resource-manager": "^4.1.1",
+    "@google-cloud/compute": "^3.6.0"
   }
 }

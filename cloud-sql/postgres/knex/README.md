@@ -123,7 +123,7 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 ## Deploy to Google App Engine Standard
 
-1. To allow your app to connect to your Cloud SQL instance when the app is deployed, add the user, password, database, and instance unix socket variables from Cloud SQL to the related environment variables in the `app.standard.yaml` file. The deployed application will connect via unix sockets.
+1. To allow your app to connect to your Cloud SQL instance when the app is deployed, add the user, password, database, and instance unix socket variables from Cloud SQL to the related environment variables in the [`app.standard.yaml`](app.standard.yaml) file. The deployed application will connect via unix sockets.
 
     ```yaml
     env_variables:
@@ -147,7 +147,9 @@ Navigate towards `http://127.0.0.1:8080` to verify your application is running c
 
 ## Deploy to Google App Engine Flexible
 
-1. Add the user, password, database, and instance unix socket variables from Cloud SQL to the related environment variables in the `app.flexible.yaml` file. The deployed application will connect via unix sockets.
+1. Add the user, password, database, and instance unix socket variables from Cloud SQL 
+to the related environment variables in the [`app.flexible.yaml`](app.flexible.yaml) file.
+The deployed application will connect via unix sockets.
 
     ```yaml
     env_variables:

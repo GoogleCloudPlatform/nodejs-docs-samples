@@ -21,5 +21,16 @@
     "gts": "^3.1.0",
     "nunjucks": "^3.2.3",
     "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "@google-cloud/asset": "^4.5.0",
+    "@google-cloud/bigquery": "^6.0.3",
+    "@google-cloud/compute": "^3.6.0",
+    "@google-cloud/resource-manager": "^4.1.1",
+    "@google-cloud/storage": "^6.7.0",
+    "chai": "^4.3.7",
+    "express": "^4.18.2",
+    "mocha": "^10.1.0",
+    "uuid": "^9.0.0"
   }
 }

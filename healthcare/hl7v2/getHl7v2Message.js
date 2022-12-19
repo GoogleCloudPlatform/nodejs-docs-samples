@@ -31,13 +31,16 @@ const main = (
   });
 
   const getHl7v2Message = async () => {
-    // TODO(developer): uncomment these lines before running the sample
+    // TODO(developer): uncomment the lines beginning with 'const' before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     // const hl7v2StoreId = 'my-hl7v2-store';
+    // The value for hl7v2MessageId is the server-generated ID returned when you
+    // created or ingested the HL7v2 message in an HL7v2 store.
     // const hl7v2MessageId = 'qCnewKno44gTt3oBn4dQ0u8ZA23ibDdV9GpifD2E=';
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/hl7V2Stores/${hl7v2StoreId}/messages/${hl7v2MessageId}`;
+    // Use the 'FULL' enum to include all of the message fields in the response.
     const view = 'FULL';
     const request = {name, view};
 

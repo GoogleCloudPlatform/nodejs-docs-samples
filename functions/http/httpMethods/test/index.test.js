@@ -15,23 +15,8 @@
 'use strict';
 
 const sinon = require('sinon');
-const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
-
-const getSample = () => {
-  const requestPromise = sinon
-    .stub()
-    .returns(new Promise(resolve => resolve('test')));
-
-  return {
-    sample: proxyquire('../', {
-      'request-promise': requestPromise,
-    }),
-    mocks: {
-      requestPromise: requestPromise,
-    },
-  };
-};
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const getMocks = () => {
   const req = {
@@ -76,11 +61,13 @@ beforeEach(stubConsole);
 afterEach(restoreConsole);
 
 describe('functions_http_method', () => {
+  require('..');
+  const helloHttp = getFunction('helloHttp');
+
   it('http:helloHttp: should handle GET', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.method = 'GET';
-    httpSample.sample.helloHttp(mocks.req, mocks.res);
+    helloHttp(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -90,9 +77,8 @@ describe('functions_http_method', () => {
 
   it('http:helloHttp: should handle PUT', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.method = 'PUT';
-    httpSample.sample.helloHttp(mocks.req, mocks.res);
+    helloHttp(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 403);
@@ -102,9 +88,8 @@ describe('functions_http_method', () => {
 
   it('http:helloHttp: should handle other methods', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.method = 'POST';
-    httpSample.sample.helloHttp(mocks.req, mocks.res);
+    helloHttp(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 405);

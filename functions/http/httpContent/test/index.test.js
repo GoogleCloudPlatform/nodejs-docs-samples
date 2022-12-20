@@ -15,23 +15,8 @@
 'use strict';
 
 const sinon = require('sinon');
-const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
-
-const getSample = () => {
-  const requestPromise = sinon
-    .stub()
-    .returns(new Promise(resolve => resolve('test')));
-
-  return {
-    sample: proxyquire('../', {
-      'request-promise': requestPromise,
-    }),
-    mocks: {
-      requestPromise: requestPromise,
-    },
-  };
-};
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const getMocks = () => {
   const req = {
@@ -76,12 +61,14 @@ beforeEach(stubConsole);
 afterEach(restoreConsole);
 
 describe('functions_http_content', () => {
+  require('..');
+  const helloContent = getFunction('helloContent');
+
   it('http:helloContent: should handle application/json', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.headers['content-type'] = 'application/json';
     mocks.req.body = {name: 'John'};
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -91,10 +78,9 @@ describe('functions_http_content', () => {
 
   it('http:helloContent: should handle application/octet-stream', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.headers['content-type'] = 'application/octet-stream';
     mocks.req.body = Buffer.from('John');
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -104,10 +90,9 @@ describe('functions_http_content', () => {
 
   it('http:helloContent: should handle text/plain', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.headers['content-type'] = 'text/plain';
     mocks.req.body = 'John';
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -117,10 +102,9 @@ describe('functions_http_content', () => {
 
   it('http:helloContent: should handle application/x-www-form-urlencoded', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.headers['content-type'] = 'application/x-www-form-urlencoded';
     mocks.req.body = {name: 'John'};
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -130,8 +114,7 @@ describe('functions_http_content', () => {
 
   it('http:helloContent: should handle other', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
@@ -141,10 +124,9 @@ describe('functions_http_content', () => {
 
   it('http:helloContent: should escape XSS', () => {
     const mocks = getMocks();
-    const httpSample = getSample();
     mocks.req.headers['content-type'] = 'text/plain';
     mocks.req.body = {name: '<script>alert(1)</script>'};
-    httpSample.sample.helloContent(mocks.req, mocks.res);
+    helloContent(mocks.req, mocks.res);
 
     assert.strictEqual(mocks.res.status.calledOnce, true);
     assert.strictEqual(mocks.res.status.firstCall.args[0], 200);

@@ -57,7 +57,7 @@ const waitForReady = async baseUrl => {
       return;
     }
   }
-  throw 'HTTP server is not reachable';
+  throw new Error('HTTP server is not reachable');
 };
 
 describe('functions/datastore', () => {

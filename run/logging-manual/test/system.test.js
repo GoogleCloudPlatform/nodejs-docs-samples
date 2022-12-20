@@ -15,7 +15,7 @@
 const assert = require('assert');
 const request = require('got');
 const {Logging} = require('@google-cloud/logging');
-const {execSync} = require('child_process');
+const {exec} = require('child-process-promise');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
@@ -66,6 +66,31 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Run shell commands with retries and exponential backoff
+async function runShellCmd(cmd, opts = {}) {
+  const maxAttempts = opts.maxAttempts || 10;
+  let attempt = 0;
+  while (attempt < maxAttempts) {
+    try {
+      console.log('Running command:', cmd);
+      const result = await exec(cmd, opts);
+      return result;
+    } catch (err) {
+      console.log('Shell command failed!');
+      console.log('\tCommand:', cmd);
+      console.log('\tError:', err);
+      attempt += 1;
+
+      if (attempt < maxAttempts) {
+        // Exponential backoff
+        await sleep(attempt ** 2 * 1000);
+      } else {
+        throw err;
+      }
+    }
+  }
+}
+
 describe('Logging', () => {
   let requestLog;
   let sampleLog;
@@ -96,14 +121,16 @@ describe('Logging', () => {
       if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
       console.log('Starting Cloud Build...');
-      execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+      runShellCmd(buildCmd, {timeout: 240000}); // timeout at 4 mins
       console.log('Cloud Build completed.');
 
       // Retrieve URL of Cloud Run service
-      const url = execSync(
+      const proc = await runShellCmd(
         `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
           `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
       );
+      const url = proc.stdout;
+      console.log('Read URL:', url);
 
       BASE_URL = url.toString('utf-8').trim();
       if (!BASE_URL) throw Error('Cloud Run service URL not found');
@@ -122,7 +149,9 @@ describe('Logging', () => {
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-      execSync(cleanUpCmd);
+      console.log('Cleaning up via Cloud Build.');
+      runShellCmd(cleanUpCmd);
+      console.log('Cleanup completed.');
     });
 
     it('can be reached by an HTTP request', async () => {
@@ -152,6 +181,7 @@ describe('Logging', () => {
       let attempt = 0;
       const maxAttempts = 5;
       while ((!requestLog || !sampleLog) && attempt < maxAttempts) {
+        console.log(`Fetching logs, attempt #${attempt}`);
         await sleep(attempt * 30000); // Linear backoff between retry attempts
         // Filter by service name over the last 5 minutes
         const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(

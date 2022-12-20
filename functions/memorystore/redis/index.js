@@ -16,7 +16,7 @@
 
 // [START functions_memorystore_redis]
 
-const {promisify} = require('util');
+const functions = require('@google-cloud/functions-framework');
 const redis = require('redis');
 
 const REDISHOST = process.env.REDISHOST || 'localhost';
@@ -24,24 +24,22 @@ const REDISPORT = process.env.REDISPORT || 6379;
 
 const redisClient = redis.createClient({
   socket: {
-    port: REDISPORT,
     host: REDISHOST,
+    port: REDISPORT,
   },
 });
-redisClient.connect();
 redisClient.on('error', err => console.error('ERR:REDIS:', err));
+redisClient.connect();
 
-const incrAsync = promisify(redisClient.incr).bind(redisClient);
-
-exports.visitCount = async (req, res) => {
+functions.http('visitCount', async (req, res) => {
   try {
-    const response = await incrAsync('visits');
+    const response = await redisClient.incr('visits');
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end(`Visit count: ${response}`);
   } catch (err) {
     console.log(err);
     res.status(500).send(err.message);
   }
-};
+});
 
 // [END functions_memorystore_redis]

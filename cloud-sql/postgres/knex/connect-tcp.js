@@ -44,7 +44,7 @@ const createTcpPool = async config => {
   // using the Cloud SQL Proxy, configuring SSL certificates will ensure the
   // connection is encrypted.
   if (process.env.DB_ROOT_CERT) {
-    dbConfig.ssl = {
+    dbConfig.connection.ssl = {
       rejectUnauthorized: false,
       ca: fs.readFileSync(process.env.DB_ROOT_CERT), // e.g., '/path/to/my/server-ca.pem'
       key: fs.readFileSync(process.env.DB_KEY), // e.g. '/path/to/my/client-key.pem'

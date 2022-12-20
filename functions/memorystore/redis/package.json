@@ -16,10 +16,11 @@
     "test": "mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2",
     "redis": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^9.0.0",
-    "sinon": "^14.0.0"
+    "sinon": "^15.0.0"
   }
 }

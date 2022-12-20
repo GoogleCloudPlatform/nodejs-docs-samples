@@ -51,14 +51,16 @@ const handleLinuxFailures = async proc => {
 
 // Wait for the HTTP server to start listening
 const waitForReady = async baseUrl => {
-  let ready = false;
-  while (!ready) {
+  for (let i = 0; i < 20; i++) {
     await new Promise(r => setTimeout(r, 500));
-    ready = await isReachable(baseUrl);
+    if (await isReachable(baseUrl)) {
+      return;
+    }
   }
+  throw 'HTTP server is not reachable';
 };
 
-describe.skip('functions/datastore', () => {
+describe('functions/datastore', () => {
   describe('set', () => {
     let ffProc;
     const PORT = 8080;

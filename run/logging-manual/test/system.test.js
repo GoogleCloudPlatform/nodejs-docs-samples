@@ -95,9 +95,13 @@ describe('Logging', () => {
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-      console.log('Starting Cloud Build...');
-      execSync(buildCmd, { timeout: 240000 }); // timeout at 4 mins
-      console.log('Cloud Build completed.');
+      try {
+        console.log('Starting Cloud Build...');
+        execSync(buildCmd, { timeout: 240000 }); // timeout at 4 mins
+        console.log('Cloud Build completed.');
+      } catch (err) {
+        console.error(err); // Ignore timeout error
+      }
 
       // Retrieve URL of Cloud Run service
       const url = execSync(

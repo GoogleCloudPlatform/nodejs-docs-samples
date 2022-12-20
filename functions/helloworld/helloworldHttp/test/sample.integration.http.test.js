@@ -21,7 +21,7 @@ const {getTestServer} = require('@google-cloud/functions-framework/testing');
 require('../');
 // [START functions_http_integration_test]
 describe('functions_helloworld_http HTTP integration test', () => {
-// [END functions_http_integration_test]
+  // [END functions_http_integration_test]
   // [START functions_http_integration_test]
   it('helloHttp: should print a name with req body', async () => {
     const server = getTestServer('helloHttp');
@@ -45,6 +45,6 @@ describe('functions_helloworld_http HTTP integration test', () => {
       .expect(200)
       .expect('Hello John!');
   });
-// [START functions_http_integration_test]
+  // [START functions_http_integration_test]
 });
 // [END functions_http_integration_test]

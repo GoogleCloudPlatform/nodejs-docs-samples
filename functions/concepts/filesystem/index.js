@@ -16,6 +16,7 @@
 
 // [START functions_concepts_filesystem]
 const fs = require('fs');
+const functions = require('@google-cloud/functions-framework');
 
 /**
  * HTTP Cloud Function that lists files in the function directory
@@ -23,7 +24,7 @@ const fs = require('fs');
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.listFiles = (req, res) => {
+functions.http('listFiles', (req, res) => {
   fs.readdir(__dirname, (err, files) => {
     if (err) {
       console.error(err);
@@ -33,5 +34,5 @@ exports.listFiles = (req, res) => {
       res.sendStatus(200);
     }
   });
-};
+});
 // [END functions_concepts_filesystem]

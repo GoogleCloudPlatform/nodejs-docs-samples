@@ -15,13 +15,15 @@
 'use strict';
 
 // [START functions_http_cors]
+const functions = require('@google-cloud/functions-framework');
+
 /**
  * HTTP function that supports CORS requests.
  *
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.corsEnabledFunction = (req, res) => {
+functions.http('corsEnabledFunction', (req, res) => {
   // Set CORS headers for preflight requests
   // Allows GETs from any origin with the Content-Type header
   // and caches preflight response for 3600s
@@ -37,5 +39,5 @@ exports.corsEnabledFunction = (req, res) => {
   } else {
     res.send('Hello World!');
   }
-};
+});
 // [END functions_http_cors]

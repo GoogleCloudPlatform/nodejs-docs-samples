@@ -15,6 +15,7 @@
 'use strict';
 
 // [START functions_tips_gcp_apis]
+const functions = require('@google-cloud/functions-framework');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 
@@ -27,7 +28,7 @@ const pubsub = new PubSub();
  * @param {String} req.body.topic The Cloud Pub/Sub topic to publish to.
  * @param {Object} res Cloud Function response context.
  */
-exports.gcpApiCall = (req, res) => {
+functions.http('gcpApiCall', (req, res) => {
   const topic = pubsub.topic(req.body.topic);
 
   const data = Buffer.from('Test message');
@@ -38,5 +39,5 @@ exports.gcpApiCall = (req, res) => {
       res.status(200).send('1 message published');
     }
   });
-};
+});
 // [END functions_tips_gcp_apis]

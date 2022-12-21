@@ -17,6 +17,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 describe('functions_tips_gcp_apis', () => {
 
@@ -30,7 +31,7 @@ describe('functions_tips_gcp_apis', () => {
         });
       }
     }
-    const {gcpApiCall} = proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
+    proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
     const reqMock = {
       body: { topic: 'topic-name' },
     };
@@ -38,6 +39,7 @@ describe('functions_tips_gcp_apis', () => {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis(),
     };
+    const gcpApiCall = getFunction('gcpApiCall');
     gcpApiCall(reqMock, resMock);
 
     assert.ok(resMock.status.calledOnce);
@@ -56,7 +58,7 @@ describe('functions_tips_gcp_apis', () => {
         });
       }
     }
-    const {gcpApiCall} = proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
+    proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
     const reqMock = {
       body: { topic: 'topic-name' },
     };
@@ -64,6 +66,7 @@ describe('functions_tips_gcp_apis', () => {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis(),
     };
+    const gcpApiCall = getFunction('gcpApiCall');
     gcpApiCall(reqMock, resMock);
 
     assert.ok(resMock.status.calledOnce);

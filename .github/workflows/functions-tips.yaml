@@ -23,7 +23,7 @@ jobs:
         package:
           - 'functions/tips/avoidInfiniteRetries'
           - 'functions/tips/connectionPools'
-          # - 'functions/tips/gcpApiCall' # TODO(muncus): reenable once tests are suitable for CI/CD.
+          - 'functions/tips/gcpApiCall'
           - 'functions/tips/lazyGlobals'
           - 'functions/tips/retry'
           - 'functions/tips/scopeDemo'

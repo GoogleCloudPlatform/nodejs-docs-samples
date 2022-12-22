@@ -20,7 +20,6 @@ const proxyquire = require('proxyquire').noCallThru();
 const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 describe('functions_tips_gcp_apis', () => {
-
   it('should send status 200 when PubSub publish callback error is falsy', () => {
     class PubSubMock {
       constructor() {
@@ -31,9 +30,9 @@ describe('functions_tips_gcp_apis', () => {
         });
       }
     }
-    proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
+    proxyquire('..', {'@google-cloud/pubsub': {PubSub: PubSubMock}});
     const reqMock = {
-      body: { topic: 'topic-name' },
+      body: {topic: 'topic-name'},
     };
     const resMock = {
       send: sinon.stub().returnsThis(),
@@ -58,9 +57,9 @@ describe('functions_tips_gcp_apis', () => {
         });
       }
     }
-    proxyquire('..', { '@google-cloud/pubsub': { PubSub: PubSubMock } });
+    proxyquire('..', {'@google-cloud/pubsub': {PubSub: PubSubMock}});
     const reqMock = {
-      body: { topic: 'topic-name' },
+      body: {topic: 'topic-name'},
     };
     const resMock = {
       send: sinon.stub().returnsThis(),
@@ -72,6 +71,5 @@ describe('functions_tips_gcp_apis', () => {
     assert.ok(resMock.status.calledOnce);
     assert.ok(resMock.status.calledWith(500));
     assert.ok(resMock.send.calledOnce);
-    assert.ok(resMock.send.calledWith('Error publishing the message: Testing failure mode'));
   });
 });

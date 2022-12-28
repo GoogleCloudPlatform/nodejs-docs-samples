@@ -24,10 +24,9 @@ const functions = require('@google-cloud/functions-framework');
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-functions.http('makeRequest', (req, res)  => {
+functions.http('makeRequest', async (req, res)  => {
   const url = 'https://example.com'; // URL to send the request to
-  fetch(url).then((externalRes) => {
-    res.sendStatus(externalRes.ok ? 200 : 500);
-  });
+  const externalRes = await fetch(url);
+  res.sendStatus(externalRes.ok ? 200 : 500);
 });
 // [END functions_concepts_requests]

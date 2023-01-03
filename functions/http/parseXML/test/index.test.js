@@ -31,7 +31,7 @@ const httpInvocation = (fnUrl, port) => {
   // GET request
   return request({
     method: 'POST',
-    data: `<foo>bar</foo>`,
+    data: '<foo>bar</foo>',
     url: `${baseUrl}/${fnUrl}`,
   });
 };

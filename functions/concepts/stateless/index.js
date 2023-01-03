@@ -15,6 +15,8 @@
 'use strict';
 
 // [START functions_concepts_stateless]
+const functions = require('@google-cloud/functions-framework');
+
 // Global variable, but only shared within function instance.
 let count = 0;
 
@@ -25,11 +27,11 @@ let count = 0;
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.executionCount = (req, res) => {
+functions.http('executionCount', (req, res) => {
   count++;
 
   // Note: the total function invocation count across
   // all instances may not be equal to this value!
   res.send(`Instance execution count: ${count}`);
-};
+});
 // [END functions_concepts_stateless]

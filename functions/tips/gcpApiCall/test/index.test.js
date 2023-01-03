@@ -15,34 +15,61 @@
 'use strict';
 
 const assert = require('assert');
-const delay = require('delay');
 const sinon = require('sinon');
-
-const sample = require('../');
+const proxyquire = require('proxyquire').noCallThru();
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 describe('functions_tips_gcp_apis', () => {
-  it('should call a GCP API', async () => {
-    const {FUNCTIONS_TOPIC} = process.env;
-    if (!FUNCTIONS_TOPIC) {
-      throw new Error('FUNCTIONS_TOPIC env var must be set.');
+  it('should send status 200 when PubSub publish callback error is falsy', () => {
+    class PubSubMock {
+      constructor() {
+        this.topic = sinon.stub().returns({
+          publishMessage: function (payload, callback) {
+            callback(null); //`callback` accepts: error
+          },
+        });
+      }
     }
+    proxyquire('..', {'@google-cloud/pubsub': {PubSub: PubSubMock}});
     const reqMock = {
-      body: {
-        topic: FUNCTIONS_TOPIC,
-      },
+      body: {topic: 'topic-name'},
     };
     const resMock = {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis(),
     };
-
-    sample.gcpApiCall(reqMock, resMock);
-
-    // Instead of modifying the sample to return a promise,
-    // use a delay here and keep the sample idiomatic
-    await delay(2000);
+    const gcpApiCall = getFunction('gcpApiCall');
+    gcpApiCall(reqMock, resMock);
 
     assert.ok(resMock.status.calledOnce);
     assert.ok(resMock.status.calledWith(200));
+    assert.ok(resMock.send.calledOnce);
+    assert.ok(resMock.send.calledWith('1 message published'));
+  });
+
+  it('should send status 500 when PubSub publish callback error is truthy', () => {
+    class PubSubMock {
+      constructor() {
+        this.topic = sinon.stub().returns({
+          publishMessage: function (payload, callback) {
+            callback('Testing failure mode'); //`callback` accepts: error
+          },
+        });
+      }
+    }
+    proxyquire('..', {'@google-cloud/pubsub': {PubSub: PubSubMock}});
+    const reqMock = {
+      body: {topic: 'topic-name'},
+    };
+    const resMock = {
+      send: sinon.stub().returnsThis(),
+      status: sinon.stub().returnsThis(),
+    };
+    const gcpApiCall = getFunction('gcpApiCall');
+    gcpApiCall(reqMock, resMock);
+
+    assert.ok(resMock.status.calledOnce);
+    assert.ok(resMock.status.calledWith(500));
+    assert.ok(resMock.send.calledOnce);
   });
 });

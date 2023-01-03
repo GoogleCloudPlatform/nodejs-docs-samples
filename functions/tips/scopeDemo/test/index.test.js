@@ -42,9 +42,6 @@ const getMocks = () => {
     res: {
       set: sinon.stub().returnsThis(),
       send: sinon.stub().returnsThis(),
-      json: sinon.stub().returnsThis(),
-      end: sinon.stub().returnsThis(),
-      status: sinon.stub().returnsThis(),
     },
   };
 };
@@ -60,42 +57,31 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-describe('functions_http_method', () => {
+describe('functions_tips_scope_demo', () => {
+  const computations = sinon.spy(require('../computations'));
+
   require('..');
-  const helloHttp = getFunction('helloHttp');
-
-  it('http:helloHttp: should handle GET', () => {
+  const scopeDemo = getFunction('scopeDemo');
+  it('tips:scopeDemo: should perform the heavy computation once', () => {
     const mocks = getMocks();
-    mocks.req.method = 'GET';
-    helloHttp(mocks.req, mocks.res);
 
-    assert.strictEqual(mocks.res.status.calledOnce, true);
-    assert.strictEqual(mocks.res.status.firstCall.args[0], 200);
-    assert.strictEqual(mocks.res.send.calledOnce, true);
-    assert.strictEqual(mocks.res.send.firstCall.args[0], 'Hello World!');
+    const numRequests = 25;
+    for (let i = 0; i < numRequests; i++) {
+      scopeDemo(mocks.req, mocks.res);
+    }
+
+    assert.strictEqual(computations.heavyComputation.calledOnce, true);
   });
 
-  it('http:helloHttp: should handle PUT', () => {
+  it('tips:scopeDemo: should perform the light computation repeatedly', () => {
     const mocks = getMocks();
-    mocks.req.method = 'PUT';
-    helloHttp(mocks.req, mocks.res);
+    computations.lightComputation.resetHistory();
 
-    assert.strictEqual(mocks.res.status.calledOnce, true);
-    assert.strictEqual(mocks.res.status.firstCall.args[0], 403);
-    assert.strictEqual(mocks.res.send.calledOnce, true);
-    assert.strictEqual(mocks.res.send.firstCall.args[0], 'Forbidden!');
-  });
+    const numRequests = 25;
+    for (let i = 0; i < numRequests; i++) {
+      scopeDemo(mocks.req, mocks.res);
+    }
 
-  it('http:helloHttp: should handle other methods', () => {
-    const mocks = getMocks();
-    mocks.req.method = 'POST';
-    helloHttp(mocks.req, mocks.res);
-
-    assert.strictEqual(mocks.res.status.calledOnce, true);
-    assert.strictEqual(mocks.res.status.firstCall.args[0], 405);
-    assert.strictEqual(mocks.res.send.calledOnce, true);
-    assert.deepStrictEqual(mocks.res.send.firstCall.args[0], {
-      error: 'Something blew up!',
-    });
+    assert.strictEqual(computations.lightComputation.callCount, numRequests);
   });
 });

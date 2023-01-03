@@ -14,22 +14,16 @@
 
 'use strict';
 
-const lightComputation = () => {
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  return numbers.reduce((t, x) => t + x);
-};
-
-const heavyComputation = () => {
-  // Multiplication is more computationally expensive than addition
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  return numbers.reduce((t, x) => t * x);
-};
-
 // [START functions_tips_scopes]
 // [START cloudrun_tips_global_scope]
 // [START run_tips_global_scope]
+const functions = require('@google-cloud/functions-framework');
+
+// TODO(developer): Define your own computations
+const {lightComputation, heavyComputation} = require('./computations');
+
 // Global (instance-wide) scope
-// This computation runs at instance cold-start
+// This computation runs once (at instance cold-start)
 const instanceVar = heavyComputation();
 
 /**
@@ -38,13 +32,13 @@ const instanceVar = heavyComputation();
  * @param {Object} req request context.
  * @param {Object} res response context.
  */
-exports.scopeDemo = (req, res) => {
+functions.http('scopeDemo', (req, res) => {
   // Per-function scope
   // This computation runs every time this function is called
   const functionVar = lightComputation();
 
   res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
-};
+});
 // [END run_tips_global_scope]
 // [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]

@@ -10,5 +10,15 @@
   },
   "engines": {
     "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "mocha test/*.test.js --timeout=60000"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "sinon": "^15.0.1"
   }
 }

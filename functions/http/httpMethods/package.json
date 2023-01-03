@@ -16,7 +16,9 @@
   },
   "devDependencies": {
     "mocha": "^9.0.0",
-    "proxyquire": "^2.1.0",
     "sinon": "^15.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2"
   }
 }

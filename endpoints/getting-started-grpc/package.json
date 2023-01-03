@@ -19,7 +19,7 @@
   "dependencies": {
     "google-auth-library": "^7.0.0",
     "grpc": "^1.18.0",
-    "jsonwebtoken": "^8.2.0",
+    "jsonwebtoken": "^9.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

@@ -41,7 +41,7 @@ jobs:
       with:
         secrets: |-
           table_model_id:nodejs-docs-samples-tests/nodejs-docs-samples-table-model-id
-    - uses: actions/setup-node@v3.5.1
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 16
     - run: npm install

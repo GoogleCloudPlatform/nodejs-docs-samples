@@ -1,15 +1,9 @@
 path:
   pullrequest: true
-  labelprefix: "api: "
+  labelprefix: 'api: '
   paths:
-    # i.e., label all PRs of files in root directory and down as "root"
-    ai-platform:
-      .: "aiplatform"
-    appengine:
-      .: "appengine"
-    asset:
-      .: "cloudasset"
-    run:
-      .: "run"
-    vision:
-      .: "vision"
+    ai-platform: 'aiplatform'
+    appengine: 'appengine'
+    asset: 'cloudasset'
+    run: 'run'
+    vision: 'vision'

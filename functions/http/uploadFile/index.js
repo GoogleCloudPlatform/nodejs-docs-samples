@@ -25,11 +25,13 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 
+const functions = require('@google-cloud/functions-framework');
+
 // Node.js doesn't have a built-in multipart/form-data parsing library.
 // Instead, we can use the 'busboy' library from NPM to parse these requests.
 const Busboy = require('busboy');
 
-exports.uploadFile = (req, res) => {
+functions.http('uploadFile', (req, res) => {
   if (req.method !== 'POST') {
     // Return a "method not allowed" error
     return res.status(405).end();
@@ -94,5 +96,5 @@ exports.uploadFile = (req, res) => {
   });
 
   busboy.end(req.rawBody);
-};
+});
 // [END functions_http_form_data]

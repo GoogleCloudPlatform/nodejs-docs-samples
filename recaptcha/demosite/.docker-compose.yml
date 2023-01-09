@@ -1,0 +1,16 @@
+version: "3"
+services:
+  livereload:
+    image: demosite-livereload
+    build:
+      context: "app"
+      dockerfile: Dockerfile
+      args:
+        - "GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}"
+        - "SITE_KEY=${SITE_KEY}"
+        - "CHECKBOX_SITE_KEY=${CHECKBOX_SITE_KEY}"
+    command: node index.js
+    ports: ["8000:8000"]
+    volumes:
+      - "./app:/app"
+    restart: always

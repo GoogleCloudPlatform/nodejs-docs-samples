@@ -1,5 +1,3 @@
-
-
 const createAssessmentRequest = (token, action, sitekey) => {
   return fetch('/create_assessment', {
     headers: {

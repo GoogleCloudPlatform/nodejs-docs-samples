@@ -1,9 +1,47 @@
 path:
   pullrequest: true
-  labelprefix: 'api: '
+  labelprefix: "api: "
   paths:
-    ai-platform: 'aiplatform'
-    appengine: 'appengine'
-    asset: 'cloudasset'
-    run: 'run'
-    vision: 'vision'
+    ai-platform: "aiplatform"
+    appengine: "appengine"
+    asset: "cloudasset"
+    automl: "automl"
+    batch: "batch"
+    cloud-language: "language"
+    cloud-sql: "cloudsql"
+    cloud-tasks: "tasks"
+    cloudbuild: "cloudbuild"
+    composer: "composer"
+    compute: "compute"
+    contact-center-insights: "contactcenterinsights"
+    container: "container"
+    container-analysis: "containeranalysis"
+    datacatalog: "datacatalog"
+    datalabeling: "datalabeling"
+    dataproc: "dataproc"
+    datastore: "datastore"
+    dialogflow: "dialogflow"
+    dialogflow-cx: "dialogflow"
+    document-ai: "documentai"
+    endpoints: "endpoints"
+    error-reporting: "clouderrorreporting"
+    functions: "cloudfunctions"
+    game-servers: "gameservices"
+    healthcare: "healhcare"
+    iam: "iam"
+    kms: "cloudkms"
+    mediatranslation: "mediatranslation"
+    memorystore: "memorystore"
+    monitoring: "monitoring"
+    run: "run"
+    scheduler: "cloudscheduler"
+    secret-manager: "secretmanager"
+    security-center: "securitycenter"
+    service-directory: "servicedirectory"
+    speech: "speech"
+    talent: "jobs"
+    texttospeech: "texttospeech"
+    translate: "translate"
+    video-intelligence: "videointelligence"
+    vision: "vision"
+    workflows: "workflows"

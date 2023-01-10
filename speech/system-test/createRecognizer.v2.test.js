@@ -16,19 +16,17 @@
 
 'use strict';
 
-const {assert} = require('chai');
+const {expect} = require('chai');
 const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const sinon = require('sinon');
 const speech = require('@google-cloud/speech').v2;
 
-const {streamingRecognizeV2} = require('../transcribeStreaming.v2');
-
-const text = 'how old is the Brooklyn Bridge';
+const {createRecognizerV2} = require('../createRecognizer.v2');
 
 let recognizerName, projectId;
 
-describe('Transcribe a local file from a stream (v2)', () => {
+describe('Create a speech recognizer (v2)', () => {
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');
@@ -42,31 +40,14 @@ describe('Transcribe a local file from a stream (v2)', () => {
   before(async ()=>{
     const client = new speech.SpeechClient();
     projectId = await client.getProjectId();
-
-    const recognizerRequest = {
-      parent: `projects/${projectId}/locations/global`,
-      recognizerId: `rec-${uuid.v4()}`,
-      recognizer: {
-        languageCodes: ['en-US'],
-        model: 'latest_long',
-      },
-    };
-
-    const operation = await client.createRecognizer(recognizerRequest);
-    const recognizer = operation[0].result;
-    recognizerName = recognizer.name;
   })
 
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should streaming transcribe a local file', async () => {
-   return streamingRecognizeV2(recognizerName)
-      .then(s => {
-        s.on('close', () => {
-          assert.include(console.log.firstCall.args, text);
-        }) 
-      })
+  it('should create a speech recognizer', async () => {
+    recognizerName = await createRecognizerV2(`rec-${uuid.v4()}`, projectId);
+    expect(console.log.firstCall.args[0]).to.contain(recognizerName);
   });
 
   after(async () => {
@@ -75,5 +56,4 @@ describe('Transcribe a local file from a stream (v2)', () => {
       name: recognizerName
     });
   });
-
 });

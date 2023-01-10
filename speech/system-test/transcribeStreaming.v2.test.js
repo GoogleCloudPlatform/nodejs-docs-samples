@@ -62,12 +62,6 @@ describe('Transcribe a local file from a stream (v2)', () => {
   afterEach(restoreConsole);
 
   it('should streaming transcribe a local file', async () => {
-    /*
-    await pipeline(
-      streamingRecognizeV2(recognizerName)
-    );
-    
-    */
    return streamingRecognizeV2(recognizerName)
       .then(s => {
         s.on('close', () => {

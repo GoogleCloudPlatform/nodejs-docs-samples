@@ -24,8 +24,7 @@ async function main(
   projectId,
   customClassId,
   phraseSetId,
-  recognizerName,
-  audioFilePath = 'resources/brooklyn.flac'
+  recognizerName
 ) {
   // [START speech_adaptation_v2_custom_class_reference]
   /**
@@ -35,7 +34,9 @@ async function main(
   // const customClassId = "a unique ID in your project for this custom class";
   // const phraseSetId = "a unique ID in your project for this phrase set";
   // const recognizerName = "projects/[PROJECT_ID]/locations/[LOCATION]/recognizers/[RECOGNIZER_ID]";
-  // const audioFilePath = "path/to/audio/file";
+  
+  // TODO(developer): Replace with your own file
+  const audioFilePath = 'resources/brooklyn.flac';
 
   // Imports the Google Cloud Speech-to-Text library (v2)
   const speech = require('@google-cloud/speech').v2;
@@ -74,7 +75,7 @@ async function main(
       phraseSets: [{phraseSet: phraseSet.name}],
     };
 
-    const recognitionConfig = {
+    const config = {
       autoDecodingConfig: {},
       adaptation: adaptation,
     };
@@ -86,8 +87,8 @@ async function main(
     const content = fs.readFileSync(audioFilePath).toString('base64');
     const transcriptionRequest = {
       recognizer: recognizerName,
-      config: recognitionConfig,
-      content: content,
+      config,
+      content,
     };
 
     const response = await client.recognize(transcriptionRequest);

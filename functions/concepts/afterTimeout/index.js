@@ -15,6 +15,8 @@
 'use strict';
 
 // [START functions_concepts_after_timeout]
+const functions = require('@google-cloud/functions-framework');
+
 /**
  * HTTP Cloud Function that may not completely
  * execute due to function execution timeout
@@ -22,11 +24,11 @@
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.afterTimeout = (req, res) => {
+functions.http('afterTimeout', (req, res) => {
   setTimeout(() => {
     // May not execute if function's timeout is <2 minutes
     console.log('Function running...');
     res.end();
   }, 120000); // 2 minute delay
-};
+});
 // [END functions_concepts_after_timeout]

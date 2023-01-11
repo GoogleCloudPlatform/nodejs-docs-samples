@@ -47,11 +47,9 @@ async function main(recognizerId, projectId) {
     const recognizer = operation[0].result;
     const recognizerName = recognizer.name;
     console.log(`Created new recognizer: ${recognizerName}`);
-
-    return recognizerName;
   }
 
-  return createRecognizer();
+  await createRecognizer();
   // [END speech_create_recognizer]
 }
 

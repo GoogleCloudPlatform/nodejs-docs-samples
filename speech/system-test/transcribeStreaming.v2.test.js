@@ -16,7 +16,7 @@
 
 'use strict';
 
-const {assert} = require('chai');
+const {expect} = require('chai');
 const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const sinon = require('sinon');
@@ -61,12 +61,8 @@ describe('Transcribe a local file from a stream (v2)', () => {
   afterEach(restoreConsole);
 
   it('should streaming transcribe a local file', async () => {
-   return streamingRecognizeV2(recognizerName)
-      .then(s => {
-        s.on('close', () => {
-          assert.include(console.log.firstCall.args, text);
-        }) 
-      })
+    await streamingRecognizeV2(recognizerName);
+    expect(console.log.firstCall.args[0]).to.contain(text);
   });
 
   after(async () => {
@@ -75,5 +71,4 @@ describe('Transcribe a local file from a stream (v2)', () => {
       name: recognizerName
     });
   });
-
 });

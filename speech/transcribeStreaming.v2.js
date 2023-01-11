@@ -56,6 +56,7 @@ async function main(recognizerName, filename = 'resources/brooklyn.flac') {
     });
 
     const chunks = [];
+    let writeStream;
     readStream
       .on('data', chunk => {
         const request = {
@@ -65,25 +66,30 @@ async function main(recognizerName, filename = 'resources/brooklyn.flac') {
       })
       .on('close', () => {
         // Config-only request should be first in stream of requests
-        stream.write(configRequest);
+        writeStream.write(configRequest);
         for (const chunk of chunks) {
-          stream.write(chunk);
+          writeStream.write(chunk);
         }
-        stream.end();
+        writeStream.end();
       });
 
-    const stream = client
-      ._streamingRecognize()
-      .on('data', response => {
-        const {results} = response;
-        console.log(results[0].alternatives[0].transcript);
-      })
-      .on('error', err => {
-        console.error(err.message);
-      });
-    return stream;
+    await new Promise((resolve, reject) => {
+      writeStream = client
+        ._streamingRecognize()
+        .on('data', response => {
+          const {results} = response;
+          const {transcript} = results[0].alternatives[0];
+          return resolve(transcript);
+        })
+        .on('error', err => {
+          console.error(err.message);
+          return reject(err);
+        });
+    }).then(transcript => {
+      console.log(transcript);
+    });
   }
-  return streamingRecognize();
+  await streamingRecognize();
   //[END speech_transcribe_streaming_v2]
 }
 

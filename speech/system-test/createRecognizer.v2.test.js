@@ -24,7 +24,7 @@ const speech = require('@google-cloud/speech').v2;
 
 const {createRecognizerV2} = require('../createRecognizer.v2');
 
-let recognizerName, projectId;
+let recognizerId, projectId;
 
 describe('Create a speech recognizer (v2)', () => {
   const stubConsole = function () {
@@ -46,11 +46,13 @@ describe('Create a speech recognizer (v2)', () => {
   afterEach(restoreConsole);
 
   it('should create a speech recognizer', async () => {
-    recognizerName = await createRecognizerV2(`rec-${uuid.v4()}`, projectId);
-    expect(console.log.firstCall.args[0]).to.contain(recognizerName);
+    recognizerId = `rec-${uuid.v4()}`;
+    await createRecognizerV2(recognizerId, projectId);
+    expect(console.log.firstCall.args[0]).to.contain(recognizerId);
   });
 
   after(async () => {
+    const recognizerName = `projects/${projectId}/locations/global/recognizers/${recognizerId}`;
     const client = new speech.SpeechClient();
     await client.deleteRecognizer({
       name: recognizerName

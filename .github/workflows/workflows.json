@@ -73,6 +73,7 @@
   "monitoring/opencensus",
   "monitoring/prometheus",
   "monitoring/snippets",
+  "retail",
   "scheduler",
   "security-center/snippets",
   "service-directory/snippets",

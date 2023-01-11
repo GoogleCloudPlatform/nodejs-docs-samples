@@ -1,0 +1,5 @@
+{
+  "timeout": "600000",
+  "recursive": true,
+  "spec": ["test/*.js", "interactive-tutorials/test/*.js"]
+}

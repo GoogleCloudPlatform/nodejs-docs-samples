@@ -24,7 +24,7 @@ async function main(recognizerName, audioFilePath = 'resources/brooklyn.flac') {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const recognizerName= "your-recognizer-id";
+  // const recognizerName= "projects/[PROJECT_ID]/locations/[LOCATION]/recognizers/[RECOGNIZER_ID]";
   // const audioFilePath = "path/to/audio/file";
 
   // Import the Cloud Speech-to-Text library

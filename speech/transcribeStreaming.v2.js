@@ -18,14 +18,14 @@
 //   title: Transcribe a local file using streaming recognition
 //   description: Streaming transcription of a local file using Speech-to-Text v2
 
-async function main(recognizerName, filename = 'resources/brooklyn.flac') {
+async function main(recognizerName) {
   //[START speech_transcribe_streaming_v2]
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
   // const recognizerName = 'Resource name, e.g. projects/[projectId]/locations/global/recognizers/[recognizerId]'
-  // const filename = 'Local path to audio file, e.g. /path/to/audio.raw';
 
+  const filename = 'resources/brooklyn.flac';
   const fs = require('fs');
 
   // Imports the Google Cloud client library

@@ -33,6 +33,7 @@ path:
     mediatranslation: "mediatranslation"
     memorystore: "memorystore"
     monitoring: "monitoring"
+    retail: "retail"
     run: "run"
     scheduler: "cloudscheduler"
     secret-manager: "secretmanager"

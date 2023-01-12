@@ -73,3 +73,6 @@ texttospeech @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-sample
 translate @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
+
+# Self-service
+retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers

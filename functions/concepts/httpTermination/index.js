@@ -16,7 +16,9 @@
 
 /* eslint-disable no-unused-vars, no-unreachable */
 
-exports.httpTermination = async (req, res) => {
+const functions = require('@google-cloud/functions-framework');
+
+functions.http('httpTermination', async (req, res) => {
   // [START functions_concepts_node_termination_http]
   // OK: await-ing a Promise before sending an HTTP response
   await Promise.resolve();
@@ -34,4 +36,4 @@ exports.httpTermination = async (req, res) => {
   // HTTP response has already been sent.
   return Promise.resolve();
   // [END functions_concepts_node_termination_http]
-};
+});

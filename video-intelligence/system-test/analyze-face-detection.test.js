@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node analyze-face-detection.js';
 const file = 'resources/googlework_short.mp4';
 
-describe.skip('analyzing faces in video', () => {
+describe('analyzing faces in video', () => {
   it('should identify faces in a local file', async () => {
     const output = execSync(`${cmd} ${file}`);
     assert.match(output, /Face detected:/);

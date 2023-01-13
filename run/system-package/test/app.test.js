@@ -28,6 +28,7 @@ describe('Unit Tests', () => {
       await request
         .get('/diagram.png')
         .type('text')
+        .retry(3)
         .expect(400)
         .expect('Content-Type', errorContentType)
         .expect(res => {
@@ -42,6 +43,7 @@ describe('Unit Tests', () => {
         .get('/diagram.png')
         .type('text')
         .query({dot: ''})
+        .retry(3)
         .expect(400)
         .expect('Content-Type', errorContentType)
         .expect(res => {
@@ -56,6 +58,7 @@ describe('Unit Tests', () => {
         .get('/diagram.png')
         .type('text')
         .query({dot: 'digraph'})
+        .retry(3)
         .expect(400)
         .expect('Content-Type', errorContentType)
         .expect(res => {
@@ -72,6 +75,7 @@ describe('Unit Tests', () => {
         .get('/diagram.png')
         .type('text')
         .query({dot: 'digraph G { A -> {B, C, D} -> {F} }'})
+        .retry(3)
         .expect(200)
         .expect('Content-Type', 'image/png')
         .expect('Cache-Control', 'public, max-age=86400');

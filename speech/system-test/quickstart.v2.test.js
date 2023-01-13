@@ -16,7 +16,6 @@
 
 'use strict';
 
-const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const sinon = require('sinon');
@@ -24,8 +23,6 @@ const uuid = require('uuid').v4;
 const speech = require('@google-cloud/speech')
 
 const {quickstartV2} = require('../quickstart.v2');
-const { recommendCommands } = require('yargs');
-
 
 const text = 'how old is the Brooklyn Bridge';
 let recognizerName = `recognizer-test${uuid()}`;

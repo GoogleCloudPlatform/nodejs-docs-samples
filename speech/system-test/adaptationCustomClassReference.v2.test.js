@@ -1,10 +1,10 @@
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,25 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/* eslint-disable */
-
 'use strict';
 
-const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const cp = require('child_process');
-const uuid = require('uuid')
 const sinon = require('sinon');
+const uuid = require('uuid');
 const speech = require('@google-cloud/speech').v2;
 
-const {transcribeFileV2} = require('../transcribeFile.v2')
+const {createCustomClassV2} = require('../adaptationCustomClassReference.v2');
 
 const text = 'how old is the Brooklyn Bridge';
 
-let recognizerName, projectId;
+let recognizerName, projectId, customClassName, phraseSetName;
 
-describe('Transcribing a local file (v2)', () => {
+describe('Creates a custom class reference (v2)', () => {
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');
@@ -50,7 +46,7 @@ describe('Transcribing a local file (v2)', () => {
       recognizerId: `rec-${uuid.v4()}`,
       recognizer: {
         languageCodes: ['en-US'],
-        model: 'latest_long',
+        model: 'latest_short',
       },
     };
 
@@ -58,19 +54,38 @@ describe('Transcribing a local file (v2)', () => {
     const recognizer = operation[0].result;
     recognizerName = recognizer.name;
   });
-  
+
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should transcribe a local file', async () => {
-    await transcribeFileV2(recognizerName);
-    assert.include(console.log.firstCall.args, `Transcript: ${text}`);
+  it('should create a custom class reference and phrase set', async () => {
+    const customClassId = `cls-${uuid.v4()}`;
+    const phraseSetId = `phrase-${uuid.v4()}`;
+    await createCustomClassV2(
+      projectId,
+      customClassId,
+      phraseSetId,
+      recognizerName
+    );
+
+    customClassName = console.log.firstCall.args[0].replace(
+      'CustomClass name: ',
+      ''
+    );
+    phraseSetName = console.log.secondCall.args[0].replace(
+      'PhraseSet name: ',
+      ''
+    );
+
+    assert.include(customClassName, customClassId);
+    assert.include(phraseSetName, phraseSetId);
+    assert.include(console.log.thirdCall.args[0], text);
   });
 
-  after(async ()=>{
+  after(async () => {
     const client = new speech.SpeechClient();
-    await client.deleteRecognizer({
-      name: recognizerName
-    })
+    await client.deleteRecognizer({name: recognizerName});
+    await client.deleteCustomClass({name: customClassName});
+    await client.deletePhraseSet({name: phraseSetName});
   });
 });

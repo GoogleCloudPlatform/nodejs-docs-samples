@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {expect} = require('chai');
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const sinon = require('sinon');
 const uuid = require('uuid');
@@ -77,9 +77,9 @@ describe('Creates a custom class reference (v2)', () => {
       ''
     );
 
-    expect(customClassName).to.contain(customClassId);
-    expect(phraseSetName).to.contain(phraseSetId);
-    expect(console.log.thirdCall.args[0]).to.contain(text);
+    assert.include(customClassName, customClassId);
+    assert.include(phraseSetName, phraseSetId);
+    assert.include(console.log.thirdCall.args[0], text);
   });
 
   after(async () => {

@@ -51,7 +51,7 @@ Because you are going to run the code samples in your own Google Cloud project, 
 To install all the dependencies, run
 
 ```
-cd cloudshell_open/nodejs-retail
+cd cloudshell_open/nodejs-docs-samples/retail
 npm install
 ```
 

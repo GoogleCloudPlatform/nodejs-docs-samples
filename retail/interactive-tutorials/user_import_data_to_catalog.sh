@@ -19,8 +19,8 @@
   export GOOGLE_APPLICATION_CREDENTIALS=~/key.json
 
   # Create a GCS bucket and upload the product data to the bucket
-  cd ~/cloudshell_open/nodejs-retail/samples
-  output=$(node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/setup/create-gcs-bucket.js)
+  cd ~/cloudshell_open/nodejs-docs-samples/retail
+  output=$(node ~/cloudshell_open/nodejs-docs-samples/retail/interactive-tutorials/setup/create-gcs-bucket.js)
 
   # Get the bucket name and store it in the env variable BUCKET_NAME
   temp="${output#*Bucket }"
@@ -28,7 +28,7 @@
   export BUCKET_NAME=$bucket_name
 
   # Import products to the Retail catalog
-  node ~/cloudshell_open/nodejs-retail/samples/interactive-tutorials/product/import-products-gcs.js
+  node ~/cloudshell_open/nodejs-docs-samples/retail/interactive-tutorials/product/import-products-gcs.js
 } && {
   echo "====================================="
   echo "Your Retail catalog is ready to use!"

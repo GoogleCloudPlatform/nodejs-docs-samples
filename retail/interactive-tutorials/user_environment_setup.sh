@@ -85,6 +85,6 @@ gcloud iam service-accounts keys create ~/key.json --iam-account "$service_acc_e
 gcloud auth activate-service-account --key-file ~/key.json
 
 # install needed Google client libraries
-cd ~/cloudshell_open/nodejs-retail/samples
+cd ~/cloudshell_open/nodejs-docs-samples/retail
 npm install
 'success'

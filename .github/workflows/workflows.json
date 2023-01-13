@@ -69,6 +69,7 @@
   "healthcare/hl7v2",
   "iam",
   "kms",
+  "media/video-stitcher",
   "mediatranslation",
   "monitoring/opencensus",
   "monitoring/prometheus",

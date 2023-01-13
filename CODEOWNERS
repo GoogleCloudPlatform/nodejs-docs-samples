@@ -76,3 +76,4 @@ vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-revi
 
 # Self-service
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
+media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers

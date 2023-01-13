@@ -60,7 +60,7 @@ describe('Creates a inline class reference (v2)', () => {
 
   it('should create an inline class reference and phrase set', async () => {
     await buildInlineCustomClassV2(recognizerName);
-    assert.includes(console.log.firstCall.args[0], text);
+    assert.include(console.log.firstCall.args[0], text);
   });
 
   after(async () => {

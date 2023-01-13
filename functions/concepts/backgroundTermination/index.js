@@ -16,7 +16,9 @@
 
 /* eslint-disable no-unused-vars, no-unreachable */
 
-exports.backgroundTermination = async (event, context) => {
+const functions = require('@google-cloud/functions-framework');
+
+functions.http('backgroundTermination', async (event, context) => {
   // [START functions_concepts_node_termination]
   // Await-ing promises within functions is OK if you don't return anything
   await Promise.resolve();
@@ -30,4 +32,4 @@ exports.backgroundTermination = async (event, context) => {
   return Promise.reject(); // OK: same behavior as to-be-resolved promises
   return await Promise.reject(); // Same as above
   // [END functions_concepts_node_termination]
-};
+});

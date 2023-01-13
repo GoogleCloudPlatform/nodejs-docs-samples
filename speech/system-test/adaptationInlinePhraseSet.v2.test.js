@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {expect} = require('chai');
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const sinon = require('sinon');
 const uuid = require('uuid');
@@ -60,7 +60,7 @@ describe('Creates a inline phrase set (v2)', () => {
 
   it('should create an inline phrase set', async () => {
     await buildInlinePhraseSetV2(recognizerName);
-    expect(console.log.firstCall.args[0]).to.contain(text);
+    assert.include(console.log.firstCall.args[0], text);
   });
 
   after(async () => {

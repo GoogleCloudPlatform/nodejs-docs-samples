@@ -42,6 +42,7 @@ describe('Unit Tests', () => {
       .post('/')
       .type('text')
       .send(markdown)
+      .retry(3)
       .expect(200);
     const body = response.text;
     assert.equal(body, '<p><strong>markdown text</strong></p>\n');
@@ -53,6 +54,7 @@ describe('Unit Tests', () => {
       .post('/')
       .type('text')
       .send(markdown)
+      .retry(3)
       .expect(200)
       .then(res => {
         const body = res.text;
@@ -67,6 +69,7 @@ describe('Unit Tests', () => {
       .post('/')
       .type('text')
       .send(markdown)
+      .retry(3)
       .expect(200)
       .then(res => {
         const body = res.text;

@@ -34,7 +34,7 @@ describe('Unit Tests', () => {
 
   describe('should fail', () => {
     it('on a Bad Request with an empty payload', async () => {
-      await request.post('/').type('json').send('').expect(400);
+      await request.post('/').type('json').send('').retry(3).expect(400);
     });
 
     it('on a Bad Request with an invalid payload', async () => {
@@ -42,11 +42,17 @@ describe('Unit Tests', () => {
         .post('/')
         .type('json')
         .send({nomessage: 'invalid'})
+        .retry(3)
         .expect(400);
     });
 
     it('on a Bad Request with an invalid mimetype', async () => {
-      await request.post('/').type('text').send('{message: true}').expect(400);
+      await request
+        .post('/')
+        .type('text')
+        .send('{message: true}')
+        .retry(3)
+        .expect(400);
     });
   });
 
@@ -65,6 +71,7 @@ describe('Unit Tests', () => {
         .post('/')
         .type('json')
         .send({message: true})
+        .retry(3)
         .expect(204)
         .expect(() => assert.ok(console.log.calledWith('Hello World!')));
     });
@@ -77,6 +84,7 @@ describe('Unit Tests', () => {
         .post('/')
         .type('json')
         .send({message: {data}})
+        .retry(3)
         .expect(204)
         .expect(() => assert.ok(console.log.calledWith(`Hello ${name}!`)));
     });

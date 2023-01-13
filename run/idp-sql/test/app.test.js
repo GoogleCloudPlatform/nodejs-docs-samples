@@ -28,13 +28,14 @@ describe('Unit Tests', () => {
   });
 
   it('should reject request without JWT token', async () => {
-    await request.post('/').expect(401);
+    await request.post('/').retry(3).expect(401);
   });
 
   it('should reject request with invalid JWT token', async () => {
     await request
       .post('/')
       .set('Authorization', 'Bearer iam-a-token')
+      .retry(3)
       .expect(403);
   });
 

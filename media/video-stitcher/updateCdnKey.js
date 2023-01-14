@@ -20,9 +20,9 @@ function main(
   location,
   cdnKeyId,
   hostname,
-  gCdnKeyname,
-  gCdnPrivateKey,
-  akamaiTokenKey = ''
+  keyName,
+  privateKey,
+  isMediaCdn = true
 ) {
   // [START videostitcher_update_cdn_key]
   /**
@@ -31,10 +31,10 @@ function main(
   // projectId = 'my-project-id';
   // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
-  // hostname = 'cdn.example.com';
-  // gCdnKeyname = 'gcdn-key';
-  // gCdnPrivateKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
-  // akamaiTokenKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
+  // hostname = 'updated.cdn.example.com';
+  // keyName = 'cdn-key';
+  // privateKey = 'my-private-key';
+  // isMediaCdn = true;
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -51,17 +51,18 @@ function main(
       },
     };
 
-    if (akamaiTokenKey !== '') {
-      request.cdnKey.akamaiCdnKey = {
-        tokenKey: akamaiTokenKey,
+    if (isMediaCdn === 'true') {
+      request.cdnKey.mediaCdnKey = {
+        keyName: keyName,
+        privateKey: privateKey,
       };
       request.updateMask = {
-        paths: ['hostname', 'akamai_cdn_key'],
+        paths: ['hostname', 'media_cdn_key'],
       };
     } else {
       request.cdnKey.googleCdnKey = {
-        keyName: gCdnKeyname,
-        privateKey: gCdnPrivateKey,
+        keyName: keyName,
+        privateKey: privateKey,
       };
       request.updateMask = {
         paths: ['hostname', 'google_cdn_key'],
@@ -76,7 +77,7 @@ function main(
   // [END videostitcher_update_cdn_key]
 }
 
-// node updateCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <gCdnKeyname> <gCdnPrivateKey> <akamaiTokenKey>
+// node updateCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <keyName> <privateKey> <isMediaCdn>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

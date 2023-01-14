@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2023, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,16 +15,8 @@
 
 'use strict';
 
-function main(
-  projectId,
-  location,
-  cdnKeyId,
-  hostname,
-  keyName,
-  privateKey,
-  isMediaCdn = true
-) {
-  // [START videostitcher_create_cdn_key]
+function main(projectId, location, cdnKeyId, hostname, akamaiTokenKey) {
+  // [START videostitcher_create_cdn_key_akamai]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -32,9 +24,7 @@ function main(
   // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
   // hostname = 'cdn.example.com';
-  // keyName = 'cdn-key';
-  // privateKey = 'my-private-key';
-  // isMediaCdn = true;
+  // akamaiTokenKey = 'my-token-key';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -42,37 +32,28 @@ function main(
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createCdnKey() {
+  async function createCdnKeyAkamai() {
     // Construct request
     const request = {
       parent: stitcherClient.locationPath(projectId, location),
       cdnKey: {
         hostname: hostname,
+        akamaiCdnKey: {
+          tokenKey: akamaiTokenKey,
+        },
       },
       cdnKeyId: cdnKeyId,
     };
-
-    if (isMediaCdn === 'true') {
-      request.cdnKey.mediaCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    } else {
-      request.cdnKey.googleCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    }
 
     const [cdnKey] = await stitcherClient.createCdnKey(request);
     console.log(`CDN key: ${cdnKey.name}`);
   }
 
-  createCdnKey();
-  // [END videostitcher_create_cdn_key]
+  createCdnKeyAkamai();
+  // [END videostitcher_create_cdn_key_akamai]
 }
 
-// node createCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <keyName> <privateKey> <isMediaCdn>
+// node createCdnKeyAkamai.js <projectId> <location> <cdnKeyId> <hostname> <akamaiTokenKey>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

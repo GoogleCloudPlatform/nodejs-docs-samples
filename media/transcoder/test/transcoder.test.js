@@ -100,10 +100,6 @@ const checkFileExists = async function (bucketName, fileName) {
 };
 
 before(async () => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT_NUMBER,
-    'Must set GOOGLE_CLOUD_PROJECT_NUMBER environment variable!'
-  );
   // Create a Cloud Storage bucket to be used for testing.
   await storage.createBucket(bucketName);
   await storage.bucket(bucketName).upload(videoFile);

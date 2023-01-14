@@ -26,12 +26,11 @@ const uniqueID = uuidv4().split('-')[0];
 const bucketName = `nodejs-samples-transcoder-test-${uniqueID}`;
 const storage = new Storage();
 
-const projectNumber = process.env.GOOGLE_CLOUD_PROJECT_NUMBER;
 const projectId = process.env.GCLOUD_PROJECT;
 const location = 'us-central1';
 const templateId = `nodejs-test-transcoder-template-${uniqueID}`;
 const preset = 'preset/web-hd';
-const templateName = `projects/${projectNumber}/locations/${location}/jobTemplates/${templateId}`;
+const templateName = `/locations/${location}/jobTemplates/${templateId}`;
 
 const testFileName = 'ChromeCast.mp4';
 const testOverlayFileName = 'overlay.jpg';
@@ -203,7 +202,7 @@ describe('Job functions preset', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     presetJobId = output.toString().split('/').pop();
   }
@@ -222,7 +221,7 @@ describe('Job functions preset', () => {
       `node getJob.js ${projectId} ${location} ${presetJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${presetJobId}`;
+    const jobName = `/locations/${location}/jobs/${presetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -231,7 +230,7 @@ describe('Job functions preset', () => {
     const output = execSync(`node listJobs.js ${projectId} ${location}`, {
       cwd,
     });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${presetJobId}`;
+    const jobName = `/locations/${location}/jobs/${presetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -270,7 +269,7 @@ describe('Job functions template', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.templateJobId = output.toString().split('/').pop();
   });
@@ -293,7 +292,7 @@ describe('Job functions template', () => {
       `node getJob.js ${projectId} ${location} ${this.templateJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.templateJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.templateJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -301,7 +300,7 @@ describe('Job functions template', () => {
     const output = execSync(`node listJobs.js ${projectId} ${location}`, {
       cwd,
     });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.templateJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.templateJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -334,7 +333,7 @@ describe('Job functions adhoc', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.adhocJobId = output.toString().split('/').pop();
   });
@@ -352,7 +351,7 @@ describe('Job functions adhoc', () => {
       `node getJob.js ${projectId} ${location} ${this.adhocJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.adhocJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.adhocJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -360,7 +359,7 @@ describe('Job functions adhoc', () => {
     const output = execSync(`node listJobs.js ${projectId} ${location}`, {
       cwd,
     });
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.adhocJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.adhocJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -393,7 +392,7 @@ describe('Job with static overlay functions', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.staticOverlayJobId = output.toString().split('/').pop();
   });
@@ -411,7 +410,7 @@ describe('Job with static overlay functions', () => {
       `node getJob.js ${projectId} ${location} ${this.staticOverlayJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.staticOverlayJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.staticOverlayJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -444,7 +443,7 @@ describe('Job with animated overlay functions', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.animatedOverlayJobId = output.toString().split('/').pop();
   });
@@ -462,7 +461,7 @@ describe('Job with animated overlay functions', () => {
       `node getJob.js ${projectId} ${location} ${this.animatedOverlayJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.animatedOverlayJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.animatedOverlayJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -495,7 +494,7 @@ describe('Job with set number of images spritesheet', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.setNumberSpritesheetJobId = output.toString().split('/').pop();
   });
@@ -513,7 +512,7 @@ describe('Job with set number of images spritesheet', () => {
       `node getJob.js ${projectId} ${location} ${this.setNumberSpritesheetJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.setNumberSpritesheetJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.setNumberSpritesheetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -563,7 +562,7 @@ describe('Job with periodic images spritesheet', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.periodicSpritesheetJobId = output.toString().split('/').pop();
   });
@@ -581,7 +580,7 @@ describe('Job with periodic images spritesheet', () => {
       `node getJob.js ${projectId} ${location} ${this.periodicSpritesheetJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.periodicSpritesheetJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.periodicSpritesheetJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -631,7 +630,7 @@ describe('Job with concatenated inputs functions', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.concatenatedJobId = output.toString().split('/').pop();
   });
@@ -649,7 +648,7 @@ describe('Job with concatenated inputs functions', () => {
       `node getJob.js ${projectId} ${location} ${this.concatenatedJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.concatenatedJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.concatenatedJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -682,7 +681,7 @@ describe('Job with embedded captions', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.embeddedCaptionsJobId = output.toString().split('/').pop();
   });
@@ -700,7 +699,7 @@ describe('Job with embedded captions', () => {
       `node getJob.js ${projectId} ${location} ${this.embeddedCaptionsJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.embeddedCaptionsJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.embeddedCaptionsJobId}`;
     assert.ok(output.includes(jobName));
   });
 
@@ -733,7 +732,7 @@ describe('Job with standalone captions', () => {
       {cwd}
     );
     assert.ok(
-      output.includes(`projects/${projectNumber}/locations/${location}/jobs/`)
+      output.includes(`/locations/${location}/jobs/`)
     );
     this.standaloneCaptionsJobId = output.toString().split('/').pop();
   });
@@ -751,7 +750,7 @@ describe('Job with standalone captions', () => {
       `node getJob.js ${projectId} ${location} ${this.standaloneCaptionsJobId}`,
       {cwd}
     );
-    const jobName = `projects/${projectNumber}/locations/${location}/jobs/${this.standaloneCaptionsJobId}`;
+    const jobName = `/locations/${location}/jobs/${this.standaloneCaptionsJobId}`;
     assert.ok(output.includes(jobName));
   });
 

@@ -197,9 +197,7 @@ describe('Job functions preset', () => {
       `node createJobFromPreset.js ${projectId} ${location} ${inputUri} ${outputUriForPreset} ${preset}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     presetJobId = output.toString().split('/').pop();
   }
 
@@ -264,9 +262,7 @@ describe('Job functions template', () => {
       `node createJobFromTemplate.js ${projectId} ${location} ${inputUri} ${outputUriForTemplate} ${templateId}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.templateJobId = output.toString().split('/').pop();
   });
 
@@ -328,9 +324,7 @@ describe('Job functions adhoc', () => {
       `node createJobFromAdHoc.js ${projectId} ${location} ${inputUri} ${outputUriForAdHoc}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.adhocJobId = output.toString().split('/').pop();
   });
 
@@ -387,9 +381,7 @@ describe('Job with static overlay functions', () => {
       `node createJobWithStaticOverlay.js ${projectId} ${location} ${inputUri} ${overlayUri} ${outputUriForStaticOverlay}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.staticOverlayJobId = output.toString().split('/').pop();
   });
 
@@ -438,9 +430,7 @@ describe('Job with animated overlay functions', () => {
       `node createJobWithAnimatedOverlay.js ${projectId} ${location} ${inputUri} ${overlayUri} ${outputUriForAnimatedOverlay}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.animatedOverlayJobId = output.toString().split('/').pop();
   });
 
@@ -489,9 +479,7 @@ describe('Job with set number of images spritesheet', () => {
       `node createJobWithSetNumberImagesSpritesheet.js ${projectId} ${location} ${inputUri} ${outputUriForSetNumberImagesSpritesheet}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.setNumberSpritesheetJobId = output.toString().split('/').pop();
   });
 
@@ -557,9 +545,7 @@ describe('Job with periodic images spritesheet', () => {
       `node createJobWithPeriodicImagesSpritesheet.js ${projectId} ${location} ${inputUri} ${outputUriForPeriodicImagesSpritesheet}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.periodicSpritesheetJobId = output.toString().split('/').pop();
   });
 
@@ -625,9 +611,7 @@ describe('Job with concatenated inputs functions', () => {
       `node createJobWithConcatenatedInputs.js ${projectId} ${location} ${concat1Uri} 0 8.1 ${concat2Uri} 3.5 15 ${outputUriForConcatenated}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.concatenatedJobId = output.toString().split('/').pop();
   });
 
@@ -676,9 +660,7 @@ describe('Job with embedded captions', () => {
       `node createJobWithEmbeddedCaptions.js ${projectId} ${location} ${inputUri} ${captionsUri} ${outputUriForEmbeddedCaptions}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.embeddedCaptionsJobId = output.toString().split('/').pop();
   });
 
@@ -727,9 +709,7 @@ describe('Job with standalone captions', () => {
       `node createJobWithStandaloneCaptions.js ${projectId} ${location} ${inputUri} ${captionsUri} ${outputUriForStandaloneCaptions}`,
       {cwd}
     );
-    assert.ok(
-      output.includes(`/locations/${location}/jobs/`)
-    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
     this.standaloneCaptionsJobId = output.toString().split('/').pop();
   });
 

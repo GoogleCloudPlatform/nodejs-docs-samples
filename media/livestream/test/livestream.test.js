@@ -38,54 +38,39 @@ const outputUri = `gs://${bucketName}/test-output-channel/`;
 const cwd = path.join(__dirname, '..');
 
 before(async () => {
-  // Stop the channel if it already exists
-  try {
-    execSync(`node stopChannel.js ${projectId} ${location} ${channelId}`, {
-      cwd,
-    });
-  } catch (err) {
-    // Ignore not found or not started error
-  }
-
-  // Delete the channel if it already exists
-  try {
-    execSync(`node deleteChannel.js ${projectId} ${location} ${channelId}`, {
-      cwd,
-    });
-  } catch (err) {
-    // Ignore not found error
-  }
-
-  // Delete the default input if it already exists
-  try {
-    execSync(`node deleteInput.js ${projectId} ${location} ${inputId}`, {
-      cwd,
-    });
-  } catch (err) {
-    // Ignore not found error
-  }
-});
-
-after(async () => {
-  // Delete outstanding channels and inputs created more than 3 days ago
+  // Delete outstanding channels and inputs created more than 3 hours ago
   const {LivestreamServiceClient} = require('@google-cloud/livestream').v1;
   const livestreamServiceClient = new LivestreamServiceClient();
-  const THREE_DAYS_IN_SEC = 60 * 60 * 24 * 3;
+  const THREE_HOURS_IN_SEC = 60 * 60 * 3;
   const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
 
   const [channels] = await livestreamServiceClient.listChannels({
     parent: livestreamServiceClient.locationPath(projectId, location),
   });
   for (const channel of channels) {
-    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_DAYS_IN_SEC) {
+    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
       const request = {
         name: channel.name,
       };
       try {
-        await livestreamServiceClient.stopChannel(request);
+        const [operation] = await livestreamServiceClient.stopChannel(request);
+        await operation.promise();
       } catch (err) {
         //Ignore error when channel is not started.
+        console.log(
+          'Existing channel already stopped. Ignore the following error.'
+        );
         console.log(err);
+      }
+
+      const [events] = await livestreamServiceClient.listEvents({
+        parent: channel.name,
+      });
+
+      for (const event of events) {
+        await livestreamServiceClient.deleteEvent({
+          name: event.name,
+        });
       }
       await livestreamServiceClient.deleteChannel(request);
     }
@@ -95,7 +80,7 @@ after(async () => {
     parent: livestreamServiceClient.locationPath(projectId, location),
   });
   for (const input of inputs) {
-    if (input.createTime.seconds < DATE_NOW_SEC - THREE_DAYS_IN_SEC) {
+    if (input.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
       const request = {
         name: input.name,
       };

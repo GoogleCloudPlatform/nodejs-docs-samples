@@ -15,15 +15,19 @@
 
 'use strict';
 
-function main(projectId, location, cdnKeyId, hostname, akamaiTokenKey) {
+function main(
+  projectId,
+  cdnKeyId,
+  akamaiTokenKey,
+  location = 'us-central1',
+  hostname = 'cdn.example.com'
+) {
   // [START videostitcher_create_cdn_key_akamai]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
-  // hostname = 'cdn.example.com';
   // akamaiTokenKey = 'my-token-key';
 
   // Imports the Video Stitcher library
@@ -53,7 +57,7 @@ function main(projectId, location, cdnKeyId, hostname, akamaiTokenKey) {
   // [END videostitcher_create_cdn_key_akamai]
 }
 
-// node createCdnKeyAkamai.js <projectId> <location> <cdnKeyId> <hostname> <akamaiTokenKey>
+// node createCdnKeyAkamai.js <projectId> <cdnKeyId> <akamaiTokenKey> <location> <hostname>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

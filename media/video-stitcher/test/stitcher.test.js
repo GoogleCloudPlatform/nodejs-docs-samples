@@ -27,16 +27,15 @@ const liveFileName = 'hls-live/manifest.m3u8';
 
 const projectId = process.env.GCLOUD_PROJECT;
 const location = 'us-central1';
-const slateIdPrefix = 'nodejs-test-slate-';
+const slateIdPrefix = 'nodejs-test-slate';
 const slateUri = `https://storage.googleapis.com/${bucketName}/ForBiggerEscapes.mp4`;
+const updatedSlateUri = `https://storage.googleapis.com/${bucketName}/ForBiggerJoyrides.mp4`;
 
-const akamaiCdnKeyIdPrefix = 'nodejs-test-akamai-';
-const mediaCdnKeyIdPrefix = 'nodejs-test-media-';
-const cloudCdnKeyIdPrefix = 'nodejs-test-cloud-';
+const akamaiCdnKeyIdPrefix = 'nodejs-test-akamai';
+const mediaCdnKeyIdPrefix = 'nodejs-test-media';
+const cloudCdnKeyIdPrefix = 'nodejs-test-cloud';
 
-const hostname = 'cdn.example.com';
 const updatedHostname = 'updated.cdn.example.com';
-
 const cdnKeyName = 'test-key';
 
 const cloudCdnPrivateKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
@@ -185,10 +184,11 @@ describe('Slate functions', () => {
 
   it('should update a slate', () => {
     const output = execSync(
-      `node updateSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
+      `node updateSlate.js ${projectId} ${location} ${this.slateId} ${updatedSlateUri}`,
       {cwd}
     );
     assert.ok(output.includes(this.slateName));
+    assert.ok(output.includes(updatedSlateUri));
   });
 
   it('should get a slate', () => {
@@ -209,7 +209,7 @@ describe('Media CDN key functions', () => {
     this.mediaCdnKeyName = `/locations/${location}/cdnKeys/${this.mediaCdnKeyId}`;
 
     const output = execSync(
-      `node createCdnKey.js ${projectId} ${location} ${this.mediaCdnKeyId} ${hostname} ${cdnKeyName} ${mediaCdnPrivateKey} true`,
+      `node createCdnKey.js ${projectId} ${this.mediaCdnKeyId} ${mediaCdnPrivateKey} true`,
       {cwd}
     );
     assert.ok(output.includes(this.mediaCdnKeyName));
@@ -232,10 +232,11 @@ describe('Media CDN key functions', () => {
 
   it('should update a Media CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${location} ${this.mediaCdnKeyId} ${updatedHostname} ${cdnKeyName} ${updatedMediaCdnPrivateKey} true`,
+      `node updateCdnKey.js ${projectId} ${this.mediaCdnKeyId} ${updatedMediaCdnPrivateKey} true ${location} ${updatedHostname} ${cdnKeyName}`,
       {cwd}
     );
     assert.ok(output.includes(this.mediaCdnKeyName));
+    assert.ok(output.includes(updatedHostname));
   });
 
   it('should get a Media CDN key', () => {
@@ -256,7 +257,7 @@ describe('Cloud CDN key functions', () => {
     this.cloudCdnKeyName = `/locations/${location}/cdnKeys/${this.cloudCdnKeyId}`;
 
     const output = execSync(
-      `node createCdnKey.js ${projectId} ${location} ${this.cloudCdnKeyId} ${hostname} ${cdnKeyName} ${cloudCdnPrivateKey} false`,
+      `node createCdnKey.js ${projectId} ${this.cloudCdnKeyId} ${cloudCdnPrivateKey} false`,
       {cwd}
     );
     assert.ok(output.includes(this.cloudCdnKeyName));
@@ -279,10 +280,11 @@ describe('Cloud CDN key functions', () => {
 
   it('should update a Cloud CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${location} ${this.cloudCdnKeyId} ${updatedHostname} ${cdnKeyName} ${updatedCloudCdnPrivateKey} false`,
+      `node updateCdnKey.js ${projectId} ${this.cloudCdnKeyId} ${updatedCloudCdnPrivateKey} false ${location} ${updatedHostname} ${cdnKeyName}`,
       {cwd}
     );
     assert.ok(output.includes(this.cloudCdnKeyName));
+    assert.ok(output.includes(updatedHostname));
   });
 
   it('should get a Cloud CDN key', () => {
@@ -303,7 +305,7 @@ describe('Akamai CDN key functions', () => {
     this.akamaiCdnKeyName = `/locations/${location}/cdnKeys/${this.akamaiCdnKeyId}`;
 
     const output = execSync(
-      `node createCdnKeyAkamai.js ${projectId} ${location} ${this.akamaiCdnKeyId} ${hostname} ${akamaiTokenKey}`,
+      `node createCdnKeyAkamai.js ${projectId} ${this.akamaiCdnKeyId} ${akamaiTokenKey}`,
       {cwd}
     );
     assert.ok(output.includes(this.akamaiCdnKeyName));
@@ -326,10 +328,11 @@ describe('Akamai CDN key functions', () => {
 
   it('should update an Akamai CDN key', () => {
     const output = execSync(
-      `node updateCdnKeyAkamai.js ${projectId} ${location} ${this.akamaiCdnKeyId} ${updatedHostname} ${updatedAkamaiTokenKey}`,
+      `node updateCdnKeyAkamai.js ${projectId} ${this.akamaiCdnKeyId} ${updatedAkamaiTokenKey} ${location} ${updatedHostname}`,
       {cwd}
     );
     assert.ok(output.includes(this.akamaiCdnKeyName));
+    assert.ok(output.includes(updatedHostname));
   });
 
   it('should get an Akamai CDN key', () => {
@@ -416,7 +419,7 @@ describe('VOD session functions', () => {
 describe('Live session functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
-    this.slateId = `${slateIdPrefix}${DATE_NOW_SEC}`;
+    this.slateId = `${slateIdPrefix}-${uuid.v4().substr(0, 8)}-${DATE_NOW_SEC}`;
     this.slateName = `/locations/${location}/slates/${this.slateId}`;
 
     const output = execSync(

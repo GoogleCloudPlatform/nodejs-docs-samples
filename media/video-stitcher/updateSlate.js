@@ -45,6 +45,7 @@ function main(projectId, location, slateId, slateUri) {
 
     const [slate] = await stitcherClient.updateSlate(request);
     console.log(`Updated slate: ${slate.name}`);
+    console.log(`Updated uri: ${slate.uri}`);
   }
 
   updateSlate();

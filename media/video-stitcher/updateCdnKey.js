@@ -17,22 +17,19 @@
 
 function main(
   projectId,
-  location,
   cdnKeyId,
-  hostname,
-  keyName,
   privateKey,
-  isMediaCdn = true
+  isMediaCdn = true,
+  location = 'us-central1',
+  hostname = 'cdn.example.com',
+  keyName = 'cdn-key'
 ) {
   // [START videostitcher_update_cdn_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
-  // hostname = 'updated.cdn.example.com';
-  // keyName = 'cdn-key';
   // privateKey = 'my-private-key';
   // isMediaCdn = true;
 
@@ -71,13 +68,14 @@ function main(
 
     const [cdnKey] = await stitcherClient.updateCdnKey(request);
     console.log(`Updated CDN key: ${cdnKey.name}`);
+    console.log(`Updated hostname: ${cdnKey.hostname}`);
   }
 
   updateCdnKey();
   // [END videostitcher_update_cdn_key]
 }
 
-// node updateCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <keyName> <privateKey> <isMediaCdn>
+// node updateCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

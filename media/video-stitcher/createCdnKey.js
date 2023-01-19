@@ -15,16 +15,11 @@
 
 'use strict';
 
-function main(
-  projectId,
-  cdnKeyId,
-  privateKey,
-  isMediaCdn = true,
-  location = 'us-central1',
-  hostname = 'cdn.example.com',
-  keyName = 'cdn-key'
-) {
+function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
   // [START videostitcher_create_cdn_key]
+  const location = 'us-central1';
+  const hostname = 'cdn.example.com';
+  const keyName = 'cdn-key';
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */

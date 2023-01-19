@@ -69,6 +69,8 @@
   "healthcare/hl7v2",
   "iam",
   "kms",
+  "media/livestream",
+  "media/transcoder",
   "media/video-stitcher",
   "mediatranslation",
   "monitoring/opencensus",

@@ -36,7 +36,6 @@ const mediaCdnKeyIdPrefix = 'nodejs-test-media';
 const cloudCdnKeyIdPrefix = 'nodejs-test-cloud';
 
 const updatedHostname = 'updated.cdn.example.com';
-const cdnKeyName = 'test-key';
 
 const cloudCdnPrivateKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
 const mediaCdnPrivateKey =
@@ -232,7 +231,7 @@ describe('Media CDN key functions', () => {
 
   it('should update a Media CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${this.mediaCdnKeyId} ${updatedMediaCdnPrivateKey} true ${location} ${updatedHostname} ${cdnKeyName}`,
+      `node updateCdnKey.js ${projectId} ${this.mediaCdnKeyId} ${updatedHostname} ${updatedMediaCdnPrivateKey} true`,
       {cwd}
     );
     assert.ok(output.includes(this.mediaCdnKeyName));
@@ -280,7 +279,7 @@ describe('Cloud CDN key functions', () => {
 
   it('should update a Cloud CDN key', () => {
     const output = execSync(
-      `node updateCdnKey.js ${projectId} ${this.cloudCdnKeyId} ${updatedCloudCdnPrivateKey} false ${location} ${updatedHostname} ${cdnKeyName}`,
+      `node updateCdnKey.js ${projectId} ${this.cloudCdnKeyId} ${updatedHostname} ${updatedCloudCdnPrivateKey} false`,
       {cwd}
     );
     assert.ok(output.includes(this.cloudCdnKeyName));
@@ -328,7 +327,7 @@ describe('Akamai CDN key functions', () => {
 
   it('should update an Akamai CDN key', () => {
     const output = execSync(
-      `node updateCdnKeyAkamai.js ${projectId} ${this.akamaiCdnKeyId} ${updatedAkamaiTokenKey} ${location} ${updatedHostname}`,
+      `node updateCdnKeyAkamai.js ${projectId} ${this.akamaiCdnKeyId} ${updatedHostname} ${updatedAkamaiTokenKey}`,
       {cwd}
     );
     assert.ok(output.includes(this.akamaiCdnKeyName));

@@ -15,14 +15,10 @@
 
 'use strict';
 
-function main(
-  projectId,
-  cdnKeyId,
-  akamaiTokenKey,
-  location = 'us-central1',
-  hostname = 'cdn.example.com'
-) {
+function main(projectId, cdnKeyId, akamaiTokenKey) {
   // [START videostitcher_create_cdn_key_akamai]
+  const location = 'us-central1';
+  const hostname = 'cdn.example.com';
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */

@@ -17,24 +17,20 @@
 
 function main(
   projectId,
-  location,
   cdnKeyId,
-  hostname,
-  keyName,
   privateKey,
-  isMediaCdn = true
+  isMediaCdn = true,
+  location = 'us-central1',
+  hostname = 'cdn.example.com',
+  keyName = 'cdn-key'
 ) {
   // [START videostitcher_create_cdn_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
-  // hostname = 'cdn.example.com';
-  // keyName = 'cdn-key';
   // privateKey = 'my-private-key';
-  // isMediaCdn = true;
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -72,7 +68,7 @@ function main(
   // [END videostitcher_create_cdn_key]
 }
 
-// node createCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <keyName> <privateKey> <isMediaCdn>
+// node createCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

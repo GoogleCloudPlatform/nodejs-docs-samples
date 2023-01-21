@@ -15,6 +15,7 @@
 
 'use strict';
 
+const crypto = require('crypto');
 const path = require('path');
 const assert = require('assert');
 const uuid = require('uuid');
@@ -37,16 +38,13 @@ const cloudCdnKeyIdPrefix = 'nodejs-test-cloud';
 
 const updatedHostname = 'updated.cdn.example.com';
 
-const cloudCdnPrivateKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
-const mediaCdnPrivateKey =
-  'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNA';
-const akamaiTokenKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
+const cloudCdnPrivateKey = crypto.randomBytes(64).toString('base64');
+const mediaCdnPrivateKey = crypto.randomBytes(64).toString('base64');
+const akamaiTokenKey = crypto.randomBytes(64).toString('base64');
 
-const updatedCloudCdnPrivateKey =
-  'VGhpcyBpcyBhbiB1cGRhdGVkIHRlc3Qgc3RyaW5nLg==';
-const updatedMediaCdnPrivateKey =
-  'ZZZzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIZZZ';
-const updatedAkamaiTokenKey = updatedCloudCdnPrivateKey;
+const updatedCloudCdnPrivateKey = crypto.randomBytes(64).toString('base64');
+const updatedMediaCdnPrivateKey = crypto.randomBytes(64).toString('base64');
+const updatedAkamaiTokenKey = crypto.randomBytes(64).toString('base64');
 
 const vodUri = `https://storage.googleapis.com/${bucketName}/${vodFileName}`;
 // VMAP Pre-roll (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)

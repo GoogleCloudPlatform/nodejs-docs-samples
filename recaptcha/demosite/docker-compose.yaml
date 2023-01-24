@@ -10,7 +10,7 @@ services:
         - "SITE_KEY=${SITE_KEY}"
         - "CHECKBOX_SITE_KEY=${CHECKBOX_SITE_KEY}"
     command: node index.js
-    ports: ["8000:8000"]
+    ports: ["8080:8080"]
     volumes:
       - "./app:/app"
       - "/app/node_modules"

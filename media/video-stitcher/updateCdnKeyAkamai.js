@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2023, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,17 +15,15 @@
 
 'use strict';
 
-function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
-  // [START videostitcher_create_cdn_key]
+function main(projectId, cdnKeyId, hostname, akamaiTokenKey) {
+  // [START videostitcher_update_cdn_key_akamai]
   const location = 'us-central1';
-  const hostname = 'cdn.example.com';
-  const keyName = 'cdn-key';
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // cdnKeyId = 'my-cdn-key';
-  // privateKey = 'my-private-key';
+  // akamaiTokenKey = 'my-token-key';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -33,37 +31,31 @@ function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createCdnKey() {
+  async function updateCdnKeyAkamai() {
     // Construct request
     const request = {
-      parent: stitcherClient.locationPath(projectId, location),
       cdnKey: {
+        name: stitcherClient.cdnKeyPath(projectId, location, cdnKeyId),
         hostname: hostname,
+        akamaiCdnKey: {
+          tokenKey: akamaiTokenKey,
+        },
       },
-      cdnKeyId: cdnKeyId,
+      updateMask: {
+        paths: ['hostname', 'akamai_cdn_key'],
+      },
     };
 
-    if (isMediaCdn === 'true') {
-      request.cdnKey.mediaCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    } else {
-      request.cdnKey.googleCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    }
-
-    const [cdnKey] = await stitcherClient.createCdnKey(request);
-    console.log(`CDN key: ${cdnKey.name}`);
+    const [cdnKey] = await stitcherClient.updateCdnKey(request);
+    console.log(`Updated CDN key: ${cdnKey.name}`);
+    console.log(`Updated hostname: ${cdnKey.hostname}`);
   }
 
-  createCdnKey();
-  // [END videostitcher_create_cdn_key]
+  updateCdnKeyAkamai();
+  // [END videostitcher_update_cdn_key_akamai]
 }
 
-// node createCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
+// node updateCdnKeyAkamai.js <projectId> <cdnKeyId> <akamaiTokenKey> <location> <hostname>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

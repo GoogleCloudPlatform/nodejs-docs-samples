@@ -82,6 +82,7 @@
   "service-directory/snippets",
   "secret-manager",
   "speech",
+  "storagetransfer",
   "talent",
   "texttospeech",
   "translate",

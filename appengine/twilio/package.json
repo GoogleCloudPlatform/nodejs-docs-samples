@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "twilio": "^3.34.0"
+    "twilio": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^9.0.0",

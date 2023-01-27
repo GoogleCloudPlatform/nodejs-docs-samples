@@ -12,6 +12,6 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@google-cloud/logging": "^10.0.0",
-    "mocha": "^9.2.0"
+    "mocha": "^10.0.0"
   }
 }

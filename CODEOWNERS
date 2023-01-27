@@ -47,8 +47,9 @@ functions/memorystore @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # SoDa teams
-/cloud-sql/**/*.js @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
-/datastore/**/*.js @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
+cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
+datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
+storagetransfer @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # One-offs
 composer @leahecole @sofisl @GoogleCloudPlatform/nodejs-samples-reviewers

@@ -15,26 +15,17 @@
 
 'use strict';
 
-function main(
-  projectId,
-  location,
-  cdnKeyId,
-  hostname,
-  gCdnKeyname,
-  gCdnPrivateKey,
-  akamaiTokenKey = ''
-) {
+function main(projectId, cdnKeyId, hostname, privateKey, isMediaCdn = true) {
   // [START videostitcher_update_cdn_key]
+  const location = 'us-central1';
+  const keyName = 'cdn-key';
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // location = 'us-central1';
   // cdnKeyId = 'my-cdn-key';
-  // hostname = 'cdn.example.com';
-  // gCdnKeyname = 'gcdn-key';
-  // gCdnPrivateKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
-  // akamaiTokenKey = 'VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg==';
+  // privateKey = 'my-private-key';
+  // isMediaCdn = true;
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -51,17 +42,18 @@ function main(
       },
     };
 
-    if (akamaiTokenKey !== '') {
-      request.cdnKey.akamaiCdnKey = {
-        tokenKey: akamaiTokenKey,
+    if (isMediaCdn === 'true') {
+      request.cdnKey.mediaCdnKey = {
+        keyName: keyName,
+        privateKey: privateKey,
       };
       request.updateMask = {
-        paths: ['hostname', 'akamai_cdn_key'],
+        paths: ['hostname', 'media_cdn_key'],
       };
     } else {
       request.cdnKey.googleCdnKey = {
-        keyName: gCdnKeyname,
-        privateKey: gCdnPrivateKey,
+        keyName: keyName,
+        privateKey: privateKey,
       };
       request.updateMask = {
         paths: ['hostname', 'google_cdn_key'],
@@ -70,13 +62,14 @@ function main(
 
     const [cdnKey] = await stitcherClient.updateCdnKey(request);
     console.log(`Updated CDN key: ${cdnKey.name}`);
+    console.log(`Updated hostname: ${cdnKey.hostname}`);
   }
 
   updateCdnKey();
   // [END videostitcher_update_cdn_key]
 }
 
-// node updateCdnKey.js <projectId> <location> <cdnKeyId> <hostname> <gCdnKeyname> <gCdnPrivateKey> <akamaiTokenKey>
+// node updateCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

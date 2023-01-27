@@ -13,13 +13,13 @@
     "test": "c8 mocha"
   },
   "dependencies": {
-    "@google-cloud/retail": "^2.1.1",
     "@google-cloud/bigquery": "^6.0.0",
+    "@google-cloud/retail": "^2.1.1",
     "@google-cloud/storage": "^6.0.0"
   },
   "devDependencies": {
     "c8": "^7.1.0",
     "chai": "^4.2.0",
-    "mocha": "^8.0.0"
+    "mocha": "^10.2.0"
   }
 }

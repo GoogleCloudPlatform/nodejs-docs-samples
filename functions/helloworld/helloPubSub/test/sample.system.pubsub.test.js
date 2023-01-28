@@ -50,7 +50,8 @@ describe('system tests', () => {
 
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
-    await topic.publishMessage(Buffer.from(name));
+    const data = Buffer.from(name);
+    await topic.publishMessage({data});
 
     console.log(`published topic ${topicName}, ${name}`);
 
@@ -76,7 +77,8 @@ describe('system tests', () => {
 
     // Publish to pub/sub topic
     const topic = pubsub.topic(topicName);
-    await topic.publishMessage(Buffer.from(''), {a: 'b'});
+    const data = Buffer.from('');
+    await topic.publishMessage({data}, {a: 'b'});
 
     // Wait for logs to become consistent
     await promiseRetry(retry => {

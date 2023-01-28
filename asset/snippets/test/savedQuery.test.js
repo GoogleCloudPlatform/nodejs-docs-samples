@@ -41,10 +41,10 @@ describe('saved query sample tests', () => {
     console.log.restore();
     console.error.restore();
   };
-  
+
   beforeEach(stubConsole);
   afterEach(restoreConsole);
-  
+
   before(async () => {
     const projectId = await instancesClient.getProjectId();
     const projectRequest = {

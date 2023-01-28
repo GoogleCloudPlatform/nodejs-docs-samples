@@ -29,6 +29,7 @@ function sleep(ms) {
 describe('asset sample tests', () => {
   let bucket;
   let bucketName;
+  let fileSuffix;
   const suffix = uuid.v4();
 
   before(async () => {
@@ -110,7 +111,8 @@ describe('asset sample tests', () => {
   });
 
   it.skip('should list asset relationship successfully', async () => {
-    const stdout = execSync(`node listAssets '' 'RELATIONSHIP'`);
+    const assetType = ''
+    const stdout = execSync(`node listAssets ${assetType} 'RELATIONSHIP'`);
     assert.include(stdout, 'relatedAsset');
   });
 });

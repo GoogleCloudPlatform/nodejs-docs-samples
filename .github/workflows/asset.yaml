@@ -54,9 +54,9 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: asset
+      working-directory: asset/snippets
     - run: npm test
-      working-directory: asset
+      working-directory: asset/snippets
       env:
         MOCHA_REPORTER_SUITENAME: asset
         MOCHA_REPORTER_OUTPUT: asset_sponge_log.xml

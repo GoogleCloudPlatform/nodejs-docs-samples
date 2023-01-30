@@ -24,7 +24,7 @@ const appPath = path.join(__dirname, '../app.js');
 describe('server listening', () => {
   it('should be listening', async () => {
     spawn('node', [appPath]);
-    const isOpen = await waitPort({port: PORT});
-    assert(isOpen);
+    const returnObject = await waitPort({port: PORT});
+    expect(returnObject.open).to.be.true;
   });
 });

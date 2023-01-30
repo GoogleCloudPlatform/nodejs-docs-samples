@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const waitPort = require('wait-port');
-const assert = require('assert');
+const {expect} = require('chai');
 const {spawn} = require('child_process');
 const path = require('path');
 
@@ -23,8 +23,9 @@ const appPath = path.join(__dirname, '../app.js');
 
 describe('server listening', () => {
   it('should be listening', async () => {
-    spawn('node', [appPath]);
+    server = spawn('node', [appPath]);
     const returnObject = await waitPort({port: PORT});
     expect(returnObject.open).to.be.true;
+    server.kill();
   });
 });

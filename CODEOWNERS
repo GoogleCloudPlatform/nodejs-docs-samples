@@ -6,7 +6,7 @@
 
 # Kokoro
 .kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/appengine @GoogleCloudPlatform/torus-dpe @ace-n @GoogleCloudPlatform/nodejs-docs-samples-owners
+.kokoro/appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
 .kokoro/functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Serverless, Orchestration, DevOps
@@ -44,7 +44,7 @@ monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-sam
 functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-samples-reviewers 
 functions/memorystore @GoogleCloudPlatform/nodejs-samples-reviewers
-functions/spanner @jsimonweb @GoogleCloudPlatform/nodejs-samples-reviewers
+functions/spanner @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # SoDa teams
 cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers

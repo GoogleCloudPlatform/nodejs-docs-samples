@@ -8,7 +8,6 @@ services:
       args:
         - "GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}"
         - "SITE_KEY=${SITE_KEY}"
-        - "CHECKBOX_SITE_KEY=${CHECKBOX_SITE_KEY}"
     command: node index.js
     ports: ["8080:8080"]
     volumes:

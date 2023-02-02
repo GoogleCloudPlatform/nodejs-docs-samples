@@ -27,8 +27,8 @@ const PORT = parseInt(process.env.PORT) || 8080;
 describe('server listening', () => {
   it('should be listening', async () => {
     const child = childProcess.exec(`node ${appPath} -p ${PORT}`);
-    const isOpen = await waitPort({port: PORT});
-    expect(isOpen).to.be.true;
+    const returnObject = await waitPort({port: PORT});
+    expect(returnObject.open).to.be.true;
     process.kill(child.pid, 'SIGTERM');
   });
 });

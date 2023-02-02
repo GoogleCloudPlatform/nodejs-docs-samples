@@ -15,21 +15,31 @@
 const {RecaptchaEnterpriseServiceClient} =
   require('@google-cloud/recaptcha-enterprise').v1;
 
-const THRESHHOLD_SCORE = 0.50;
+const SAMPLE_THRESHOLD_SCORE = 0.50;
 
+/**
+ * Create an assessment to analyze the risk of a UI action.
+ * @param projectId: GCloud Project ID
+ * @param recaptchaSiteKey: Site key obtained by registering a domain/app to use recaptcha services.
+ * @param token: The token obtained from the client on passing the recaptchaSiteKey.
+ * @param recaptchaAction: Action name corresponding to the token.
+ * @return {Promise<{score: *, verdict: string}>}
+ */
 async function createAssessment(
   projectId,
-  recaptchSiteKey,
+  recaptchaSiteKey,
   token,
   recaptchaAction
 ) {
+  // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
 
+  // Build the assessment request.
   const [response] = await client.createAssessment({
     parent: `projects/${projectId}`,
     assessment: {
       event: {
-        siteKey: recaptchSiteKey,
+        siteKey: recaptchaSiteKey,
         token,
       },
     },
@@ -48,24 +58,13 @@ async function createAssessment(
       'The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !'
     );
   }
+  // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-  // Get the risk score and the reason(s)
-  // For more information on interpreting the assessment,
-  // see https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment
-  for (const reason of response.riskAnalysis.reasons) {
-    console.log(reason);
-  }
-
-  console.log(
-    `The reCAPTCHA score for this token is: ${response.riskAnalysis.score}`
-  );
-
+  // Return the risk score.
   let verdict = 'Human';
-
-  if (response.riskAnalysis.score < THRESHHOLD_SCORE) {
+  if (response.riskAnalysis.score < SAMPLE_THRESHOLD_SCORE) {
     verdict = 'Not a human';
   }
-
   return {
     score: response.riskAnalysis.score,
     verdict,

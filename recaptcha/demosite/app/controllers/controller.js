@@ -44,12 +44,14 @@ const gameController = (req, res) => {
 const {createAssessment} = require('../recaptcha/createAssessment');
 const assessmentController = async (req, res) => {
   try {
+    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentData = await createAssessment(
         process.env.GOOGLE_CLOUD_PROJECT,
         req.body.sitekey,
         req.body.token,
         req.body.action
     );
+    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     res.json({
       data: assessmentData,

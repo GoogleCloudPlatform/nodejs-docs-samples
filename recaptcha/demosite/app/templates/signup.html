@@ -60,13 +60,13 @@
     <script type="text/javascript" src="../static/scripts/global.js"></script>
     <!-- ATTENTION: reCAPTCHA Example (Part 1) Starts -->
     <!-- See https://cloud.google.com/recaptcha-enterprise/docs/instrument-web-pages#html-button -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render={{context.site_key}}"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render={{site_key}}"></script>
     <script type="text/javascript">
       async function handleToken(token) {
         // See https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
         const score = await createAssessment({
           action: "sign_up",
-          sitekey: "{{context.site_key}}",
+          sitekey: "{{site_key}}",
           token,
         });
         useAssessment(score);
@@ -81,7 +81,7 @@
         class="g-recaptcha"
         data-action="sign_up"
         data-callback="handleToken"
-        data-sitekey="{{context.site_key}}"
+        data-sitekey="{{site_key}}"
         disabled="disabled"
       >
         Sign up

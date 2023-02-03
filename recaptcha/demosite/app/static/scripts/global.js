@@ -39,6 +39,10 @@ function fetchDemoAssessment({ action, sitekey, token }) {
     },
   });
   return fetch("/create_assessment", {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
     body,
     method: "POST",
   })

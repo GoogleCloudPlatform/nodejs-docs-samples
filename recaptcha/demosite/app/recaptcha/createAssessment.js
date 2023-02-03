@@ -40,7 +40,7 @@ async function createAssessment(
     assessment: {
       event: {
         siteKey: recaptchaSiteKey,
-        token,
+        token: token,
       },
     },
   });

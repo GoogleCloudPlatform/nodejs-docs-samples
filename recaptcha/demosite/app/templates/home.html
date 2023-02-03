@@ -60,11 +60,11 @@
     <script type="text/javascript" src="../static/scripts/global.js"></script>
     <!-- ATTENTION: reCAPTCHA Example (Part 1) Starts -->
     <!-- SEE: https://cloud.google.com/recaptcha-enterprise/docs/instrument-web-pages#page-load -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render={{context.site_key}}"></script>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render={{site_key}}"></script>
     <script type="text/javascript">
       grecaptcha.enterprise.ready(async () => {
         const token = await grecaptcha.enterprise.execute(
-          "{{context.site_key}}",
+          "{{site_key}}",
           {
             action: "home",
           }
@@ -72,7 +72,7 @@
         // SEE: https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
         const score = await createAssessment({
           action: "home",
-          sitekey: "{{context.site_key}}",
+          sitekey: "{{site_key}}",
           token,
         });
         useAssessment(score);

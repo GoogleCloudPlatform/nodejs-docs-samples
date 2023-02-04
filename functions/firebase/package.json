@@ -16,9 +16,9 @@
     "proxyquire": "^2.1.0",
     "sinon": "^15.0.0",
     "supertest": "^6.0.0",
-    "uuid": "^8.0.0"
+    "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^5.0.0"
+    "@google-cloud/firestore": "^6.0.0"
   }
 }

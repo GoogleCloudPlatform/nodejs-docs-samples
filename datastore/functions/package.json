@@ -23,7 +23,7 @@
     "node-fetch": "^2.6.1",
     "proxyquire": "^2.1.0",
     "sinon": "^15.0.0",
-    "uuid": "^8.0.0",
+    "uuid": "^9.0.0",
     "wait-port": "^1.0.4"
   }
 }

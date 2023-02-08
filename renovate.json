@@ -1,8 +1,8 @@
 {
   "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
+    "config:base"
   ],
+  "dependencyDashboardAutoclose": true,  
   "pinVersions": false,
   "rebaseStalePrs": false
 }

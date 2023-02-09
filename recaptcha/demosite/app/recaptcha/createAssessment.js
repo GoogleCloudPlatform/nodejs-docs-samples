@@ -66,7 +66,7 @@ async function createAssessment(
     verdict = 'Not a human';
   }
   return {
-    score: response.riskAnalysis.score,
+    score: response.riskAnalysis.score.toFixed(1),
     verdict,
   };
 }

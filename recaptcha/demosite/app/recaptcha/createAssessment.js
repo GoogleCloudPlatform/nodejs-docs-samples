@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { RecaptchaEnterpriseServiceClient } =
-  require("@google-cloud/recaptcha-enterprise").v1;
+const {RecaptchaEnterpriseServiceClient} =
+    require('@google-cloud/recaptcha-enterprise').v1;
 
 const SAMPLE_THRESHOLD_SCORE = 0.5;
 
@@ -48,22 +48,22 @@ async function createAssessment(
   // Check if the token is valid.
   if (!response.tokenProperties || !response.tokenProperties.valid) {
     throw new Error(
-      `The Create Assessment call failed because the token was invalid for the following reasons: ${response.tokenProperties.invalidReason}`
+        `The Create Assessment call failed because the token was invalid for the following reasons: ${response.tokenProperties.invalidReason}`
     );
   }
 
   // Check if the expected action was executed.
   if (response.tokenProperties.action !== recaptchaAction) {
     throw new Error(
-      "The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !"
+        'The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !'
     );
   }
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
   // Return the risk score.
-  let verdict = "Human";
+  let verdict = 'Human';
   if (response.riskAnalysis.score < SAMPLE_THRESHOLD_SCORE) {
-    verdict = "Not a human";
+    verdict = 'Not a human';
   }
   return {
     score: response.riskAnalysis.score,

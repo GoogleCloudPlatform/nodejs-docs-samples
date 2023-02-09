@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const express = require("express");
-const mustacheExpress = require("mustache-express");
-const bodyParser = require("body-parser");
+const express = require('express');
+const mustacheExpress = require('mustache-express');
+const bodyParser = require('body-parser');
 
-const router = require("./routes");
+const router = require('./routes');
 
 const app = express();
 const port = 8080;
@@ -28,12 +28,12 @@ app.use(
 );
 app.use(bodyParser.json());
 
-app.engine("html", mustacheExpress());
-app.set("view engine", "html");
-app.set("views", __dirname + "/templates");
+app.engine('html', mustacheExpress());
+app.set('view engine', 'html');
+app.set('views', __dirname + '/templates');
 
-app.use("/static", express.static("static"));
-app.use("/", router);
+app.use('/static', express.static('static'));
+app.use('/', router);
 
 app.listen(port, () => {
   console.log(`ReCAPTCHA Demosite app listening on port ${port}`);

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
 const {
@@ -23,14 +23,14 @@ const {
   commentController,
   gameController,
   assessmentController,
-} = require("./controllers/controller");
+} = require('./controllers/controller');
 
-router.get("/", homeController);
-router.get("/store", storeController);
-router.get("/login", loginController);
-router.get("/comment", commentController);
-router.get("/signup", signupController);
-router.get("/game", gameController);
-router.post("/create_assessment", assessmentController);
+router.get('/', homeController);
+router.get('/store', storeController);
+router.get('/login', loginController);
+router.get('/comment', commentController);
+router.get('/signup', signupController);
+router.get('/game', gameController);
+router.post('/create_assessment', assessmentController);
 
 module.exports = router;

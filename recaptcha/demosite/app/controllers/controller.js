@@ -18,38 +18,38 @@ const context = {
 };
 
 const homeController = (req, res) => {
-  res.render("home", context);
+  res.render('home', context);
 };
 
 const storeController = (req, res) => {
-  res.render("store", context);
+  res.render('store', context);
 };
 
 const loginController = (req, res) => {
-  res.render("login", context);
+  res.render('login', context);
 };
 
 const commentController = (req, res) => {
-  res.render("comment", context);
+  res.render('comment', context);
 };
 
 const signupController = (req, res) => {
-  res.render("signup", context);
+  res.render('signup', context);
 };
 
 const gameController = (req, res) => {
-  res.render("game", context);
+  res.render('game', context);
 };
 
-const { createAssessment } = require("../recaptcha/createAssessment");
+const {createAssessment} = require('../recaptcha/createAssessment');
 const assessmentController = async (req, res) => {
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentData = await createAssessment(
-        process.env.GOOGLE_CLOUD_PROJECT,
-        context.site_key,
-        req.body.recaptcha_cred.token,
-        req.body.recaptcha_cred.action
+      process.env.GOOGLE_CLOUD_PROJECT,
+      context.site_key,
+      req.body.recaptcha_cred.token,
+      req.body.recaptcha_cred.action
     );
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 

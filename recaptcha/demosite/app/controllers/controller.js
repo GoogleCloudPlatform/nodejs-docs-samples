@@ -47,7 +47,7 @@ const assessmentController = async (req, res) => {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentData = await createAssessment(
         process.env.GOOGLE_CLOUD_PROJECT,
-        req.body.recaptcha_cred.sitekey,
+        context.site_key,
         req.body.recaptcha_cred.token,
         req.body.recaptcha_cred.action
     );

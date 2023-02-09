@@ -15,7 +15,7 @@
 const {RecaptchaEnterpriseServiceClient} =
   require('@google-cloud/recaptcha-enterprise').v1;
 
-const SAMPLE_THRESHOLD_SCORE = 0.50;
+const SAMPLE_THRESHOLD_SCORE = 0.5;
 
 /**
  * Create an assessment to analyze the risk of a UI action.

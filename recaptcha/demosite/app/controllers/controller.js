@@ -72,5 +72,5 @@ module.exports = {
   commentController,
   signupController,
   gameController,
-  assessmentController
+  assessmentController,
 };

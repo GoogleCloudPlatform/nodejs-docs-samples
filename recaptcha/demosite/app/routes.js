@@ -15,16 +15,22 @@
 const express = require('express');
 const router = express.Router();
 
-const {homeController, loginController, signupController, storeController,
-  commentController, gameController, assessmentController
-} = require('./controllers/controller')
+const {
+  homeController,
+  loginController,
+  signupController,
+  storeController,
+  commentController,
+  gameController,
+  assessmentController,
+} = require('./controllers/controller');
 
 router.get('/', homeController);
-router.get('/store', storeController)
+router.get('/store', storeController);
 router.get('/login', loginController);
-router.get('/comment', commentController)
+router.get('/comment', commentController);
 router.get('/signup', signupController);
-router.get('/game', gameController)
+router.get('/game', gameController);
 router.post('/create_assessment', assessmentController);
 
 module.exports = router;

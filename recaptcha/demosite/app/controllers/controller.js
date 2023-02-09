@@ -46,10 +46,10 @@ const assessmentController = async (req, res) => {
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentData = await createAssessment(
-        process.env.GOOGLE_CLOUD_PROJECT,
-        context.site_key,
-        req.body.recaptcha_cred.token,
-        req.body.recaptcha_cred.action
+      process.env.GOOGLE_CLOUD_PROJECT,
+      context.site_key,
+      req.body.recaptcha_cred.token,
+      req.body.recaptcha_cred.action
     );
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 

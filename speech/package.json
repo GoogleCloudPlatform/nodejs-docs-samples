@@ -26,7 +26,7 @@
     "protobufjs": "^7.0.0",
     "sinon": "^15.0.0",
     "sox": "^0.1.0",
-    "yargs": "^16.0.0"
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "c8": "^7.0.0",

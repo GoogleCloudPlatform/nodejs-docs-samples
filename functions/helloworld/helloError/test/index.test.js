@@ -25,7 +25,7 @@ describe('index.test.js', () => {
       });
     });
   });
-  
+
   describe('functions_helloworld_error_2', () => {
     describe('Error handling (unit tests)', () => {
       it('helloError2: should throw a value', () => {
@@ -33,7 +33,7 @@ describe('index.test.js', () => {
       });
     });
   });
-  
+
   describe('functions_helloworld_error_3', () => {
     describe('Error handling (unit tests)', () => {
       it('helloError3: callback should return an errback value', () => {

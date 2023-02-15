@@ -16,12 +16,12 @@ import re
 import subprocess
 from pathlib import Path
 
-import synthtool.languages.node_mono_repo as node
+# import synthtool.languages.node_mono_repo as node
 from synthtool import shell
 from synthtool.log import logger
 
 _TOOLS_DIRECTORY = "/synthtool"
-_EXCLUDED_DIRS = [r"node_modules", r"^\.", r"nodejs-docs-samples/package.json$"]
+_EXCLUDED_DIRS = [r"node_modules", r"^\."]
 
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
@@ -46,7 +46,8 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
             else:
                 raise e
     for path_object in dir.glob("**/package.json"):
-        if path_object.is_file() and not re.search(
+        object_dir = str(Path(path_object).parents[0])
+        if path_object.is_file() and object_dir != str(dir) and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
             if search_for_changed_files:
@@ -57,14 +58,14 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
                             "diff",
                             "--quiet",
                             "main...",
-                            Path(path_object).parents[0],
+                            object_dir
                         ]
                     ).returncode
                     == 1
                 ):
-                    owlbot_dirs.append(str(Path(path_object).parents[0]))
+                    owlbot_dirs.append(object_dir)
             else:
-                owlbot_dirs.append(str(Path(path_object).parents[0]))
+                owlbot_dirs.append(object_dir)
     for path_object in dir.glob("owl-bot-staging/*"):
         owlbot_dirs.append(
             f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
@@ -95,6 +96,26 @@ def typeless_samples_hermetic(output_path: str, targets: str, hide_output: bool=
         hide_output=hide_output,
     )
 
+def fix_hermetic(relative_dir, hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library. It assumes that gts
+    is already installed in a well known location on disk (node_modules/.bin).
+    """
+#    logger.debug("Copy eslint config")
+#    shell.run(
+#        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+#        cwd=relative_dir,
+#        check=True,
+#        hide_output=hide_output,
+#    )
+    logger.debug("Running fix...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/eslint", "--fix"],
+        cwd=relative_dir,
+        check=False,
+        hide_output=hide_output,
+    )
+
 # Retrieve list of directories
 dirs: list[str] = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=True)
 for d in dirs:
@@ -102,4 +123,4 @@ for d in dirs:
     # Run typeless bot to convert from TS -> JS
     typeless_samples_hermetic(output_path=d, targets=d)
     # Apply source code fixes
-    # node.fix_hermetic(relative_dir=d)
+    fix_hermetic(relative_dir=d)

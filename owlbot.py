@@ -16,11 +16,12 @@ import re
 import subprocess
 from pathlib import Path
 
-import synthtool.languages.node as node
+import synthtool.languages.node_mono_repo as node
 from synthtool import shell
 from synthtool.log import logger
 
 _TOOLS_DIRECTORY = "/synthtool"
+_EXCLUDED_DIRS = [r"node_modules", r"^\.", r"nodejs-docs-samples/package.json$"]
 
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
@@ -30,7 +31,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
     A list of directories
     """
     owlbot_dirs: list[str] = []
-    packages_to_exclude = [r"node_modules", r"^\."]
+    packages_to_exclude = _EXCLUDED_DIRS
     if search_for_changed_files:
         try:
             # Need to run this step first in the post processor since we only clone
@@ -44,7 +45,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
                 logger.info(f"Error: ${e.output}; skipping fetching main")
             else:
                 raise e
-    for path_object in dir.glob("/**/*test"):
+    for path_object in dir.glob("**/package.json"):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
@@ -101,4 +102,4 @@ for d in dirs:
     # Run typeless bot to convert from TS -> JS
     typeless_samples_hermetic(output_path=d, targets=d)
     # Apply source code fixes
-    node.fix_hermetic(relative_dir=d)
+    # node.fix_hermetic(relative_dir=d)

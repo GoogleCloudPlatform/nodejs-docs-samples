@@ -14,7 +14,7 @@
 
 'use strict';
 
-import { CloudSchedulerClient } from "@google-cloud/scheduler";
+import {CloudSchedulerClient} from '@google-cloud/scheduler';
 
 const {assert} = require('chai');
 // const {describe, it, before, after} = require('mocha');

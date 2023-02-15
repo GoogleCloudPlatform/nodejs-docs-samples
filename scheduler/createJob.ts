@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {CloudSchedulerClient, protos} from '@google-cloud/scheduler';
 // sample-metadata:
 //   title: Create Job
 //   description: Create a job that posts to /log_payload on an App Engine service.
 //   usage: node createJob.js [project-id] [location-id] [app-engine-service-id]
+
+import {protos, CloudSchedulerClient} from '@google-cloud/scheduler';
 
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
@@ -54,7 +55,6 @@ async function createJob(
     timeZone: 'America/Los_Angeles',
   };
 
-  // TODO: fix namespace
   const request: protos.google.cloud.scheduler.v1.ICreateJobRequest = {
     parent: parent,
     job: job,

@@ -14,25 +14,26 @@
 
 'use strict';
 
-const {CloudSchedulerClient} = require('@google-cloud/scheduler');
+import { CloudSchedulerClient } from "@google-cloud/scheduler";
+
 const {assert} = require('chai');
 // const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 
-const client = new CloudSchedulerClient();
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const client: CloudSchedulerClient = new CloudSchedulerClient();
+const execSync = (cmd: String) => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
-  let PROJECT_ID, stdout;
+  let PROJECT_ID: String, stdout: String;
 
   before(async () => {
     PROJECT_ID = await client.getProjectId();
   });
 
   after(async () => {
-    const jobName = stdout && stdout.trim().split(' ').slice(-1);
+    const jobName = (stdout && stdout.trim().split(' ').slice(-1))[0];
     if (jobName) {
       await client.deleteJob({name: jobName});
     }
@@ -40,7 +41,7 @@ describe('Cloud Scheduler Sample Tests', () => {
 
   it('should create a scheduler job', async () => {
     stdout = execSync(
-      `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
+      `node --loader ts-node/esm createJob.ts ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);
   });

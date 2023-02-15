@@ -1,15 +1,8 @@
 {
     "compilerOptions": {
-      "module": "esnext",
-      "target": "esnext",
+      "target": "ESNext",
       "strict": true,
       "noImplicitAny": false,
-      "lib": ["esnext", "es6", "dom", "dom.iterable"],
-      "moduleResolution": "Node",
-      "jsx": "preserve",
-      "esModuleInterop": true,
-      "experimentalDecorators": true
-    },
-    "include": ["**/*", "src/**/*"],
-    "exclude": ["node_modules", "./dist"]
+      "moduleResolution": "node",
+    }
   }

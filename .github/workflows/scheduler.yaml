@@ -41,6 +41,8 @@ jobs:
         node-version: 16
     - run: npm install
       working-directory: scheduler
+    - run: npm build
+      working-directory: scheduler
     - run: npm test
       working-directory: scheduler
       env:

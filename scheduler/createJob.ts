@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CloudSchedulerClient, protos } from "@google-cloud/scheduler";
+import {CloudSchedulerClient, protos} from '@google-cloud/scheduler';
 // sample-metadata:
 //   title: Create Job
 //   description: Create a job that posts to /log_payload on an App Engine service.
@@ -21,12 +21,16 @@ import { CloudSchedulerClient, protos } from "@google-cloud/scheduler";
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
-async function createJob(projectId: string, locationId: string, serviceId: string) {
+async function createJob(
+  projectId: string,
+  locationId: string,
+  serviceId: string
+) {
   // [START cloudscheduler_create_job]
   const scheduler = require('@google-cloud/scheduler');
 
   // Create a client.
-  const client:CloudSchedulerClient = new scheduler.CloudSchedulerClient();
+  const client: CloudSchedulerClient = new scheduler.CloudSchedulerClient();
 
   // TODO(developer): Uncomment and set the following variables
   // const projectId = "PROJECT_ID"

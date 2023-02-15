@@ -13,4 +13,10 @@
 # limitations under the License.
 docker:
   image: gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest
-  
+
+deep-remove-regex:
+  - /owl-bot-staging
+
+deep-copy-regex:
+  - source: (.*)/(.*).js
+    dest: /owl-bot-staging/$1/$2

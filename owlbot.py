@@ -16,7 +16,6 @@ import re
 import subprocess
 from pathlib import Path
 
-# import synthtool.languages.node_mono_repo as node
 from synthtool import shell
 from synthtool.log import logger
 
@@ -96,25 +95,6 @@ def typeless_samples_hermetic(output_path: str, targets: str, hide_output: bool=
         hide_output=hide_output,
     )
 
-def fix_hermetic(relative_dir, hide_output=False):
-    """
-    Fixes the formatting in the current Node.js library. It assumes that gts
-    is already installed in a well known location on disk (node_modules/.bin).
-    """
-#    logger.debug("Copy eslint config")
-#    shell.run(
-#        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
-#        cwd=relative_dir,
-#        check=True,
-#        hide_output=hide_output,
-#    )
-    logger.debug("Running fix...")
-    shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/eslint", "--fix"],
-        cwd=relative_dir,
-        check=False,
-        hide_output=hide_output,
-    )
 
 # Retrieve list of directories
 dirs: list[str] = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=True)
@@ -122,5 +102,3 @@ for d in dirs:
     logger.debug(f"Directory: {d}")
     # Run typeless bot to convert from TS -> JS
     typeless_samples_hermetic(output_path=d, targets=d)
-    # Apply source code fixes
-    fix_hermetic(relative_dir=d)

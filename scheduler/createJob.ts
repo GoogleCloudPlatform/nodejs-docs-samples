@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { CloudSchedulerClient, protos } from "@google-cloud/scheduler";
 // sample-metadata:
 //   title: Create Job
 //   description: Create a job that posts to /log_payload on an App Engine service.
@@ -20,12 +21,12 @@
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
-async function createJob(projectId, locationId, serviceId) {
+async function createJob(projectId: string, locationId: string, serviceId: string) {
   // [START cloudscheduler_create_job]
   const scheduler = require('@google-cloud/scheduler');
 
   // Create a client.
-  const client = new scheduler.CloudSchedulerClient();
+  const client:CloudSchedulerClient = new scheduler.CloudSchedulerClient();
 
   // TODO(developer): Uncomment and set the following variables
   // const projectId = "PROJECT_ID"
@@ -33,10 +34,10 @@ async function createJob(projectId, locationId, serviceId) {
   // const serviceId = "my-serivce"
 
   // Construct the fully qualified location path.
-  const parent = client.locationPath(projectId, locationId);
+  const parent: string = client.locationPath(projectId, locationId);
 
   // Construct the request body.
-  const job = {
+  const job: protos.google.cloud.scheduler.v1.IJob = {
     appEngineHttpTarget: {
       appEngineRouting: {
         service: serviceId,
@@ -49,19 +50,21 @@ async function createJob(projectId, locationId, serviceId) {
     timeZone: 'America/Los_Angeles',
   };
 
-  const request = {
+  // TODO: fix namespace
+  const request: protos.google.cloud.scheduler.v1.ICreateJobRequest = {
     parent: parent,
     job: job,
   };
 
   // Use the client to send the job creation request.
   const [response] = await client.createJob(request);
+  // await client.createJob(request);
   console.log(`Created job: ${response.name}`);
   // [END cloudscheduler_create_job]
 }
 
 const args = process.argv.slice(2);
-createJob(...args).catch(err => {
+createJob(args[0], args[1], args[2]).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

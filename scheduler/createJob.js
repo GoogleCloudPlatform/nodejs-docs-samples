@@ -62,7 +62,6 @@ serviceId)
 
   // Use the client to send the job creation request.
   const [response] = await client.createJob(request);
-  // await client.createJob(request);
   console.log(`Created job: ${response.name}`);
   // [END cloudscheduler_create_job]
 }

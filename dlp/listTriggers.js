@@ -61,7 +61,7 @@ function main(projectId) {
   }
 
   listTriggers();
-  // [END dlp_list_trigger]
+  // [END dlp_list_triggers]
 }
 
 main(...process.argv.slice(2));

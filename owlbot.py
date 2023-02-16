@@ -21,6 +21,7 @@ from synthtool.log import logger
 
 _TOOLS_DIRECTORY = "/synthtool"
 _EXCLUDED_DIRS = [r"node_modules", r"^\."]
+_TYPELESS_EXPRESSION = "s/export {};$//"
 
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
@@ -94,6 +95,17 @@ def typeless_samples_hermetic(output_path: str, targets: str, hide_output: bool=
         check=False,
         hide_output=hide_output,
     )
+    shell.run(
+        [
+            "sed",
+            "-e",
+            _TYPELESS_EXPRESSION,
+            f"{targets}/*.js"
+        ],
+        check=False,
+        hide_output=hide_output,
+    )
+
 
 
 # Retrieve list of directories

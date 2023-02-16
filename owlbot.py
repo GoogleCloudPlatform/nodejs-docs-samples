@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -21,8 +22,7 @@ from synthtool.log import logger
 
 _TOOLS_DIRECTORY = "/synthtool"
 _EXCLUDED_DIRS = [r"node_modules", r"^\."]
-_TYPELESS_EXPRESSION = "s/export {};$//"
-
+_TYPELESS_EXPRESSION = "s/export {};$/\\n/"
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
     """
@@ -95,17 +95,21 @@ def typeless_samples_hermetic(output_path: str, targets: str, hide_output: bool=
         check=False,
         hide_output=hide_output,
     )
-    shell.run(
-        [
-            "sed",
-            "-e",
-            _TYPELESS_EXPRESSION,
-            f"{targets}/*.js"
-        ],
-        check=False,
-        hide_output=hide_output,
+    logger.debug("Trim generated files")
+    for file in os.listdir(f"{targets}"):
+        if file.endswith(".js"):
+            logger.debug(f"Updating {targets}/{file}")
+            shell.run(
+            [
+                "sed",
+                "-i",
+                "-e",
+                _TYPELESS_EXPRESSION,
+                f"{targets}/{file}",
+            ],
+            check=False,
+            hide_output=hide_output,
     )
-
 
 
 # Retrieve list of directories

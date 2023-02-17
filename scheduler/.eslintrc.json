@@ -1,6 +1,10 @@
 {
+  "extends": "./node_modules/gts/",  
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module"
+  },
+  "rules": {
+    "node/no-unsupported-features/es-syntax": ["off"]
   }
 }

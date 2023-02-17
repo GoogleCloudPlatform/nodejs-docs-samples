@@ -25,6 +25,7 @@ function main(conversationName) {
   // Imports the Contact Center Insights client.
   const {
     ContactCenterInsightsClient,
+    // eslint-disable-next-line node/no-missing-require
   } = require('@google-cloud/contact-center-insights');
 
   // Instantiates a client.

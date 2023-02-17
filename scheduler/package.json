@@ -11,10 +11,11 @@
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit",
-    "lint": "gts lint",
+    "build": "tsc",
     "fix": "gts fix",
-    "posttest": "npm run lint"
+    "lint": "gts lint",
+    "posttest": "npm run lint",
+    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit"
   },
   "dependencies": {
     "@google-cloud/scheduler": "^3.0.5",

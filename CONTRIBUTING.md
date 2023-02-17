@@ -30,7 +30,7 @@ For new samples, a GitHub Actions workflow should be created to run your tests o
 
 1. Add an entry to [.github/workflows/workflows.json](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows/workflows.json) matching the directory with your sample code.
 
-2. From the root of the repo, generate a new workflow in the [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows) directory. You can specify a `path` to only generate the specific workflow, e.g. `cloud-tasks`. If the path is omitted, all workflows will be generated.
+1. From the root of the repo, generate a new workflow in the [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows) directory. You can specify a `path` to only generate the specific workflow, e.g. `cloud-tasks`. If the path is omitted, all workflows will be generated.
 
         node .github/workflows/generate.js [path]
 
@@ -48,7 +48,7 @@ This repository also supports TypeScript samples. We use the [typeless-sample-bo
 
 If you choose to write a TypeScript based sample, please follow these guidelines:
 
-* **Testing**: Use a `.ts` test runner, which is executed by the `npm test` command `mocha --require ts-node/register test/*.ts` in `package.json`.
+* **Testing**: Use a `.ts` test runner, which is executed by the `npm test` command `mocha --require ts-node/register test/*.ts` in `package.json`. **Do not** check in any generated `.js` tests from running `npm build`.
 * **Imports** Use an `import` statement at the beginning of the file to enable importing types. Within each "region tag," import required libraries with `required`. Each of these region tag sections are directly embedded in the Cloud documentation, so the imports help show our users which libraries are needed.
 * **Linting** See the example [.eslintrc.yml](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/scheduler/.eslintrc.yml).
 * **JavaScript** Do not modify any `.js` files. The [typeless-sample-bot](https://github.com/googleapis/google-cloud-node/tree/main/packages/typeless-sample-bot) will overwrite them as it converts from TypeScript into JavaScript. 

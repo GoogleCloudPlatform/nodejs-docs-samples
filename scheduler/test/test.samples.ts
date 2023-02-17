@@ -16,6 +16,7 @@
 
 import {CloudSchedulerClient} from '@google-cloud/scheduler';
 import {assert} from 'chai';
+import {after, before, describe, it} from 'mocha';
 import * as cp from 'child_process';
 
 const client: CloudSchedulerClient = new CloudSchedulerClient();

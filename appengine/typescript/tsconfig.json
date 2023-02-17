@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true
-  },
-  "include": [
-    "*.ts"
-  ]
+  }
 }

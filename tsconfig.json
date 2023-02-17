@@ -3,6 +3,10 @@
       "target": "ESNext",
       "strict": true,
       "noImplicitAny": false,
+      "esModuleInterop": true,      
       "moduleResolution": "node",
-    }
+    },
+    "include": [
+      "**/*.ts"
+    ]  
   }

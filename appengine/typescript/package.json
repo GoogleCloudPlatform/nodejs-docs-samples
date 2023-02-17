@@ -9,26 +9,27 @@
     "node": "16.x.x"
   },
   "scripts": {
-    "prepare": "npm run gcp-build",
-    "pretest": "npm run gcp-build",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
     "test": "mocha test/*.test.js --exit",
     "posttest": "npm run lint",
-    "lint": "tslint -p .",
+    "lint": "gts lint",
     "start": "node ./index.js",
-    "gcp-build": "tsc -p .",
-    "deploy": "gcloud app deploy"
+    "deploy": "gcloud app deploy",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix"
   },
   "dependencies": {
-    "express": "^4.16.3",
-    "typescript": "^4.0.0"
+    "express": "^4.16.3"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
-    "@types/express": "^4.16.0",
-    "@types/node": "^14.14.7",
-    "chai": "^4.2.0",
-    "tslint": "^6.0.0",
-    "typescript": "^4.0.0",
-    "wait-port": "^1.0.0"
+    "mocha": "^10.2.0",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.13.0",
+    "chai": "^4.3.7",
+    "typescript": "^4.9.5",
+    "wait-port": "^1.0.0",
+    "gts": "^3.1.1"
   }
 }

@@ -17,16 +17,10 @@
 //   description: Create a job that posts to /log_payload on an App Engine service.
 //   usage: node createJob.js [project-id] [location-id] [app-engine-service-id]
 
-
-
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
-async function createJob(
-projectId,
-locationId,
-serviceId)
-{
+async function createJob(projectId, locationId, serviceId) {
   // [START cloudscheduler_create_job]
   const scheduler = require('@google-cloud/scheduler');
 
@@ -45,19 +39,19 @@ serviceId)
   const job = {
     appEngineHttpTarget: {
       appEngineRouting: {
-        service: serviceId
+        service: serviceId,
       },
       relativeUri: '/log_payload',
       httpMethod: 'POST',
-      body: Buffer.from('Hello World')
+      body: Buffer.from('Hello World'),
     },
     schedule: '* * * * *',
-    timeZone: 'America/Los_Angeles'
+    timeZone: 'America/Los_Angeles',
   };
 
   const request = {
     parent: parent,
-    job: job
+    job: job,
   };
 
   // Use the client to send the job creation request.
@@ -67,7 +61,7 @@ serviceId)
 }
 
 const args = process.argv.slice(2);
-createJob(args[0], args[1], args[2]).catch((err) => {
+createJob(args[0], args[1], args[2]).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

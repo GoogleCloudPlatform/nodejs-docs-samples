@@ -22,7 +22,6 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const {
   ContactCenterInsightsClient,
-  // eslint-disable-next-line node/no-missing-require
 } = require('@google-cloud/contact-center-insights');
 const client = new ContactCenterInsightsClient();
 

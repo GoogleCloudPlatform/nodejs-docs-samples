@@ -17,8 +17,9 @@
     "start": "node ./index.js",
     "deploy": "gcloud app deploy",
     "clean": "gts clean",
-    "compile": "tsc",
-    "fix": "gts fix"
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "build": "tsc -p ."
   },
   "dependencies": {
     "express": "^4.16.3"

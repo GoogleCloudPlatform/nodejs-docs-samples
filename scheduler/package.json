@@ -11,7 +11,7 @@
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
     "posttest": "npm run lint",

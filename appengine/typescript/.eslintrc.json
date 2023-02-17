@@ -1,5 +1,4 @@
 {
-  "extends": "./node_modules/gts/",
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "sourceType": "module"

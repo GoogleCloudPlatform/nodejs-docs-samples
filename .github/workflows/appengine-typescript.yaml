@@ -26,6 +26,9 @@ jobs:
       contents: 'write'
       pull-requests: 'write'
       id-token: 'write'
+    defaults:
+      run:
+        working-directory: scheduler
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -40,9 +43,9 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: appengine/typescript
+      working-directory: .
+    - run: npm install
     - run: npm test
-      working-directory: appengine/typescript
       env:
         MOCHA_REPORTER_SUITENAME: appengine_typescript
         MOCHA_REPORTER_OUTPUT: appengine_typescript_sponge_log.xml

@@ -6,13 +6,15 @@
     "node": ">=12.0.0"
   },
   "files": [
-    "*.js", "*.ts"
+    "*.js",
+    "*.ts"
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
-    "start": "node app.js",
-    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit"
+    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit",
+    "lint": "gts lint",
+    "fix": "gts fix",
+    "posttest": "npm run lint"
   },
   "dependencies": {
     "@google-cloud/scheduler": "^3.0.5",
@@ -20,9 +22,13 @@
     "express": "^4.16.4"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.1",
     "chai": "^4.2.0",
+    "eslint": "^8.34.0",
+    "gts": "^3.1.1",
     "mocha": "^10.0.0",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0"
   }
 }

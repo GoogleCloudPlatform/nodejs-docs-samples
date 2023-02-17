@@ -8,6 +8,6 @@
     "node/no-unsupported-features/es-syntax": ["off"]
   },
   "parserOptions": {
-    "ecmaVersion": 14
+    "ecmaVersion": 2019
   }
 }

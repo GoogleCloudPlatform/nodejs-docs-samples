@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 root: true
-extends: "./node_modules/gts/"
+parser: "@typescript-eslint/parser"
 env:
   mocha: true
 rules:
@@ -22,3 +22,4 @@ rules:
   node/no-unsupported-features/es-syntax: off
 parserOptions:
   sourceType: module
+  ecmaVersion: 14

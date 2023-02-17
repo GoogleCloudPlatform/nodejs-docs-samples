@@ -12,7 +12,6 @@
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "test": "mocha test/*.test.js --exit",
-    "posttest": "npm run lint",
     "lint": "gts lint",
     "start": "node ./index.js",
     "deploy": "gcloud app deploy",

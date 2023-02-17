@@ -61,9 +61,9 @@ async function createAssessment(
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
   // Return the risk score.
-  let verdict = 'Human';
+  let verdict = 'Not Bad';
   if (response.riskAnalysis.score < SAMPLE_THRESHOLD_SCORE) {
-    verdict = 'Not a human';
+    verdict = 'Bad';
   }
   return {
     score: response.riskAnalysis.score,

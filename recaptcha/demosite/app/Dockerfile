@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This file is only used for packaging and deployment purposes.
+
 FROM node:16-slim
 
 ARG GOOGLE_CLOUD_PROJECT

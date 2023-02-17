@@ -17,7 +17,19 @@
 //   description: Create a job that posts to /log_payload on an App Engine service.
 //   usage: node createJob.js [project-id] [location-id] [app-engine-service-id]
 
+const args = process.argv.slice(2);
+const [projectId, locationId, serviceId] = args;
+
+// [START cloudscheduler_create_job]
 import {protos, CloudSchedulerClient} from '@google-cloud/scheduler';
+
+// TODO(developer): Uncomment and set the following variables
+// const projectId = "PROJECT_ID"
+// const locationId = "LOCATION_ID"
+// const serviceId = "my-serivce"
+
+// Create a client.
+const client: CloudSchedulerClient = new CloudSchedulerClient();
 
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
@@ -27,17 +39,6 @@ async function createJob(
   locationId: string,
   serviceId: string
 ) {
-  // [START cloudscheduler_create_job]
-  const scheduler = require('@google-cloud/scheduler');
-
-  // Create a client.
-  const client: CloudSchedulerClient = new scheduler.CloudSchedulerClient();
-
-  // TODO(developer): Uncomment and set the following variables
-  // const projectId = "PROJECT_ID"
-  // const locationId = "LOCATION_ID"
-  // const serviceId = "my-serivce"
-
   // Construct the fully qualified location path.
   const parent: string = client.locationPath(projectId, locationId);
 
@@ -63,11 +64,11 @@ async function createJob(
   // Use the client to send the job creation request.
   const [response] = await client.createJob(request);
   console.log(`Created job: ${response.name}`);
-  // [END cloudscheduler_create_job]
 }
 
-const args = process.argv.slice(2);
-createJob(...(args as [string, string, string])).catch(err => {
+createJob(projectId, locationId, serviceId).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
+
+// [END cloudscheduler_create_job]

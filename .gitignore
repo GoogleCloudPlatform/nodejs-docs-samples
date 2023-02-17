@@ -11,3 +11,6 @@ logs/
 yarn.lock
 package-lock.json
 .envrc
+
+#TypeScript samples
+scheduler/**/*.js

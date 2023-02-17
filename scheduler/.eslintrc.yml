@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-root: true
 parser: "@typescript-eslint/parser"
 env:
   mocha: true
 rules:
   no-console: off
-  prettier/prettier: off
   node/no-unsupported-features/es-syntax: off
 parserOptions:
   sourceType: module

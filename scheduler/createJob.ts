@@ -67,7 +67,7 @@ async function createJob(
 }
 
 const args = process.argv.slice(2);
-createJob(args[0], args[1], args[2]).catch(err => {
+createJob(...(args as [string, string, string])).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

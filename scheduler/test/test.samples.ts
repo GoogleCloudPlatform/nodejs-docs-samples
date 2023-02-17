@@ -15,17 +15,16 @@
 'use strict';
 
 import {CloudSchedulerClient} from '@google-cloud/scheduler';
-
-const {assert} = require('chai');
-const cp = require('child_process');
+import {assert} from 'chai';
+import * as cp from 'child_process';
 
 const client: CloudSchedulerClient = new CloudSchedulerClient();
-const execSync = (cmd: String) => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
-  let PROJECT_ID: String, stdout: String;
+  let PROJECT_ID: string, stdout: string;
 
   before(async () => {
     PROJECT_ID = await client.getProjectId();

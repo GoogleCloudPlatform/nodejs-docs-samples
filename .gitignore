@@ -13,4 +13,4 @@ package-lock.json
 .envrc
 
 #TypeScript samples
-scheduler/**/*.js
+scheduler/test/*.js

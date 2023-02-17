@@ -33,6 +33,7 @@ secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-sample
 security-center @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
+dlp @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # DEE Platform Ops (DEEPO)
 container @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers

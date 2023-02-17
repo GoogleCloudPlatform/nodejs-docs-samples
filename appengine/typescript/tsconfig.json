@@ -6,6 +6,5 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "moduleResolution": "node"
-  },
-  "include": ["*.ts"]
+  }
 }

@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/gts/",
   "env": {
     "mocha": true
   },
@@ -6,8 +7,5 @@
     "node/no-missing-require": ["off"], 
     "node/no-unpublished-require": ["off"],
     "node/no-unsupported-features/es-syntax": ["off"]
-  },
-  "parserOptions": {
-    "ecmaVersion": 11
   }
 }

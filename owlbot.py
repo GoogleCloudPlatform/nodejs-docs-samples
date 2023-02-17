@@ -99,46 +99,38 @@ def typeless_samples_hermetic(
     )
 
 
-# def fix_hermetic(targets:str=".", hide_output:bool=False):
-#     """
-#     Fixes the formatting in the provided path. It assumes that gts
-#     is already installed in a well known location on disk (node_modules/.bin).
-#     """
-#     logger.debug("Copy eslint config")
-#     shell.run(
-#         ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
-#         check=True,
-#         hide_output=hide_output,
-#     )
-#     logger.debug("Running fix...")
-#     shell.run(
-#         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", targets],
-#         check=False,
-#         hide_output=hide_output,
-#     )
-
-
-def fix(targets: str, hide_output: bool = False) -> None:
+def trim(targets: str, hide_output: bool = False) -> None:
     """
     Fixes the formatting of generated JS files
     """
-    logger.debug("Installing prettier")
-    shell.run("npm --no-audit --no-update-notifier --loglevel=error install prettier".split(),
-              hide_output=hide_output)
     logger.debug("Trim generated files")
     for file in os.listdir(f"{targets}"):
         if file.endswith(".js"):
             logger.debug(f"Updating {targets}/{file}")
             shell.run(
                 ["sed", "-i", "-e", _TYPELESS_EXPRESSION, f"{targets}/{file}"],
-                check=False, hide_output=hide_output,
+                check=False,
+                hide_output=hide_output,
             )
 
-            logger.debug(f"Fixing {targets}/{file}")
-            shell.run(
-                ["npx", "--silent", "--no-update-notifier", "prettier", "--write",
-                f"{targets}/{file}"], check=False, hide_output=hide_output
-            )
+
+def fix_hermetic(targets=".", hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library. It assumes that gts
+    is already installed in a well known location on disk (node_modules/.bin).
+    """
+    logger.debug("Copy eslint config")
+    shell.run(
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        check=True,
+        hide_output=hide_output,
+    )
+    logger.debug("Running fix...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", f"{targets}"],
+        check=False,
+        hide_output=hide_output,
+    )
 
 
 # Avoid "Your cache folder contains root-owned files" error
@@ -150,5 +142,7 @@ for d in dirs:
     logger.debug(f"Directory: {d}")
     # Run typeless bot to convert from TS -> JS
     typeless_samples_hermetic(output_path=d, targets=d)
+    # Remove extra characters
+    trim(targets=d)
     # Fix formatting
-    fix(targets=d)
+    fix_hermetic(targets=d)

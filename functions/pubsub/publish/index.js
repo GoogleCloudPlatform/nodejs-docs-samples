@@ -58,7 +58,7 @@ exports.publish = async (req, res) => {
 
   // Publishes a message
   try {
-    await topic.publish(messageBuffer);
+    topic.publishMessage(messageBuffer);
     res.status(200).send('Message published.');
   } catch (err) {
     console.error(err);

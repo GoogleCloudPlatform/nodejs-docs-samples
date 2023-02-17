@@ -12,7 +12,7 @@
   "repository": "googleapis/nodejs-asset",
   "private": true,
   "scripts": {
-    "test": "mocha --timeout 600000"
+    "test": "mocha test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/asset": "^4.5.0",

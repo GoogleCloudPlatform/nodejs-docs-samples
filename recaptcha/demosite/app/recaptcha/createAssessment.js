@@ -66,7 +66,7 @@ async function createAssessment(
     verdict = 'Bad';
   }
   return {
-    score: response.riskAnalysis.score,
+    score: response.riskAnalysis.score.toFixed(1),
     verdict,
   };
 }

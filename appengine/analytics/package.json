@@ -23,6 +23,7 @@
     "node-fetch": "^3.3.0"
   },
   "devDependencies": {
+    "@types/supertest": "^2.0.12",
     "mocha": "^10.0.0",
     "supertest": "^6.0.0"
   }

@@ -13,14 +13,7 @@
 // limitations under the License.
 
 import supertest from 'supertest';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
-import {createRequire} from 'module';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const app = createRequire(path.join(__dirname, '../', 'server.js'));
+import app from '../server.js';
 
 describe('gae_flex_metadata', () => {
   it('should be listening', async () => {

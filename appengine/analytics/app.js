@@ -77,4 +77,4 @@ app.listen(PORT, () => {
 
 // [END gae_flex_analytics_track_event]
 
-module.exports = app;
+export default app;

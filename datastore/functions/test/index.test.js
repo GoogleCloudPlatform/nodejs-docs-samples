@@ -17,7 +17,7 @@
 import assert from 'assert';
 import {exec as execPromise} from 'child-process-promise';
 import path from 'path';
-import uuid from 'uuid';
+import {v4} from 'uuid';
 import sinon from 'sinon';
 import fetch from 'node-fetch';
 import waitPort from 'wait-port';
@@ -29,7 +29,7 @@ const program = require('../');
 const FF_TIMEOUT = 3000;
 const cwd = path.join(__dirname, '..');
 const NAME = 'sampletask1';
-const KIND = `Task-${uuid.v4()}`;
+const KIND = `Task-${v4()}`;
 const VALUE = {
   description: 'Buy milk',
 };

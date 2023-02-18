@@ -4,6 +4,7 @@
   "description": "Demonstrates a Cloud Run service which provides a CLI tool over HTTP.",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "test": "mocha test/app.test.js --check-leaks",

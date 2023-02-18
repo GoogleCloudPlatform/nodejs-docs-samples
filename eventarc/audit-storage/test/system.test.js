@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
+import assert from 'assert';
 import got from 'got';
 
 function request(method, route, base_url) {

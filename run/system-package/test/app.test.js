@@ -14,8 +14,8 @@
 
 'use strict';
 
-const path = require('path');
-const supertest = require('supertest');
+import path from 'path';
+import supertest from 'supertest';
 
 describe('Unit Tests', () => {
   const app = require(path.join(__dirname, '..', 'app'));

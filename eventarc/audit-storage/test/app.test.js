@@ -18,10 +18,10 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
-const sinon = require('sinon');
+import assert from 'assert';
+import path from 'path';
+import supertest from 'supertest';
+import sinon from 'sinon';
 
 let request;
 

@@ -16,18 +16,22 @@
 
 import assert from 'assert';
 import {exec as execPromise} from 'child-process-promise';
-import path from 'path';
+import path, {dirname} from 'path';
+import { fileURLToPath } from 'url';
 import {v4} from 'uuid';
 import sinon from 'sinon';
 import fetch from 'node-fetch';
 import waitPort from 'wait-port';
 import {Datastore} from '@google-cloud/datastore';
+import program from '../';
 
 const datastore = new Datastore();
-const program = require('../');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const cwd = path.join(__dirname, '..');
 
 const FF_TIMEOUT = 3000;
-const cwd = path.join(__dirname, '..');
 const NAME = 'sampletask1';
 const KIND = `Task-${v4()}`;
 const VALUE = {

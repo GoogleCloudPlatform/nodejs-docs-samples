@@ -1,4 +1,4 @@
-// Copyright 2019, Google LLC.
+// Copyright 2019 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -21,12 +21,12 @@
 import assert from 'assert';
 import path from 'path';
 import supertest from 'supertest';
-
+import {createRequire} from 'module';
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
+    const app = createRequire(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

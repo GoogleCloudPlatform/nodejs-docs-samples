@@ -11,7 +11,7 @@
     "system-test": "mocha test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">= 12.2.0"
   },
   "dependencies": {
     "express": "^4.17.1"

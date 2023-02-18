@@ -18,17 +18,18 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
-const uuid = require('uuid');
-const sinon = require('sinon');
+import assert from 'assert';
+import path from 'path';
+import supertest from 'supertest';
+import uuid from 'uuid';
+import sinon from 'sinon';
+import {createRequire} from 'module';
 
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
+    const app = createRequire(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
+import assert from 'assert';
 import got from 'got';
-const {GoogleAuth} = require('google-auth-library');
+import GoogleAuth from 'google-auth-library';
 const auth = new GoogleAuth();
-const {execSync} = require('child_process');
+import {execSync} from 'child_process';
 
 let BASE_URL, ID_TOKEN;
 describe('End-to-End Tests', () => {

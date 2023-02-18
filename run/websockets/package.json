@@ -3,6 +3,7 @@
   "description": "Node.js websockets sample for Cloud Run",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "license": "Apache Version 2.0",
   "author": "Google LLC",
   "scripts": {

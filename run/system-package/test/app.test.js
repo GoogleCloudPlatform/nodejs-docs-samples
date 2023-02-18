@@ -16,9 +16,10 @@
 
 import path from 'path';
 import supertest from 'supertest';
+import {createRequire} from 'module';
 
 describe('Unit Tests', () => {
-  const app = require(path.join(__dirname, '..', 'app'));
+  const app = createRequire(path.join(__dirname, '..', 'app'));
   const request = supertest(app);
 
   describe('should fail', () => {

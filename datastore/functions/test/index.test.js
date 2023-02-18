@@ -17,13 +17,13 @@
 import assert from 'assert';
 import {exec as execPromise} from 'child-process-promise';
 import path, {dirname} from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import {v4} from 'uuid';
 import sinon from 'sinon';
 import fetch from 'node-fetch';
 import waitPort from 'wait-port';
 import {Datastore} from '@google-cloud/datastore';
-import program from '../';
+import program from '../index.js';
 
 const datastore = new Datastore();
 

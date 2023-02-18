@@ -15,12 +15,12 @@
 'use strict';
 
 // [START functions_tips_connection_pooling]
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-const http = require('http');
-const https = require('https');
+import http from 'http';
+import https from 'https';
 
-const functions = require('@google-cloud/functions-framework');
+import functions from '@google-cloud/functions-framework';
 
 const httpAgent = new http.Agent({keepAlive: true});
 const httpsAgent = new https.Agent({keepAlive: true});

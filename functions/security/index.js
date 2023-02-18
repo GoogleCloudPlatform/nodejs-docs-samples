@@ -15,7 +15,7 @@
 'use strict';
 
 // [START functions_bearer_token]
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 // TODO(developer): set these values
 const REGION = 'us-central1';

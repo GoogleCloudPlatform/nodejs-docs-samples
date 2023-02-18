@@ -15,8 +15,8 @@
 'use strict';
 
 // [START functions_concepts_requests]
-const fetch = require('node-fetch');
-const functions = require('@google-cloud/functions-framework');
+import fetch from 'node-fetch';
+import functions from '@google-cloud/functions-framework';
 
 /**
  * HTTP Cloud Function that makes an HTTP request

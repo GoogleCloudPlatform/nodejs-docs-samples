@@ -17,8 +17,8 @@
 // [START composer_trigger]
 'use strict';
 
-const fetch = require('node-fetch');
-const FormData = require('form-data');
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 /**
  * Triggered from a message on a Cloud Storage bucket.

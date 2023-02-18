@@ -14,14 +14,14 @@
 
 'use strict';
 
-const assert = require('assert');
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
-const uuid = require('uuid');
-const sinon = require('sinon');
-const fetch = require('node-fetch');
-const waitPort = require('wait-port');
-const {Datastore} = require('@google-cloud/datastore');
+import assert from 'assert';
+import {exec as execPromise} from 'child-process-promise';
+import path from 'path';
+import uuid from 'uuid';
+import sinon from 'sinon';
+import fetch from 'node-fetch';
+import waitPort from 'wait-port';
+import {Datastore} from '@google-cloud/datastore';
 
 const datastore = new Datastore();
 const program = require('../');

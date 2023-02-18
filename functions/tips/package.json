@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "type": "module",
   "engines": {
     "node": ">=12.0.0"
   },
@@ -19,7 +20,7 @@
     "mocha": "^10.0.0"
   },
   "devDependencies": {
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.3.0",
     "sinon": "^15.0.0"
   }
 }

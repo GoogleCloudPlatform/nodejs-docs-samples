@@ -1,11 +1,17 @@
-const path = require('path');
-const supertest = require('supertest');
+import path from 'path';
+import supertest from 'supertest';
+import {createRequire} from 'module';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
+    const app = createRequire(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

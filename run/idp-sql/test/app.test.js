@@ -14,16 +14,23 @@
 
 'use strict';
 
-const path = require('path');
-const assert = require('assert');
-const supertest = require('supertest');
-const {buildRenderedHtml} = require('../handlebars');
+import path from 'path';
+import assert from 'assert';
+import supertest from 'supertest';
+import {createRequire} from 'module';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
+import {buildRenderedHtml} from '../handlebars';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let request;
 
+
 describe('Unit Tests', () => {
   before(async () => {
-    const app = require(path.join(__dirname, '..', 'app'));
+    const app = createRequire(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

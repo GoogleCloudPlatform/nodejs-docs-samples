@@ -14,10 +14,10 @@
 
 'use strict';
 
-const assert = require('assert');
+import assert from 'assert';
 import got from 'got';
-const admin = require('firebase-admin');
-const {spawnSync, execSync} = require('child_process');
+import admin from 'firebase-admin';
+import {spawnSync, execSync} from 'child_process';
 
 admin.initializeApp();
 

@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
+import assert from 'assert';
+import path from 'path';
+import supertest from 'supertest';
+import {createRequire} from 'module';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let request;
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'index'));
+    const app = createRequire(path.join(__dirname, '..', 'index'));
     request = supertest(app);
   });
 

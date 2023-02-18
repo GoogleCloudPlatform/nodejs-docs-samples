@@ -3,6 +3,7 @@
   "description": "Identity Platform and Cloud SQL integrations sample for Cloud Run.",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "license": "Apache-2.0",
   "author": "Google LLC",
   "repository": {
@@ -10,7 +11,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=12.2.0"
   },
   "scripts": {
     "start": "node index.js",

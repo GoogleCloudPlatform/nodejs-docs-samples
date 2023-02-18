@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const {execSync} = require('child_process');
+import assert from 'assert';
+import {execSync} from 'child_process';
 import got from 'got';
-const {GoogleAuth} = require('google-auth-library');
+import {GoogleAuth} from 'google-auth-library';
 const auth = new GoogleAuth();
 
 let BASE_URL, ID_TOKEN;

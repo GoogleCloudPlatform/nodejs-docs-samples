@@ -24,6 +24,11 @@ import supertest from 'supertest';
 import sinon from 'sinon';
 import {createRequire} from 'module';
 
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 let request;
 
 describe('Unit Tests', () => {

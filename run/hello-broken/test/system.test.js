@@ -13,13 +13,13 @@
 // limitations under the License.
 
 const assert = require('assert');
-import request from 'got';
+import got from 'got';
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
 const get = (route, base_url, id_token, retry = 3) => {
-  return request(new URL(route, base_url.trim()), {
+  return got(new URL(route, base_url.trim()), {
     headers: {
       Authorization: `${id_token.trim()}`,
     },

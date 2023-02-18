@@ -14,9 +14,9 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
-const sinon = require('sinon');
-const assert = require('assert');
+import {noCallThru as proxyquire} from 'proxyquire';
+import sinon from 'sinon';
+import assert from 'assert';
 
 const getSample = FetchStub => {
   return {

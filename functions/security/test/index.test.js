@@ -14,9 +14,9 @@
 
 'use strict';
 
-const sinon = require('sinon');
-const proxyquire = require('proxyquire').noCallThru();
-const assert = require('assert');
+import sinon from 'sinon')
+import {noCallThru as proxyquire} from 'proxyquire');
+import assert from 'assert';
 
 const getSample = () => {
   const fetchMock = sinon

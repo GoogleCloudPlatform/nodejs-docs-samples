@@ -15,7 +15,7 @@
 // [START cloudrun_secure_request]
 // [START run_secure_request]
 const {GoogleAuth} = require('google-auth-library');
-const got = require('got');
+import got from 'got';
 const auth = new GoogleAuth();
 
 let client, serviceUrl;

@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const got = require('got');
+import got from 'got';
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 

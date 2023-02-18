@@ -13,9 +13,9 @@
 // limitations under the License.
 
 const assert = require('assert');
-const got = require('got');
+import got from 'got';
 
-const request = (method, route, base_url) => {
+function request(method, route, base_url) {
   const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" environment variable is required.');
@@ -28,7 +28,7 @@ const request = (method, route, base_url) => {
     method: method || 'get',
     throwHttpErrors: false,
   });
-};
+}
 
 describe('End-to-End Tests', () => {
   const {BASE_URL} = process.env;

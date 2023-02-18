@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const {execSync} = require('child_process');
-const request = require('got');
+import got from 'got';
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
@@ -23,7 +23,7 @@ const get = (route, base_url) => {
     throw Error('"ID_TOKEN" environment variable is required.');
   }
 
-  return request(new URL(route, base_url.trim()), {
+  return got(new URL(route, base_url.trim()), {
     headers: {
       Authorization: `${ID_TOKEN.trim()}`,
     },

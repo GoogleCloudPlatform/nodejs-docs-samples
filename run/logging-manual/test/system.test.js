@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
-const request = require('got');
+import got from 'got';
 const {Logging} = require('@google-cloud/logging');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
@@ -141,7 +141,7 @@ describe('Logging', () => {
       }
 
       console.log(`Sending test requests to ${BASE_URL}`);
-      await request(BASE_URL.trim(), {
+      await got(BASE_URL.trim(), {
         headers: {
           Authorization: `${ID_TOKEN.trim()}`,
         },

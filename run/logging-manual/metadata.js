@@ -1,4 +1,4 @@
-const request = require('got');
+import got from 'got';
 
 // Load the project ID from GCP metadata server.
 // You can also use https://www.npmjs.com/package/gcp-metadata.
@@ -8,6 +8,6 @@ exports.getProjectId = async () => {
   const options = {
     headers: {'Metadata-Flavor': 'Google'},
   };
-  const response = await request(METADATA_PROJECT_ID_URL, options);
+  const response = await got(METADATA_PROJECT_ID_URL, options);
   return response.body;
 };

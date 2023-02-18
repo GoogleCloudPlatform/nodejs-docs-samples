@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const got = require('got');
+import got from 'got';
 const admin = require('firebase-admin');
 const {spawnSync, execSync} = require('child_process');
 

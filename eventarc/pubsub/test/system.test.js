@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const assert = require('assert');
-const got = require('got');
+import got from 'got';
 
 const request = (method, route, base_url) => {
   const {ID_TOKEN} = process.env;

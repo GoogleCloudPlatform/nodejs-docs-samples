@@ -3,8 +3,12 @@
   "env": {
     "mocha": true
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "rules": {
     "node/no-missing-require": ["off"], 
-    "node/no-unpublished-require": ["off"]
+    "node/no-unpublished-require": ["off"],
+    "node/no-unsupported-features/es-syntax": ["off"]
   }
 }

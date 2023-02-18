@@ -3,9 +3,13 @@
   "description": "Demonstrates logging on Cloud Run",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.2.0"
   },
   "scripts": {
     "start": "node index.js",

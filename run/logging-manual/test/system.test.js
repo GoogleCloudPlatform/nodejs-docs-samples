@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
+import assert from 'assert';
 import got from 'got';
-const {Logging} = require('@google-cloud/logging');
-const {execSync} = require('child_process');
-const {GoogleAuth} = require('google-auth-library');
+import {Logging} from '@google-cloud/logging';
+import {execSync} from 'child_process';
+import {createRequire} from 'module';
+import {GoogleAuth} from 'google-auth-library';
 const auth = new GoogleAuth();
 
 const {promisify} = require('util');
@@ -24,7 +25,7 @@ const setTimeoutPromise = promisify(setTimeout);
 
 // Support concurrency by setting the service name to something unique.
 // The service name must be the same used to deploy to Cloud Run.
-const service_name = process.env.SERVICE_NAME || require('../package').name;
+const service_name = process.env.SERVICE_NAME || createRequire('../package').name;
 
 const logging = new Logging({
   projectId: process.env.GOOGLE_CLOUD_PROJECT,

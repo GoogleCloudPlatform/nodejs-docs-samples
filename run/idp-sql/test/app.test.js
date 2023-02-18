@@ -27,7 +27,6 @@ const __dirname = dirname(__filename);
 
 let request;
 
-
 describe('Unit Tests', () => {
   before(async () => {
     const app = createRequire(path.join(__dirname, '..', 'app'));

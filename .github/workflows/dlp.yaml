@@ -50,7 +50,7 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - uses: actions/setup-node@v3.5.1
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 16
     - run: npm install

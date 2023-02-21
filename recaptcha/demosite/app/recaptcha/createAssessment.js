@@ -1,22 +1,46 @@
+// Copyright 2023 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 const {RecaptchaEnterpriseServiceClient} =
   require('@google-cloud/recaptcha-enterprise').v1;
 
-const THRESHHOLD_SCORE = 0.5;
+const SAMPLE_THRESHOLD_SCORE = 0.5;
 
+/**
+ * Create an assessment to analyze the risk of a UI action.
+ * @param projectId: GCloud Project ID
+ * @param recaptchaSiteKey: Site key obtained by registering a domain/app to use recaptcha services.
+ * @param token: The token obtained from the client on passing the recaptchaSiteKey.
+ * @param recaptchaAction: Action name corresponding to the token.
+ * @return {Promise<{score: *, verdict: string}>}
+ */
 async function createAssessment(
   projectId,
-  recaptchSiteKey,
+  recaptchaSiteKey,
   token,
   recaptchaAction
 ) {
+  // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
 
+  // Build the assessment request.
   const [response] = await client.createAssessment({
     parent: `projects/${projectId}`,
     assessment: {
       event: {
-        siteKey: recaptchSiteKey,
-        token,
+        siteKey: recaptchaSiteKey,
+        token: token,
       },
     },
   });
@@ -34,26 +58,15 @@ async function createAssessment(
       'The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !'
     );
   }
+  // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
 
-  // Get the risk score and the reason(s)
-  // For more information on interpreting the assessment,
-  // see https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment
-  for (const reason of response.riskAnalysis.reasons) {
-    console.log(reason);
+  // Return the risk score.
+  let verdict = 'Not Bad';
+  if (response.riskAnalysis.score < SAMPLE_THRESHOLD_SCORE) {
+    verdict = 'Bad';
   }
-
-  console.log(
-    `The reCAPTCHA score for this token is: ${response.riskAnalysis.score}`
-  );
-
-  let verdict = 'Human';
-
-  if (response.riskAnalysis.score < THRESHHOLD_SCORE) {
-    verdict = 'Not a human';
-  }
-
   return {
-    score: response.riskAnalysis.score,
+    score: response.riskAnalysis.score.toFixed(1),
     verdict,
   };
 }

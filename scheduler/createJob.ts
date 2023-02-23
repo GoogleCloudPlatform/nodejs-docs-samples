@@ -21,7 +21,7 @@ const args = process.argv.slice(2);
 const [projectId, locationId, serviceId] = args;
 
 // [START cloudscheduler_create_job]
-const {CloudSchedulerClient} = require('@google-cloud/scheduler');
+import {protos, CloudSchedulerClient} from '@google-cloud/scheduler';
 
 // TODO(developer): Uncomment and set the following variables
 // const projectId = "PROJECT_ID"
@@ -29,17 +29,21 @@ const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 // const serviceId = "my-serivce"
 
 // Create a client.
-const client = new CloudSchedulerClient();
+const client: CloudSchedulerClient = new CloudSchedulerClient();
 
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
-async function createJob(projectId, locationId, serviceId) {
+async function createJob(
+  projectId: string,
+  locationId: string,
+  serviceId: string
+) {
   // Construct the fully qualified location path.
-  const parent = client.locationPath(projectId, locationId);
+  const parent: string = client.locationPath(projectId, locationId);
 
   // Construct the request body.
-  const job = {
+  const job: protos.google.cloud.scheduler.v1.IJob = {
     appEngineHttpTarget: {
       appEngineRouting: {
         service: serviceId,
@@ -52,7 +56,7 @@ async function createJob(projectId, locationId, serviceId) {
     timeZone: 'America/Los_Angeles',
   };
 
-  const request = {
+  const request: protos.google.cloud.scheduler.v1.ICreateJobRequest = {
     parent: parent,
     job: job,
   };

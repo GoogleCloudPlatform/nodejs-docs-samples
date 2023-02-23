@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
 
 'use strict';
 
-const {CloudSchedulerClient} = require('@google-cloud/scheduler');
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const cp = require('child_process');
+import {CloudSchedulerClient} from '@google-cloud/scheduler';
+import {assert} from 'chai';
+import {after, before, describe, it} from 'mocha';
+import * as cp from 'child_process';
 
-const client = new CloudSchedulerClient();
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const client: CloudSchedulerClient = new CloudSchedulerClient();
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
 const SERVICE_ID = 'my-service';
 
 describe('Cloud Scheduler Sample Tests', () => {
-  let PROJECT_ID, stdout;
+  let PROJECT_ID: string, stdout: string;
 
   before(async () => {
     PROJECT_ID = await client.getProjectId();
   });
 
   after(async () => {
-    const jobName = stdout && stdout.trim().split(' ').slice(-1);
+    const jobName = (stdout && stdout.trim().split(' ').slice(-1))[0];
     if (jobName) {
       await client.deleteJob({name: jobName});
     }
@@ -40,7 +40,7 @@ describe('Cloud Scheduler Sample Tests', () => {
 
   it('should create a scheduler job', async () => {
     stdout = execSync(
-      `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
+      `node --loader ts-node/esm createJob.ts ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
     );
     assert.match(stdout, /Created job/);
   });

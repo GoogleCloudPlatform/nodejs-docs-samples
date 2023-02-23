@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # gcloud command to get the current GOOGLE Project id.
 export GOOGLE_CLOUD_PROJECT=$(gcloud config list --format 'value(core.project)' 2>/dev/null)
@@ -10,8 +23,6 @@ gcloud services enable recaptchaenterprise.googleapis.com
 # gcloud command to create reCAPTCHA keys.
 gcloud alpha recaptcha keys create --display-name=demo-recaptcha-score-key --web --allow-all-domains --integration-type=SCORE 1>/dev/null 2>recaptchascorekeyfile
 export SITE_KEY=$(cat recaptchascorekeyfile | sed -n -e 's/.*Created \[\([0-9a-zA-Z_-]\+\)\].*/\1/p')
-gcloud alpha recaptcha keys create --display-name=demo-recaptcha-checkbox-key --web --allow-all-domains --integration-type=CHECKBOX 1>/dev/null 2>recaptchacheckboxkeyfile
-export CHECKBOX_SITE_KEY=$(cat recaptchacheckboxkeyfile | sed -n -e 's/.*Created \[\([0-9a-zA-Z_-]\+\)\].*/\1/p')
 
 # Docker compose up
 DOCKER_COMPOSE="/usr/local/bin/docker-compose -f $HOME/cloudshell_open/nodejs-recaptcha-enterprise/samples/demosite/docker-compose.yaml up --build"

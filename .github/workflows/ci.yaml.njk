@@ -52,7 +52,7 @@ jobs:
         access_token_lifetime: 600s
     - uses: actions/setup-node@v3.5.1
       with:
-        node-version: 16
+        node-version: 14
     - run: npm install
       working-directory: {{path}}
     - run: npm test

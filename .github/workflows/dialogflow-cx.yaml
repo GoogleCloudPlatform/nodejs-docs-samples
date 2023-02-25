@@ -44,7 +44,7 @@ jobs:
           test_id:nodejs-docs-samples-tests/nodejs-docs-samples-dialogflow-cx-test-id
     - uses: actions/setup-node@v3.6.0
       with:
-        node-version: 16
+        node-version: 14
     - run: npm install
       working-directory: dialogflow-cx
     - run: npm test

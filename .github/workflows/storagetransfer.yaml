@@ -44,7 +44,7 @@ jobs:
           sts_azure_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-azure
     - uses: actions/setup-node@v3.6.0
       with:
-        node-version: 16
+        node-version: 14
     - run: npm install
       working-directory: storagetransfer
     - run: npm test

@@ -61,7 +61,7 @@ async function detectFulltext(fileName) {
 }
 
 //.usage('$0 <command> <local-image-file>', 'Cloud Vision Beta API Samples')
-require(`yargs`) // eslint-disable-line
+require('yargs')
   .demand(1)
   .command(
     'fulltext <fileName>',
@@ -69,9 +69,6 @@ require(`yargs`) // eslint-disable-line
     {},
     opts => detectFulltext(opts.fileName)
   )
-  .example('node $0 safe-search ./resources/wakeupcat.jpg')
-  .example('node $0 web-entities-geo ./resources/city.jpg')
-  .example('node $0 web ./resources/wakeupcat.jpg')
   .example('node $0 fulltext ./resources/wakeupcat.jpg')
   .wrap(120)
   .recommendCommands()

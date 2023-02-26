@@ -19,11 +19,12 @@ const supertest = require('supertest');
 const storage = new Storage();
 const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
+const uuid = require('uuid');
 
-process.env.GCLOUD_STORAGE_BUCKET =
-  'nodejs-docs-samples-test-appengine-storage-std';
-const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
+const bucketName =
+  `nodejs-docs-samples-test-appengine-storage-flex-${uuid.v4()}`.slice(0, 63);
 const bucket = storage.bucket(bucketName);
+process.env.GCLOUD_STORAGE_BUCKET = bucketName;
 
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));

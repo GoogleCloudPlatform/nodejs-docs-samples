@@ -19,10 +19,11 @@ const storage = new Storage();
 const supertest = require('supertest');
 const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
+const uuid = require('uuid');
 
-process.env.GCLOUD_STORAGE_BUCKET =
-  'nodejs-docs-samples-test-appengine-storage-std';
-const bucketName = 'nodejs-docs-samples-test-appengine-storage-std';
+const bucketName =
+  `nodejs-docs-samples-test-appengine-storage-std-${uuid.v4()}`.slice(0, 63);
+process.env.GCLOUD_STORAGE_BUCKET = bucketName;
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');

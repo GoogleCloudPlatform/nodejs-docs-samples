@@ -1,0 +1,19 @@
+{
+  "name": "recaptcha-password-check-example",
+  "version": "1.0.0",
+  "description": "Example command line app to send reCAPTCHA password check requests",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc --build",
+    "test": "jasmine --config=jasmine.json"
+  },
+  "author": "reCAPTCHA Team <no-reply@google.com>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google-cloud/recaptcha-enterprise": "^3.2.0",
+    "@types/node": "^18.11.9",
+    "@types/yargs": "^17.0.19",
+    "typescript": "^4.9.3",
+    "recaptcha-password-check-helpers": "^1.0.1"
+  }
+}

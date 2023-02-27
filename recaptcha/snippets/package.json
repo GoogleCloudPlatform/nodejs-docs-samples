@@ -1,19 +1,38 @@
 {
-  "name": "recaptcha-password-check-example",
-  "version": "1.0.0",
-  "description": "Example command line app to send reCAPTCHA password check requests",
-  "main": "dist/main.js",
-  "scripts": {
-    "build": "tsc --build",
-    "test": "jasmine --config=jasmine.json"
-  },
-  "author": "reCAPTCHA Team <no-reply@google.com>",
+  "name": "recaptcha-samples",
+  "private": true,
   "license": "Apache-2.0",
+  "author": "Google LLC",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "files": [
+    "*.js",
+    "*.ts"
+  ],
+  "scripts": {
+    "build": "tsc -p .",
+    "fix": "gts fix",
+    "lint": "gts lint",
+    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit"
+  },
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^3.2.0",
-    "@types/node": "^18.11.9",
+    "recaptcha-password-check-helpers": "^1.0.1",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.4",
+    "@types/express": "^4.17.17",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
     "@types/yargs": "^17.0.19",
-    "typescript": "^4.9.3",
-    "recaptcha-password-check-helpers": "^1.0.1"
+    "chai": "^4.3.7",
+    "eslint": "^8.34.0",
+    "gts": "^3.1.1",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }

@@ -2,18 +2,25 @@
 
 ## Before you begin
 
-1. If you haven't already, set up a Node.js Development Environment by following the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup)  and
-[create a project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
+1. If you haven't already, set up a Node.js Development Environment by following
+   the [Node.js setup guide](https://cloud.google.com/nodejs/docs/setup) and
+   [create a
+   project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
 1. Create a 2nd Gen Cloud SQL Instance by following these
-[instructions](https://cloud.google.com/sql/docs/mysql/create-instance). Note the instance connection name,
-database user, and database password that you create.
+   [instructions](https://cloud.google.com/sql/docs/mysql/create-instance). Note
+   the instance connection name, database user, and database password that you
+   create.
 
 1. Create a database for your application by following these
-[instructions](https://cloud.google.com/sql/docs/mysql/create-manage-databases). Note the database
-name.
+   [instructions](https://cloud.google.com/sql/docs/mysql/create-manage-databases).
+   Note the database name.
 
-1. Create a service account following these [instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating), and then grant the `roles/cloudsql.client` role following these [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role). Download a JSON key to use to authenticate your connection.
+1. Create a service account following these
+   [instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating),
+   and then grant the `roles/cloudsql.client` role following these
+   [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role).
+   Download a JSON key to use to authenticate your connection.
 
 1. Use the information noted in the previous steps:
 
@@ -25,25 +32,29 @@ export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
 
-Note: Defining credentials in environment variables is convenient, but not secure. For a more secure solution, use
-[Secret Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe. You can then define
-`export CLOUD_SQL_CREDENTIALS_SECRET='projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION'` to reference a secret
-that stores your Cloud SQL database password. The sample app checks for your defined secret version. If a version is
-present, the app retrieves the `DB_PASS` from Secret Manager before it connects to Cloud SQL.
+Note: Defining credentials in environment variables is convenient, but not
+secure. For a more secure solution, use [Secret
+Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
+You can then define `export
+CLOUD_SQL_CREDENTIALS_SECRET='projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION'`
+to reference a secret that stores your Cloud SQL database password. The sample
+app checks for your defined secret version. If a version is present, the app
+retrieves the `DB_PASS` from Secret Manager before it connects to Cloud SQL.
 
 ## Running locally
 
 To run this application locally, download and install the `cloud_sql_proxy` by
-[following the instructions](https://cloud.google.com/sql/docs/mysql/sql-proxy#install).
+[following the
+instructions](https://cloud.google.com/sql/docs/mysql/sql-proxy#install).
 
-Instructions are provided below for using the proxy with a TCP connection or a Unix Domain Socket.
-On Linux or Mac OS you can use either option, but on Windows the proxy currently requires a TCP
-connection.
+Instructions are provided below for using the proxy with a TCP connection or a
+Unix Domain Socket. On Linux or Mac OS you can use either option, but on Windows
+the proxy currently requires a TCP connection.
 
 ### Launch proxy with TCP
 
-To run the sample locally with a TCP connection, set environment variables and launch the proxy as
-shown below.
+To run the sample locally with a TCP connection, set environment variables and
+launch the proxy as shown below.
 
 #### Linux / Mac OS
 
@@ -85,11 +96,11 @@ Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "-instances=<proj
 
 ### Launch proxy with Unix Domain Socket
 
-NOTE: this option is currently only supported on Linux and Mac OS. Windows users should use the
-[Launch proxy with TCP](#launch-proxy-with-tcp) option.
+NOTE: this option is currently only supported on Linux and Mac OS. Windows users
+should use the [Launch proxy with TCP](#launch-proxy-with-tcp) option.
 
-To use a Unix socket, you'll need to create a directory and give write access to the user running
-the proxy. For example:
+To use a Unix socket, you'll need to create a directory and give write access to
+the user running the proxy. For example:
 
 ```bash
 sudo mkdir ./cloudsql
@@ -126,24 +137,27 @@ Finally, start the application:
 npm start
 ```
 
-Navigate towards `http://127.0.0.1:8080` to verify your application is running correctly.
+Navigate towards `http://127.0.0.1:8080` to verify your application is running
+correctly.
 
 ## Google App Engine Standard
 
-To run on GAE-Standard, create an App Engine project by following the setup for these
+To run on GAE-Standard, create an App Engine project by following the setup for
+these
 [instructions](https://cloud.google.com/appengine/docs/standard/nodejs/quickstart#before-you-begin).
 
-First, update [`app.standard.yaml`](app.standard.yaml) with the correct values to pass the environment
-variables into the runtime.
+First, update [`app.standard.yaml`](app.standard.yaml) with the correct values
+to pass the environment variables into the runtime.
 
-Next, the following command will deploy the application to your Google Cloud project:
+Next, the following command will deploy the application to your Google Cloud
+project:
 
 ```bash
 gcloud app deploy app.standard.yaml
 ```
 
-To launch your browser and view the app at <https://[YOUR_PROJECT_ID>].appspot.com, run the following
-command:
+To launch your browser and view the app at
+<https://[YOUR_PROJECT_ID>].appspot.com, run the following command:
 
 ```bash
 gcloud app browse
@@ -151,17 +165,18 @@ gcloud app browse
 
 ## Deploy to Google App Engine Flexible
 
-First, update [`app.flexible.yaml`](app.flexible.yaml) with the correct values to pass the environment
-variables into the runtime.
+First, update [`app.flexible.yaml`](app.flexible.yaml) with the correct values
+to pass the environment variables into the runtime.
 
-Next, the following command will deploy the application to your Google Cloud project:
+Next, the following command will deploy the application to your Google Cloud
+project:
 
 ```bash
 gcloud app deploy app.flexible.yaml
 ```
 
-To launch your browser and view the app at <https://[YOUR_PROJECT_ID>].appspot.com, run the following
-command:
+To launch your browser and view the app at
+<https://[YOUR_PROJECT_ID>].appspot.com, run the following command:
 
 ```bash
 gcloud app browse
@@ -169,8 +184,9 @@ gcloud app browse
 
 ## Deploy to Cloud Run
 
-See the [Cloud Run documentation](https://cloud.google.com/sql/docs/mysql/connect-run)
-for more details on connecting a Cloud Run service to Cloud SQL.
+See the [Cloud Run
+documentation](https://cloud.google.com/sql/docs/mysql/connect-run) for more
+details on connecting a Cloud Run service to Cloud SQL.
 
 1. Build the container image:
 
@@ -200,9 +216,11 @@ instance configuration.
 
 This step can be done as part of deployment but is separated for clarity.
 
-It is recommended to use the [Secret Manager integration](https://cloud.google.com/run/docs/configuring/secrets) for Cloud Run instead
-of using environment variables for the SQL configuration. The service injects the SQL credentials from
-Secret Manager at runtime via an environment variable.
+It is recommended to use the [Secret Manager
+integration](https://cloud.google.com/run/docs/configuring/secrets) for Cloud
+Run instead of using environment variables for the SQL configuration. The
+service injects the SQL credentials from Secret Manager at runtime via an
+environment variable.
 
 Create secrets via the command line:
 
@@ -224,5 +242,5 @@ gcloud beta run deploy SERVICE --image gcr.io/[YOUR_PROJECT_ID]/run-sql \
 
 1. Navigate your browser to the URL noted in step 2.
 
-For more details about using Cloud Run see <http://cloud.run>.
-Review other [Node.js on Cloud Run samples](../../../run/).
+For more details about using Cloud Run see <http://cloud.run>. Review other
+[Node.js on Cloud Run samples](../../../run/).

@@ -84,3 +84,4 @@ jobs:
           }
   flakybot:
     uses: ./.github/workflows/flakybot.yaml
+    secrets: inherit

@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,8 @@
     "generate-ci": "node .github/workflows/generate.js"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
     "gts": "^3.1.0",
     "nunjucks": "^3.2.3",
     "typescript": "^4.6.4"
@@ -31,6 +33,7 @@
     "chai": "^4.3.7",
     "express": "^4.18.2",
     "mocha": "^10.1.0",
+    "prettier": "^2.8.4",
     "uuid": "^9.0.0"
   }
 }

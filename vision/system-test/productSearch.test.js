@@ -26,7 +26,7 @@ const productSearchClient = new vision.ProductSearchClient();
 const cmd = 'node productSearch';
 
 // Refs: https://github.com/googleapis/nodejs-vision/issues/1025
-describe.skip('product search', () => {
+describe('product search', () => {
   let projectId;
   let testProductSet;
 
@@ -34,7 +34,7 @@ describe.skip('product search', () => {
     projectId = await productSearchClient.getProjectId();
 
     // Shared fixture data for product tests
-    const testProductSet = {
+    testProductSet = {
       projectId,
       location: 'us-west1',
       productCategory: 'homegoods',
@@ -42,6 +42,8 @@ describe.skip('product search', () => {
       productDisplayName: 'test_product_display_name_1',
       productSetId: `test_product_set_id${uuid.v4()}`,
       productSetDisplayName: 'test_product_set_display_name_1',
+      createdProductPaths: [],
+      createdProductSetPaths: [],
     };
 
     testProductSet.productSetPath = productSearchClient.productSetPath(

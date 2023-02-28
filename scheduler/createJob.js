@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,21 +17,24 @@
 //   description: Create a job that posts to /log_payload on an App Engine service.
 //   usage: node createJob.js [project-id] [location-id] [app-engine-service-id]
 
+const args = process.argv.slice(2);
+const [projectId, locationId, serviceId] = args;
+
+// [START cloudscheduler_create_job]
+const {CloudSchedulerClient} = require('@google-cloud/scheduler');
+
+// TODO(developer): Uncomment and set the following variables
+// const projectId = "PROJECT_ID"
+// const locationId = "LOCATION_ID"
+// const serviceId = "my-serivce"
+
+// Create a client.
+const client = new CloudSchedulerClient();
+
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */
 async function createJob(projectId, locationId, serviceId) {
-  // [START cloudscheduler_create_job]
-  const scheduler = require('@google-cloud/scheduler');
-
-  // Create a client.
-  const client = new scheduler.CloudSchedulerClient();
-
-  // TODO(developer): Uncomment and set the following variables
-  // const projectId = "PROJECT_ID"
-  // const locationId = "LOCATION_ID"
-  // const serviceId = "my-serivce"
-
   // Construct the fully qualified location path.
   const parent = client.locationPath(projectId, locationId);
 
@@ -57,11 +60,11 @@ async function createJob(projectId, locationId, serviceId) {
   // Use the client to send the job creation request.
   const [response] = await client.createJob(request);
   console.log(`Created job: ${response.name}`);
-  // [END cloudscheduler_create_job]
 }
 
-const args = process.argv.slice(2);
-createJob(...args).catch(err => {
+createJob(projectId, locationId, serviceId).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
+
+// [END cloudscheduler_create_job]

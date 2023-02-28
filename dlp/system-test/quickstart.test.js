@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,34 +14,22 @@
 
 'use strict';
 
-const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
 
-const client = new CloudSchedulerClient();
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const LOCATION_ID = process.env.LOCATION_ID || 'us-central1';
-const SERVICE_ID = 'my-service';
 
-describe('Cloud Scheduler Sample Tests', () => {
-  let PROJECT_ID, stdout;
+const client = new DLP.DlpServiceClient();
+describe('quickstart', () => {
+  let projectId;
 
   before(async () => {
-    PROJECT_ID = await client.getProjectId();
+    projectId = await client.getProjectId();
   });
-
-  after(async () => {
-    const jobName = stdout && stdout.trim().split(' ').slice(-1);
-    if (jobName) {
-      await client.deleteJob({name: jobName});
-    }
-  });
-
-  it('should create a scheduler job', async () => {
-    stdout = execSync(
-      `node createJob.js ${PROJECT_ID} ${LOCATION_ID} ${SERVICE_ID}`
-    );
-    assert.match(stdout, /Created job/);
+  it('should run', () => {
+    const output = execSync(`node quickstart.js ${projectId}`);
+    assert.match(output, /Info type: PERSON_NAME/);
   });
 });

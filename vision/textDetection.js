@@ -16,7 +16,6 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-const {promisify} = require('util');
 const vision = require('@google-cloud/vision');
 const natural = require('natural');
 const redis = require('redis');
@@ -44,21 +43,22 @@ class Index {
     const HOST = process.env.REDIS_HOST || '127.0.0.1';
 
     this.tokenClient = redis
-      .createClient(PORT, HOST, {
-        db: TOKEN_DB,
-      })
+      .createClient({url: `redis://${HOST}:${PORT}`, db: TOKEN_DB})
       .on('error', err => {
         console.error('ERR:REDIS: ' + err);
         throw err;
       });
     this.docsClient = redis
-      .createClient(PORT, HOST, {
-        db: DOCS_DB,
-      })
+      .createClient({url: `redis://${HOST}:${PORT}`, db: DOCS_DB})
       .on('error', err => {
         console.error('ERR:REDIS: ' + err);
         throw err;
       });
+
+    (async () => {
+      await this.tokenClient.connect();
+      await this.docsClient.connect();
+    })();
   }
 
   /**
@@ -83,13 +83,9 @@ class Index {
     await Promise.all(
       tokens
         .filter(token => PUNCTUATION.indexOf(token) === -1)
-        .map(token => {
-          const sadd = promisify(this.tokenClient.sadd).bind(this.tokenClient);
-          return sadd(token, filename);
-        })
+        .map(token => this.tokenClient.sAdd(token, filename))
     );
-    const set = promisify(this.docsClient.set).bind(this.docsClient);
-    await set(filename, document);
+    await this.docsClient.set(filename, document);
   }
 
   /**
@@ -101,12 +97,7 @@ class Index {
     return Promise.all(
       words
         .map(word => word.toLowerCase())
-        .map(word => {
-          const smembers = promisify(this.tokenClient.smembers).bind(
-            this.tokenClient
-          );
-          return smembers(word);
-        })
+        .map(word => this.tokenClient.sMembers(word))
     );
   }
 
@@ -116,8 +107,7 @@ class Index {
    * @returns {Promise<boolean>}
    */
   async documentIsProcessed(filename) {
-    const get = promisify(this.docsClient.get).bind(this.docsClient);
-    const value = await get(filename);
+    const value = await this.docsClient.get(filename);
     if (value) {
       console.log(`${filename} already added to index.`);
       return true;
@@ -134,8 +124,7 @@ class Index {
    * @param {string} filename
    */
   async setContainsNoText(filename) {
-    const set = promisify(this.docsClient.set).bind(this.docsClient);
-    await set(filename, '');
+    await this.docsClient.set(filename, '');
   }
 }
 

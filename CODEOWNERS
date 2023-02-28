@@ -75,5 +75,6 @@ video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Self-service
+dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers

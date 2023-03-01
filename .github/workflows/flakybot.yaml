@@ -29,6 +29,9 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+    defaults:
+      run:
+        working-directory: scheduler
     steps:
       - uses: 'google-github-actions/auth@v1.0.0'
         with:

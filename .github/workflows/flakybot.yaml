@@ -44,7 +44,7 @@ jobs:
           # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
           curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v1.2.0.tar.gz -o flakybot.tar.gz
           tar xzf flakybot.tar.gz
-          cp -r repo-automation-bots-flakybot-v1.2.0/packages/flakybot/ .
+          cp -rT repo-automation-bots-flakybot-v1.2.0/packages/flakybot/ .
           ls
 #          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${FLAKYBOT_VERSION}.tar.gz -o flakybot.tar.gz
       - uses: actions/setup-go@v3

@@ -22,15 +22,18 @@ import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
 import * as cp from 'child_process';
 
-const client: RecaptchaEnterpriseServiceClient = new RecaptchaEnterpriseServiceClient()
+const client: RecaptchaEnterpriseServiceClient =
+  new RecaptchaEnterpriseServiceClient();
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Test for password leak given username and password', () => {
   let PROJECT_ID: string,
-      SITE_KEY: string,
-      TOKEN: string,
-      ACTION: string,
-      stdout: string;
+    SITE_KEY: string,
+    TOKEN: string,
+    ACTION: string,
+    USERNAME: string,
+    PASSWORD: string,
+    stdout: string;
 
   before(async () => {
     PROJECT_ID = await client.getProjectId();
@@ -42,13 +45,12 @@ describe('Test for password leak given username and password', () => {
     // Delete site key.
   });
 
-  it('should obtain boolean result from password leak assessment call',
-      async () => {
+  it('should obtain boolean result from password leak assessment call', async () => {
     stdout = execSync(
-        `node --loader ts-node/esm passwordLeakAssessment.ts 
-        ${PROJECT_ID} ${SITE_KEY}, ${TOKEN}, ${ACTION}`
+      `node --loader ts-node/esm passwordLeakAssessment.ts 
+        ${PROJECT_ID} ${SITE_KEY}, ${TOKEN}, ${ACTION} ${USERNAME} ${PASSWORD}`
     );
-    assert.match(stdout, /Is Credential leaked:/);
+    assert.match(stdout, /Is Credential leaked: false/);
   });
 
 });

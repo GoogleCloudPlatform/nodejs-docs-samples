@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
+const {describe, it, before, after, afterEach} = require('mocha');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
 const cp = require('child_process');
@@ -46,7 +46,7 @@ const client = new DLP.DlpServiceClient();
 describe('risk', () => {
   let projectId;
   // Create new custom topic/subscription
-  let topic, subscription, topicName, subscriptionName;
+  let topic, subscription, topicName, subscriptionName, jobName;
 
   before(async () => {
     topicName = `dlp-risk-topic-${uuid.v4()}-${Date.now()}`;
@@ -84,6 +84,22 @@ describe('risk', () => {
     await topic.delete();
   });
 
+  // Delete risk analysis job created in the snippets.
+  afterEach(async () => {
+    const request = {
+      name: jobName,
+    };
+
+    dlp
+        .deleteDlpJob(request)
+        .then(() => {
+          console.log(`Successfully deleted job ${jobName}.`);
+        })
+        .catch(err => {
+          throw (`Error in deleteJob: ${err.message || err}`);
+        });
+  });
+
   // numericalRiskAnalysis
   it('should perform numerical risk analysis', () => {
     const output = execSync(
@@ -91,6 +107,8 @@ describe('risk', () => {
     );
     assert.match(output, /Value at 0% quantile:/);
     assert.match(output, /Value at \d+% quantile:/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should handle numerical risk analysis errors', () => {
@@ -103,6 +121,8 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'NOT_FOUND');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // categoricalRiskAnalysis
@@ -111,6 +131,8 @@ describe('risk', () => {
       `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should perform categorical risk analysis on a number field', () => {
@@ -118,6 +140,8 @@ describe('risk', () => {
       `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should handle categorical risk analysis errors', () => {
@@ -130,6 +154,8 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // kAnonymityAnalysis
@@ -140,6 +166,8 @@ describe('risk', () => {
     console.log(output);
     assert.include(output, 'Quasi-ID values:');
     assert.include(output, 'Class size:');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should handle k-anonymity analysis errors', () => {
@@ -152,6 +180,8 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // kMapAnalysis
@@ -162,6 +192,8 @@ describe('risk', () => {
     assert.match(output, /Anonymity range: \[\d+, \d+\]/);
     assert.match(output, /Size: \d/);
     assert.match(output, /Values: \d{2}/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should handle k-map analysis errors', () => {
@@ -174,6 +206,8 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should check that numbers of quasi-ids and info types are equal', () => {
@@ -182,6 +216,8 @@ describe('risk', () => {
         `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
     }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // lDiversityAnalysis
@@ -192,6 +228,8 @@ describe('risk', () => {
     assert.match(output, /Quasi-ID values:/);
     assert.match(output, /Class size: \d/);
     assert.match(output, /Sensitive value/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should handle l-diversity analysis errors', () => {
@@ -204,5 +242,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 });

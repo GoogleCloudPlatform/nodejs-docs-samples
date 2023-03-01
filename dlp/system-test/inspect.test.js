@@ -15,7 +15,7 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
+const {describe, it, before, after, afterEach} = require('mocha');
 const cp = require('child_process');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
@@ -34,7 +34,7 @@ describe('inspect', () => {
   before(async () => {
     projectId = await client.getProjectId();
   });
-  let topic, subscription;
+  let topic, subscription, jobName;
   const topicName = `dlp-inspect-topic-${uuid.v4()}`;
   const subscriptionName = `dlp-inspect-subscription-${uuid.v4()}`;
   before(async () => {
@@ -46,6 +46,22 @@ describe('inspect', () => {
   after(async () => {
     await subscription.delete();
     await topic.delete();
+  });
+
+  // Delete DLP job created in the snippets.
+  afterEach(async () => {
+    const request = {
+      name: jobName,
+    };
+
+    dlp
+        .deleteDlpJob(request)
+        .then(() => {
+          console.log(`Successfully deleted job ${jobName}.`);
+        })
+        .catch(err => {
+          throw (`Error in deleteJob: ${err.message || err}`);
+        });
   });
 
   // inspect_string
@@ -143,6 +159,8 @@ describe('inspect', () => {
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it.skip('should inspect multiple GCS text files', () => {
@@ -151,6 +169,8 @@ describe('inspect', () => {
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it.skip('should handle a GCS file with no sensitive data', () => {
@@ -158,6 +178,8 @@ describe('inspect', () => {
       `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName}`
     );
     assert.match(output, /No findings/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should report GCS file handling errors', () => {
@@ -170,6 +192,8 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // inspect_datastore
@@ -178,6 +202,8 @@ describe('inspect', () => {
       `node inspectDatastore.js ${projectId} Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it.skip('should handle Datastore with no sensitive data', () => {
@@ -185,6 +211,8 @@ describe('inspect', () => {
       `node inspectDatastore.js ${projectId} Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /No findings/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should report Datastore errors', () => {
@@ -197,6 +225,8 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // inspect_bigquery
@@ -205,6 +235,8 @@ describe('inspect', () => {
       `node inspectBigQuery.js ${projectId} integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it.skip('should handle a Bigquery table with no sensitive data', () => {
@@ -212,6 +244,8 @@ describe('inspect', () => {
       `node inspectBigQuery.js ${projectId} integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /No findings/);
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   it('should report Bigquery table handling errors', () => {
@@ -224,6 +258,8 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
+    assert.match(output, 'Job created. Job name: ');
+    jobName = output.split(':')[1].trim();
   });
 
   // CLI options

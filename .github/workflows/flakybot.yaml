@@ -31,7 +31,7 @@ jobs:
       id-token: 'write'
     defaults:
       run:
-        working-directory: scheduler
+        working-directory: /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
     steps:
       - uses: 'google-github-actions/auth@v1.0.0'
         with:

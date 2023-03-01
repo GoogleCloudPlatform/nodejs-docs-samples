@@ -107,7 +107,7 @@ describe('risk', () => {
     );
     assert.match(output, /Value at 0% quantile:/);
     assert.match(output, /Value at \d+% quantile:/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -121,7 +121,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'NOT_FOUND');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -131,7 +131,7 @@ describe('risk', () => {
       `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -140,7 +140,7 @@ describe('risk', () => {
       `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
     );
     assert.match(output, /Most common value occurs \d time\(s\)/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -154,7 +154,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -166,7 +166,7 @@ describe('risk', () => {
     console.log(output);
     assert.include(output, 'Quasi-ID values:');
     assert.include(output, 'Class size:');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -180,7 +180,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -192,7 +192,7 @@ describe('risk', () => {
     assert.match(output, /Anonymity range: \[\d+, \d+\]/);
     assert.match(output, /Size: \d/);
     assert.match(output, /Values: \d{2}/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -206,7 +206,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -217,7 +217,7 @@ describe('risk', () => {
         `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
     }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -229,7 +229,7 @@ describe('risk', () => {
     assert.match(output, /Quasi-ID values:/);
     assert.match(output, /Class size: \d/);
     assert.match(output, /Sensitive value/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -243,7 +243,7 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 });

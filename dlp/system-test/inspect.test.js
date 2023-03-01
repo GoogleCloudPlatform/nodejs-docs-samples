@@ -159,7 +159,7 @@ describe('inspect', () => {
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -169,7 +169,7 @@ describe('inspect', () => {
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -178,7 +178,7 @@ describe('inspect', () => {
       `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName}`
     );
     assert.match(output, /No findings/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -192,7 +192,7 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -202,7 +202,7 @@ describe('inspect', () => {
       `node inspectDatastore.js ${projectId} Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -211,7 +211,7 @@ describe('inspect', () => {
       `node inspectDatastore.js ${projectId} Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
     );
     assert.match(output, /No findings/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -225,7 +225,7 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -235,7 +235,7 @@ describe('inspect', () => {
       `node inspectBigQuery.js ${projectId} integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -244,7 +244,7 @@ describe('inspect', () => {
       `node inspectBigQuery.js ${projectId} integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`
     );
     assert.match(output, /No findings/);
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 
@@ -258,7 +258,7 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, 'Job created. Job name: ');
+    assert.match(output, /Job created. Job name: /);
     jobName = output.split(':')[1].trim();
   });
 

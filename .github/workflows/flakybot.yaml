@@ -46,5 +46,6 @@ jobs:
 #          cache-dependency-path: repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/go.sum
           cache-dependency-path: repo-automation-bots-flakybot-v1.2.0/packages/flakybot/go.sum
       - run: |
-          go run repo-automation-bots-flakybot-v1.2.0/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+          cd repo-automation-bots-flakybot-v1.2.0/packages/flakybot
+          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 #          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

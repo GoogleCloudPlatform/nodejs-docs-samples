@@ -66,7 +66,7 @@ jobs:
         MOCHA_REPORTER_OUTPUT: scheduler_sponge_log.xml
         MOCHA_REPORTER: xunit
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
-      uses: actions/github-script@v6
+      uses: actions/github-script@v6.4.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |

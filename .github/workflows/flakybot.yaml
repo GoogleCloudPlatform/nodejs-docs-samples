@@ -52,7 +52,6 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           cache: true
-          cache-dependency-path: /home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.sum
 #          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
       - run: |
           ls          

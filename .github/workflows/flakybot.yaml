@@ -43,7 +43,6 @@ jobs:
 #          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${FLAKYBOT_VERSION}.tar.gz -o flakybot.tar.gz
       - uses: actions/setup-go@v3
         with:
-          go-version-file: ./go.mod
           cache: true
       - run: |          
           go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

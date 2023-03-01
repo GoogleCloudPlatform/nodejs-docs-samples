@@ -90,14 +90,14 @@ describe('risk', () => {
       name: jobName,
     };
 
-    dlp
-        .deleteDlpJob(request)
-        .then(() => {
-          console.log(`Successfully deleted job ${jobName}.`);
-        })
-        .catch(err => {
-          throw (`Error in deleteJob: ${err.message || err}`);
-        });
+    client
+      .deleteDlpJob(request)
+      .then(() => {
+        console.log(`Successfully deleted job ${jobName}.`);
+      })
+      .catch(err => {
+        throw `Error in deleteJob: ${err.message || err}`;
+      });
   });
 
   // numericalRiskAnalysis
@@ -211,8 +211,9 @@ describe('risk', () => {
   });
 
   it('should check that numbers of quasi-ids and info types are equal', () => {
+    let output;
     assert.throws(() => {
-      execSync(
+      output = execSync(
         `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
     }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);

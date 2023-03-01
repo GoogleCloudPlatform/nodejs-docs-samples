@@ -54,14 +54,14 @@ describe('inspect', () => {
       name: jobName,
     };
 
-    dlp
-        .deleteDlpJob(request)
-        .then(() => {
-          console.log(`Successfully deleted job ${jobName}.`);
-        })
-        .catch(err => {
-          throw (`Error in deleteJob: ${err.message || err}`);
-        });
+    client
+      .deleteDlpJob(request)
+      .then(() => {
+        console.log(`Successfully deleted job ${jobName}.`);
+      })
+      .catch(err => {
+        throw `Error in deleteJob: ${err.message || err}`;
+      });
   });
 
   // inspect_string

@@ -96,7 +96,7 @@ function main(
     const subscription = await topicResponse.subscription(subscriptionId);
     const [jobsResponse] = await dlp.createDlpJob(request);
     const jobName = jobsResponse.name;
-    console.log(`Job created. Job name: ${jobName}`)
+    console.log(`Job created. Job name: ${jobName}`);
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
       const messageHandler = message => {

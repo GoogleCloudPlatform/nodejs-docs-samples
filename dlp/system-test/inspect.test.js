@@ -55,13 +55,13 @@ describe('inspect', () => {
     };
 
     dlp
-        .deleteDlpJob(request)
-        .then(() => {
-          console.log(`Successfully deleted job ${jobName}.`);
-        })
-        .catch(err => {
-          throw (`Error in deleteJob: ${err.message || err}`);
-        });
+      .deleteDlpJob(request)
+      .then(() => {
+        console.log(`Successfully deleted job ${jobName}.`);
+      })
+      .catch(err => {
+        throw `Error in deleteJob: ${err.message || err}`;
+      });
   });
 
   // inspect_string

@@ -20,6 +20,8 @@ on:
 jobs:
   flakybot:
 #    if: ${{ github.event_name == 'schedule' && always() }}
+    env:
+      FLAKYBOT_VERSION: 1.2.0
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -33,6 +35,12 @@ jobs:
           create_credentials_file: 'true'
           access_token_lifetime: 600s
       - run: |
-          curl https://github.com/googleapis/repo-automation-bots/releases/download/flakybot-1.1.0/flakybot -o flakybot -s -L
-          chmod +x ./flakybot
-          ./flakybot --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v$FLAKYBOT_VERSION.tar.gz -o flakybot.tar.gz
+          tar xzf flakybot.tar.gz
+      - uses: actions/setup-go@v3
+        with:
+          go-version-file: repo-automation-bots-flakybot-v$FLAKYBOT_VERSION/packages/flakybot/go.mod
+          cache: true
+          cache-dependency-path: repo-automation-bots-flakybot-v$FLAKYBOT_VERSION/packages/flakybot/go.sum
+      - run: |
+          go run repo-automation-bots-flakybot-v$FLAKYBOT_VERSION/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

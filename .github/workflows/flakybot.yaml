@@ -22,6 +22,8 @@ jobs:
 #    if: ${{ github.event_name == 'schedule' && always() }}
     env:
       FLAKYBOT_VERSION: 1.2.0
+      MOCHA_REPORTER_SUITENAME: scheduler
+      MOCHA_REPORTER_OUTPUT: scheduler_sponge_log.xml      
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -47,5 +49,5 @@ jobs:
           cache-dependency-path: repo-automation-bots-flakybot-v1.2.0/packages/flakybot/go.sum
       - run: |
           cd repo-automation-bots-flakybot-v1.2.0/packages/flakybot
-          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+          go run flakybot.go --logs_dir ../../.. --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 #          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

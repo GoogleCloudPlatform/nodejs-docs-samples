@@ -40,15 +40,18 @@ jobs:
           create_credentials_file: 'true'
           access_token_lifetime: 600s
       - run: |
-          cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
+          pwd
+          # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
           curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v1.2.0.tar.gz -o flakybot.tar.gz
           tar xzf flakybot.tar.gz
           cp -r repo-automation-bots-flakybot-v1.2.0/packages/flakybot/ .
+          ls
 #          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${FLAKYBOT_VERSION}.tar.gz -o flakybot.tar.gz
       - uses: actions/setup-go@v3
         with:
           cache: true
-          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
-      - run: |          
+#          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
+      - run: |
+          ls          
           go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 #          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

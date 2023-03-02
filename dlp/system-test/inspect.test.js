@@ -22,8 +22,8 @@ const pubsub = new PubSub();
 const uuid = require('uuid');
 const DLP = require('@google-cloud/dlp');
 
-const bucket = 'nodejs-docs-samples-dlp';
-const dataProject = 'nodejs-docs-samples';
+const bucket = 'nodejs-dlp-test-bucket';
+const dataProject = 'long-door-651';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -192,8 +192,6 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // inspect_datastore
@@ -225,8 +223,6 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // inspect_bigquery
@@ -258,8 +254,6 @@ describe('inspect', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // CLI options

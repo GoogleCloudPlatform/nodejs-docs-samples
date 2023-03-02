@@ -203,9 +203,8 @@ describe('risk', () => {
   });
 
   it('should check that numbers of quasi-ids and info types are equal', () => {
-    let output;
     assert.throws(() => {
-      output = execSync(
+      execSync(
         `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
     }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);

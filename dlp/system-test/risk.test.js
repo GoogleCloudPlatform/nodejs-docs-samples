@@ -121,8 +121,6 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'NOT_FOUND');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // categoricalRiskAnalysis
@@ -154,8 +152,6 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // kAnonymityAnalysis
@@ -180,8 +176,6 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // kMapAnalysis
@@ -206,8 +200,6 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   it('should check that numbers of quasi-ids and info types are equal', () => {
@@ -217,8 +209,6 @@ describe('risk', () => {
         `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
       );
     }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 
   // lDiversityAnalysis
@@ -243,7 +233,5 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
   });
 });

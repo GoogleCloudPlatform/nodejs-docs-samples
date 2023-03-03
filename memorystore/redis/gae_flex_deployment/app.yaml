@@ -20,6 +20,6 @@ env_variables:
   REDISPORT: '6379'
 
 # Update with Redis instance network name
-network:
+vpc_access_connector:
   name: default
 # [END memorystore_app_yaml_flex]

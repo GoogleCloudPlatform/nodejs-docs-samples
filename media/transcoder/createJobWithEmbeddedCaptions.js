@@ -86,15 +86,12 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
                     inputTrack: 0,
                   },
                 ],
+                languageCode: 'en-US',
+                displayName: 'English',
               },
             },
           ],
           muxStreams: [
-            {
-              key: 'sd',
-              container: 'mp4',
-              elementaryStreams: ['video-stream0', 'audio-stream0'],
-            },
             {
               key: 'sd-hls',
               container: 'ts',

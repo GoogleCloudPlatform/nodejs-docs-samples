@@ -34,7 +34,7 @@ path:
     mediatranslation: "mediatranslation"
     memorystore: "memorystore"
     monitoring: "monitoring"
-    recaptcha: "recaptchaenterprise"
+    recaptcha_enterprise: "recaptchaenterprise"
     retail: "retail"
     run: "run"
     scheduler: "cloudscheduler"

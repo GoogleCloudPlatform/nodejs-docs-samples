@@ -19,6 +19,7 @@
     "@google-cloud/workflows": "^2.3.1"
   },
   "devDependencies": {
+    "@types/node": "^18.14.6",
     "gts": "^3.1.1",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1"

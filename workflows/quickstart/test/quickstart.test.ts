@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import quickstart from '../index.js';
-import {strict as assert} from 'assert';
-
+import * as assert from 'assert';
+import {before, beforeEach, describe, it} from 'mocha';
 import {WorkflowsClient} from '@google-cloud/workflows';
-const client: WorkflowsClient = new WorkflowsClient();
 
+const client: WorkflowsClient = new WorkflowsClient();
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT as string;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';

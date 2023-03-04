@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {pathToFileURL} from 'url';
-
 // [START workflows_api_quickstart]
 import {ExecutionsClient} from '@google-cloud/workflows';
 
@@ -78,10 +76,8 @@ export default main;
 
 // Call as CLI
 // node . [projectId] [location] [workflowName]
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const projectID =
-    process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
-  const location = process.argv[3] || 'us-central1';
-  const workflowName = process.argv[4] || 'myFirstWorkflow';
-  main(projectID, location, workflowName);
-}
+const projectID =
+  process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
+const location = process.argv[3] || 'us-central1';
+const workflowName = process.argv[4] || 'myFirstWorkflow';
+main(projectID, location, workflowName);

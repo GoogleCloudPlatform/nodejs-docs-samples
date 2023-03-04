@@ -13,12 +13,12 @@
     "fix": "gts fix",
     "lint": "gts lint",
     "test": "c8 mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
-    
   },
   "dependencies": {
     "@google-cloud/workflows": "^2.3.1"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.6",
     "gts": "^3.1.1",
     "mocha": "^10.2.0",

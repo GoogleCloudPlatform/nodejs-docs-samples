@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import {WorkflowsClient} from '@google-cloud/workflows';
 import * as assert from 'assert';
 import * as cp from 'child_process';
 import {before, beforeEach, describe, it} from 'mocha';
-import {WorkflowsClient} from '@google-cloud/workflows';
 
 const client: WorkflowsClient = new WorkflowsClient();
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});

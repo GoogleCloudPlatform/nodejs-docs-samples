@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+import {ExecutionsClient} from '@google-cloud/workflows';
 
-async function main(projectId, location, name) {
+async function main(projectId: string, location: string, name: string) {
   // [START workflows_create_execution]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -23,7 +23,7 @@ async function main(projectId, location, name) {
   // const location = 'us-central1';
   // const name = 'my-test-workflow';
   const {ExecutionsClient} = require('@google-cloud/workflows');
-  const client = new ExecutionsClient();
+  const client: ExecutionsClient = new ExecutionsClient();
   async function createExecution() {
     const [resp] = await client.createExecution({
       parent: client.workflowPath(projectId, location, name),
@@ -34,8 +34,8 @@ async function main(projectId, location, name) {
   // [END workflows_create_execution]
 }
 
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
+main(...(process.argv.slice(2) as [string, string, string]));

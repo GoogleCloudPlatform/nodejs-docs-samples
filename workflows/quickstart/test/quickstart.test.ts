@@ -12,37 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+import quickstart from '../index.js';
+import {strict as assert} from 'assert';
 
-const quickstart = require('../index');
-const assert = require('assert');
+import {WorkflowsClient} from '@google-cloud/workflows';
+const client: WorkflowsClient = new WorkflowsClient();
 
-const {WorkflowsClient} = require('@google-cloud/workflows');
-const client = new WorkflowsClient();
-
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT as string;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
 
 describe('Cloud Workflows Quickstart Tests', () => {
-  beforeEach(async () => {
-    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
-
+  before(async () => {
     // Ensure project is configured
     assert.notStrictEqual(
       PROJECT_ID,
       undefined,
       'GOOGLE_CLOUD_PROJECT must be set'
     );
+  });
 
+  beforeEach(async () => {
     /**
      * Check if the workflow exists
      */
-    async function worklowExists() {
+    async function workflowExists() {
       try {
         // Try to get the workflow
         const [workflowGet] = await client.getWorkflow({
-          name: client.workflowPath(projectId, LOCATION_ID, WORKFLOW_ID),
+          name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
         });
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
@@ -52,9 +50,9 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
 
     // Create a new workflow if it doesn't exist.
-    if (!(await worklowExists())) {
+    if (!(await workflowExists())) {
       await client.createWorkflow({
-        parent: client.locationPath(projectId, LOCATION_ID),
+        parent: client.locationPath(PROJECT_ID, LOCATION_ID),
         workflow: {
           name: WORKFLOW_ID,
           // Copied from:
@@ -69,7 +67,11 @@ describe('Cloud Workflows Quickstart Tests', () => {
 
   it('should execute the quickstart', async () => {
     // Execute workflow, with long test timeout
-    const result = await quickstart(PROJECT_ID, LOCATION_ID, WORKFLOW_ID);
+    const result = (await quickstart(
+      PROJECT_ID,
+      LOCATION_ID,
+      WORKFLOW_ID
+    )) as string;
     assert.strictEqual(
       result.length > 0,
       true,

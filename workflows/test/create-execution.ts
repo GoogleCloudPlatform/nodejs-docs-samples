@@ -14,14 +14,11 @@
 
 'use strict';
 
-const path = require('path');
-const assert = require('assert');
-const cp = require('child_process');
-const {describe, it} = require('mocha');
+import {strict as assert} from 'assert';
+import * as cp from 'child_process';
+import {describe, it} from 'mocha';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-const cwd = path.join(__dirname, '..');
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const project = process.env.GCLOUD_PROJECT;
 const location = 'us-central1';
@@ -30,10 +27,7 @@ const workflow = 'test-workflow-dont-delete';
 describe('create-execution', () => {
   it('should create an execution', async () => {
     const output = execSync(
-      `node ./create-execution.js ${project} ${location} ${workflow}`,
-      {
-        cwd,
-      }
+      `node --loader ts-node/esm ./create-execution.ts ${project} ${location} ${workflow}`
     );
     assert(output.match(/name: projects.*executions.*/));
   });

@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+import {pathToFileURL} from 'url';
+
+// [START workflows_api_quickstart]
+import {ExecutionsClient} from '@google-cloud/workflows';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -20,23 +23,17 @@
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
  */
-const main = async (
-  projectId = process.env.GOOGLE_CLOUD_PROJECT,
-  location = 'us-central1',
-  workflow = 'myFirstWorkflow'
-) => {
+const main = async (projectId: string, location: string, workflow: string) => {
   if (!projectId)
     return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
 
-  // [START workflows_api_quickstart]
-  const {ExecutionsClient} = require('@google-cloud/workflows');
-  const client = new ExecutionsClient();
+  const client: ExecutionsClient = new ExecutionsClient();
 
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
    */
-  function sleep(ms) {
+  function sleep(ms: number) {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
@@ -74,13 +71,17 @@ const main = async (
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
-  // [END workflows_api_quickstart]
 };
+// [END workflows_api_quickstart]
 
-module.exports = main;
+export default main;
 
 // Call as CLI
-// node . [projectId] [cloudRegion] [workflowName]
-if (require.main === module) {
-  main(...process.argv.slice(2));
+// node . [projectId] [location] [workflowName]
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const projectID =
+    process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
+  const location = process.argv[3] || 'us-central1';
+  const workflowName = process.argv[4] || 'myFirstWorkflow';
+  main(projectID, location, workflowName);
 }

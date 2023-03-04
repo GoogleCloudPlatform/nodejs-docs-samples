@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { pathToFileURL } = require("url");
+const {pathToFileURL} = require('url');
 
 // [START workflows_api_quickstart]
-const { ExecutionsClient } = require("@google-cloud/workflows");
+const {ExecutionsClient} = require('@google-cloud/workflows');
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -25,7 +25,7 @@ const { ExecutionsClient } = require("@google-cloud/workflows");
  */
 const main = async (projectId, location, workflow) => {
   if (!projectId)
-  return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
+    return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
 
   const client = new ExecutionsClient();
 
@@ -34,7 +34,7 @@ const main = async (projectId, location, workflow) => {
    * @param {Number} ms The number of milliseconds to sleep.
    */
   function sleep(ms) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
   }
@@ -42,7 +42,7 @@ const main = async (projectId, location, workflow) => {
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
-      parent: client.workflowPath(projectId, location, workflow)
+      parent: client.workflowPath(projectId, location, workflow),
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);
@@ -53,7 +53,7 @@ const main = async (projectId, location, workflow) => {
     console.log('Poll every second for result...');
     while (!executionFinished) {
       const [execution] = await client.getExecution({
-        name: executionName
+        name: executionName,
       });
       executionFinished = execution.state !== 'ACTIVE';
 
@@ -78,9 +78,8 @@ module.exports = main;
 
 // Call as CLI
 // node . [projectId] [location] [workflowName]
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const projectID =
-  process.argv[2] || process.env.GOOGLE_CLOUD_PROJECT;
+if (require.main === module) {
+  const projectID = process.argv[2] || process.env.GOOGLE_CLOUD_PROJECT;
   const location = process.argv[3] || 'us-central1';
   const workflowName = process.argv[4] || 'myFirstWorkflow';
   main(projectID, location, workflowName);

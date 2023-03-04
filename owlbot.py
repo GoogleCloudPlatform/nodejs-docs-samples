@@ -92,7 +92,6 @@ def typeless_samples_hermetic(
             output_path,
             "--targets",
             targets,
-            "--recursive",
         ],
         check=False,
         hide_output=hide_output,

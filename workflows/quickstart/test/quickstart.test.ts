@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import quickstart from '../index.js';
 import * as assert from 'assert';
+import * as cp from 'child_process';
 import {before, beforeEach, describe, it} from 'mocha';
 import {WorkflowsClient} from '@google-cloud/workflows';
 
 const client: WorkflowsClient = new WorkflowsClient();
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
+
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT as string;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
@@ -67,11 +69,10 @@ describe('Cloud Workflows Quickstart Tests', () => {
 
   it('should execute the quickstart', async () => {
     // Execute workflow, with long test timeout
-    const result = (await quickstart(
-      PROJECT_ID,
-      LOCATION_ID,
-      WORKFLOW_ID
-    )) as string;
+    const result = execSync(
+      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+    );
+
     assert.strictEqual(
       result.length > 0,
       true,

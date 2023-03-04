@@ -22,7 +22,14 @@ from synthtool.log import logger
 
 _TOOLS_DIRECTORY: str = "/synthtool"
 _EXCLUDED_DIRS: list[str] = [r"node_modules", r"^\."]
-_TYPELESS_EXPRESSIONS: list[str] = ["s/export {};$/\\n/","s/export default/module.exports =/"]
+_TYPELESS_EXPRESSIONS: list[str] = [
+    # Remove extra export{}; statement at end
+    "s/export {};$/\\n/",
+    # Convert module export to CJS
+    "s/export default/module.exports =/",
+    # Convert check if running on CLI to CJS
+    "s/import.meta.url === pathToFileURL(process.argv[1]).href/require.main === module/",
+]
 _NPM_CONFIG_CACHE: str = "/var/tmp/.npm"
 
 

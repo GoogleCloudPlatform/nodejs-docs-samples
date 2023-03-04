@@ -20,13 +20,13 @@ from pathlib import Path
 from synthtool import shell
 from synthtool.log import logger
 
-_TOOLS_DIRECTORY: str = "/synthtool"
-_EXCLUDED_DIRS: list[str] = [r"node_modules", r"^\."]
-_TYPELESS_EXPRESSIONS: list[str] = [
+_TOOLS_DIRECTORY = "/synthtool"
+_EXCLUDED_DIRS = [r"node_modules", r"^\."]
+_TYPELESS_EXPRESSIONS = [
     "s/export {};$/\\n/",
     "s/export default/module.exports =/",
 ]
-_NPM_CONFIG_CACHE: str = "/var/tmp/.npm"
+_NPM_CONFIG_CACHE = "/var/tmp/.npm"
 
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:

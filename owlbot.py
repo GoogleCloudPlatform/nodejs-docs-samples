@@ -28,7 +28,7 @@ _TYPELESS_EXPRESSIONS: list[str] = [
     # Convert module export to CJS
     "s/export default/module.exports =/",
     # Convert check if running on CLI to CJS
-    "s/import.meta.url === pathToFileURL(process.argv[1]).href/require.main === module/",
+    "s/import.meta.url === pathToFileURL(process.argv\\[1\\]).href/require.main === module/",
 ]
 _NPM_CONFIG_CACHE: str = "/var/tmp/.npm"
 

@@ -20,10 +20,10 @@ from pathlib import Path
 from synthtool import shell
 from synthtool.log import logger
 
-_TOOLS_DIRECTORY = "/synthtool"
-_EXCLUDED_DIRS = [r"node_modules", r"^\."]
-_TYPELESS_EXPRESSION = "s/export {};$/\\n/"
-_NPM_CONFIG_CACHE = "/var/tmp/.npm"
+_TOOLS_DIRECTORY: str = "/synthtool"
+_EXCLUDED_DIRS: list[str] = [r"node_modules", r"^\."]
+_TYPELESS_EXPRESSIONS: list[str] = ["s/export {};$/\\n/","s/export default/module.exports =/"]
+_NPM_CONFIG_CACHE: str = "/var/tmp/.npm"
 
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
@@ -106,11 +106,12 @@ def trim(targets: str, hide_output: bool = False) -> None:
     for file in os.listdir(f"{targets}"):
         if file.endswith(".js"):
             logger.debug(f"Updating {targets}/{file}")
-            shell.run(
-                ["sed", "-i", "-e", _TYPELESS_EXPRESSION, f"{targets}/{file}"],
-                check=False,
-                hide_output=hide_output,
-            )
+            for expr in _TYPELESS_EXPRESSIONS:
+                shell.run(
+                    ["sed", "-i", "-e", expr, f"{targets}/{file}"],
+                    check=False,
+                    hide_output=hide_output,
+                )
 
 
 def fix_hermetic(targets=".", hide_output=False):

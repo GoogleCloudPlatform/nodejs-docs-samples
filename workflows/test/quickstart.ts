@@ -18,11 +18,12 @@ import {describe, it} from 'mocha';
 
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 const project = process.env.GCLOUD_PROJECT as string;
+const location = 'us-central1';
 
 describe('Quickstart', () => {
   it('should run quickstart', async () => {
     const output = execSync(
-      `node --loader ts-node/esm ./quickstart.js ${project} us-central1`
+      `node --loader ts-node/esm ./quickstart.js ${project} ${location}`
     );
     assert(output.match(/name: projects.*/));
   });

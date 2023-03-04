@@ -12,15 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-import {strict as assert} from 'assert';
+import assert from 'assert';
 import * as cp from 'child_process';
 import {describe, it} from 'mocha';
 
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const project = process.env.GCLOUD_PROJECT;
+const project = process.env.GCLOUD_PROJECT as string;
 const location = 'us-central1';
 const workflow = 'test-workflow-dont-delete';
 

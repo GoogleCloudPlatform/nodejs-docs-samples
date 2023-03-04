@@ -12,24 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+import assert from 'assert';
+import * as cp from 'child_process';
+import {describe, it} from 'mocha';
 
-const path = require('path');
-const assert = require('assert');
-const cp = require('child_process');
-const {describe, it} = require('mocha');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-const cwd = path.join(__dirname, '..');
-
-const project = process.env.GCLOUD_PROJECT;
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
+const project = process.env.GCLOUD_PROJECT as string;
 
 describe('Quickstart', () => {
   it('should run quickstart', async () => {
-    const output = execSync(`node ./quickstart.js ${project} us-central1`, {
-      cwd,
-    });
+    const output = execSync(
+      `node --loader ts-node/esm ./quickstart.js ${project} us-central1`
+    );
     assert(output.match(/name: projects.*/));
   });
 });

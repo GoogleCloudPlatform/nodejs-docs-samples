@@ -74,7 +74,7 @@ const main = async (projectId, location, workflow) => {
 };
 // [END workflows_api_quickstart]
 
-export default main;
+module.exports = main;
 
 // Call as CLI
 // node . [projectId] [location] [workflowName]

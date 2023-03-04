@@ -14,14 +14,15 @@
 
 'use strict';
 
-async function main(projectId, location) {
-  // [START workflows_quickstart]
+// [START workflows_quickstart]
+import {WorkflowsClient} from '@google-cloud/workflows';
+
+async function main(projectId: string, location: string) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'my-project';
   // const location = 'us-central1';
-  const {WorkflowsClient} = require('@google-cloud/workflows');
   const client = new WorkflowsClient();
   async function listWorkflows() {
     const [workflows] = await client.listWorkflows({
@@ -32,11 +33,11 @@ async function main(projectId, location) {
     }
   }
   listWorkflows();
-  // [END workflows_quickstart]
 }
+// [END workflows_quickstart]
 
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
+main(...(process.argv.slice(2) as [string, string]));

@@ -96,7 +96,7 @@ def typeless_samples_hermetic(
             "--targets",
             targets,
         ],
-        check=False,
+        check=True,
         hide_output=hide_output,
     )
 
@@ -112,7 +112,7 @@ def trim(targets: str, hide_output: bool = False) -> None:
             for expr in _TYPELESS_EXPRESSIONS:
                 shell.run(
                     ["sed", "-i", "-e", expr, f"{targets}/{file}"],
-                    check=False,
+                    check=True,
                     hide_output=hide_output,
                 )
 
@@ -131,7 +131,7 @@ def fix_hermetic(targets=".", hide_output=False):
     logger.debug("Running fix...")
     shell.run(
         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", f"{targets}"],
-        check=False,
+        check=True,
         hide_output=hide_output,
     )
 

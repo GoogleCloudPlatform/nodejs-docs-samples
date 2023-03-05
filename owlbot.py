@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 import re
 import subprocess
@@ -103,15 +104,14 @@ def trim(targets: str, hide_output: bool = False) -> None:
     Fixes the formatting of generated JS files
     """
     logger.debug("Trim generated files")
-    for file in os.listdir(f"{targets}"):
-        if file.endswith(".js"):
-            logger.debug(f"Updating {targets}/{file}")
-            for expr in _TYPELESS_EXPRESSIONS:
-                shell.run(
-                    ["sed", "-i", "-e", expr, f"{targets}/{file}"],
-                    check=True,
-                    hide_output=hide_output,
-                )
+    for path in glob.iglob(f"{targets}/**.*.js", recursive=True):
+        logger.debug(f"Updating {path}")
+        for expr in _TYPELESS_EXPRESSIONS:
+            shell.run(
+                ["sed", "-i", "-e", expr, f"{path}"],
+                check=True,
+                hide_output=hide_output,
+            )
 
 
 def fix_hermetic(targets: str = ".", hide_output: bool = False):

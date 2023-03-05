@@ -75,7 +75,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
     for i in range(len(owlbot_dirs)):
         for j in range(i+1, len(owlbot_dirs)):
             if owlbot_dirs[i] in owlbot_dirs[j]:
-                dirs_dict.pop(owlbot_dirs[i])
+                dirs_dict.pop(owlbot_dirs[j])
                 i+=1
                 break
     owlbot_dirs = list(dirs_dict.keys())

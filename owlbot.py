@@ -96,10 +96,12 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> list[s
             "--recursive",
         ],
         check=True,
-        hide_output=hide_output,
+        hide_output=True, # Capture stdout
     )
+    if not proc.stdout:
+        return []
     if not hide_output:
-        logger.debug(proc.stdout)
+        logger.debug(proc.stdout)        
     return re.findall(_TYPELESS_EXPRESSION, proc.stdout)
 # def trim(targets: str, hide_output: bool = False) -> None:
 #     """

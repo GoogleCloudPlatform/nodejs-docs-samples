@@ -16,8 +16,6 @@
 // look for the source TypeScript sample (.ts) for modifications.
 'use strict';
 
-'use strict';
-
 // [START workflows_quickstart]
 const {WorkflowsClient} = require('@google-cloud/workflows');
 

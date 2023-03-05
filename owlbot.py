@@ -69,16 +69,6 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
                     owlbot_dirs.append(object_dir)
             else:
                 owlbot_dirs.append(object_dir)
-    dirs_dict: dict[str, bool] = dict.fromkeys(owlbot_dirs, True)
-    owlbot_dirs = sorted(owlbot_dirs, key=len)
-    # Remove any directories that are already belong to parents
-    for i in range(len(owlbot_dirs)):
-        for j in range(i+1, len(owlbot_dirs)):
-            if owlbot_dirs[i] in owlbot_dirs[j]:
-                dirs_dict.pop(owlbot_dirs[j])
-                i+=1
-                break
-    owlbot_dirs = list(dirs_dict.keys())
     for path_object in dir.glob("owl-bot-staging/*"):
         owlbot_dirs.append(
             f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
@@ -86,9 +76,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
     return owlbot_dirs
 
 
-def typeless_samples_hermetic(
-    output_path: str, targets: str, hide_output: bool = False
-) -> None:
+def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> None:
     """
     Converts TypeScript samples in the current Node.js library
     to JavaScript samples. Run this step before fix() and friends.
@@ -101,11 +89,9 @@ def typeless_samples_hermetic(
     shell.run(
         [
             f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
-            "--outputpath",
-            output_path,
             "--targets",
             targets,
-            "--recursive"
+            "--recursive",
         ],
         check=True,
         hide_output=hide_output,
@@ -128,7 +114,7 @@ def trim(targets: str, hide_output: bool = False) -> None:
                 )
 
 
-def fix_hermetic(targets=".", hide_output=False):
+def fix_hermetic(targets: str = ".", hide_output: bool = False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
     is already installed in a well known location on disk (node_modules/.bin).
@@ -147,6 +133,13 @@ def fix_hermetic(targets=".", hide_output=False):
     )
 
 
+# Update typeless-sample-bot
+old_path = os.getcwd()
+os.chdir("/synthtool")
+logger.debug("Update typeless sample bot [1.3.0]")
+shell.run(["npm", "i", "@google-cloud/typeless-sample-bot@1.3.0"])
+os.chdir(old_path)
+
 # Avoid "Your cache folder contains root-owned files" error
 os.environ["npm_config_cache"] = _NPM_CONFIG_CACHE
 
@@ -155,7 +148,7 @@ dirs: list[str] = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=
 for d in dirs:
     logger.debug(f"Directory: {d}")
     # Run typeless bot to convert from TS -> JS
-    typeless_samples_hermetic(output_path=d, targets=d)
+    typeless_samples_hermetic(targets=d)
     # Remove extra characters
     trim(targets=d)
     # Fix formatting

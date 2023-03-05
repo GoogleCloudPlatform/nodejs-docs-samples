@@ -69,6 +69,16 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
                     owlbot_dirs.append(object_dir)
             else:
                 owlbot_dirs.append(object_dir)
+    dirs_dict: dict[str, bool] = dict.fromkeys(owlbot_dirs, True)
+    owlbot_dirs = sorted(owlbot_dirs, key=len)
+    # Remove any directories that are already belong to parents
+    for i in range(len(owlbot_dirs)):
+        for j in range(i+1, len(owlbot_dirs)):
+            if owlbot_dirs[i] in owlbot_dirs[j]:
+                dirs_dict.pop(owlbot_dirs[i])
+                i+=1
+                break
+    owlbot_dirs = list(dirs_dict.keys())
     for path_object in dir.glob("owl-bot-staging/*"):
         owlbot_dirs.append(
             f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
@@ -95,6 +105,7 @@ def typeless_samples_hermetic(
             output_path,
             "--targets",
             targets,
+            "--recursive"
         ],
         check=True,
         hide_output=hide_output,

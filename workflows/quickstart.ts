@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
 // [START workflows_quickstart]
 import {WorkflowsClient} from '@google-cloud/workflows';
 

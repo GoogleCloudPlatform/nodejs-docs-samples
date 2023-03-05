@@ -23,10 +23,11 @@ from synthtool.log import logger
 
 _TOOLS_DIRECTORY = "/synthtool"
 _EXCLUDED_DIRS = [r"node_modules", r"^\."]
-_TYPELESS_EXPRESSIONS = [
+_TRIM_EXPRESSIONS = [
     "s/export {};$/\\n/",
     "s/export default/module.exports =/",
 ]
+_TYPELESS_EXPRESSION = r"Generated (.*)"
 _NPM_CONFIG_CACHE = "/var/tmp/.npm"
 
 
@@ -77,7 +78,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
     return owlbot_dirs
 
 
-def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> None:
+def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> list[str]:
     """
     Converts TypeScript samples in the current Node.js library
     to JavaScript samples. Run this step before fix() and friends.
@@ -87,7 +88,7 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> None:
     OwlBot.py, and must be called from there before calling owlbot_main.
     """
     logger.debug("Run typeless sample bot")
-    shell.run(
+    proc:subprocess.CompletedProcess[str] = shell.run(
         [
             f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
             "--targets",
@@ -97,24 +98,40 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> None:
         check=True,
         hide_output=hide_output,
     )
+    if not hide_output:
+        logger.debug(proc.stdout)
+    return re.findall(_TYPELESS_EXPRESSION, proc.stdout)
+# def trim(targets: str, hide_output: bool = False) -> None:
+#     """
+#     Fixes the formatting of generated JS files
+#     """
+#     logger.debug("Trim generated files")
+#     for path in glob.iglob(f"{targets}/**.*.js", recursive=True):
+#         logger.debug(f"Updating {path}")
+#         for expr in _TRIM_EXPRESSIONS:
+#             shell.run(
+#                 ["sed", "-i", "-e", expr, f"{path}"],
+#                 check=True,
+#                 hide_output=hide_output,
+#             )
 
 
-def trim(targets: str, hide_output: bool = False) -> None:
+def trim(files: list[str], hide_output: bool = False) -> None:
     """
     Fixes the formatting of generated JS files
     """
     logger.debug("Trim generated files")
-    for path in glob.iglob(f"{targets}/**.*.js", recursive=True):
-        logger.debug(f"Updating {path}")
-        for expr in _TYPELESS_EXPRESSIONS:
+    for file in files:
+        logger.debug(f"Updating {file}")
+        for expr in _TRIM_EXPRESSIONS:
             shell.run(
-                ["sed", "-i", "-e", expr, f"{path}"],
+                ["sed", "-i", "-e", expr, f"{file}"],
                 check=True,
                 hide_output=hide_output,
             )
 
 
-def fix_hermetic(targets: str = ".", hide_output: bool = False):
+def fix_hermetic(targets: str = ".", hide_output: bool = False) -> list[str]:
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
     is already installed in a well known location on disk (node_modules/.bin).
@@ -129,8 +146,9 @@ def fix_hermetic(targets: str = ".", hide_output: bool = False):
     shell.run(
         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", f"{targets}"],
         check=True,
-        hide_output=hide_output,
+        hide_output=hide_output
     )
+
 
 
 # Update typeless-sample-bot
@@ -148,8 +166,9 @@ dirs: list[str] = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=
 for d in dirs:
     logger.debug(f"Directory: {d}")
     # Run typeless bot to convert from TS -> JS
-    typeless_samples_hermetic(targets=d)
+    f=typeless_samples_hermetic(targets=d)
     # Remove extra characters
-    trim(targets=d)
+    # trim(targets=d)
+    trim(files=f)
     # Fix formatting
     fix_hermetic(targets=d)

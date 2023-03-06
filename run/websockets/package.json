@@ -1,6 +1,6 @@
 {
   "name": "websockets",
-  "description": "Node.js websockets sample for Cloud Run",
+  "description": "Node.js websockets sample for Cloud Run trivial change",
   "version": "0.0.1",
   "private": true,
   "license": "Apache Version 2.0",

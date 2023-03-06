@@ -32,10 +32,10 @@ async function main(projectId: string, location: string) {
   }
   listWorkflows();
 }
-// [END workflows_quickstart]
 
 process.on('unhandledRejection', (err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
 main(...(process.argv.slice(2) as [string, string]));
+// [END workflows_quickstart]

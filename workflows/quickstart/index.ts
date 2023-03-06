@@ -14,6 +14,7 @@
 
 // [START workflows_api_quickstart]
 import {ExecutionsClient} from '@google-cloud/workflows';
+const client: ExecutionsClient = new ExecutionsClient();
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -25,13 +26,11 @@ const main = async (projectId: string, location: string, workflow: string) => {
   if (!projectId)
     return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
 
-  const client: ExecutionsClient = new ExecutionsClient();
-
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
    */
-  function sleep(ms: number) {
+  function sleep(ms: number): Promise<unknown> {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
@@ -70,9 +69,6 @@ const main = async (projectId: string, location: string, workflow: string) => {
     console.error(`Error executing workflow: ${e}`);
   }
 };
-// [END workflows_api_quickstart]
-
-export default main;
 
 // Call as CLI
 // node . [projectId] [location] [workflowName]
@@ -81,3 +77,6 @@ const projectID =
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
 main(projectID, location, workflowName);
+// [END workflows_api_quickstart]
+
+export default main;

@@ -90,4 +90,4 @@ executeWorkflow(projectId, location, workflowName).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-// [END workflows_quickstart]
+// [END workflows_api_quickstart]

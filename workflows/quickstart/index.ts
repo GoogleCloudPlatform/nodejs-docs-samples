@@ -79,4 +79,4 @@ const workflowName = process.argv[4] || 'myFirstWorkflow';
 main(projectID, location, workflowName);
 // [END workflows_api_quickstart]
 
-export default main;
+module.exports = main;

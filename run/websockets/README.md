@@ -3,18 +3,19 @@
 This sample demonstrates how to use WebSockets on
 [Cloud Run][run] with Node.js.
 
-* [Setup](#setup)
-* [Running locally](#running-locally)
-* [Deploying to Cloud Run](#deploying-to-Cloud-Run)
-* [Running the tests](#running-the-tests)
+- [Node.js WebSockets sample for Cloud Run](#nodejs-websockets-sample-for-cloud-run)
+  - [Setup](#setup)
+  - [Running locally](#running-locally)
+  - [Deploying to Cloud Run](#deploying-to-cloud-run)
+  - [Running the tests](#running-the-tests)
 
 ## Setup
 
 Before you can run or deploy the sample, you need to do the following:
 
-1.  Refer to the [run/README.md][readme] file for instructions on
+1. Refer to the [run/README.md][readme] file for instructions on
     running and deploying.
-1.  Install dependencies:
+1. Install dependencies:
 
     With `npm`:
 
@@ -33,12 +34,13 @@ With `npm`:
 1. Create a [VPC connector.](https://cloud.google.com/vpc/docs/configure-serverless-vpc-access#creating_a_connector). This will let our Cloud Run service connect to Redis over the VPC network. After it’s created, note its name.
 
 1. Deploy to Cloud Run:
-    ```
+
+    ```bash
     export REGION=us-central1
     export CONNECTOR_NAME=<CONNECTOR>
     export REDISHOST=$(gcloud redis instances describe INSTANCE_ID --region REGION --format "value(host)")
 
-    gcloud beta run deploy websockets --source . \
+    gcloud run deploy websockets --source . \
     --allow-unauthenticated \
     --region $REGION \
     --timeout 3600 \
@@ -53,4 +55,3 @@ See [Contributing][contributing].
 [run]: https://cloud.google.com/run/docs
 [readme]: ../README.md
 [contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md
-

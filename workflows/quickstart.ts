@@ -12,30 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const [projectId, location] = process.argv.slice(2);
+
 // [START workflows_quickstart]
 import {WorkflowsClient} from '@google-cloud/workflows';
+const client = new WorkflowsClient();
 
-async function main(projectId: string, location: string) {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'my-project';
-  // const location = 'us-central1';
-  const client = new WorkflowsClient();
-  async function listWorkflows() {
-    const [workflows] = await client.listWorkflows({
-      parent: client.locationPath(projectId, location),
-    });
-    for (const workflow of workflows) {
-      console.info(`name: ${workflow.name}`);
-    }
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// const projectId = 'my-project';
+// const location = 'us-central1';
+
+async function listWorkflows(projectId: string, location: string) {
+  const [workflows] = await client.listWorkflows({
+    parent: client.locationPath(projectId, location),
+  });
+  for (const workflow of workflows) {
+    console.info(`name: ${workflow.name}`);
   }
-  listWorkflows();
 }
 
-process.on('unhandledRejection', (err: Error) => {
+listWorkflows(projectId, location).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...(process.argv.slice(2) as [string, string]));
 // [END workflows_quickstart]

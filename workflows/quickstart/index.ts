@@ -12,9 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const projectId =
+  process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
+const location = process.argv[3] || 'us-central1';
+const workflowName = process.argv[4] || 'myFirstWorkflow';
+
+if (!projectId) {
+  throw new Error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
+}
+
 // [START workflows_api_quickstart]
 import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();
+
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// const projectId = 'my-project';
+// const location = 'us-central1';
+// const workflow = 'myFirstWorkflow';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -22,10 +38,11 @@ const client: ExecutionsClient = new ExecutionsClient();
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
  */
-const main = async (projectId: string, location: string, workflow: string) => {
-  if (!projectId)
-    return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
-
+async function executeWorkflow(
+  projectId: string,
+  location: string,
+  workflow: string
+) {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
@@ -68,15 +85,10 @@ const main = async (projectId: string, location: string, workflow: string) => {
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
-};
+}
 
-// Call as CLI
-// node . [projectId] [location] [workflowName]
-const projectID =
-  process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
-const location = process.argv[3] || 'us-central1';
-const workflowName = process.argv[4] || 'myFirstWorkflow';
-main(projectID, location, workflowName);
-// [END workflows_api_quickstart]
-
-module.exports = main;
+executeWorkflow(projectId, location, workflowName).catch((err: Error) => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+// [END workflows_quickstart]

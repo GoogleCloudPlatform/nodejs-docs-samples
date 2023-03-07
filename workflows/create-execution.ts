@@ -12,30 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {ExecutionsClient} from '@google-cloud/workflows';
+const [projectId, location, name] = process.argv.slice(2);
 
-async function main(projectId: string, location: string, name: string) {
-  // [START workflows_create_execution]
+// [START workflows_create_execution]
+import {ExecutionsClient} from '@google-cloud/workflows';
+const client: ExecutionsClient = new ExecutionsClient();
+
+async function createExecution(
+  projectId: string,
+  location: string,
+  name: string
+) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'my-project';
   // const location = 'us-central1';
   // const name = 'my-test-workflow';
-  const {ExecutionsClient} = require('@google-cloud/workflows');
-  const client: ExecutionsClient = new ExecutionsClient();
-  async function createExecution() {
-    const [resp] = await client.createExecution({
-      parent: client.workflowPath(projectId, location, name),
-    });
-    console.info(`name: ${resp.name}`);
-  }
-  createExecution();
-  // [END workflows_create_execution]
+
+  const [resp] = await client.createExecution({
+    parent: client.workflowPath(projectId, location, name),
+  });
+  console.info(`name: ${resp.name}`);
 }
 
-process.on('unhandledRejection', (err: Error) => {
+createExecution(projectId, location, name).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...(process.argv.slice(2) as [string, string, string]));
+// [END workflows_create_execution]

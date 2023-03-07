@@ -16,30 +16,29 @@
 // look for the source TypeScript sample (.ts) for modifications.
 'use strict';
 
+const [projectId, location] = process.argv.slice(2);
+
 // [START workflows_quickstart]
 const {WorkflowsClient} = require('@google-cloud/workflows');
+const client = new WorkflowsClient();
 
-async function main(projectId, location) {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'my-project';
-  // const location = 'us-central1';
-  const client = new WorkflowsClient();
-  async function listWorkflows() {
-    const [workflows] = await client.listWorkflows({
-      parent: client.locationPath(projectId, location),
-    });
-    for (const workflow of workflows) {
-      console.info(`name: ${workflow.name}`);
-    }
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// const projectId = 'my-project';
+// const location = 'us-central1';
+
+async function listWorkflows(projectId, location) {
+  const [workflows] = await client.listWorkflows({
+    parent: client.locationPath(projectId, location),
+  });
+  for (const workflow of workflows) {
+    console.info(`name: ${workflow.name}`);
   }
-  listWorkflows();
 }
 
-process.on('unhandledRejection', err => {
+listWorkflows(projectId, location).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
 // [END workflows_quickstart]

@@ -17,10 +17,6 @@ const projectId =
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
 
-if (!projectId) {
-  throw new Error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
-}
-
 // [START workflows_api_quickstart]
 import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();

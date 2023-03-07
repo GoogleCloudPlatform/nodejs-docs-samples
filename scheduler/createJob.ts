@@ -70,5 +70,4 @@ createJob(projectId, locationId, serviceId).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
 // [END cloudscheduler_create_job]

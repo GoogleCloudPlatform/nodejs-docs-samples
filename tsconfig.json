@@ -5,6 +5,5 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "moduleResolution": "node"
-  },
-  "exclude": ["**/*test*/*.ts"]
+  }
 }

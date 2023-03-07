@@ -27,7 +27,6 @@ _TOOLS_DIRECTORY = "/synthtool"
 _EXCLUDED_DIRS = [r"node_modules", r"^\."]
 _TRIM_EXPRESSIONS = [
     "s/export {};$/\\n/",
-    "s/export default/module.exports =/",
 ]
 _TYPELESS_EXPRESSION = r"Generated (.*)"
 _NPM_CONFIG_CACHE = "/var/tmp/.npm"

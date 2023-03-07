@@ -23,7 +23,7 @@ const location = 'us-central1';
 describe('Quickstart', () => {
   it('should run quickstart', async () => {
     const output = execSync(
-      `node --loader ts-node/esm ./quickstart.js ${project} ${location}`
+      `node --loader ts-node/esm ./quickstart.ts ${project} ${location}`
     );
     assert(output.match(/name: projects.*/));
   });

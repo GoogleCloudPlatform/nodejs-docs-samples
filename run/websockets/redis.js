@@ -12,19 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {promisify} = require('util');
-
 // [START cloudrun_websockets_redis]
 const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
 // Instantiate the Redis client
-const redisClient = require('redis').createClient(REDISPORT, REDISHOST);
-// [END cloudrun_websockets_redis]
+const redisClient = require('redis').createClient({
+  url: `redis://${REDISHOST}:${REDISPORT}`,
+});
 
-// Set up to use promises and async/await for Redis methods
-const redisGet = promisify(redisClient.get).bind(redisClient);
-const redisExists = promisify(redisClient.exists).bind(redisClient);
+// Connect to the Redis server
+(async () => {
+  await redisClient.connect();
+})();
+// [END cloudrun_websockets_redis]
 
 // Insert new messages into the Redis cache
 async function addMessageToCache(roomName, msg) {
@@ -40,7 +41,7 @@ async function addMessageToCache(roomName, msg) {
       messages: [msg],
     };
   }
-  redisClient.set(roomName, JSON.stringify(room));
+  await redisClient.set(roomName, JSON.stringify(room));
   // Insert message to the database as well
   addMessageToDb(room);
 }
@@ -48,13 +49,13 @@ async function addMessageToCache(roomName, msg) {
 // Query Redis for messages for a specific room
 // If not in Redis, query the database
 async function getRoomFromCache(roomName) {
-  if (!(await redisExists(roomName))) {
+  if (!(await redisClient.exists(roomName))) {
     const room = getRoomFromDatabase(roomName);
     if (room) {
-      redisClient.set(roomName, JSON.stringify(room));
+      await redisClient.set(roomName, JSON.stringify(room));
     }
   }
-  return JSON.parse(await redisGet(roomName));
+  return JSON.parse(await redisClient.get(roomName));
 }
 
 // In-memory database example -

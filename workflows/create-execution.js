@@ -16,28 +16,28 @@
 // look for the source TypeScript sample (.ts) for modifications.
 'use strict';
 
-async function main(projectId, location, name) {
-  // [START workflows_create_execution]
+const [projectId, location, name] = process.argv.slice(2);
+
+// [START workflows_create_execution]
+const {ExecutionsClient} = require('@google-cloud/workflows');
+const client = new ExecutionsClient();
+
+async function createExecution(projectId, location, name) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'my-project';
   // const location = 'us-central1';
   // const name = 'my-test-workflow';
-  const {ExecutionsClient} = require('@google-cloud/workflows');
-  const client = new ExecutionsClient();
-  async function createExecution() {
-    const [resp] = await client.createExecution({
-      parent: client.workflowPath(projectId, location, name),
-    });
-    console.info(`name: ${resp.name}`);
-  }
-  createExecution();
-  // [END workflows_create_execution]
+
+  const [resp] = await client.createExecution({
+    parent: client.workflowPath(projectId, location, name),
+  });
+  console.info(`name: ${resp.name}`);
 }
 
-process.on('unhandledRejection', err => {
+createExecution(projectId, location, name).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
+// [END workflows_create_execution]

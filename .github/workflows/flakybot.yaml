@@ -19,8 +19,6 @@ on:
 
 jobs:
   flakybot:
-    # needs:
-    #   test
   #  if: ${{ github.event_name == 'schedule' && always() }}
     env:
       FLAKYBOT_VERSION: 1.2.0

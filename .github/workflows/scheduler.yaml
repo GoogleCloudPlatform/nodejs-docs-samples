@@ -63,12 +63,12 @@ jobs:
     - run: npm test
       env:
         MOCHA_REPORTER_SUITENAME: scheduler
-        MOCHA_REPORTER_OUTPUT: scheduler_sponge_log.xml
+        MOCHA_REPORTER_OUTPUT: scheduler_sponge_log_${{github.run_id}}.xml
         MOCHA_REPORTER: xunit
     - uses: actions/upload-artifact@v3
       with:
-        name: mocha-reporter-output
-        path: ${{github.run_id}}/scheduler_sponge_log.xml
+        name: test-results
+        path: ${{env.MOCHA_REPORTER_OUTPUT}}
         retention-days: 1
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6.4.0
@@ -89,4 +89,6 @@ jobs:
           }
   flakybot:
     uses: ./.github/workflows/flakybot.yaml
+    # with:
+    #   test-results: ${{env.MOCHA_REPORTER_OUTPUT}}
     needs: [test]

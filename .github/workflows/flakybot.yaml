@@ -16,6 +16,10 @@ name: FlakyBot
 
 on:
   workflow_call:
+    # inputs:
+    #   test-results:
+    #     required: true
+    #     type: string
 
 jobs:
   flakybot:
@@ -41,7 +45,7 @@ jobs:
           access_token_lifetime: 600s
       - uses: actions/download-artifact@v3
         with:
-          name: mocha-reporter-output
+          name: test-results
       - run: |
           pwd
           # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples

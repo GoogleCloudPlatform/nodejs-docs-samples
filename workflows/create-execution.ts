@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This is a generated sample, using the typeless sample bot. Please
-// look for the source TypeScript sample (.ts) for modifications.
-'use strict';
-
 const [projectId, location, name] = process.argv.slice(2);
 
 // [START workflows_create_execution]
-const {ExecutionsClient} = require('@google-cloud/workflows');
-const client = new ExecutionsClient();
+import {ExecutionsClient} from '@google-cloud/workflows';
+const client: ExecutionsClient = new ExecutionsClient();
 
-async function createExecution(projectId, location, name) {
+async function createExecution(
+  projectId: string,
+  location: string,
+  name: string
+) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -36,7 +36,7 @@ async function createExecution(projectId, location, name) {
   console.info(`name: ${resp.name}`);
 }
 
-createExecution(projectId, location, name).catch(err => {
+createExecution(projectId, location, name).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });

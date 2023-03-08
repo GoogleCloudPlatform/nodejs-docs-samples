@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This is a generated sample, using the typeless sample bot. Please
-// look for the source TypeScript sample (.ts) for modifications.
-'use strict';
-
-const projectId = process.argv[2] || process.env.GOOGLE_CLOUD_PROJECT;
+const projectId =
+  process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
 
 // [START workflows_api_quickstart]
-const {ExecutionsClient} = require('@google-cloud/workflows');
-const client = new ExecutionsClient();
+import {ExecutionsClient} from '@google-cloud/workflows';
+const client: ExecutionsClient = new ExecutionsClient();
 
 /**
  * TODO(developer): Uncomment these variables before running the sample.
@@ -37,12 +34,16 @@ const client = new ExecutionsClient();
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
  */
-async function executeWorkflow(projectId, location, workflow) {
+async function executeWorkflow(
+  projectId: string,
+  location: string,
+  workflow: string
+) {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
    */
-  function sleep(ms) {
+  function sleep(ms: number): Promise<unknown> {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
@@ -82,7 +83,7 @@ async function executeWorkflow(projectId, location, workflow) {
   }
 }
 
-executeWorkflow(projectId, location, workflowName).catch(err => {
+executeWorkflow(projectId, location, workflowName).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });

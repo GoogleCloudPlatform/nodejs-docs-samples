@@ -14,7 +14,7 @@
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
-    "test": "mocha --require ts-node/register test/*.ts --timeout 10000 --exit"
+    "test": "mocha --loader=ts-node/esm --extension ts --timeout 10000 --exit"
   },
   "dependencies": {
     "@google-cloud/scheduler": "^3.2.1",

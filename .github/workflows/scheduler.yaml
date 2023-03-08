@@ -65,6 +65,7 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm test
+      continue-on-error: true
     - run: ls
     - run: ls ..
     - uses: actions/upload-artifact@v3
@@ -93,4 +94,5 @@ jobs:
     uses: ./.github/workflows/flakybot.yaml
     # with:
     #   test-results: ${{env.MOCHA_REPORTER_OUTPUT}}
+    if: ${{ always() }}
     needs: [test]

@@ -43,6 +43,10 @@ jobs:
     defaults:
       run:
         working-directory: scheduler
+    env:
+      MOCHA_REPORTER_SUITENAME: scheduler
+      MOCHA_REPORTER_OUTPUT: scheduler_sponge_log_${{github.run_id}}.xml
+      MOCHA_REPORTER: xunit
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -61,10 +65,6 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm test
-      env:
-        MOCHA_REPORTER_SUITENAME: scheduler
-        MOCHA_REPORTER_OUTPUT: scheduler_sponge_log_${{github.run_id}}.xml
-        MOCHA_REPORTER: xunit
     - uses: actions/upload-artifact@v3
       with:
         name: test-results

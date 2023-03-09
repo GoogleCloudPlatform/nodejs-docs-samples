@@ -58,6 +58,6 @@ describe('system tests', () => {
     });
     assert.strictEqual(response.data, 'Hello World!');
   });
-// [START functions_http_system_test]
+  // [START functions_http_system_test]
 });
 // [END functions_http_system_test]

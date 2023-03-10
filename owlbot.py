@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 import re
 import subprocess
@@ -97,6 +98,12 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> list[s
         A list of JavaScript files that were generated
     """
     logger.debug("Run typeless sample bot")
+
+    ## Do not run bot when there are no TypeScript files
+    if not any(glob.glob(f"{targets}/**/*.ts", recursive=True)):
+        logger.debug("No TypeScript files in path. Skipping typeless bot.")
+        return []
+
     proc: subprocess.CompletedProcess[str] = shell.run(
         [
             f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",

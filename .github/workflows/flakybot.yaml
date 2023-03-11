@@ -52,6 +52,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           cache: true
+          cache-dependency-path: '${{ github.workspace }}/go.sum'
           go-version-file: '${{ github.workspace }}/go.mod'
       - run: |
           ls

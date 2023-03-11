@@ -44,4 +44,4 @@ jobs:
     # if: always()
     # # if: github.event_name == 'schedule' && always()
     uses: ./.github/workflows/flakybot.yaml
-    needs: [test2]
+    needs: [test]

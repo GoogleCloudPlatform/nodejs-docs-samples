@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Google, Inc.
+ * Copyright 2020 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,12 +36,16 @@ const testFileName = 'ChromeCast.mp4';
 const testOverlayFileName = 'overlay.jpg';
 const testConcat1FileName = 'ForBiggerEscapes.mp4';
 const testConcat2FileName = 'ForBiggerJoyrides.mp4';
-const testCaptionFileName = 'caption.srt';
+const testCaptionFileName = 'captions.srt';
+const testSubtitles1FileName = 'subtitles-en.srt';
+const testSubtitles2FileName = 'subtitles-es.srt';
 const inputUri = `gs://${bucketName}/${testFileName}`;
 const overlayUri = `gs://${bucketName}/${testOverlayFileName}`;
 const concat1Uri = `gs://${bucketName}/${testConcat1FileName}`;
 const concat2Uri = `gs://${bucketName}/${testConcat2FileName}`;
 const captionsUri = `gs://${bucketName}/${testCaptionFileName}`;
+const subtitles1Uri = `gs://${bucketName}/${testSubtitles1FileName}`;
+const subtitles2Uri = `gs://${bucketName}/${testSubtitles2FileName}`;
 const outputUriForPreset = `gs://${bucketName}/test-output-preset/`;
 const outputUriForTemplate = `gs://${bucketName}/test-output-template/`;
 const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
@@ -67,6 +71,8 @@ const overlayFile = `testdata/${testOverlayFileName}`;
 const concat1File = `testdata/${testConcat1FileName}`;
 const concat2File = `testdata/${testConcat2FileName}`;
 const captionFile = `testdata/${testCaptionFileName}`;
+const subtitles1File = `testdata/${testSubtitles1FileName}`;
+const subtitles2File = `testdata/${testSubtitles2FileName}`;
 
 const delay = async (test, addMs) => {
   const retries = test.currentRetry();
@@ -107,6 +113,8 @@ before(async () => {
   await storage.bucket(bucketName).upload(concat1File);
   await storage.bucket(bucketName).upload(concat2File);
   await storage.bucket(bucketName).upload(captionFile);
+  await storage.bucket(bucketName).upload(subtitles1File);
+  await storage.bucket(bucketName).upload(subtitles2File);
 });
 
 after(async () => {
@@ -706,7 +714,7 @@ describe('Job with embedded captions', () => {
 describe('Job with standalone captions', () => {
   before(function () {
     const output = execSync(
-      `node createJobWithStandaloneCaptions.js ${projectId} ${location} ${inputUri} ${captionsUri} ${outputUriForStandaloneCaptions}`,
+      `node createJobWithStandaloneCaptions.js ${projectId} ${location} ${inputUri} ${subtitles1Uri} ${subtitles2Uri} ${outputUriForStandaloneCaptions}`,
       {cwd}
     );
     assert.ok(output.includes(`/locations/${location}/jobs/`));

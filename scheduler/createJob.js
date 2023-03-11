@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// This is a generated sample, using the typeless sample bot. Please
+// look for the source TypeScript sample (.ts) for modifications.
+'use strict';
+
 // sample-metadata:
 //   title: Create Job
 //   description: Create a job that posts to /log_payload on an App Engine service.
@@ -66,5 +70,4 @@ createJob(projectId, locationId, serviceId).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
 // [END cloudscheduler_create_job]

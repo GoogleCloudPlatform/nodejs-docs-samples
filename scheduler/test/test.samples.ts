@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
 import {CloudSchedulerClient} from '@google-cloud/scheduler';
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';

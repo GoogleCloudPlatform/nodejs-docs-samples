@@ -16,7 +16,6 @@ name: Test
 
 on:
   workflow_call:
-    if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     inputs:
       directory:  
         required: true

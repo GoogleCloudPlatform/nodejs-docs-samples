@@ -18,22 +18,7 @@
     "generate-ci": "node .github/workflows/generate.js"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
     "gts": "^3.1.0",
-    "nunjucks": "^3.2.3",
     "typescript": "^4.6.4"
-  },
-  "dependencies": {
-    "@google-cloud/asset": "^4.5.0",
-    "@google-cloud/bigquery": "^6.0.3",
-    "@google-cloud/compute": "^3.6.0",
-    "@google-cloud/resource-manager": "^4.1.1",
-    "@google-cloud/storage": "^6.7.0",
-    "chai": "^4.3.7",
-    "express": "^4.18.2",
-    "mocha": "^10.1.0",
-    "prettier": "^2.8.4",
-    "uuid": "^9.0.0"
   }
 }

@@ -52,28 +52,27 @@ jobs:
       shell: bash
       run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}        
     - uses: actions/cache@v3
-      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      id: npm-cache
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-     
-    - run: npm install
+    - name: install repo dependencies
+      run: npm install
       working-directory: .
-    - run: npm install
+    - name: install directory dependencies
+      run: npm install
     - run: npm run build
     - name: Set env vars for scheduled run
-      if: always()
+      if: github.event.action == 'schedule'
       run: |
         echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
         echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-    # - if: github.event.action == 'schedule'
-    # - if: github.event.action != 'schedule'
-    #   run: export MOCHA_REPORTER=spec
     - run: npm test
-    # - if: github.event.action == 'schedule'
-    - if: always()
+    - name: Upload test results for FlakyBot workflow
+      if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3
       with:
         name: test-results

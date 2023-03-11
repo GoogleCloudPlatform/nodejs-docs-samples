@@ -45,7 +45,7 @@ jobs:
         working-directory: scheduler
     env:
       MOCHA_REPORTER_SUITENAME: scheduler
-      MOCHA_REPORTER_OUTPUT: scheduler/sponge_log_${{github.run_id}}.xml
+      MOCHA_REPORTER_OUTPUT: sponge_log_${{github.run_id}}.xml
       MOCHA_REPORTER: xunit
     steps:
     - uses: actions/checkout@v3.3.0

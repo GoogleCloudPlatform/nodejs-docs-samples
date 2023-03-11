@@ -23,7 +23,6 @@ const {verifyRequestSignature} = require('@slack/events-api');
 const kgsearch = google.kgsearch('v1');
 // [END functions_slack_setup]
 
-
 // [START functions_slack_format]
 /**
  * Format the Knowledge Graph API response into a richly formatted Slack message.

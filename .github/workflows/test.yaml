@@ -63,8 +63,7 @@ jobs:
     - run: npm install
     - run: npm run build
     # - if: github.event.action == 'schedule'
-    - if: always()
-      run: |
+    - run: |
         export MOCHA_REPORTER_SUITENAME=${{ inputs.service_name }}
         export MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml
         export MOCHA_REPORTER=xunit        

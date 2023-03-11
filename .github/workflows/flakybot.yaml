@@ -16,10 +16,6 @@ name: FlakyBot
 
 on:
   workflow_call:
-    # inputs:
-    #   test-results:
-    #     required: true
-    #     type: string
 
 jobs:
   flakybot:
@@ -37,7 +33,7 @@ jobs:
       run:
         working-directory: /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
     steps:
-      - uses: 'google-github-actions/auth@v1.0.0'
+      - uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
           service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'

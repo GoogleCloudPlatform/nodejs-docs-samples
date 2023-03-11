@@ -43,10 +43,6 @@ jobs:
     defaults:
       run:
         working-directory: scheduler
-    env:
-      MOCHA_REPORTER_SUITENAME: scheduler
-      MOCHA_REPORTER_OUTPUT: sponge_log_${{github.run_id}}.xml
-      MOCHA_REPORTER: xunit
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -64,7 +60,15 @@ jobs:
       working-directory: .
     - run: npm install
     - run: npm run build
-    - run: npm test
+    - if: ${{ github.event.action == 'schedule }}
+      env:
+        MOCHA_REPORTER_SUITENAME: scheduler
+        MOCHA_REPORTER_OUTPUT: sponge_log_${{github.run_id}}.xml
+        MOCHA_REPORTER: xunit
+      run: npm test
+      continue-on-error: true
+    - if: ${{ github.event.action != 'schedule }}
+      run: npm test
       continue-on-error: true
     - run: ls
     - run: ls ..
@@ -91,8 +95,6 @@ jobs:
             }
           }
   flakybot:
+    if: ${{ github.event_name == 'schedule' && always()
     uses: ./.github/workflows/flakybot.yaml
-    # with:
-    #   test-results: ${{env.MOCHA_REPORTER_OUTPUT}}
-    if: ${{ always() }}
     needs: [test]

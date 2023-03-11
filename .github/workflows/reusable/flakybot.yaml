@@ -16,14 +16,9 @@ name: FlakyBot
 
 on:
   workflow_call:
-
+  
 jobs:
   flakybot:
-  #  if: ${{ github.event_name == 'schedule' && always() }}
-    # env:
-    #   FLAKYBOT_VERSION: 1.2.0
-    #   MOCHA_REPORTER_SUITENAME: scheduler
-    #   MOCHA_REPORTER_OUTPUT: scheduler_sponge_log.xml      
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -56,6 +51,6 @@ jobs:
           cache: true
 #          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
       - run: |
-          ls          
-          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+          ls
+#          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 #          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

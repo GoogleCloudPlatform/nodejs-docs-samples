@@ -71,7 +71,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: ${{ github.workspace }}/scheduler/${{env.MOCHA_REPORTER_OUTPUT}}
+        path: scheduler/${{env.MOCHA_REPORTER_OUTPUT}}
         retention-days: 1
     - if: ${{ github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' }}
       uses: actions/github-script@v6.4.0

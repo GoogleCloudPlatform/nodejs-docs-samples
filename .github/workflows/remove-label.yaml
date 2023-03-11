@@ -22,19 +22,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            try {
-              await github.rest.issues.removeLabel({
-                name: 'actions:force-run',
-                owner: 'GoogleCloudPlatform',
-                repo: 'nodejs-docs-samples',
-                issue_number: context.payload.pull_request.number
-              });
-            } catch (e) {
-              if (!e.message.includes('Label does not exist')) {
-                throw e;
-              }
+    - uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          try {
+            await github.rest.issues.removeLabel({
+              name: 'actions:force-run',
+              owner: 'GoogleCloudPlatform',
+              repo: 'nodejs-docs-samples',
+              issue_number: context.payload.pull_request.number
+            });
+          } catch (e) {
+            if (!e.message.includes('Label does not exist')) {
+              throw e;
             }
+          }

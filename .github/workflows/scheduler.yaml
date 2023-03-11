@@ -68,6 +68,8 @@ jobs:
       run: npm test
       continue-on-error: true
     - if: ${{ github.event.action != 'schedule }}
+      env:
+        MOCHA_REPORTER: spec
       run: npm test
       continue-on-error: true
     - run: ls

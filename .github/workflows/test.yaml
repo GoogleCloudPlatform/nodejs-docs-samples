@@ -66,15 +66,15 @@ jobs:
       if: always()
       run: |
         echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
-        echo "MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     # - if: github.event.action == 'schedule'
     # - if: github.event.action != 'schedule'
     #   run: export MOCHA_REPORTER=spec
     - run: npm test
-      continue-on-error: true
     # - if: github.event.action == 'schedule'
-    - uses: actions/upload-artifact@v3
+    - if: github.event.action == always()
+      uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: ${{ inputs.path }}/${{ env.MOCHA_REPORTER_OUTPUT }}

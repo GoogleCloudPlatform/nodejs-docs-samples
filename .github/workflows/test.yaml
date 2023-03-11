@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Common Test
+name: Test
 
 on:
   workflow_call:
@@ -22,7 +22,7 @@ on:
         type: string
 
 jobs:
-  test-common:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -60,14 +60,15 @@ jobs:
       working-directory: .
     - run: npm install
     - run: npm run build
-    - if: github.event.action == 'schedule'
-      run: export MOCHA_REPORTER_OUTPUT=sponge_log_${{github.run_id}}.xml
-    - if: github.event.action != 'schedule'
-      run: export MOCHA_REPORTER=spec
+    # - if: github.event.action == 'schedule'
+    - run: export MOCHA_REPORTER_OUTPUT=sponge_log_${{github.run_id}}.xml
+    # - if: github.event.action != 'schedule'
+    #   run: export MOCHA_REPORTER=spec
     - run: npm test
       continue-on-error: true
     - run: ls
     - run: ls ..
+    # - if: github.event.action == 'schedule'
     - uses: actions/upload-artifact@v3
       with:
         name: test-results

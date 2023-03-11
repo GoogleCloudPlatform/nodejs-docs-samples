@@ -1,0 +1,56 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: FlakyBot
+
+on:
+  workflow_call:
+  
+jobs:
+  flakybot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    defaults:
+      run:
+        working-directory: /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
+    steps:
+      - uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+          service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+          create_credentials_file: 'true'
+          access_token_lifetime: 600s
+      - uses: actions/download-artifact@v3
+        with:
+          name: test-results
+      - run: |
+          pwd
+          mv sponge_log_${{github.run_id}}.xml sponge_log.xml
+          # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
+          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v1.2.0.tar.gz -o flakybot.tar.gz
+          tar xzf flakybot.tar.gz
+          cp -rT repo-automation-bots-flakybot-v1.2.0/packages/flakybot/ .
+          ls
+#          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${FLAKYBOT_VERSION}.tar.gz -o flakybot.tar.gz
+      - uses: actions/setup-go@v3
+        with:
+          cache: true
+#          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
+      - run: |
+          ls
+#          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+#          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

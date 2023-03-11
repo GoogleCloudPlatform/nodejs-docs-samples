@@ -52,7 +52,6 @@ async function createJob(
       httpMethod: 'POST',
       body: Buffer.from('Hello World'),
     },
-    
     schedule: '* * * * *',
     timeZone: 'America/Los_Angeles',
   };

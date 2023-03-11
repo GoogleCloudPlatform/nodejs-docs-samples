@@ -62,7 +62,7 @@ jobs:
       working-directory: .
     - run: npm install
     - run: npm run build
-    - name: Sets env vars for scheduled run
+    - name: Set env vars for scheduled run
       if: always()
       run: |
         echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
@@ -73,7 +73,7 @@ jobs:
     #   run: export MOCHA_REPORTER=spec
     - run: npm test
     # - if: github.event.action == 'schedule'
-    - if: github.event.action == always()
+    - if: always()
       uses: actions/upload-artifact@v3
       with:
         name: test-results

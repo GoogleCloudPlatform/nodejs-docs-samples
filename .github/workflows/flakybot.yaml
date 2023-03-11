@@ -46,7 +46,7 @@ jobs:
           echo ${{ github.workspace }}
           # mv sponge_log_${{github.run_id}}.xml sponge_log.xml
           # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
-          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${{ env.FLAKYBOT_VERSION}.tar.gz -o flakybot.tar.gz
+          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${{ env.FLAKYBOT_VERSION }}.tar.gz -o flakybot.tar.gz
           tar xzf flakybot.tar.gz
           cp -rT repo-automation-bots-flakybot-v${{ env.FLAKYBOT_VERSION}}/packages/flakybot/ .
       - uses: actions/setup-go@v3

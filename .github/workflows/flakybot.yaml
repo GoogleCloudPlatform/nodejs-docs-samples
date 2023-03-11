@@ -53,5 +53,5 @@ jobs:
 #          go-version-file: '/home/runner/work/nodejs-docs-samples/nodejs-docs-samples/go.mod'
       - run: |
           ls
-#          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+          go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 #          go run repo-automation-bots-flakybot-v${FLAKYBOT_VERSION}/packages/flakybot/flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

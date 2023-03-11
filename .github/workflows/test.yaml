@@ -17,10 +17,12 @@ name: Test
 on:
   workflow_call:
     inputs:
-      directory:  
+      name:  
         required: true
         type: string
-
+      path:  
+        required: true
+        type: string
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -61,7 +63,11 @@ jobs:
     - run: npm install
     - run: npm run build
     # - if: github.event.action == 'schedule'
-    - run: export MOCHA_REPORTER_OUTPUT=sponge_log_${{github.run_id}}.xml
+    - if: always()
+      run: |
+        export MOCHA_REPORTER_SUITENAME=${{ inputs.name }}
+        export MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml
+        export MOCHA_REPORTER=xunit        
     # - if: github.event.action != 'schedule'
     #   run: export MOCHA_REPORTER=spec
     - run: npm test

@@ -40,7 +40,7 @@ jobs:
       - run: |
           pwd
           echo ${{ github.workspace }}
-          mv sponge_log_${{github.run_id}}.xml sponge_log.xml
+          # mv sponge_log_${{github.run_id}}.xml sponge_log.xml
           # cd /home/runner/work/nodejs-docs-samples/nodejs-docs-samples
           curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v1.2.0.tar.gz -o flakybot.tar.gz
           tar xzf flakybot.tar.gz

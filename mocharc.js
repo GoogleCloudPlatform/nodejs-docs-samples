@@ -14,19 +14,19 @@
 const config = {};
 
 if (process.env.MOCHA_THROW_DEPRECATION === 'false') {
-    delete config['throw-deprecation'];
+  delete config['throw-deprecation'];
 }
 if (process.env.MOCHA_REPORTER) {
-    config.reporter = process.env.MOCHA_REPORTER;
+  config.reporter = process.env.MOCHA_REPORTER;
 }
 
 const reporterOptions = [];
 if (process.env.MOCHA_REPORTER_OUTPUT) {
-    reporterOptions.push(`output=${process.env.MOCHA_REPORTER_OUTPUT}`);
+  reporterOptions.push(`output=${process.env.MOCHA_REPORTER_OUTPUT}`);
 }
 if (process.env.MOCHA_REPORTER_SUITENAME) {
-    reporterOptions.push(`suiteName=${process.env.MOCHA_REPORTER_SUITENAME}`);
+  reporterOptions.push(`suiteName=${process.env.MOCHA_REPORTER_SUITENAME}`);
 }
 config['reporter-option'] = reporterOptions;
 
-module.exports = config
+module.exports = config;

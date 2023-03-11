@@ -61,14 +61,10 @@ jobs:
     - run: npm install
     - run: npm run build
     - if: ${{ github.event.action == 'schedule }}
-      run: |
-        export MOCHA_REPORTER_OUTPUT=sponge_log_${{github.run_id}}.xml
-        npm test
-      continue-on-error: true
+      run: export MOCHA_REPORTER_OUTPUT=sponge_log_${{github.run_id}}.xml
     - if: ${{ github.event.action != 'schedule }}
-      run: |
-        export MOCHA_REPORTER=spec
-        npm test
+      run: export MOCHA_REPORTER=spec
+    - run: npm test
       continue-on-error: true
     - run: ls
     - run: ls ..

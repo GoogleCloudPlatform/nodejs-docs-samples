@@ -62,11 +62,13 @@ jobs:
       working-directory: .
     - run: npm install
     - run: npm run build
+    - name: Sets env vars for scheduled run
+      if: always()
+      run: |
+        echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     # - if: github.event.action == 'schedule'
-    - run: |
-        export MOCHA_REPORTER_SUITENAME=${{ inputs.name }}
-        export MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml
-        export MOCHA_REPORTER=xunit        
     # - if: github.event.action != 'schedule'
     #   run: export MOCHA_REPORTER=spec
     - run: npm test

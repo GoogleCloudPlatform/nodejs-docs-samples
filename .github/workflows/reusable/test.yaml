@@ -22,7 +22,7 @@ on:
         type: string
 
 jobs:
-  common-test:
+  test-common:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:

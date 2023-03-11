@@ -33,7 +33,7 @@ on:
   - cron:  '0 0 * * 0'
 jobs:
   test:
-    if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+    # if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     uses: ./.github/workflows/reusable/test.yaml
     with:
       directory: 'scheduler'

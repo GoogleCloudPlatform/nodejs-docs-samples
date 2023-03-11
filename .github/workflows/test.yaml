@@ -17,10 +17,10 @@ name: Test
 on:
   workflow_call:
     inputs:
-      name:  
+      service_name:  
         required: true
         type: string
-      path:  
+      service_path:  
         required: true
         type: string
 jobs:
@@ -65,7 +65,7 @@ jobs:
     # - if: github.event.action == 'schedule'
     - if: always()
       run: |
-        export MOCHA_REPORTER_SUITENAME=${{ inputs.name }}
+        export MOCHA_REPORTER_SUITENAME=${{ inputs.service_name }}
         export MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml
         export MOCHA_REPORTER=xunit        
     # - if: github.event.action != 'schedule'
@@ -76,5 +76,5 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: ${{ inputs.directory }}/${{ env.MOCHA_REPORTER_OUTPUT }}
+        path: ${{ inputs.service_path }}/${{ env.MOCHA_REPORTER_OUTPUT }}
         retention-days: 1

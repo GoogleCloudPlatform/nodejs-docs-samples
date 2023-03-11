@@ -17,10 +17,10 @@ name: Test
 on:
   workflow_call:
     inputs:
-      service_name:  
+      name:  
         required: true
         type: string
-      service_path:  
+      path:  
         required: true
         type: string
 jobs:
@@ -33,7 +33,7 @@ jobs:
       id-token: 'write'
     defaults:
       run:
-        working-directory: ${{ inputs.directory }}
+        working-directory: ${{ inputs.path }}
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -64,7 +64,7 @@ jobs:
     - run: npm run build
     # - if: github.event.action == 'schedule'
     - run: |
-        export MOCHA_REPORTER_SUITENAME=${{ inputs.service_name }}
+        export MOCHA_REPORTER_SUITENAME=${{ inputs.name }}
         export MOCHA_REPORTER_OUTPUT=MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml
         export MOCHA_REPORTER=xunit        
     # - if: github.event.action != 'schedule'
@@ -75,5 +75,5 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: test-results
-        path: ${{ inputs.service_path }}/${{ env.MOCHA_REPORTER_OUTPUT }}
+        path: ${{ inputs.path }}/${{ env.MOCHA_REPORTER_OUTPUT }}
         retention-days: 1

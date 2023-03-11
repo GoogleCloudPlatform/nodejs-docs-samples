@@ -52,7 +52,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           cache: true
-          go-version-file: '${github.workspace}/go.mod'
+          go-version-file: '${{ github.workspace }}/go.mod'
       - run: |
           ls
           # go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

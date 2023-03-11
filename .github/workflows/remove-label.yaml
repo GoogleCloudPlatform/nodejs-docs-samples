@@ -27,14 +27,17 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           try {
+            const event = JSON.parse(
+              require("fs").readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
+            );
             await github.rest.issues.removeLabel({
-              name: 'actions:force-run',
-              owner: 'GoogleCloudPlatform',
-              repo: 'nodejs-docs-samples',
-              issue_number: context.payload.pull_request.number
+              name: "actions:force-run",
+              owner: "GoogleCloudPlatform",
+              repo: "nodejs-docs-samples",
+              issue_number: event.pull_request.number,
             });
           } catch (e) {
-            if (!e.message.includes('Label does not exist')) {
+            if (!e.message.includes("Label does not exist")) {
               throw e;
             }
           }

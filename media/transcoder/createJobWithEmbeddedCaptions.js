@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2022 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -86,15 +86,12 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
                     inputTrack: 0,
                   },
                 ],
+                languageCode: 'en-US',
+                displayName: 'English',
               },
             },
           ],
           muxStreams: [
-            {
-              key: 'sd',
-              container: 'mp4',
-              elementaryStreams: ['video-stream0', 'audio-stream0'],
-            },
             {
               key: 'sd-hls',
               container: 'ts',

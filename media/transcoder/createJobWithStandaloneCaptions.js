@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2022 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,14 @@
 
 'use strict';
 
-function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
+function main(
+  projectId,
+  location,
+  inputVideoUri,
+  inputSubtitles1Uri,
+  inputSubtitles2Uri,
+  outputUri
+) {
   // [START transcoder_create_job_with_standalone_captions]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -23,7 +30,8 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
   // projectId = 'my-project-id';
   // location = 'us-central1';
   // inputVideoUri = 'gs://my-bucket/my-video-file';
-  // inputCaptionsUri = 'gs://my-bucket/my-captions-file';
+  // inputSubtitles1Uri = 'gs://my-bucket/my-captions-file1';
+  // inputSubtitles2Uri = 'gs://my-bucket/my-captions-file2';
   // outputUri = 'gs://my-bucket/my-output-folder/';
 
   // Imports the Transcoder library
@@ -46,14 +54,18 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
               uri: inputVideoUri,
             },
             {
-              key: 'caption_input0',
-              uri: inputCaptionsUri,
+              key: 'subtitle_input_en',
+              uri: inputSubtitles1Uri,
+            },
+            {
+              key: 'subtitle_input_es',
+              uri: inputSubtitles2Uri,
             },
           ],
           editList: [
             {
               key: 'atom0',
-              inputs: ['input0', 'caption_input0'],
+              inputs: ['input0', 'subtitle_input_en', 'subtitle_input_es'],
             },
           ],
           elementaryStreams: [
@@ -76,14 +88,29 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
               },
             },
             {
-              key: 'vtt-stream0',
+              key: 'vtt-stream-en',
               textStream: {
                 codec: 'webvtt',
+                languageCode: 'en-US',
+                displayName: 'English',
                 mapping: [
                   {
                     atomKey: 'atom0',
-                    inputKey: 'caption_input0',
-                    inputTrack: 0,
+                    inputKey: 'subtitle_input_en',
+                  },
+                ],
+              },
+            },
+            {
+              key: 'vtt-stream-es',
+              textStream: {
+                codec: 'webvtt',
+                languageCode: 'es-ES',
+                displayName: 'Spanish',
+                mapping: [
+                  {
+                    atomKey: 'atom0',
+                    inputKey: 'subtitle_input_es',
                   },
                 ],
               },
@@ -101,9 +128,20 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
               elementaryStreams: ['audio-stream0'],
             },
             {
-              key: 'text-vtt',
+              key: 'text-vtt-en',
               container: 'vtt',
-              elementaryStreams: ['vtt-stream0'],
+              elementaryStreams: ['vtt-stream-en'],
+              segmentSettings: {
+                segmentDuration: {
+                  seconds: 6,
+                },
+                individualSegments: true,
+              },
+            },
+            {
+              key: 'text-vtt-es',
+              container: 'vtt',
+              elementaryStreams: ['vtt-stream-es'],
               segmentSettings: {
                 segmentDuration: {
                   seconds: 6,
@@ -116,7 +154,12 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
             {
               fileName: 'manifest.m3u8',
               type: 'HLS',
-              muxStreams: ['sd-hls-fmp4', 'audio-hls-fmp4', 'text-vtt'],
+              muxStreams: [
+                'sd-hls-fmp4',
+                'audio-hls-fmp4',
+                'text-vtt-en',
+                'text-vtt-es',
+              ],
             },
           ],
         },
@@ -132,7 +175,7 @@ function main(projectId, location, inputVideoUri, inputCaptionsUri, outputUri) {
   // [END transcoder_create_job_with_standalone_captions]
 }
 
-// node createJobWithStandaloneCaptions.js <projectId> <location> <inputVideoUri> <inputCaptionsUri> <outputUri>
+// node createJobWithStandaloneCaptions.js <projectId> <location> <inputVideoUri> <inputSubtitles1Uri> <inputSubtitles2Uri> <outputUri>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

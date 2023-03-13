@@ -12,14 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This is a generated sample, using the typeless sample bot. Please
-// look for the source TypeScript sample (.ts) for modifications.
-'use strict';
-
 const [projectId, location] = process.argv.slice(2);
 
 // [START workflows_quickstart]
-const {WorkflowsClient} = require('@google-cloud/workflows');
+import {WorkflowsClient} from '@google-cloud/workflows';
 const client = new WorkflowsClient();
 
 /**
@@ -28,7 +24,7 @@ const client = new WorkflowsClient();
 // const projectId = 'my-project';
 // const location = 'us-central1';
 
-async function listWorkflows(projectId, location) {
+async function listWorkflows(projectId: string, location: string) {
   const [workflows] = await client.listWorkflows({
     parent: client.locationPath(projectId, location),
   });
@@ -37,7 +33,7 @@ async function listWorkflows(projectId, location) {
   }
 }
 
-listWorkflows(projectId, location).catch(err => {
+listWorkflows(projectId, location).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });

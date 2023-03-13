@@ -1,0 +1,72 @@
+steps:
+- name: us.gcr.io/gae-runtimes-qa/utilities/gcs-fetcher:base_20221128_18_04_RC00
+  args:
+  - "--type=Manifest"
+  - "--location=gs://staging.kenneth-dev3.appspot.com/ae/23d30673-690e-4044-96d6-495b0b9835e8/manifest.json"
+  - "--dest_dir=/workspace"
+  id: fetch
+- name: us.gcr.io/gae-runtimes-qa/utilities/buildpack-shim:base_20221128_18_04_RC00
+  env:
+  - GOOGLE_DEBUG=${_GOOGLE_DEBUG}
+  - GOOGLE_RUNTIME=${_GOOGLE_RUNTIME}
+  - GOOGLE_LABEL_BUILDER_VERSION=${_GOOGLE_LABEL_BUILDER_VERSION}
+  - GOOGLE_LABEL_BUILDER_IMAGE=${_GOOGLE_LABEL_BUILDER_IMAGE}
+  - GOOGLE_LABEL_RUN_IMAGE=${_GOOGLE_LABEL_RUN_IMAGE}
+  - GAE_APPLICATION_YAML_PATH=${_GAE_APPLICATION_YAML_PATH}
+  - GOOGLE_RUNTIME_VERSION=${_GOOGLE_RUNTIME_VERSION}
+  - GOOGLE_EXPERIMENTAL_AR_AUTH_ENABLED=${_GOOGLE_EXPERIMENTAL_AR_AUTH_ENABLED}
+  args:
+  - "--phase=pre"
+  - "--app_image_unique=us.gcr.io/kenneth-dev3/appengine/default.20221205t232543:123123"
+  - "--app_image_stable=us.gcr.io/kenneth-dev3/app-engine-tmp/app/default/ttl-18h:latest"
+  - "--cache_image_unique=us.gcr.io/kenneth-dev3/app-engine-tmp/build-cache/default/ttl-7d:${BUILD_ID}"
+  - "--cache_image_stable=us.gcr.io/kenneth-dev3/app-engine-tmp/build-cache/default/ttl-7d:latest"
+  - "--env_var_names=BUILDER_OUTPUT,GOOGLE_DEBUG,GOOGLE_RUNTIME,GOOGLE_LABEL_BUILDER_VERSION,GOOGLE_LABEL_BUILDER_IMAGE,GOOGLE_LABEL_RUN_IMAGE,GAE_APPLICATION_YAML_PATH,GOOGLE_RUNTIME_VERSION,GOOGLE_EXPERIMENTAL_AR_AUTH_ENABLED"
+  id: pre-buildpack
+- name: us.gcr.io/gae-runtimes-qa/buildpacks/google-gae-18/python/builder:python310_20221202_3_10_8_RC00
+  env:
+  - CNB_RUN_IMAGE=us.gcr.io/gae-runtimes-qa/buildpacks/google-gae-18/python/run:python310_20221202_3_10_8_RC00
+  args:
+  - us.gcr.io/kenneth-dev3/app-engine-tmp/app/default/ttl-18h:9839746d-e927-44b6-a141-1d1fa0f1e106
+  id: build
+  entrypoint: "/cnb/lifecycle/creator"
+- name: us.gcr.io/gae-runtimes-qa/utilities/buildpack-shim:base_20221128_18_04_RC00
+  args:
+  - "--phase=post"
+  - "--app_image_unique=us.gcr.io/kenneth-dev3/app-engine-tmp/app/default/ttl-18h:9839746d-e927-44b6-a141-1d1fa0f1e106"
+  - "--app_image_stable=us.gcr.io/kenneth-dev3/app-engine-tmp/app/default/ttl-18h:latest"
+  - "--cache_image_unique=us.gcr.io/kenneth-dev3/app-engine-tmp/build-cache/default/ttl-7d:${BUILD_ID}"
+  - "--cache_image_stable=us.gcr.io/kenneth-dev3/app-engine-tmp/build-cache/default/ttl-7d:latest"
+  id: post-buildpack
+options:
+  env:
+  - CNB_APP_DIR=/workspace
+  - CNB_ANALYZED_PATH=/layers/analyzed.toml
+  - CNB_BUILDPACKS_DIR=/cnb/buildpacks
+  - CNB_GROUP_PATH=/layers/group.toml
+  - CNB_LAYERS_DIR=/layers
+  - CNB_PLAN_PATH=/layers/plan.toml
+  - CNB_PLATFORM_DIR=/platform
+  - CNB_PLATFORM_API=0.5
+  - CNB_NO_COLOR=true
+  - CNB_USER_ID=33
+  - CNB_GROUP_ID=33
+  - CNB_CACHE_IMAGE=us.gcr.io/kenneth-dev3/app-engine-tmp/build-cache/default/ttl-7d:${BUILD_ID}
+  - CNB_REPORT_PATH=/builder/outputs/buildpacks/report.toml
+  volumes:
+  - name: layers
+    path: "/layers"
+  - name: platform
+    path: "/platform"
+substitutions:
+  _GAE_APPLICATION_YAML_PATH: app.yaml
+  _GOOGLE_LABEL_RUN_IMAGE: us.gcr.io/gae-runtimes-qa/buildpacks/google-gae-18/python/run:python310_20221202_3_10_8_RC00
+  _GOOGLE_RUNTIME_VERSION: '3.11'
+  _GOOGLE_EXPERIMENTAL_AR_AUTH_ENABLED: 'true'
+  _GOOGLE_DEBUG: 'true'
+  _GOOGLE_RUNTIME: python
+  _GOOGLE_LABEL_BUILDER_VERSION: ''
+  _GOOGLE_LABEL_BUILDER_IMAGE: us.gcr.io/gae-runtimes-qa/buildpacks/google-gae-18/python/builder:python310_20221202_3_10_8_RC00
+tags:
+- p-flex
+- r-python

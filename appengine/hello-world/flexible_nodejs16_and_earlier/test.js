@@ -1,2 +1,2 @@
-console.log("TESTING ENV VARS")
-console.log(process.env)
+console.log('TESTING ENV VARS');
+console.log(process.env);

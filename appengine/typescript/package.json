@@ -9,8 +9,8 @@
     "node": "16.x.x"
   },
   "scripts": {
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
+    "prepare": "npm run gcp-build",
+    "pretest": "npm run gcp-build",
     "test": "mocha test/*.test.js --exit",
     "lint": "gts lint",
     "start": "node ./index.js",
@@ -18,7 +18,8 @@
     "clean": "gts clean",
     "compile": "tsc -p .",
     "fix": "gts fix",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "gcp-build": "tsc -p ."
   },
   "dependencies": {
     "express": "^4.16.3"

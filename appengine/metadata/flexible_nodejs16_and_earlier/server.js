@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START gae_flex_metadata_nodejs16_earlier]
+// [START gae_flex_metadata_nodejs]
 const express = require('express');
 const fetch = require('node-fetch');
 
@@ -57,5 +57,5 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END gae_flex_metadata_nodejs16_earlier]
+// [END gae_flex_metadata_nodejs]
 module.exports = app;

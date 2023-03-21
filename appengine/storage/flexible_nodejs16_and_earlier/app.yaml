@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_flex_storage_yaml_nodejs16_earlier]
+# [START gae_flex_storage_yaml_nodejs]
 runtime: nodejs
 env: flex
 
 env_variables:
   GCLOUD_STORAGE_BUCKET: YOUR_BUCKET_NAME
-# [END gae_flex_storage_yaml_nodejs16_earlier]
+# [END gae_flex_storage_yaml_nodejs]

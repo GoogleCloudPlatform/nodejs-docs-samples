@@ -14,10 +14,9 @@
 
 'use strict';
 
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 const sinon = require('sinon');
 const assert = require('assert');
-const {getFunction} = require('@google-cloud/functions-framework/testing');
-
 require('..');
 
 const stubConsole = function () {
@@ -33,16 +32,32 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-describe('functions_log_helloworld', () => {
-  it('should write to log', () => {
-    const expectedMsg = 'I am a log entry!';
-    const res = {end: sinon.stub()};
+describe('functions_cloudevent_log_stackdriver', async () => {
+  it('processLogEntry: should process log entry', async () => {
+    const processLogEntry = getFunction('processLogEntry');
+    const json = JSON.stringify({
+      protoPayload: {
+        methodName: 'method',
+        resourceName: 'resource',
+        authenticationInfo: {
+          principalEmail: 'me@example.com',
+        },
+      },
+    });
 
-    getFunction('helloWorld')(null, res);
+    const event = {
+      data: {
+        message: {data: Buffer.from(json).toString('base64')},
+      },
+    };
 
-    assert.strictEqual(console.log.callCount, 1);
-    assert.deepStrictEqual(console.log.firstCall.args, [expectedMsg]);
-    assert.strictEqual(res.end.callCount, 1);
-    assert.deepStrictEqual(res.end.firstCall.args, []);
+    await processLogEntry(event);
+
+    assert.strictEqual(console.log.calledWith('Method: method'), true);
+    assert.strictEqual(console.log.calledWith('Resource: resource'), true);
+    assert.strictEqual(
+      console.log.calledWith('Initiator: me@example.com'),
+      true
+    );
   });
 });

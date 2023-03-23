@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START gae_flex_quickstart_nodejs]
+// [START gaeflexnode_quickstart]
 const express = require('express');
 
 const app = express();
@@ -29,6 +29,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END gae_flex_quickstart_nodejs]
+// [END gaeflexnode_quickstart]
 
 module.exports = app;

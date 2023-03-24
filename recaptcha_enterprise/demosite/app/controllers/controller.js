@@ -16,6 +16,12 @@
 // can be used to trigger secondary actions like MFA.
 SAMPLE_THRESHOLD_SCORE = 0.50
 
+// Parse config file and read available reCAPTCHA actions. All reCAPTCHA actions registered in the client
+// should be mapped in the config file. This will be used to verify if the token obtained during assessment
+// corresponds to the claimed action.
+const propertiesReader = require('properties-reader');
+const PROPERTIES = propertiesReader('../config.properties');
+
 const context = {
   project_id: process.env.GOOGLE_CLOUD_PROJECT,
   site_key: process.env.SITE_KEY,
@@ -66,7 +72,7 @@ const onHomepageLoad = async (req, res) => {
     // Check if the token is valid, score is above threshold score and the action equals expected.
     if (assessmentResponse.tokenProperties.valid &&
         assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-        assessmentResponse.tokenProperties.action === "") {
+        assessmentResponse.tokenProperties.action === PROPERTIES.get("recaptcha_action.home")) {
       // Load the home page.
       // Business logic.
       // Classify the action as not bad.
@@ -109,7 +115,7 @@ const onSignup = async (req, res) => {
     // Check if the token is valid, score is above threshold score and the action equals expected.
     if (assessmentResponse.tokenProperties.valid &&
         assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-        assessmentResponse.tokenProperties.action === "") {
+        assessmentResponse.tokenProperties.action === PROPERTIES.get("recaptcha_action.signup")) {
       // Write new username and password to users database.
       // let username = req.body.recaptcha_cred.username
       // let password = req.body.recaptcha_cred.password
@@ -154,7 +160,7 @@ const onLogin = async (req, res) => {
     // Check if the token is valid, score is above threshold score and the action equals expected.
     if (assessmentResponse.tokenProperties.valid &&
         assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-        assessmentResponse.tokenProperties.action === "") {
+        assessmentResponse.tokenProperties.action === PROPERTIES.get("recaptcha_action.login")) {
       // Check if the login credentials exist and match.
       // let username = req.body.recaptcha_cred.username
       // let password = req.body.recaptcha_cred.password
@@ -199,7 +205,7 @@ const onStoreCheckout = async (req, res) => {
     // Check if the token is valid, score is above threshold score and the action equals expected.
     if (assessmentResponse.tokenProperties.valid &&
         assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-        assessmentResponse.tokenProperties.action === "") {
+        assessmentResponse.tokenProperties.action === PROPERTIES.get("recaptcha_action.store")) {
       // Check if the cart contains items and proceed to checkout and payment.
       // let items = req.body.recaptcha_cred.items
       // Business logic.
@@ -243,7 +249,7 @@ const onCommentSubmit = async (req, res) => {
     // Check if the token is valid, score is above threshold score and the action equals expected.
     if (assessmentResponse.tokenProperties.valid &&
         assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-        assessmentResponse.tokenProperties.action === "") {
+        assessmentResponse.tokenProperties.action === PROPERTIES.get("recaptcha_action.comment")) {
       // Check if comment has safe language and proceed to store in database.
       // let comment = req.body.recaptcha_cred.comment
       // Business logic.

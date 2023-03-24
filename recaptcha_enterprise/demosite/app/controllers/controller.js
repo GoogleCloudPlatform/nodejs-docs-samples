@@ -20,7 +20,7 @@ const SAMPLE_THRESHOLD_SCORE = 0.5;
 // should be mapped in the config file. This will be used to verify if the token obtained during assessment
 // corresponds to the claimed action.
 const propertiesReader = require('properties-reader');
-const PROPERTIES = propertiesReader('../config.properties');
+const PROPERTIES = propertiesReader('config.properties');
 
 const context = {
   project_id: process.env.GOOGLE_CLOUD_PROJECT,

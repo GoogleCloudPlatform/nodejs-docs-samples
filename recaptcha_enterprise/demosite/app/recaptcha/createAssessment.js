@@ -22,11 +22,7 @@ const {RecaptchaEnterpriseServiceClient} =
  * @param token: The token obtained from the client on passing the recaptchaSiteKey.
  * @returns Assessment
  */
-async function createAssessment(
-  projectId,
-  recaptchaSiteKey,
-  token,
-) {
+async function createAssessment(projectId, recaptchaSiteKey, token) {
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
 

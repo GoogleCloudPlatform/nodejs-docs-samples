@@ -15,21 +15,17 @@
 const {RecaptchaEnterpriseServiceClient} =
   require('@google-cloud/recaptcha-enterprise').v1;
 
-const SAMPLE_THRESHOLD_SCORE = 0.5;
-
 /**
  * Create an assessment to analyze the risk of a UI action.
  * @param projectId: GCloud Project ID
  * @param recaptchaSiteKey: Site key obtained by registering a domain/app to use recaptcha services.
  * @param token: The token obtained from the client on passing the recaptchaSiteKey.
- * @param recaptchaAction: Action name corresponding to the token.
- * @return {Promise<{score: *, verdict: string}>}
+ * @returns Assessment
  */
 async function createAssessment(
   projectId,
   recaptchaSiteKey,
   token,
-  recaptchaAction
 ) {
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
@@ -38,37 +34,15 @@ async function createAssessment(
   const [response] = await client.createAssessment({
     parent: `projects/${projectId}`,
     assessment: {
+      // Set the properties of the event to be tracked.
       event: {
         siteKey: recaptchaSiteKey,
         token: token,
       },
     },
   });
-
-  // Check if the token is valid.
-  if (!response.tokenProperties || !response.tokenProperties.valid) {
-    throw new Error(
-      `The Create Assessment call failed because the token was invalid for the following reasons: ${response.tokenProperties.invalidReason}`
-    );
-  }
-
-  // Check if the expected action was executed.
-  if (response.tokenProperties.action !== recaptchaAction) {
-    throw new Error(
-      'The action attribute in your reCAPTCHA tag does not match the action you are expecting to score. Please check your action attribute !'
-    );
-  }
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Ends -->
-
-  // Return the risk score.
-  let verdict = 'Not Bad';
-  if (response.riskAnalysis.score < SAMPLE_THRESHOLD_SCORE) {
-    verdict = 'Bad';
-  }
-  return {
-    score: response.riskAnalysis.score.toFixed(1),
-    verdict,
-  };
+  return response;
 }
 
 module.exports = {

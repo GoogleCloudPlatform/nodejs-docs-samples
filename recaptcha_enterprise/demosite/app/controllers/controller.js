@@ -60,31 +60,32 @@ const game = (req, res) => {
 const {createAssessment} = require('../recaptcha/createAssessment');
 // On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onHomepageLoad = async (req, res) => {
-  let verdict;
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.recaptcha_cred.token
+        context.project_id,
+        context.site_key,
+        req.body.recaptcha_cred.token
     );
 
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    if (
-      assessmentResponse.tokenProperties.valid &&
-      assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-      assessmentResponse.tokenProperties.action ===
-        PROPERTIES.get('recaptcha_action.home')
-    ) {
-      // Load the home page.
-      // Business logic.
-      // Classify the action as not bad.
-      verdict = 'Not Bad';
-    } else {
-      // If any of the above condition fails, trigger email/ phone verification flow.
-      // Classify the action as bad.
-      verdict = 'Bad';
-    }
+    const verdict = function () {
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (
+          assessmentResponse.tokenProperties.valid &&
+          assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.tokenProperties.action ===
+            PROPERTIES.get('recaptcha_action.home')
+      ) {
+        // Load the home page.
+        // Business logic.
+        // Classify the action as not bad.
+        return 'Not Bad'
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        return 'Bad';
+      }
+    };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Return the risk score.
@@ -106,32 +107,33 @@ const onHomepageLoad = async (req, res) => {
 
 // On signup button click, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onSignup = async (req, res) => {
-  let verdict;
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.recaptcha_cred.token
+        context.project_id,
+        context.site_key,
+        req.body.recaptcha_cred.token
     );
 
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    if (
-      assessmentResponse.tokenProperties.valid &&
-      assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-      assessmentResponse.tokenProperties.action ===
-        PROPERTIES.get('recaptcha_action.signup')
-    ) {
-      // Write new username and password to users database.
-      // let username = req.body.recaptcha_cred.username
-      // let password = req.body.recaptcha_cred.password
-      // Business logic.
-      // Classify the action as not bad.
-      verdict = 'Not Bad';
-    } else {
-      // If any of the above condition fails, trigger email/ phone verification flow.
-      // Classify the action as bad.
-      verdict = 'Bad';
+    const verdict = function () {
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (
+          assessmentResponse.tokenProperties.valid &&
+          assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.tokenProperties.action ===
+            PROPERTIES.get('recaptcha_action.signup')
+      ) {
+        // Write new username and password to users database.
+        // let username = req.body.recaptcha_cred.username
+        // let password = req.body.recaptcha_cred.password
+        // Business logic.
+        // Classify the action as not bad.
+        return 'Not Bad';
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        return 'Bad';
+      }
     }
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
@@ -154,32 +156,33 @@ const onSignup = async (req, res) => {
 
 // On login button click, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onLogin = async (req, res) => {
-  let verdict;
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.recaptcha_cred.token
+        context.project_id,
+        context.site_key,
+        req.body.recaptcha_cred.token
     );
 
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    if (
-      assessmentResponse.tokenProperties.valid &&
-      assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-      assessmentResponse.tokenProperties.action ===
-        PROPERTIES.get('recaptcha_action.login')
-    ) {
-      // Check if the login credentials exist and match.
-      // let username = req.body.recaptcha_cred.username
-      // let password = req.body.recaptcha_cred.password
-      // Business logic.
-      // Classify the action as not bad.
-      verdict = 'Not Bad';
-    } else {
-      // If any of the above condition fails, trigger email/ phone verification flow.
-      // Classify the action as bad.
-      verdict = 'Bad';
+    const verdict = function () {
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (
+          assessmentResponse.tokenProperties.valid &&
+          assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.tokenProperties.action ===
+            PROPERTIES.get('recaptcha_action.login')
+      ) {
+        // Check if the login credentials exist and match.
+        // let username = req.body.recaptcha_cred.username
+        // let password = req.body.recaptcha_cred.password
+        // Business logic.
+        // Classify the action as not bad.
+        return 'Not Bad';
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        return 'Bad';
+      }
     }
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
@@ -202,31 +205,32 @@ const onLogin = async (req, res) => {
 
 // On checkout button click in store page, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onStoreCheckout = async (req, res) => {
-  let verdict;
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.recaptcha_cred.token
+        context.project_id,
+        context.site_key,
+        req.body.recaptcha_cred.token
     );
 
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    if (
-      assessmentResponse.tokenProperties.valid &&
-      assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-      assessmentResponse.tokenProperties.action ===
-        PROPERTIES.get('recaptcha_action.store')
-    ) {
-      // Check if the cart contains items and proceed to checkout and payment.
-      // let items = req.body.recaptcha_cred.items
-      // Business logic.
-      // Classify the action as not bad.
-      verdict = 'Not Bad';
-    } else {
-      // If any of the above condition fails, trigger email/ phone verification flow.
-      // Classify the action as bad.
-      verdict = 'Bad';
+    const verdict = function () {
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (
+          assessmentResponse.tokenProperties.valid &&
+          assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.tokenProperties.action ===
+            PROPERTIES.get('recaptcha_action.store')
+      ) {
+        // Check if the cart contains items and proceed to checkout and payment.
+        // let items = req.body.recaptcha_cred.items
+        // Business logic.
+        // Classify the action as not bad.
+        return 'Not Bad';
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        return 'Bad';
+      }
     }
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
@@ -249,31 +253,32 @@ const onStoreCheckout = async (req, res) => {
 
 // On comment submit, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onCommentSubmit = async (req, res) => {
-  let verdict;
   try {
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
     const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.recaptcha_cred.token
+        context.project_id,
+        context.site_key,
+        req.body.recaptcha_cred.token
     );
 
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    if (
-      assessmentResponse.tokenProperties.valid &&
-      assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
-      assessmentResponse.tokenProperties.action ===
-        PROPERTIES.get('recaptcha_action.comment')
-    ) {
-      // Check if comment has safe language and proceed to store in database.
-      // let comment = req.body.recaptcha_cred.comment
-      // Business logic.
-      // Classify the action as not bad.
-      verdict = 'Not Bad';
-    } else {
-      // If any of the above condition fails, trigger email/ phone verification flow.
-      // Classify the action as bad.
-      verdict = 'Bad';
+    const verdict = function () {
+      // Check if the token is valid, score is above threshold score and the action equals expected.
+      if (
+          assessmentResponse.tokenProperties.valid &&
+          assessmentResponse.riskAnalysis.score > SAMPLE_THRESHOLD_SCORE &&
+          assessmentResponse.tokenProperties.action ===
+            PROPERTIES.get('recaptcha_action.comment')
+      ) {
+        // Check if comment has safe language and proceed to store in database.
+        // let comment = req.body.recaptcha_cred.comment
+        // Business logic.
+        // Classify the action as not bad.
+        return 'Not Bad';
+      } else {
+        // If any of the above condition fails, trigger email/ phone verification flow.
+        // Classify the action as bad.
+        return 'Bad';
+      }
     }
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 

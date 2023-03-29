@@ -1,7 +1,9 @@
 {
     "name": "recaptcha-demosite",
-    "description": "",
+    "description": "One-click deployment solution for recaptcha enterprise",
     "version": "1.0.0",
+    "license": "Apache-2.0",
+    "author": "Google Inc.",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -9,7 +11,6 @@
         "type": "git",
         "url": "https://github.com/googleapis/nodejs-recaptcha-enterprise.git"
     },
-    "license": "MIT",
     "dependencies": {
         "@google-cloud/recaptcha-enterprise": "^3.0.0",
         "body-parser": "^1.20.0",

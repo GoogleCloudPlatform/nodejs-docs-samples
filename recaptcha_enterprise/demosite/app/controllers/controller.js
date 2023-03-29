@@ -15,6 +15,8 @@
 // Sample threshold score for classification of bad / not bad action. The threshold score
 // can be used to trigger secondary actions like MFA.
 const SAMPLE_THRESHOLD_SCORE = 0.5;
+const BAD = 'Bad';
+const NOT_BAD = 'Not Bad';
 
 // Parse config file and read available reCAPTCHA actions. All reCAPTCHA actions registered in the client
 // should be mapped in the config file. This will be used to verify if the token obtained during assessment
@@ -79,11 +81,11 @@ const onHomepageLoad = async (req, res) => {
         // Load the home page.
         // Business logic.
         // Classify the action as not bad.
-        return 'Not Bad';
+        return NOT_BAD;
       } else {
         // If any of the above condition fails, trigger email/ phone verification flow.
         // Classify the action as bad.
-        return 'Bad';
+        return BAD;
       }
     };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
@@ -91,7 +93,7 @@ const onHomepageLoad = async (req, res) => {
     // Return the risk score.
     const result = {
       score: assessmentResponse.riskAnalysis.score.toFixed(1),
-      verdict,
+      verdict: verdict(),
     };
     res.json({
       data: result,
@@ -128,11 +130,11 @@ const onSignup = async (req, res) => {
         // let password = req.body.recaptcha_cred.password
         // Business logic.
         // Classify the action as not bad.
-        return 'Not Bad';
+        return NOT_BAD;
       } else {
         // If any of the above condition fails, trigger email/ phone verification flow.
         // Classify the action as bad.
-        return 'Bad';
+        return BAD;
       }
     };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
@@ -140,7 +142,7 @@ const onSignup = async (req, res) => {
     // Return the risk score.
     const result = {
       score: assessmentResponse.riskAnalysis.score.toFixed(1),
-      verdict,
+      verdict: verdict(),
     };
     res.json({
       data: result,
@@ -177,11 +179,11 @@ const onLogin = async (req, res) => {
         // let password = req.body.recaptcha_cred.password
         // Business logic.
         // Classify the action as not bad.
-        return 'Not Bad';
+        return NOT_BAD;
       } else {
         // If any of the above condition fails, trigger email/ phone verification flow.
         // Classify the action as bad.
-        return 'Bad';
+        return BAD;
       }
     };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
@@ -189,7 +191,7 @@ const onLogin = async (req, res) => {
     // Return the risk score.
     const result = {
       score: assessmentResponse.riskAnalysis.score.toFixed(1),
-      verdict,
+      verdict: verdict(),
     };
     res.json({
       data: result,
@@ -225,11 +227,11 @@ const onStoreCheckout = async (req, res) => {
         // let items = req.body.recaptcha_cred.items
         // Business logic.
         // Classify the action as not bad.
-        return 'Not Bad';
+        return NOT_BAD;
       } else {
         // If any of the above condition fails, trigger email/ phone verification flow.
         // Classify the action as bad.
-        return 'Bad';
+        return BAD;
       }
     };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
@@ -237,7 +239,7 @@ const onStoreCheckout = async (req, res) => {
     // Return the risk score.
     const result = {
       score: assessmentResponse.riskAnalysis.score.toFixed(1),
-      verdict,
+      verdict: verdict(),
     };
     res.json({
       data: result,
@@ -273,11 +275,11 @@ const onCommentSubmit = async (req, res) => {
         // let comment = req.body.recaptcha_cred.comment
         // Business logic.
         // Classify the action as not bad.
-        return 'Not Bad';
+        return NOT_BAD;
       } else {
         // If any of the above condition fails, trigger email/ phone verification flow.
         // Classify the action as bad.
-        return 'Bad';
+        return BAD;
       }
     };
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
@@ -285,7 +287,7 @@ const onCommentSubmit = async (req, res) => {
     // Return the risk score.
     const result = {
       score: assessmentResponse.riskAnalysis.score.toFixed(1),
-      verdict,
+      verdict: verdict(),
     };
     res.json({
       data: result,

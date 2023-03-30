@@ -16,21 +16,32 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  homeController,
-  loginController,
-  signupController,
-  storeController,
-  commentController,
-  gameController,
-  assessmentController,
+  home,
+  signup,
+  login,
+  store,
+  comment,
+  game,
+  onHomepageLoad,
+  onSignup,
+  onLogin,
+  onStoreCheckout,
+  onCommentSubmit,
 } = require('./controllers/controller');
 
-router.get('/', homeController);
-router.get('/store', storeController);
-router.get('/login', loginController);
-router.get('/comment', commentController);
-router.get('/signup', signupController);
-router.get('/game', gameController);
-router.post('/create_assessment', assessmentController);
+// Template URL rules.
+router.get('/', home);
+router.get('/signup', signup);
+router.get('/login', login);
+router.get('/store', store);
+router.get('/comment', comment);
+router.get('/game', game);
+
+// Submit action URL rules.
+router.post('/on_homepage_load', onHomepageLoad);
+router.post('/on_signup', onSignup);
+router.post('/on_login', onLogin);
+router.post('/on_store_checkout', onStoreCheckout);
+router.post('/on_comment_submit', onCommentSubmit);
 
 module.exports = router;

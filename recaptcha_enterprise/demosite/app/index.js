@@ -36,5 +36,5 @@ app.use('/static', express.static('static'));
 app.use('/', router);
 
 app.listen(port, () => {
-  console.log(`ReCAPTCHA Demosite app listening on port ${port}`);
+  console.log(`reCAPTCHA Demosite app listening on port ${port}`);
 });

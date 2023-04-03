@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START workflows_api_quickstart]
 const projectId =
   process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
 
-// [START workflows_api_quickstart]
+
 import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();
-
-/**
- * TODO(developer): Uncomment these variables before running the sample.
- */
-// const projectId = 'my-project';
-// const location = 'us-central1';
-// const workflow = 'myFirstWorkflow';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.

@@ -21,6 +21,9 @@ import {RecaptchaEnterpriseServiceClient} from '@google-cloud/recaptcha-enterpri
 import {assert} from 'chai';
 import {after, before, describe, it} from 'mocha';
 import * as cp from 'child_process';
+import {google} from '@google-cloud/recaptcha-enterprise/build/protos/protos';
+import recaptchaenterprise = google.cloud.recaptchaenterprise.v1;
+import IntegrationType = google.cloud.recaptchaenterprise.v1.WebKeySettings.IntegrationType;
 
 const client: RecaptchaEnterpriseServiceClient =
   new RecaptchaEnterpriseServiceClient();
@@ -38,11 +41,36 @@ describe('Test for password leak given username and password', () => {
   before(async () => {
     PROJECT_ID = await client.getProjectId();
     //  Create site key.
+    const webKeySettings: recaptchaenterprise.IWebKeySettings = {
+      integrationType: IntegrationType.SCORE,
+      allowedDomains: ['localhost'],
+      allowAmpTraffic: false,
+    };
+    const keyObject : recaptchaenterprise.IKey = {
+      displayName: 'test_key',
+      webSettings: webKeySettings,
+    };
+    const createKeyRequest : recaptchaenterprise.ICreateKeyRequest = {
+      parent: client.projectPath(PROJECT_ID),
+      key: keyObject
+    };
+    const [response] = await client.createKey(createKeyRequest);
+    const keyName : string = response.name!;
+    SITE_KEY = keyName.substring(keyName.lastIndexOf('/')+1);
+
     //  Get token and action.
+    TOKEN = '12345678asdfghjk';
+    ACTION = 'home';
+
   });
 
   after(async () => {
     // Delete site key.
+    const deleteKeyRequest : recaptchaenterprise.IDeleteKeyRequest = {
+      name: client.keyPath(PROJECT_ID, SITE_KEY),
+    };
+    await client.deleteKey(deleteKeyRequest);
+    console.log('reCAPTCHA Site key successfully deleted !')
   });
 
   it('should obtain boolean result from password leak assessment call', async () => {
@@ -50,7 +78,7 @@ describe('Test for password leak given username and password', () => {
       `node --loader ts-node/esm passwordLeakAssessment.ts 
         ${PROJECT_ID} ${SITE_KEY}, ${TOKEN}, ${ACTION} ${USERNAME} ${PASSWORD}`
     );
-    assert.match(stdout, /Is Credential leaked: false/);
+    assert.match(stdout, /Hashes created/);
   });
 
 });

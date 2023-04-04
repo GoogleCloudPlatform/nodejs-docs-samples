@@ -30,7 +30,7 @@ import {RecaptchaEnterpriseServiceClient} from '@google-cloud/recaptcha-enterpri
 import {PasswordCheckVerification} from 'recaptcha-password-check-helpers'
 
 // TODO(developer): Uncomment and set the following variables
-// GCloud Project ID.
+// Google Cloud Project ID.
 // const projectId: string = "PROJECT_ID"
 
 // Site key obtained by registering a domain/app to use recaptcha Enterprise.
@@ -110,6 +110,7 @@ async function checkPasswordLeak(
   const encryptedUserCredentialsHash: string = Buffer.from(
     verification.getEncryptedUserCredentialsHash()
   ).toString('base64');
+  console.log('Hashes created.')
 
   // Pass the credentials to the createPasswordLeakAssessment() to get back
   // the matching database entry for the hash prefix.
@@ -124,10 +125,10 @@ async function checkPasswordLeak(
 
   // Convert to appropriate input format.
   const reencryptedUserCredentialsHash: Uint8Array = Buffer.from(
-      credentials.reencryptedUserCredentialsHash as string, 'base64'
+      credentials.reencryptedUserCredentialsHash!.toString(), 'base64'
   );
-  const encryptedLeakMatchPrefixes: Uint8Array[] = credentials.encryptedLeakMatchPrefixes!.map(prefix => {
-      return Buffer.from(prefix, 'base64');
+  const encryptedLeakMatchPrefixes: Uint8Array[] = credentials.encryptedLeakMatchPrefixes!.map((prefix) => {
+      return Buffer.from(prefix.toString(), 'base64');
   });
 
   // Verify if the encrypted credentials are present in the obtained

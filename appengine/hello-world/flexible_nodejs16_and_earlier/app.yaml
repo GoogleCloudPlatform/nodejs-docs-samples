@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gaeflexnode_quickstart_yaml]
+# [START gae_flex_quickstart_yaml_v1]
 runtime: nodejs
 env: flex
 
@@ -26,4 +26,4 @@ resources:
   memory_gb: 0.5
   disk_size_gb: 10
 
-# [END gaeflexnode_quickstart_yaml]
+# [END gae_flex_quickstart_yaml_v1]

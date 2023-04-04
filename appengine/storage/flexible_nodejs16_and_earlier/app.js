@@ -16,7 +16,7 @@
 
 const process = require('process'); // Required to mock environment variables
 
-// [START gaeflexnode_storage_app]
+// [START gae_flex_storage_app_v1]
 const {format} = require('util');
 const express = require('express');
 const Multer = require('multer');
@@ -85,6 +85,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-// [END gaeflexnode_storage_app]
+// [END gae_flex_storage_app_v1]
 
 module.exports = app;

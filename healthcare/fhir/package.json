@@ -14,11 +14,11 @@
   "devDependencies": {
     "@google-cloud/pubsub": "^3.0.0",
     "@google-cloud/storage": "^6.0.0",
-    "google-auth-library": "^7.0.0",
+    "google-auth-library": "^8.0.0",
     "mocha": "^10.0.0",
     "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@googleapis/healthcare": "^5.0.0"
+    "@googleapis/healthcare": "^6.0.0"
   }
 }

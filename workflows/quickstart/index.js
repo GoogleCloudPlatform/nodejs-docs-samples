@@ -12,7 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// This is a generated sample, using the typeless sample bot. Please
+// look for the source TypeScript sample (.ts) for modifications.
 'use strict';
+
+const projectId = process.argv[2] || process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.argv[3] || 'us-central1';
+const workflowName = process.argv[4] || 'myFirstWorkflow';
+
+// [START workflows_api_quickstart]
+const {ExecutionsClient} = require('@google-cloud/workflows');
+const client = new ExecutionsClient();
+
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// const projectId = 'my-project';
+// const location = 'us-central1';
+// const workflow = 'myFirstWorkflow';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -20,18 +37,7 @@
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
  */
-const main = async (
-  projectId = process.env.GOOGLE_CLOUD_PROJECT,
-  location = 'us-central1',
-  workflow = 'myFirstWorkflow'
-) => {
-  if (!projectId)
-    return console.error('ERROR: GOOGLE_CLOUD_PROJECT is required.');
-
-  // [START workflows_api_quickstart]
-  const {ExecutionsClient} = require('@google-cloud/workflows');
-  const client = new ExecutionsClient();
-
+async function executeWorkflow(projectId, location, workflow) {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
@@ -74,13 +80,10 @@ const main = async (
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
-  // [END workflows_api_quickstart]
-};
-
-module.exports = main;
-
-// Call as CLI
-// node . [projectId] [cloudRegion] [workflowName]
-if (require.main === module) {
-  main(...process.argv.slice(2));
 }
+
+executeWorkflow(projectId, location, workflowName).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+// [END workflows_api_quickstart]

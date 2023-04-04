@@ -46,31 +46,30 @@ describe('Test for password leak given username and password', () => {
       allowedDomains: ['localhost'],
       allowAmpTraffic: false,
     };
-    const keyObject : recaptchaenterprise.IKey = {
+    const keyObject: recaptchaenterprise.IKey = {
       displayName: 'test_key',
       webSettings: webKeySettings,
     };
-    const createKeyRequest : recaptchaenterprise.ICreateKeyRequest = {
+    const createKeyRequest: recaptchaenterprise.ICreateKeyRequest = {
       parent: client.projectPath(PROJECT_ID),
-      key: keyObject
+      key: keyObject,
     };
     const [response] = await client.createKey(createKeyRequest);
-    const keyName : string = response.name!;
-    SITE_KEY = keyName.substring(keyName.lastIndexOf('/')+1);
+    const keyName: string = response.name!;
+    SITE_KEY = keyName.substring(keyName.lastIndexOf('/') + 1);
 
     //  Get token and action.
     TOKEN = '12345678asdfghjk';
     ACTION = 'home';
-
   });
 
   after(async () => {
     // Delete site key.
-    const deleteKeyRequest : recaptchaenterprise.IDeleteKeyRequest = {
+    const deleteKeyRequest: recaptchaenterprise.IDeleteKeyRequest = {
       name: client.keyPath(PROJECT_ID, SITE_KEY),
     };
     await client.deleteKey(deleteKeyRequest);
-    console.log('reCAPTCHA Site key successfully deleted !')
+    console.log('reCAPTCHA Site key successfully deleted !');
   });
 
   it('should obtain boolean result from password leak assessment call', async () => {
@@ -80,5 +79,4 @@ describe('Test for password leak given username and password', () => {
     );
     assert.match(stdout, /Hashes created/);
   });
-
 });

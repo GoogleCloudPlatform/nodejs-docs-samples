@@ -27,7 +27,7 @@ const [projectId, siteKey, token, action, username, password] = args;
 
 import {google} from '@google-cloud/recaptcha-enterprise/build/protos/protos';
 import {RecaptchaEnterpriseServiceClient} from '@google-cloud/recaptcha-enterprise';
-import {PasswordCheckVerification} from 'recaptcha-password-check-helpers'
+import {PasswordCheckVerification} from 'recaptcha-password-check-helpers';
 
 // TODO(developer): Uncomment and set the following variables
 // Google Cloud Project ID.
@@ -49,7 +49,8 @@ import {PasswordCheckVerification} from 'recaptcha-password-check-helpers'
 // const password: string = "1234@abcd";
 
 // Create a client.
-const client: RecaptchaEnterpriseServiceClient = new RecaptchaEnterpriseServiceClient();
+const client: RecaptchaEnterpriseServiceClient =
+  new RecaptchaEnterpriseServiceClient();
 
 /*
 * Detect password leaks and breached credentials to prevent account takeovers
@@ -92,17 +93,13 @@ async function checkPasswordLeak(
   token: string,
   action: string,
   username: string,
-  password: string,
+  password: string
 ) {
-
   // Instantiate the recaptcha-password-check-helpers library to perform the
   // cryptographic functions.
   // Create the request to obtain the hash prefix and encrypted credentials.
   const verification: PasswordCheckVerification =
-    await PasswordCheckVerification.create(
-      username,
-      password
-    );
+    await PasswordCheckVerification.create(username, password);
 
   const lookupHashPrefix: string = Buffer.from(
     verification.getLookupHashPrefix()
@@ -110,26 +107,29 @@ async function checkPasswordLeak(
   const encryptedUserCredentialsHash: string = Buffer.from(
     verification.getEncryptedUserCredentialsHash()
   ).toString('base64');
-  console.log('Hashes created.')
+  console.log('Hashes created.');
 
   // Pass the credentials to the createPasswordLeakAssessment() to get back
   // the matching database entry for the hash prefix.
-  const credentials: google.cloud.recaptchaenterprise.v1.IPrivatePasswordLeakVerification = await createPasswordLeakAssessment(
-    projectId,
-    recaptchaSiteKey,
-    token,
-    action,
-    lookupHashPrefix,
-    encryptedUserCredentialsHash
-  );
+  const credentials: google.cloud.recaptchaenterprise.v1.IPrivatePasswordLeakVerification =
+    await createPasswordLeakAssessment(
+      projectId,
+      recaptchaSiteKey,
+      token,
+      action,
+      lookupHashPrefix,
+      encryptedUserCredentialsHash
+    );
 
   // Convert to appropriate input format.
   const reencryptedUserCredentialsHash: Uint8Array = Buffer.from(
-      credentials.reencryptedUserCredentialsHash!.toString(), 'base64'
+    credentials.reencryptedUserCredentialsHash!.toString(),
+    'base64'
   );
-  const encryptedLeakMatchPrefixes: Uint8Array[] = credentials.encryptedLeakMatchPrefixes!.map((prefix) => {
+  const encryptedLeakMatchPrefixes: Uint8Array[] =
+    credentials.encryptedLeakMatchPrefixes!.map(prefix => {
       return Buffer.from(prefix.toString(), 'base64');
-  });
+    });
 
   // Verify if the encrypted credentials are present in the obtained
   // match list to check if the credential is leaked.
@@ -152,38 +152,36 @@ async function createPasswordLeakAssessment(
   lookupHashPrefix: string,
   encryptedUserCredentialsHash: string
 ): Promise<google.cloud.recaptchaenterprise.v1.IPrivatePasswordLeakVerification> {
-
   // Build the assessment request.
-  const createAssessmentRequest: google.cloud.recaptchaenterprise.v1.ICreateAssessmentRequest = {
-    parent: `projects/${projectId}`,
-    assessment: {
-      // Set the properties of the event to be tracked.
-      event: {
-        siteKey: recaptchaSiteKey,
-        token: token,
+  const createAssessmentRequest: google.cloud.recaptchaenterprise.v1.ICreateAssessmentRequest =
+    {
+      parent: `projects/${projectId}`,
+      assessment: {
+        // Set the properties of the event to be tracked.
+        event: {
+          siteKey: recaptchaSiteKey,
+          token: token,
+        },
+        // Set the hashprefix and credentials hash.
+        // Setting this will trigger the Password leak protection.
+        privatePasswordLeakVerification: {
+          lookupHashPrefix: lookupHashPrefix,
+          encryptedUserCredentialsHash: encryptedUserCredentialsHash,
+        },
       },
-      // Set the hashprefix and credentials hash.
-      // Setting this will trigger the Password leak protection.
-      privatePasswordLeakVerification: {
-        lookupHashPrefix: lookupHashPrefix,
-        encryptedUserCredentialsHash: encryptedUserCredentialsHash,
-      },
-    },
-  };
+    };
 
   // Send the create assessment request.
-  const [response] = await client.createAssessment(
-    createAssessmentRequest
-  );
+  const [response] = await client.createAssessment(createAssessmentRequest);
 
   // Check validity and integrity of the response.
-  await checkTokenIntegrity(response.tokenProperties, action);
+  await checkTokenIntegrity(response.tokenProperties!, action);
   // Get the reCAPTCHA Enterprise score.
   console.log(`The reCAPTCHA score is: ${response.riskAnalysis?.score}`);
   // Get the assessment name (id). Use this to annotate the assessment.
   console.log(`Assessment name: ${response.name}`);
 
-  if(!response?.privatePasswordLeakVerification) {
+  if (!response?.privatePasswordLeakVerification) {
     throw `Error in obtaining response from Private Password Leak Verification ${response}`;
   }
 
@@ -192,10 +190,9 @@ async function createPasswordLeakAssessment(
 
 // Check for token validity and action integrity.
 async function checkTokenIntegrity(
-    tokenProperties: google.cloud.recaptchaenterprise.v1.ITokenProperties | null | undefined,
-    action: string
+  tokenProperties: google.cloud.recaptchaenterprise.v1.ITokenProperties,
+  action: string
 ) {
-
   if (!tokenProperties) {
     throw 'Token properties field is null or undefined.';
   }
@@ -214,8 +211,10 @@ async function checkTokenIntegrity(
   }
 }
 
-checkPasswordLeak(projectId, siteKey, token, action, username, password).catch(err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+checkPasswordLeak(projectId, siteKey, token, action, username, password).catch(
+  err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  }
+);
 // [END recaptcha_enterprise_password_leak_verification]

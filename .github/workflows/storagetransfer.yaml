@@ -27,7 +27,7 @@ jobs:
       pull-requests: 'write'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@v3.1.0
+    - uses: actions/checkout@v3.3.0
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@v1.0.0'
@@ -42,7 +42,7 @@ jobs:
         secrets: |-
           sts_aws_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-aws
           sts_azure_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-azure
-    - uses: actions/setup-node@v3.5.1
+    - uses: actions/setup-node@v3.6.0
       with:
         node-version: 16
     - run: npm install

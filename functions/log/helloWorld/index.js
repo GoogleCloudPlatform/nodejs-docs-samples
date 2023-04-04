@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
 'use strict';
 
 // [START functions_log_helloworld]
-exports.helloWorld = (req, res) => {
+const functions = require('@google-cloud/functions-framework');
+
+functions.http('helloWorld', (req, res) => {
   console.log('I am a log entry!');
   console.error('I am an error!');
   res.end();
-};
+});
 // [END functions_log_helloworld]

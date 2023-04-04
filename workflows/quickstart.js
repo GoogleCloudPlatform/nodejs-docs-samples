@@ -12,31 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// This is a generated sample, using the typeless sample bot. Please
+// look for the source TypeScript sample (.ts) for modifications.
 'use strict';
 
-async function main(projectId, location) {
-  // [START workflows_quickstart]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'my-project';
-  // const location = 'us-central1';
-  const {WorkflowsClient} = require('@google-cloud/workflows');
-  const client = new WorkflowsClient();
-  async function listWorkflows() {
-    const [workflows] = await client.listWorkflows({
-      parent: client.locationPath(projectId, location),
-    });
-    for (const workflow of workflows) {
-      console.info(`name: ${workflow.name}`);
-    }
+const [projectId, location] = process.argv.slice(2);
+
+// [START workflows_quickstart]
+const {WorkflowsClient} = require('@google-cloud/workflows');
+const client = new WorkflowsClient();
+
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+// const projectId = 'my-project';
+// const location = 'us-central1';
+
+async function listWorkflows(projectId, location) {
+  const [workflows] = await client.listWorkflows({
+    parent: client.locationPath(projectId, location),
+  });
+  for (const workflow of workflows) {
+    console.info(`name: ${workflow.name}`);
   }
-  listWorkflows();
-  // [END workflows_quickstart]
 }
 
-process.on('unhandledRejection', err => {
+listWorkflows(projectId, location).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
+// [END workflows_quickstart]

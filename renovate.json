@@ -1,8 +1,13 @@
 {
   "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
+    "config:base"
   ],
+  "dependencyDashboardAutoclose": true,  
   "pinVersions": false,
-  "rebaseStalePrs": false
+  "rebaseStalePrs": false,
+  "force": {
+    "constraints": {
+      "node": "< 15.0.0"
+    }
+  }
 }

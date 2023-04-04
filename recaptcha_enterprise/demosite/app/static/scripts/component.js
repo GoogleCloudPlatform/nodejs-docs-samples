@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// TODO: productionize dependencies; network cascade is too slow
 import {
   LitElement,
   css,
@@ -1418,7 +1417,6 @@ class RecaptchaDemo extends LitElement {
       "tokenProperties": {
         "action": "${ACTIONS[this.step]}",
         ...
-        "invalidReason": null,
         "valid": true
       },
     }`

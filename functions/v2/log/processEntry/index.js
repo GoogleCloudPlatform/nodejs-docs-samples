@@ -14,12 +14,15 @@
 
 'use strict';
 
-// [START functions_log_helloworld]
+// [START functions_cloudevent_log_stackdriver]
 const functions = require('@google-cloud/functions-framework');
 
-functions.http('helloWorld', (req, res) => {
-  console.log('I am a log entry!');
-  console.error('I am an error!');
-  res.end();
+functions.cloudEvent('processLogEntry', async event => {
+  const dataBuffer = Buffer.from(event.data.message.data, 'base64');
+
+  const logEntry = JSON.parse(dataBuffer.toString()).protoPayload;
+  console.log(`Method: ${logEntry.methodName}`);
+  console.log(`Resource: ${logEntry.resourceName}`);
+  console.log(`Initiator: ${logEntry.authenticationInfo.principalEmail}`);
 });
-// [END functions_log_helloworld]
+// [END functions_cloudevent_log_stackdriver]

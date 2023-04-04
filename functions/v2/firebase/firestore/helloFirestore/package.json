@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-docs-samples-functions-log-hello-world",
+  "name": "nodejs-docs-samples-functions-firebase-firestore",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -12,7 +12,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=20000"
+    "test": "mocha -T 30s test/*.test.js"
   },
   "devDependencies": {
     "mocha": "^10.0.0",
@@ -20,6 +20,7 @@
     "sinon": "^15.0.0"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.3"
+    "@google-cloud/functions-framework": "^3.1.3",
+    "protobufjs": "^7.2.2"
   }
 }

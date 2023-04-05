@@ -52,7 +52,7 @@ function main(
     const task = {
       httpRequest: {
         headers: {
-          'Content-Type': 'text/plain',
+          'Content-Type': 'text/plain', // Set content type to ensure compatibility your application's request parsing
         },
         httpMethod: 'POST',
         url,

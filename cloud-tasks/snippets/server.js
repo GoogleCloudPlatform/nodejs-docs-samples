@@ -15,7 +15,6 @@
 'use strict';
 
 // [START cloud_tasks_appengine_quickstart]
-const bodyParser = require('body-parser');
 const express = require('express');
 
 const app = express();

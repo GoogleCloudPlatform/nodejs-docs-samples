@@ -96,8 +96,12 @@ In the current directory, deploy using `gcloud`:
 
         gcloud app deploy app.standard.yaml
 
-To deploy to App Engine Node.js Flexible Environment, run
+To deploy to App Engine Node.js Flexible Environment for Node.js 16 and earlier, run:
 
         gcloud app deploy app.flexible.yaml
+
+For App Engine Flexible deployments for 18 and later, deploy via:
+        
+        gcloud app deploy app.flexible_os.yaml
 
 You can now access the application at https://[your-app-id].appspot.com. You can use the form to submit messages, but it's non-deterministic which instance of your application will receive the notification. You can send multiple messages and refresh the page to see the received message.

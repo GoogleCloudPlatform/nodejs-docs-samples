@@ -16,7 +16,7 @@
 
 // sample-metadata:
 //  title: Inspects strings
-//  description: Inspects a string using phone number built in info type.
+//  description: Inspects a string using built in info type "Phone Number".
 //  usage: node inspectPhoneNumber.js my-project string minLikelihood maxFindings infoTypes customInfoTypes includeQuote
 
 function main(
@@ -40,7 +40,7 @@ function main(
   // const projectId = 'my-project';
 
   // The string to inspect
-  // const string = 'My name is Gary and my email is gary@example.com';
+  // const string = 'My email is gary@example.com and my phone number is (223) 456-7890.';
 
   // The minimum likelihood required before returning a match
   // const minLikelihood = 'LIKELIHOOD_UNSPECIFIED';

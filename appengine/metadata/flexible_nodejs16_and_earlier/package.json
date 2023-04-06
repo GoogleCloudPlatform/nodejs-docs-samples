@@ -1,0 +1,27 @@
+{
+  "name": "appengine-metadata",
+  "description": "Sample for accessing the Compute metadata server on GAE Flexible Environment.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": "16.x.x"
+  },
+  "scripts": {
+    "system-test": "mocha --exit test/*.test.js",
+    "test": "npm run system-test"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "supertest": "^6.0.0"
+  }
+}

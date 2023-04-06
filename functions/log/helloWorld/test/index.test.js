@@ -1,4 +1,4 @@
-// Copyright 2016 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,31 +14,11 @@
 
 'use strict';
 
-const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
-const getSample = () => {
-  const results = [[{}], {}];
-  const stream = {
-    on: sinon.stub().returnsThis(),
-  };
-  stream.on.withArgs('end').yields();
-
-  const logging = {
-    getEntries: sinon.stub().returns(Promise.resolve(results)),
-  };
-
-  return {
-    program: proxyquire('../', {
-      '@google-cloud/logging': sinon.stub().returns(logging),
-    }),
-    mocks: {
-      logging: logging,
-      results: results,
-    },
-  };
-};
+require('..');
 
 const stubConsole = function () {
   sinon.stub(console, 'error');
@@ -58,7 +38,7 @@ describe('functions_log_helloworld', () => {
     const expectedMsg = 'I am a log entry!';
     const res = {end: sinon.stub()};
 
-    getSample().program.helloWorld({}, res);
+    getFunction('helloWorld')(null, res);
 
     assert.strictEqual(console.log.callCount, 1);
     assert.deepStrictEqual(console.log.firstCall.args, [expectedMsg]);

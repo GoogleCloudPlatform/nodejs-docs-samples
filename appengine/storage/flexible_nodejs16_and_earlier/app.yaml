@@ -1,4 +1,4 @@
-# Copyright 2019 Google LLC
+# Copyright 2015-2016, Google, Inc.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,4 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-runtime: nodejs18
+# [START gae_flex_storage_yaml_v1]
+runtime: nodejs
+env: flex
+
+env_variables:
+  GCLOUD_STORAGE_BUCKET: YOUR_BUCKET_NAME
+# [END gae_flex_storage_yaml_v1]

@@ -25,7 +25,7 @@ services:
       args:
         - "GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}"
         - "SITE_KEY=${SITE_KEY}"
-    command: node index.js
+    command: node --watch index.js
     user: "${DOCKER_COMPOSE_USER}"
     ports: ["8080:8080"]
     volumes:

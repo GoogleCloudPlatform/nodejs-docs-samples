@@ -16,7 +16,7 @@
 
 // sample-metadata:
 //  title: De-identify sensitive data with a simple word list
-//  description: Uses the Data Loss Prevention API to deidentify sensitive data in a
+//  description: Uses the Data Loss Prevention API to de-identify sensitive data in a
 //    string using a custom simple word list.
 //  usage: node deIdentifyWithSimpleWordList.js my-project text-to-insect word-list custom-info-type-name
 
@@ -29,7 +29,7 @@ function main(projectId, textToInspect, words, customInfoTypeName) {
   // TODO(developer): Replace these variables before running the sample.
   // const projectId = "your-project-id";
 
-  // The string to deidentify
+  // The string to de-identify
   // const textToInspect = 'Patient was seen in RM-YELLOW then transferred to rm green.';
 
   // Words to look for during inspection
@@ -60,7 +60,7 @@ function main(projectId, textToInspect, words, customInfoTypeName) {
       },
     };
 
-    // Construct deidentify configuration
+    // Construct de-identify configuration
     const deidentifyConfig = {
       infoTypeTransformations: {
         transformations: [

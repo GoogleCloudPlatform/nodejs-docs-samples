@@ -15,8 +15,8 @@
 'use strict';
 
 // sample-metadata:
-//  title: Deidentify with Exception List
-//  description: Deidentify sensitive data in a string with exceptions
+//  title: De-identify with Exception List
+//  description: De-identify sensitive data in a string with exceptions
 //  usage: node deIdentifyWithExceptionList.js my-project string words infotypes
 
 function main(projectId, textToInspect, words, infoTypes) {

@@ -28,7 +28,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-      - uses: 'google-github-actions/auth@v1'
+      - name: authenticate
+        uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
           service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'

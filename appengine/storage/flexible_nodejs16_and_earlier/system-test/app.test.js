@@ -57,7 +57,7 @@ after(async () => {
   }
 });
 
-describe('gae_flex_storage_app', () => {
+describe('gae_flex_storage_app_v1', () => {
   it('should load', async () => {
     await requestObj
       .get('/')

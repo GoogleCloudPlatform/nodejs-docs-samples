@@ -33,7 +33,6 @@ const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 // const serviceId = "my-serivce"
 
 const client = new CloudSchedulerClient();
-
 /**
  * Create a job with an App Engine target via the Cloud Scheduler API
  */

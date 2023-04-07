@@ -40,9 +40,6 @@ jobs:
       contents: 'write'
       pull-requests: 'write'
       id-token: 'write'
-    defaults:
-      run:
-        working-directory: scheduler
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -57,7 +54,7 @@ jobs:
       with:
         node-version: 16
     - run: npm install
-      working-directory: .
+      working-directory: scheduler
     - run: npm install
     - run: npm run build
     - run: npm test

@@ -15,6 +15,6 @@
     "@google-cloud/functions-framework": "^3.1.2"
   },
   "scripts": {
-    "test": "echo \"There is no test for this sample.\""
+    "test": "echo \"No tests exist for this sample.\""
   }
 }

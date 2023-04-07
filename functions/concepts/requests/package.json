@@ -16,6 +16,6 @@
     "node-fetch": "^2.6.0"
   },
   "scripts": {
-    "test": "echo \"There is no test for this sample.\""
+    "test": "echo \"No tests exist for this sample.\""
   }
 }

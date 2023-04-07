@@ -32,7 +32,6 @@ const {CloudSchedulerClient} = require('@google-cloud/scheduler');
 // const locationId = "LOCATION_ID"
 // const serviceId = "my-serivce"
 
-// Create a client.
 const client = new CloudSchedulerClient();
 
 /**

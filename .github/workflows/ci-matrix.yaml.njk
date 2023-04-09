@@ -38,8 +38,8 @@ jobs:
       matrix:
         path:
           # TODO: Replace these examples below 
-          - 'example/variant/1'
-          - 'example/variant/2'
+          - 'example/subfolder/1'
+          - 'example/subfolder/2'
     uses: ./.github/workflows/test.yaml
     with:
       name: '{{name}}'

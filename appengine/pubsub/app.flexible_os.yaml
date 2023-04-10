@@ -12,20 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_flex_quickstart_yaml]
-runtime: nodejs
-env: flex
-runtime_config:
-  operating_system: ubuntu22
-# This sample incurs costs to run on the App Engine flexible environment.
-# The settings below are to reduce costs during testing and are not appropriate
-# for production use. For more information, see:
-# https://cloud.google.com/appengine/docs/flexible/nodejs/configuring-your-app-with-app-yaml
-manual_scaling:
-  instances: 1
-resources:
-  cpu: 1
-  memory_gb: 0.5
-  disk_size_gb: 10
+env_variables:
+  PUBSUB_TOPIC: YOUR_TOPIC_NAME
+  # This token is used to verify that requests originate from your
+  # application. It can be any sufficiently random string.
+  PUBSUB_VERIFICATION_TOKEN: YOUR_VERIFICATION_TOKEN
 
-# [END gae_flex_quickstart_yaml]

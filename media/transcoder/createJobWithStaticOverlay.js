@@ -23,7 +23,7 @@ function main(projectId, location, inputUri, overlayImageUri, outputUri) {
   // projectId = 'my-project-id';
   // location = 'us-central1';
   // inputUri = 'gs://my-bucket/my-video-file';
-  // overlayImageUri = 'gs://my-bucket/my-overlay-image-file'; // Must be a JPEG
+  // overlayImageUri = 'gs://my-bucket/my-overlay-image-file';
   // outputUri = 'gs://my-bucket/my-output-folder/';
 
   // Imports the Transcoder library

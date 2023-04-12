@@ -23,7 +23,7 @@
 function main(projectId, textToInspect, infoTypes) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_deidentify_redact]
-  // Imports the Google Cloud Data Loss Prevention library 
+  // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
@@ -42,7 +42,6 @@ function main(projectId, textToInspect, infoTypes) {
   // const infoTypes = [{name: 'EMAIL_ADDRESS'}];
 
   async function deIdentifyRedaction() {
-
     // Construct deidentify configuration
     const deidentifyConfig = {
       infoTypeTransformations: {

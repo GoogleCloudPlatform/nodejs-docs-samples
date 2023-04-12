@@ -315,9 +315,9 @@ describe('inspect', () => {
     const string = 'Patients MRN 444-5-22222';
     const custRegex = '[1-9]{3}-[1-9]{1}-[1-9]{5}';
     const output = execSync(
-      `node inspectWithCustomRegex.js ${projectId} "${string}" UNLIKELY 0 "" ${custRegex} true`
+      `node inspectWithCustomRegex.js ${projectId} "${string}" "${custRegex}"`
     );
-    assert.match(output, /Info type: CUSTOM_REGEX_0/);
+    assert.match(output, /InfoType: C_MRN/);
     assert.match(output, /Likelihood: POSSIBLE/);
   });
 
@@ -325,7 +325,7 @@ describe('inspect', () => {
     const string = 'Patients MRN 444-5-22222';
     const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
     const output = execSync(
-      `node inspectWithCustomRegex.js ${projectId} "${string}" UNLIKELY 0 "" ${custRegex} true`
+      `node inspectWithCustomRegex.js ${projectId} "${string}" "${custRegex}"`
     );
     assert.include(output, 'No findings');
   });
@@ -336,7 +336,7 @@ describe('inspect', () => {
     const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
     try {
       output = execSync(
-        `node inspectWithCustomRegex.js ${projectId} "${string}" UNLIKELY 0 BAD_TYPE ${custRegex} true`
+        `node inspectWithCustomRegex.js BAD_PROJECT_ID "${string}" "${custRegex}"`
       );
     } catch (err) {
       output = err.message;

@@ -17,18 +17,9 @@
 // sample-metadata:
 //  title: Inspects strings
 //  description: Inspects a string using custom regex pattern.
-//  usage: node inspectWithCustomRegex.js my-project string minLikelihood maxFindings infoTypes customInfoTypes includeQuote
+//  usage: node inspectWithCustomRegex.js my-project string customRegex
 
-function main(
-  projectId,
-  string,
-  minLikelihood,
-  maxFindings,
-  infoTypes,
-  customInfoTypes,
-  includeQuote
-) {
-  [infoTypes, customInfoTypes] = transformCLI(infoTypes, customInfoTypes);
+function main(projectId, string, customRegex) {
   // [START dlp_inspect_custom_regex]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -42,23 +33,8 @@ function main(
   // The string to inspect
   // const string = 'Patients MRN 444-5-22222';
 
-  // The minimum likelihood required before returning a match
-  // const minLikelihood = DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE;
-
-  // The maximum number of findings to report per request (0 = server maximum)
-  // const maxFindings = 0;
-
-  // The infoTypes of information to match
-  // See https://cloud.google.com/dlp/docs/concepts-infotypes for more information
-  // about supported infoTypes.
-  // const infoTypes = [{ name: 'EMAIL_ADDRESS' }];
-
-  // The customInfoTypes of information to match
-  // const customInfoTypes = [{ infoType: { name: 'DICT_TYPE' }, dictionary: { wordList: { words: ['foo', 'bar', 'baz']}}},
-  //   { infoType: { name: 'REGEX_TYPE' }, regex: {pattern: '\\(\\d{3}\\) \\d{3}-\\d{4}'}}];
-
-  // Whether to include the matching string
-  // const includeQuote = true;
+  // The regex pattern to match for
+  // const customRegex = '[1-9]{3}-[1-9]{1}-[1-9]{5}';
 
   async function inspectWithCustomRegex() {
     // Construct item to inspect
@@ -70,24 +46,25 @@ function main(
       },
     };
 
-    // Assigns likelihood to each match
-    customInfoTypes = customInfoTypes.map(customInfoType => {
-      customInfoType.likelihood =
-        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE;
-      return customInfoType;
-    });
+    // Construct the custom regex detector.
+    const customInfoTypes = [
+      {
+        infoType: {
+          name: 'C_MRN',
+        },
+        likelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        regex: {
+          pattern: customRegex,
+        },
+      },
+    ];
 
     // Construct request
     const request = {
       parent: `projects/${projectId}/locations/global`,
       inspectConfig: {
-        infoTypes: infoTypes,
         customInfoTypes: customInfoTypes,
-        minLikelihood: minLikelihood,
-        includeQuote: includeQuote,
-        limits: {
-          maxFindingsPerRequest: maxFindings,
-        },
+        includeQuote: true,
       },
       item: item,
     };
@@ -96,13 +73,11 @@ function main(
     const [response] = await dlp.inspectContent(request);
     const findings = response.result.findings;
     if (findings.length > 0) {
-      console.log('Findings:');
+      console.log('Findings: \n');
       findings.forEach(finding => {
-        if (includeQuote) {
-          console.log(`\tQuote: ${finding.quote}`);
-        }
-        console.log(`\tInfo type: ${finding.infoType.name}`);
-        console.log(`\tLikelihood: ${finding.likelihood}`);
+        console.log(`InfoType: ${finding.infoType.name}`);
+        console.log(`\tQuote: ${finding.quote}`);
+        console.log(`\tLikelihood: ${finding.likelihood} \n`);
       });
     } else {
       console.log('No findings.');
@@ -112,34 +87,9 @@ function main(
   // [END dlp_inspect_custom_regex]
 }
 
-main(...process.argv.slice(2));
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
 });
 
-function transformCLI(infoTypes, customInfoTypes) {
-  infoTypes = infoTypes
-    ? infoTypes.split(',').map(type => {
-        return {name: type};
-      })
-    : undefined;
-
-  if (customInfoTypes) {
-    customInfoTypes = customInfoTypes.includes(',')
-      ? customInfoTypes.split(',').map((dict, idx) => {
-          return {
-            infoType: {name: 'CUSTOM_DICT_'.concat(idx.toString())},
-            dictionary: {wordList: {words: dict.split(',')}},
-          };
-        })
-      : customInfoTypes.split(',').map((rgx, idx) => {
-          return {
-            infoType: {name: 'CUSTOM_REGEX_'.concat(idx.toString())},
-            regex: {pattern: rgx},
-          };
-        });
-  }
-
-  return [infoTypes, customInfoTypes];
-}
+main(...process.argv.slice(2));

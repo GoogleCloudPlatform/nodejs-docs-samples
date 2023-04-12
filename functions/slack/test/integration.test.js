@@ -55,9 +55,11 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     assert.ok(results);
 
     const result = results[0];
+
     assert.ok(result);
     assert.ok(result.text);
-    assert.ok(result.text.includes('kolach'));
+    assert.ok(result.title);
+    assert.ok(result.title.toLowerCase().includes('kolach'));
   });
 
   it('handles non-existent query', async () => {

@@ -30,10 +30,19 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
 // [START cloudrun_websockets_redis_adapter]
-const redisAdapter = require('@socket.io/redis-adapter');
+const {createAdapter} = require('@socket.io/redis-adapter');
 // Replace in-memory adapter with Redis
-io.adapter(redisAdapter(redisClient, redisClient.duplicate()));
+const subClient = redisClient.duplicate();
+io.adapter(createAdapter(redisClient, subClient));
 // [END cloudrun_websockets_redis_adapter]
+// Add error handlers
+redisClient.on('error', err => {
+  console.error(err.message);
+});
+
+subClient.on('error', err => {
+  console.error(err.message);
+});
 
 // Listen for new connection
 io.on('connection', socket => {

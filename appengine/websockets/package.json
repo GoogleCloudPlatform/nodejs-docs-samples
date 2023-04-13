@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "14.x.x"
+    "node": "16.x.x"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
@@ -21,7 +21,7 @@
     "supertest": "^6.0.0"
   },
   "devDependencies": {
-    "mocha": "^9.0.0",
-    "puppeteer": "^10.0.0"
+    "mocha": "^10.0.0",
+    "puppeteer": "^19.0.0"
   }
 }

@@ -1,0 +1,12 @@
+{
+    "name": "jobs",
+    "version": "1.0.0",
+    "description": "Node.js sample for Cloud Run jobs",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "author": "Google LLC",
+    "license": "Apache-2.0"
+  }
+  

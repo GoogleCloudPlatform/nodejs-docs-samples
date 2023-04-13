@@ -55,7 +55,7 @@ Refer to the `README.md` file in the sample folder.
 
 Many samples in this folder can be deployed to both App Engine Node.js standard
 environment and flexible environment. Those samples come with two different
-App Engine configuration files: `app.flexible.yaml` for flexible environment,
+App Engine configuration files: `app.flexible.yaml` for flexible environment Node.js 16 and earlier, `app.flexible_os.yaml` for Node.js 18 and later
 and `app.standard.yaml` for standard environment.
 
 Samples with one single configuration file, `app.yaml`, can only be deployed
@@ -76,9 +76,13 @@ Generally speaking, to deploy a sample application:
 
         gcloud app deploy app.standard.yaml
 
-    To deploy to App Engine Node.js Flexible Environment, run
+    To deploy to App Engine Flexible Environment Node.js 16 and earlier , run
 
         gcloud app deploy app.flexible.yaml
+    
+    For App Engine Flexible Environment Node.js 18 and later, run 
+        
+        gclooud app deploy app.flexible_os.yaml
 
     For samples with one configuration file (`app.yaml`), run
 
@@ -102,5 +106,5 @@ View the [Community-contributed App Engine Node.js samples][community_samples].
 [sdk]: https://cloud.google.com/sdk/
 [console]: https://console.cloud.google.com
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-[official_samples]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/master/appengine
+[official_samples]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/appengine
 [community_samples]: https://cloud.google.com/community/tutorials/?q=%22Node.js%22

@@ -14,25 +14,16 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
+const path = require('path');
 const {execSync} = require('child_process');
 
 const cwd = path.join(__dirname, '..');
 const cmd = 'node auth.js';
 
-const {BUCKET_NAME} = process.env;
-
-before(() => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
-});
+const BUCKET_NAME = 'long-door-651';
+const GOOGLE_CLOUD_PROJECT = 'long-door-651';
+process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 it('should load credentials implicitly', () => {
   const output = execSync(`${cmd} auth-cloud-implicit`, {cwd, shell: true});
@@ -40,7 +31,7 @@ it('should load credentials implicitly', () => {
 });
 
 it('should load credentials explicitly', () => {
-  const project = process.env.GOOGLE_CLOUD_PROJECT;
+  const project = GOOGLE_CLOUD_PROJECT;
   const keyfile = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   console.log(`${cmd} auth-cloud-explicit -p ${project} -k ${keyfile}`);
   const output = execSync(

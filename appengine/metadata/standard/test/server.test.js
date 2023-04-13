@@ -1,5 +1,5 @@
-const supertest = require('supertest');
 const path = require('path');
+const supertest = require('supertest');
 const app = require(path.join(__dirname, '../', 'server.js'));
 
 it('should be listening', async () => {

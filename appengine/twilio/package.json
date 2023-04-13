@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "14.x.x"
+    "node": "16.x.x"
   },
   "scripts": {
     "start": "node app.js",
@@ -14,12 +14,12 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "twilio": "^3.34.0"
+    "twilio": "^4.0.0"
   },
   "devDependencies": {
-    "mocha": "^9.0.0",
+    "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^11.0.0",
+    "sinon": "^15.0.0",
     "supertest": "^6.0.0"
   }
 }

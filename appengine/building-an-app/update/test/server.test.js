@@ -16,8 +16,8 @@
 const path = require('path');
 const assert = require('assert');
 const sinon = require('sinon');
-const supertest = require('supertest');
 const proxyquire = require('proxyquire').noPreserveCache();
+const supertest = require('supertest');
 
 const cwd = path.join(__dirname, '../');
 

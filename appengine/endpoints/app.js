@@ -38,11 +38,10 @@ app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
 if (module === require.main) {
-  const PORT = process.env.PORT || 8080;
+  const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
   });
 }
-
 module.exports = app;

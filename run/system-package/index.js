@@ -13,6 +13,6 @@
 // limitations under the License.
 
 const app = require('./app.js');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 
 app.listen(PORT, () => console.log(`graphviz-web listening on port ${PORT}`));

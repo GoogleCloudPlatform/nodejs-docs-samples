@@ -2,12 +2,12 @@
 # Use of this source code is governed by the Apache 2.0
 # license that can be found in the LICENSE file.
 
-# Use the official lightweight Node.js 10 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:10-slim
+FROM node:18-slim
 
 # Create and change to the app directory.
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy application dependency manifests to the container image.
 # A wildcard is used to ensure both package.json AND package-lock.json are copied.
@@ -18,6 +18,9 @@ COPY package*.json ./
 # If you add a package-lock.json speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
 RUN npm install --production
+
+# Copy any certificates if present.
+COPY ./certs /app/certs
 
 # Copy local code to the container image.
 COPY . ./

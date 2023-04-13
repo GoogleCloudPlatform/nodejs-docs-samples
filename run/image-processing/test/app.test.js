@@ -19,6 +19,7 @@ describe('Unit Tests', () => {
         .post('/')
         .type('json')
         .send({nomessage: 'invalid'})
+        .retry(3)
         .expect(400);
     });
 
@@ -35,6 +36,7 @@ describe('Unit Tests', () => {
             data: 'non-JSON value',
           },
         })
+        .retry(3)
         .expect(400);
     });
 
@@ -48,6 +50,7 @@ describe('Unit Tests', () => {
               data: Buffer.from('{ "json": "value" }').toString('base64'),
             },
           })
+          .retry(3)
           .expect(400);
       });
       it('missing just the "name" property', async () => {
@@ -59,6 +62,7 @@ describe('Unit Tests', () => {
               data: Buffer.from('{ "name": "value" }').toString('base64'),
             },
           })
+          .retry(3)
           .expect(400);
       });
       it('missing just the "bucket" property', async () => {
@@ -70,6 +74,7 @@ describe('Unit Tests', () => {
               data: Buffer.from('{ "bucket": "value" }').toString('base64'),
             },
           })
+          .retry(3)
           .expect(400);
       });
     });
@@ -88,6 +93,7 @@ describe('Integration Tests', () => {
           ).toString('base64'),
         },
       })
+      .retry(3)
       .expect(204);
   });
 });

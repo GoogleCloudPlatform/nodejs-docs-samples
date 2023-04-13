@@ -1,5 +1,4 @@
 const app = require('../app');
-
 const request = require('supertest');
 
 describe('gae_flex_quickstart', () => {

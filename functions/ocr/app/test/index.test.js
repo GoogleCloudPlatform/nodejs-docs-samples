@@ -70,9 +70,7 @@ describe('processImage', () => {
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
-      assert.ok(
-        console.log.calledWith('Extracted text from image:', `${text}\n`)
-      );
+      assert.ok(console.log.calledWith('Extracted text from image:', text));
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );

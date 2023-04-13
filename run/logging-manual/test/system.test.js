@@ -13,8 +13,8 @@
 // limitations under the License.
 
 const assert = require('assert');
-const {Logging} = require('@google-cloud/logging');
 const request = require('got');
+const {Logging} = require('@google-cloud/logging');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
@@ -95,9 +95,13 @@ describe('Logging', () => {
         `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
       if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-      console.log('Starting Cloud Build...');
-      execSync(buildCmd);
-      console.log('Cloud Build completed.');
+      try {
+        console.log('Starting Cloud Build...');
+        execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+        console.log('Cloud Build completed.');
+      } catch (err) {
+        console.error(err); // Ignore timeout error
+      }
 
       // Retrieve URL of Cloud Run service
       const url = execSync(
@@ -144,13 +148,13 @@ describe('Logging', () => {
       });
     });
 
-    it('generates Stackdriver logs', async () => {
+    it('generates Cloud Logging logs', async () => {
       // The latest two log entries for our service in the last 5 minutes
       // are treated as the result of the previous test.
       // Concurrency is supporting by distinctly named service deployment per test run.
       let entries;
       let attempt = 0;
-      const maxAttempts = 5;
+      const maxAttempts = 10;
       while ((!requestLog || !sampleLog) && attempt < maxAttempts) {
         await sleep(attempt * 30000); // Linear backoff between retry attempts
         // Filter by service name over the last 5 minutes

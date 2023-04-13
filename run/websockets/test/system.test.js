@@ -14,7 +14,7 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync, exec} = require('child_process');
+const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
 const auth = new GoogleAuth();
@@ -33,6 +33,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
+  const CONNECTOR = 'my-connector';
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
@@ -44,10 +45,10 @@ describe('End-to-End Tests', () => {
     const buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST},_CONNECTOR=${CONNECTOR}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd);
+    execSync(buildCmd, {stdio: 'inherit'}); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
@@ -81,8 +82,9 @@ describe('End-to-End Tests', () => {
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
-
-    exec(cleanUpCmd);
+    console.log('Starting Cleanup...');
+    execSync(cleanUpCmd);
+    console.log('Cleanup complete.');
   });
 
   it('can be reached by an HTTP request', async () => {
@@ -123,12 +125,23 @@ describe('End-to-End Tests', () => {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     // Confirm message
-    const list = await browserPage.$('#messages li');
-    const itemText = await browserPage.evaluate(el => el.textContent, list);
-    assert.strictEqual(itemText.trim(), 'Sundar: Welcome!');
+    let itemText;
+    for (let i = 0; i < 5; i++) {
+      itemText = await browserPage.evaluate(() => {
+        return document.querySelector('#messages li');
+      });
+      if (itemText) return;
+      await sleep(i * 1000); // Linear delay
+    }
+    assert.ok(itemText);
+    assert.strictEqual(itemText.innerText.trim(), 'Sundar: Welcome!');
     // Confirm room
     const room = await browserPage.$('#chatroom h1');
     const roomText = await browserPage.evaluate(el => el.textContent, room);
     assert.strictEqual(roomText, 'Google');
   });
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 });

@@ -15,9 +15,9 @@
 'use strict';
 
 const assert = require('assert');
-const admin = require('firebase-admin');
 const got = require('got');
-const {execSync} = require('child_process');
+const admin = require('firebase-admin');
+const {spawnSync, execSync} = require('child_process');
 
 admin.initializeApp();
 
@@ -63,16 +63,23 @@ describe('System Tests', () => {
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd);
+    execSync(buildCmd, {timeout: 240000, shell: true}); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
-    const url = execSync(
+    const results = spawnSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`,
+      {shell: true}
     );
-    BASE_URL = url.toString('utf-8');
-    if (!BASE_URL) throw Error('Cloud Run service URL not found');
+
+    const stdout = results.stdout && results.stdout.toString('utf-8').trim();
+    const stderr = results.stderr && results.stderr.toString('utf-8').trim();
+
+    BASE_URL = stdout.trim();
+    if (!BASE_URL) {
+      throw Error('Cloud Run service URL not found: ' + stderr);
+    }
 
     // Retrieve ID token for testing
     const customToken = await admin.auth().createCustomToken('a-user-id');
@@ -80,12 +87,18 @@ describe('System Tests', () => {
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
       {
         method: 'POST',
+        retry: {
+          limit: 5,
+          statusCodes: [404, 401, 403, 500],
+          methods: ['POST'],
+        },
         body: JSON.stringify({
           token: customToken,
           returnSecureToken: true,
         }),
       }
     );
+
     const tokens = JSON.parse(response.body);
     ID_TOKEN = tokens.idToken;
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
@@ -98,7 +111,7 @@ describe('System Tests', () => {
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    execSync(cleanUpCmd);
+    execSync(cleanUpCmd, {shell: true});
   });
 
   it('Can successfully make a request', async () => {
@@ -115,6 +128,8 @@ describe('System Tests', () => {
   });
 
   it('Can make a POST request with token', async () => {
+    assert(ID_TOKEN && ID_TOKEN.length > 0);
+
     const options = {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
@@ -128,7 +143,14 @@ describe('System Tests', () => {
         methods: ['GET', 'POST'],
       },
     };
-    const response = await got('', options);
+
+    let response = {};
+    try {
+      response = await got('', options);
+    } catch (err) {
+      assert.fail('POST request with token failed with error: ', err);
+    }
+
     assert.strictEqual(response.statusCode, 200);
   });
 

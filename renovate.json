@@ -2,6 +2,12 @@
   "extends": [
     "config:base"
   ],
+  "dependencyDashboardAutoclose": true,  
   "pinVersions": false,
-  "rebaseStalePrs": true
+  "rebaseStalePrs": false,
+  "force": {
+    "constraints": {
+      "node": "< 15.0.0"
+    }
+  }
 }

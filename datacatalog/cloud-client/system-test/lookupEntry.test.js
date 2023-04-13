@@ -19,17 +19,6 @@ const assert = require('assert');
 const cwd = path.join(__dirname, '..');
 const {exec} = require('child_process');
 
-before(() => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  assert(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    'Must set GOOGLE_APPLICATION_CREDENTIALS environment variable!'
-  );
-});
-
 describe('lookupEntry lookup', () => {
   it('should lookup a dataset entry', done => {
     const projectId = 'bigquery-public-data';

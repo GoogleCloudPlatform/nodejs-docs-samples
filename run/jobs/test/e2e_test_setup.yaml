@@ -1,0 +1,36 @@
+steps:
+
+- id: 'Build Container Image'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+    - '-c'
+    - |
+      ./test/retry.sh "gcloud builds submit \
+        --pack image=gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
+
+- id: 'Deploy to Cloud Run'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    gcloud components install beta --quiet
+    
+    gcloud beta run jobs create ${_SERVICE} \
+      --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      --project ${PROJECT_ID} \
+      --region ${_REGION} \
+      --tasks 2 \
+      --set-env-vars=SLEEP_MS=100 \
+      --max-retries 0
+
+    ./test/retry.sh "gcloud beta run jobs execute ${_SERVICE} \
+      --project ${PROJECT_ID} \
+      --region ${_REGION} \
+      --wait"
+
+substitutions:
+  _SERVICE: logger-job
+  _VERSION: manual
+  _REGION: us-west1

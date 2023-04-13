@@ -7,16 +7,17 @@
   "author": "Google LLC",
   "repository": "GoogleCloudPlatform/nodejs-docs-samples",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12.0.0"
   },
   "scripts": {
     "test": "mocha system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "mocha": "^9.0.0",
-    "uuid": "^8.0.0"
+    "mocha": "^10.0.0",
+    "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@google-cloud/datacatalog": "^2.0.0"
+    "@google-cloud/datacatalog": "^3.0.0"
   }
 }
+

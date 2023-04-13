@@ -15,9 +15,9 @@
 # [START cloudrun_broken_dockerfile]
 # [START run_broken_dockerfile]
 
-# Use the official lightweight Node.js 10 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:12-slim
+FROM node:18-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app

@@ -63,7 +63,7 @@ app.post('/', formBodyParser, async (req, res, next) => {
 
   const data = Buffer.from(req.body.payload);
   try {
-    const messageId = await topic.publish(data);
+    const messageId = await topic.publishMessage({data});
     res.status(200).send(`Message ${messageId} sent.`);
   } catch (error) {
     next(error);
@@ -142,7 +142,7 @@ app.post('/pubsub/authenticated-push', jsonBodyParser, async (req, res) => {
 // [END gae_flex_pubsub_auth_push]
 
 // Start the server
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');

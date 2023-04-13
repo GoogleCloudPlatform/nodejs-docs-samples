@@ -30,9 +30,13 @@ Before you can run or deploy the sample, you need to do the following:
 
 	gcloud app deploy app.standard.yaml
 
-## Deploying to App Engine flexible environment
+## Deploying to App Engine flexible environment for Node.js 16 and earlier
 
 	gcloud app deploy app.flexible.yaml
+
+## Deploying to App Engine flexible environment for Node.js 18 and later
+
+	gcloud app deploy app.flexible_os.yaml
 
 ## Running the tests
 
@@ -43,4 +47,4 @@ See [Contributing][contributing].
 [tutorial-std]: https://cloud.google.com/appengine/docs/standard/nodejs/using-cloud-datastore
 [tutorial-flex]: https://cloud.google.com/appengine/docs/flexible/nodejs/using-cloud-datastore
 [readme]: ../README.md
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md

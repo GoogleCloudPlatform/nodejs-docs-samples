@@ -16,14 +16,14 @@
 
 const assert = require('assert');
 const path = require('path');
-const app = require(path.join(path.dirname(__dirname), 'app.js'));
 const puppeteer = require('puppeteer');
+const app = require(path.join(path.dirname(__dirname), 'app.js'));
 /* global document */
 
 let browser, browserPage;
 
 before(async () => {
-  const PORT = process.env.PORT || 8080;
+  const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {});
 
   browser = await puppeteer.launch({

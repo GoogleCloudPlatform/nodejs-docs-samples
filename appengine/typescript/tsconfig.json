@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs"
-  },
-  "include": [
-    "*.ts"
-  ]
+    "module": "CommonJS",
+    "target": "ESNext",
+    "strict": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
 }

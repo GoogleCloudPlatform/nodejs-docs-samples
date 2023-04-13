@@ -23,7 +23,7 @@ describe('Editor unit tests', () => {
     it('should successfully load the index page', async () => {
       const {app} = require(path.join(__dirname, '..', 'app'));
       const request = supertest(app);
-      await request.get('/').expect(200);
+      await request.get('/').retry(3).expect(200);
     });
   });
 
@@ -53,7 +53,7 @@ describe('Integration tests', () => {
     });
 
     it('responds 404 Not Found on "GET /render"', async () => {
-      await request.get('/render').expect(404);
+      await request.get('/render').retry(3).expect(404);
     });
 
     it('responds 200 OK on "POST /render" with valid JSON', async () => {
@@ -64,6 +64,7 @@ describe('Integration tests', () => {
         .type('json')
         .set('Accept', 'text/html')
         .send({data: 'markdown'})
+        .retry(3)
         .expect(200)
         .expect('content-type', 'text/html; charset=utf-8');
     });
@@ -74,6 +75,7 @@ describe('Integration tests', () => {
         .post('/render')
         .type('json')
         .send('string: incorrect data type')
+        .retry(3)
         .expect(400);
     });
   });

@@ -34,10 +34,16 @@ Before you can run or deploy the sample, you need to do the following:
 gcloud app deploy app.standard.yaml
 ```
 
-## Deploying to App Engine flexible Environment
+## Deploying to App Engine flexible Environment for Node.js 16 and earlier
 
 ```
 gcloud app deploy app.flexible.yaml
+```
+
+## Deploying to App Engine flexible Environment for Node.js 18 and later
+
+```
+gcloud app deploy app.flexible_os.yaml
 ```
 
 
@@ -51,4 +57,4 @@ See [Contributing][contributing].
 [std-tutorial]: https://cloud.google.com/appengine/docs/standard/nodejs/integrating-with-analytics
 [readme]: ../README.md
 [tracking]: https://support.google.com/analytics/answer/1042508
-[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/CONTRIBUTING.md
+[contributing]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md

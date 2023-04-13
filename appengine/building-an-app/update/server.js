@@ -22,7 +22,7 @@ const app = express();
 
 // [START enable_parser]
 // This middleware is available in Express v4.16.0 onwards
-app.use(express.json({extended: true}));
+app.use(express.urlencoded({extended: true}));
 // [END enable_parser]
 
 app.get('/', (req, res) => {
@@ -46,7 +46,7 @@ app.post('/submit', (req, res) => {
 // [END add_post_handler]
 
 // Listen to the App Engine-specified port, or 8080 otherwise
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });

@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-docs-samples-functions-http-hello-content",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "mocha test/*.test.js --timeout=60000"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "sinon": "^15.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.1.2",
+    "escape-html": "^1.0.3"
+  }
+}

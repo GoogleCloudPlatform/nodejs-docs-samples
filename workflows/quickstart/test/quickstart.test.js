@@ -12,37 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// This is a generated sample, using the typeless sample bot. Please
+// look for the source TypeScript sample (.ts) for modifications.
 'use strict';
 
-const quickstart = require('../index');
-const assert = require('assert');
-
 const {WorkflowsClient} = require('@google-cloud/workflows');
+const assert = require('assert');
+const cp = require('child_process');
+const {before, beforeEach, describe, it} = require('mocha');
+
 const client = new WorkflowsClient();
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
 
 describe('Cloud Workflows Quickstart Tests', () => {
-  beforeEach(async () => {
-    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
-
+  before(async () => {
     // Ensure project is configured
     assert.notStrictEqual(
       PROJECT_ID,
       undefined,
       'GOOGLE_CLOUD_PROJECT must be set'
     );
+  });
 
+  beforeEach(async () => {
     /**
      * Check if the workflow exists
      */
-    async function worklowExists() {
+    async function workflowExists() {
       try {
         // Try to get the workflow
         const [workflowGet] = await client.getWorkflow({
-          name: client.workflowPath(projectId, LOCATION_ID, WORKFLOW_ID),
+          name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
         });
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
@@ -52,9 +56,9 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
 
     // Create a new workflow if it doesn't exist.
-    if (!(await worklowExists())) {
+    if (!(await workflowExists())) {
       await client.createWorkflow({
-        parent: client.locationPath(projectId, LOCATION_ID),
+        parent: client.locationPath(PROJECT_ID, LOCATION_ID),
         workflow: {
           name: WORKFLOW_ID,
           // Copied from:
@@ -69,7 +73,10 @@ describe('Cloud Workflows Quickstart Tests', () => {
 
   it('should execute the quickstart', async () => {
     // Execute workflow, with long test timeout
-    const result = await quickstart(PROJECT_ID, LOCATION_ID, WORKFLOW_ID);
+    const result = execSync(
+      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+    );
+
     assert.strictEqual(
       result.length > 0,
       true,

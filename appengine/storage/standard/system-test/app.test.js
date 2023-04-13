@@ -1,9 +1,10 @@
-// Copyright 2017, Google, Inc.
+// Copyright 2017 Google, Inc
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,27 +17,36 @@
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
-const assert = require('assert');
 const supertest = require('supertest');
+const assert = require('assert');
 const proxyquire = require('proxyquire').noPreserveCache();
+const uuid = require('uuid');
 
-const bucketName = process.env.GCLOUD_STORAGE_BUCKET;
+const bucketName =
+  `nodejs-docs-samples-test-appengine-storage-std-${uuid.v4()}`.slice(0, 63);
+process.env.GCLOUD_STORAGE_BUCKET = bucketName;
 const bucket = storage.bucket(bucketName);
 
 const cwd = path.join(__dirname, '../');
 const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
 before(async () => {
-  assert(
-    process.env.GOOGLE_CLOUD_PROJECT,
-    'Must set GOOGLE_CLOUD_PROJECT environment variable!'
-  );
-  await bucket.create(bucket).then(() => {
-    return bucket.acl.add({
-      entity: 'allUsers',
-      role: Storage.acl.READER_ROLE,
+  try {
+    await bucket.create(bucket).then(() => {
+      return bucket.acl.add({
+        entity: 'allUsers',
+        role: Storage.acl.READER_ROLE,
+      });
     });
-  });
+  } catch (err) {
+    if (
+      !err.message.match(
+        /Your previous request to create the named bucket succeeded and you already own it./
+      )
+    ) {
+      throw err;
+    }
+  }
 });
 after(async () => {
   try {

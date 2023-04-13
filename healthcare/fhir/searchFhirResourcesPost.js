@@ -22,29 +22,30 @@ const main = (
   resourceType
 ) => {
   // [START healthcare_search_resources_post]
-  const google = require('@googleapis/healthcare');
-  const healthcare = google.healthcare({
-    version: 'v1',
-    auth: new google.auth.GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    }),
-    method: 'POST',
-  });
+  // Import google-auth-library for authentication.
+  const {GoogleAuth} = require('google-auth-library');
 
   const searchFhirResourcesPost = async () => {
+    const auth = new GoogleAuth({
+      scopes: 'https://www.googleapis.com/auth/cloud-platform',
+      // Set application/fhir+json header because this is a POST request.
+      headers: {'Content-Type': 'application/fhir+json'},
+    });
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
     // const projectId = 'adjective-noun-123';
     // const datasetId = 'my-dataset';
     // const fhirStoreId = 'my-fhir-store';
     // const resourceType = 'Patient';
-    const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir`;
-    const request = {parent, resourceType};
+    const url = `https://healthcare.googleapis.com/v1/projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/_search`;
 
-    const response =
-      await healthcare.projects.locations.datasets.fhirStores.fhir.search(
-        request
-      );
+    const params = {};
+    // Specify search filters in a params object. For example, to filter on a
+    // Patient with the last name "Smith", set resourceType to "Patient" and
+    // specify the following params:
+    // params = {'family:exact' : 'Smith'};
+    const client = await auth.getClient();
+    const response = await client.request({url, method: 'POST', params});
     const resources = response.data.entry;
     console.log(`Resources found: ${resources.length}`);
     console.log(JSON.stringify(resources, null, 2));

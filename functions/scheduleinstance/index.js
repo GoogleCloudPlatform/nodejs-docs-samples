@@ -14,8 +14,19 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const Compute = require('@google-cloud/compute');
-const compute = new Compute();
+const compute = require('@google-cloud/compute');
+const instancesClient = new compute.InstancesClient();
+const operationsClient = new compute.ZoneOperationsClient();
+
+async function waitForOperation(projectId, operation) {
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+      zone: operation.zone.split('/').pop(),
+    });
+  }
+}
 // [END functions_stop_instance_pubsub]
 
 /**
@@ -32,20 +43,25 @@ const compute = new Compute();
  */
 exports.startInstancePubSub = async (event, context, callback) => {
   try {
+    const project = await instancesClient.getProjectId();
     const payload = _validatePayload(event);
-    const options = {filter: `labels.${payload.label}`};
-    const [vms] = await compute.getVMs(options);
-    await Promise.all(
-      vms.map(async instance => {
-        if (payload.zone === instance.zone.id) {
-          const [operation] = await compute
-            .zone(payload.zone)
-            .vm(instance.name)
-            .start();
+    const options = {
+      filter: `labels.${payload.label}`,
+      project,
+      zone: payload.zone,
+    };
 
-          // Operation pending
-          return operation.promise();
-        }
+    const [instances] = await instancesClient.list(options);
+
+    await Promise.all(
+      instances.map(async instance => {
+        const [response] = await instancesClient.start({
+          project,
+          zone: payload.zone,
+          instance: instance.name,
+        });
+
+        return waitForOperation(project, response.latestResponse);
       })
     );
 
@@ -74,22 +90,25 @@ exports.startInstancePubSub = async (event, context, callback) => {
  */
 exports.stopInstancePubSub = async (event, context, callback) => {
   try {
+    const project = await instancesClient.getProjectId();
     const payload = _validatePayload(event);
-    const options = {filter: `labels.${payload.label}`};
-    const [vms] = await compute.getVMs(options);
-    await Promise.all(
-      vms.map(async instance => {
-        if (payload.zone === instance.zone.id) {
-          const [operation] = await compute
-            .zone(payload.zone)
-            .vm(instance.name)
-            .stop();
+    const options = {
+      filter: `labels.${payload.label}`,
+      project,
+      zone: payload.zone,
+    };
 
-          // Operation pending
-          return operation.promise();
-        } else {
-          return Promise.resolve();
-        }
+    const [instances] = await instancesClient.list(options);
+
+    await Promise.all(
+      instances.map(async instance => {
+        const [response] = await instancesClient.stop({
+          project,
+          zone: payload.zone,
+          instance: instance.name,
+        });
+
+        return waitForOperation(project, response.latestResponse);
       })
     );
 

@@ -5,7 +5,7 @@
 // [START cloudrun_pubsub_server]
 // [START run_pubsub_server]
 const app = require('./app.js');
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(parseInt(process.env.PORT)) || 8080;
 
 app.listen(PORT, () =>
   console.log(`nodejs-pubsub-tutorial listening on port ${PORT}`)

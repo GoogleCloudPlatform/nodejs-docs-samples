@@ -18,16 +18,16 @@ const path = require('path');
 const request = require('supertest');
 const assert = require('assert');
 
-const SAMPLE_PATH = path.join(__dirname, '../server.js');
+const SAMPLE_PATH = path.join(__dirname, '../server/server.js');
 
-const _db_host_backup = process.env.DB_HOST;
-delete process.env.DB_HOST;
+const _instance_host_backup = process.env.INSTANCE_HOST;
+delete process.env.INSTANCE_HOST;
 
 const serverUnix = require(SAMPLE_PATH);
 
 after(() => {
   serverUnix.close();
-  process.env.DB_HOST = _db_host_backup;
+  process.env.INSTANCE_HOST = _instance_host_backup;
 });
 
 it('should display the default via unix socket', async () => {

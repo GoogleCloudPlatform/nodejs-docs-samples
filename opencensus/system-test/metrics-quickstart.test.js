@@ -14,8 +14,8 @@
 
 'use strict';
 
-const assert = require('assert');
 const childProcess = require('child_process');
+const assert = require('assert');
 
 it('Should throw an error without projectId', async () => {
   process.env.GOOGLE_PROJECT_ID = '';

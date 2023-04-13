@@ -15,12 +15,12 @@
 'use strict';
 
 const assert = require('assert');
+const execPromise = require('child-process-promise').exec;
 const path = require('path');
 const uuid = require('uuid');
 const sinon = require('sinon');
 const fetch = require('node-fetch');
-const isReachable = require('is-reachable');
-const execPromise = require('child-process-promise').exec;
+const waitPort = require('wait-port');
 const {Datastore} = require('@google-cloud/datastore');
 
 const datastore = new Datastore();
@@ -49,15 +49,6 @@ const handleLinuxFailures = async proc => {
   }
 };
 
-// Wait for the HTTP server to start listening
-const waitForReady = async baseUrl => {
-  let ready = false;
-  while (!ready) {
-    await new Promise(r => setTimeout(r, 500));
-    ready = await isReachable(baseUrl);
-  }
-};
-
 describe('functions/datastore', () => {
   describe('set', () => {
     let ffProc;
@@ -69,7 +60,7 @@ describe('functions/datastore', () => {
         `functions-framework --target=set --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
-      await waitForReady(BASE_URL);
+      await waitPort({port: PORT});
     });
 
     after(async () => {
@@ -150,7 +141,7 @@ describe('functions/datastore', () => {
         `functions-framework --target=get --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
-      await waitForReady(BASE_URL);
+      await waitPort({port: PORT});
     });
 
     after(async () => {
@@ -236,7 +227,7 @@ describe('functions/datastore', () => {
         `functions-framework --target=del --signature-type=http --port=${PORT}`,
         {timeout: FF_TIMEOUT, shell: true, cwd}
       );
-      await waitForReady(BASE_URL);
+      await waitPort({port: PORT});
     });
 
     after(async () => {

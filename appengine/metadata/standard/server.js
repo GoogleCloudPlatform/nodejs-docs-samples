@@ -23,20 +23,26 @@ app.enable('trust proxy');
 const METADATA_PROJECT_ID_URL =
   'http://metadata.google.internal/computeMetadata/v1/project/project-id';
 
-const getProjectId = () => {
+const getProjectId = async () => {
   const options = {
     headers: {
       'Metadata-Flavor': 'Google',
     },
   };
 
-  return fetch(METADATA_PROJECT_ID_URL, options);
+  try {
+    const response = await fetch(METADATA_PROJECT_ID_URL, options);
+    const projectId = await response.text();
+    return projectId;
+  } catch (err) {
+    console.log('Error while talking to metadata server, assuming localhost');
+    return 'localhost';
+  }
 };
 
 app.get('/', async (req, res, next) => {
   try {
-    const response = await getProjectId();
-    const projectId = await response.text();
+    const projectId = await getProjectId();
     res.status(200).send(`Project ID: ${projectId}`).end();
   } catch (error) {
     if (error && error.statusCode && error.statusCode !== 200) {
@@ -46,7 +52,7 @@ app.get('/', async (req, res, next) => {
   }
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');

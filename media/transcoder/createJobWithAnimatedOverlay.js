@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Google, Inc.
+ * Copyright 2021 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,7 +23,7 @@ function main(projectId, location, inputUri, overlayImageUri, outputUri) {
   // projectId = 'my-project-id';
   // location = 'us-central1';
   // inputUri = 'gs://my-bucket/my-video-file';
-  // overlayImageUri = 'gs://my-bucket/my-overlay-image-file'; // Must be a JPEG
+  // overlayImageUri = 'gs://my-bucket/my-overlay-image-file';
   // outputUri = 'gs://my-bucket/my-output-folder/';
 
   // Imports the Transcoder library

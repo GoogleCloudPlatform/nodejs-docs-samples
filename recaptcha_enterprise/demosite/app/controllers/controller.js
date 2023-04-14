@@ -54,11 +54,6 @@ const comment = (req, res) => {
   res.render('comment', context);
 };
 
-// Return game template.
-const game = (req, res) => {
-  res.render('game', context);
-};
-
 const {createAssessment} = require('../recaptcha/createAssessment');
 // On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onHomepageLoad = async (req, res) => {
@@ -307,7 +302,6 @@ module.exports = {
   login,
   store,
   comment,
-  game,
   onHomepageLoad,
   onSignup,
   onLogin,

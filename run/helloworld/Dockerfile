@@ -15,7 +15,7 @@
 # [START cloudrun_helloworld_dockerfile]
 # [START run_helloworld_dockerfile]
 
-# Use the official lightweight Node.js 14 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
 FROM node:18-slim
 

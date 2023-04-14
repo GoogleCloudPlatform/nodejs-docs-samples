@@ -26,4 +26,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: ./.github/workflows/region-tags-tests.sh
+      - run: ./.github/workflows/utils/region-tags-tests.sh

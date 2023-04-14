@@ -106,4 +106,40 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_simple_word_list
+  it('should deidentify using the word list provided', () => {
+    const textToInspect =
+      'Patient was seen in RM-YELLOW then transferred to rm green.';
+    const wordsStr = 'RM-GREEN,RM-YELLOW,RM-ORANGE';
+    const customInfoTypeName = 'CUSTOM_ROOM_ID';
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithSimpleWordList.js ${projectId} "${textToInspect}" "${wordsStr}" "${customInfoTypeName}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(
+      output,
+      'Patient was seen in [CUSTOM_ROOM_ID] then transferred to [CUSTOM_ROOM_ID].'
+    );
+  });
+
+  it('should handle deidentification errors', () => {
+    const textToInspect =
+      'Patient was seen in RM-YELLOW then transferred to rm green.';
+    const wordsStr = 'RM-GREEN,RM-YELLOW,RM-ORANGE';
+    const customInfoTypeName = 'CUSTOM_ROOM_ID';
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithSimpleWordList.js 'BAD_PROJECT_ID' "${textToInspect}" "${wordsStr}" "${customInfoTypeName}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

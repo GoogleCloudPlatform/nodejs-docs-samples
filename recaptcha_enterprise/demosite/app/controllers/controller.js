@@ -67,7 +67,7 @@ const onHomepageLoad = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.recaptcha_cred.token
+      req.body.token
     );
 
     const verdict = function () {
@@ -114,7 +114,7 @@ const onSignup = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.recaptcha_cred.token
+      req.body.token
     );
 
     const verdict = function () {
@@ -126,8 +126,8 @@ const onSignup = async (req, res) => {
           PROPERTIES.get('recaptcha_action.signup')
       ) {
         // Write new username and password to users database.
-        // let username = req.body.recaptcha_cred.username
-        // let password = req.body.recaptcha_cred.password
+        // let username = req.body.username
+        // let password = req.body.password
         // Business logic.
         // Classify the action as not bad.
         return NOT_BAD;
@@ -163,7 +163,7 @@ const onLogin = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.recaptcha_cred.token
+      req.body.token
     );
 
     const verdict = function () {
@@ -175,8 +175,8 @@ const onLogin = async (req, res) => {
           PROPERTIES.get('recaptcha_action.login')
       ) {
         // Check if the login credentials exist and match.
-        // let username = req.body.recaptcha_cred.username
-        // let password = req.body.recaptcha_cred.password
+        // let username = req.body.username
+        // let password = req.body.password
         // Business logic.
         // Classify the action as not bad.
         return NOT_BAD;
@@ -212,7 +212,7 @@ const onStoreCheckout = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.recaptcha_cred.token
+      req.body.token
     );
 
     const verdict = function () {
@@ -224,7 +224,7 @@ const onStoreCheckout = async (req, res) => {
           PROPERTIES.get('recaptcha_action.store')
       ) {
         // Check if the cart contains items and proceed to checkout and payment.
-        // let items = req.body.recaptcha_cred.items
+        // let items = req.body.items
         // Business logic.
         // Classify the action as not bad.
         return NOT_BAD;
@@ -260,7 +260,7 @@ const onCommentSubmit = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.recaptcha_cred.token
+      req.body.token
     );
 
     const verdict = function () {
@@ -272,7 +272,7 @@ const onCommentSubmit = async (req, res) => {
           PROPERTIES.get('recaptcha_action.comment')
       ) {
         // Check if comment has safe language and proceed to store in database.
-        // let comment = req.body.recaptcha_cred.comment
+        // let comment = req.body.comment
         // Business logic.
         // Classify the action as not bad.
         return NOT_BAD;

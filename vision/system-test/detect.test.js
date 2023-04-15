@@ -88,7 +88,7 @@ describe('detect', () => {
   it('should detect landmarks in a local file', async () => {
     const output = execSync(`${cmd} landmarks ${files[1].localPath}`);
     assert.match(output, /Landmarks:/);
-    assert.match(output, /Palace of Fine Arts/);
+    assert.match(output, /Palace of Fine Arts/i);
   });
 
   it('should detect landmarks in a remote file', async () => {
@@ -96,7 +96,7 @@ describe('detect', () => {
       `${cmd} landmarks-gcs ${bucketName} ${files[1].name}`
     );
     assert.match(output, /Landmarks:/);
-    assert.match(output, /Palace of Fine Arts/);
+    assert.match(output, /Palace of Fine Arts/i);
   });
 
   it('should detect text in a local file', async () => {

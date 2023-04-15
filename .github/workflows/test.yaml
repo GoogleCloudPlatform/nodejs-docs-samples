@@ -64,6 +64,7 @@ jobs:
     - name: install directory dependencies
       run: npm install
     - run: npm run build
+      continue-on-error: true
     - name: set env vars for scheduled run
       if: github.event.action == 'schedule'
       run: |

@@ -145,8 +145,10 @@ describe('Client with SourcesAndFindings', async () => {
   });
 
   it('client can list all findings', () => {
-    const output = exec(`node v1/listAllFindings.js ${data.orgId}`,
-      {maxBuffer: 16 * 1024 * 1024});
+    // Increased default buffer size to avoid ENOBUFS error
+    const output = exec(`node v1/listAllFindings.js ${data.orgId}`, {
+      maxBuffer: 256 * 1024 * 1024,
+    });
     assert.match(output, new RegExp(data.findingName));
     assert.match(output, new RegExp(data.untouchedFindingName));
     assert.notMatch(output, /undefined/);

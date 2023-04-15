@@ -17,6 +17,7 @@
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const entities = [
   {
@@ -35,7 +36,7 @@ const query = {
   sql: 'SELECT * FROM Albums',
 };
 
-const getSample = () => {
+const getEnvironment = () => {
   const resultsMock = entities.map(row => {
     return {toJSON: sinon.stub().returns(row)};
   });
@@ -72,10 +73,11 @@ const getSample = () => {
 
 describe('spanner_functions_quickstart', () => {
   it('get: Gets albums', async () => {
-    const sample = getSample();
+    const sample = getEnvironment();
     const {mocks} = sample;
+    const spannerQuickstart = getFunction('spannerQuickstart');
 
-    await sample.program.get(mocks.req, mocks.res);
+    await spannerQuickstart(mocks.req, mocks.res);
     assert.strictEqual(mocks.spanner.instance.called, true);
     assert.strictEqual(mocks.instance.database.called, true);
     assert.strictEqual(mocks.database.run.calledWith(query), true);

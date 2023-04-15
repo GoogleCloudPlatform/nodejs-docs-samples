@@ -14,7 +14,7 @@
 
 # [START eventarc_generic_dockerfile]
 
-# Use the official lightweight Node.js 10 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
 FROM node:18-slim
 

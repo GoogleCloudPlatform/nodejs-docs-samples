@@ -5,7 +5,7 @@
 # [START cloudrun_pubsub_dockerfile]
 # [START run_pubsub_dockerfile]
 
-# Use the official lightweight Node.js 12 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
 FROM node:18-slim
 

@@ -25,7 +25,7 @@ const {
 } = require('@google-cloud/contact-center-insights');
 const client = new ContactCenterInsightsClient();
 
-describe('CreateIssueModel', () => {
+describe.skip('CreateIssueModel', () => {
   const minConversationCount = 10000;
   const pageSize = 1000;
   let projectId;

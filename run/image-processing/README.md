@@ -18,7 +18,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 Cloud Run services can be [configured with Environment Variables](https://cloud.google.com/run/docs/configuring/environment-variables).
 Required variables for this sample include:
 
-* `INPUT_BUCKET_NAME`: The Cloud Run service will be notified of images uploaded to this Cloud Storage bucket. The service will then retreive and process the image.
+* `INPUT_BUCKET_NAME`: The Cloud Run service will be notified of images uploaded to this Cloud Storage bucket. The service will then retrieve and process the image.
 * `BLURRED_BUCKET_NAME`: The Cloud Run service will write blurred images to this Cloud Storage bucket.
 
 ## Maintenance Note

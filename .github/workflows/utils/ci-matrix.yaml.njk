@@ -34,14 +34,23 @@ on:
 jobs:
   test:
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+    strategy:
+      matrix:
+        path:
+          # TODO: Replace these examples below 
+          - 'example/subfolder/1'
+          - 'example/subfolder/2'
     uses: ./.github/workflows/test.yaml
     with:
       name: '{{name}}'
-      path: '{{path}}'
+      path: '${% raw %}{{ matrix.path }}{% endraw %}'
   remove_label:
-    if: github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' && always()
+    if: |
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'actions:force-run' &&
+      always()
     uses: ./.github/workflows/remove-label.yaml
   flakybot:
-    if: github.event_name == 'schedule' && always()
+    if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
     uses: ./.github/workflows/flakybot.yaml
     needs: [test]

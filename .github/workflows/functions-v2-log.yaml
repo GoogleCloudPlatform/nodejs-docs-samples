@@ -12,23 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: opencensus
+name: functions-v2-log
 on:
   push:
     branches:
     - main
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'functions/v2/log/**'
+    - '.github/workflows/functions-v2-log.yaml'
   pull_request:
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'functions/v2/log/**'
+    - '.github/workflows/functions-v2-log.yaml'
   pull_request_target:
     types: [labeled]
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'functions/v2/log/**'
+    - '.github/workflows/functions-v2-log.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -36,8 +36,8 @@ jobs:
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     uses: ./.github/workflows/test.yaml
     with:
-      name: 'opencensus'
-      path: 'opencensus'
+      name: 'functions-v2-log'
+      path: 'functions/v2/log'
   remove_label:
     if: |
       github.event.action == 'labeled' &&

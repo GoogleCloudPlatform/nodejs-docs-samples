@@ -12,23 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: opencensus
+name: eventarc-generic
 on:
   push:
     branches:
     - main
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'eventarc/generic/**'
+    - '.github/workflows/eventarc-generic.yaml'
   pull_request:
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'eventarc/generic/**'
+    - '.github/workflows/eventarc-generic.yaml'
   pull_request_target:
     types: [labeled]
     paths:
-    - 'opencensus/**'
-    - '.github/workflows/opencensus.yaml'
+    - 'eventarc/generic/**'
+    - '.github/workflows/eventarc-generic.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -36,8 +36,8 @@ jobs:
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     uses: ./.github/workflows/test.yaml
     with:
-      name: 'opencensus'
-      path: 'opencensus'
+      name: 'eventarc-generic'
+      path: 'eventarc/generic'
   remove_label:
     if: |
       github.event.action == 'labeled' &&

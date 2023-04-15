@@ -23,6 +23,7 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 
 describe('Client with SourcesAndFindings', async () => {
+  assert.isNotNull(organizationId);
   let data;
   before(async () => {
     // Creates a new client.

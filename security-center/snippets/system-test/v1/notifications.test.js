@@ -26,6 +26,7 @@ const orgName = 'organizations/' + organizationId;
 const pubsubTopic = 'projects/project-a-id/topics/notifications-sample-topic';
 
 describe('Client with Notifications', async () => {
+  assert.isNotNull(organizationId);
   const createConfig = 'notif-config-test-node-create' + uuidv1();
   const deleteConfig = 'notif-config-test-node-delete' + uuidv1();
   const getConfig = 'notif-config-test-node-get' + uuidv1();

@@ -22,6 +22,8 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 
 describe('client with organization settings', () => {
+  assert.isNotNull(organizationId);
+
   it('client can enable asset discovery', () => {
     const output = exec(`node v1/enableAssetDiscovery.js ${organizationId}`);
     assert.match(output, new RegExp(organizationId));

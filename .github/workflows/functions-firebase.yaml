@@ -37,12 +37,12 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'helloAnalytics'
-          - 'helloAuth'
-          - 'helloFirestore'
-          - 'helloRemoteConfig'
-          - 'helloRTDB'
-          - 'helloUpperCase'
+          - 'functions/firebase/helloAnalytics'
+          - 'functions/firebase/helloAuth'
+          - 'functions/firebase/helloFirestore'
+          - 'functions/firebase/helloRemoteConfig'
+          - 'functions/firebase/helloRTDB'
+          - 'functions/firebase/helloUpperCase'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-firebase'

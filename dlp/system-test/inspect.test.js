@@ -309,4 +309,38 @@ describe('inspect', () => {
     assert.notMatch(outputB, /EMAIL_ADDRESS/);
     assert.match(outputB, /PHONE_NUMBER/);
   });
+
+  // dlp_inspect_custom_regex
+  it('should inspect a string using custom regex', () => {
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{1}-[1-9]{5}';
+    const output = execSync(
+      `node inspectWithCustomRegex.js ${projectId} "${string}" "${custRegex}"`
+    );
+    assert.match(output, /InfoType: C_MRN/);
+    assert.match(output, /Likelihood: POSSIBLE/);
+  });
+
+  it('should handle string with no match', () => {
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
+    const output = execSync(
+      `node inspectWithCustomRegex.js ${projectId} "${string}" "${custRegex}"`
+    );
+    assert.include(output, 'No findings');
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
+    try {
+      output = execSync(
+        `node inspectWithCustomRegex.js BAD_PROJECT_ID "${string}" "${custRegex}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

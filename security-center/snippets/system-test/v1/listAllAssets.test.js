@@ -22,7 +22,6 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organization_id = process.env['GCLOUD_ORGANIZATION'];
 
 describe('listAllAssets', () => {
-  assert.isNotNull(organization_id);
   it('should print all assets in org', () => {
     const output = exec(`node v1/listAllAssets.js ${organization_id}`);
     assert.isAtLeast(output.match(/\n/g).length + 1, 62);

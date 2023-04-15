@@ -42,7 +42,7 @@ jobs:
           - 'functions/firebase/helloFirestore'
           - 'functions/firebase/helloRemoteConfig'
           - 'functions/firebase/helloRTDB'
-          - 'functions/firebase/helloUpperCase'
+          - 'functions/firebase/makeUpperCase'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-firebase'

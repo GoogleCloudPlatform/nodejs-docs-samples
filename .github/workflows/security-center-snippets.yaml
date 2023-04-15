@@ -34,10 +34,62 @@ on:
 jobs:
   test:
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
-    uses: ./.github/workflows/test.yaml
-    with:
-      name: 'security-center-snippets'
-      path: 'security-center/snippets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: 'write'
+      pull-requests: 'write'
+      id-token: 'write'
+    defaults:
+      run:
+        working-directory: 'security-center/snippets'
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        ref: ${{github.event.pull_request.head.sha}}
+    - uses: 'google-github-actions/auth@v1.0.0'
+      with:
+        workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+        create_credentials_file: 'true'
+        access_token_lifetime: 600s
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 16
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}        
+    - uses: actions/cache@v3
+      id: npm-cache
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-   
+    - name: install repo dependencies
+      run: npm install
+      working-directory: .
+    - name: install directory dependencies
+      run: npm install
+    - run: npm run build
+      continue-on-error: true
+    - name: set env vars for scheduled run
+      if: github.event.action == 'schedule'
+      run: |
+        echo "MOCHA_REPORTER_SUITENAME=security-center-snippets" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
+    - run: npm test
+      env:
+        GCLOUD_ORGANIZATION: 1081635000895
+    - name: upload test results for FlakyBot workflow
+      if: github.event.action == 'schedule' && always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: security-center/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}
+        retention-days: 1        
   remove_label:
     if: |
       github.event.action == 'labeled' &&

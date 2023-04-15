@@ -22,7 +22,6 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organization_id = process.env['GCLOUD_ORGANIZATION'];
 
 describe('listAssetsAttime', () => {
-  assert.isNotNull(organization_id);
   it('should print projects', () => {
     const output = exec(`node v1/listAssetsAtTime.js ${organization_id}`);
     assert.equal(4, output.match(/\n/g).length + 1, '== number of projects');

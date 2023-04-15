@@ -22,7 +22,6 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organization_id = process.env['GCLOUD_ORGANIZATION'];
 
 describe('listAssetsandChanges', () => {
-  assert.isNotNull(organization_id);
   it('should print projects with state changes', () => {
     const output = exec(`node v1/listAssetsAndChanges.js ${organization_id}`);
     assert.match(output, /(ADDED|ACTIVE)/);

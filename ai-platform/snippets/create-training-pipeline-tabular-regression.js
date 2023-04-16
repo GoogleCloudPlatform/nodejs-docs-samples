@@ -83,7 +83,6 @@ async function main(
       {auto: {column_name: 'STRUCT_NULLABLE.NUMERIC_5000unique_NULLABLE'}},
       {auto: {column_name: 'STRUCT_NULLABLE.BOOLEAN_2unique_NULLABLE'}},
       {auto: {column_name: 'STRUCT_NULLABLE.TIMESTAMP_1unique_NULLABLE'}},
-      {auto: {column_name: 'STRUCT_REPEATED.STRING_5000unique_NULLABLE'}},
     ];
 
     const trainingTaskInputsObj = new definition.AutoMlTablesInputs({

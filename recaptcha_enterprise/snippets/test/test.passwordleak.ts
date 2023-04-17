@@ -55,7 +55,6 @@ describe('Test for password leak given username and password', () => {
     const [response] = await client.createKey(createKeyRequest);
     const keyName: string = response.name!;
     SITE_KEY = keyName.substring(keyName.lastIndexOf('/') + 1);
-
   });
 
   after(async () => {
@@ -69,8 +68,7 @@ describe('Test for password leak given username and password', () => {
 
   it('should obtain boolean result from password leak assessment call', async () => {
     stdout = execSync(
-      `node --loader ts-node/esm passwordLeakAssessment.ts 
-        ${PROJECT_ID} ${SITE_KEY}, ${USERNAME} ${PASSWORD}`
+      `node --loader ts-node/esm passwordLeakAssessment.ts ${PROJECT_ID} ${SITE_KEY}, ${USERNAME} ${PASSWORD}`
     );
     assert.match(stdout, /Hashes created/);
   });

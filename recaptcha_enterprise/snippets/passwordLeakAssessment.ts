@@ -54,7 +54,7 @@ const client: RecaptchaEnterpriseServiceClient =
 * Steps:
 * 1. Use the 'create' method to hash and Encrypt the hashed username and
 * password.
-* 2. Send the hash prefix (2-byte) and the encrypted credentials to create
+* 2. Send the hash prefix (26-bit) and the encrypted credentials to create
 * the assessment.(Hash prefix is used to partition the database.)
 * 3. Password leak assessment returns a list of encrypted credential hashes to
 * be compared with the decryption of the returned re-encrypted credentials.
@@ -171,10 +171,8 @@ async function createPasswordLeakAssessment(
   return response.privatePasswordLeakVerification;
 }
 
-checkPasswordLeak(projectId, siteKey, username, password).catch(
-  err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  }
-);
+checkPasswordLeak(projectId, siteKey, username, password).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 // [END recaptcha_enterprise_password_leak_verification]

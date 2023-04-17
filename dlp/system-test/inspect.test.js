@@ -343,4 +343,31 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_phone_number
+  it('should inspect a string with phone numbers', () => {
+    const output = execSync(
+      `node inspectPhoneNumber.js ${projectId} "My email is gary@example.com and my phone number is (223) 456-7890." POSSIBLE 2 PHONE_NUMBER '' true`
+    );
+    assert.match(output, /PHONE_NUMBER/);
+  });
+
+  it('should inspect a string with no phone numbers', () => {
+    const output = execSync(
+      `node inspectPhoneNumber.js ${projectId} "My email is gary@example.com" POSSIBLE 2 PHONE_NUMBER '' true`
+    );
+    assert.include(output, 'No findings');
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectPhoneNumber.js ${projectId} "My email is gary@example.com" POSSIBLE 2 BAD_TYPE '' true`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

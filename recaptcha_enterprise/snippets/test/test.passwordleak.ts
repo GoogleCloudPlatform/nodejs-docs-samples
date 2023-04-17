@@ -55,7 +55,6 @@ describe('Test for password leak given username and password', () => {
     const [response] = await client.createKey(createKeyRequest);
     const keyName: string = response.name!;
     SITE_KEY = keyName.substring(keyName.lastIndexOf('/') + 1);
-
   });
 
   after(async () => {

@@ -171,10 +171,8 @@ async function createPasswordLeakAssessment(
   return response.privatePasswordLeakVerification;
 }
 
-checkPasswordLeak(projectId, siteKey, username, password).catch(
-  err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  }
-);
+checkPasswordLeak(projectId, siteKey, username, password).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
 // [END recaptcha_enterprise_password_leak_verification]

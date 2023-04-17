@@ -142,4 +142,40 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_exception_list
+  it('should exclude the words during inspection', () => {
+    const textToInspect =
+      'jack@example.org accessed customer record of user5@example.com';
+    const words = 'jack@example.org,jill@example.org';
+    const infoTypes = 'EMAIL_ADDRESS';
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithExceptionList.js ${projectId} "${textToInspect}" "${words}" "${infoTypes}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(
+      output,
+      'jack@example.org accessed customer record of [EMAIL_ADDRESS]'
+    );
+  });
+
+  it('should handle deidentification errors', () => {
+    const textToInspect =
+      'jack@example.org accessed customer record of user5@example.com';
+    const words = 'jack@example.org,jill@example.org';
+    const infoTypes = 'EMAIL_ADDRESS';
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithExceptionList.js 'BAD_PROJECT_ID' "${textToInspect}" "${words}" "${infoTypes}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

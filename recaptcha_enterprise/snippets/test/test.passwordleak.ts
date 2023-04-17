@@ -32,8 +32,6 @@ const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Test for password leak given username and password', () => {
   let PROJECT_ID: string,
     SITE_KEY: string,
-    TOKEN: string,
-    ACTION: string,
     USERNAME: string,
     PASSWORD: string,
     stdout: string;
@@ -58,9 +56,6 @@ describe('Test for password leak given username and password', () => {
     const keyName: string = response.name!;
     SITE_KEY = keyName.substring(keyName.lastIndexOf('/') + 1);
 
-    //  Get token and action.
-    TOKEN = '12345678asdfghjk';
-    ACTION = 'home';
   });
 
   after(async () => {
@@ -75,7 +70,7 @@ describe('Test for password leak given username and password', () => {
   it('should obtain boolean result from password leak assessment call', async () => {
     stdout = execSync(
       `node --loader ts-node/esm passwordLeakAssessment.ts 
-        ${PROJECT_ID} ${SITE_KEY}, ${TOKEN}, ${ACTION} ${USERNAME} ${PASSWORD}`
+        ${PROJECT_ID} ${SITE_KEY}, ${USERNAME} ${PASSWORD}`
     );
     assert.match(stdout, /Hashes created/);
   });

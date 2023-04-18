@@ -18,6 +18,9 @@
 // Imports the Google Cloud client library
 const {Spanner} = require('@google-cloud/spanner');
 
+// Imports the functions framework to register your HTTP function
+const functions = require('@google-cloud/functions-framework');
+
 // Instantiates a client
 const spanner = new Spanner();
 
@@ -33,7 +36,7 @@ const databaseId = 'example-db';
  * @param {Object} req Cloud Function request context.
  * @param {Object} res Cloud Function response context.
  */
-exports.get = async (req, res) => {
+functions.http('spannerQuickstart', async (req, res) => {
   // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
@@ -58,5 +61,5 @@ exports.get = async (req, res) => {
   } catch (err) {
     res.status(500).send(`Error querying Spanner: ${err}`);
   }
-};
+});
 // [END spanner_functions_quickstart]

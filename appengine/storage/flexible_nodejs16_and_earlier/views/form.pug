@@ -1,0 +1,10 @@
+doctype html
+html(lang="en")
+  head
+    title Static Files
+    meta(charset='utf-8')
+    link(rel="stylesheet", href="/static/main.css")
+  body
+    form(method="POST", action="/upload", enctype="multipart/form-data")
+      input(type="file", name="file")
+      input(type="submit")

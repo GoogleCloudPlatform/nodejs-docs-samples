@@ -30,9 +30,13 @@ Before you can run or deploy the sample, you need to do the following:
 
 	gcloud app deploy app.standard.yaml
 
-## Deploying to App Engine flexible environment
+## Deploying to App Engine flexible environment for Node.js 16 and earlier
 
 	gcloud app deploy app.flexible.yaml
+
+## Deploying to App Engine flexible environment for Node.js 18 and later
+
+	gcloud app deploy app.flexible_os.yaml
 
 ## Running the tests
 

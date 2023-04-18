@@ -44,6 +44,9 @@ async function main(endpointId, project, location = 'us-central1') {
       name: `projects/${project}/locations/${location}/endpoints/${endpointId}`,
     };
 
+    // NOTE: Be sure to undeploy any models deployed to the endpoint before
+    // attempting to delete the endpoint.
+
     // Delete endpoint request
     const [response] = await endpointServiceClient.deleteEndpoint(endpoint);
     console.log(`Long running operation : ${response.name}`);

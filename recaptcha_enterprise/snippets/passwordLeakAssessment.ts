@@ -16,7 +16,7 @@
  */
 
 // sample-metadata:
-//   title: Detect password leak with reCAPTCHA
+//   title: Detect password leak with reCAPTCHA Enterprise
 //   description: Detect if the user credentials have been compromised as part of a data leak
 //   usage: node passwordLeakAssessment.ts [project-id] [sita-key]
 

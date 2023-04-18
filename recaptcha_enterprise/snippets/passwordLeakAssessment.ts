@@ -18,10 +18,10 @@
 // sample-metadata:
 //   title: Detect password leak with reCAPTCHA Enterprise
 //   description: Detect if the user credentials have been compromised as part of a data leak
-//   usage: node passwordLeakAssessment.ts [project-id] [sita-key]
+//   usage: node passwordLeakAssessment.ts [project-id] [username] [password]
 
 const args = process.argv.slice(2);
-const [projectId, siteKey, username, password] = args;
+const [projectId, username, password] = args;
 
 // [START recaptcha_enterprise_password_leak_verification]
 
@@ -32,9 +32,6 @@ import {PasswordCheckVerification} from 'recaptcha-password-check-helpers';
 // TODO(developer): Uncomment and set the following variables
 // Google Cloud Project ID.
 // const projectId: string = "PROJECT_ID"
-
-// Site key obtained by registering a domain/app to use recaptcha Enterprise.
-// const siteKey: string = "RECAPTCHA_SITE_KEY"
 
 // Username and password to be checked for credential breach.
 // const username: string = "user123";
@@ -68,7 +65,7 @@ const client: RecaptchaEnterpriseServiceClient =
 
 * If you want to extend this behavior to your own implementation/ languages,
 * make sure to perform the following steps:
-* 1. Hash the credentials (First 2 bytes of the result is the
+* 1. Hash the credentials (First 26 bits of the result is the
 * 'lookupHashPrefix')
 * 2. Encrypt the hash (result = 'encryptedUserCredentialsHash')
 * 3. Get back the PasswordLeak information from
@@ -81,7 +78,6 @@ const client: RecaptchaEnterpriseServiceClient =
 */
 async function checkPasswordLeak(
   projectId: string,
-  recaptchaSiteKey: string,
   username: string,
   password: string
 ) {
@@ -104,7 +100,6 @@ async function checkPasswordLeak(
   const credentials: google.cloud.recaptchaenterprise.v1.IPrivatePasswordLeakVerification =
     await createPasswordLeakAssessment(
       projectId,
-      recaptchaSiteKey,
       lookupHashPrefix,
       encryptedUserCredentialsHash
     );
@@ -134,7 +129,6 @@ async function checkPasswordLeak(
 // matches the lookupHashPrefix.
 async function createPasswordLeakAssessment(
   projectId: string,
-  recaptchaSiteKey: string,
   lookupHashPrefix: string,
   encryptedUserCredentialsHash: string
 ): Promise<google.cloud.recaptchaenterprise.v1.IPrivatePasswordLeakVerification> {
@@ -143,10 +137,6 @@ async function createPasswordLeakAssessment(
     {
       parent: `projects/${projectId}`,
       assessment: {
-        // Set the properties of the event to be tracked.
-        event: {
-          siteKey: recaptchaSiteKey,
-        },
         // Set the hashprefix and credentials hash.
         // Setting this will trigger the Password leak protection.
         privatePasswordLeakVerification: {
@@ -171,7 +161,7 @@ async function createPasswordLeakAssessment(
   return response.privatePasswordLeakVerification;
 }
 
-checkPasswordLeak(projectId, siteKey, username, password).catch(err => {
+checkPasswordLeak(projectId, username, password).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

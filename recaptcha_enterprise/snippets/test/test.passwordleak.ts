@@ -23,10 +23,10 @@ import * as cp from 'child_process';
 
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
-let PROJECT_ID: string = process.env.GOOGLE_CLOUD_PROJECT!,
-  USERNAME: string = "username",
-  PASSWORD: string = "password",
-  stdout: string;
+const PROJECT_ID: string = process.env.GOOGLE_CLOUD_PROJECT;
+const USERNAME = 'username';
+const PASSWORD = 'password';
+let stdout: string;
 
 it('should obtain boolean result from password leak assessment call', async () => {
   stdout = execSync(

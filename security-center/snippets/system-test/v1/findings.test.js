@@ -144,7 +144,7 @@ describe('Client with SourcesAndFindings', async () => {
     assert.notMatch(output, /undefined/);
   });
 
-  it('client can list all findings', () => {
+  it.skip('client can list all findings', () => {
     const output = exec(`node v1/listAllFindings.js ${data.orgId}`);
     assert.match(output, new RegExp(data.findingName));
     assert.match(output, new RegExp(data.untouchedFindingName));

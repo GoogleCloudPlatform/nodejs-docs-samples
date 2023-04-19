@@ -1,5 +1,6 @@
 [
   "functions/concepts",
+  "functions/firebase",
   "functions/helloworld",
   "functions/http",
   "functions/pubsub",

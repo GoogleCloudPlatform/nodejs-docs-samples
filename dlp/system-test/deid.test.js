@@ -181,12 +181,12 @@ describe('deid', () => {
 
   // dlp_deidentify_redact
   it('should redact the matched input values', () => {
-    const textToInspect =
+    const string =
       'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
     let output;
     try {
       output = execSync(
-        `node deIdentifyWithRedaction.js ${projectId} "${textToInspect}" EMAIL_ADDRESS`
+        `node deIdentifyWithRedaction.js ${projectId} "${string}" EMAIL_ADDRESS`
       );
     } catch (err) {
       output = err.message;
@@ -199,11 +199,11 @@ describe('deid', () => {
 
   it('should handle deidentification errors', () => {
     let output;
-    const textToInspect =
+    const string =
       'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
     try {
       output = execSync(
-        `node deIdentifyWithRedaction.js ${projectId} "${textToInspect}" BAD_TYPE`
+        `node deIdentifyWithRedaction.js ${projectId} "${string}" BAD_TYPE`
       );
     } catch (err) {
       output = err.message;

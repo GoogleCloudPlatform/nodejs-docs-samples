@@ -18,9 +18,9 @@
 //  title: De-identify data: Redacting with matched input values
 //  description: Uses the Data Loss Prevention API to de-identify sensitive data
 //    in a string by redacting matched input values.
-//  usage: node deIdentifyWithRedaction.js my-project textToInspect infoTypes
+//  usage: node deIdentifyWithRedaction.js my-project string infoTypes
 
-function main(projectId, textToInspect, infoTypes) {
+function main(projectId, string, infoTypes) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_deidentify_redact]
   // Imports the Google Cloud Data Loss Prevention library
@@ -33,7 +33,7 @@ function main(projectId, textToInspect, infoTypes) {
   // const projectId = "your-project-id";
 
   // The string to deidentify
-  // const textToInspect =
+  // const string =
   //   'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
 
   // The infoTypes of information to match
@@ -47,6 +47,7 @@ function main(projectId, textToInspect, infoTypes) {
       infoTypeTransformations: {
         transformations: [
           {
+            infoTypes: infoTypes,
             primitiveTransformation: {
               redactConfig: {},
             },
@@ -62,7 +63,7 @@ function main(projectId, textToInspect, infoTypes) {
 
     // Construct Item
     const item = {
-      value: textToInspect,
+      value: string,
     };
 
     // Combine configurations into a request for the service.

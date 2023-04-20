@@ -23,7 +23,7 @@ import * as cp from 'child_process';
 
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const PROJECT_ID: string = process.env.GOOGLE_CLOUD_PROJECT;
+const PROJECT_ID: string = process.env.GOOGLE_CLOUD_PROJECT!;
 const USERNAME = 'username';
 const PASSWORD = 'password';
 let stdout: string;

@@ -370,4 +370,47 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_hotword_rule
+  it('should inspect a string using hotword rule', () => {
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{1}-[1-9]{5}';
+    const output = execSync(
+      `node inspectWithHotwordRules.js ${projectId} "${string}" UNLIKELY 0 "" ${custRegex} true "(?i)(mrn|medical)(?-i)"`
+    );
+    assert.match(output, /Info type: CUSTOM_REGEX_0/);
+    assert.match(output, /Likelihood: VERY_LIKELY/);
+  });
+
+  it('should not update the likelihood if proximity criteria not satisfied', () => {
+    const string = 'Patients MRN is updated to 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{1}-[1-9]{5}';
+    const output = execSync(
+      `node inspectWithHotwordRules.js ${projectId} "${string}" UNLIKELY 0 "" ${custRegex} true "(?i)(mrn|medical)(?-i)"`
+    );
+    assert.match(output, /Likelihood: POSSIBLE/);
+  });
+
+  it('should handle string with no match', () => {
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
+    const output = execSync(
+      `node inspectWithHotwordRules.js ${projectId} "${string}" UNLIKELY 0 "" ${custRegex} true "(?i)(mrn|medical)(?-i)"`
+    );
+    assert.include(output, 'No findings');
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    const string = 'Patients MRN 444-5-22222';
+    const custRegex = '[1-9]{3}-[1-9]{2}-[1-9]{5}';
+    try {
+      output = execSync(
+        `node inspectWithHotwordRules.js ${projectId} "${string}" UNLIKELY 0 BAD_TYPE ${custRegex} true "(?i)(mrn|medical)(?-i)"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

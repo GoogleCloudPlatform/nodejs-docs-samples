@@ -50,7 +50,7 @@ functions/spanner @GoogleCloudPlatform/nodejs-samples-reviewers
 # SoDa teams
 cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
-storagetransfer @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
+storagetransfer @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # One-offs
 composer @leahecole @sofisl @GoogleCloudPlatform/nodejs-samples-reviewers

@@ -44,7 +44,7 @@ jobs:
       run:
         working-directory: 'security-center/snippets'
     steps:
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v3.5.2
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@v1.0.0'

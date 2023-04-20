@@ -29,7 +29,7 @@ iam @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 kms @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
-recaptcha_enterprise/demosite @Sita04 @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers @GoogleCloudPlatform/nodejs-samples-reviewers
+recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers @GoogleCloudPlatform/nodejs-samples-reviewers
 secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 security-center @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -54,7 +54,6 @@ storagetransfer @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/n
 
 # One-offs
 composer @leahecole @sofisl @GoogleCloudPlatform/nodejs-samples-reviewers
-healthcare @noerog @GoogleCloudPlatform/nodejs-samples-reviewers
 monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Data & AI
@@ -79,3 +78,4 @@ vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-revi
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers
+healthcare @GoogleCloudPlatform/healthcare-life-sciences @GoogleCloudPlatform/nodejs-samples-reviewers

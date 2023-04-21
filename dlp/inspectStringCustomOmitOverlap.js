@@ -17,7 +17,6 @@
 // sample-metadata:
 //  title: Inspect a string for sensitive data, omitting custom matches.
 //  usage: node inspectStringCustomOmitOverlap.js my-project string
-
 function main(projectId, string) {
   // [START dlp_inspect_string_custom_omit_overlap]
   // Imports the Google Cloud Data Loss Prevention library

@@ -132,4 +132,31 @@ describe('redact', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_redact_image_listed_infotypes
+  it('should redact sensitive data type from an image', async () => {
+    const testName = 'redact-multiple-types';
+    const output = execSync(
+      `node redactImageFileListedInfoTypes.js ${projectId} ${testImage} "PHONE_NUMBER,EMAIL_ADDRESS" ${testName}.actual.png`
+    );
+    assert.match(output, /Saved image redaction results to path/);
+    const difference = await getImageDiffPercentage(
+      `${testName}.actual.png`,
+      `${testResourcePath}/${testName}.expected.png`
+    );
+    assert.isBelow(difference, 0.1);
+  });
+
+  it('should report info type errors', () => {
+    const testName = 'redact-multiple-type';
+    let output;
+    try {
+      output = execSync(
+        `node redactImageFileListedInfoTypes.js ${projectId} ${testImage} BAD_TYPE ${testName}.actual.png`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

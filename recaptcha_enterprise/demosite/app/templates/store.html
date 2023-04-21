@@ -34,7 +34,7 @@
     </script>
     <!-- See: https://cloud.google.com/recaptcha-enterprise/docs/create-assessment -->
     <script type="text/javascript">
-    async function doCheckout({ cardNumber = "", items = [], token }) {
+      async function doCheckout({ cardNumber = "", items = [], token }) {
         // Include the token for server-side assessment.
         // Include the user input values from your form to pass to the backend.
         // Always use HTTPS to encrypt plain text credit card numbers!

@@ -178,4 +178,36 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_redact
+  it('should redact the matched input values', () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithRedaction.js ${projectId} "${string}" EMAIL_ADDRESS`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(
+      output,
+      'My name is Alicia Abernathy, and my email address is .'
+    );
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    try {
+      output = execSync(
+        `node deIdentifyWithRedaction.js ${projectId} "${string}" BAD_TYPE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

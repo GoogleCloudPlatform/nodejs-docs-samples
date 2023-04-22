@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "^4.16.2",
     "firebase-admin": "^11.0.0",
+    "gcp-metadata": "^5.0.0",
     "google-auth-library": "^8.0.0",
     "handlebars": "^4.7.6",
     "knex": "^2.0.0",
@@ -29,6 +30,8 @@
   "devDependencies": {
     "got": "^11.7.0",
     "mocha": "^10.0.0",
+    "short-uuid": "^4.1.0",
+    "sinon": "^15.0.0",    
     "supertest": "^6.0.0"
   }
 }

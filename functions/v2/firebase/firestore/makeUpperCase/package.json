@@ -12,13 +12,14 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha -T 30s test/*.test.js"
+    "test": "c8 mocha -T 30s test/*.test.js"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^15.0.0",
-    "rewire": "^6.0.0"
+    "rewire": "^6.0.0",
+    "sinon": "^15.0.0"
   },
   "dependencies": {
     "@google-cloud/firestore": "^6.0.0",

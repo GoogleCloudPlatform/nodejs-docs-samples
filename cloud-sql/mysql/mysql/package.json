@@ -13,8 +13,8 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "system-test": "mocha test/server.test.js --timeout=60000 --exit",
-    "system-test-unix": "mocha test/server-unix.test.js --timeout=60000 --exit",
+    "system-test": "c8 mocha test/server.test.js --timeout=60000 --exit",
+    "system-test-unix": "c8 mocha test/server-unix.test.js --timeout=60000 --exit",
     "test": "npm run system-test && npm run system-test-unix"
   },
   "dependencies": {
@@ -26,9 +26,10 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "supertest": "^6.0.0",
-    "sinon": "^15.0.0"
+    "sinon": "^15.0.0",
+    "supertest": "^6.0.0"
   }
 }

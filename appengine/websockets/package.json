@@ -11,7 +11,7 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "test": "mocha --exit test/*.test.js",
+    "test": "c8 mocha --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "supertest": "^6.0.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "puppeteer": "^19.0.0"
   }

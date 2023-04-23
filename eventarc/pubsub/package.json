@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "unit-test": "mocha test/app.test.js --check-leaks",
+    "unit-test": "c8 mocha test/app.test.js --check-leaks",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run all-test"
@@ -25,6 +25,7 @@
     "express": "^4.16.4"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "got": "^11.5.0",
     "mocha": "^10.0.0",
     "sinon": "^15.0.0",

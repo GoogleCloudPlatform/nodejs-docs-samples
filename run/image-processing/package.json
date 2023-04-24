@@ -15,8 +15,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --check-leaks --timeout=5000",
-    "system-test": "mocha test/system.test.js --timeout=360000 --exit"
+    "test": "c8 mocha test/app.test.js --check-leaks --timeout=5000",
+    "system-test": "c8 mocha test/system.test.js --timeout=360000 --exit"
   },
   "dependencies": {
     "@google-cloud/storage": "^6.0.0",
@@ -25,6 +25,7 @@
     "gm": "^1.23.1"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "google-auth-library": "^8.0.0",
     "got": "^11.5.0",
     "mocha": "^10.0.0",

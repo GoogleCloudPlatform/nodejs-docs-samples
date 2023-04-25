@@ -32,6 +32,7 @@ _TRIM_EXPRESSIONS = [
 _TYPELESS_EXPRESSION = r"Generated (.*)"
 _NPM_CONFIG_CACHE = "/var/tmp/.npm"
 
+
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
     """
     Walks through all sample directories
@@ -113,7 +114,6 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> list[s
         check=True,
         hide_output=True,  # Capture stdout
     )
-
     if not proc.stdout:
         return []
     if not hide_output:

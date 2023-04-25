@@ -31,7 +31,6 @@ _TRIM_EXPRESSIONS = [
 ]
 _TYPELESS_EXPRESSION = r"Generated (.*)"
 _NPM_CONFIG_CACHE = "/var/tmp/.npm"
-_NO_SAMPLES = "No samples were selected"
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[str]:
     """
@@ -104,21 +103,16 @@ def typeless_samples_hermetic(targets: str, hide_output: bool = False) -> list[s
         logger.debug("No TypeScript files in path. Skipping typeless bot.")
         return []
 
-    proc: subprocess.CompletedProcess[str] = None
-    try:
-        proc = shell.run(
-            [
-                f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
-                "--targets",
-                targets,
-                "--recursive",
-            ],
-            check=True,
-            hide_output=True,  # Capture stdout
-        )
-    except subprocess.CalledProcessError as error:
-        if proc.stdout and _NO_SAMPLES not in proc.stdout:
-            raise error
+    proc: subprocess.CompletedProcess[str] = shell.run(
+        [
+            f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
+            "--targets",
+            targets,
+            "--recursive",
+        ],
+        check=True,
+        hide_output=True,  # Capture stdout
+    )
 
     if not proc.stdout:
         return []

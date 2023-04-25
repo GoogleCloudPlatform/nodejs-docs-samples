@@ -21,7 +21,6 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "@google-cloud/automl": "^3.0.0",
     "c8": "^7.13.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",

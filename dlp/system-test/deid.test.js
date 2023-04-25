@@ -210,4 +210,28 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_table_infotypes
+  it('should replace the matched input in table', () => {
+    let output;
+    try {
+      output = execSync(`node deIdentifyTableInfoTypes.js ${projectId}`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /Charles Dickens/);
+    assert.notMatch(output, /Jane Austen/);
+    assert.notMatch(output, /Mark Twain/);
+    assert.match(output, /PERSON_NAME/);
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync('node deIdentifyTableInfoTypes.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

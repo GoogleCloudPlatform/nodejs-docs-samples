@@ -234,4 +234,30 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_table_condition_masking
+  it('should replace the matched input in table', () => {
+    let output;
+    try {
+      output = execSync(`node deIdentifyTableConditionMasking.js ${projectId}`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /"stringValue":"\*\*"/);
+    assert.match(output, /"integerValue":"21"/);
+    assert.match(output, /"integerValue":"75"/);
+    assert.notMatch(output, /"integerValue":"95"/);
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableConditionMasking.js BAD_PROJECT_ID'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

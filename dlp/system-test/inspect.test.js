@@ -413,4 +413,25 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_string_custom_omit_overlap
+  it('should omit overlapping findings between custom match and Person Name', () => {
+    const output = execSync(
+      `node inspectStringCustomOmitOverlap.js ${projectId} "Name: Jane Doe. Name: Larry Page."`
+    );
+    assert.match(output, /Quote: Jane Doe/);
+    assert.notMatch(output, /Quote: Larry Page/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringCustomOmitOverlap.js BAD_PROJECT_ID "Name: Jane Doe. Name: Larry Page."'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

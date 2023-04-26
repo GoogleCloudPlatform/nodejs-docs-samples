@@ -457,4 +457,25 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_string_omit_overlap
+  it('should omit overlapping findings during inspection', () => {
+    const output = execSync(
+      `node inspectStringOmitOverlap.js ${projectId} "james@example.com"`
+    );
+    assert.match(output, /Findings: 1/);
+    assert.match(output, /InfoType: EMAIL_ADDRESS/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringOmitOverlap.js BAD_PROJECT_ID "james@example.com"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

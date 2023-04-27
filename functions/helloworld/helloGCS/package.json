@@ -18,8 +18,7 @@
     "test": "npm -- run unit-test"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.0",
-    "escape-html": "^1.0.3"
+    "@google-cloud/functions-framework": "^3.1.0"
   },
   "devDependencies": {
     "@google-cloud/storage": "^6.0.0",
@@ -28,7 +27,6 @@
     "moment": "^2.24.0",
     "promise-retry": "^2.0.0",
     "sinon": "^15.0.0",
-    "supertest": "^6.0.0",
     "uuid": "^9.0.0",
     "wait-port": "^1.0.4"
   }

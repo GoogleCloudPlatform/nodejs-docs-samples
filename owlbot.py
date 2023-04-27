@@ -49,11 +49,11 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
                 ["git", "fetch", "origin", "main:main", "--deepen=200"], check=False
             )
             output.check_returncode()
-        except subprocess.CalledProcessError as e:
-            if e.returncode == 128:
+        except subprocess.CalledProcessError as error:
+            if error.returncode == 128:
                 logger.info(f"Error: ${e.output}; skipping fetching main")
             else:
-                raise e
+                raise error
     for path_object in dir.glob("**/package.json"):
         object_dir = str(Path(path_object).parents[0])
         if (

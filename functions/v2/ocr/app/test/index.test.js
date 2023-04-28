@@ -26,14 +26,14 @@ const storage = new Storage();
 process.env.GCP_PROJECT = 'nodejs-docs-samples-tests';
 process.env.FUNCTIONS_BUCKET = 'nodejs-docs-samples-tests';
 process.env.TRANSLATE_TOPIC = 'integration-tests-instance';
-process.env.RESULT_TOPIC = 'integration-tests-instance'
+process.env.RESULT_TOPIC = 'integration-tests-instance';
 process.env.RESULT_BUCKET = 'nodejs-docs-samples-tests';
 process.env.TO_LANG = 'en,es';
 
 const filename = 'wakeupcat.jpg';
 const text = 'Wake up human!';
 const lang = 'en';
-const { RESULT_BUCKET, FUNCTIONS_BUCKET } = process.env;
+const {RESULT_BUCKET, FUNCTIONS_BUCKET} = process.env;
 
 const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
@@ -143,9 +143,13 @@ describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult validates parameters', async () => {
       const cloudEvent = new CloudEvent({
-        data: { message: Buffer.from(JSON.stringify({ text, filename })).toString('base64') },
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        data: {
+          message: Buffer.from(JSON.stringify({text, filename})).toString(
+            'base64'
+          ),
+        },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('saveResult');
@@ -153,8 +157,9 @@ describe('saveResult', () => {
         .post('/')
         .send(cloudEvent)
         .expect(500)
-        .expect((res) => {
-          assert.strictEqual(res.error.text, errorMsg('Language', 'lang'))});
+        .expect(res => {
+          assert.strictEqual(res.error.text, errorMsg('Language', 'lang'));
+        });
     });
   });
 
@@ -162,12 +167,12 @@ describe('saveResult', () => {
     it('saveResult translates and publishes text', async () => {
       const cloudEvent = new CloudEvent({
         data: {
-          message: Buffer.from(JSON.stringify({ text, filename, lang })).toString(
+          message: Buffer.from(JSON.stringify({text, filename, lang})).toString(
             'base64'
-          )
+          ),
         },
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const newFilename = `${filename}_to_${lang}.txt`;

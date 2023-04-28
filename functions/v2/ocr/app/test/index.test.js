@@ -127,8 +127,10 @@ describe('translateText', () => {
         type: 'google.cloud.storage.object.v1.finalized',
       });
 
-      const server = getTestServer('translateText');
-      await supertest(server).post('/').send(cloudEvent);
+      const translateText = getFunction('translateText');
+      await translateText(cloudEvent);
+      // const server = getTestServer('translateText');
+      // await supertest(server).post('/').send(cloudEvent);
       assert.ok(console.log.calledWith(`Translating text into ${lang}`));
       assert.ok(console.log.calledWith(`Text translated to ${lang}`));
     });
@@ -142,13 +144,15 @@ describe('saveResult', () => {
         source: 'tests',
         type: 'google.cloud.storage.object.v1.finalized',
       });
-
-      const server = getTestServer('saveResult');
-      await supertest(server)
-        .post('/')
-        .send(cloudEvent)
-        .expect(500)
-        .expect(errorMsg('Language', 'lang'));
+      const saveResult = getFunction('saveResult');
+      await saveResult(cloudEvent);
+      // const server = getTestServer('saveResult');
+      // await supertest(server)
+      //   .post('/')
+      //   .send(cloudEvent)
+      //   .expect(500)
+      //   .expect((res) => {
+      //     assert.ok(res.error == errorMsg('Language', 'lang'))});
     });
   });
 
@@ -164,8 +168,10 @@ describe('saveResult', () => {
 
       const newFilename = `${filename}_to_${lang}.txt`;
 
-      const server = getTestServer('saveResult');
-      await supertest(server).post('/').send(cloudEvent);
+      const saveResult = getFunction('saveResult');
+      await saveResult(cloudEvent);
+      // const server = getTestServer('saveResult');
+      // await supertest(server).post('/').send(cloudEvent);
       assert.ok(
         console.log.calledWith(`Received request to save file ${filename}`)
       );

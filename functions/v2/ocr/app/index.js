@@ -114,7 +114,7 @@ const renameImageForSave = (filename, lang) => {
  * @param {object} cloudEvent A CloudEvent containing the Cloud Storage File object.
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('processImage', async cloudEvent => {
+functions.cloudEvent('processImage', async (cloudEvent) => {
   const {bucket, name} = cloudEvent.data;
 
   if (!bucket) {
@@ -190,7 +190,7 @@ functions.cloudEvent('translateText', async cloudEvent => {
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object.
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('saveResult', async cloudEvent => {
+functions.cloudEvent('saveResult', async (cloudEvent) => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);

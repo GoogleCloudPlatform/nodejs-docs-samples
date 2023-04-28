@@ -145,15 +145,9 @@ describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult validates parameters', async () => {
       const cloudEvent = new CloudEvent({
-<<<<<<< HEAD
-        data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
-        source: 'tests',
-        type: 'google.cloud.storage.object.v1.finalized',
-=======
         data: { message: Buffer.from(JSON.stringify({ text, filename })).toString('base64') },
         source: "tests",
         type: "google.cloud.storage.object.v1.finalized"
->>>>>>> 9b1f5cc1 (update sample)
       });
 
       const server = getTestServer('saveResult');
@@ -169,13 +163,6 @@ describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult translates and publishes text', async () => {
       const cloudEvent = new CloudEvent({
-<<<<<<< HEAD
-        data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
-          'base64'
-        ),
-        source: 'tests',
-        type: 'google.cloud.storage.object.v1.finalized',
-=======
         data: {
           message: Buffer.from(JSON.stringify({ text, filename, lang })).toString(
             'base64'
@@ -183,7 +170,6 @@ describe('saveResult', () => {
         },
         source: "tests",
         type: "google.cloud.storage.object.v1.finalized"
->>>>>>> 9b1f5cc1 (update sample)
       });
 
       const newFilename = `${filename}_to_${lang}.txt`;

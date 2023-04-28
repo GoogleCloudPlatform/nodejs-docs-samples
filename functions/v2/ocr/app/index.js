@@ -16,11 +16,11 @@
 
 // [START functions_ocr_setup]
 // Get a reference to the Pub/Sub component
-const {PubSub} = require('@google-cloud/pubsub');
+const { PubSub } = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 
 // Get a reference to the Cloud Storage component
-const {Storage} = require('@google-cloud/storage');
+const { Storage } = require('@google-cloud/storage');
 const storage = new Storage();
 
 // Get a reference to the Cloud Vision API component
@@ -28,7 +28,7 @@ const Vision = require('@google-cloud/vision');
 const vision = new Vision.ImageAnnotatorClient();
 
 // Get a reference to the Translate API component
-const {Translate} = require('@google-cloud/translate').v2;
+const { Translate } = require('@google-cloud/translate').v2;
 const translate = new Translate();
 
 const functions = require('@google-cloud/functions-framework');
@@ -44,8 +44,8 @@ const functions = require('@google-cloud/functions-framework');
 const publishResult = async (topicName, data) => {
   const dataBuffer = Buffer.from(JSON.stringify(data));
 
-  const [topic] = await pubsub.topic(topicName).get({autoCreate: true});
-  topic.publishMessage({dataBuffer});
+  const [topic] = await pubsub.topic(topicName).get({ autoCreate: true });
+  topic.publishMessage({ dataBuffer });
 };
 
 // [START functions_ocr_detect]
@@ -114,8 +114,8 @@ const renameImageForSave = (filename, lang) => {
  * @param {object} cloudEvent A CloudEvent containing the Cloud Storage File object.
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('processImage', async (cloudEvent) => {
-  const {bucket, name} = cloudEvent.data;
+functions.cloudEvent('processImage', async cloudEvent => {
+  const { bucket, name } = cloudEvent.data;
 
   if (!bucket) {
     throw new Error(
@@ -143,10 +143,10 @@ functions.cloudEvent('processImage', async (cloudEvent) => {
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('translateText', async (cloudEvent) => {
+functions.cloudEvent('translateText', async cloudEvent => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
-  const {text, filename, lang} = JSON.parse(jsonStr);
+  const { text, filename, lang } = JSON.parse(jsonStr);
 
   if (!text) {
     throw new Error(
@@ -190,10 +190,10 @@ functions.cloudEvent('translateText', async (cloudEvent) => {
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object.
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('saveResult', async (cloudEvent) => {
+functions.cloudEvent('saveResult', async cloudEvent => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
-  const {text, filename, lang} = JSON.parse(jsonStr);
+  const { text, filename, lang } = JSON.parse(jsonStr);
 
   if (!text) {
     throw new Error(

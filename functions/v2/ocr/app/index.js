@@ -143,7 +143,7 @@ functions.cloudEvent('processImage', async (cloudEvent) => {
  * @param {object} cloudEvent The CloudEvent containing the Pub/Sub Message object
  * https://cloud.google.com/storage/docs/json_api/v1/objects
  */
-functions.cloudEvent('translateText', async cloudEvent => {
+functions.cloudEvent('translateText', async (cloudEvent) => {
   const pubsubData = cloudEvent.data;
   const jsonStr = Buffer.from(pubsubData.message, 'base64').toString();
   const {text, filename, lang} = JSON.parse(jsonStr);

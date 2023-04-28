@@ -23,11 +23,11 @@ const {CloudEvent} = require('cloudevents');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-process.env.GCP_PROJECT = $PROJECT_ID;
-process.env.FUNCTIONS_BUCKET = $PROJECT_ID;
+process.env.GCP_PROJECT = process.env.PROJECT_ID;
+process.env.FUNCTIONS_BUCKET = process.env.PROJECT_ID;
 process.env.TRANSLATE_TOPIC = "integration-tests-instance";
 process.env.RESULT_TOPIC = "integration-tests-instance"
-process.env.RESULT_BUCKET = $PROJECT_ID
+process.env.RESULT_BUCKET = process.env.PROJECT_ID;
 process.env.TO_LANG = "en,es";
 
 const filename = 'wakeupcat.jpg';

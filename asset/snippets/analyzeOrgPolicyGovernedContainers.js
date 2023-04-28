@@ -20,7 +20,7 @@
 //   folders or organization) under a scope.
 //   usage: node analyzeOrgPoliciesGovernedContainers
 
-async function main(scope, constraint, filter, pageSize, pageToken) {
+async function main(scope, constraint) {
   // [START asset_quickstart_analyze_org_policy_governed_containers]
 
   const util = require('util');
@@ -32,9 +32,6 @@ async function main(scope, constraint, filter, pageSize, pageToken) {
     const request = {
       scope: scope,
       constraint: constraint,
-      filter: filter,
-      pageSize: pageSize,
-      pageToken: pageToken,
     };
 
     // Handle the operation using the promise pattern.

@@ -19,7 +19,7 @@
 //   description: Analyzes accessible Org policies that match a request.
 //   usage: node analyzeOrgPolicies
 
-async function main(scope, constraint, filter, pageSize, pageToken) {
+async function main(scope, constraint) {
   // [START asset_quickstart_analyze_org_policies]
 
   const util = require('util');
@@ -31,9 +31,6 @@ async function main(scope, constraint, filter, pageSize, pageToken) {
     const request = {
       scope: scope,
       constraint: constraint,
-      filter: filter,
-      pageSize: pageSize,
-      pageToken: pageToken,
     };
 
     // Handle the operation using the promise pattern.

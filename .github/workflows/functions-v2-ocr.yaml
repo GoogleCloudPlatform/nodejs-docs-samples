@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-v2-ocr'
-      path: 'functions/v2/ocr'
+      path: 'functions/v2/ocr/app'
   remove_label:
     if: |
       github.event.action == 'labeled' &&

@@ -64,23 +64,24 @@ describe('org policy analyzer sample tests', () => {
     await bigquery.dataset(datasetId).delete({force: true}).catch(console.warn);
   });
 
-  it('should search all iam policies successfully', async () => {
+  it('should analyze org policies successfully', async () => {
     const scope = 'organizations/474566717491';
     const constraint = "constraints/iam.allowServiceAccountCredentialLifetimeExtension";
-    const stdout = execSync(`node analyzeOrgPolicies ${scope} ${constraint} '' 2 ''`);
+    const stdout = execSync(`node analyzeOrgPolicies ${scope} ${constraint} '' 10 ''`);
     assert.include(stdout, '//cloudresourcemanager.googleapis.com/organizations/474566717491');
   });
-  it('should search all iam policies successfully', async () => {
+
+  it('should analyze org policy governed assets successfully', async () => {
     const scope = 'organizations/474566717491';
     const constraint = "constraints/iam.allowedPolicyMemberDomains";
-    const stdout = execSync(`node analyzeOrgPolicyGovernedAssets ${scope} ${constraint} '' 2 ''`);
-    //throw new Error(stdout);
+    const stdout = execSync(`node analyzeOrgPolicyGovernedAssets ${scope} ${constraint} '' 10 ''`);
     assert.include(stdout, '//cloudresourcemanager.googleapis.com/projects');
   });
-  it('should search all iam policies successfully', async () => {
+
+  it('should should analyze org policy governed containers successfully', async () => {
     const scope = 'organizations/474566717491';
     const constraint = "constraints/iam.allowedPolicyMemberDomains";
-    const stdout = execSync(`node analyzeOrgPolicyGovernedContainers ${scope} ${constraint} '' 2 ''`);
+    const stdout = execSync(`node analyzeOrgPolicyGovernedContainers ${scope} ${constraint} '' 10 ''`);
     assert.include(stdout, '//cloudresourcemanager.googleapis.com/organizations/474566717491');
   });
 });

@@ -27,7 +27,6 @@ async function main(scope, constraint, filter, pageSize, pageToken) {
   const {AssetServiceClient} = require('@google-cloud/asset');
 
   const client = new AssetServiceClient();
-  const projectId = await client.getProjectId();
 
   async function analyzeOrgPolicyGovernedAssets() {
     const request = {

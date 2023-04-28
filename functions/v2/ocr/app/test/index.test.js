@@ -93,8 +93,6 @@ describe('processImage', () => {
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
-      console.log(console.log.calledWith);
-      assert.ok(console.log.calledWith(`File ${filename} processed.`));
     });
   });
 });

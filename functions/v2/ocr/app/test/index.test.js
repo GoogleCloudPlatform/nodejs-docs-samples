@@ -18,9 +18,9 @@ require('..');
 
 const assert = require('assert');
 const sinon = require('sinon');
-const { CloudEvent } = require('cloudevents');
+const {CloudEvent} = require('cloudevents');
 
-const { Storage } = require('@google-cloud/storage');
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
 const bucketName = process.env.FUNCTIONS_BUCKET;
@@ -28,10 +28,10 @@ const filename = 'wakeupcat.jpg';
 const text = 'Wake up human!';
 const lang = 'en';
 
-const { RESULT_BUCKET } = process.env;
+const {RESULT_BUCKET} = process.env;
 
 const supertest = require('supertest');
-const { getTestServer } = require('@google-cloud/functions-framework/testing');
+const {getTestServer} = require('@google-cloud/functions-framework/testing');
 
 const errorMsg = (name, propertyName) => {
   propertyName = propertyName || name.toLowerCase();
@@ -56,8 +56,8 @@ describe('processImage', () => {
     it('processImage validates parameters', async () => {
       const cloudEvent = new CloudEvent({
         data: {},
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
       const server = getTestServer('processImage');
       await supertest(server)
@@ -74,8 +74,8 @@ describe('processImage', () => {
           bucket: bucketName,
           name: filename,
         },
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('processImage');
@@ -87,7 +87,7 @@ describe('processImage', () => {
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
-      console.log(console.log.calledWith)
+      console.log(console.log.calledWith);
       assert.ok(console.log.calledWith(`File ${filename} processed.`));
     });
   });
@@ -99,8 +99,8 @@ describe('translateText', () => {
         data: {
           message: Buffer.from(JSON.stringify({})).toString('base64'),
         },
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
       const server = getTestServer('translateText');
       await supertest(server)
@@ -123,8 +123,8 @@ describe('translateText', () => {
             })
           ).toString('base64'),
         },
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('translateText');
@@ -138,9 +138,9 @@ describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult validates parameters', async () => {
       const cloudEvent = new CloudEvent({
-        data: Buffer.from(JSON.stringify({ text, filename })).toString('base64'),
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('saveResult');
@@ -155,11 +155,11 @@ describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult translates and publishes text', async () => {
       const cloudEvent = new CloudEvent({
-        data: Buffer.from(JSON.stringify({ text, filename, lang })).toString(
+        data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
           'base64'
         ),
-        source: "tests",
-        type: "google.cloud.storage.object.v1.finalized"
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const newFilename = `${filename}_to_${lang}.txt`;

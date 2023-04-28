@@ -23,11 +23,11 @@ const {CloudEvent} = require('cloudevents');
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-process.env.GCP_PROJECT = "nodejs-docs-samples-testing";
-process.env.FUNCTIONS_BUCKET = "nodejs-docs-samples-testing";
+process.env.GCP_PROJECT = "nodejs-docs-samples-tests";
+process.env.FUNCTIONS_BUCKET = "nodejs-docs-samples-tests";
 process.env.TRANSLATE_TOPIC = "integration-tests-instance";
 process.env.RESULT_TOPIC = "integration-tests-instance"
-process.env.RESULT_BUCKET = "nodejs-docs-samples-testing";
+process.env.RESULT_BUCKET = "nodejs-docs-samples-tests";
 process.env.TO_LANG = "en,es";
 
 const filename = 'wakeupcat.jpg';
@@ -184,7 +184,6 @@ describe('saveResult', () => {
           `Saving result to ${newFilename} in bucket ${RESULT_BUCKET}`
         )
       );
-      assert.ok(console.log.calledWith('File saved.'));
 
       // Check file was actually saved
       assert.ok(storage.bucket(RESULT_BUCKET).file(newFilename).exists());

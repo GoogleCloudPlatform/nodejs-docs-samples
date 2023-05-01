@@ -15,11 +15,12 @@
     "test": "mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.2.0",
     "@google-cloud/pubsub": "^3.0.0",
     "@google-cloud/storage": "^6.0.0",
     "@google-cloud/translate": "^7.0.0",
     "@google-cloud/vision": "^3.0.0",
-    "@google-cloud/functions-framework": "^3.1.2"
+    "cloudevents": "^6.0.4"
   },
   "devDependencies": {
     "mocha": "^10.0.0",

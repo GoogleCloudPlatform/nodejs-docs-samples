@@ -3701,6 +3701,7 @@ class RecaptchaDemo extends s {
     /* Result */
     score: { type: String },
     verdict: { type: String },
+    reason: { type: String },
   };
 
   constructor() {
@@ -3715,6 +3716,7 @@ class RecaptchaDemo extends s {
     this._score = undefined;
     this.score = this._score;
     this.verdict = undefined;
+    this.reason = undefined;
     /* Other */
     this.cleanupGame = () => {};
     /* In the year of our lord 2023 */
@@ -4092,7 +4094,7 @@ class RecaptchaDemo extends s {
       "tokenProperties": {
         "action": "${ACTIONS[this.step]}",
         ...
-        "valid": true
+        "valid": ${this.reason !== 'Invalid token'}
       },
     }`
       .replace(/^([ ]+)[}](?!,)/m, "}")
@@ -4185,10 +4187,17 @@ class RecaptchaDemo extends s {
         `;
         break;
       case "Bad":
-        card = x`
-          <p>reCAPTCHA is ${percentage || "???"}% confident you're not bad.</p>
-          <img alt="Bad" src="${badbad}" />
-        `;
+        if (this.reason) {
+          card = x`
+            <p>Suspicious request. Reason: "${this.reason}".</p>
+            <img alt="Bad" src="${badbad}" />
+          `;
+        } else {
+          card = x`
+            <p>reCAPTCHA is ${percentage || "???"}% confident you're not bad.</p>
+            <img alt="Bad" src="${badbad}" />
+          `;
+        }
         break;
       default:
         card = x`

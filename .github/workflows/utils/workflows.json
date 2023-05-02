@@ -36,6 +36,7 @@
   "dataproc",
   "datastore/functions",
   "dialogflow",
+  "discoveryengine/genappbuilder",
   "dlp",
   "document-ai",
   "endpoints/getting-started",

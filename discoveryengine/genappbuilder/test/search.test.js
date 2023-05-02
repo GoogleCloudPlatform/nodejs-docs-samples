@@ -19,11 +19,10 @@ const path = require('path');
 const assert = require('assert');
 const cp = require('child_process');
 
-const { SearchServiceClient } =
-  require('@google-cloud/discoveryengine').v1beta;
+const {SearchServiceClient} = require('@google-cloud/discoveryengine').v1beta;
 const client = new SearchServiceClient();
 
-const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 const LOCATION = 'global';

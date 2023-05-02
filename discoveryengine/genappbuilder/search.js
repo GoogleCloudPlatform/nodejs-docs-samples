@@ -15,7 +15,13 @@
 
 'use strict';
 
-async function main(projectId, location, searchEngineId, servingConfigId, searchQuery) {
+async function main(
+  projectId,
+  location,
+  searchEngineId,
+  servingConfigId,
+  searchQuery
+) {
   // [START genappbuilder_search]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -26,8 +32,7 @@ async function main(projectId, location, searchEngineId, servingConfigId, search
   // const servingConfigId = 'default_config';      // Options: 'default_config'
   // const searchQuery = 'Google';
 
-  const { SearchServiceClient } =
-    require('@google-cloud/discoveryengine').v1beta;
+  const {SearchServiceClient} = require('@google-cloud/discoveryengine').v1beta;
 
   // Instantiates a client
   const client = new SearchServiceClient();
@@ -36,11 +41,16 @@ async function main(projectId, location, searchEngineId, servingConfigId, search
     // The full resource name of the search engine serving configuration.
     // Example: projects/{projectId}/locations/{location}/dataStores/{searchEngineId}/servingConfigs/{servingConfigId}
     // You must create a search engine in the Cloud Console first.
-    const name = client.projectLocationDataStoreServingConfigPath(projectId, location, searchEngineId, servingConfigId);
+    const name = client.projectLocationDataStoreServingConfigPath(
+      projectId,
+      location,
+      searchEngineId,
+      servingConfigId
+    );
 
     const request = {
       name,
-      query: searchQuery
+      query: searchQuery,
     };
 
     // Perform search request

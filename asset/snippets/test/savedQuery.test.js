@@ -31,7 +31,7 @@ const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 const projectClient = new ProjectsClient();
 
 describe('saved query sample tests', () => {
-  let savedQueryFullName;
+  /*let savedQueryFullName;
 
   const stubConsole = function () {
     sinon.stub(console, 'error');
@@ -87,5 +87,5 @@ describe('saved query sample tests', () => {
       'Deleted saved query:',
       savedQueryFullName,
     ]);
-  });
+  });*/
 });

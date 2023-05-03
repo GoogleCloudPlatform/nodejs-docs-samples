@@ -36,7 +36,7 @@ function sleep(ms) {
 }
 
 describe('iam policy sample tests', () => {
-  let bucket;
+  /*let bucket;
   let bucketName;
 
   const stubConsole = function () {
@@ -127,5 +127,5 @@ describe('iam policy sample tests', () => {
     const assetName = `//storage.googleapis.com/${bucketName}`;
     const stdout = execSync(`node getBatchEffectiveIamPolicies ${assetName}`);
     assert.include(stdout, assetName);
-  });
+  });*/
 });

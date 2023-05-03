@@ -71,7 +71,7 @@ describe('org policy analyzer sample tests', () => {
     );
   });
 
-  /*it('should analyze org policy governed assets successfully', async () => {
+  it('should analyze org policy governed assets successfully', async () => {
     const scope = 'organizations/474566717491';
     const constraint = 'constraints/iam.allowedPolicyMemberDomains';
     const stdout = execSync(
@@ -90,5 +90,5 @@ describe('org policy analyzer sample tests', () => {
       stdout,
       '//cloudresourcemanager.googleapis.com/organizations/474566717491'
     );
-  });*/
+  });
 });

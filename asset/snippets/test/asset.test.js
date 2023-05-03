@@ -27,7 +27,7 @@ function sleep(ms) {
 }
 
 describe('asset sample tests', () => {
-  /*let bucket;
+  let bucket;
   let bucketName;
   let fileSuffix;
   const suffix = uuid.v4();
@@ -114,5 +114,5 @@ describe('asset sample tests', () => {
     const assetType = '';
     const stdout = execSync(`node listAssets ${assetType} 'RELATIONSHIP'`);
     assert.include(stdout, 'relatedAsset');
-  });*/
+  });
 });

@@ -86,7 +86,7 @@ const onHomepageLoad = async (req, res) => {
     //
     // If result.label is BAD:
     // Trigger email/ phone verification flow.
-    let result = checkForBadAction(assessmentResponse, recaptchaAction);
+    const result = checkForBadAction(assessmentResponse, recaptchaAction);
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Below code is only used to send response to the client for demo purposes.
@@ -131,7 +131,7 @@ const onSignup = async (req, res) => {
     //
     // If result.label is BAD:
     // Trigger email/ phone verification flow.
-    let result = checkForBadAction(assessmentResponse, recaptchaAction);
+    const result = checkForBadAction(assessmentResponse, recaptchaAction);
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Below code is only used to send response to the client for demo purposes.
@@ -176,7 +176,7 @@ const onLogin = async (req, res) => {
     //
     // If result.label is BAD:
     // Trigger email/ phone verification flow.
-    let result = checkForBadAction(assessmentResponse, recaptchaAction);
+    const result = checkForBadAction(assessmentResponse, recaptchaAction);
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Below code is only used to send response to the client for demo purposes.
@@ -220,7 +220,7 @@ const onStoreCheckout = async (req, res) => {
     //
     // If result.label is BAD:
     // Trigger email/ phone verification flow.
-    let result = checkForBadAction(assessmentResponse, recaptchaAction);
+    const result = checkForBadAction(assessmentResponse, recaptchaAction);
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Below code is only used to send response to the client for demo purposes.
@@ -264,7 +264,7 @@ const onCommentSubmit = async (req, res) => {
     //
     // If result.label is BAD:
     // Trigger email/ phone verification flow.
-    let result = checkForBadAction(assessmentResponse, recaptchaAction);
+    const result = checkForBadAction(assessmentResponse, recaptchaAction);
     // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
 
     // Below code is only used to send response to the client for demo purposes.

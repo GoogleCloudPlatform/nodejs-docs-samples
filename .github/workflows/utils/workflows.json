@@ -62,6 +62,7 @@
   "functions/v2/helloPubSub",
   "functions/v2/httpLogging",
   "functions/v2/log/processEntry",
+  "functions/v2/ocr/app",
   "functions/v2/tips/avoidInfiniteRetries",
   "functions/v2/tips/retry",
   "game-servers/snippets",

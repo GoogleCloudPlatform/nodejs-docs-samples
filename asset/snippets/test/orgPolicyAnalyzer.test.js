@@ -66,10 +66,7 @@ describe('org policy analyzer sample tests', () => {
     const constraint =
       'constraints/iam.allowServiceAccountCredentialLifetimeExtension';
     const stdout = execSync(`node analyzeOrgPolicies ${orgId} ${constraint}`);
-    assert.include(
-      stdout,
-      '//cloudresourcemanager.googleapis.com/' + orgId
-    );
+    assert.include(stdout, '//cloudresourcemanager.googleapis.com/' + orgId);
   });
 
   it('should analyze org policy governed assets successfully', async () => {
@@ -85,9 +82,6 @@ describe('org policy analyzer sample tests', () => {
     const stdout = execSync(
       `node analyzeOrgPolicyGovernedContainers ${orgId} ${constraint}`
     );
-    assert.include(
-      stdout,
-      '//cloudresourcemanager.googleapis.com/' + orgId
-    );
+    assert.include(stdout, '//cloudresourcemanager.googleapis.com/' + orgId);
   });
 });

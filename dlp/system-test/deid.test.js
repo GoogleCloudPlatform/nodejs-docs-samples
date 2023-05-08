@@ -310,4 +310,27 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_table_bucketing
+  it('should transform column HAPPINESS SCORE using table bucketing configs', () => {
+    let output;
+    try {
+      output = execSync(`node deIdentifyTableBucketing.js ${projectId}`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, '90:100');
+    assert.include(output, '20:30');
+    assert.include(output, '70:80');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync('node deIdentifyTableBucketing.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

@@ -43,10 +43,10 @@ function main(projectId, string) {
       },
     };
 
-    // The infoTypes of information to match
+    // Specify the type of info the inspection will look for.
     const infoTypes = [{name: 'PERSON_NAME'}, {name: 'EMAIL_ADDRESS'}];
 
-    // Construct a exclusion rule
+    // Exclude EMAIL_ADDRESS matches
     const exclusionRule = {
       excludeInfoTypes: {
         infoTypes: [{name: 'EMAIL_ADDRESS'}],
@@ -56,7 +56,9 @@ function main(projectId, string) {
           .MATCHING_TYPE_PARTIAL_MATCH,
     };
 
-    // Construct a rule set with exclusions
+    // Construct a ruleset that applies the exclusion rule to the PERSON_NAME infotype.
+    // If a PERSON_NAME match overlaps with an EMAIL_ADDRESS match, the PERSON_NAME match will
+    // be excluded.
     const ruleSet = [
       {
         infoTypes: [{name: 'PERSON_NAME'}],
@@ -68,14 +70,14 @@ function main(projectId, string) {
       },
     ];
 
-    // Construct the inspect configuration
+    // Construct the configuration for the Inspect request, including the ruleset.
     const inspectConfig = {
       infoTypes: infoTypes,
       ruleSet: ruleSet,
       includeQuote: true,
     };
 
-    // Combine configurations into a request for the service.
+    // Construct the Inspect request to be sent by the client.
     const request = {
       parent: `projects/${projectId}/locations/global`,
       inspectConfig: inspectConfig,

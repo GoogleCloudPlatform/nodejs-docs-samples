@@ -22,7 +22,6 @@
 
 async function main(scope, constraint) {
   // [START asset_quickstart_analyze_org_policy_governed_containers]
-
   const util = require('util');
   const {AssetServiceClient} = require('@google-cloud/asset');
 

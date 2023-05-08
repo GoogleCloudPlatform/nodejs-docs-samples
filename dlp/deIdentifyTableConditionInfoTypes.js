@@ -69,10 +69,10 @@ function main(projectId) {
   };
 
   async function deIdentifyTableConditionalInfoType() {
-    // Column that needs to be transformed
+    // Specify fields to be de-identified.
     const fieldIds = [{name: 'PATIENT'}, {name: 'FACTOID'}];
 
-    // Contruct InfoTypeTransformations configurations
+    // Associate info type with the replacement strategy
     const infoTypeTransformations = {
       transformations: [
         {
@@ -84,7 +84,7 @@ function main(projectId) {
       ],
     };
 
-    // Construct condition
+    // Specify when the above fields should be de-identified.
     const condition = {
       expressions: {
         conditions: {
@@ -99,7 +99,7 @@ function main(projectId) {
       },
     };
 
-    // Contruct RecordTransformations configurations
+    // Apply the condition to records.
     const recordTransformations = {
       fieldTransformations: [
         {
@@ -120,10 +120,10 @@ function main(projectId) {
         recordTransformations,
       },
     };
-    // Send the request and receive response from the service
+    // Send the request and receive response from the service.
     const [response] = await dlp.deidentifyContent(request);
 
-    // Print the results
+    // Print the results.
     console.log(
       `Table after de-identification: ${JSON.stringify(response.item.table)}`
     );

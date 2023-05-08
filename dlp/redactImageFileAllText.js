@@ -38,7 +38,7 @@ function main(projectId, filepath, outputPath) {
   // const outputPath = 'result.png';
 
   async function redactImageAllText() {
-    // Construct Redact configurations
+    // Enable redaction of all text.
     const imageRedactionConfigs = [{redactAllText: true}];
 
     // Load image
@@ -48,7 +48,8 @@ function main(projectId, filepath, outputPath) {
       ) + 1;
     const fileBytes = Buffer.from(fs.readFileSync(filepath)).toString('base64');
 
-    // Construct image redaction request
+    // Construct the Redact request to be sent by the client.
+    // Do not specify the type of info to redact.
     const request = {
       parent: `projects/${projectId}/locations/global`,
       byteItem: {
@@ -60,6 +61,8 @@ function main(projectId, filepath, outputPath) {
 
     // Run image redaction request
     const [response] = await dlp.redactImage(request);
+
+    // Parse the response and process results.
     const image = response.redactedImage;
     fs.writeFileSync(outputPath, image);
     console.log(`Saved image redaction results to path: ${outputPath}`);

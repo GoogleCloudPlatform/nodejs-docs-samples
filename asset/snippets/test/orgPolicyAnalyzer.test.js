@@ -31,7 +31,7 @@ const options = {
 };
 const datasetId = `asset_nodejs_${uuid.v4()}`.replace(/-/gi, '_');
 
-const orgId = 'organizations/474566717491'; // This is the id of ipa1.joonix.net, a test organization
+const orgId = 'organizations/474566717491'; // This is the id of ipa1.joonix.net, a test organization owned by mdb.cloud-asset-analysis-team@google.com
 
 describe('org policy analyzer sample tests', () => {
   let bucket;

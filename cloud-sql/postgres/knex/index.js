@@ -219,7 +219,7 @@ const httpGet = async (req, res) => {
         voteDiff = spacesTotalVotes - tabsTotalVotes;
       }
       leaderMessage =
-        `${leadTeam} are winning by ${voteDiff} vote` + voteDiff > 1 ? 's' : '';
+        `${leadTeam} are winning by ${voteDiff} vote` + (voteDiff > 1 ? 's' : '');
     } else {
       leaderMessage = 'TABS and SPACES are evenly matched!';
     }
@@ -295,4 +295,4 @@ exports.votes = (req, res) => {
   }
 };
 
-module.exports = app;
+module.exports.app = app;

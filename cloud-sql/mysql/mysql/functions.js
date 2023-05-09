@@ -18,5 +18,5 @@ const app = require('./index.js');
 
 // TABS vs. SPACES App for Cloud Functions
 functions.http('votes', (req, res) => {
-    app.votes(req, res)
+  app.votes(req, res);
 });

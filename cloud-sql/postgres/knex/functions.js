@@ -11,21 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+'use strict';
 
-const app = require('../index.js');
+const functions = require('@google-cloud/functions-framework');
+const app = require('./index.js');
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
+// TABS vs. SPACES App for Cloud Functions
+functions.http('votes', (req, res) => {
+  app.votes(req, res);
 });
-
-const environment = process.env.NODE_ENV || 'development';
-if (environment === 'development') {
-  process.on('unhandledRejection', err => {
-    console.error(err);
-    throw err;
-  });
-}
-
-module.exports = server;

@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,20 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+'use strict';
 
-import assert from 'assert';
-import * as cp from 'child_process';
-import {describe, it} from 'mocha';
+const functions = require('@google-cloud/functions-framework');
+const app = require('./index.js');
 
-const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
-const project = process.env.GCLOUD_PROJECT as string;
-const location = 'us-central1';
-
-describe('Quickstart', () => {
-  it('should run quickstart', async () => {
-    const output = execSync(
-      `node --loader ts-node/esm ./quickstart.ts ${project} ${location}`
-    );
-    assert(output.match(/name: projects.*/));
-  });
+// TABS vs. SPACES App for Cloud Functions
+functions.http('votes', (req, res) => {
+  app.votes(req, res);
 });

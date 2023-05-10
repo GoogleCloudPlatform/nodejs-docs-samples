@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const app = require('../index.js');
+import assert from 'assert';
+import * as cp from 'child_process';
+import {describe, it} from 'mocha';
 
-const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-  console.log('Press Ctrl+C to quit.');
-});
+const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
+const project = process.env.GCLOUD_PROJECT as string;
+const location = 'us-central1';
 
-const environment = process.env.NODE_ENV || 'development';
-if (environment === 'development') {
-  process.on('unhandledRejection', err => {
-    console.error(err);
-    throw err;
+describe('list-workflows', () => {
+  it('should run list-workflows', async () => {
+    const output = execSync(
+      `node --loader ts-node/esm ./list-workflows.ts ${project} ${location}`
+    );
+    assert(output.match(/name: projects.*/));
   });
-}
-
-module.exports = server;
+});

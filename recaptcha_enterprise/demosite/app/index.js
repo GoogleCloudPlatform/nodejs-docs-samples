@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 app.engine('html', mustacheExpress());
 app.set('view engine', 'html');
 app.set('views', __dirname + '/templates');
+app.set('view cache', false);
 
 app.use('/static', express.static('static'));
 app.use('/', router);

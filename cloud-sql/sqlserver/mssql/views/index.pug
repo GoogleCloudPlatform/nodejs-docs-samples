@@ -31,7 +31,7 @@ html(lang="en")
             h3 #{tabCount} votes
             button(id="voteTabs" class="btn green") Vote for TABS
         div(class="col s6 m5")
-          div(class=(leadTeam === 'SPACES') ? 'card-panel green lighten-3' : 'card-panel')
+          div(class=(leadTeam === 'SPACES') ? 'card-panel blue lighten-3' : 'card-panel')
             i(class="material-icons large") space_bar
             h3 #{spaceCount} votes
             button(id="voteSpaces" class="btn blue") Vote for SPACES
@@ -53,9 +53,7 @@ html(lang="en")
         xhr.onreadystatechange = function () {
           var msg = "";
           if (this.readyState == 4) {
-            if (!window.alert(this.responseText)) {
-              window.location.reload();
-            }
+            window.location.reload();
           }
         };
         xhr.open("POST", "/votes", true);

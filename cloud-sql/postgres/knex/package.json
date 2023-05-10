@@ -1,6 +1,6 @@
 {
-  "name": "appengine-cloudsql-postgres",
-  "description": "Node.js PostgreSQL sample for Cloud SQL on App Engine.",
+  "name": "cloudsql-postgres",
+  "description": "Node.js PostgreSQL sample for Cloud SQL.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -18,6 +18,7 @@
     "test": "c8 mocha test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
     "@google-cloud/logging-winston": "^5.0.0",
     "@google-cloud/secret-manager": "^4.0.0",
     "express": "^4.16.2",

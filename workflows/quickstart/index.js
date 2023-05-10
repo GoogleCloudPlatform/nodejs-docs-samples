@@ -52,6 +52,9 @@ async function executeWorkflow(projectId, location, workflow) {
   try {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
+      execution: {
+        argument: JSON.stringify({}),
+      },
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);

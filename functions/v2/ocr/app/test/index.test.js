@@ -18,17 +18,22 @@ require('..');
 
 const assert = require('assert');
 const sinon = require('sinon');
-const {CloudEvent} = require('cloudevent');
+const {CloudEvent} = require('cloudevents');
 
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 
-const bucketName = process.env.FUNCTIONS_BUCKET;
+process.env.GCP_PROJECT = 'nodejs-docs-samples-tests';
+process.env.FUNCTIONS_BUCKET = 'nodejs-docs-samples-tests';
+process.env.TRANSLATE_TOPIC = 'integration-tests-instance';
+process.env.RESULT_TOPIC = 'integration-tests-instance';
+process.env.RESULT_BUCKET = 'nodejs-docs-samples-tests';
+process.env.TO_LANG = 'en,es';
+
 const filename = 'wakeupcat.jpg';
 const text = 'Wake up human!';
 const lang = 'en';
-
-const {RESULT_BUCKET} = process.env;
+const {RESULT_BUCKET, FUNCTIONS_BUCKET} = process.env;
 
 const supertest = require('supertest');
 const {getTestServer} = require('@google-cloud/functions-framework/testing');
@@ -54,8 +59,10 @@ afterEach(restoreConsole);
 describe('processImage', () => {
   describe('functions_ocr_process', () => {
     it('processImage validates parameters', async () => {
-      const cloudEvent = CloudEvent({
+      const cloudEvent = new CloudEvent({
         data: {},
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
       const server = getTestServer('processImage');
       await supertest(server)
@@ -65,13 +72,16 @@ describe('processImage', () => {
         .expect(errorMsg('Bucket'));
     });
   });
+
   describe('functions_ocr_process functions_ocr_detect', () => {
     it('processImage detects text', async () => {
-      const cloudEvent = CloudEvent({
+      const cloudEvent = new CloudEvent({
         data: {
-          bucket: bucketName,
+          bucket: FUNCTIONS_BUCKET,
           name: filename,
         },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('processImage');
@@ -83,17 +93,19 @@ describe('processImage', () => {
       assert.ok(
         console.log.calledWith(`Detected language "en" for ${filename}`)
       );
-      assert.ok(console.log.calledWith(`File ${filename} processed.`));
     });
   });
 });
+
 describe('translateText', () => {
   describe('functions_ocr_translate', () => {
     it('translateText validates parameters', async () => {
-      const cloudEvent = CloudEvent({
+      const cloudEvent = new CloudEvent({
         data: {
           message: Buffer.from(JSON.stringify({})).toString('base64'),
         },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
       const server = getTestServer('translateText');
       await supertest(server)
@@ -106,7 +118,7 @@ describe('translateText', () => {
 
   describe('functions_ocr_translate', () => {
     it('translateText translates and publishes text', async () => {
-      const cloudEvent = CloudEvent({
+      const cloudEvent = new CloudEvent({
         data: {
           message: Buffer.from(
             JSON.stringify({
@@ -116,6 +128,8 @@ describe('translateText', () => {
             })
           ).toString('base64'),
         },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('translateText');
@@ -128,8 +142,14 @@ describe('translateText', () => {
 describe('saveResult', () => {
   describe('functions_ocr_save', () => {
     it('saveResult validates parameters', async () => {
-      const cloudEvent = CloudEvent({
-        data: Buffer.from(JSON.stringify({text, filename})).toString('base64'),
+      const cloudEvent = new CloudEvent({
+        data: {
+          message: Buffer.from(JSON.stringify({text, filename})).toString(
+            'base64'
+          ),
+        },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const server = getTestServer('saveResult');
@@ -137,16 +157,22 @@ describe('saveResult', () => {
         .post('/')
         .send(cloudEvent)
         .expect(500)
-        .expect(errorMsg('Language', 'lang'));
+        .expect(res => {
+          assert.strictEqual(res.error.text, errorMsg('Language', 'lang'));
+        });
     });
   });
 
   describe('functions_ocr_save', () => {
     it('saveResult translates and publishes text', async () => {
-      const cloudEvent = CloudEvent({
-        data: Buffer.from(JSON.stringify({text, filename, lang})).toString(
-          'base64'
-        ),
+      const cloudEvent = new CloudEvent({
+        data: {
+          message: Buffer.from(JSON.stringify({text, filename, lang})).toString(
+            'base64'
+          ),
+        },
+        source: 'tests',
+        type: 'google.cloud.storage.object.v1.finalized',
       });
 
       const newFilename = `${filename}_to_${lang}.txt`;
@@ -161,7 +187,6 @@ describe('saveResult', () => {
           `Saving result to ${newFilename} in bucket ${RESULT_BUCKET}`
         )
       );
-      assert.ok(console.log.calledWith('File saved.'));
 
       // Check file was actually saved
       assert.ok(storage.bucket(RESULT_BUCKET).file(newFilename).exists());

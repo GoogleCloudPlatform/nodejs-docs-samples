@@ -21,7 +21,6 @@ cloudbuild @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-re
 container-analysis @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Infrastructure
-asset @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 auth @GoogleCloudPlatform/googleapis-auth @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 batch @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 compute @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -76,6 +75,7 @@ video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Self-service
+asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers

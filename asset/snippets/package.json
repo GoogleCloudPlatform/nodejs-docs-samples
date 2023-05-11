@@ -12,6 +12,7 @@
   "repository": "googleapis/nodejs-asset",
   "private": true,
   "scripts": {
+    "lint": "gts lint",
     "test": "c8 mocha test --timeout 600000"
   },
   "dependencies": {
@@ -24,6 +25,7 @@
   "devDependencies": {
     "c8": "^7.13.0",
     "chai": "^4.2.0",
+    "gts": "^3.1.1",
     "mocha": "^10.0.0",
     "sinon": "^15.0.0",
     "uuid": "^9.0.0"

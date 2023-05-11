@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha test/*.js --timeout 600000"
+    "test": "c8 mocha test/*.js --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/documentai": "^7.0.0",
@@ -18,6 +18,7 @@
     "p-queue": "^6.6.2"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "uuid": "^9.0.0"

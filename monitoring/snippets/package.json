@@ -11,10 +11,11 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha --timeout 600000"
+    "test": "c8 mocha --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/monitoring": "^3.0.2",
+    "c8": "^7.13.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

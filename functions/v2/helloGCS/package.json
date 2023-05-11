@@ -12,12 +12,13 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=60000"
+    "test": "c8 mocha test/*.test.js --timeout=60000"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.0.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "sinon": "^15.0.0",
     "supertest": "^6.0.0"

@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
+    "test": "c8 mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "author": "Yuri Grinshteyn",
   "license": "Apache-2.0",
@@ -16,6 +16,7 @@
     "node-stopwatch": "^0.0.1"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "supertest": "^6.1.3"
   }

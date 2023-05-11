@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/index.test.js --exit",
-    "system-test": "NAME=Cloud mocha test/system.test.js --timeout=180000"
+    "test": "c8 mocha test/index.test.js --exit",
+    "system-test": "NAME=Cloud c8 mocha test/system.test.js --timeout=180000"
   },
   "engines": {
     "node": ">= 12.0.0"
@@ -18,6 +18,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "google-auth-library": "^8.0.0",
     "got": "^11.0.0",
     "mocha": "^10.0.0",

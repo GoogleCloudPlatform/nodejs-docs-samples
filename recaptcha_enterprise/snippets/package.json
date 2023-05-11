@@ -15,13 +15,13 @@
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
-    "test": "mocha --loader=ts-node/esm --extension ts --timeout 10000 --exit"
+    "test": "c8 mocha --loader=ts-node/esm --extension ts --timeout 10000 --exit"
   },
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^3.2.0",
-    "recaptcha-password-check-helpers": "^1.0.1",
     "body-parser": "^1.20.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "recaptcha-password-check-helpers": "^1.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",
@@ -29,6 +29,7 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.15.11",
     "@types/yargs": "^17.0.19",
+    "c8": "^7.13.0",
     "chai": "^4.3.7",
     "eslint": "^8.34.0",
     "gts": "^3.1.1",

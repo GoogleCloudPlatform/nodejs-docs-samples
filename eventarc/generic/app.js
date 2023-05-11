@@ -21,7 +21,7 @@ app.post('/', (req, res) => {
   console.log('Event received!');
 
   console.log('HEADERS:');
-  delete req.headers.Authorization; // do not log authorization header
+  delete req.headers.authorization; // do not log authorization header
   console.log(JSON.stringify(req.headers));
 
   console.log('BODY:');

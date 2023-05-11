@@ -159,4 +159,31 @@ describe('redact', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_redact_image_all_text
+  it('should redact all text detected in an image', async () => {
+    const testName = 'redact-all-text';
+    const output = execSync(
+      `node redactImageFileAllText.js ${projectId} ${testImage} ${testName}.actual.png`
+    );
+    assert.match(output, /Saved image redaction results to path/);
+    const difference = await getImageDiffPercentage(
+      `${testName}.actual.png`,
+      `${testResourcePath}/${testName}.expected.png`
+    );
+    assert.isBelow(difference, 0.1);
+  });
+
+  it('should report any error while redacting all text from an image', () => {
+    const testName = 'redact-all-text';
+    let output;
+    try {
+      output = execSync(
+        `node redactImageFileAllText.js BAD_PROJECT_ID ${testImage} ${testName}.actual.png`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

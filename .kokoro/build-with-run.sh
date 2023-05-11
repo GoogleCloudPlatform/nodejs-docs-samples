@@ -22,6 +22,9 @@ _run_error_log() {
 
 trap '_run_error_log' ERR
 
+# Unsetting to use latest python 3 than python 2
+unset CLOUDSDK_PYTHON
+
 # Activate mocha config
 export MOCHA_REPORTER_OUTPUT=${PROJECT}_sponge_log.xml
 export MOCHA_REPORTER=xunit

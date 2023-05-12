@@ -18,8 +18,8 @@
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.6",
-    "gts": "^3.1.1",
     "c8": "^7.13.0",
+    "gts": "^3.1.1",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1"
   }

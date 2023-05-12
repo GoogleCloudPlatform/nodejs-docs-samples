@@ -11,7 +11,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha test --timeout 1200000"
+    "test": "c8 mocha test --timeout 1200000"
   },
   "dependencies": {
     "@google-cloud/compute": "^3.5.1",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@google-cloud/storage": "^6.0.0",
+    "c8": "^7.13.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "proxyquire": "^2.0.1",

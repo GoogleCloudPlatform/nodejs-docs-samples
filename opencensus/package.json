@@ -14,13 +14,14 @@
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "mocha -- system-test/*.test.js --timeout=5000 --exit"
+    "test": "c8 mocha -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
     "@opencensus/core": "^0.1.0",
     "@opencensus/exporter-stackdriver": "^0.1.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0"
   }
 }

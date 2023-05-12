@@ -14,8 +14,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --timeout=120000 --exit",
-    "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
+    "test": "c8 mocha test/app.test.js --timeout=120000 --exit",
+    "system-test": "c8 mocha test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {
     "express": "^4.16.2",
@@ -28,6 +28,7 @@
     "winston": "3.8.2"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "got": "^11.7.0",
     "mocha": "^10.0.0",
     "short-uuid": "^4.1.0",

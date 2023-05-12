@@ -158,8 +158,8 @@ def fix_hermetic(targets: str = ".", hide_output: bool = False) -> None:
 # Update typeless-sample-bot
 old_path = os.getcwd()
 os.chdir("/synthtool")
-logger.debug("Update typeless sample bot [1.3.0]")
-shell.run(["npm", "i", "@google-cloud/typeless-sample-bot@1.3.0"])
+logger.debug("Update typeless sample bot [1.3.2]")
+shell.run(["npm", "i", "@google-cloud/typeless-sample-bot@1.3.2"])
 os.chdir(old_path)
 
 # Avoid "Your cache folder contains root-owned files" error

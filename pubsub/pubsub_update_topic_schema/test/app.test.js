@@ -13,20 +13,10 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const sinon = require('sinon');
-
 describe('Unit Tests', () => {
-  before(() => {
-  
-  });
+  before(() => {});
 
-  describe('should fail', () => {
-  
-  });
+  describe('should fail', () => {});
 
-  describe('should succeed', () => {
-  
-  });
+  describe('should succeed', () => {});
 });

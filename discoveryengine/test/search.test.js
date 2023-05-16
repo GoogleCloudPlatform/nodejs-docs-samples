@@ -27,6 +27,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 const LOCATION = 'global';
 const SEARCH_ENGINE_ID = 'cloud-google-com_1684250565013';
+const COLLECTION_ID = 'default_collection';
 const SERVING_CONFIG_ID = 'default_config';
 const SEARCH_QUERY = 'Google';
 
@@ -37,11 +38,11 @@ describe('Search', () => {
   });
   it('should run genappbuilder search (v1beta)', async () => {
     const stdout = execSync(
-      `node ./search.js ${projectId} ${LOCATION} ${SEARCH_ENGINE_ID} ${SERVING_CONFIG_ID} ${SEARCH_QUERY}`,
+      `node ./search.js ${projectId} ${LOCATION} ${COLLECTION_ID} ${SEARCH_ENGINE_ID} ${SERVING_CONFIG_ID} ${SEARCH_QUERY}`,
       {
         cwd,
       }
     );
-    assert.match(stdout.toString(), /Google/);
+    assert.match(stdout.toString(), /google/);
   });
 });

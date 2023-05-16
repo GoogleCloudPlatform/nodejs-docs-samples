@@ -18,6 +18,7 @@
 async function main(
   projectId,
   location,
+  collectionId,
   searchEngineId,
   servingConfigId,
   searchQuery
@@ -28,6 +29,7 @@ async function main(
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';              // Options: 'global'
+  // const collectionId = 'default_collection';     // Options: 'default_collection'
   // const searchEngineId = 'YOUR_SEARCH_ENGINE_ID' // Create in Cloud Console
   // const servingConfigId = 'default_config';      // Options: 'default_config'
   // const searchQuery = 'Google';
@@ -39,18 +41,20 @@ async function main(
 
   async function search() {
     // The full resource name of the search engine serving configuration.
-    // Example: projects/{projectId}/locations/{location}/dataStores/{searchEngineId}/servingConfigs/{servingConfigId}
+    // Example: projects/{projectId}/locations/{location}/collections/{collectionId}/dataStores/{searchEngineId}/servingConfigs/{servingConfigId}
     // You must create a search engine in the Cloud Console first.
-    const name = client.projectLocationDataStoreServingConfigPath(
+    const name = client.projectLocationCollectionDataStoreServingConfigPath(
       projectId,
       location,
+      collectionId,
       searchEngineId,
       servingConfigId
     );
 
     const request = {
-      name,
+      pageSize: 10,
       query: searchQuery,
+      servingConfig: name,
     };
 
     // Perform search request

@@ -23,6 +23,6 @@
   "devDependencies": {
     "c8": "^7.13.0",
     "mocha": "^10.0.0",
-    "puppeteer": "^19.7.2"
+    "puppeteer": "^20.0.0"
   }
 }

@@ -26,7 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
 const LOCATION = 'global';
-const SEARCH_ENGINE_ID = '';
+const SEARCH_ENGINE_ID = 'cloud-google-com_1684250565013';
 const SERVING_CONFIG_ID = 'default_config';
 const SEARCH_QUERY = 'Google';
 

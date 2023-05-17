@@ -16,7 +16,8 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const webhook = require('../webhooks');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+require('../webhooks');
 
 const request = {
   body: {
@@ -39,7 +40,9 @@ describe('create agent', () => {
       },
     };
 
-    webhook.handleWebhook(JSON.parse(temp), res);
+    const handleWebhook = getFunction('handleWebhook');
+
+    handleWebhook(JSON.parse(temp), res);
     assert.include(response, 'Hello from a GCF Webhook');
   });
 });

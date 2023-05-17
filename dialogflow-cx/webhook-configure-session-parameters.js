@@ -17,8 +17,9 @@
  */
 
 // [START dialogflow_cx_v3_webhook_configure_session_parameters]
+const functions = require('@google-cloud/functions-framework');
 
-exports.configureSessionParams = (request, response) => {
+functions.http('configureSessionParams', (request, response) => {
   // Session parameter configured by the webhook
   const orderNumber = 123;
 
@@ -31,5 +32,5 @@ exports.configureSessionParams = (request, response) => {
   };
 
   response.send(jsonResponse);
-};
+});
 // [END dialogflow_cx_v3_webhook_configure_session_parameters]

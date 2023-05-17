@@ -17,8 +17,9 @@
  */
 
 // [START dialogflow_cx_v3_configure_webhooks_to_set_form_parameter_as_optional_or_required]
+const functions = require('@google-cloud/functions-framework');
 
-exports.configureOptionalFormParam = (request, response) => {
+functions.http('configureOptionalFormParam', (request, response) => {
   // The value of the parameter that the webhook will set as optional or required.
   // Note that the webhook cannot add or remove any form parameter
 
@@ -44,5 +45,5 @@ exports.configureOptionalFormParam = (request, response) => {
   );
 
   response.send(jsonResponse);
-};
+});
 // [END dialogflow_cx_v3_configure_webhooks_to_set_form_parameter_as_optional_or_required]

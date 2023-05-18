@@ -32,7 +32,8 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const webhook = require('../webhook-configure-session-parameters');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+require('../webhook-configure-session-parameters');
 
 describe('configure session parameters', () => {
   it('should test that webhook adds new session parameter', async () => {
@@ -52,7 +53,9 @@ describe('configure session parameters', () => {
       },
     };
 
-    webhook.configureSessionParams(JSON.parse(temp), res);
+    const configureSessionParams = getFunction('configureSessionParams');
+
+    configureSessionParams(JSON.parse(temp), res);
     assert.include(response, 'orderNumber');
   });
 });

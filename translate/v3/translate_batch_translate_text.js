@@ -55,8 +55,9 @@ function main(
       },
     };
 
+    // Setup timeout for long-running operation. Timeout specified in ms.
     const options = {timeout: 240000};
-    // Batch translate text using a long-running operation
+    // Batch translate text using a long-running operation with a timeout of 240000ms.
     const [operation] = await translationClient.batchTranslateText(
       request,
       options

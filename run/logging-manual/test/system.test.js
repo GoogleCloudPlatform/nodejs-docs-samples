@@ -164,7 +164,9 @@ describe('Logging', () => {
           5
         )}"`;
         entries = await getLogEntriesPolling(filter);
-        console.log(`Found ${entries.length} log entries using filter: ${filter}`);
+        console.log(
+          `Found ${entries.length} log entries using filter: ${filter}`
+        );
         entries.forEach(entry => {
           console.debug(entry);
           if (entry.metadata.httpRequest) {

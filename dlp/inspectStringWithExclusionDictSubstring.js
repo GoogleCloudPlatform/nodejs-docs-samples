@@ -51,7 +51,12 @@ function main(projectId, string, excludedSubstringList) {
 
     // Specify the type of info the inspection will look for.
     // See https://cloud.google.com/dlp/docs/infotypes-reference for complete list of info types.
-    const infoTypes = [{name: 'EMAIL_ADDRESS'}];
+    const infoTypes = [
+      {name: 'EMAIL_ADDRESS'},
+      {name: 'DOMAIN_NAME'},
+      {name: 'PHONE_NUMBER'},
+      {name: 'PERSON_NAME'},
+    ];
 
     // Exclude partial matches from the specified excludedSubstringList.
     const exclusionRule = {

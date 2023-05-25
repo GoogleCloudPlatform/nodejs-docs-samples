@@ -156,14 +156,19 @@ describe('Logging', () => {
       let attempt = 0;
       const maxAttempts = 10;
       while ((!requestLog || !sampleLog) && attempt < maxAttempts) {
-        await sleep(attempt * 30000); // Linear backoff between retry attempts
+        console.log(`Polling for logs: attempt #${attempt + 1}`);
+        await sleep(attempt * 10000); // Linear backoff between retry attempts
         // Filter by service name over the last 5 minutes
         const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
           new Date(),
           5
         )}"`;
         entries = await getLogEntriesPolling(filter);
+        console.log(
+          `Found ${entries.length} log entries using filter: ${filter}`
+        );
         entries.forEach(entry => {
+          console.debug(entry);
           if (entry.metadata.httpRequest) {
             requestLog = entry;
           } else {

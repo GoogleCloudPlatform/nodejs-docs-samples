@@ -1,6 +1,6 @@
 {
-  "name": "cloudsql-mysql-mysql",
-  "description": "Node.js Cloud SQL MySQL Connectivity Sample",
+  "name": "cloudsql-mysql",
+  "description": "Node.js MySQL sample for Cloud SQL",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
@@ -13,11 +13,12 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "system-test": "mocha test/server.test.js --timeout=60000 --exit",
-    "system-test-unix": "mocha test/server-unix.test.js --timeout=60000 --exit",
+    "system-test": "c8 mocha test/server.test.js --timeout=60000 --exit",
+    "system-test-unix": "c8 mocha test/server-unix.test.js --timeout=60000 --exit",
     "test": "npm run system-test && npm run system-test-unix"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
     "@google-cloud/logging-winston": "^5.0.0",
     "@google-cloud/secret-manager": "^4.0.0",
     "express": "^4.17.1",
@@ -26,6 +27,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "supertest": "^6.0.0"
   }

@@ -37,6 +37,7 @@ path:
     datastore: "datastore"
     dialogflow: "dialogflow"
     dialogflow-cx: "dialogflow"
+    discoveryengine: "discoveryengine"
     dlp: "dlp"
     document-ai: "documentai"
     endpoints: "endpoints"

@@ -13,13 +13,14 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=20000 --exit"
+    "test": "c8 mocha test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.2",
     "redis": "^4.0.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "mocha": "^10.0.0",
     "sinon": "^15.0.0"
   }

@@ -15,7 +15,7 @@
 const app = require('../index.js');
 
 const PORT = parseInt(process.env.PORT) || 8080;
-const server = app.listen(PORT, () => {
+const server = app.app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });

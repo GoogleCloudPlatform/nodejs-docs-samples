@@ -10,14 +10,15 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha --timeout 1200000 test/*.js"
+    "test": "c8 mocha --timeout 1200000 test/*.js"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^2.3.0",
-    "@google-cloud/storage": "^6.0.0",
-    "@google-cloud/bigquery": "^6.0.0"
+    "@google-cloud/bigquery": "^6.0.0",
+    "@google-cloud/storage": "^6.0.0"
   },
   "devDependencies": {
+    "c8": "^7.13.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "uuid": "^9.0.0"

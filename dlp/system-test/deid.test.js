@@ -260,4 +260,54 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_table_condition_infotypes
+  it('should redact PERSON_NAME findings when conditions are met', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableConditionInfoTypes.js ${projectId}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notInclude(output, 'Charles Dickens');
+    assert.include(output, 'Jane Austen');
+    assert.include(output, 'Mark Twain');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableConditionInfoTypes.js BAD_PROJECT_ID'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_table_row_suppress
+  it('should suppress a row if conditions are met', () => {
+    let output;
+    try {
+      output = execSync(`node deIdentifyTableRowSuppress.js ${projectId}`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notInclude(output, 'Charles Dickens');
+    assert.include(output, 'Jane Austen');
+    assert.include(output, 'Mark Twain');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync('node deIdentifyTableRowSuppress.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

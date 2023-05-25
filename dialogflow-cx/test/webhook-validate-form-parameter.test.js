@@ -32,7 +32,8 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const webhook = require('../webhook-validate-form-parameter');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+require('../webhook-validate-form-parameter');
 
 describe('configure session parameters', () => {
   it('should test that webhook invalidates form parameter', async () => {
@@ -52,7 +53,9 @@ describe('configure session parameters', () => {
       },
     };
 
-    webhook.validateParameter(JSON.parse(temp), res);
+    const validateParameter = getFunction('validateParameter');
+
+    validateParameter(JSON.parse(temp), res);
     assert.include(response, 'INVALID');
   });
 });

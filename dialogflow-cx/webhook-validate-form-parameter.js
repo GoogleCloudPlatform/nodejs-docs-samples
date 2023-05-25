@@ -17,11 +17,11 @@
  */
 
 // [START dialogflow_cx_v3_webhook_validate_form_parameter]
+const functions = require('@google-cloud/functions-framework');
 
-exports.validateParameter = (request, response) => {
+functions.http('validateParameter', (request, response) => {
   // Webhook will validate or invalidate parameter based on logic configured by the user.
   // Access parameter values through the webhook request via `request.body.pageInfo.formInfo.parameterInfo[]`
-
   const jsonResponse = {
     page_info: {
       form_info: {
@@ -44,5 +44,5 @@ exports.validateParameter = (request, response) => {
   };
 
   response.send(jsonResponse);
-};
+});
 // [END dialogflow_cx_v3_webhook_validate_form_parameter]

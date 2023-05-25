@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "mocha system-test --timeout 600000"
+    "test": "c8 mocha system-test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/vision": "^3.1.2",
@@ -23,6 +23,7 @@
     "@google-cloud/storage": "^6.9.3",
     "@types/uuid": "^9.0.1",
     "@types/yargs": "^17.0.22",
+    "c8": "^7.13.0",
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
     "uuid": "^9.0.0"

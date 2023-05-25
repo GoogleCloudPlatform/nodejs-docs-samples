@@ -15,8 +15,9 @@
 'use strict';
 
 // [START dialogflow_cx_webhook]
+const functions = require('@google-cloud/functions-framework');
 
-exports.handleWebhook = (request, response) => {
+functions.http('handleWebhook', (request, response) => {
   const tag = request.body.fulfillmentInfo.tag;
   let text = '';
 
@@ -42,5 +43,5 @@ exports.handleWebhook = (request, response) => {
   };
 
   response.send(jsonResponse);
-};
+});
 // [END dialogflow_cx_webhook]

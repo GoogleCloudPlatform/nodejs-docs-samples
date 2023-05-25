@@ -32,7 +32,8 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const webhook = require('../configure-webhook-to-set-form-parameter-as-optional-or-required');
+const {getFunction} = require('@google-cloud/functions-framework/testing');
+require('../configure-webhook-to-set-form-parameter-as-optional-or-required');
 
 describe('configure optional or required form parameter', () => {
   it('should test that webhook sets parameter as required', async () => {
@@ -62,7 +63,11 @@ describe('configure optional or required form parameter', () => {
       },
     };
 
-    webhook.configureOptionalFormParam(JSON.parse(temp), res);
+    const configureOptionalFormParam = getFunction(
+      'configureOptionalFormParam'
+    );
+
+    configureOptionalFormParam(JSON.parse(temp), res);
     assert.include(response, '"required":true');
   });
 });

@@ -499,4 +499,25 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_string_with_exclusion_dict_substring
+  it('should inspect using exclusion word list (substring)', () => {
+    const output = execSync(
+      `node inspectStringWithExclusionDictSubstring.js ${projectId} "Some email addresses: gary@example.com, TEST@example.com" TEST`
+    );
+    assert.notMatch(output, /Quote: TEST@example.com/);
+    assert.match(output, /Quote: gary@example.com/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringWithExclusionDictSubstring.js BAD_PROJECT_ID "Some email addresses: gary@example.com, TEST@example.com" TEST'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

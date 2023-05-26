@@ -24,6 +24,8 @@ const DLP = require('@google-cloud/dlp');
 
 const bucket = 'nodejs-dlp-test-bucket';
 const dataProject = 'long-door-651';
+const datasetId = 'YOUR_DATASET_ID';
+const tableId = 'YOUR_TABLE_ID';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -514,6 +516,31 @@ describe('inspect', () => {
     try {
       output = execSync(
         'node inspectStringWithExclusionDictSubstring.js BAD_PROJECT_ID "Some email addresses: gary@example.com, TEST@example.com" TEST'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_bigquery_with_sampling
+  it.skip('should inspect a Bigquery table with sampling', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectBigQueryTableWithSampling.js ${projectId} ${dataProject} ${datasetId} ${tableId} ${topicName} ${subscriptionName}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /Found \d instance\(s\) of infoType PERSON_NAME/);
+  });
+
+  it.skip('should handle errors while inspecting table', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectBigQueryTableWithSampling.js BAD_PROJECT_ID ${dataProject} ${datasetId} ${tableId} ${topicName} ${subscriptionName}`
       );
     } catch (err) {
       output = err.message;

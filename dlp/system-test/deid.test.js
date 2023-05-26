@@ -30,6 +30,8 @@ const csvFile = 'resources/dates.csv';
 const tempOutputFile = path.join(__dirname, 'temp.result.csv');
 const dateShiftAmount = 30;
 const dateFields = 'birth_date,register_date';
+const keyName = 'KEY_NAME';
+const wrappedKey = 'WRAPPED_KEY';
 
 const client = new DLP.DlpServiceClient();
 describe('deid', () => {
@@ -356,5 +358,30 @@ describe('deid', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_table_fpe
+  it.skip('should de-identify table using Format Preserving Encryption (FPE)', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithFpe.js ${projectId} NUMERIC "${keyName}" "${wrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /"stringValue":"11111"/);
+  });
+
+  it.skip('should handle de-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithFpe.js ${projectId} NUMERIC "BAD_KEY_NAME" "BAD_KEY_NAME NUMERIC"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'invalid encoding');
   });
 });

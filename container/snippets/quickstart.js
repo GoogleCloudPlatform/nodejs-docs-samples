@@ -30,6 +30,7 @@ async function main() {
       zone: zone,
     };
 
+    // Nim: Testing a change to understand the GitHub checks inside this repo.
     const [response] = await client.listClusters(request);
     console.log('Clusters: ', response);
   }

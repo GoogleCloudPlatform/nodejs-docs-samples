@@ -32,6 +32,7 @@ async function main() {
 
     // Nim: Testing a change to understand the GitHub checks inside this repo.
     const [response] = await client.listClusters(request);
+    console.log('Nim: Placeholder change.');
     console.log('Clusters: ', response);
   }
   quickstart();

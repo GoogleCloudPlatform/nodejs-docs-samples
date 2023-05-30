@@ -333,4 +333,31 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_time_extract
+  it('should replace sensitive data in a string using time extraction', () => {
+    let output;
+    const string = 'My BirthDay is on 9/21/1976';
+    try {
+      output = execSync(
+        `node deidentifyWithTimeExtraction.js ${projectId} "${string}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /My BirthDay is on 1976/);
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    const string = 'My BirthDay is on 9/21/1976';
+    try {
+      output = execSync(
+        `node deidentifyWithTimeExtraction.js BAD_PROJECT_ID "${string}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

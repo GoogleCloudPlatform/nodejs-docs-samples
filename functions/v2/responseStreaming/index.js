@@ -20,7 +20,11 @@
 const {BigQuery} = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
 const functions = require('@google-cloud/functions-framework');
-
+async function processRows(rows, res) {
+  for (const row of rows) {
+    res.write(row['abstract'] + '\n');
+  }
+}
 /**
  * HTTP Cloud Function that streams BigQuery query results
  *
@@ -41,12 +45,7 @@ functions.http('streamBigQuery', async (req, res) => {
   try {
     // Execute the query
     const [rows] = await bigquery.query(options);
-    async function processRows() {
-      for (const row of rows) {
-        res.write(row["abstract"] + "\n");
-      }
-    }
-    await processRows();
+    await processRows(rows, res);
     res.status(200).end();
   } catch (err) {
     console.error(err);

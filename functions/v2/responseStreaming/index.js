@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START functions_response_streaming]
+// [START functions_stream_bigquery]
 
 // Import the Google Cloud client library
 const {BigQuery} = require('@google-cloud/bigquery');
@@ -53,4 +53,4 @@ functions.http('streamBigQuery', async (req, res) => {
   }
 });
 
-// [END functions_response_streaming]
+// [END functions_stream_bigquery]

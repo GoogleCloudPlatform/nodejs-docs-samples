@@ -14,12 +14,12 @@
 
 const assert = require('assert');
 const request = require('got');
-const { Logging } = require('@google-cloud/logging');
-const { execSync } = require('child_process');
-const { GoogleAuth } = require('google-auth-library');
+const {Logging} = require('@google-cloud/logging');
+const {execSync} = require('child_process');
+const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
-const { promisify } = require('util');
+const {promisify} = require('util');
 const setTimeoutPromise = promisify(setTimeout);
 
 // Support concurrency by setting the service name to something unique.
@@ -51,7 +51,7 @@ const getLogEntries = async filter => {
   const preparedFilter = `resource.type="cloud_run_revision" severity!="default" ${filter}  NOT protoPayload.serviceName="run.googleapis.com"`;
   const entries = await logging.getEntries({
     filter: preparedFilter,
-    autoPaginate: false
+    autoPaginate: false,
   });
 
   return entries;
@@ -71,18 +71,18 @@ describe('Logging', () => {
   let sampleLog;
 
   describe('Live Service', () => {
-    const { GOOGLE_CLOUD_PROJECT } = process.env;
+    const {GOOGLE_CLOUD_PROJECT} = process.env;
     if (!GOOGLE_CLOUD_PROJECT) {
       throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
     }
-    let { SERVICE_NAME } = process.env;
+    let {SERVICE_NAME} = process.env;
     if (!SERVICE_NAME) {
       SERVICE_NAME = 'logging-manual';
       console.log(
         `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
       );
     }
-    const { SAMPLE_VERSION } = process.env;
+    const {SAMPLE_VERSION} = process.env;
     const PLATFORM = 'managed';
     const REGION = 'us-central1';
 
@@ -97,7 +97,7 @@ describe('Logging', () => {
 
       try {
         console.log('Starting Cloud Build...');
-        execSync(buildCmd, { timeout: 240000 }); // timeout at 4 mins
+        execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
         console.log('Cloud Build completed.');
       } catch (err) {
         console.error(err); // Ignore timeout error
@@ -106,7 +106,7 @@ describe('Logging', () => {
       // Retrieve URL of Cloud Run service
       const url = execSync(
         `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+          `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
       );
 
       BASE_URL = url.toString('utf-8').trim();
@@ -211,7 +211,7 @@ describe('Logging', () => {
 
   describe('Cloud Run Log Metadata', () => {
     it('has expected label properties', () => {
-      const { labels, resource } = sampleLog.metadata;
+      const {labels, resource} = sampleLog.metadata;
 
       assert(labels.instanceId, "'labels.instanceId' found in the log entry");
       assert(

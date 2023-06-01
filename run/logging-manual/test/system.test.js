@@ -164,12 +164,12 @@ describe('Logging', () => {
         console.log(`Polling for logs: attempt #${attempt + 1}`);
         await sleep(attempt * 10000); // Linear backoff between retry attempts
         entries = await getLogEntriesPolling(filter);
-        console.log('Found ${entries.length} log entries');
+        console.log(`Found ${entries.length} log entries.`);
         entries.forEach(entry => {
           console.debug(entry);
           if (entry.metadata.httpRequest) {
             requestLog = entry;
-          } else {
+          } else if (entry.data.message) {
             sampleLog = entry;
           }
         });

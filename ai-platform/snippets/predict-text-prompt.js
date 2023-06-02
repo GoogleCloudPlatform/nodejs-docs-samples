@@ -27,18 +27,18 @@ async function main(project, location = 'us-central1') {
   const aiplatform = require('@google-cloud/aiplatform');
 
   // Imports the Google Cloud Prediction service client
-  const { PredictionServiceClient } = aiplatform.v1;
+  const {PredictionServiceClient} = aiplatform.v1;
 
   // Import the helper module for converting arbitrary protobuf.Value objects.
-  const { helpers } = aiplatform;
+  const {helpers} = aiplatform;
 
   // Specifies the location of the api endpoint
   const clientOptions = {
     apiEndpoint: 'us-central1-aiplatform.googleapis.com',
   };
 
-  const publisher = "google"
-  const model = 'text-bison@001'
+  const publisher = 'google';
+  const model = 'text-bison@001';
 
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
@@ -47,7 +47,10 @@ async function main(project, location = 'us-central1') {
     // Configure the parent resource
     const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
 
-    const prompt = { prompt: "Give me ten interview questions for the role of program manager." }
+    const prompt = {
+      prompt:
+        'Give me ten interview questions for the role of program manager.',
+    };
     const instanceValue = helpers.toValue(prompt);
     const instances = [instanceValue];
 
@@ -56,7 +59,7 @@ async function main(project, location = 'us-central1') {
       maxOutputTokens: 5,
       topP: 0.95,
       topK: 40,
-    }
+    };
     const parameters = helpers.toValue(parameter);
 
     const request = {

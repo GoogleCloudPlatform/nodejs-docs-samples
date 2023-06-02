@@ -16,11 +16,11 @@
 
 'use strict';
 
-const { assert } = require('chai');
-const { after, describe, it } = require('mocha');
+const {assert} = require('chai');
+const {after, describe, it} = require('mocha');
 
 const cp = require('child_process');
-const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const project = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';

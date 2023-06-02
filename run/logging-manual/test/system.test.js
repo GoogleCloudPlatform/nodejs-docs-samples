@@ -47,11 +47,11 @@ const getLogEntriesPolling = async (filter, max_attempts) => {
 };
 
 const getLogEntries = async filter => {
+  console.debug(`Log filter: ${filter}`);
   const preparedFilter = `resource.type="cloud_run_revision" severity!="default" ${filter}  NOT protoPayload.serviceName="run.googleapis.com"`;
   const entries = await logging.getEntries({
     filter: preparedFilter,
     autoPaginate: false,
-    pageSize: 2,
   });
 
   return entries;
@@ -155,23 +155,21 @@ describe('Logging', () => {
       let entries;
       let attempt = 0;
       const maxAttempts = 10;
+      // Filter by service name over the last 5 minutes
+      const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
+        new Date(),
+        5
+      )}"`;
       while ((!requestLog || !sampleLog) && attempt < maxAttempts) {
         console.log(`Polling for logs: attempt #${attempt + 1}`);
         await sleep(attempt * 10000); // Linear backoff between retry attempts
-        // Filter by service name over the last 5 minutes
-        const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
-          new Date(),
-          5
-        )}"`;
         entries = await getLogEntriesPolling(filter);
-        console.log(
-          `Found ${entries.length} log entries using filter: ${filter}`
-        );
+        console.log(`Found ${entries.length} log entries.`);
         entries.forEach(entry => {
           console.debug(entry);
           if (entry.metadata.httpRequest) {
             requestLog = entry;
-          } else {
+          } else if (entry.data.message) {
             sampleLog = entry;
           }
         });

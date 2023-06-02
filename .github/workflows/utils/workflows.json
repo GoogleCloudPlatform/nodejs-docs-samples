@@ -29,7 +29,7 @@
   "compute",
   "contact-center-insights",
   "container-analysis/snippets",
-  "container/snippets",
+  "container",
   "datacatalog/cloud-client",
   "datacatalog/snippets",
   "datalabeling",

@@ -13,9 +13,9 @@
     "test": "c8 mocha --timeout 1200000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/aiplatform": "^2.3.0",
-    "@google-cloud/bigquery": "^6.0.0",
-    "@google-cloud/storage": "^6.0.0"
+    "@google-cloud/aiplatform": "^2.14.0",
+    "@google-cloud/bigquery": "^6.2.0",
+    "@google-cloud/storage": "^6.10.1"
   },
   "devDependencies": {
     "c8": "^7.13.0",

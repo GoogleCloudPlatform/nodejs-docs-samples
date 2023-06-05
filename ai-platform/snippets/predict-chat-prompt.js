@@ -48,21 +48,19 @@ async function main(project, location = 'us-central1') {
 
     const prompt = {
       context:
-        'My name is Ned. You are my personal assistant. My favorite movies are Lord of the Rings and Hobbit.',
+        'My name is Miles. You are an astronomer, knowledgeable about the solar system.',
       examples: [
         {
-          input: {content: 'Who do you work for?'},
-          output: {content: 'I work for Ned.'},
-        },
-        {
-          input: {content: 'What do I like?'},
-          output: {content: 'Ned likes watching movies.'},
+          input: {content: 'How many moons does Mars have?'},
+          output: {
+            content: 'The planet Mars has two moons, Phobos and Deimos.',
+          },
         },
       ],
       messages: [
         {
           author: 'user',
-          content: 'Are my favorite movies based on a book series?',
+          content: 'How many planets are there in the solar system?',
         },
       ],
     };

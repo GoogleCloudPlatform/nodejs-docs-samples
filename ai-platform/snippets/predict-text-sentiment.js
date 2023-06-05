@@ -67,9 +67,8 @@ async function main(project, location = 'us-central1') {
     
     My family has watched Arthur Bach stumble and stammer since the movie first \
     came out. We have most lines memorized. I watched it two weeks ago and still \
-    get tickled at the simple humor and view-at-life that Dudley Moore portrays. \
-    Liza Minelli did a wonderful job as the side kick - though I'm not her \
-    biggest fan. This movie makes me just enjoy watching movies. My favorite scene \
+    get tickled at the simple humor and view-at-life. \
+    This movie makes me just enjoy watching movies. My favorite scene \
     is when Arthur is visiting his fiancée's house. His conversation with the \
     butler and Susan's father is side-spitting. The line from the butler, \
     "Would you care to wait in the Library" followed by Arthur's reply, \
@@ -77,11 +76,6 @@ async function main(project, location = 'us-central1') {
     notification on my computer.
     Classify the sentiment of the message: positive
     
-    This Charles outing is decent but this is a pretty low-key performance. Marlon \
-    Brando stands out. There's a subplot with Mira Sorvino and Donald Sutherland \
-    that forgets to develop and it hurts the film a little. I'm still trying to \
-    figure out why Charlie want to change his name.
-    Classify the sentiment of the message: negative
     
     Tweet: The Pixel 7 Pro, is too big to fit in my jeans pocket, so I bought \
     new jeans.

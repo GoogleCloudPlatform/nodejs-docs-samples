@@ -61,16 +61,16 @@ async function main(project, location = 'us-central1') {
     Text: Quit smoking?
     The answer is: health
     
-    Text: Roger Federer reveals why he touched Rafael Nadals hand while they were crying
+    Text: Best soccer game of the season?
     The answer is: sports
     
-    Text: Business relief from Arizona minimum-wage hike looking more remote
+    Text: This stock continues to soar.
     The answer is: business
     
-    Text: #TomCruise has arrived in Bari, Italy for #MissionImpossible.
+    Text: What movie should I watch this week?
     The answer is: entertainment
     
-    Text: CNBC Reports Rising Digital Profit as Print Advertising Falls
+    Text: Airlines expect to make $10 billion this year despite economic slowdown
     The answer is:
     `,
     };

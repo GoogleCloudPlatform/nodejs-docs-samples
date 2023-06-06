@@ -16,16 +16,19 @@
 
 const {assert} = require('chai');
 const {describe, it, before, after, afterEach} = require('mocha');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 const cp = require('child_process');
 const {PubSub} = require('@google-cloud/pubsub');
 const pubsub = new PubSub();
 const uuid = require('uuid');
 const DLP = require('@google-cloud/dlp');
 
+const {MOCK_DATA} = require('./mockdata');
 const bucket = 'nodejs-dlp-test-bucket';
-const dataProject = 'long-door-651';
-const datasetId = 'YOUR_DATASET_ID';
-const tableId = 'YOUR_TABLE_ID';
+const dataProject = 'bigquery-public-data';
+const datasetId = 'samples';
+const tableId = 'github_nested';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -52,6 +55,8 @@ describe('inspect', () => {
 
   // Delete DLP job created in the snippets.
   afterEach(async () => {
+    sinon.restore();
+    if (!jobName) return;
     const request = {
       name: jobName,
     };
@@ -524,27 +529,137 @@ describe('inspect', () => {
   });
 
   // dlp_inspect_bigquery_with_sampling
-  it.skip('should inspect a Bigquery table with sampling', () => {
-    let output;
-    try {
-      output = execSync(
-        `node inspectBigQueryTableWithSampling.js ${projectId} ${dataProject} ${datasetId} ${tableId} ${topicName} ${subscriptionName}`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.match(output, /Found \d instance\(s\) of infoType PERSON_NAME/);
+  it('should inspect a Bigquery table with sampling', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_WITH_SAMPLING(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+    const inspectBigqueryWithSampling = proxyquire(
+      '../inspectBigQueryTableWithSampling',
+      {
+        '@google-cloud/dlp': {
+          DLP: DLP,
+        },
+        '@google-cloud/pubsub': {
+          PubSub: PubSub,
+        },
+      }
+    );
+    await inspectBigqueryWithSampling(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      subscriptionName
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
   });
 
-  it.skip('should handle errors while inspecting table', () => {
-    let output;
+  it('should handle errors while creating inspection job', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_WITH_SAMPLING(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      jobName
+    );
+    const mockCreateDlpJob = sinon
+      .stub()
+      .rejects(new Error('Error while creating job'));
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockErrorHandler = sinon.stub();
+    sinon.replace(process, 'on', mockErrorHandler);
+    sinon.replace(console, 'log', () => sinon.stub());
+    const inspectBigqueryWithSampling = proxyquire(
+      '../inspectBigQueryTableWithSampling',
+      {
+        '@google-cloud/dlp': {
+          DLP: DLP,
+        },
+        '@google-cloud/pubsub': {
+          PubSub: PubSub,
+        },
+      }
+    );
     try {
-      output = execSync(
-        `node inspectBigQueryTableWithSampling.js BAD_PROJECT_ID ${dataProject} ${datasetId} ${tableId} ${topicName} ${subscriptionName}`
+      await inspectBigqueryWithSampling(
+        projectId,
+        dataProject,
+        datasetId,
+        tableId,
+        topicName,
+        subscriptionName
       );
-    } catch (err) {
-      output = err.message;
+    } catch (error) {
+      console.log(error);
     }
-    assert.include(output, 'INVALID_ARGUMENT');
+    sinon.assert.calledOnce(mockErrorHandler);
+    sinon.assert.notCalled(mockGetDlpJob);
   });
 });

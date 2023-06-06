@@ -16,7 +16,7 @@
 //  title: Inspect Bigquery with sampling
 //  description: Inspects a BigQuery table using the Data Loss Prevention API  to scan a 1000-row subset of a BigQuery table.
 //  usage: node inspectBigQueryTableWithSampling.js my-project dataProjectId datasetId tableId topicId subscriptionId
-function main(
+async function main(
   projectId,
   dataProjectId,
   datasetId,
@@ -54,6 +54,9 @@ function main(
   // completion notifications
   // TODO(developer): create a Pub/Sub subscription to use for this
   // const subscriptionId = 'MY-PUBSUB-SUBSCRIPTION'
+
+  // DLP Job max time (in milliseconds)
+  const DLP_JOB_WAIT_TIME = 15 * 1000 * 60;
 
   async function inspectBigqueryWithSampling() {
     // Specify the type of info the inspection will look for.
@@ -97,7 +100,6 @@ function main(
         actions: actions,
       },
     };
-
     // Use the client to send the request.
     const [topicResponse] = await pubsub.topic(topicId).get();
 
@@ -110,11 +112,17 @@ function main(
 
     // Watch the Pub/Sub topic until the DLP job finishes
     await new Promise((resolve, reject) => {
+      // Set up the timeout
+      const timer = setTimeout(() => {
+        reject(new Error('Timeout'));
+      }, DLP_JOB_WAIT_TIME);
+
       const messageHandler = message => {
         if (message.attributes && message.attributes.DlpJobName === jobName) {
           message.ack();
           subscription.removeListener('message', messageHandler);
           subscription.removeListener('error', errorHandler);
+          clearTimeout(timer);
           resolve(jobName);
         } else {
           message.nack();
@@ -124,16 +132,13 @@ function main(
       const errorHandler = err => {
         subscription.removeListener('message', messageHandler);
         subscription.removeListener('error', errorHandler);
+        clearTimeout(timer);
         reject(err);
       };
 
       subscription.on('message', messageHandler);
       subscription.on('error', errorHandler);
     });
-    // Wait for DLP job to fully complete
-    setTimeout(() => {
-      console.log('Waiting for DLP job to fully complete');
-    }, 500);
     const [job] = await dlp.getDlpJob({name: jobName});
     console.log(`Job ${job.name} status: ${job.state}`);
 
@@ -149,7 +154,7 @@ function main(
     }
   }
 
-  inspectBigqueryWithSampling();
+  await inspectBigqueryWithSampling();
   // [END dlp_inspect_bigquery_with_sampling]
 }
 
@@ -158,4 +163,7 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
+module.exports = main;

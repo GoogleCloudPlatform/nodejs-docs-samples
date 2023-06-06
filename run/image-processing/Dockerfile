@@ -4,7 +4,7 @@
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:18-slim
+FROM node:20-slim
 
 # [START cloudrun_imageproc_dockerfile_imagemagick]
 # [START run_imageproc_dockerfile_imagemagick]

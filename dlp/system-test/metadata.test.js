@@ -20,10 +20,10 @@ const cp = require('child_process');
 const uuid = require('uuid');
 const DLP = require('@google-cloud/dlp');
 
-const dataProject = 'DATA_PROJECT';
-const dataSetId = 'DATASET_ID';
-const tableId = 'TABLE_ID';
-const fieldId = 'FIELD_ID';
+const dataProject = 'bigquery-public-data';
+const dataSetId = 'samples';
+const tableId = 'github_nested';
+const fieldId = 'url';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

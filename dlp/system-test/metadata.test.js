@@ -25,6 +25,8 @@ const dataSetId = 'samples';
 const tableId = 'github_nested';
 const fieldId = 'url';
 
+const bucketName = process.env.BUCKET_NAME;
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new DLP.DlpServiceClient();
@@ -64,9 +66,9 @@ describe('metadata', () => {
   });
 
   // dlp_create_stored_infotype
-  it.skip('should create a stored infotype', () => {
+  it('should create a stored infotype', () => {
     const infoTypeId = `stored-infoType-${uuid.v4()}`;
-    const infoTypeOutputPath = 'INFOTYPE_OUTPUT_PATH';
+    const infoTypeOutputPath = bucketName;
     const output = execSync(
       `node createStoredInfoType.js ${projectId} ${infoTypeId} ${infoTypeOutputPath} ${dataProject} ${dataSetId} ${tableId} ${fieldId}`
     );
@@ -74,7 +76,7 @@ describe('metadata', () => {
     storedInfoTypeId = output.split(':')[1].trim();
   });
 
-  it.skip('should handle stored infotype creation errors', () => {
+  it('should handle stored infotype creation errors', () => {
     let output;
     const infoTypeId = `stored-infoType-${uuid.v4()}`;
     const infoTypeOutputPath = 'INFOTYPE_OUTPUT_PATH';

@@ -68,7 +68,7 @@ describe('metadata', () => {
   // dlp_create_stored_infotype
   it('should create a stored infotype', () => {
     const infoTypeId = `stored-infoType-${uuid.v4()}`;
-    const infoTypeOutputPath = bucketName;
+    const infoTypeOutputPath = `gs://${bucketName}`;
     const output = execSync(
       `node createStoredInfoType.js ${projectId} ${infoTypeId} ${infoTypeOutputPath} ${dataProject} ${dataSetId} ${tableId} ${fieldId}`
     );

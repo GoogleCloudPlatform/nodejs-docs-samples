@@ -49,7 +49,7 @@ async function main(project, location = 'us-central1') {
     const prompt = {
       messages: [
         {
-          author: 'content',
+          author: 'user',
           content: 'Hi, how are you?',
         },
         {
@@ -57,7 +57,7 @@ async function main(project, location = 'us-central1') {
           content: 'I am doing good. What can I help you in the coding world?',
         },
         {
-          author: 'content',
+          author: 'user',
           content:
             'Please help write a function to calculate the min of two numbers',
         },
@@ -67,8 +67,8 @@ async function main(project, location = 'us-central1') {
     const instances = [instanceValue];
 
     const parameter = {
-      temperature: 0.2,
-      maxOutputTokens: 256,
+      temperature: 0.5,
+      maxOutputTokens: 1024,
     };
     const parameters = helpers.toValue(parameter);
 

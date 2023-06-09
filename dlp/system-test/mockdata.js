@@ -85,12 +85,7 @@ const MOCK_DATA = {
       nack: sinon.stub(),
     },
   }),
-  DEIDENTIFY_TABLE_WITH_FPE: (
-    projectId,
-    alphabet,
-    keyName,
-    wrappedKey
-  ) => ({
+  DEIDENTIFY_TABLE_WITH_FPE: (projectId, alphabet, keyName, wrappedKey) => ({
     REQUEST_DEIDENTIFY_CONTENT: {
       parent: `projects/${projectId}/locations/global`,
       deidentifyConfig: {
@@ -115,7 +110,11 @@ const MOCK_DATA = {
       },
       item: {
         table: {
-          headers: [{name: 'Employee ID'}, {name: 'Date'}, {name: 'Compensation'}],
+          headers: [
+            {name: 'Employee ID'},
+            {name: 'Date'},
+            {name: 'Compensation'},
+          ],
           rows: [
             {
               values: [
@@ -142,9 +141,7 @@ const MOCK_DATA = {
         },
       },
     },
-    RESPONSE_DEIDENTIFY_CONTENT: [{item: {
-      table: {}
-    }}],
+    RESPONSE_DEIDENTIFY_CONTENT: [{item: {table: {}}}],
   }),
 };
 

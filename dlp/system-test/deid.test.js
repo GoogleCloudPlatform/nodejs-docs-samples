@@ -20,6 +20,9 @@ const {describe, it, before} = require('mocha');
 const fs = require('fs');
 const cp = require('child_process');
 const DLP = require('@google-cloud/dlp');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
+const {MOCK_DATA} = require('./mockdata');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -40,6 +43,11 @@ describe('deid', () => {
   before(async () => {
     projectId = await client.getProjectId();
   });
+
+  afterEach(async () => {
+    sinon.restore();
+  });
+
   // deidentify_masking
   it('should mask sensitive data in a string', () => {
     const output = execSync(
@@ -361,27 +369,54 @@ describe('deid', () => {
   });
 
   // dlp_deidentify_table_fpe
-  it.skip('should de-identify table using Format Preserving Encryption (FPE)', () => {
-    let output;
-    try {
-      output = execSync(
-        `node deIdentifyTableWithFpe.js ${projectId} NUMERIC "${keyName}" "${wrappedKey}"`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.notMatch(output, /"stringValue":"11111"/);
+  it('should de-identify table using Format Preserving Encryption (FPE)', async () => {
+    const CONSTANT_DATA = MOCK_DATA.DEIDENTIFY_TABLE_WITH_FPE(
+      projectId,
+      'NUMERIC',
+      keyName,
+      wrappedKey
+    );
+
+    const mockDeidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_DEIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyTableWithFpe = proxyquire('../deidentifyTableWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await deIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
+
+    sinon.assert.calledOnceWithExactly(
+      mockDeidentifyContent,
+      CONSTANT_DATA.REQUEST_DEIDENTIFY_CONTENT
+    );
   });
 
-  it.skip('should handle de-identification errors', () => {
-    let output;
+  it('should handle de-identification errors', async () => {
+    const mockDeidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyTableWithFpe = proxyquire('../deidentifyTableWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
     try {
-      output = execSync(
-        `node deIdentifyTableWithFpe.js ${projectId} NUMERIC "BAD_KEY_NAME" "BAD_KEY_NAME NUMERIC"`
-      );
-    } catch (err) {
-      output = err.message;
+      await deIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
     }
-    assert.include(output, 'invalid encoding');
   });
 });

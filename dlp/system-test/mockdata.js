@@ -85,6 +85,67 @@ const MOCK_DATA = {
       nack: sinon.stub(),
     },
   }),
+  DEIDENTIFY_TABLE_WITH_FPE: (
+    projectId,
+    alphabet,
+    keyName,
+    wrappedKey
+  ) => ({
+    REQUEST_DEIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      deidentifyConfig: {
+        recordTransformations: {
+          fieldTransformations: [
+            {
+              fields: [{name: 'Employee ID'}],
+              primitiveTransformation: {
+                cryptoReplaceFfxFpeConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  commonAlphabet: alphabet,
+                },
+              },
+            },
+          ],
+        },
+      },
+      item: {
+        table: {
+          headers: [{name: 'Employee ID'}, {name: 'Date'}, {name: 'Compensation'}],
+          rows: [
+            {
+              values: [
+                {stringValue: '11111'},
+                {stringValue: '2015'},
+                {stringValue: '$10'},
+              ],
+            },
+            {
+              values: [
+                {stringValue: '11111'},
+                {stringValue: '2016'},
+                {stringValue: '$20'},
+              ],
+            },
+            {
+              values: [
+                {stringValue: '11111'},
+                {stringValue: '2016'},
+                {stringValue: '$15'},
+              ],
+            },
+          ],
+        },
+      },
+    },
+    RESPONSE_DEIDENTIFY_CONTENT: [{item: {
+      table: {}
+    }}],
+  }),
 };
 
 module.exports = {MOCK_DATA};

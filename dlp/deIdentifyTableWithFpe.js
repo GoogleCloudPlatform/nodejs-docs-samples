@@ -18,7 +18,7 @@
 //  title: De-identify with FPE
 //  description: De-identify sensitive data in a string using Format Preserving Encryption (FPE).
 //  usage: node deIdentifyTableWithFpe.js my-project alphabet keyName wrappedKey
-function main(projectId, alphabet, keyName, wrappedKey) {
+async function main(projectId, alphabet, keyName, wrappedKey) {
   // [START dlp_deidentify_table_fpe]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -117,7 +117,7 @@ function main(projectId, alphabet, keyName, wrappedKey) {
       `Table after de-identification: ${JSON.stringify(response.item.table)}`
     );
   }
-  deidentifyTableWithFpe();
+  await deidentifyTableWithFpe();
   // [END dlp_deidentify_table_fpe]
 }
 
@@ -126,4 +126,7 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
+module.exports = main;

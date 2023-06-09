@@ -50,14 +50,14 @@ async function main(project, location = 'us-central1') {
       prefix:
         'def reverse_string(s): \
           return s[::-1] \
-        //This function',
+        #This function',
     };
     const instanceValue = helpers.toValue(prompt);
     const instances = [instanceValue];
 
     const parameter = {
       temperature: 0.2,
-      maxOutputTokens: 256,
+      maxOutputTokens: 64,
     };
     const parameters = helpers.toValue(parameter);
 

@@ -45,7 +45,7 @@ const createHttpTaskWithToken = async function (
       url,
       oidcToken: {
         serviceAccountEmail: email,
-        audience: new URL(url).origin,
+        audience: url,
       },
       headers: {
         'Content-Type': 'application/json',

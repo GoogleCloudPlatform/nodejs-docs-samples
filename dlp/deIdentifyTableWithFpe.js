@@ -53,14 +53,14 @@ async function main(projectId, alphabet, keyName, wrappedKey) {
       },
       {
         values: [
-          {stringValue: '11111'},
+          {stringValue: '22222'},
           {stringValue: '2016'},
           {stringValue: '$20'},
         ],
       },
       {
         values: [
-          {stringValue: '11111'},
+          {stringValue: '33333'},
           {stringValue: '2016'},
           {stringValue: '$15'},
         ],

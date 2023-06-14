@@ -41,8 +41,8 @@ game-servers @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-s
 monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Other functions samples
-functions/scheduleinstance @askmeegs @GoogleCloudPlatform/nodejs-samples-reviewers
-functions/speech-to-speech @ricalo @GoogleCloudPlatform/nodejs-samples-reviewers 
+functions/scheduleinstance @GoogleCloudPlatform/nodejs-samples-reviewers
+functions/speech-to-speech @GoogleCloudPlatform/nodejs-samples-reviewers 
 functions/memorystore @GoogleCloudPlatform/nodejs-samples-reviewers
 functions/spanner @GoogleCloudPlatform/nodejs-samples-reviewers
 

@@ -16,7 +16,7 @@
 
 'use strict';
 
-function main(
+async function main(
   project,
   pipelineJobId,
   modelDisplayName,
@@ -46,7 +46,7 @@ function main(
 
   const pipelineClient = new PipelineServiceClient(clientOptions);
 
-  function tuneLLM() {
+  async function tuneLLM() {
     // Configure the parent resource
     const parent = `projects/${project}/locations/${location}`;
 
@@ -76,21 +76,25 @@ function main(
       pipelineJob,
       pipelineJobId,
     };
-
-    const response = pipelineClient.createPipelineJob(createPipelineRequest);
-
-    const [result] = response;
-    console.log('Tuning pipeline job:');
-    console.log(`\tName: ${result.name}`);
-    console.log(
-      `\tCreate time: ${new Date(1970, 0, 1)
-        .setSeconds(result.createTime.seconds)
-        .toLocaleString()}`
-    );
-    console.log(`\tStatus: ${result.status}`);
+    await new Promise((resolve, reject) => {
+      pipelineClient.createPipelineJob(createPipelineRequest).then(
+        response => resolve(response),
+        e => reject(e)
+      );
+    }).then(response => {
+      const [result] = response;
+      console.log('Tuning pipeline job:');
+      console.log(`\tName: ${result.name}`);
+      console.log(
+        `\tCreate time: ${new Date(1970, 0, 1)
+          .setSeconds(result.createTime.seconds)
+          .toLocaleString()}`
+      );
+      console.log(`\tStatus: ${result.status}`);
+    });
   }
 
-  tuneLLM();
+  await tuneLLM();
   // [END aiplatform_model_tuning]
 }
 

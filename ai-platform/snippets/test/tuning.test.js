@@ -51,9 +51,9 @@ describe('Tune a model', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should prompt-tune an existing model', () => {
+  it('should prompt-tune an existing model', async () => {
     // Act
-    tuneModel(projectId, pipelineJobId, modelDisplayName, gcsOutputDirectory);
+    await tuneModel(projectId, pipelineJobId, modelDisplayName, gcsOutputDirectory);
 
     // Assert
     assert.include(console.log.firstCall.args, 'Tuning pipeline job:');

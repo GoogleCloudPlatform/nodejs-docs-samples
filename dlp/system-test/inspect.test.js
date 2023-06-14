@@ -662,4 +662,46 @@ describe('inspect', () => {
     sinon.assert.calledOnce(mockErrorHandler);
     sinon.assert.notCalled(mockGetDlpJob);
   });
+
+  // dlp_inspect_string_multiple_rules
+  it('should inspect using multiple rules (Patient rule)', () => {
+    const output = execSync(
+      `node inspectStringMultipleRules.js ${projectId} "patient: Jane Doe"`
+    );
+    assert.match(output, /Quote: Jane Doe/);
+    assert.match(output, /Likelihood: VERY_LIKELY/);
+  });
+
+  it('should inspect using multiple rules (Doctor rule)', () => {
+    const output = execSync(
+      `node inspectStringMultipleRules.js ${projectId} "doctor: Jane Doe"`
+    );
+    assert.match(output, /No findings./);
+  });
+
+  it('should inspect using multiple rules (Quasimodo rule)', () => {
+    const output = execSync(
+      `node inspectStringMultipleRules.js ${projectId} "patient: Quasimodo"`
+    );
+    assert.match(output, /No findings./);
+  });
+
+  it('should inspect using multiple rules (Redacted rule)', () => {
+    const output = execSync(
+      `node inspectStringMultipleRules.js ${projectId} "patient: REDACTED"`
+    );
+    assert.match(output, /No findings./);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringMultipleRules.js BAD_PROJECT_ID "patient: Jane Doe"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

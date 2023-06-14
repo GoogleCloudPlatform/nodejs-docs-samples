@@ -65,8 +65,8 @@ async function main(project, location = 'us-central1') {
     const instances = [instanceValue];
 
     const parameter = {
-      temperature: 0.2,
-      maxOutputTokens: 512,
+      temperature: 0.5,
+      maxOutputTokens: 256,
     };
     const parameters = helpers.toValue(parameter);
 

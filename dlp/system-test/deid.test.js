@@ -388,7 +388,7 @@ describe('deid', () => {
     );
     sinon.replace(console, 'log', () => sinon.stub());
 
-    const deIdentifyTableWithFpe = proxyquire('../deidentifyTableWithFpe', {
+    const deIdentifyTableWithFpe = proxyquire('../deIdentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
@@ -409,7 +409,7 @@ describe('deid', () => {
     );
     sinon.replace(console, 'log', () => sinon.stub());
 
-    const deIdentifyTableWithFpe = proxyquire('../deidentifyTableWithFpe', {
+    const deIdentifyTableWithFpe = proxyquire('../deIdentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 

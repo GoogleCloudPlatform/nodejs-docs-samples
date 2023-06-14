@@ -11,7 +11,6 @@
 
 # Serverless, Orchestration, DevOps
 appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/nodejs-samples-reviewers
 run @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 scheduler @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 cloud-tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -40,12 +39,6 @@ error-reporting @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodej
 game-servers @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 
-# Other functions samples
-functions/scheduleinstance @GoogleCloudPlatform/nodejs-samples-reviewers
-functions/speech-to-speech @GoogleCloudPlatform/nodejs-samples-reviewers 
-functions/memorystore @GoogleCloudPlatform/nodejs-samples-reviewers
-functions/spanner @GoogleCloudPlatform/nodejs-samples-reviewers
-
 # SoDa teams
 cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -73,6 +66,9 @@ texttospeech @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-sample
 translate @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
+
+# Assisted
+functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Self-service
 asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team @GoogleCloudPlatform/nodejs-samples-reviewers

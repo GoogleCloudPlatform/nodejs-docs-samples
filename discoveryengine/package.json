@@ -13,7 +13,7 @@
     "test": "mocha test/*.js --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/discoveryengine": "^0.6.0",
+    "@google-cloud/discoveryengine": "^0.7.0",
     "p-queue": "^6.6.2"
   },
   "devDependencies": {

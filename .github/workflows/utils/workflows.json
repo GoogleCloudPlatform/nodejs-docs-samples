@@ -72,7 +72,6 @@
   "healthcare/dicom",
   "healthcare/fhir",
   "healthcare/hl7v2",
-  "iam",
   "kms",
   "media/livestream",
   "media/transcoder",

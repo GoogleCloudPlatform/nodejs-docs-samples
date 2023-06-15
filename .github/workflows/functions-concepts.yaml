@@ -33,6 +33,9 @@ on:
   - cron:  '0 0 * * 0'
 jobs:
   test:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     strategy:
       matrix:
@@ -49,9 +52,15 @@ jobs:
       name: 'functions-concepts'
       path: '${{ matrix.path }}'
   remove_label:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     if: github.event.action == 'labeled' && github.event.label.name == 'actions:force-run' && always()
     uses: ./.github/workflows/remove-label.yaml
   flakybot:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     if: github.event_name == 'schedule' && always()
     uses: ./.github/workflows/flakybot.yaml
     needs: [test]

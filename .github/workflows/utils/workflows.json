@@ -92,5 +92,6 @@
   "translate",
   "video-intelligence",
   "vision/productSearch",
-  "workflows"
+  "workflows",
+  "workflows/quickstart"
 ]

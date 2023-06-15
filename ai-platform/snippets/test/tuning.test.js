@@ -22,18 +22,23 @@ const {describe, it} = require('mocha');
 const uuid = require('uuid')
 const sinon = require('sinon');
 
+const aiplatform = require('@google-cloud/aiplatform');
+const clientOptions = {
+  apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
+};
+
+const pipelineClient = new aiplatform.v1.PipelineServiceClient(clientOptions);
+
 const {tuneModel} = require('../tuning');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-let timestampId = `${new Date().toISOString().replace(/(:|\.)/g, '-').toLowerCase()}`
-let pipelineJobId = `my-tuning-pipeline-${timestampId}`
-let modelDisplayName = `my-tuned-model-${timestampId}`
-let gcsOutputDirectory = 'gs://video-erschmid/tune-model';
+const timestampId = `${new Date().toISOString().replace(/(:|\.)/g, '-').toLowerCase()}`
+const pipelineJobName = `my-tuning-pipeline-${timestampId}`
+const modelDisplayName = `my-tuned-model-${timestampId}`
+const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
+const bucketUri = `gs://${bucketName}/tune-model`
 
 describe('Tune a model', () => {
-  // Test takes longer than default 2 sec
-  //this.timeout(0);
-
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');
@@ -44,22 +49,44 @@ describe('Tune a model', () => {
     console.error.restore();
   };
 
-  //before(async () => {
-    // create a bucket
-  //});
+  before(async () => {
+    const [bucket] = await storage.createBucket(bucketName);
+    await Promise.all(files.map(file => bucket.upload(file.localPath)));
+  });
+
+  after(async () => {
+    const bucket = storage.bucket(bucketName);
+    await bucket.deleteFiles({force: true});
+    await bucket.delete();
+
+    // Cancel and delete the pipeline job
+    const name = pipelineServiceClient.pipelineJobPath(
+      project,
+      location,
+      pipelineJobName
+    );
+
+    const cancelRequest = {
+      name,
+    };
+
+    pipelineServiceClient.cancelPipeline(cancelRequest).then(() => {
+      const deleteRequest = {
+        name,
+      };
+
+      return pipelineServiceClient.deletePipeline(deleteRequest);
+    });
+  });
   
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
   it('should prompt-tune an existing model', async () => {
     // Act
-    await tuneModel(projectId, pipelineJobId, modelDisplayName, gcsOutputDirectory);
+    await tuneModel(projectId, pipelineJobName, modelDisplayName, bucketUri);
 
     // Assert
     assert.include(console.log.firstCall.args, 'Tuning pipeline job:');
   });
-
-  //after(async ()=>{
-    // destroy bucket
-  //});
 });

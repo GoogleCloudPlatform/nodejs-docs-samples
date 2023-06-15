@@ -23,7 +23,7 @@ const iamClient = new PoliciesClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe.skip('IAM deny samples', () => {
+describe('IAM deny samples', () => {
   let projectId;
   const policyId = `gcloud-test-policy-${uuid.v4().split('-')[0]}`;
   const policyName = `policies/cloudresourcemanager.googleapis.com%2Fprojects%2F949737848314/denypolicies/${policyId}`;
@@ -33,21 +33,19 @@ describe.skip('IAM deny samples', () => {
   });
 
   it('should create IAM policy', async () => {
-    const output = execSync(
-      `node deny/createDenyPolicy ${projectId} ${policyId}`
-    );
+    const output = execSync(`node createDenyPolicy ${projectId} ${policyId}`);
 
     assert.include(output, `Created the deny policy: ${policyName}`);
   });
 
   it('should list IAM policies', async () => {
-    const output = execSync(`node deny/listDenyPolicies ${projectId}`);
+    const output = execSync(`node listDenyPolicies ${projectId}`);
 
     assert.include(output, `- ${policyName}`);
   });
 
   it('should get IAM policies', async () => {
-    const output = execSync(`node deny/getDenyPolicy ${projectId} ${policyId}`);
+    const output = execSync(`node getDenyPolicy ${projectId} ${policyId}`);
 
     assert.include(output, `Retrieved the deny policy: ${policyName}`);
   });
@@ -57,16 +55,14 @@ describe.skip('IAM deny samples', () => {
       name: policyName,
     });
     const output = execSync(
-      `node deny/updateDenyPolicy ${projectId} ${policyId} ${policy.etag}`
+      `node updateDenyPolicy ${projectId} ${policyId} ${policy.etag}`
     );
 
     assert.include(output, `Updated the deny policy: ${policyName}`);
   });
 
   it('should delete IAM policy', async () => {
-    const output = execSync(
-      `node deny/deleteDenyPolicy ${projectId} ${policyId}`
-    );
+    const output = execSync(`node deleteDenyPolicy ${projectId} ${policyId}`);
 
     assert.include(output, `Deleted the deny policy: ${policyName}`);
   });

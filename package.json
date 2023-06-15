@@ -15,7 +15,7 @@
     "lint": "gts check",
     "fix": "gts fix",
     "test": "echo 'Please run tests in each sample directory.' && exit 1",
-    "generate-ci": "node .github/workflows/generate.js"
+    "generate-ci": "node .github/workflows/utils/generate.js"
   },
   "devDependencies": {    
     "c8": "^7.13.0",  

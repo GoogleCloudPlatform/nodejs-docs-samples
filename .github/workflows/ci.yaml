@@ -20,6 +20,9 @@ on:
 name: ci
 jobs:
   lint:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +32,9 @@ jobs:
       - run: npm install
       - run: npm run lint
   docs:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -37,6 +43,9 @@ jobs:
           paths: "**/*.md"
           linksToSkip: "localhost"
   region-tags:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

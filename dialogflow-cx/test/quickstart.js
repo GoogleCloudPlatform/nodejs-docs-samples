@@ -33,7 +33,7 @@ describe('Quickstart', () => {
     try {
       // TODO: write an actual functional test:
       execSync(
-        `node ./quickstart.js ${project} global my-agent audio.raw AUDIO_ENCODING_LINEAR_16 16000 en`,
+        `node ./quickstart.js ${project} global my-agent resources/audio.raw AUDIO_ENCODING_LINEAR_16 16000 en`,
         {cwd}
       );
       assert('unreachable');

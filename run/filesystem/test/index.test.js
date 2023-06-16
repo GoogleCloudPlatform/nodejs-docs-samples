@@ -15,7 +15,9 @@ describe('Unit tests', () => {
   });
   after(() => {
     console.log = defaultLogFunction;
+    console.log('\nconsole.log output:\n---------');
     console.log(consoleOutput);
+    console.log('---------');
   })
   describe('GET /', () => {
     it('responds with 200 OK', async () => {

@@ -23,13 +23,12 @@ const uuid = require('uuid')
 const sinon = require('sinon');
 
 const aiplatform = require('@google-cloud/aiplatform');
-const storage = require('@google-cloud/storage');
-
 const clientOptions = {
   apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
 };
-
 const pipelineClient = new aiplatform.v1.PipelineServiceClient(clientOptions);
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 const {tuneModel} = require('../tuning');
 
@@ -52,7 +51,9 @@ describe('Tune a model', () => {
   };
 
   before(async () => {
-    const [bucket] = await storage.createBucket(bucketName);
+    const [bucket] = await storage.createBucket(bucketName, {
+      location: "europe-west4"
+    });
     await Promise.all(files.map(file => bucket.upload(file.localPath)));
   });
 

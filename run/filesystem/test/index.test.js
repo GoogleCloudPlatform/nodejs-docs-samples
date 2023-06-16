@@ -13,4 +13,14 @@ describe('Unit tests', () => {
         });
     });
   });
+  describe('GET nonexistant path', () => {
+    it('responds with 404 Not Found', function () {
+      supertest(app)
+        .get('/nonexistant')
+        .expect(404)
+        .end(function (err, res) {
+          if (err) throw err;
+        });
+    });
+  });
 });

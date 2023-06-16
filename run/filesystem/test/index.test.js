@@ -1,26 +1,23 @@
 const path = require('path');
 const supertest = require('supertest');
+const assert = require('chai').expect;
 
-const app = require(path.join(__dirname, '..', 'index'))
+let request;
 describe('Unit tests', () => {
+  before(() => {
+    const app = require(path.join(__dirname, '..', 'index'));
+    request = supertest(app);
+  });
   describe('GET /', () => {
-    it('responds with 200 OK', function () {
-      supertest(app)
-        .get('/')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) throw err;
-        });
+    it('responds with 200 OK', async () => {
+      response = await request.get('/');
+      assert(response.status).to.eql(200);
     });
   });
   describe('GET nonexistant path', () => {
-    it('responds with 404 Not Found', function () {
-      supertest(app)
-        .get('/nonexistant')
-        .expect(404)
-        .end(function (err, res) {
-          if (err) throw err;
-        });
+    it('responds with 404 Not Found', async () => {
+      response = await request.get('/nonexistant');
+      assert(response.status).to.eql(404);
     });
   });
 });

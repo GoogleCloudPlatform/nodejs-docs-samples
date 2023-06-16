@@ -333,4 +333,28 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_time_extract
+  it('should replace sensitive data in a string using time extraction', () => {
+    let output;
+    try {
+      output = execSync(`node deidentifyWithTimeExtraction.js ${projectId}`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /"stringValue":"1970"/);
+    assert.match(output, /"stringValue":"1996"/);
+    assert.match(output, /"stringValue":"1988"/);
+    assert.match(output, /"stringValue":"2001"/);
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync('node deidentifyWithTimeExtraction.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

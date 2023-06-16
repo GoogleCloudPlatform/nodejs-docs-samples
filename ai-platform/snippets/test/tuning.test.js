@@ -23,6 +23,8 @@ const uuid = require('uuid')
 const sinon = require('sinon');
 
 const aiplatform = require('@google-cloud/aiplatform');
+const storage = require('@google-cloud/storage');
+
 const clientOptions = {
   apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
 };

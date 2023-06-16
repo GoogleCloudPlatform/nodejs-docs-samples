@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js",
+    "start": "node index.js",
     "test": "c8 mocha test/index.test.js --exit",
     "system-test": "NAME=Cloud c8 mocha test/system.test.js --timeout=180000"
   },
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "c8": "^7.14.0",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

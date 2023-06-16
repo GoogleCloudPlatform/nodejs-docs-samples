@@ -54,7 +54,6 @@ describe('Tune a model', () => {
     const [bucket] = await storage.createBucket(bucketName, {
       location: "europe-west4"
     });
-    await Promise.all(files.map(file => bucket.upload(file.localPath)));
   });
 
   after(async () => {

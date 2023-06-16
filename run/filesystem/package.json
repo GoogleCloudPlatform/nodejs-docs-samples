@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "c8": "^7.14.0",
+    "chai": "^4.3.7",
     "mocha": "^10.2.0",
     "supertest": "^6.3.3"
   }

@@ -16,7 +16,9 @@ describe('Unit tests', () => {
     mock({
       [mntDir]: mock.directory({
         mode: 0755,
-        items: {}
+        items: {
+          'test-file.txt': 'This is a test file.'
+        }
       })
     });
     request = supertest(app);
@@ -46,9 +48,14 @@ describe('Unit tests', () => {
     it('writes a file', async () => {
       response = await request.get(mntDir);
       fs.readdir(mntDir, (err, files) => {
-        assert(files.length).to.eql(1)
+        assert(files.length).to.eql(2)
       });
     });
   });
-  // TODO: test for GET mount-path/filename - should return file contents
+  describe('GET file path', () => {
+    it('responses with 200 OK', async () => {
+      response = await request.get(`${mntDir}/test-file.txt`);
+      assert(response.status).to.eql(200);
+    });
+  });
 });

@@ -33,7 +33,6 @@ app.get(`${mntDir}`, async (req, res) => {
 
 app.get(`${mntDir}/*`, (req, res) => {
     fs.readFile(req.originalUrl, 'utf-8', (err, data) => {
-        console.log(data)
         let html = '<html><body>\n';
         html += `<a href="${mntDir}">${mntDir}</a><br><br/>\n`
         html += `${data}\n</body></html>`

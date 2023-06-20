@@ -15,11 +15,18 @@
 const express = require('express');
 const app = express();
 
-app.get('/', (req, res) => {
-    res.send(`Hello world`);
+const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore'
+const filename = process.env.FILENAME
+const port = parseInt(process.env.PORT) || 8080;
+
+app.get(`${mntDir}\*`, (req, res) => {
+    res.send(`hello world`);
 });
 
-const port = parseInt(process.env.PORT) || 8080;
+app.all('*', (req, res) => {
+    res.redirect(`${mntDir}`);
+});
+
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });

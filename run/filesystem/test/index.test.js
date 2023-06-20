@@ -20,15 +20,17 @@ describe('Unit tests', () => {
     console.log('---------');
   });
   describe('GET /', () => {
-    it('responds with 200 OK', async () => {
+    it('responds with 302 Found and redirects to mount directory', async () => {
       response = await request.get('/');
-      assert(response.status).to.eql(200);
+      assert(response.header.location).to.eql('/mnt/nfs/filestore');
+      assert(response.status).to.eql(302);
     });
   });
   describe('GET nonexistant path', () => {
-    it('responds with 404 Not Found', async () => {
+    it('responds with 302 Found and redirects to mount directory', async () => {
       response = await request.get('/nonexistant');
-      assert(response.status).to.eql(404);
+      assert(response.header.location).to.eql('/mnt/nfs/filestore');
+      assert(response.status).to.eql(302);
     });
   });
 });

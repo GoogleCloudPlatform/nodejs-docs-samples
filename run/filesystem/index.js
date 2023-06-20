@@ -14,13 +14,15 @@
 
 const express = require('express');
 const app = express();
+const fs = require('fs');
 
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore'
-const filename = process.env.FILENAME
+const filePrefix = process.env.FILENAME || 'test'
 const port = parseInt(process.env.PORT) || 8080;
 
 app.get(`${mntDir}\*`, (req, res) => {
     res.send(`hello world`);
+    writeFile(mntDir)
 });
 
 app.all('*', (req, res) => {
@@ -31,4 +33,38 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
 
+function writeFile(path) {
+    let date = new Date();
+    date = date.toString().split(' ').join('-')
+    const filename = `${filePrefix}-${date}.txt`
+    const contents = `This test file was created on ${date}\n`
+
+    fs.writeFile(`${path}/${filename}`, contents, err => {
+        if (err) {
+            console.error(`could not write to file system:\n${err}`);
+        };
+    });
+
+    // date = datetime.datetime.utcnow()
+    // file_date = "{dt:%a}-{dt:%b}-{dt:%d}-{dt:%H}:{dt:%M}-{dt:%Y}".format(dt=date)
+    // with open(f"{mnt_dir}/{filename}-{file_date}.txt", "a") as f:
+    //     f.write(f"This test file was created on {date}.")
+}
+
 module.exports = app;
+
+
+
+
+/*
+function writeFile(mntDir, filename) {
+
+}
+
+function readFile(fullPath) {
+
+}
+
+
+
+*/

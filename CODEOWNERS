@@ -58,6 +58,7 @@ dialogflow @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-
 dialogflow-cx @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 discoveryengine @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 document-ai @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
+document-warehouse @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 mediatranslation @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 notebooks @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 speech @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers

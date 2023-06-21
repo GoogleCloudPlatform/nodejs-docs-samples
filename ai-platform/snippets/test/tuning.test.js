@@ -27,8 +27,6 @@ const clientOptions = {
   apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
 };
 const pipelineClient = new aiplatform.v1.PipelineServiceClient(clientOptions);
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
 
 const {tuneModel} = require('../tuning');
 
@@ -36,8 +34,8 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const timestampId = `${new Date().toISOString().replace(/(:|\.)/g, '-').toLowerCase()}`
 const pipelineJobName = `my-tuning-pipeline-${timestampId}`
 const modelDisplayName = `my-tuned-model-${timestampId}`
-const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
-const bucketUri = `gs://${bucketName}/tune-model`
+const bucketName = `ucaip-samples-europe-west4/training_pipeline_output`;
+const bucketUri = `gs://${bucketName}/tune-model-nodejs`
 
 describe('Tune a model', () => {
   const stubConsole = function () {
@@ -50,17 +48,7 @@ describe('Tune a model', () => {
     console.error.restore();
   };
 
-  before(async () => {
-    const [bucket] = await storage.createBucket(bucketName, {
-      location: "europe-west4"
-    });
-  });
-
   after(async () => {
-    const bucket = storage.bucket(bucketName);
-    await bucket.deleteFiles({force: true});
-    await bucket.delete();
-
     // Cancel and delete the pipeline job
     const name = pipelineClient.pipelineJobPath(
       project,

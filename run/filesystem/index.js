@@ -16,49 +16,51 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 
-const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore'
-const filePrefix = process.env.FILENAME || 'test'
+const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
+const filePrefix = process.env.FILENAME || 'test';
 const port = parseInt(process.env.PORT) || 8080;
 
 app.get(`${mntDir}`, async (req, res) => {
-    await writeFile(mntDir)
-    const files = fs.readdirSync(mntDir);
-    let html = '<html><body>\nFiles created on filesystem:\n<br>'
-    files.forEach(file => {
-        html += `<a href="${req.protocol}://${req.get('host')}${req.originalUrl}/${file}">${file}</a><br>`
-    })
-    html += `</body></html>`
-    res.send(html);
+  await writeFile(mntDir);
+  const files = fs.readdirSync(mntDir);
+  let html = '<html><body>\nFiles created on filesystem:\n<br>';
+  files.forEach(file => {
+    html += `<a href="${req.protocol}://${req.get('host')}${
+      req.originalUrl
+    }/${file}">${file}</a><br>`;
+  });
+  html += '</body></html>';
+  res.send(html);
 });
 
 app.get(`${mntDir}/*`, (req, res) => {
-    fs.readFile(req.originalUrl, 'utf-8', (err, data) => {
-        let html = '<html><body>\n';
-        html += `<a href="${mntDir}">${mntDir}</a><br><br/>\n`
-        html += `${data}\n</body></html>`
-        res.send(html)
-    })
+  fs.readFile(req.originalUrl, 'utf-8', (err, data) => {
+    let html = '<html><body>\n';
+    html += `<a href="${mntDir}">${mntDir}</a><br><br/>\n`;
+    html += `${data}\n</body></html>`;
+    res.send(html);
+  });
 });
 
 app.all('*', (req, res) => {
-    res.redirect(`${mntDir}`);
+  res.redirect(`${mntDir}`);
 });
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
 
 async function writeFile(path) {
-    let date = new Date();
-    date = date.toString().split(' ').join('-')
-    const filename = `${filePrefix}-${date}.txt`
-    const contents = `This test file was created on ${date}\n`
+  let date = new Date();
+  date = date.toString().split(' ').join('-');
+  const filename = `${filePrefix}-${date}.txt`;
+  const contents = `This test file was created on ${date}\n`;
 
-    fs.writeFile(`${path}/${filename}`, contents, err => {
-        if (err) {
-            console.error(`could not write to file system:\n${err}`);
-        };
-    });
+  fs.writeFile(`${path}/${filename}`, contents, err => {
+    if (err) {
+      console.error(`could not write to file system:\n${err}`);
+    }
+  });
 }
 
 module.exports = app;

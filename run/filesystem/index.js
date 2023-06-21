@@ -30,9 +30,8 @@ const port = parseInt(process.env.PORT) || 8080;
 app.use(limit);
 app.get(`${mntDir}`, async (req, res) => {
   await writeFile(mntDir);
-  const files = fs.readdirSync(mntDir);
   let html = '<html><body>\nFiles created on filesystem:\n<br>';
-  files.forEach(file => {
+  fs.readdirSync(mntDir).forEach(file => {
     html += `<a href="${req.protocol}://${req.get('host')}${
       req.originalUrl
     }/${file}">${file}</a><br>`;

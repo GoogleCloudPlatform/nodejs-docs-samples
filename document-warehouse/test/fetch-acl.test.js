@@ -1,5 +1,5 @@
-/**
- * Copyright 2021, Google, Inc.
+/** Copyright 2023 Google LLC
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,6 @@ const LOCATION = 'us';
 const USER_ID = 'user:xxxx@example.com';
 const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
 
-//TODO: Create a PR for this! :)
 describe('Fetch document acl', () => {
   it('should get acl given only a projectId', async () => {
     const stdout = execSync(`node ./fetch-acl.js ${PROJECT_ID_PASS} `, {cwd});
@@ -42,7 +41,7 @@ describe('Fetch document acl', () => {
     assert(stdout.startsWith('Success!'));
   });
 
-  it('should fail given an incorrent projectId', async () => {
+  it('should fail given an incorrect projectId', async () => {
     const stdout = execSync(`node ./fetch-acl.js ${PROJECT_ID_FAILED}`, {cwd});
     assert(stdout.startsWith('Failed!'));
   });

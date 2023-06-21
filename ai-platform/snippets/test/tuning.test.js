@@ -62,7 +62,7 @@ describe('Tune a model', () => {
     await bucket.delete();
 
     // Cancel and delete the pipeline job
-    const name = pipelineServiceClient.pipelineJobPath(
+    const name = pipelineClient.pipelineJobPath(
       project,
       location,
       pipelineJobName
@@ -72,12 +72,12 @@ describe('Tune a model', () => {
       name,
     };
 
-    pipelineServiceClient.cancelPipeline(cancelRequest).then(() => {
+    pipelineClient.cancelPipeline(cancelRequest).then(() => {
       const deleteRequest = {
         name,
       };
 
-      return pipelineServiceClient.deletePipeline(deleteRequest);
+      return pipelineClient.deletePipeline(deleteRequest);
     });
   });
   

@@ -21,11 +21,11 @@ const assert = require('assert');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const PROJECT_ID_PASS = '510080582367';
-const PROJECT_ID_FAILED = '821411934445';
+const PROJECT_ID_PASS = 'YOUR_PROJECT_ID';
+const PROJECT_ID_FAILED = 'PROJECT_ID_WITHOUT_ACL';
 const LOCATION = 'us';
-const USER_ID = 'user:paulinanguyen@google.com';
-const DOCUMENT_ID = '3qof76fb3avl0';
+const USER_ID = 'user:xxxx@example.com';
+const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
 
 //TODO: Create a PR for this! :)
 describe('Fetch document acl', () => {

@@ -50,7 +50,7 @@ describe('Tune a model', () => {
   after(async () => {
     // Cancel and delete the pipeline job
     const name = pipelineClient.pipelineJobPath(
-      project,
+      projectId,
       location,
       pipelineJobName
     );

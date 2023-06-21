@@ -37,6 +37,11 @@ assign_issues_by:
   - 'api: dlp'
   to:
   - GoogleCloudPlatform/googleapis-dlp
+- labels:
+  - 'api: contentwarehouse'
+  - 'api: documentai'
+  to:
+  - GoogleCloudPlatform/document-ai-samples-contributors
 
 assign_prs_by:
 - labels:
@@ -58,3 +63,8 @@ assign_prs_by:
   - 'api: dlp'
   to:
   - GoogleCloudPlatform/googleapis-dlp
+- labels:
+    - 'api: contentwarehouse'
+    - 'api: documentai'
+  to:
+    - GoogleCloudPlatform/document-ai-samples-contributors

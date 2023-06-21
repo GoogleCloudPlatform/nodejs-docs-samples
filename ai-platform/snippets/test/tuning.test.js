@@ -30,6 +30,7 @@ const pipelineClient = new aiplatform.v1.PipelineServiceClient(clientOptions);
 const {tuneModel} = require('../tuning');
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'europe-west4';
 const timestampId = `${new Date().toISOString().replace(/(:|\.)/g, '-').toLowerCase()}`
 const pipelineJobName = `my-tuning-pipeline-${timestampId}`
 const modelDisplayName = `my-tuned-model-${timestampId}`
@@ -59,7 +60,7 @@ describe('Tune a model', () => {
       name,
     };
 
-    pipelineClient.cancelPipeline(cancelRequest).then(() => {
+    pipelineClient.cancelPipelineJob(cancelRequest).then(() => {
       const deleteRequest = {
         name,
       };

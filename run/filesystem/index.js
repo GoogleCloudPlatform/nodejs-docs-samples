@@ -13,13 +13,21 @@
 // limitations under the License.
 
 const express = require('express');
-const app = express();
+const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 
+const app = express();
+const limit = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Rate limit exceeded',
+  headers: true,
+});
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const filePrefix = process.env.FILENAME || 'test';
 const port = parseInt(process.env.PORT) || 8080;
 
+app.use(limit);
 app.get(`${mntDir}`, async (req, res) => {
   await writeFile(mntDir);
   const files = fs.readdirSync(mntDir);

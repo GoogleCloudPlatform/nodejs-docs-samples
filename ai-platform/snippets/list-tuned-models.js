@@ -15,7 +15,7 @@
  */
 'use strict';
 
-function main(project, location, model = 'text-bison@001') {
+async function main(project, location, model = 'text-bison-001') {
   // [START aiplatform_list_tuned_models]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
@@ -34,7 +34,7 @@ function main(project, location, model = 'text-bison@001') {
   // Instantiate the service client.
   const modelServiceClient = new ModelServiceClient(clientOptions);
 
-  function listTunedModels() {
+  async function listTunedModels() {
     // Configure the parent resource
     const parent = `projects/${project}/locations/${location}`;
     const filter = `labels.google-vertex-llm-tuning-base-model-id=${model}`;
@@ -44,14 +44,14 @@ function main(project, location, model = 'text-bison@001') {
       filter,
     };
 
-    const [response] = modelServiceClient.listModels(request);
+    const [response] = await modelServiceClient.listModels(request);
     console.log('List Tuned Models response');
     for (const model of response) {
       console.log(`\tModel name: ${model.name}`);
       console.log(`\tDisplay name: ${model.displayName}`);
     }
   }
-  listTunedModels();
+  await listTunedModels();
   // [END aiplatform_list_tuned_models]
 }
 

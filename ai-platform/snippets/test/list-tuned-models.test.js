@@ -25,7 +25,7 @@ const project = process.env.CAIP_PROJECT_ID;
 
 const {listTunedModels} = require('../list-tuned-models');
 
-describe('AI platform list tuned models', () => {
+describe('List tuned models', async () => {
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');
@@ -39,8 +39,8 @@ describe('AI platform list tuned models', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should list all tuned LLM models', () => {
-    listTunedModels(project, LOCATION);
+  it('should list all tuned LLM models', async () => {
+    await listTunedModels(project, LOCATION);
     assert.include(console.log.firstCall.args, 'List Tuned Models response');
   });
 });

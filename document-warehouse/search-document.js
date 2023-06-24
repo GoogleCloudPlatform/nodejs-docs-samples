@@ -36,7 +36,9 @@ async function main(
 
   // Search document
   async function searchDocument() {
-    // TODO: Fill in
+    // Initialize request arguments
+    const request = {};
+    
   }
 
   // [END contentwarehouse_search_documents]

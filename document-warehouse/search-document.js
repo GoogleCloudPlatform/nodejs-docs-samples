@@ -15,8 +15,31 @@
 
 'use strict';
 
-async function main() {
+async function main(
+  projectId = 'YOUR_PROJECT_ID',
+  location =  'YOUR_PROJECT_LOCATION',
+  query = 'YOUR_DOCUMENT_QUERY',
+) {
+  // [START contentwarehouse_search_documents]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   * projectId = 'YOUR_PROJECT_ID'
+   * location =  'YOUR_PROJECT_LOCATION' // Format is 'us' or 'eu'
+   * query = 'YOUR_DOCUMENT_QUERY'
+   */
 
+  // Import service client from google cloud
+  const {DocumentServiceClient} = require('@google-cloud/contentwarehouse').v1;
+
+  // Create client
+  const serviceClient = new DocumentServiceClient();
+
+  // Search document
+  async function searchDocument() {
+
+  }
+
+  // [END contentwarehouse_search_documents]
 }
 
 main(...process.argv.slice(2)).catch(err => {

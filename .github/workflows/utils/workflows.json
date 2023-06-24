@@ -39,6 +39,7 @@
   "discoveryengine",
   "dlp",
   "document-ai",
+  "document-warehouse",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "error-reporting",

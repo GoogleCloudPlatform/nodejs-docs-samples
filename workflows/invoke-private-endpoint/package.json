@@ -1,7 +1,7 @@
 {
-  "name": "appengine-hello-world",
-  "description": "Simple Hello World Node.js sample for Google App Engine Flexible Environment.",
-  "version": "0.0.2",
+  "name": "workflows-hello-private-endpoint",
+  "description": "Simple Hello World Node.js sample for Workflows",
+  "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
   "author": "Google Inc.",
@@ -10,7 +10,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": "=v16.20.1"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "start": "node app.js",

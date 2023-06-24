@@ -36,10 +36,11 @@ async function main(
 
   // Search document
   async function searchDocument() {
-
+    // TODO: Fill in
   }
 
   // [END contentwarehouse_search_documents]
+  await searchDocument();
 }
 
 main(...process.argv.slice(2)).catch(err => {

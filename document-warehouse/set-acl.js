@@ -45,10 +45,12 @@ async function main(
     //Initialize request argument(s)
     const request = {};
     request.policy = {
-      bindings:[{
-        role: policyRole,
-        members: [policyMember]
-      }]
+      bindings: [
+        {
+          role: policyRole,
+          members: [policyMember],
+        },
+      ],
     };
     if (documentId !== 'YOUR_DOCUMENT_ID') {
       // Full document resource name, e.g.:
@@ -63,7 +65,7 @@ async function main(
 
     // Make Request
     const response = serviceClient.setAcl(request);
-    
+
     // Print Response
     response.then(
       result => console.log(`Success! Response: \n${JSON.stringify(result)}`),

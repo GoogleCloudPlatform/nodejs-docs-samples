@@ -31,7 +31,10 @@ const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
 
 describe('Set document acl', () => {
   it('should set acl given no userId', async () => {
-    const stdout = execSync(`node ./set-acl.js ${PROJECT_ID_PASS} ${LOCATION} ${POLICY_ROLE} ${POLICY_MEMBER} ${USER_ID}`, {cwd});
+    const stdout = execSync(
+      `node ./set-acl.js ${PROJECT_ID_PASS} ${LOCATION} ${POLICY_ROLE} ${POLICY_MEMBER} ${USER_ID}`,
+      {cwd}
+    );
     assert(stdout.startsWith('Success!'));
   });
 

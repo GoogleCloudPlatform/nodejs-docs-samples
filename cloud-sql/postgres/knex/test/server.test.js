@@ -20,21 +20,36 @@ const assert = require('assert');
 
 const SAMPLE_PATH = path.join(__dirname, '../server/server.js');
 
-const server = require(SAMPLE_PATH);
+const serverConnector = require(SAMPLE_PATH);
+
+const _instance_connect_backup = process.env.INSTANCE_CONNECTION_NAME;
+delete process.env.INSTANCE_CONNECTION_NAME;
+
+const serverTcp = require(SAMPLE_PATH);
 
 const _instance_host_backup = process.env.INSTANCE_HOST;
 delete process.env.INSTANCE_HOST;
 
 const serverUnix = require(SAMPLE_PATH);
 
+process.env.INSTANCE_CONNECTION_NAME = _instance_connect_backup;
 process.env.INSTANCE_HOST = _instance_host_backup;
 
 after(() => {
-  server.close();
+  serverTcp.close();
+});
+
+it('should display the default page with connector', async () => {
+  await request(serverConnector)
+    .get('/')
+    .expect(response => {
+      assert.ok(response.text.includes('Tabs VS Spaces'));
+    })
+    .expect(200);
 });
 
 it('should display the default page over tcp', async () => {
-  await request(server)
+  await request(serverTcp)
     .get('/')
     .expect(response => {
       assert.ok(response.text.includes('Tabs VS Spaces'));
@@ -54,7 +69,7 @@ it('should display the default page over unix', async () => {
 it('should handle insert error', async () => {
   const expectedResult = 'Invalid team specified';
 
-  await request(server)
+  await request(serverTcp)
     .post('/')
     .expect(400)
     .expect(response => {

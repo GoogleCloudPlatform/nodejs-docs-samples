@@ -1,5 +1,14 @@
 # Connecting to Cloud SQL - PostgreSQL
 
+This demo application can be used to connect to Cloud SQL in two different ways:
+
+1. [The Cloud SQL Node.js Connector](https://github.com/GoogleCloudPlatform/cloud-sql-nodejs-connector) (recommended)
+2. [The Cloud SQL Auth Proxy](https://github.com/GoogleCloudPlatform/cloud-sql-proxy)
+
+Using the Cloud SQL Node.js Connector package is recommended over the
+Cloud SQL Auth Proxy as it provides all the same functionality and features but
+as a npm package. See [`@google-cloud/cloud-sql-connector`](https://www.npmjs.com/package/@google-cloud/cloud-sql-connector).
+
 ## Before you begin
 
 1. If you haven't already, set up a Node.js Development Environment by following
@@ -13,7 +22,7 @@ the instance `connection name` of the instance that you create, and password
 that you specify for the default 'postgres' user.
 
     * If you don't want to use the default user to connect, [create a
-      user](https://cloud.google.com/sql/docs/postgres/create-manage-users#creating).
+user](https://cloud.google.com/sql/docs/postgres/create-manage-users#creating).
 
 1. Create a database for your application by following these
    [instructions](https://cloud.google.com/sql/docs/postgres/create-manage-databases).
@@ -25,16 +34,6 @@ that you specify for the default 'postgres' user.
    [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role).
    Download a JSON key to use to authenticate your connection.
 
-1. Use the information noted in the previous steps:
-
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
-export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
-export DB_USER='my-db-user'
-export DB_PASS='my-db-pass'
-export DB_NAME='my_db'
-```
-
 Note: Defining credentials in environment variables is convenient, but not
 secure. For a more secure solution, use [Secret
 Manager](https://cloud.google.com/secret-manager/) to help keep secrets safe.
@@ -44,13 +43,190 @@ to reference a secret that stores your Cloud SQL database password. The sample
 app checks for your defined secret version. If a version is present, the app
 retrieves the `DB_PASS` from Secret Manager before it connects to Cloud SQL.
 
-## Initialize the Cloud SQL database
+## Cloud SQL Node.js Connector Usage
+
+### Running Locally
+
+To run the demo application locally using the Cloud SQL Node.js Connector, set
+environment variables and install dependencies as shown below.
+
+Note: The `INSTANCE_CONNECTION_NAME` for your instance can be found on the
+**Overview** page for your instance in the
+[Google Cloud console](https://console.cloud.google.com/sql) or by running
+the following command:
+
+```sh
+gcloud sql instances describe <INSTANCE_NAME> --format='value(connectionName)'
+```
+
+#### Linux / Mac OS
+
+Use these terminal commands to initialize environment variables:
+
+```bash
+export INSTANCE_CONNECTION_NAME='<INSTANCE_CONNECTION_NAME>'
+export DB_USER='<DB_USER_NAME>'
+export DB_PASS='<DB_PASSWORD>'
+export DB_NAME='<DB_NAME>'
+```
+
+#### Windows/PowerShell
+
+Use these PowerShell commands to initialize environment variables:
+
+```powershell
+$env:INSTANCE_CONNECTION_NAME="<INSTANCE_CONNECTION_NAME>"
+$env:DB_USER="<DB_USER_NAME>"
+$env:DB_PASS="<DB_PASSWORD>"
+$env:DB_NAME="<DB_NAME>"
+```
+
+### Testing the application
+
+1. Next, install the Node.js packages necessary to run the app locally by
+   running the following command:
+
+    ```sh
+    npm install
+    ```
+
+2. Run the sample app locally with the following command:
+
+    ```sh
+    npm start
+    ```
+
+Navigate towards `http://127.0.0.1:8080` to verify your application is running
+correctly.
+
+## Deploy to Google App Engine Standard
+
+1. To allow your app to connect to your Cloud SQL instance when the app is
+   deployed, modify the [`app.standard.yaml`](app.standard.yaml) to add the
+   user, password, database, and an instance connection name to the related
+   environment variables, like in the example below:
+
+    ```yaml
+    env_variables:
+      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
+      DB_USER: MY_DB_USER
+      DB_PASS: MY_DB_PASSWORD
+      DB_NAME: MY_DATABASE
+    ```
+
+2. To deploy to App Engine Standard, run the following command:
+
+    ```sh
+    gcloud app deploy app.standard.yaml
+    ```
+
+3. To launch your browser and view the app at
+   <https://[YOUR_PROJECT_ID]>.appspot.com, run the following command:
+
+    ```sh
+    gcloud app browse
+    ```
+
+## Deploy to Google App Engine Flexible
+
+1. To allow your app to connect to your Cloud SQL instance when the app is
+   deployed, modify the [`app.flexible.yaml`](app.flexible.yaml) to add the
+   user, password, database, and an instance connection name to the related
+   environment variables, like in the example below:
+
+    ```yaml
+    env_variables:
+      INSTANCE_CONNECTION_NAME: <MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>
+      DB_USER: MY_DB_USER
+      DB_PASS: MY_DB_PASSWORD
+      DB_NAME: MY_DATABASE
+    ```
+
+2. To deploy to App Engine Node.js Flexible Environment, run the following
+   command:
+
+    ```sh
+    gcloud app deploy app.flexible.yaml
+    ```
+
+3. To launch your browser and view the app at
+   <https://[YOUR_PROJECT_ID]>.appspot.com, run the following command:
+
+    ```sh
+    gcloud app browse
+    ```
+
+## Deploy to Cloud Run
+
+See the [Cloud Run
+documentation](https://cloud.google.com/sql/docs/postgres/connect-run) for more
+details on connecting a Cloud Run service to Cloud SQL.
+
+Build and deploy the service to Cloud Run:
+
+```sh
+gcloud run deploy run-sql --source . /
+    --allow-unauthenticated \
+    --set-env-vars INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME],\
+      DB_USER=[MY_DB_USER],DB_PASS=[MY_DB_PASS],DB_NAME=[MY_DB]
+```
+
+Replace environment variables with the correct values for your Cloud SQL
+instance configuration.
+
+It is recommended to use the [Secret Manager
+integration](https://cloud.google.com/run/docs/configuring/secrets) for Cloud
+Run instead of using environment variables for the SQL configuration. The
+service injects the SQL credentials from Secret Manager at runtime via an
+environment variable.
+
+Create secrets via the command line:
+
+```sh
+echo -n $INSTANCE_CONNECTION_NAME | \
+    gcloud secrets create [INSTANCE_CONNECTION_NAME_SECRET] --data-file=-
+```
+
+Deploy the service to Cloud Run specifying the env var name and secret name:
+
+```sh
+gcloud run deploy run-sql --source . /
+    --allow-unauthenticated \
+    --update-secrets INSTANCE_CONNECTION_NAME=[INSTANCE_CONNECTION_NAME_SECRET]:latest, \
+      DB_USER=[DB_USER_SECRET]:latest, \
+      DB_PASS=[DB_PASS_SECRET]:latest, \
+      DB_NAME=[DB_NAME_SECRET]:latest
+```
+
+1. Navigate your browser to the URL noted in step 2.
+
+For more details about using Cloud Run see <http://cloud.run>. Review other
+[Node.js on Cloud Run samples](../../../run/).
+
+## Deploy to Cloud Functions
+
+To deploy the service to [Cloud Functions](https://cloud.google.com/functions/docs) run the following command:
+
+```sh
+gcloud functions deploy votes --gen2 --runtime nodejs18 --trigger-http \
+  --allow-unauthenticated \
+  --entry-point votes \
+  --region <INSTANCE_REGION> \
+  --set-env-vars INSTANCE_CONNECTION_NAME=<PROJECT_ID>:<INSTANCE_REGION>:<INSTANCE_NAME> \
+  --set-env-vars DB_USER=$DB_USER \
+  --set-env-vars DB_PASS=$DB_PASS \
+  --set-env-vars DB_NAME=$DB_NAME
+```
+
+## Cloud SQL Auth Proxy Usage
+
+### Running Locally
 
 Setting up the Cloud SQL database for the app requires setting up the app for
 local use.
 
-1. To run this application locally, download and install the `cloud_sql_proxy`
-by [following the
+You may optionally download and install the `cloud_sql_proxy` by
+[following the
 instructions](https://cloud.google.com/sql/docs/postgres/sql-proxy#install).
 
 Instructions are provided below for using the proxy with a TCP connection or a

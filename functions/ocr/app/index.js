@@ -42,7 +42,7 @@ const publishResult = async (topicName, data) => {
   const dataBuffer = Buffer.from(JSON.stringify(data));
 
   const [topic] = await pubsub.topic(topicName).get({autoCreate: true});
-  topic.publishMessage({dataBuffer});
+  topic.publishMessage({data:dataBuffer});
 };
 
 // [START functions_ocr_detect]

@@ -38,7 +38,44 @@ async function main(
   async function searchDocument() {
     // Initialize request arguments
     const request = {};
+    // Full document resource name, e.g.: projects/{project_id}/locations/{location}
+    request.parent = `projects/${projectId}/locations/${location}`;
+    // File Type Filter
+    // Options: DOCUMENT, FOLDER
+    const fileTypeFilter = {
+      fileType: DOCUMENT
+    };
+    // Search Prompt
+    const documentQuery = {
+      query: query,
+      fileTypeFilter : fileTypeFilter
+    };
+    request.documentQuery = documentQuery;
+    request.histogramQueries = [{histogramQuery:'count("DocumentSchemaId")'}];
+
+    // Make Request
+    const response = serviceClient.searchDocuments(request);
+
+    // Print Search Results
+    for (matchingDocument in response.matchingDocuments) {
+      const document = matchingDocument.document;
+      console.log(`
+        ${document.displayName} - ${document.documentSchemaName}\n
+        ${document.name}\n
+        ${document.createTime}\n
+        ${matchingDocument.searchTextSnippet}\n
+      `);
+    }
     
+    // Print Histogram
+    for (result in response.histogramQueryResults){
+      console.log(`
+        History Query: ${result.historyQuery}\n
+
+        //TODO
+      `)
+    }
+
   }
 
   // [END contentwarehouse_search_documents]

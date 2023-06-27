@@ -14,6 +14,7 @@
 'use strict';
 
 const express = require('express');
+const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js');
 const createConnectorPool = require('./connect-connector.js');
 const createTcpPool = require('./connect-tcp.js');
 const createUnixSocketPool = require('./connect-unix.js');
@@ -121,7 +122,13 @@ const createPool = async () => {
   if (process.env.INSTANCE_CONNECTION_NAME) {
     // Uses the Cloud SQL Node.js Connector when INSTANCE_CONNECTION_NAME
     // (e.g., project:region:instance) is defined
-    return createConnectorPool(config);
+    if (process.env.DB_IAM_USER) {
+      //  Either a DB_USER or a DB_IAM_USER should be defined. If both are
+      //  defined, DB_IAM_USER takes precedence
+      return createConnectorIAMAuthnPool(config);
+    } else {
+      return createConnectorPool(config);
+    }
   } else if (process.env.INSTANCE_HOST) {
     // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
     return createTcpPool(config);

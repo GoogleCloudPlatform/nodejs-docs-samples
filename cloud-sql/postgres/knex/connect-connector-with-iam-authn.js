@@ -42,7 +42,7 @@ const connectWithConnectorAutoIAMAuthn = async config => {
     client: 'pg',
     connection: {
       ...clientOpts,
-      user: process.env.IAM_DB_USER, // e.g. 'service-account-name'
+      user: process.env.IAM_DB_USER, // e.g. 'sa-name@project-id.iam'
       database: process.env.DB_NAME, // e.g. 'my-database'
     },
     // ... Specify additional properties here.

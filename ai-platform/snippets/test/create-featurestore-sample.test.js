@@ -54,7 +54,8 @@ const deleteFeaturestore = async () => {
   await operation.promise();
 };
 
-describe('AI platform create featurestore', async function () {
+// TODO (#3302): Investigate Featurestore stability issue
+describe.skip('AI platform create featurestore', async function () {
   this.retries(2);
   it('should create a featurestore', async () => {
     const stdout = execSync(

@@ -19,7 +19,7 @@ const mock = require('mock-fs');
 const fs = require('fs');
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 let request;
-const testFileContents = 'Test file contents.'
+const testFileContents = 'Test file contents.';
 describe('Unit tests', () => {
   const defaultLogFunction = console.log;
   let consoleOutput = '\n';

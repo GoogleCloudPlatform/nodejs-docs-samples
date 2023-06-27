@@ -15,6 +15,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
+const serveIndex = require('serve-index');
 
 const app = express();
 const limit = rateLimit({
@@ -28,29 +29,21 @@ const filePrefix = process.env.FILENAME || 'test';
 const port = parseInt(process.env.PORT) || 8080;
 
 app.use(limit);
-app.get(`${mntDir}`, async (req, res) => {
+app.use('/filesystem', express.static(mntDir))
+app.use('/filesystem', serveIndex(mntDir));
+
+app.get('/', async (req, res) => {
   await writeFile(mntDir);
-  let html = '<html><body>\nFiles created on filesystem:\n<br>';
-  fs.readdirSync(mntDir).forEach(file => {
-    html += `<a href="${req.protocol}://${req.get('host')}${
-      req.originalUrl
-    }/${file}">${file}</a><br>`;
+  let html = '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
+  fs.readdirSync(mntDir).forEach(filename => {
+    html += `<a href="${req.protocol}://${req.get('host')}/filesystem/${filename}">${filename}</a><br>`;
   });
   html += '</body></html>';
   res.send(html);
 });
 
-app.get(`${mntDir}/*`, (req, res) => {
-  fs.readFile(req.originalUrl, 'utf-8', (err, data) => {
-    let html = '<html><body>\n';
-    html += `<a href="${mntDir}">${mntDir}</a><br><br/>\n`;
-    html += `${data}\n</body></html>`;
-    res.send(html);
-  });
-});
-
 app.all('*', (req, res) => {
-  res.redirect(`${mntDir}`);
+  res.redirect('/');
 });
 
 app.listen(port, () => {

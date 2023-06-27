@@ -19,6 +19,7 @@ const mock = require('mock-fs');
 const fs = require('fs');
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 let request;
+const testFileContents = 'Test file contents.'
 describe('Unit tests', () => {
   const defaultLogFunction = console.log;
   let consoleOutput = '\n';
@@ -30,7 +31,7 @@ describe('Unit tests', () => {
     mock({
       [mntDir]: mock.directory({
         items: {
-          'test-file.txt': 'This is a test file.',
+          'test-file.txt': `${testFileContents}`,
         },
       }),
     });
@@ -44,20 +45,10 @@ describe('Unit tests', () => {
     console.log('---------');
   });
   describe('GET /', () => {
-    it('responds with 302 Found and redirects to mount directory', async () => {
+    it('responds with 200 Ok', async () => {
       const response = await request.get('/');
-      assert(response.header.location).to.eql(mntDir);
-      assert(response.status).to.eql(302);
+      assert(response.status).to.eql(200);
     });
-  });
-  describe('GET nonexistant path', () => {
-    it('responds with 302 Found and redirects to mount directory', async () => {
-      const response = await request.get('/nonexistant');
-      assert(response.header.location).to.eql(mntDir);
-      assert(response.status).to.eql(302);
-    });
-  });
-  describe('GET mount path', () => {
     it('writes a file', async () => {
       await request.get(mntDir);
       fs.readdir(mntDir, (err, files) => {
@@ -65,9 +56,17 @@ describe('Unit tests', () => {
       });
     });
   });
+  describe('GET nonexistant path', () => {
+    it('responds with 302 Found and redirects to /', async () => {
+      const response = await request.get('/nonexistant');
+      assert(response.header.location).to.eql('/');
+      assert(response.status).to.eql(302);
+    });
+  });
   describe('GET file path', () => {
-    it('responds with 200 OK', async () => {
-      const response = await request.get(`${mntDir}/test-file.txt`);
+    it('responds with file contents and 200 Ok', async () => {
+      const response = await request.get('/filesystem/test-file.txt');
+      assert(response.text).to.eql(`${testFileContents}`);
       assert(response.status).to.eql(200);
     });
   });

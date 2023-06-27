@@ -14,7 +14,7 @@
 'use strict';
 
 const express = require('express');
-const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js')
+const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js');
 const createConnectorPool = require('./connect-connector.js');
 const createTcpPool = require('./connect-tcp.js');
 const createUnixSocketPool = require('./connect-unix.js');
@@ -126,8 +126,7 @@ const createPool = async () => {
       //  Either a DB_USER or a DB_IAM_USER should be defined. If both are
       //  defined, DB_IAM_USER takes precedence
       return createConnectorIAMAuthnPool(config);
-    }
-    else {
+    } else {
       return createConnectorPool(config);
     }
   } else if (process.env.INSTANCE_HOST) {

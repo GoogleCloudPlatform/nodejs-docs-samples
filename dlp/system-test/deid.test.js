@@ -35,6 +35,7 @@ const dateShiftAmount = 30;
 const dateFields = 'birth_date,register_date';
 const keyName = 'KEY_NAME';
 const wrappedKey = 'WRAPPED_KEY';
+const unwrappedKey = 'YWJjZGVmZ2hpamtsbW5vcA==';
 
 const client = new DLP.DlpServiceClient();
 describe('deid', () => {
@@ -418,5 +419,55 @@ describe('deid', () => {
     } catch (error) {
       assert.equal(error.message, 'Failed');
     }
+  });
+
+  // dlp_deidentify_free_text_with_fpe_using_surrogate
+  it('should de-identify table using Format Preserving Encryption (FPE) with surrogate', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deidentifyWithFpeSurrogate.js ${projectId} "My phone number is 4359916732" ALPHA_NUMERIC PHONE_NUMBER PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /PHONE_TOKEN\(10\):Vz6T6ff4J7/);
+  });
+
+  it('should handle de-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deidentifyWithFpeSurrogate.js ${projectId} "My phone numer is 4359916732" ALPHA_NUMERIC BAD_TYPE PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_reidentify_free_text_with_fpe_using_surrogate
+  it('should re-identify table using Format Preserving Encryption (FPE) with surrogate', () => {
+    let output;
+    try {
+      output = execSync(
+        `node reidentifyWithFpeSurrogate.js ${projectId} "My phone number is PHONE_TOKEN(10):Vz6T6ff4J7" ALPHA_NUMERIC PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /My phone number is 4359916732/);
+  });
+
+  it('should handle re-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node reidentifyWithFpeSurrogate.js ${projectId} "My phone number is PHONE_TOKEN(10):Vz6T6ff4J7" ALPHA_NUMERIC PHONE_TOKEN INVALID_KEY`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 });

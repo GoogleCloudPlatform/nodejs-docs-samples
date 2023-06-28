@@ -704,4 +704,143 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_gcs_with_sampling
+  it('should inspect a GCS file with sampling', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_WITH_SAMPLING(
+      projectId,
+      gcsUri,
+      topicName,
+      infoTypes,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    await inspectGcsWithSampling(
+      projectId,
+      gcsUri,
+      topicName,
+      subscriptionName,
+      'PERSON_NAME'
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error while inspecting GCS file', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_WITH_SAMPLING(
+      projectId,
+      gcsUri,
+      topicName,
+      infoTypes,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    try {
+      await inspectGcsWithSampling(
+        projectId,
+        gcsUri,
+        topicName,
+        subscriptionName,
+        'PERSON_NAME'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_inspect_image_all_infotypes
+  it('should inspect a local image file for all sensitive data', () => {
+    const output = execSync(
+      `node inspectImageFileAllInfoTypes.js ${projectId} resources/test.png`
+    );
+    assert.match(output, /InfoType: PHONE_NUMBER/);
+    assert.match(output, /InfoType: EMAIL_ADDRESS/);
+  });
+
+  it('should handle error while inspecting a local image file', () => {
+    let output = '';
+    try {
+      output = execSync(
+        'node inspectImageFileAllInfoTypes.js BAD_PROJECT_ID resources/test.png'
+      );
+    } catch (error) {
+      output = error.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

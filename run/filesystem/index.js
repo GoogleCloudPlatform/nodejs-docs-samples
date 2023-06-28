@@ -26,7 +26,6 @@ const limit = rateLimit({
 });
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const filePrefix = process.env.FILENAME || 'test';
-const port = parseInt(process.env.PORT) || 8080;
 
 app.use(limit);
 app.use('/filesystem', express.static(mntDir));
@@ -35,24 +34,25 @@ app.use('/filesystem', serveIndex(mntDir));
 app.get('/', async (req, res) => {
   await writeFile(mntDir);
   let html =
-    '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
+  '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   fs.readdirSync(mntDir).forEach(filename => {
     html += `<a href="${req.protocol}://${req.get(
       'host'
-    )}/filesystem/${filename}">${filename}</a><br>`;
+      )}/filesystem/${filename}">${filename}</a><br>`;
+    });
+    html += '</body></html>';
+    res.send(html);
   });
-  html += '</body></html>';
-  res.send(html);
-});
-
-app.all('*', (req, res) => {
-  res.redirect('/');
-});
-
+  
+  app.all('*', (req, res) => {
+    res.redirect('/');
+  });
+  
+const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
-});
-
+  });
+  
 async function writeFile(path) {
   let date = new Date();
   date = date.toString().split(' ').join('-');

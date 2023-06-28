@@ -7,7 +7,7 @@
   "rebaseStalePrs": false,
   "force": {
     "constraints": {
-      "node": "< 15.0.0"
+      "node": ">= 16.0.0"
     }
   }
 }

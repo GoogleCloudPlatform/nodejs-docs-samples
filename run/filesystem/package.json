@@ -1,5 +1,5 @@
 {
-  "name": "index.js",
+  "name": "filesystem",
   "description": "Demonstrate accessing a mounted network filesystem from a Cloud Run service.",
   "version": "1.0.0",
   "main": "index.js",

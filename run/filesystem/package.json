@@ -13,7 +13,6 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
-    "fs": "0.0.1-security",
     "serve-index": "^1.9.1"
   },
   "devDependencies": {

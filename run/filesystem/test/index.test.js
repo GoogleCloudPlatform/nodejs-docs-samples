@@ -56,7 +56,7 @@ describe('Unit tests', () => {
       });
     });
   });
-  describe('GET nonexistant path', () => {
+  describe('GET nonexistent path', () => {
     it('responds with 302 Found and redirects to /', async () => {
       const response = await request.get('/nonexistant');
       assert(response.header.location).to.eql('/');

@@ -55,7 +55,7 @@ app.listen(port, () => {
   
 async function writeFile(path) {
   let date = new Date();
-  date = date.toString().split(' ').join('-');
+  date = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${date}.txt`;
   const contents = `This test file was created on ${date}\n`;
 

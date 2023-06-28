@@ -143,6 +143,67 @@ const MOCK_DATA = {
     },
     RESPONSE_DEIDENTIFY_CONTENT: [{item: {table: {}}}],
   }),
+  INSPECT_GCS_WITH_SAMPLING: (
+    projectId,
+    gcsUri,
+    topicId,
+    infoTypes,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: infoTypes,
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+          includeQuote: true,
+          excludeInfoTypes: true,
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: gcsUri},
+            bytesLimitPerFile: 200,
+            filesLimitPercent: 90,
+            fileTypes: [DLP.protos.google.privacy.dlp.v2.FileType.TEXT_FILE],
+            sampleMethod:
+              DLP.protos.google.privacy.dlp.v2.CloudStorageOptions.SampleMethod
+                .RANDOM_START,
+          },
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB: [
+      {
+        name: jobName,
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
 };
 
 module.exports = {MOCK_DATA};

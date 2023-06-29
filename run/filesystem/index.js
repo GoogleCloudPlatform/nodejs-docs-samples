@@ -28,24 +28,25 @@ const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const filePrefix = process.env.FILENAME || 'test';
 
 app.use(limit);
-app.use('/filesystem', express.static(mntDir));
-app.use('/filesystem', serveIndex(mntDir));
+app.use(mntDir, express.static(mntDir));
 
-app.get('/', async (req, res) => {
+app.get(mntDir, async (req, res) => {
   await writeFile(mntDir);
   let html =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   fs.readdirSync(mntDir).forEach(filename => {
     html += `<a href="${req.protocol}://${req.get(
       'host'
-    )}/filesystem/${filename}">${filename}</a><br>`;
+    )}${mntDir}/${filename}">${filename}</a><br>`;
   });
   html += '</body></html>';
   res.send(html);
 });
-
+app.get('/', (req, res) => {
+  res.redirect(mntDir)
+})
 app.all('*', (req, res) => {
-  res.redirect('/');
+  res.redirect(mntDir);
 });
 
 const port = parseInt(process.env.PORT) || 8080;

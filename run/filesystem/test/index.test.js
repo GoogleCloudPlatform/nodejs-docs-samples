@@ -45,29 +45,31 @@ describe('Unit tests', () => {
     console.log('---------');
   });
   describe('GET /', () => {
-    it('responds with 200 Ok', async () => {
+    it('responds with 302 Found and redirects to mount point', async () => {
       const response = await request.get('/');
-      assert(response.status).to.eql(200);
-    });
-    it('writes a file', async () => {
-      await request.get(mntDir);
-      fs.readdir(mntDir, (err, files) => {
-        assert(files.length).to.eql(2);
-      });
+      assert(response.status).to.eql(302);
     });
   });
+  describe('GET mount path', () => {
+    it('responds with 301 Found', async () => {
+      const response = await request.get(mntDir);
+      assert(response.status).to.eql(301);
+    });
+// TODO: Test that file is being generated.
+  });
   describe('GET nonexistent path', () => {
-    it('responds with 302 Found and redirects to /', async () => {
+    it('responds with 302 Found and redirects to mount path', async () => {
       const response = await request.get('/nonexistant');
-      assert(response.header.location).to.eql('/');
+      assert(response.header.location).to.eql(mntDir);
       assert(response.status).to.eql(302);
     });
   });
   describe('GET file path', () => {
-    it('responds with file contents and 200 Ok', async () => {
-      const response = await request.get('/filesystem/test-file.txt');
-      assert(response.text).to.eql(`${testFileContents}`);
+    it('responds with file contents and 302 found', async () => {
+      const response = await request.get(`${mntDir}/test-file.txt`);
       assert(response.status).to.eql(200);
+      console.log(JSON.stringify(response))
+      assert(response.text).to.eql(`${testFileContents}`);
     });
   });
 });

@@ -15,7 +15,6 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
-const serveIndex = require('serve-index');
 
 const app = express();
 const limit = rateLimit({
@@ -43,8 +42,8 @@ app.get(mntDir, async (req, res) => {
   res.send(html);
 });
 app.get('/', (req, res) => {
-  res.redirect(mntDir)
-})
+  res.redirect(mntDir);
+});
 app.all('*', (req, res) => {
   res.redirect(mntDir);
 });

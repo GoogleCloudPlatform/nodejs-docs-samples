@@ -16,7 +16,6 @@ const path = require('path');
 const supertest = require('supertest');
 const assert = require('chai').expect;
 const mock = require('mock-fs');
-const fs = require('fs');
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 let request;
 const testFileContents = 'Test file contents.';
@@ -55,7 +54,7 @@ describe('Unit tests', () => {
       const response = await request.get(mntDir);
       assert(response.status).to.eql(301);
     });
-// TODO: Test that file is being generated.
+    // TODO: Test that file is being generated.
   });
   describe('GET nonexistent path', () => {
     it('responds with 302 Found and redirects to mount path', async () => {
@@ -68,7 +67,6 @@ describe('Unit tests', () => {
     it('responds with file contents and 302 found', async () => {
       const response = await request.get(`${mntDir}/test-file.txt`);
       assert(response.status).to.eql(200);
-      console.log(JSON.stringify(response))
       assert(response.text).to.eql(`${testFileContents}`);
     });
   });

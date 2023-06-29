@@ -843,4 +843,46 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_string_custom_excluding_substring
+  it('should inspect using custom regex pattern excluding list of words', () => {
+    const output = execSync(
+      `node inspectStringCustomExcludingSubstring.js ${projectId} "Name: Doe, John. Name: Example, Jimmy" Jimmy`
+    );
+    assert.notMatch(output, /Quote: Jimmy/);
+    assert.match(output, /Quote: Doe, John/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringCustomExcludingSubstring.js BAD_PROJECT_ID "Name: Doe, John. Name: Example, Jimmy" Jimmy'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_string_custom_hotword
+  it('should inspect using custom regex pattern excluding list of words', () => {
+    const output = execSync(
+      `node inspectStringCustomHotword.js ${projectId} "patient name: John Doe" "patient"`
+    );
+    assert.match(output, /Likelihood: VERY_LIKELY/);
+    assert.match(output, /Quote: John Doe/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringCustomHotword.js BAD_PROJECT_ID "patient name: John Doe" "patient"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

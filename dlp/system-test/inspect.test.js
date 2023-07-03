@@ -885,4 +885,47 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_image_file
+  it('should inspect a image file for matching infoTypes', () => {
+    const output = execSync(
+      `node inspectImageFile.js ${projectId} "resources/test.png" EMAIL_ADDRESS`
+    );
+    assert.match(output, /Findings: 1/);
+    assert.match(output, /InfoType: EMAIL_ADDRESS/);
+  });
+
+  it('should report any error while inspecting a image file', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectImageFile.js ${projectId} "resources/test.png" BAD_TYPE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_image_listed_infotypes
+  it('should inspect a image file for matching infoTypes', () => {
+    const output = execSync(
+      `node inspectImageFileListedInfoTypes.js ${projectId} "resources/test.png" EMAIL_ADDRESS,PHONE_NUMBER`
+    );
+    assert.match(output, /Findings: 2/);
+    assert.match(output, /InfoType: EMAIL_ADDRESS/);
+    assert.match(output, /InfoType: PHONE_NUMBER/);
+  });
+
+  it('should report any error while inspecting a image file', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectImageFileListedInfoTypes.js ${projectId} "resources/test.png" BAD_TYPE`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

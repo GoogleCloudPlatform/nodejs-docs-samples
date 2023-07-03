@@ -26,6 +26,7 @@ const tableId = 'github_nested';
 const fieldId = 'url';
 
 const bucketName = process.env.BUCKET_NAME;
+const infoTypeCloudStorageFileSet = `gs://${bucketName}/test.txt`;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -83,6 +84,87 @@ describe('metadata', () => {
     try {
       output = execSync(
         `node createStoredInfoType.js BAD_PROJECT_ID ${infoTypeId} ${infoTypeOutputPath} ${dataProject} ${dataSetId} ${tableId} ${fieldId}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_update_stored_infotype
+  it('should update a stored infotype', async () => {
+    let output;
+    const infoTypeId = `stored-infoType-${uuid.v4()}`;
+    const infoTypeOutputPath = `gs://${bucketName}`;
+    try {
+      // First create a temporary stored infoType
+      const [response] = await client.createStoredInfoType({
+        parent: `projects/${projectId}/locations/global`,
+        config: {
+          displayName: 'GitHub usernames',
+          description: 'Dictionary of GitHub usernames used in commits',
+          largeCustomDictionary: {
+            outputPath: {
+              path: infoTypeOutputPath,
+            },
+            bigQueryField: {
+              table: {
+                datasetId: dataSetId,
+                projectId: dataProject,
+                tableId: tableId,
+              },
+              field: {
+                name: fieldId,
+              },
+            },
+          },
+        },
+        storedInfoTypeId: infoTypeId,
+      });
+      storedInfoTypeId = response.name;
+      // Execute the update script
+      output = execSync(
+        `node updateStoredInfoType.js ${projectId} ${infoTypeId} ${infoTypeOutputPath} ${infoTypeCloudStorageFileSet}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /InfoType updated successfully:/);
+  });
+
+  it('should handle stored infotype update errors', async () => {
+    let output;
+    const infoTypeId = `stored-infoType-${uuid.v4()}`;
+    const infoTypeOutputPath = 'INFOTYPE_OUTPUT_PATH';
+    try {
+      // First create a temporary stored infoType
+      const [response] = await client.createStoredInfoType({
+        parent: `projects/${projectId}/locations/global`,
+        config: {
+          displayName: 'GitHub usernames',
+          description: 'Dictionary of GitHub usernames used in commits',
+          largeCustomDictionary: {
+            outputPath: {
+              path: infoTypeOutputPath,
+            },
+            bigQueryField: {
+              table: {
+                datasetId: dataSetId,
+                projectId: dataProject,
+                tableId: tableId,
+              },
+              field: {
+                name: fieldId,
+              },
+            },
+          },
+        },
+        storedInfoTypeId: infoTypeId,
+      });
+      storedInfoTypeId = response.name;
+      // Execute the update script
+      output = execSync(
+        `node updateStoredInfoType.js BAD_PROJECT_ID ${infoTypeId} ${infoTypeOutputPath} ${infoTypeCloudStorageFileSet}`
       );
     } catch (err) {
       output = err.message;

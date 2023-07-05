@@ -5,6 +5,9 @@
   "private": true,
   "license": "Apache Version 2.0",
   "author": "Google LLC",
+  "engines": {
+    "node": ">=16.x.x"
+  },
   "scripts": {
     "start": "node index.js",
     "system-test": "c8 mocha test/system.test.js --timeout=420000 --exit"

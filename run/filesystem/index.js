@@ -32,19 +32,9 @@ app.use(mntDir, express.static(mntDir));
 app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
   await writeFile(mntDir);
-  let html =
-    '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
-  // Capture list of existing files in mount directory.
-  const existingFiles = fs.readdirSync(mntDir);
-  // Append file name with hyperlink to html.   
-  existingFiles.forEach(filename => {
-    html += `<a href="${req.protocol}://${req.get(
-      'host'
-    )}${mntDir}/${filename}">${filename}</a><br>`;
-  });
-  // Append closing html tags to html.
-  html += '</body></html>';
-  res.send(html);
+  // Respond with html listing files.
+  const index = generateIndex(mntDir, req.get('host'));
+  res.send(index);
 });
 
 app.all('*', (req, res) => {
@@ -69,5 +59,16 @@ async function writeFile(path) {
     }
   });
 }
+
+function generateIndex(mntDir, host) {
+  const header = '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
+  const footer = '</body></html>';
+  const existingFiles = fs.readdirSync(mntDir);
+  fileHtml = existingFiles.map(filename => {
+    return `<a href="http://${host}${mntDir}/${filename}">${filename}</a><br>`;
+  });
+  return header+fileHtml.join("")+footer
+
+};
 
 module.exports = app;

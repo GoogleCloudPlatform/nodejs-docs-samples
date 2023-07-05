@@ -24,7 +24,6 @@ const limit = rateLimit({
   headers: true,
 });
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
-const filePrefix = process.env.FILENAME || 'test';
 
 app.use(limit);
 app.use(mntDir, express.static(mntDir));
@@ -47,7 +46,7 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-async function writeFile(path) {
+async function writeFile(path, filePrefix='test') {  
   let date = new Date();
   date = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${date}.txt`;

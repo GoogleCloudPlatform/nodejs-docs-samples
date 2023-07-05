@@ -39,7 +39,7 @@ RUN npm install --only=production
 COPY . ./
 
 # Ensure the script is executable
-RUN chmod +x /app/wrapper.sh
+RUN chmod +x /app/run.sh
 
 # Use tini to manage zombie processes and signal forwarding
 # https://github.com/krallin/tini

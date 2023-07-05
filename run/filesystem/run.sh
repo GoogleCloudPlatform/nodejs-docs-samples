@@ -24,5 +24,5 @@ echo "Mounting Cloud Filestore."
 mount -o nolock $FILESTORE_IP_ADDRESS:/$FILE_SHARE_NAME $MNT_DIR
 echo "Mounting completed."
 
-npm start
+node index.js
 # [END cloudrun_fs_script]

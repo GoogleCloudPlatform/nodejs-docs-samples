@@ -204,6 +204,88 @@ const MOCK_DATA = {
       nack: sinon.stub(),
     },
   }),
+  DEIDENTIFY_WITH_DETEMINISTIC: (
+    projectId,
+    string,
+    infoTypes,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_DEIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      deidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              infoTypes,
+              primitiveTransformation: {
+                cryptoDeterministicConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  surrogateInfoType: {name: surrogateType},
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        infoTypes,
+      },
+      item: {
+        value: string,
+      },
+    },
+    RESPONSE_DEIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
+  REIDENTIFY_WITH_DETEMINISTIC: (
+    projectId,
+    string,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              infoTypes: [{name: surrogateType}],
+              primitiveTransformation: {
+                cryptoDeterministicConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  surrogateInfoType: {name: surrogateType},
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        customInfoTypes: [
+          {
+            infoType: {name: surrogateType},
+            surrogateType: {},
+          },
+        ],
+      },
+      item: {
+        value: string,
+      },
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
 };
 
 module.exports = {MOCK_DATA};

@@ -470,4 +470,162 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_deterministic
+  it('should de-identify string using deterministic encryption', async () => {
+    const infoTypes = [{name: 'EMAIL_ADDRESS'}];
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    const CONSTANT_DATA = MOCK_DATA.DEIDENTIFY_WITH_DETEMINISTIC(
+      projectId,
+      string,
+      infoTypes,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    const mockDeidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_DEIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyWithDeterministic = proxyquire(
+      '../deidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await deIdentifyWithDeterministic(
+      projectId,
+      string,
+      'EMAIL_ADDRESS',
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    sinon.assert.calledOnceWithExactly(
+      mockDeidentifyContent,
+      CONSTANT_DATA.REQUEST_DEIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle de-identification errors', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+
+    const mockDeidentifyContent = sinon.stub().rejects(new Error('Failed'));
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyWithDeterministic = proxyquire(
+      '../deidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    try {
+      await deIdentifyWithDeterministic(
+        projectId,
+        string,
+        'EMAIL_ADDRESS',
+        keyName,
+        wrappedKey,
+        'EMAIL_ADDRESS_TOKEN'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_reidentify_deterministic
+  it('should re-identify string using deterministic encryption', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is EMAIL_ADDRESS_TOKEN';
+    const CONSTANT_DATA = MOCK_DATA.REIDENTIFY_WITH_DETEMINISTIC(
+      projectId,
+      string,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    const mockReidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyWithDeterministic = proxyquire(
+      '../reidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await reIdentifyWithDeterministic(
+      projectId,
+      string,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    sinon.assert.calledOnceWithExactly(
+      mockReidentifyContent,
+      CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle re-identification errors', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is EMAIL_ADDRESS_TOKEN';
+
+    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyWithDeterministic = proxyquire(
+      '../reidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    try {
+      await reIdentifyWithDeterministic(
+        projectId,
+        string,
+        keyName,
+        wrappedKey,
+        'EMAIL_ADDRESS_TOKEN'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
 });

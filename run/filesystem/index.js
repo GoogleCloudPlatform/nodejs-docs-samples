@@ -61,14 +61,14 @@ async function writeFile(path) {
 }
 
 function generateIndex(mntDir, host) {
-  const header = '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
+  const header =
+    '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   const footer = '</body></html>';
   const existingFiles = fs.readdirSync(mntDir);
-  fileHtml = existingFiles.map(filename => {
+  const fileHtml = existingFiles.map(filename => {
     return `<a href="http://${host}${mntDir}/${filename}">${filename}</a><br>`;
   });
-  return header+fileHtml.join("")+footer
-
-};
+  return header + fileHtml.join('') + footer;
+}
 
 module.exports = app;

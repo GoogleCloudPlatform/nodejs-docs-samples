@@ -23,8 +23,9 @@ const cmd = 'node quickstart.js';
 const filePath = path.join(__dirname, '..', 'resources/audio.raw');
 const exec = cmd => execSync(cmd, {encoding: 'utf-8'});
 
+// skip this test because testing code sample is deprecated
 describe('Quickstart', () => {
-  it('should translate from a streamed file', async () => {
+  it.skip('should translate from a streamed file', async () => {
     const stdout = exec(`${cmd} ${filePath} linear16 en-US es-ES`);
     assert.include(stdout, 'Partial translation');
   });

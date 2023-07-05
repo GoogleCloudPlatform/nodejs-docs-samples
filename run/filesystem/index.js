@@ -33,7 +33,7 @@ app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
   await writeFile(mntDir);
   // Respond with html listing files.
-  const index = generateIndex(mntDir, req.get('host'));
+  const index = generateIndex(mntDir);
   res.send(index);
 });
 
@@ -60,13 +60,13 @@ async function writeFile(path) {
   });
 }
 
-function generateIndex(mntDir, host) {
+function generateIndex(mntDir) {
   const header =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   const footer = '</body></html>';
   const existingFiles = fs.readdirSync(mntDir);
   const fileHtml = existingFiles.map(filename => {
-    return `<a href="http://${host}${mntDir}/${filename}">${filename}</a><br>`;
+    return `<a href="${mntDir}/${filename}">${filename}</a><br>`;
   });
   return header + fileHtml.join('') + footer;
 }

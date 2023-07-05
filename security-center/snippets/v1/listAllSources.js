@@ -26,11 +26,14 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   /*
    * TODO(developer): Uncomment the following lines
    */
-  // const organizaionId = "111122222444";
-  const orgName = client.organizationPath(organizationId);
+  // parent: must be in one of the following formats:
+  //    `organizations/${organization_id}`
+  //    `projects/${project_id}`
+  //    `folders/${folder_id}`
+  const parent = `organizations/${organizationId}`;
   // Call the API with automatic pagination.
   async function listSources() {
-    const [response] = await client.listSources({parent: orgName});
+    const [response] = await client.listSources({parent: parent});
     let count = 0;
     console.log('Sources:');
     Array.from(response).forEach(source =>

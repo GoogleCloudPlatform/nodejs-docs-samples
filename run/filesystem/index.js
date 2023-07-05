@@ -46,11 +46,11 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-async function writeFile(path, filePrefix='test') {  
+async function writeFile(path, filePrefix = 'test') {
   let date = new Date();
   date = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${date}.txt`;
-  const contents = `This test file was created on ${date}\n`;
+  const contents = `This test file was created on ${date}.\n`;
 
   fs.writeFile(`${path}/${filename}`, contents, err => {
     if (err) {

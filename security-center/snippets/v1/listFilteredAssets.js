@@ -32,6 +32,8 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   const orgName = client.organizationPath(organizationId);
 
   // Call the API with automatic pagination.
+  // You can also list assets in a project/ folder. To do so, modify the parent
+  // value and filter condition.
   async function listFilteredAssets() {
     const [response] = await client.listAssets({
       parent: orgName,

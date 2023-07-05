@@ -24,7 +24,9 @@ function main(
 
   const client = new SecurityCenterClient();
 
-  // organizationId = "your-org-id";
+  // formattedConfigName: You can also use
+  //    `client.projectNotificationConfigPath(projectId, configId)` or
+  //    `client.folderNotificationConfigPath(folderId, configId)`.
   // configId = "your-config-id";
   const formattedConfigName = client.organizationNotificationConfigPath(
     organizationId,

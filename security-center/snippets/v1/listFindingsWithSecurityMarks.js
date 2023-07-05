@@ -27,7 +27,12 @@ function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
   /*
    * TODO(developer): Uncomment the following lines
    */
-  // const sourceName = "organizations/111122222444/sources/1234";
+  // const sourceName = `${parent}/sources/${sourceId}`;
+  // where,
+  // parent: must be in one of the following formats:
+  //    `organizations/${organization_id}`
+  //    `projects/${project_id}`
+  //    `folders/${folder_id}`
 
   async function listFindingsWithSecurityMarks() {
     const [response] = await client.listFindings({

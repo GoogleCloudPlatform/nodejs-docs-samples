@@ -31,6 +31,10 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   async function listAllFindings() {
     const [response] = await client.listFindings({
       // List findings across all sources.
+      // parent: must be in one of the following formats:
+      //    `organizations/${organization_id}/sources/-`
+      //    `projects/${project_id}/sources/-`
+      //    `folders/${folder_id}/sources/-`
       parent: `organizations/${organizationId}/sources/-`,
     });
     let count = 0;

@@ -28,13 +28,16 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   /*
    * TODO(developer): Uncomment the following lines
    */
-  // const organizationId = "1234567777";
-  const orgName = client.organizationPath(organizationId);
+  // parent: must be in one of the following formats:
+  //    `organizations/${organization_id}`
+  //    `projects/${project_id}`
+  //    `folders/${folder_id}`
+  const parent = `organizations/${organizationId}`;
 
   // Call the API with automatic pagination.
   async function listAssetsWithSecurityMarks() {
     const [response] = await client.listAssets({
-      parent: orgName,
+      parent: parent,
       filter: 'security_marks.marks.key_a="value_a"',
     });
     let count = 0;

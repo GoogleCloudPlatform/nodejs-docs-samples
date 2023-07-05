@@ -5,6 +5,9 @@
   "private": true,
   "license": "Apache Version 2.0",
   "author": "Google LLC",
+  "engines": {
+    "node": ">=16.x.x"
+  },
   "scripts": {
     "start": "node index.js",
     "system-test": "c8 mocha test/system.test.js --timeout=420000 --exit"
@@ -21,6 +24,6 @@
     "google-auth-library": "^8.7.0",
     "got": "^11.8.3",
     "mocha": "^10.2.0",
-    "puppeteer": "^20.0.0" 
+    "puppeteer": "^20.0.0"
   }
 }

@@ -46,5 +46,5 @@ RUN chmod +x /app/wrapper.sh
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Pass the wrapper script as arguments to tini
-CMD ["/app/wrapper.sh"]
+CMD ["/app/run.sh"]
 # [END cloudrun_fs_dockerfile]

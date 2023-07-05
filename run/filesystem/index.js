@@ -30,21 +30,25 @@ app.use(limit);
 app.use(mntDir, express.static(mntDir));
 
 app.get(mntDir, async (req, res) => {
+  // Have all requests to mount directory generate a new file on the filesystem.
   await writeFile(mntDir);
   let html =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
-  fs.readdirSync(mntDir).forEach(filename => {
+  // Capture list of existing files in mount directory.
+  const existingFiles = fs.readdirSync(mntDir);
+  // Append file name with hyperlink to html.   
+  existingFiles.forEach(filename => {
     html += `<a href="${req.protocol}://${req.get(
       'host'
     )}${mntDir}/${filename}">${filename}</a><br>`;
   });
+  // Append closing html tags to html.
   html += '</body></html>';
   res.send(html);
 });
-app.get('/', (req, res) => {
-  res.redirect(mntDir);
-});
+
 app.all('*', (req, res) => {
+  // Redirect all requests to the mount directory
   res.redirect(mntDir);
 });
 

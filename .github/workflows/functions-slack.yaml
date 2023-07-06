@@ -58,7 +58,7 @@ jobs:
         secrets: |-
           slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
           kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
-    - uses: actions/setup-node@v3.6.0
+    - uses: actions/setup-node@v3.7.0
       with:
         node-version: 16
     - name: Get npm cache directory

@@ -35,9 +35,14 @@ app.use(mntDir, express.static(mntDir));
 
 app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
-  await writeFile(mntDir);
-  // Respond with html listing files.
-  res.send(generateIndex(mntDir));
+  try {
+    await writeFile(mntDir);
+    // Respond with html listing files.
+    res.send(generateIndex(mntDir));
+  } catch (error) {
+    console.error(error);
+    res.send(error);
+  }
 });
 
 app.all('*', (req, res) => {
@@ -58,7 +63,7 @@ async function writeFile(path, filePrefix = 'test') {
 
   fs.writeFile(`${path}/${filename}`, contents, err => {
     if (err) {
-      console.error(`could not write to file system:\n${err}`);
+      return err;
     }
   });
 }

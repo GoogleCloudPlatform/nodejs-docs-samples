@@ -37,8 +37,7 @@ app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
   await writeFile(mntDir);
   // Respond with html listing files.
-  const index = generateIndex(mntDir);
-  res.send(index);
+  res.send(generateIndex(mntDir));
 });
 
 app.all('*', (req, res) => {

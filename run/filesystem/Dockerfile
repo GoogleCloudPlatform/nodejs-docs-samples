@@ -16,12 +16,13 @@
 
 # Use the official Node.js image.
 # https://hub.docker.com/_/node
-FROM node:20
+FROM node:20-slim
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y \
     tini \
     nfs-common \
+	libtool \ 
     && apt-get clean
 
 # Set fallback mount directory

@@ -44,7 +44,7 @@ app.get(mntDir, async (req, res) => {
     res
       .status(500)
       .send(
-        'Something went wrong when writing to the file system. Refresh the page to try again.'
+        'Something went wrong when writing to the filesystem. Refresh the page to try again.'
       );
   }
 });
@@ -73,15 +73,20 @@ async function writeFile(path, filePrefix = 'test') {
 }
 
 function generateIndex(mntDir) {
+  // Return html for page with a list of files on the mounted filesystem.
   const header =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   const footer = '</body></html>';
-  // Get list of files on mounted file system.
+  // Get list of files on mounted filesystem.
+  let body = '';
   const existingFiles = fs.readdirSync(mntDir);
-  const fileHtml = existingFiles.map(filename => {
-    return `<a href="${mntDir}/${filename}">${filename}</a><br>`;
+  existingFiles.forEach(fileName => {
+    const sanitized = encodeURIComponent(fileName);
+    body += `<a href="${mntDir}/${sanitized}">${decodeURIComponent(
+      sanitized
+    )}</a><br>`;
   });
-  return header + fileHtml.join('') + footer;
+  return header + body + footer;
 }
 
 module.exports = app;

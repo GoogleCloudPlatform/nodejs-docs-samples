@@ -41,7 +41,11 @@ app.get(mntDir, async (req, res) => {
     res.send(generateIndex(mntDir));
   } catch (error) {
     console.error(error);
-    res.send(error);
+    res
+      .status(500)
+      .send(
+        'Something went wrong when writing to the file system. Refresh the page to try again.'
+      );
   }
 });
 

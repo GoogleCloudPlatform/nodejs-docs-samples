@@ -11,6 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+/**
+ * Express webapp that generates files to a mounted NFS disk.
+ *
+ * See https://cloud.google.com/run/docs/tutorials/network-filesystems-filestore before running the code snippet.
+ */
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -63,6 +68,7 @@ function generateIndex(mntDir) {
   const header =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   const footer = '</body></html>';
+  // Get list of files on mounted file system.
   const existingFiles = fs.readdirSync(mntDir);
   const fileHtml = existingFiles.map(filename => {
     return `<a href="${mntDir}/${filename}">${filename}</a><br>`;

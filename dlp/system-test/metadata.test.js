@@ -25,14 +25,13 @@ const dataSetId = 'samples';
 const tableId = 'github_nested';
 const fieldId = 'url';
 
-const bucketName = process.env.BUCKET_NAME;
-const infoTypeCloudStorageFileSet = `gs://${bucketName}/test.txt`;
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new DLP.DlpServiceClient();
 describe('metadata', () => {
   let projectId, storedInfoTypeId;
+  const bucketName = process.env.BUCKET_NAME;
+  const infoTypeCloudStorageFileSet = `gs://${bucketName}/test.txt`;
 
   before(async () => {
     projectId = await client.getProjectId();

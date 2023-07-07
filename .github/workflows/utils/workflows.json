@@ -67,6 +67,8 @@
   "functions/v2/ocr/app",
   "functions/v2/tips/avoidInfiniteRetries",
   "functions/v2/tips/retry",
+  "functions/v2/typed/greeting",
+  "functions/v2/typed/googlechatapp",
   "game-servers/snippets",
   "healthcare/consent",
   "healthcare/datasets",

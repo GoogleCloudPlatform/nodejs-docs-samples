@@ -58,7 +58,7 @@ const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-const writeFile = async (path, filePrefix= 'test') => { 
+const writeFile = async (path, filePrefix = 'test') => {
   const date = new Date();
   const formattedDate = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${formattedDate}.txt`;
@@ -69,7 +69,7 @@ const writeFile = async (path, filePrefix= 'test') => {
       return err;
     }
   });
-}
+};
 
 const generateIndex = mntDir => {
   // Return html for page with a list of files on the mounted filesystem.
@@ -86,6 +86,6 @@ const generateIndex = mntDir => {
     )}</a><br>`;
   });
   return header + body + footer;
-}
+};
 
 module.exports = app;

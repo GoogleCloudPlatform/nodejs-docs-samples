@@ -58,12 +58,11 @@ const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
-async function writeFile(path, filePrefix = 'test') {
-  let date = new Date();
-  date = date.toString().split(' ').slice(0, 5).join('-');
-  const filename = `${filePrefix}-${date}.txt`;
-  const contents = `This test file was created on ${date}.\n`;
+const writeFile = async (path, filePrefix= 'test') => { 
+  const date = new Date();
+  const formattedDate = date.toString().split(' ').slice(0, 5).join('-');
+  const filename = `${filePrefix}-${formattedDate}.txt`;
+  const contents = `This test file was created on ${formattedDate}.\n`;
 
   fs.writeFile(`${path}/${filename}`, contents, err => {
     if (err) {
@@ -72,7 +71,7 @@ async function writeFile(path, filePrefix = 'test') {
   });
 }
 
-function generateIndex(mntDir) {
+const generateIndex = mntDir => {
   // Return html for page with a list of files on the mounted filesystem.
   const header =
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';

@@ -82,6 +82,7 @@
   "monitoring/prometheus",
   "monitoring/snippets",
   "opencensus",
+  "run/helloworld",
   "retail",
   "scheduler",
   "secret-manager",

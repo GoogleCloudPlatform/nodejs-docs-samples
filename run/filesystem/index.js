@@ -55,7 +55,7 @@ app.all('*', (req, res) => {
 });
 
 const port = parseInt(process.env.PORT) || 8080;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 const writeFile = (path, filePrefix = 'test') => {
@@ -89,8 +89,9 @@ const generateIndex = mntDir => {
 };
 
 process.on('SIGTERM', () => {
-  console.log('Received SIGTERM signal. Exiting.');
-  process.exit(0);
+  server.close(() => {
+    console.error('Received SIGTERM signal. Exiting.');
+  });
 });
 
 module.exports = app;

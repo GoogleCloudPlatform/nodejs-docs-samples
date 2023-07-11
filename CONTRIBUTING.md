@@ -32,12 +32,14 @@ Console](https://console.cloud.google.com/apis/library).
 ## Adding new samples
 
 All samples must have tests. We use `mocha` as testing framework. The
-package.json file within your sample directory must contain a test script that
+`package.json` file within your sample directory must contain a test script that
 executes the `mocha` tests via `npm test`
 ([example](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/batch/package.json#L13)).
 
 For new samples, a GitHub Actions workflow should be created to run your tests
 on the CI system:
+
+1. Check that your new samples and sample tests are on a branch created directly from this repo `GoogleCloudPlatform/nodejs-docs-samples`. Not a fork.
 
 1. Add an entry to
    [.github/workflows/utils/workflows.json](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows/utils/workflows.json)

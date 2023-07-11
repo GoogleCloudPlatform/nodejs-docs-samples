@@ -58,7 +58,7 @@ const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-const writeFile = async (path, filePrefix = 'test') => {
+const writeFile = (path, filePrefix = 'test') => {
   const date = new Date();
   const formattedDate = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${formattedDate}.txt`;

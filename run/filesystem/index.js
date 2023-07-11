@@ -88,4 +88,9 @@ const generateIndex = mntDir => {
   return header + htmlBody.join(' ') + footer;
 };
 
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM signal. Exiting.');
+  process.exit(0);
+});
+
 module.exports = app;

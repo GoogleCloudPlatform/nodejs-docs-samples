@@ -77,15 +77,15 @@ const generateIndex = mntDir => {
     '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
   const footer = '</body></html>';
   // Get list of files on mounted filesystem.
-  let body = '';
   const existingFiles = fs.readdirSync(mntDir);
-  existingFiles.forEach(fileName => {
+  const htmlBody = existingFiles.map(fileName => {
     const sanitized = encodeURIComponent(fileName);
-    body += `<a href="${mntDir}/${sanitized}">${decodeURIComponent(
+    return `<a href="${mntDir}/${sanitized}">${decodeURIComponent(
       sanitized
     )}</a><br>`;
   });
-  return header + body + footer;
-};
+
+  return header + htmlBody.join(' ') + footer
+}
 
 module.exports = app;

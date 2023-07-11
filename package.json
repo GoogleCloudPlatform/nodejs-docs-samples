@@ -23,11 +23,11 @@
     "c8": "^8.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.0.0-alpha.1",
     "gts": "^4.0.1",
     "mocha": "^10.2.0",
     "nunjucks": "^3.2.4",
-    "prettier": "^2.8.7",
+    "prettier": "^3.0.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {

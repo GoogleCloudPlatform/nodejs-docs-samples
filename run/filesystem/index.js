@@ -85,7 +85,7 @@ const generateIndex = mntDir => {
     )}</a><br>`;
   });
 
-  return header + htmlBody.join(' ') + footer
-}
+  return header + htmlBody.join(' ') + footer;
+};
 
 module.exports = app;

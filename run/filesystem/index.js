@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /**
- * Express webapp that generates files to a mounted NFS disk.
+ * Express webapp that generates files to a mounted NFS  when deployed to Cloud Run.
  *
  * See https://cloud.google.com/run/docs/tutorials/network-filesystems-filestore before running the code snippet.
  */
@@ -20,18 +20,22 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
-
 const app = express();
+const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
+const port = parseInt(process.env.PORT) || 8080;
 const limit = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Rate limit exceeded',
   headers: true,
 });
-const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 
 app.use(limit);
 app.use(mntDir, express.static(mntDir));
+
+const server = app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
 
 app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
@@ -54,11 +58,8 @@ app.all('*', (req, res) => {
   res.redirect(mntDir);
 });
 
-const port = parseInt(process.env.PORT) || 8080;
-const server = app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
 const writeFile = (path, filePrefix = 'test') => {
+  // Write a test file to the provided path.
   const date = new Date();
   const formattedDate = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${formattedDate}.txt`;
@@ -84,7 +85,6 @@ const generateIndex = mntDir => {
       sanitized
     )}</a><br>`;
   });
-
   return header + htmlBody.join(' ') + footer;
 };
 

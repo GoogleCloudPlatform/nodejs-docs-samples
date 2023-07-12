@@ -38,6 +38,8 @@ describe('metadata', () => {
   const infoTypeCloudStorageFileSet = `gs://${bucketName}/test.txt`;
 
   before(async () => {
+    // TODO: Remove this once you get an idea of environment variables
+    console.log('ENV VARS: ', JSON.stringify(process.env));
     projectId = await client.getProjectId();
     // Create a Cloud Storage bucket to be used for testing.
     await storage.createBucket(bucketName);

@@ -1,0 +1,21 @@
+steps:
+- id: 'Build and deploy to Cloud Run'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    gcloud run deploy $_RUN_SERVICE --source . \
+    --region $_REGION \
+    --vpc-connector $_CONNECTOR_NAME \
+    --execution-environment gen2 \
+    --allow-unauthenticated \
+    --update-env-vars FILESTORE_IP_ADDRESS=$_FILESTORE_IP_ADDRESS,FILE_SHARE_NAME=$_SHARE_NAME
+
+substitutions:
+  _REGION: us-central1
+  _FILESTORE_IP_ADDRESS: 10.103.89.66 # Existing long-standing resource
+  _SHARE_NAME: filestoresamples # Existing long-standing resource
+  _CONNECTOR_NAME: run-filesystem-e2e-test # Existing long-standing resource
+  _RUN_SERVICE: filesystem-app
+  

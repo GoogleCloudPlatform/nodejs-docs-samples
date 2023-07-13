@@ -1,0 +1,24 @@
+steps:
+- id: 'Delete Cloud Run service'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['-']
+  args:
+  - '-c'
+  - |
+    gcloud run services delete $_RUN_SERVICE --region $_REGION --quiet
+
+- id: 'Delete Artifact Registry build'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['-']
+  args:
+  - '-c'
+  - |
+    gcloud artifacts docker images delete \
+    us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$_RUN_SERVICE:latest --quiet
+
+substitutions:
+  _REGION: us-central1
+  _RUN_SERVICE: filesystem-app
+  

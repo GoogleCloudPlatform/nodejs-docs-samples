@@ -19,22 +19,41 @@ const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid');
 const DLP = require('@google-cloud/dlp');
+const {Storage} = require('@google-cloud/storage');
 
 const dataProject = 'bigquery-public-data';
 const dataSetId = 'samples';
 const tableId = 'github_nested';
 const fieldId = 'url';
 
+const storage = new Storage();
+const bucketName = `test-bucket-${uuid.v4()}`;
+const testFile = 'resources/test.txt'
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const client = new DLP.DlpServiceClient();
 describe('metadata', () => {
   let projectId, storedInfoTypeId;
-  const bucketName = process.env.BUCKET_NAME;
   const infoTypeCloudStorageFileSet = `gs://${bucketName}/test.txt`;
 
   before(async () => {
     projectId = await client.getProjectId();
+    // Create a Cloud Storage bucket to be used for testing.
+    await storage.createBucket(bucketName);
+    await storage.bucket(bucketName).upload(testFile);
+    console.log(`Bucket ${bucketName} created.`);
+  });
+
+  after(async () => {
+    try {
+      const bucket = storage.bucket(bucketName);
+      await bucket.deleteFiles({force: true});
+      await bucket.delete();
+      console.log(`Bucket ${bucketName} deleted.`);
+    } catch (err) {
+      // ignore error
+    }
   });
 
   // Delete stored infotypes created in the snippets.

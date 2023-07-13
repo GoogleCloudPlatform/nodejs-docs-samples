@@ -3,7 +3,7 @@ steps:
 - id: 'Delete Cloud Run service'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
-  waitFor: ['Build and deploy to Cloud Run']
+  waitFor: ['-']
   args:
   - '-c'
   - |
@@ -13,7 +13,7 @@ steps:
 - id: 'Delete VPC access connector'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
-  waitFor: ['Build and deploy to Cloud Run']
+  waitFor: ['-']
   args:
   - '-c'
   - |
@@ -24,7 +24,7 @@ steps:
 - id: 'Delete Filestore instance'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
-  waitFor: ['Build and deploy to Cloud Run']
+  waitFor: ['-']
   args:
   - '-c'
   - |
@@ -35,7 +35,7 @@ steps:
 - id: 'Delete Artifact Registry build'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
-  waitFor: ['Build and deploy to Cloud Run']
+  waitFor: ['-']
   args:
   - '-c'
   - |

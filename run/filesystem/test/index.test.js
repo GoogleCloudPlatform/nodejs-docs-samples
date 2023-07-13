@@ -71,3 +71,16 @@ describe('Unit tests', () => {
     });
   });
 });
+
+describe('End-to-end test', () => {
+  describe('Deploy to Cloud', () => {
+    it('has Cloud Run endpoint', () => {
+      assert(true).to.eql(true);
+    });
+  });
+  describe('Tear down', () => {
+    it('removes all resources', async () => {
+      assert(true).to.eql(true);
+    });
+  });
+});

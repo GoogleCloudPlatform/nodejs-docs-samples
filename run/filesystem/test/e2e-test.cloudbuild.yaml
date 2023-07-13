@@ -6,8 +6,8 @@ steps:
   - '-c'
   - |
     gcloud config set run/region $_REGION && \
-    gcloud config set filestore/zone $_ZONE \
-    || echo 'Failed to set gcloud config values.' | tee -a /workspace/errors.txt
+    gcloud config set filestore/zone $_ZONE || \
+    echo 'Failed to set gcloud config values.' | tee -a /workspace/errors.txt
 
 - id: 'Create Filestore instance'
   name: 'gcr.io/cloud-builders/gcloud:latest'
@@ -19,8 +19,8 @@ steps:
     gcloud filestore instances create ${_INSTANCE_ID} \
     --tier=STANDARD \
     --file-share=name=${_SHARE_NAME},capacity=1TiB \
-    --network=name="default" \
-    || echo 'Failed to create Filestore instance.' | tee -a /workspace/errors.txt
+    --network=name="default" || \
+    echo 'Failed to create Filestore instance.' | tee -a /workspace/errors.txt
 
 - id: 'Create serverless VPC connector'
   name: 'gcr.io/cloud-builders/gcloud:latest'
@@ -30,8 +30,8 @@ steps:
   - '-c'
   - |
     gcloud compute networks vpc-access connectors create \
-    ${_CONNECTOR_NAME} --region ${_REGION} --range "10.8.0.0/28" \
-    || echo 'Failed to create serverless VPC connector.' | tee -a /workspace/errors.txt
+    ${_CONNECTOR_NAME} --region ${_REGION} --range "10.8.0.0/28" || \
+    echo 'Failed to create serverless VPC connector.' | tee -a /workspace/errors.txt
 
 - id: 'Retrieve Filestore IP address'
   name: 'gcr.io/cloud-builders/gcloud:latest'
@@ -42,8 +42,8 @@ steps:
   - |
     gcloud filestore instances \
     describe $_INSTANCE_ID \
-    --format "value(networks.ipAddresses[0])" > /workspace/FILESTORE_IP_ADDRESS \
-    || echo 'Failed to retrieve Filestore IP address.' | tee -a /workspace/errors.txt
+    --format "value(networks.ipAddresses[0])" > /workspace/FILESTORE_IP_ADDRESS || \
+    echo 'Failed to retrieve Filestore IP address.' | tee -a /workspace/errors.txt
 
 - id: 'Build and deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/gcloud:latest'
@@ -51,24 +51,47 @@ steps:
   args:
   - '-c'
   - |
-    export FILESTORE_IP_ADDRESS=$(cat /workspace/FILESTORE_IP_ADDRESS) &&
+    export FILESTORE_IP_ADDRESS=$(cat /workspace/FILESTORE_IP_ADDRESS) && \
     gcloud run deploy filesystem-app --source . \
     --vpc-connector $_CONNECTOR_NAME \
     --execution-environment gen2 \
     --allow-unauthenticated \
-    --update-env-vars FILESTORE_IP_ADDRESS=$$FILESTORE_IP_ADDRESS,FILE_SHARE_NAME=$_SHARE_NAME \
-    || echo 'Failed to build and deploy to Cloud Run' | tee -a /workspace/errors.txt
+    --update-env-vars FILESTORE_IP_ADDRESS=$$FILESTORE_IP_ADDRESS,FILE_SHARE_NAME=$_SHARE_NAME || \
+    echo 'Failed to build and deploy to Cloud Run' | tee -a /workspace/errors.txt
 
-- id: 'Clean up resources'
+# Clean up resources
+- id: 'Delete Cloud Run service'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
+  waitFor: ['Build and deploy to Cloud Run']
   args:
   - '-c'
   - |
-    gcloud run services delete filesystem-app --quiet || echo 'Failed to delete Cloud Run service.'  | tee -a /workspace/errors.txt ; \
-    gcloud compute networks vpc-access connectors delete ${_CONNECTOR_NAME} --region ${_REGION} --quiet || echo 'Failed to delete serverless VPC connector.' | tee -a /workspace/errors.txt ; \
-    gcloud filestore instances delete ${_INSTANCE_ID}  --quiet || echo 'Failed to delete Filestore instance.' | tee -a /workspace/errors.txt ;
+    gcloud run services delete filesystem-app --quiet || echo 'Failed to delete Cloud Run service.'  | \
+    tee -a /workspace/errors.txt
 
+- id: 'Delete VPC access connector'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Build and deploy to Cloud Run']
+  args:
+  - '-c'
+  - |
+    gcloud compute networks vpc-access connectors delete ${_CONNECTOR_NAME} --region ${_REGION} --quiet || \
+    echo 'Failed to delete serverless VPC connector.' | \
+    tee -a /workspace/errors.txt
+
+- id: 'Delete Filestore instance'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Build and deploy to Cloud Run']
+  args:
+  - '-c'
+  - |
+    gcloud filestore instances delete ${_INSTANCE_ID}  --quiet || \
+    echo 'Failed to delete Filestore instance.' | \
+    tee -a /workspace/errors.txt
+   
 - id: 'Pass/Fail'
   name: 'bash'
   args:
@@ -78,7 +101,6 @@ steps:
     && exit 2 \
     || echo "End to end test completed successfully." 
 
-    
 substitutions:
   _ZONE: us-central1-a
   _REGION: us-central1

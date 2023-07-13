@@ -28,7 +28,7 @@ const fieldId = 'url';
 
 const storage = new Storage();
 const bucketName = `test-bucket-${uuid.v4()}`;
-const testFile = 'resources/test.txt'
+const testFile = 'resources/test.txt';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

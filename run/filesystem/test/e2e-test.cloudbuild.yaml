@@ -52,7 +52,7 @@ steps:
   - '-c'
   - |
     export FILESTORE_IP_ADDRESS=$(cat /workspace/FILESTORE_IP_ADDRESS) && \
-    gcloud run deploy filesystem-app --source . \
+    gcloud run deploy $_RUN_SERVICE --source . \
     --vpc-connector $_CONNECTOR_NAME \
     --execution-environment gen2 \
     --allow-unauthenticated \
@@ -67,7 +67,7 @@ steps:
   args:
   - '-c'
   - |
-    gcloud run services delete filesystem-app --quiet || echo 'Failed to delete Cloud Run service.'  | \
+    gcloud run services delete $_RUN_SERVICE --quiet || echo 'Failed to delete Cloud Run service.'  | \
     tee -a /workspace/errors.txt
 
 - id: 'Delete VPC access connector'
@@ -92,6 +92,18 @@ steps:
     echo 'Failed to delete Filestore instance.' | \
     tee -a /workspace/errors.txt
    
+- id: 'Delete Artifact Registry build'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Build and deploy to Cloud Run']
+  args:
+  - '-c'
+  - |
+    gcloud artifacts docker images delete \
+    us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$_RUN_SERVICE:latest --quiet || \
+    echo 'Failed to delete build Artifact Registry.' | \
+    tee -a /workspace/errors.txt
+
 - id: 'Pass/Fail'
   name: 'bash'
   args:
@@ -107,3 +119,4 @@ substitutions:
   _SHARE_NAME: share1
   _INSTANCE_ID: run-filesystem-e2e-test
   _CONNECTOR_NAME: run-filesystem-e2e-test
+  _RUN_SERVICE: filesystem-app

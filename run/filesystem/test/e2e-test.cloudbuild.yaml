@@ -62,9 +62,9 @@ steps:
   args:
   - '-c'
   - |
-    gcloud run services delete filesystem-app --quiet || echo 'Failed to delete Cloud Run service.'  | tee -a /workspace/errors.txt & \
-    gcloud compute networks vpc-access connectors delete ${_CONNECTOR_NAME} --region ${_REGION} --quiet || echo 'Failed to delete serverless VPC connector.' | tee -a /workspace/errors.txt & \
-    gcloud filestore instances delete ${_INSTANCE_ID}  --quiet || echo 'Failed to delete Filestore instance.' | tee -a /workspace/errors.txt &
+    gcloud run services delete filesystem-app --quiet || echo 'Failed to delete Cloud Run service.'  | tee -a /workspace/errors.txt ; \
+    gcloud compute networks vpc-access connectors delete ${_CONNECTOR_NAME} --region ${_REGION} --quiet || echo 'Failed to delete serverless VPC connector.' | tee -a /workspace/errors.txt ; \
+    gcloud filestore instances delete ${_INSTANCE_ID}  --quiet || echo 'Failed to delete Filestore instance.' | tee -a /workspace/errors.txt ;
 
 - id: 'Pass/Fail'
   name: 'bash'

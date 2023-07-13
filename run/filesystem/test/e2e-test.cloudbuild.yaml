@@ -25,7 +25,7 @@ steps:
 - id: 'Create serverless VPC connector'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
-  waitFor: ['Set gcloud config values']
+  waitFor: ['-']
   args:
   - '-c'
   - |
@@ -58,6 +58,60 @@ steps:
     --allow-unauthenticated \
     --update-env-vars FILESTORE_IP_ADDRESS=$$FILESTORE_IP_ADDRESS,FILE_SHARE_NAME=$_SHARE_NAME || \
     echo 'Failed to build and deploy to Cloud Run' | tee -a /workspace/errors.txt
+
+- id: 'Placeholder for tests'
+  name: 'bash'
+  args:
+  - '-c'
+  - |
+    echo "Placeholder step for tests"
+    echo "Check for endpoint."
+    echo "Check for functionality."
+
+# Clean up resources
+- id: 'Delete Cloud Run service'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Placeholder for tests']
+  args:
+  - '-c'
+  - |
+    gcloud run services delete $_RUN_SERVICE --quiet || echo 'Failed to delete Cloud Run service.'  | \
+    tee -a /workspace/errors.txt
+
+- id: 'Delete VPC access connector'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Placeholder for tests']
+  args:
+  - '-c'
+  - |
+    gcloud compute networks vpc-access connectors delete ${_CONNECTOR_NAME} --region ${_REGION} --quiet || \
+    echo 'Failed to delete serverless VPC connector.' | \
+    tee -a /workspace/errors.txt
+
+- id: 'Delete Filestore instance'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Placeholder for tests']
+  args:
+  - '-c'
+  - |
+    gcloud filestore instances delete ${_INSTANCE_ID}  --quiet || \
+    echo 'Failed to delete Filestore instance.' | \
+    tee -a /workspace/errors.txt
+   
+- id: 'Delete Artifact Registry build'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
+  entrypoint: /bin/bash
+  waitFor: ['Placeholder for tests']
+  args:
+  - '-c'
+  - |
+    gcloud artifacts docker images delete \
+    us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$_RUN_SERVICE:latest --quiet || \
+    echo 'Failed to delete build Artifact Registry.' | \
+    tee -a /workspace/errors.txt
 
 - id: 'Pass/Fail'
   name: 'bash'

@@ -12,6 +12,7 @@ steps:
 - id: 'Create Filestore instance'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
+  waitFor: ['Set gcloud config values']
   args:
   - '-c'
   - |
@@ -24,6 +25,7 @@ steps:
 - id: 'Create serverless VPC connector'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
+  waitFor: ['Set gcloud config values']
   args:
   - '-c'
   - |
@@ -34,6 +36,7 @@ steps:
 - id: 'Retrieve Filestore IP address'
   name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
+  waitFor: ['Create Filestore instance']
   args:
   - '-c'
   - |

@@ -54,9 +54,7 @@ steps:
     || echo "End to end test completed successfully." 
 
 substitutions:
-  _ZONE: us-central1-a
   _REGION: us-central1
-  _SHARE_NAME: share1
   _INSTANCE_ID: run-filesystem-e2e-test
   _CONNECTOR_NAME: run-filesystem-e2e-test
   _RUN_SERVICE: filesystem-app

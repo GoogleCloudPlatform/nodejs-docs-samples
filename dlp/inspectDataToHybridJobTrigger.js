@@ -20,7 +20,7 @@
 //  usage: node inspectDataToHybridJobTrigger.js my-project string jobTriggerId
 
 function main(projectId, string, jobTriggerId) {
-  // [START dlp_inspect_data_to_hybrid_job_trigger]
+  // [START dlp_inspect_send_data_to_hybrid_job_trigger]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -83,7 +83,7 @@ function main(projectId, string, jobTriggerId) {
     console.log(response);
   }
   inspectDataToHybridJobTrigger();
-  // [END dlp_inspect_data_to_hybrid_job_trigger]
+  // [END dlp_inspect_send_data_to_hybrid_job_trigger]
 }
 
 process.on('unhandledRejection', err => {

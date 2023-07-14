@@ -103,7 +103,6 @@ popd
 cd github/nodejs-docs-samples/${PROJECT}
 
 # Install dependencies
-npm install -g npm
 npm install
 
 # Configure gcloud

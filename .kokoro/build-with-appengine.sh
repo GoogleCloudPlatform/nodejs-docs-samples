@@ -59,7 +59,6 @@ function cleanup {
 trap cleanup EXIT HUP
 
 # Install dependencies and run tests
-npm install -g npm
 npm install
 
 # If tests are running against main, configure FlakyBot

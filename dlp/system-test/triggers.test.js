@@ -184,7 +184,9 @@ describe('triggers', () => {
     let output = '';
     try {
       tempTriggerName = await createTempTrigger();
-      output = execSync(`node updateTrigger.js ${projectId} ${tempTriggerName}`);
+      output = execSync(
+        `node updateTrigger.js ${projectId} ${tempTriggerName}`
+      );
     } catch (err) {
       output = err.message;
     }

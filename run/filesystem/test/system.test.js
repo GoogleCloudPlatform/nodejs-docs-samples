@@ -13,10 +13,22 @@
 // limitations under the License.
 
 const assert = require('chai').expect;
+const {GoogleAuth} = require('google-auth-library');
+
+const authenticate = async () => {
+    const auth = new GoogleAuth({
+        scopes: 'https://www.googleapis.com/auth/cloud-platform'
+    });
+    const client = await auth.getClient();
+    const projectId = await auth.getProjectId();
+    const url = `https://dns.googleapis.com/dns/v1/projects/${projectId}`;
+};
+
+authenticate().catch(console.error)
 
 describe('End-to-end test', () => {
   before(() => {
-    console.log('Run e2e_test_setup');
+    const projectID = getEnvironmentVariable('GOOGLE_CLOUD_PROJECT');
   });
   after(() => {
     console.log('Run e2e_test_cleanup');

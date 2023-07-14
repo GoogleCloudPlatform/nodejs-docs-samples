@@ -116,6 +116,7 @@ export SERVICE_NAME="${SAMPLE_NAME}-${SUFFIX}"
 
 # Install dependencies and run Nodejs tests.
 export NODE_ENV=development
+npm install -g npm
 npm install
 
 # If tests are running against main, configure FlakyBot

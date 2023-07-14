@@ -15,14 +15,13 @@
 const assert = require('chai').expect;
 
 describe('End-to-end test', () => {
-    before(() => {
-        console.log('Run e2e_test_setup')
-    });
-    after(() => {
-        console.log('Run e2e_test_cleanup')
-    });
-    it('completes Cloud Build e2e', () => {
-      assert(true).to.eql(true); // temp assert
-    });
+  before(() => {
+    console.log('Run e2e_test_setup');
   });
-  
+  after(() => {
+    console.log('Run e2e_test_cleanup');
+  });
+  it('completes Cloud Build e2e', () => {
+    assert(true).to.eql(true); // temp assert
+  });
+});

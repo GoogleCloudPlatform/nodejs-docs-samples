@@ -184,7 +184,7 @@ describe('triggers', () => {
     let output = '';
     try {
       tempTriggerName = await createTempTrigger();
-      output = execSync(`node patchTrigger.js ${projectId} ${tempTriggerName}`);
+      output = execSync(`node updateTrigger.js ${projectId} ${tempTriggerName}`);
     } catch (err) {
       output = err.message;
     }
@@ -194,7 +194,7 @@ describe('triggers', () => {
   it('should handle errors while updating trigger', () => {
     let output;
     try {
-      output = execSync(`node patchTrigger.js ${projectId} BAD_TRIGGER_NAME`);
+      output = execSync(`node updateTrigger.js ${projectId} BAD_TRIGGER_NAME`);
     } catch (err) {
       output = err.message;
     }

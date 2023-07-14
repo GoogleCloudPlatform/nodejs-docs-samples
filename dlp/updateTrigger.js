@@ -17,7 +17,7 @@
 // sample-metadata:
 //  title: Update job trigger with suitable configuration and mask.
 //  description: Uses the Data Loss Prevention API to update job trigger with suitable configuration and mask.
-//  usage: node patchTrigger.js projectId, jobTriggerName
+//  usage: node updateTrigger.js projectId, jobTriggerName
 function main(projectId, jobTriggerName) {
   // [START dlp_update_trigger]
   // Imports the Google Cloud Data Loss Prevention library
@@ -32,7 +32,7 @@ function main(projectId, jobTriggerName) {
   // The job trigger ID to run the API call under
   // const jobTriggerName = 'your-job-trigger-name';
 
-  async function patchTrigger() {
+  async function updateTrigger() {
     // Construct inspect configuration to match PERSON_NAME infotype
     const inspectConfig = {
       infoTypes: [{name: 'PERSON_NAME'}],
@@ -62,7 +62,7 @@ function main(projectId, jobTriggerName) {
     // Print the results
     console.log(`Updated Trigger: ${JSON.stringify(updatedJobTrigger)}`);
   }
-  patchTrigger(projectId, jobTriggerName);
+  updateTrigger(projectId, jobTriggerName);
   // [END dlp_update_trigger]
 }
 

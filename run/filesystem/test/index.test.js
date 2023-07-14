@@ -71,10 +71,3 @@ describe('Unit tests', () => {
     });
   });
 });
-
-describe('End-to-end test', () => {
-  it('completes Cloud Build e2e', () => {
-    // Run Cloud Build test via e2e-test.cloudbuild.yaml
-    assert(true).to.eql(true); // temp assert
-  });
-});

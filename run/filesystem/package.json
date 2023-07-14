@@ -17,6 +17,7 @@
   "devDependencies": {
     "c8": "^7.14.0",
     "chai": "^4.3.7",
+    "google-auth-library": "^8.0.0",
     "mocha": "^10.2.0",
     "mock-fs": "^5.2.0",
     "supertest": "^6.3.3"

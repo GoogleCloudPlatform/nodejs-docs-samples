@@ -13,12 +13,15 @@
 // limitations under the License.
 
 const assert = require('chai').expect;
+const chai = require('chai');
 const {GoogleAuth} = require('google-auth-library');
 const {execSync} = require('child_process');
-
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 const auth = new GoogleAuth();
 
 const getEnvironmentVariable = (variable, defaultValue) => {
+  // Return value of environment variable. Returns fallback default value if not set.
   if (variable in process.env) {
     return process.env[variable];
   }
@@ -33,31 +36,42 @@ const getEnvironmentVariable = (variable, defaultValue) => {
 const gcloudCmdExec = command => {
   // Returns standard output of gcloud command
   try {
-    return execSync(command, {timeout: 240000});
+    return execSync(command, {timeout: 240000}).toString();
   } catch (err) {
     throw Error(err);
   }
 };
 
 auth.getClient();
-const serviceName = getEnvironmentVariable('SERVICE_NAME', 'filesystem-app');
-const projectId = getEnvironmentVariable('GOOGLE_CLOUD_PROJECT', 'werwerew');
+const appendRandomSuffix = string =>
+  `${string}-${Math.random().toString().substring(2, 8)}`;
+const serviceName = getEnvironmentVariable(
+  'SERVICE_NAME',
+  appendRandomSuffix('filesystem-app')
+);
+const projectId = getEnvironmentVariable('GOOGLE_CLOUD_PROJECT');
+const region = 'us-central1';
 
 describe('End-to-end test', () => {
   before(() => {
-    const buildCmd = `gcloud builds submit --config=test/e2e_test_setup.yaml --project ${projectId} --substitutions=_FILESTORE_IP_ADDRESS=10.42.154.2,_RUN_SERVICE=${serviceName}`;
+    const buildCmd = `gcloud builds submit --config=test/e2e_test_setup.yaml --project ${projectId} --substitutions=_FILESTORE_IP_ADDRESS=10.42.154.2,_RUN_SERVICE=${serviceName},_REGION=${region}`;
     console.log('Deploying required Google Cloud resources...');
     gcloudCmdExec(buildCmd);
   });
   after(() => {
-    const cleanUpCmd = `gcloud builds submit --config=test/e2e_test_cleanup.yaml --project ${projectId} --substitutions=_RUN_SERVICE=${serviceName};`;
+    const cleanUpCmd = `gcloud builds submit --config=test/e2e_test_cleanup.yaml --project ${projectId} --substitutions=_RUN_SERVICE=${serviceName},_REGION=${region};`;
     console.log('Cleaning up Google Cloud Resources...');
     gcloudCmdExec(cleanUpCmd);
   });
-  it('has Cloud Run end point', () => {
-    assert(true).to.eql(true); // temp assert
-  });
-  it('GET endpoint responds with 200', () => {
-    assert(true).to.eql(true); // temp assert
+  it('GET endpoint URL responds with 200', done => {
+    const runCmd = `gcloud run services describe ${serviceName} --project=${projectId} --region=${region} --format='value(status.url)'`;
+    const runEndPointUrl = gcloudCmdExec(runCmd).trim();
+    chai
+      .request(runEndPointUrl)
+      .get('/')
+      .end((err, res) => {
+        assert(res.status).to.eql(200);
+        done();
+      });
   });
 });

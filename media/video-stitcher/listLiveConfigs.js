@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2023 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,13 @@
 
 'use strict';
 
-function main(projectId, location, sessionId) {
-  // [START videostitcher_get_vod_session]
+function main(projectId, location) {
+  // [START videostitcher_list_live_configs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // sessionId = 'my-session-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,20 +29,21 @@ function main(projectId, location, sessionId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function getVodSession() {
-    // Construct request
-    const request = {
-      name: stitcherClient.vodSessionPath(projectId, location, sessionId),
-    };
-    const [session] = await stitcherClient.getVodSession(request);
-    console.log(`VOD session: ${session.name}`);
+  async function listLiveConfigs() {
+    const iterable = await stitcherClient.listLiveConfigsAsync({
+      parent: stitcherClient.locationPath(projectId, location),
+    });
+    console.info('Live configs:');
+    for await (const response of iterable) {
+      console.log(response.name);
+    }
   }
 
-  getVodSession();
-  // [END videostitcher_get_vod_session]
+  listLiveConfigs();
+  // [END videostitcher_list_live_configs]
 }
 
-// node getVodSession.js <projectId> <location> <sessionId>
+// node listLiveConfigs.js <projectId> <location>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

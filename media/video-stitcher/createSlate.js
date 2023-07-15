@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2022 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,8 +40,9 @@ function main(projectId, location, slateId, slateUri) {
       },
       slateId: slateId,
     };
-    const [slate] = await stitcherClient.createSlate(request);
-    console.log(`Slate: ${slate.name}`);
+    const [operation] = await stitcherClient.createSlate(request);
+    const [response] = await operation.promise();
+    console.log(`response.name: ${response.name}`);
   }
 
   createSlate();

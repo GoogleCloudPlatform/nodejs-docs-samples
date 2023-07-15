@@ -1,5 +1,5 @@
 /**
- * Copyright 2023, Google, Inc.
+ * Copyright 2023 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -46,9 +46,10 @@ function main(projectId, cdnKeyId, hostname, akamaiTokenKey) {
       },
     };
 
-    const [cdnKey] = await stitcherClient.updateCdnKey(request);
-    console.log(`Updated CDN key: ${cdnKey.name}`);
-    console.log(`Updated hostname: ${cdnKey.hostname}`);
+    const [operation] = await stitcherClient.updateCdnKey(request);
+    const [response] = await operation.promise();
+    console.log(`Updated CDN key: ${response.name}`);
+    console.log(`Updated hostname: ${response.hostname}`);
   }
 
   updateCdnKeyAkamai();

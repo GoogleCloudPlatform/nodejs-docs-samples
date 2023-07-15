@@ -45,8 +45,9 @@ function main(projectId, cdnKeyId, akamaiTokenKey) {
       cdnKeyId: cdnKeyId,
     };
 
-    const [cdnKey] = await stitcherClient.createCdnKey(request);
-    console.log(`CDN key: ${cdnKey.name}`);
+    const [operation] = await stitcherClient.createCdnKey(request);
+    const [response] = await operation.promise();
+    console.log(`CDN key: ${response.name}`);
   }
 
   createCdnKeyAkamai();

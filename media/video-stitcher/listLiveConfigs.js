@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2023, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,17 +15,13 @@
 
 'use strict';
 
-function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
-  // [START videostitcher_create_cdn_key]
-  const location = 'us-central1';
-  const hostname = 'cdn.example.com';
-  const keyName = 'cdn-key';
+function main(projectId, location) {
+  // [START videostitcher_list_live_configs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // cdnKeyId = 'my-cdn-key';
-  // privateKey = 'my-private-key';
+  // location = 'us-central1';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -33,38 +29,21 @@ function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createCdnKey() {
-    // Construct request
-    const request = {
+  async function listLiveConfigs() {
+    const iterable = await stitcherClient.listLiveConfigsAsync({
       parent: stitcherClient.locationPath(projectId, location),
-      cdnKey: {
-        hostname: hostname,
-      },
-      cdnKeyId: cdnKeyId,
-    };
-
-    if (isMediaCdn === 'true') {
-      request.cdnKey.mediaCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    } else {
-      request.cdnKey.googleCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
+    });
+    console.info('Live configs:');
+    for await (const response of iterable) {
+      console.log(response.name);
     }
-
-    const [operation] = await stitcherClient.createCdnKey(request);
-    const [response] = await operation.promise();
-    console.log(`CDN key: ${response.name}`);
   }
 
-  createCdnKey();
-  // [END videostitcher_create_cdn_key]
+  listLiveConfigs();
+  // [END videostitcher_list_live_configs]
 }
 
-// node createCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
+// node listLiveConfigs.js <projectId> <location>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

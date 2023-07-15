@@ -35,7 +35,8 @@ function main(projectId, location, cdnKeyId) {
     const request = {
       name: stitcherClient.cdnKeyPath(projectId, location, cdnKeyId),
     };
-    await stitcherClient.deleteCdnKey(request);
+    const [operation] = await stitcherClient.deleteCdnKey(request);
+    await operation.promise();
     console.log('Deleted CDN key');
   }
 

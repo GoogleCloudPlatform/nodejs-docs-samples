@@ -40,6 +40,7 @@ function main(projectId, location, sourceUri, adTagUri) {
       vodSession: {
         sourceUri: sourceUri,
         adTagUri: adTagUri,
+        adTracking: 'SERVER',
       },
     };
     const [session] = await stitcherClient.createVodSession(request);

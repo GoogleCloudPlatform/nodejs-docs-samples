@@ -40,8 +40,9 @@ function main(projectId, location, slateId, slateUri) {
       },
       slateId: slateId,
     };
-    const [slate] = await stitcherClient.createSlate(request);
-    console.log(`Slate: ${slate.name}`);
+    const [operation] = await stitcherClient.createSlate(request);
+    const [response] = await operation.promise();
+    console.log(`response.name: ${response.name}`);
   }
 
   createSlate();

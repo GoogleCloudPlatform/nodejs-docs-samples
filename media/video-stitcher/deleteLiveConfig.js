@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2023, Google, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,17 +15,14 @@
 
 'use strict';
 
-function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
-  // [START videostitcher_create_cdn_key]
-  const location = 'us-central1';
-  const hostname = 'cdn.example.com';
-  const keyName = 'cdn-key';
+function main(projectId, location, liveConfigId) {
+  // [START videostitcher_delete_live_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
-  // cdnKeyId = 'my-cdn-key';
-  // privateKey = 'my-private-key';
+  // location = 'us-central1';
+  // liveConfigId = 'my-live-config-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -33,38 +30,21 @@ function main(projectId, cdnKeyId, privateKey, isMediaCdn = true) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createCdnKey() {
+  async function deleteLiveConfig() {
     // Construct request
     const request = {
-      parent: stitcherClient.locationPath(projectId, location),
-      cdnKey: {
-        hostname: hostname,
-      },
-      cdnKeyId: cdnKeyId,
+      name: stitcherClient.liveConfigPath(projectId, location, liveConfigId),
     };
-
-    if (isMediaCdn === 'true') {
-      request.cdnKey.mediaCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    } else {
-      request.cdnKey.googleCdnKey = {
-        keyName: keyName,
-        privateKey: privateKey,
-      };
-    }
-
-    const [operation] = await stitcherClient.createCdnKey(request);
-    const [response] = await operation.promise();
-    console.log(`CDN key: ${response.name}`);
+    const [operation] = await stitcherClient.deleteLiveConfig(request);
+    await operation.promise();
+    console.log('Deleted live config');
   }
 
-  createCdnKey();
-  // [END videostitcher_create_cdn_key]
+  deleteLiveConfig();
+  // [END videostitcher_delete_live_config]
 }
 
-// node createCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
+// node deleteLiveConfig.js <projectId> <location> <liveConfigId>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

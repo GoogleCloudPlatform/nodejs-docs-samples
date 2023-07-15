@@ -15,18 +15,14 @@
 
 'use strict';
 
-function main(projectId, location, sourceUri, adTagUri, slateId) {
+function main(projectId, location, liveConfigId) {
   // [START videostitcher_create_live_session]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
-  // Single Inline Linear (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-  // adTagUri = 'https://pubads.g.doubleclick.net/gampad/ads...';
-  // slateId = 'my-slate';
+  // liveConfigId = 'my-live-config-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -39,13 +35,11 @@ function main(projectId, location, sourceUri, adTagUri, slateId) {
     const request = {
       parent: stitcherClient.locationPath(projectId, location),
       liveSession: {
-        sourceUri: sourceUri,
-        adTagMap: {
-          default: {
-            uri: adTagUri,
-          },
-        },
-        defaultSlateId: slateId,
+        liveConfig: stitcherClient.liveConfigPath(
+          projectId,
+          location,
+          liveConfigId
+        ),
       },
     };
 
@@ -58,7 +52,7 @@ function main(projectId, location, sourceUri, adTagUri, slateId) {
   // [END videostitcher_create_live_session]
 }
 
-// node createLiveSession.js <projectId> <location> <sourceUri> <adTagUri> <slateId>
+// node createLiveSession.js <projectId> <location> <liveConfigId>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

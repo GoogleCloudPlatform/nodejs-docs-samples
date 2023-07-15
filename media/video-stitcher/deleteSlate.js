@@ -35,7 +35,8 @@ function main(projectId, location, slateId) {
     const request = {
       name: stitcherClient.slatePath(projectId, location, slateId),
     };
-    await stitcherClient.deleteSlate(request);
+    const [operation] = await stitcherClient.deleteSlate(request);
+    await operation.promise();
     console.log('Deleted slate');
   }
 

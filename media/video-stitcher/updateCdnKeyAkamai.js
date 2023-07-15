@@ -46,9 +46,10 @@ function main(projectId, cdnKeyId, hostname, akamaiTokenKey) {
       },
     };
 
-    const [cdnKey] = await stitcherClient.updateCdnKey(request);
-    console.log(`Updated CDN key: ${cdnKey.name}`);
-    console.log(`Updated hostname: ${cdnKey.hostname}`);
+    const [operation] = await stitcherClient.updateCdnKey(request);
+    const [response] = await operation.promise();
+    console.log(`Updated CDN key: ${response.name}`);
+    console.log(`Updated hostname: ${response.hostname}`);
   }
 
   updateCdnKeyAkamai();

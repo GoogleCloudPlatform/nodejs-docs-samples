@@ -46,6 +46,8 @@ const updatedCloudCdnPrivateKey = crypto.randomBytes(64).toString('base64');
 const updatedMediaCdnPrivateKey = crypto.randomBytes(64).toString('base64');
 const updatedAkamaiTokenKey = crypto.randomBytes(64).toString('base64');
 
+const liveConfigIdPrefix = 'nodejs-test-live-config';
+
 const vodUri = `https://storage.googleapis.com/${bucketName}/${vodFileName}`;
 // VMAP Pre-roll (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
 const vodAdTagUri =
@@ -57,6 +59,7 @@ const liveUri = `https://storage.googleapis.com/${bucketName}/${liveFileName}`;
 const liveAdTagUri =
   "'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_ad_samples&sz=640x480&cust_params=sample_ct%3Dlinear&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator='";
 const liveSessionPrefix = `/locations/${location}/liveSessions/`;
+let liveSessionLiveConfigId;
 
 const https = require('https');
 const cwd = path.join(__dirname, '..');
@@ -151,25 +154,19 @@ before(() => {
     });
 });
 
-describe.skip('Slate functions', () => {
+describe('Slate functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
     this.slateId = `${slateIdPrefix}-${uuid.v4().substr(0, 8)}-${DATE_NOW_SEC}`;
     this.slateName = `/locations/${location}/slates/${this.slateId}`;
+  });
 
+  it('should create a slate', () => {
     const output = execSync(
       `node createSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
       {cwd}
     );
     assert.ok(output.includes(this.slateName));
-  });
-
-  after(() => {
-    const output = execSync(
-      `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted slate'));
   });
 
   it('should show a list of slates', () => {
@@ -195,29 +192,31 @@ describe.skip('Slate functions', () => {
     );
     assert.ok(output.includes(this.slateName));
   });
+
+  it('should delete a slate', () => {
+    const output = execSync(
+      `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted slate'));
+  });
 });
 
-describe.skip('Media CDN key functions', () => {
+describe('Media CDN key functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
     this.mediaCdnKeyId = `${mediaCdnKeyIdPrefix}-${uuid
       .v4()
       .substr(0, 8)}-${DATE_NOW_SEC}`;
     this.mediaCdnKeyName = `/locations/${location}/cdnKeys/${this.mediaCdnKeyId}`;
+  });
 
+  it('should create a Media CDN key', () => {
     const output = execSync(
       `node createCdnKey.js ${projectId} ${this.mediaCdnKeyId} ${mediaCdnPrivateKey} true`,
       {cwd}
     );
     assert.ok(output.includes(this.mediaCdnKeyName));
-  });
-
-  after(() => {
-    const output = execSync(
-      `node deleteCdnKey.js ${projectId} ${location} ${this.mediaCdnKeyId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted CDN key'));
   });
 
   it('should show a list of Media CDN keys', () => {
@@ -243,29 +242,31 @@ describe.skip('Media CDN key functions', () => {
     );
     assert.ok(output.includes(this.mediaCdnKeyName));
   });
+
+  it('should delete a Media CDN key', () => {
+    const output = execSync(
+      `node deleteCdnKey.js ${projectId} ${location} ${this.mediaCdnKeyId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted CDN key'));
+  });
 });
 
-describe.skip('Cloud CDN key functions', () => {
+describe('Cloud CDN key functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
     this.cloudCdnKeyId = `${cloudCdnKeyIdPrefix}-${uuid
       .v4()
       .substr(0, 8)}-${DATE_NOW_SEC}`;
     this.cloudCdnKeyName = `/locations/${location}/cdnKeys/${this.cloudCdnKeyId}`;
+  });
 
+  it('should show create aCloud CDN key', () => {
     const output = execSync(
       `node createCdnKey.js ${projectId} ${this.cloudCdnKeyId} ${cloudCdnPrivateKey} false`,
       {cwd}
     );
     assert.ok(output.includes(this.cloudCdnKeyName));
-  });
-
-  after(() => {
-    const output = execSync(
-      `node deleteCdnKey.js ${projectId} ${location} ${this.cloudCdnKeyId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted CDN key'));
   });
 
   it('should show a list of Cloud CDN keys', () => {
@@ -291,29 +292,31 @@ describe.skip('Cloud CDN key functions', () => {
     );
     assert.ok(output.includes(this.cloudCdnKeyName));
   });
+
+  it('should delete a Cloud CDN key', () => {
+    const output = execSync(
+      `node deleteCdnKey.js ${projectId} ${location} ${this.cloudCdnKeyId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted CDN key'));
+  });
 });
 
-describe.skip('Akamai CDN key functions', () => {
+describe('Akamai CDN key functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
     this.akamaiCdnKeyId = `${akamaiCdnKeyIdPrefix}-${uuid
       .v4()
       .substr(0, 8)}-${DATE_NOW_SEC}`;
     this.akamaiCdnKeyName = `/locations/${location}/cdnKeys/${this.akamaiCdnKeyId}`;
+  });
 
+  it('should create an Akamai CDN key', () => {
     const output = execSync(
       `node createCdnKeyAkamai.js ${projectId} ${this.akamaiCdnKeyId} ${akamaiTokenKey}`,
       {cwd}
     );
     assert.ok(output.includes(this.akamaiCdnKeyName));
-  });
-
-  after(() => {
-    const output = execSync(
-      `node deleteCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId}`,
-      {cwd}
-    );
-    assert.ok(output.includes('Deleted CDN key'));
   });
 
   it('should show a list of Akamai CDN keys', () => {
@@ -339,9 +342,76 @@ describe.skip('Akamai CDN key functions', () => {
     );
     assert.ok(output.includes(this.akamaiCdnKeyName));
   });
+
+  it('should delete an Akamai CDN key', () => {
+    const output = execSync(
+      `node deleteCdnKey.js ${projectId} ${location} ${this.akamaiCdnKeyId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted CDN key'));
+  });
 });
 
-describe.skip('VOD session functions', () => {
+describe('Live config functions', () => {
+  before(() => {
+    const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
+    this.slateId = `${slateIdPrefix}-${uuid.v4().substr(0, 8)}-${DATE_NOW_SEC}`;
+    this.slateName = `/locations/${location}/slates/${this.slateId}`;
+
+    const output = execSync(
+      `node createSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.slateName));
+
+    this.liveConfigId = `${liveConfigIdPrefix}-${uuid
+      .v4()
+      .substr(0, 8)}-${DATE_NOW_SEC}`;
+    this.liveConfigName = `/locations/${location}/liveConfigs/${this.liveConfigId}`;
+  });
+
+  after(() => {
+    const output = execSync(
+      `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted slate'));
+  });
+
+  it('should create a live config', () => {
+    const output = execSync(
+      `node createLiveConfig.js ${projectId} ${location} ${this.liveConfigId} ${liveUri} ${liveAdTagUri} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.liveConfigName));
+  });
+
+  it('should show a list of live configs', () => {
+    const output = execSync(
+      `node listLiveConfigs.js ${projectId} ${location}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.liveConfigName));
+  });
+
+  it('should get a live config', () => {
+    const output = execSync(
+      `node getLiveConfig.js ${projectId} ${location} ${this.liveConfigId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.liveConfigName));
+  });
+
+  it('should delete a live config', () => {
+    const output = execSync(
+      `node deleteLiveConfig.js ${projectId} ${location} ${this.liveConfigId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted live config'));
+  });
+});
+
+describe('VOD session functions', () => {
   it('should create a VOD session', () => {
     const output = execSync(
       `node createVodSession.js ${projectId} ${location} ${vodUri} ${vodAdTagUri}`,
@@ -413,21 +483,39 @@ describe.skip('VOD session functions', () => {
   });
 });
 
-describe.skip('Live session functions', () => {
+describe('Live session functions', () => {
   before(() => {
     const DATE_NOW_SEC = Math.floor(Date.now() / 1000);
     this.slateId = `${slateIdPrefix}-${uuid.v4().substr(0, 8)}-${DATE_NOW_SEC}`;
     this.slateName = `/locations/${location}/slates/${this.slateId}`;
 
-    const output = execSync(
+    let output = execSync(
       `node createSlate.js ${projectId} ${location} ${this.slateId} ${slateUri}`,
       {cwd}
     );
     assert.ok(output.includes(this.slateName));
+
+    this.liveConfigId = `${liveConfigIdPrefix}-${uuid
+      .v4()
+      .substr(0, 8)}-${DATE_NOW_SEC}`;
+    liveSessionLiveConfigId = this.liveConfigId;
+    this.liveConfigName = `/locations/${location}/liveConfigs/${this.liveConfigId}`;
+
+    output = execSync(
+      `node createLiveConfig.js ${projectId} ${location} ${this.liveConfigId} ${liveUri} ${liveAdTagUri} ${this.slateId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(this.liveConfigName));
   });
 
   after(() => {
-    const output = execSync(
+    let output = execSync(
+      `node deleteLiveConfig.js ${projectId} ${location} ${this.liveConfigId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted live config'));
+
+    output = execSync(
       `node deleteSlate.js ${projectId} ${location} ${this.slateId}`,
       {cwd}
     );
@@ -436,7 +524,7 @@ describe.skip('Live session functions', () => {
 
   it('should create and get a live session and list and get ad tag details', async function () {
     let output = execSync(
-      `node createLiveSession.js ${projectId} ${location} ${liveUri} ${liveAdTagUri} ${this.slateId}`,
+      `node createLiveSession.js ${projectId} ${location} ${liveSessionLiveConfigId}`,
       {cwd}
     );
     assert.ok(output.includes(liveSessionPrefix));

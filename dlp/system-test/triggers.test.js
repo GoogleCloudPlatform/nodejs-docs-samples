@@ -33,7 +33,7 @@ describe('triggers', () => {
   const infoType = 'PERSON_NAME';
   const minLikelihood = 'VERY_LIKELY';
   const maxFindings = 5;
-  const bucketName = process.env.BUCKET_NAME;
+  const bucketName = process.env.BUCKET_NAME || 'long-door-651';
 
   before(async () => {
     projectId = await client.getProjectId();

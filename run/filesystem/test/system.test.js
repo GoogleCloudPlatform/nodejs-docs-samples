@@ -34,7 +34,7 @@ const getEnvironmentVariable = (variable, defaultValue) => {
 };
 
 const gcloudCmdExec = command => {
-  // Returns standard output of gcloud command
+  // Returns standard output of gcloud command.
   try {
     return execSync(command, {timeout: 240000}).toString();
   } catch (err) {
@@ -44,7 +44,10 @@ const gcloudCmdExec = command => {
 
 auth.getClient();
 const appendRandomSuffix = string =>
+  // Append a random 6-digit number to a provided string. Use to create unique
+  // service name.
   `${string}-${Math.random().toString().substring(2, 8)}`;
+
 const serviceName = getEnvironmentVariable(
   'SERVICE_NAME',
   appendRandomSuffix('filesystem-app')
@@ -53,21 +56,41 @@ const projectId = getEnvironmentVariable('GOOGLE_CLOUD_PROJECT');
 const region = 'us-central1';
 
 describe('End-to-end test', () => {
+  let runEndPointUrl;
   before(() => {
     const buildCmd = `gcloud builds submit --config=test/e2e_test_setup.yaml --project ${projectId} --substitutions=_FILESTORE_IP_ADDRESS=10.42.154.2,_RUN_SERVICE=${serviceName},_REGION=${region}`;
     console.log('Deploying required Google Cloud resources...');
     gcloudCmdExec(buildCmd);
+    const runCmd = `gcloud run services describe ${serviceName} --project=${projectId} --region=${region} --format='value(status.url)'`;
+    runEndPointUrl = gcloudCmdExec(runCmd).trim();
   });
   after(() => {
     const cleanUpCmd = `gcloud builds submit --config=test/e2e_test_cleanup.yaml --project ${projectId} --substitutions=_RUN_SERVICE=${serviceName},_REGION=${region};`;
     console.log('Cleaning up Google Cloud Resources...');
     gcloudCmdExec(cleanUpCmd);
   });
-  it('GET endpoint URL responds with 200', done => {
-    const runCmd = `gcloud run services describe ${serviceName} --project=${projectId} --region=${region} --format='value(status.url)'`;
-    const runEndPointUrl = gcloudCmdExec(runCmd).trim();
+  it('GET endpoint URL redirects to mount point path', done => {
     chai
       .request(runEndPointUrl)
+      .get('/')
+      .end((err, res) => {
+        assert(res).to.redirectTo(`${runEndPointUrl}/mnt/nfs/filestore`);
+        done();
+      });
+  });
+  it('GET non-existant path redirects to mount point path', done => {
+    chai
+      .request(runEndPointUrl)
+      .get('/nonexistant-path')
+      .end((err, res) => {
+        assert(res).to.redirectTo(`${runEndPointUrl}/mnt/nfs/filestore`);
+        done();
+      });
+  });
+  it('GET mount point path responds with 200', done => {
+    const mountPointPath = `${runEndPointUrl}/mnt/nfs/filestore`;
+    chai
+      .request(mountPointPath)
       .get('/')
       .end((err, res) => {
         assert(res.status).to.eql(200);

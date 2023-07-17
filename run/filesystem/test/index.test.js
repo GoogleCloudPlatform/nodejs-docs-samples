@@ -64,7 +64,7 @@ describe('Unit tests', () => {
     });
   });
   describe('GET file path', () => {
-    it('responds with file contents and 302 found', async () => {
+    it('responds with file contents and 200 found', async () => {
       const response = await request.get(`${mntDir}/test-file.txt`);
       assert(response.status).to.eql(200);
       assert(response.text).to.eql(`${testFileContents}`);

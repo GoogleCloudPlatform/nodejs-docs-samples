@@ -17,8 +17,8 @@
 // sample-metadata:
 //  title: Deidentifying the table data with crypto key defined.
 //  description: Uses the Data Loss Prevention API to Deidentifying the table data with crypto key defined.
-//  usage: node deIdentifyTableWithCryptoHash.js projectId, transientKey
-function main(projectId, transientKey) {
+//  usage: node deIdentifyTableWithCryptoHash.js projectId, transientKeyName
+function main(projectId, transientKeyName) {
   // [START dlp_deidentify_table_with_crypto_hash]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -30,7 +30,7 @@ function main(projectId, transientKey) {
   // const projectId = 'my-project';
 
   // Crypto key
-  // const transientKey = 'YOUR_TRANSIENT_CRYPTO_KEY';
+  // const transientKeyName = 'YOUR_TRANSIENT_CRYPTO_KEY';
 
   // The table to de-identify.
   const tableToDeIdentify = {
@@ -70,7 +70,7 @@ function main(projectId, transientKey) {
     const cryptoHashConfig = {
       cryptoKey: {
         transient: {
-          name: transientKey,
+          name: transientKeyName,
         },
       },
     };

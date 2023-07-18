@@ -18,8 +18,7 @@
 //  title: Inspects a image file.
 //  description: Inspect a image for certain built-in infoTypes.
 //  usage: node inspectImageFileListedInfoTypes.js my-project imagePath infoTypes
-function main(projectId, imagePath, infoTypes) {
-  infoTypes = transformCLI(infoTypes);
+function main(projectId, imagePath) {
   // [START dlp_inspect_image_listed_infotypes]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -32,8 +31,12 @@ function main(projectId, imagePath, infoTypes) {
   // The project ID to run the API call under
   // const imagePath = './test.pdf';
 
-  // Info Types
-  // const infoTypes = ['EMAIL_ADDRESS', 'PHONE_NUMBER', 'US_SOCIAL_SECURITY_NUMBER'];
+  // InfoTypes
+  const infoTypes = [
+    {name: 'PHONE_NUMBER'},
+    {name: 'EMAIL_ADDRESS'},
+    {name: 'US_SOCIAL_SECURITY_NUMBER'},
+  ];
 
   async function inspectImageFileListedInfoTypes() {
     let fileBytes = null;
@@ -46,7 +49,7 @@ function main(projectId, imagePath, infoTypes) {
         ) + 1;
       fileBytes = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return;
     }
     // Specify item to inspect
@@ -96,11 +99,3 @@ process.on('unhandledRejection', err => {
 });
 
 main(...process.argv.slice(2));
-
-function transformCLI(infoTypes) {
-  return infoTypes
-    ? infoTypes.split(',').map(type => {
-        return {name: type};
-      })
-    : undefined;
-}

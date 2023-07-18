@@ -18,8 +18,7 @@
 //  title: Inspects a image file.
 //  description: Inspect a image for sensitive data like Phone Number, Email.
 //  usage: node inspectImageFile.js.js my-project imagePath infoTypes
-function main(projectId, imagePath, infoTypes) {
-  infoTypes = transformCLI(infoTypes);
+function main(projectId, imagePath) {
   // [START dlp_inspect_image_file]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -33,7 +32,11 @@ function main(projectId, imagePath, infoTypes) {
   // const imagePath = './test.jpeg';
 
   // InfoTypes
-  // const infoTypes = ['EMAIL_ADDRESS', 'PHONE_NUMBER', 'CREDIT_CARD_NUMBER'];
+  const infoTypes = [
+    {name: 'PHONE_NUMBER'},
+    {name: 'EMAIL_ADDRESS'},
+    {name: 'CREDIT_CARD_NUMBER'},
+  ];
 
   async function inspectImageFile() {
     let fileBytes = null;
@@ -46,7 +49,7 @@ function main(projectId, imagePath, infoTypes) {
         ) + 1;
       fileBytes = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return;
     }
 
@@ -97,11 +100,3 @@ process.on('unhandledRejection', err => {
 });
 
 main(...process.argv.slice(2));
-
-function transformCLI(infoTypes) {
-  return infoTypes
-    ? infoTypes.split(',').map(type => {
-        return {name: type};
-      })
-    : undefined;
-}

@@ -54,7 +54,6 @@ describe('Unit tests', () => {
       const response = await request.get(mntDir);
       assert(response.status).to.eql(301);
     });
-    // TODO: Test that file is being generated.
   });
   describe('GET nonexistent path', () => {
     it('responds with 302 Found and redirects to mount path', async () => {
@@ -65,9 +64,14 @@ describe('Unit tests', () => {
   });
   describe('GET file path', () => {
     it('responds with file contents and 200 found', async () => {
-      const response = await request.get(`${mntDir}/test-file.txt`);
+      const getMntPathPage = await request.get(`${mntDir}/`);
+      const fileNameRegExp = new RegExp(
+        /test-\D{3}-\D{3}-\d{2}-\d{4}-\d{2}:\d{2}:\d{2}.txt/
+      );
+      const generatedFileName = getMntPathPage.text.match(fileNameRegExp);
+      const response = await request.get(`${mntDir}/${generatedFileName}`);
+      assert(response.text).to.contain('This test file was created on');
       assert(response.status).to.eql(200);
-      assert(response.text).to.eql(`${testFileContents}`);
     });
   });
 });

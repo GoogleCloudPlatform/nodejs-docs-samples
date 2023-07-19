@@ -23,7 +23,6 @@ steps:
     --region $_REGION \
     --vpc-connector $_CONNECTOR_NAME \
     --execution-environment gen2 \
-    --allow-unauthenticated \
     --update-env-vars FILESTORE_IP_ADDRESS=$_FILESTORE_IP_ADDRESS,FILE_SHARE_NAME=$_SHARE_NAME
 
 substitutions:

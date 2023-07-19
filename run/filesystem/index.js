@@ -34,7 +34,7 @@ const limit = rateLimit({
 app.use(limit);
 app.use(mntDir, express.static(mntDir));
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 

@@ -97,5 +97,26 @@ describe('End-to-End Tests', () => {
       const response = await get('/mnt/nfs/filestore/', BASE_URL, ID_TOKEN, 0);
       assert.strictEqual(response.statusCode, 200);
     });
+
+    it('GET generated txt file responds with txt file', async () => {
+      const getMntPathPage = await get(
+        '/mnt/nfs/filestore/',
+        BASE_URL,
+        ID_TOKEN,
+        0
+      );
+      const bodyElements = getMntPathPage.body.split('<br> ');
+      const latestFile = bodyElements[bodyElements.length - 1].replace(
+        /(<([^>]+)>)/gi,
+        ''
+      );
+      const response = await get(
+        `/mnt/nfs/filestore/${latestFile}`,
+        BASE_URL,
+        ID_TOKEN,
+        0
+      );
+      assert.match(response.body, /This test file was created on/);
+    });
   });
 });

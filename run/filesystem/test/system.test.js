@@ -12,89 +12,90 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('chai').expect;
-const chai = require('chai');
-const {GoogleAuth} = require('google-auth-library');
+const assert = require('assert');
+const request = require('got');
 const {execSync} = require('child_process');
-const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-const auth = new GoogleAuth();
 
-const getEnvironmentVariable = (variable, defaultValue) => {
-  // Return value of environment variable. Returns fallback default value if not set.
-  if (variable in process.env) {
-    return process.env[variable];
-  }
-  if (defaultValue) {
-    return defaultValue;
-  }
-  throw Error(
-    `Environment variable ${variable} not set and no default value provided.`
-  );
+const get = (route, base_url, id_token, retry = 3) => {
+  return request(new URL(route, base_url.trim()), {
+    headers: {
+      Authorization: `Bearer ${id_token.trim()}`,
+    },
+    throwHttpErrors: false,
+    retry,
+  });
 };
 
-const gcloudCmdExec = command => {
-  // Returns standard output of gcloud command.
-  try {
-    return execSync(command, {timeout: 240000}).toString();
-  } catch (err) {
-    throw Error(err);
-  }
-};
-
-auth.getClient();
 const appendRandomSuffix = string =>
   // Append a random 6-digit number to a provided string. Use to create unique
   // service name.
   `${string}-${Math.random().toString().substring(2, 8)}`;
 
-const serviceName = getEnvironmentVariable(
-  'SERVICE_NAME',
-  appendRandomSuffix('filesystem-app')
-);
-const projectId = getEnvironmentVariable('GOOGLE_CLOUD_PROJECT');
-const region = 'us-central1';
+describe('End-to-End Tests', () => {
+  const {GOOGLE_CLOUD_PROJECT} = process.env;
+  if (!GOOGLE_CLOUD_PROJECT) {
+    throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
+  }
+  let {SERVICE_NAME} = process.env;
+  if (!SERVICE_NAME) {
+    SERVICE_NAME = appendRandomSuffix('filesystem-app');
+    console.log(
+      `"SERVICE_NAME" env var not found. Defaulting to "${appendRandomSuffix(
+        'filesystem-app'
+      )}"`
+    );
+  }
+  const {SAMPLE_VERSION} = process.env;
+  const REGION = 'us-central1';
+  describe('Service relying on defaults', () => {
+    let BASE_URL, ID_TOKEN;
+    before(async () => {
+      let buildCmd =
+        `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+        '--config ./test/e2e_test_setup.yaml ' +
+        ` --substitutions _FILESTORE_IP_ADDRESS=10.42.154.2,_RUN_SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
+      if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-describe('End-to-end test', () => {
-  let runEndPointUrl;
-  before(() => {
-    const buildCmd = `gcloud builds submit --config=test/e2e_test_setup.yaml --project ${projectId} --substitutions=_FILESTORE_IP_ADDRESS=10.42.154.2,_RUN_SERVICE=${serviceName},_REGION=${region}`;
-    console.log('Deploying required Google Cloud resources...');
-    gcloudCmdExec(buildCmd);
-    const runCmd = `gcloud run services describe ${serviceName} --project=${projectId} --region=${region} --format='value(status.url)'`;
-    runEndPointUrl = gcloudCmdExec(runCmd).trim();
-  });
-  after(() => {
-    const cleanUpCmd = `gcloud builds submit --config=test/e2e_test_cleanup.yaml --project ${projectId} --substitutions=_RUN_SERVICE=${serviceName},_REGION=${region};`;
-    console.log('Cleaning up Google Cloud Resources...');
-    gcloudCmdExec(cleanUpCmd);
-  });
-  it('GET endpoint URL redirects to mount point path', done => {
-    chai
-      .request(runEndPointUrl)
-      .get('/')
-      .end((err, res) => {
-        assert(res).to.redirectTo(`${runEndPointUrl}/mnt/nfs/filestore`);
-        done();
-      });
-  });
-  it('GET non-existant path redirects to mount point path', done => {
-    chai
-      .request(runEndPointUrl)
-      .get('/nonexistant-path')
-      .end((err, res) => {
-        assert(res).to.redirectTo(`${runEndPointUrl}/mnt/nfs/filestore`);
-        done();
-      });
-  });
-  it('GET mount point path responds with 200', done => {
-    const mountPointPath = `${runEndPointUrl}/mnt/nfs/filestore`;
-    chai
-      .request(mountPointPath)
-      .get('/')
-      .end((err, res) => {
-        assert(res.status).to.eql(200);
-        done();
-      });
+      console.log('Starting Cloud Build...');
+      execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+      console.log('Cloud Build completed.');
+
+      // Retrieve URL of Cloud Run service
+      const url = execSync(
+        `gcloud run services describe ${SERVICE_NAME} --project ${GOOGLE_CLOUD_PROJECT} ` +
+          `--region=${REGION} --format='value(status.url)'`
+      );
+
+      BASE_URL = url.toString('utf-8').trim();
+      if (!BASE_URL) throw Error('Cloud Run service URL not found');
+      // Retrieve ID token for testing
+      ID_TOKEN = execSync('gcloud auth print-identity-token').toString();
+      if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    });
+
+    after(() => {
+      let cleanUpCmd =
+        `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
+        '--config ./test/e2e_test_cleanup.yaml ' +
+        `--substitutions _RUN_SERVICE=${SERVICE_NAME},_REGION=${REGION};`;
+      if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+
+      execSync(cleanUpCmd);
+    });
+
+    it('GET endpoint URL redirects to mount point path', async () => {
+      const response = await get('/', BASE_URL, ID_TOKEN, 0);
+      assert.strictEqual(response.url, `${BASE_URL}/mnt/nfs/filestore/`);
+    });
+
+    it('GET non-existant path redirects to mount point path', async () => {
+      const response = await get('/doesnotexist', BASE_URL, ID_TOKEN, 0);
+      assert.strictEqual(response.url, `${BASE_URL}/mnt/nfs/filestore/`);
+    });
+
+    it('GET mount point path responds with 200', async () => {
+      const response = await get('/mnt/nfs/filestore/', BASE_URL, ID_TOKEN, 0);
+      assert.strictEqual(response.statusCode, 200);
+    });
   });
 });

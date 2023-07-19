@@ -24,6 +24,7 @@ const app = express();
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const port = parseInt(process.env.PORT) || 8080;
 const limit = rateLimit({
+  // Use of rate limit to fullfill CodeQL rule js/missing-rate-limiting
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Rate limit exceeded',

@@ -20,11 +20,14 @@ function main(organizationId = 'your-org-id') {
 
   const client = new SecurityCenterClient();
 
-  // organizationId = "your-org-id";
-  const orgName = client.organizationPath(organizationId);
+  // parent: must be in one of the following formats:
+  //    `organizations/${organization_id}`
+  //    `projects/${project_id}`
+  //    `folders/${folder_id}`
+  const parent = `organizations/${organizationId}`;
 
   async function listNotificationConfigs() {
-    const [resources] = await client.listNotificationConfigs({parent: orgName});
+    const [resources] = await client.listNotificationConfigs({parent: parent});
     console.log('Received Notification configs: ');
     for (const resource of resources) {
       console.log(resource);

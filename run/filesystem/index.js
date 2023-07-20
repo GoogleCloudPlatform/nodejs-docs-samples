@@ -25,8 +25,8 @@ const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const port = parseInt(process.env.PORT) || 8080;
 const limit = rateLimit({
   // Use of rate limit to fullfill CodeQL rule js/missing-rate-limiting
-  // HTTP request handlers should not perform expensive operations such as 
-  // accessing the file system. Setting rate limit to maximum 100 requests 
+  // HTTP request handlers should not perform expensive operations such as
+  // accessing the file system. Setting rate limit to maximum 100 requests
   // per 15 minute window.
   windowMs: 15 * 60 * 1000,
   max: 100,

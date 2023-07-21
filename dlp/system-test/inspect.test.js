@@ -885,4 +885,25 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_string_with_exclusion_regex
+  it('should inspect using exclusion regex', () => {
+    const output = execSync(
+      `node inspectStringWithExclusionRegex.js ${projectId} "Some email addresses: gary@example.com, bob@example.org" ".+@example.com"`
+    );
+    assert.match(output, /Quote: bob@example.org/);
+    assert.notMatch(output, /Quote: gary@example.com/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringWithExclusionRegex.js BAD_PROJECT_ID "Some email addresses: gary@example.com, bob@example.org" ".+@example.com"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

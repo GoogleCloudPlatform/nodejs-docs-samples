@@ -704,4 +704,206 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_gcs_with_sampling
+  it('should inspect a GCS file with sampling', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_WITH_SAMPLING(
+      projectId,
+      gcsUri,
+      topicName,
+      infoTypes,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    await inspectGcsWithSampling(
+      projectId,
+      gcsUri,
+      topicName,
+      subscriptionName,
+      'PERSON_NAME'
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error while inspecting GCS file', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_WITH_SAMPLING(
+      projectId,
+      gcsUri,
+      topicName,
+      infoTypes,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    try {
+      await inspectGcsWithSampling(
+        projectId,
+        gcsUri,
+        topicName,
+        subscriptionName,
+        'PERSON_NAME'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_inspect_image_all_infotypes
+  it('should inspect a local image file for all sensitive data', () => {
+    const output = execSync(
+      `node inspectImageFileAllInfoTypes.js ${projectId} resources/test.png`
+    );
+    assert.match(output, /InfoType: PHONE_NUMBER/);
+    assert.match(output, /InfoType: EMAIL_ADDRESS/);
+  });
+
+  it('should handle error while inspecting a local image file', () => {
+    let output = '';
+    try {
+      output = execSync(
+        'node inspectImageFileAllInfoTypes.js BAD_PROJECT_ID resources/test.png'
+      );
+    } catch (error) {
+      output = error.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_string_custom_excluding_substring
+  it('should inspect using custom regex pattern excluding list of words', () => {
+    const output = execSync(
+      `node inspectStringCustomExcludingSubstring.js ${projectId} "Name: Doe, John. Name: Example, Jimmy" Jimmy`
+    );
+    assert.notMatch(output, /Quote: Jimmy/);
+    assert.match(output, /Quote: Doe, John/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringCustomExcludingSubstring.js BAD_PROJECT_ID "Name: Doe, John. Name: Example, Jimmy" Jimmy'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_string_custom_hotword
+  it('should inspect using custom regex pattern excluding list of words', () => {
+    const output = execSync(
+      `node inspectStringCustomHotword.js ${projectId} "patient name: John Doe" "patient"`
+    );
+    assert.match(output, /Likelihood: VERY_LIKELY/);
+    assert.match(output, /Quote: John Doe/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringCustomHotword.js BAD_PROJECT_ID "patient name: John Doe" "patient"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_string_with_exclusion_regex
+  it('should inspect using exclusion regex', () => {
+    const output = execSync(
+      `node inspectStringWithExclusionRegex.js ${projectId} "Some email addresses: gary@example.com, bob@example.org" ".+@example.com"`
+    );
+    assert.match(output, /Quote: bob@example.org/);
+    assert.notMatch(output, /Quote: gary@example.com/);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringWithExclusionRegex.js BAD_PROJECT_ID "Some email addresses: gary@example.com, bob@example.org" ".+@example.com"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

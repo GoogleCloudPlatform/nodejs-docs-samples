@@ -44,8 +44,8 @@ app.listen(port, () => {
 app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
   try {
+    writeFile(mntDir);
     const html = await generateIndex(mntDir);
-    await writeFile(mntDir);
     // Respond with html with list of files on the filesystem.
     res.send(html);
   } catch (error) {

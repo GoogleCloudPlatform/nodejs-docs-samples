@@ -19,7 +19,7 @@
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
-const fs = require('fs');
+const fs = require('fs/promises');
 const app = express();
 const mntDir = process.env.MNT_DIR || '/mnt/nfs/filestore';
 const port = parseInt(process.env.PORT) || 8080;
@@ -44,9 +44,10 @@ app.listen(port, () => {
 app.get(mntDir, async (req, res) => {
   // Have all requests to mount directory generate a new file on the filesystem.
   try {
+    const html = await generateIndex(mntDir);
     await writeFile(mntDir);
-    // Respond with html listing files.
-    res.send(generateIndex(mntDir));
+    // Respond with html with list of files on the filesystem.
+    res.send(html);
   } catch (error) {
     console.error(error);
     res
@@ -62,34 +63,40 @@ app.all('*', (req, res) => {
   res.redirect(mntDir);
 });
 
-const writeFile = (path, filePrefix = 'test') => {
+const writeFile = async (path, filePrefix = 'test') => {
   // Write a test file to the provided path.
   const date = new Date();
   const formattedDate = date.toString().split(' ').slice(0, 5).join('-');
   const filename = `${filePrefix}-${formattedDate}.txt`;
   const contents = `This test file was created on ${formattedDate}.\n`;
 
-  fs.writeFile(`${path}/${filename}`, contents, err => {
-    if (err) {
-      return err;
-    }
-  });
+  try {
+    const newFile = fs.writeFile(`${path}/${filename}`, contents);
+    await newFile;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-const generateIndex = mntDir => {
+const generateIndex = async mntDir => {
   // Return html for page with a list of files on the mounted filesystem.
-  const header =
-    '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
-  const footer = '</body></html>';
-  // Get list of files on mounted filesystem.
-  const existingFiles = fs.readdirSync(mntDir);
-  const htmlBody = existingFiles.map(fileName => {
-    const sanitized = encodeURIComponent(fileName);
-    return `<a href="${mntDir}/${sanitized}">${decodeURIComponent(
-      sanitized
-    )}</a><br>`;
-  });
-  return header + htmlBody.join(' ') + footer;
+  try {
+    const header =
+      '<html><body>A new file is generated each time this page is reloaded.<p>Files created on filesystem:<p>';
+    const footer = '</body></html>';
+    // Get list of files on mounted filesystem.
+    const existingFiles = await fs.readdir(mntDir);
+    // Insert each file into html content
+    const htmlBody = existingFiles.map(fileName => {
+      const sanitized = encodeURIComponent(fileName);
+      return `<a href="${mntDir}/${sanitized}">${decodeURIComponent(
+        sanitized
+      )}</a><br>`;
+    });
+    return header + htmlBody.join(' ') + footer;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 process.on('SIGTERM', () => {

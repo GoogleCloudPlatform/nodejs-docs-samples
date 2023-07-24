@@ -628,4 +628,58 @@ describe('deid', () => {
       assert.equal(error.message, 'Failed');
     }
   });
+
+  // dlp_deidentify_table_with_crypto_hash
+  it('should deidentify table using defined crypto key', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithCryptoHash.js ${projectId} CRYPTO_KEY_1`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /"stringValue": user1@example.org/);
+    assert.notMatch(output, /"stringValue": user2@example.org/);
+    assert.notInclude(output, '858-555-0224');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableWithCryptoHash.js BAD_PROJECT_ID CRYPTO_KEY_1'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_table_with_multiple_crypto_hash
+  it('should transform columns in the table using two separate cryptographic hash transformations', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithMultipleCryptoHash.js ${projectId} CRYPTO_KEY_1 CRYPTO_KEY_2`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /"stringValue": user1@example.org/);
+    assert.notMatch(output, /"stringValue": user2@example.org/);
+    assert.notInclude(output, '858-555-0224');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableWithMultipleCryptoHash.js BAD_PROJECT_ID CRYPTO_KEY_1 CRYPTO_KEY_2'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

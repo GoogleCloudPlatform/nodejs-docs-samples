@@ -23,7 +23,7 @@ async function main(
   gcsOutputDirectory,
   location = 'europe-west4',
   datasetUri = 'gs://cloud-samples-data/ai-platform/generative_ai/headline_classification.jsonl',
-  trainSteps = 10
+  trainSteps = 300
 ) {
   // [START aiplatform_model_tuning]
   /**
@@ -66,7 +66,7 @@ async function main(
 
     const pipelineJob = {
       templateUri:
-        'https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v1.0.0',
+        'https://us-kfp.pkg.dev/ml-pipeline/large-language-model-pipelines/tune-large-model/v2.0.0',
       displayName: 'my-tuning-job',
       runtimeConfig,
     };

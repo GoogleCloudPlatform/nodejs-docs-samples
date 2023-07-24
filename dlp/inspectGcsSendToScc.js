@@ -80,7 +80,7 @@ function main(projectId, gcsPath) {
     // Send the job creation request and process the response.
     const [jobsResponse] = await dlpClient.createDlpJob(request);
     const jobName = jobsResponse.name;
-    
+
     // Waiting for a maximum of 15 minutes for the job to get complete.
     let job;
     let numOfAttempts = 30;
@@ -89,16 +89,16 @@ function main(projectId, gcsPath) {
       [job] = await dlpClient.getDlpJob({name: jobName});
 
       // Check if the job has completed.
-      if (job.state == 'DONE'){
+      if (job.state === 'DONE') {
         break;
       }
-      if (job.state == 'FAILED'){
+      if (job.state === 'FAILED') {
         console.log('Job Failed, Please check the configuration.');
         break;
       }
       // Sleep for a short duration before checking the job status again.
-      await new Promise((resolve, reject) => {
-        setTimeout(()=> resolve(), 30000);
+      await new Promise(resolve => {
+        setTimeout(() => resolve(), 30000);
       });
       numOfAttempts -= 1;
     }

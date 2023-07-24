@@ -906,4 +906,46 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_gcs_send_to_scc
+  it('should inspect a GCS file and send results to SCC', () => {
+    const output = execSync(
+      `node inspectGcsSendToScc.js ${projectId} gs://${bucket}/test.txt`
+    );
+    console.log(output);
+    assert.match(output, /Found [0-9]+ instance\(s\) of infoType /);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectGcsSendToScc.js BAD_PROJECT_ID gs://${bucket}/test.txt`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_bigquery_send_to_scc
+  it('should inspect a bigquery table and send results to SCC', () => {
+    const output = execSync(
+      `node inspectBigquerySendToScc.js ${projectId} ${dataProject} ${datasetId} ${tableId}`
+    );
+    console.log(output);
+    assert.match(output, /Found [0-9]+ instance\(s\) of infoType /);
+  });
+
+  it('should report any errors while inspecting a string', () => {
+    let output;
+    try {
+      output = execSync(
+        `node inspectBigquerySendToScc.js BAD_PROJECT_ID ${dataProject} ${datasetId} ${tableId}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

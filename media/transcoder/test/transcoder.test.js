@@ -47,6 +47,7 @@ const captionsUri = `gs://${bucketName}/${testCaptionFileName}`;
 const subtitles1Uri = `gs://${bucketName}/${testSubtitles1FileName}`;
 const subtitles2Uri = `gs://${bucketName}/${testSubtitles2FileName}`;
 const outputUriForPreset = `gs://${bucketName}/test-output-preset/`;
+const outputUriForPresetBatchMode = `gs://${bucketName}/test-output-preset-batch-mode/`;
 const outputUriForTemplate = `gs://${bucketName}/test-output-template/`;
 const outputUriForAdHoc = `gs://${bucketName}/test-output-adhoc/`;
 const outputUriForStaticOverlay = `gs://${bucketName}/test-output-static-overlay/`;
@@ -371,6 +372,63 @@ describe('Job functions adhoc', () => {
       await wait(ms);
       const output = execSync(
         `node getJobState.js ${projectId} ${location} ${this.adhocJobId}`,
+        {cwd}
+      );
+      if (output.includes('Job state: SUCCEEDED')) {
+        assert.ok(true);
+        return;
+      }
+      getAttempts++;
+    }
+    assert.ok(false);
+  });
+});
+
+describe('Job functions preset batch mode', () => {
+  before(function () {
+    const output = execSync(
+      `node createJobFromPresetBatchMode.js ${projectId} ${location} ${inputUri} ${outputUriForPresetBatchMode} ${preset}`,
+      {cwd}
+    );
+    assert.ok(output.includes(`/locations/${location}/jobs/`));
+    this.presetBatchModeJobId = output.toString().split('/').pop();
+  });
+
+  after(function () {
+    const output = execSync(
+      `node deleteJob.js ${projectId} ${location} ${this.presetBatchModeJobId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted job'));
+  });
+
+  it('should get a job', function () {
+    const output = execSync(
+      `node getJob.js ${projectId} ${location} ${this.presetBatchModeJobId}`,
+      {cwd}
+    );
+    const jobName = `/locations/${location}/jobs/${this.presetBatchModeJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should show a list of jobs', function () {
+    const output = execSync(`node listJobs.js ${projectId} ${location}`, {
+      cwd,
+    });
+    const jobName = `/locations/${location}/jobs/${this.presetBatchModeJobId}`;
+    assert.ok(output.includes(jobName));
+  });
+
+  it('should check that the job succeeded', async function () {
+    this.retries(5);
+    await delay(this.test, 30000);
+
+    let getAttempts = 0;
+    while (getAttempts < 5) {
+      const ms = Math.pow(2, getAttempts + 1) * 10000 + Math.random() * 1000;
+      await wait(ms);
+      const output = execSync(
+        `node getJobState.js ${projectId} ${location} ${this.presetBatchModeJobId}`,
         {cwd}
       );
       if (output.includes('Job state: SUCCEEDED')) {

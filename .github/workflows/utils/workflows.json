@@ -85,6 +85,7 @@
   "monitoring/snippets",
   "opencensus",
   "retail",
+  "run/filesystem",
   "scheduler",
   "secret-manager",
   "service-directory/snippets",

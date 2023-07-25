@@ -179,9 +179,11 @@ describe('test', () => {
   });
 
   // dlp_get_job
-  it('should get job details using jon name', () => {
-    const output = execSync(`node getJob.js ${testJobName}`);
+  it('should get job details using job name', async () => {
+    const jobName = await createTestJob();
+    const output = execSync(`node getJob.js ${jobName}`);
     assert.match(output, /Job .+ status: \w/);
+    await client.deleteDlpJob({name: jobName});
   });
 
   it('should handle error while fetching job details', () => {

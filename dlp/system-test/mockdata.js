@@ -286,6 +286,84 @@ const MOCK_DATA = {
     },
     RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
   }),
+  REIDENTIFY_TABLE_WITH_FPE: (projectId, alphabet, keyName, wrappedKey) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        recordTransformations: {
+          fieldTransformations: [
+            {
+              fields: [{name: 'Employee ID'}],
+              primitiveTransformation: {
+                cryptoReplaceFfxFpeConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  commonAlphabet: alphabet,
+                },
+              },
+            },
+          ],
+        },
+      },
+      item: {
+        table: {
+          headers: [{name: 'Employee ID'}],
+          rows: [{values: [{stringValue: '90511'}]}],
+        },
+      },
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {table: {}}}],
+  }),
+  REIDENTIFY_TEXT_WITH_FPE: (
+    projectId,
+    text,
+    alphabet,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              primitiveTransformation: {
+                cryptoReplaceFfxFpeConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  commonAlphabet: alphabet,
+                  surrogateInfoType: {
+                    name: surrogateType,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        customInfoTypes: [
+          {
+            infoType: {
+              name: surrogateType,
+            },
+            surrogateType: {},
+          },
+        ],
+      },
+      item: {value: text},
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
 };
 
 module.exports = {MOCK_DATA};

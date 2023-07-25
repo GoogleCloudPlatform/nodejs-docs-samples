@@ -948,4 +948,231 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_PATH');
   });
+
+  // dlp_inspect_gcs_with_sampling
+  it('should inspect a GCS file and send results to SCC', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_SEND_TO_SCC(
+      projectId,
+      gcsUri,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectGcsSendToScc = proxyquire('../inspectGcsSendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectGcsSendToScc(projectId, gcsUri);
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if inspect job results into failure', async () => {
+    const jobName = 'test-job-name';
+    const gcsUri = 'test-uri';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_SEND_TO_SCC(
+      projectId,
+      gcsUri,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectGcsSendToScc = proxyquire('../inspectGcsSendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectGcsSendToScc(projectId, gcsUri);
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
+  });
+
+  // dlp_inspect_bigquery_send_to_scc
+  it('should inspect bigquery table and send results to SCC', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_SEND_TO_SCC(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectBigquerySendToScc = proxyquire('../inspectBigquerySendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectBigquerySendToScc(projectId, dataProject, datasetId, tableId);
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if inspect job results into failure', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_SEND_TO_SCC(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectBigQuerySendToScc = proxyquire('../inspectBigquerySendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectBigQuerySendToScc(projectId, dataProject, datasetId, tableId);
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
+  });
+
+  // dlp_inspect_datastore_send_to_scc
+  it('should inspect datastore and send results to SCC', async () => {
+    const jobName = 'test-job-name';
+    const datastoreNamespace = 'datastore-namespace';
+    const datastoreKind = 'datastore-kind';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_DATASTORE_SEND_TO_SCC(
+      projectId,
+      datastoreNamespace,
+      datastoreKind,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectDatastoreSendToScc = proxyquire(
+      '../inspectDatastoreSendToScc',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await inspectDatastoreSendToScc(
+      projectId,
+      datastoreNamespace,
+      datastoreKind
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if inspect job results into failure', async () => {
+    const jobName = 'test-job-name';
+    const datastoreNamespace = 'datastore-namespace';
+    const datastoreKind = 'datastore-kind';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_DATASTORE_SEND_TO_SCC(
+      projectId,
+      datastoreNamespace,
+      datastoreKind,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectDatastoreSendToScc = proxyquire(
+      '../inspectDatastoreSendToScc',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await inspectDatastoreSendToScc(
+      projectId,
+      datastoreNamespace,
+      datastoreKind
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
+  });
 });

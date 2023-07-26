@@ -40,28 +40,29 @@ async function main(
 
     // Property Definition
     const propertyDefinition = {};
-    // Must be unique within a document schema (case insensitive)
-    propertyDefinition.name = "stock symbol";
-    propertyDefinition.displayName = "Searchable text";
-    propertyDefinition.isSearchable= true;
-    //propertyDefinition.textTypeOptions = {};
+    propertyDefinition.name = "schema property 1"; // Must be unique within a document schema (case insensitive)
+    propertyDefinition.displayName = "searchable text";
+    propertyDefinition.isSearchable = true;
+    propertyDefinition.textTypeOptions = {};
 
     // Document Schema
     const documentSchema = {};
     documentSchema.displayName = "My Test Schema";
     documentSchema.propertyDefinitions = [propertyDefinition];
 
+    request.documentSchema = documentSchema;
+
     // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}/
-    request.parent = `projects/${projectId}/locations/${location}`;
-    request.documentSchema = documentSchema;
+    request.parent = `projects/${projectId}/locations/${location}/documentSchemas`;
+    request.requestMetadata = {userInfo: {id: userId}};
 
     // Make Request
     const response = serviceClient.createDocumentSchema(request);
 
     // Print out response
     response.then(
-      result => console.log(`Success!\nDocument Schema Created: \n${result}`),
+      result => console.log(`Success!\nDocument Schema Created: \n${JSON.stringify(result)}`),
       error => console.log(`Failed!\n${error}`)
     );
   }

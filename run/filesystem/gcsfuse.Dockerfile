@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START cloudrun_fs_dockerfile]
+# [START cloudrun_fuse_dockerfile]
 
 # Use the official Node.js image.
 # https://hub.docker.com/_/node
@@ -56,4 +56,4 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Pass the wrapper script as arguments to tini
 CMD ["/app/gcsfuse.run.sh"]
-# [END cloudrun_fs_dockerfile]
+# [END cloudrun_fuse_dockerfile]

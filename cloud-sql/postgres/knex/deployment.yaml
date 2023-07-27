@@ -47,9 +47,10 @@ spec:
           value: "127.0.0.1"
         - name: DB_PORT
           value: "5432"
-        # To use Automatic IAM Authentication (recommended)
-        # use DB_IAM_USER instead of DB_USER
-        # you may also remove the DB_PASS environment variable
+        # For Automatic IAM Authentication with the Node.js Connector
+        # use DB_IAM_USER instead of DB_USER (recommended)
+        # You may also remove the DB_PASS environment variable if
+        # you use Automatic IAM Authentication
         - name: DB_USER
           valueFrom:
             secretKeyRef:
@@ -65,6 +66,8 @@ spec:
             secretKeyRef:
               name: <YOUR-DB-SECRET>
               key: database
+      # If you are using the Node.js Connector (recommended), you can
+      # remove cloud-sql-proxy (everything below this line)
       - name: cloud-sql-proxy
         # This uses the latest version of the Cloud SQL proxy
         # It is recommended to use a specific version for production environments.

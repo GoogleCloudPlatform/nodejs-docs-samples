@@ -364,6 +364,191 @@ const MOCK_DATA = {
     },
     RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
   }),
+  INSPECT_GCS_SEND_TO_SCC: (projectId, gcsUri, jobName) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: gcsUri},
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
+  INSPECT_BIG_QUERY_SEND_TO_SCC: (
+    projectId,
+    dataProjectId,
+    datasetId,
+    tableId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+          includeQuote: true,
+        },
+        storageConfig: {
+          bigQueryOptions: {
+            tableReference: {
+              projectId: dataProjectId,
+              datasetId: datasetId,
+              tableId: tableId,
+            },
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {enable: true},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
+  INSPECT_DATASTORE_SEND_TO_SCC: (
+    projectId,
+    datastoreNamespace,
+    datastoreKind,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+          includeQuote: true,
+        },
+        storageConfig: {
+          datastoreOptions: {
+            kind: {
+              name: datastoreKind,
+            },
+            partitionId: {
+              projectId: projectId,
+              namespaceId: datastoreNamespace,
+            },
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {enable: true},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
 };
 
 module.exports = {MOCK_DATA};

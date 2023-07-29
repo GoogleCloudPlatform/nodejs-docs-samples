@@ -12,16 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# [START cloudrun_fs_script]
+# [START cloudrun_fuse_script]
 #!/usr/bin/env bash
 set -eo pipefail
 
-# Create mount directory for service.
+# Create mount directory for service
 mkdir -p $MNT_DIR
 
-echo "Mounting Cloud Filestore."
-mount -o nolock $FILESTORE_IP_ADDRESS:/$FILE_SHARE_NAME $MNT_DIR
+echo "Mounting GCS Fuse."
+gcsfuse --debug_gcs --debug_fuse $BUCKET $MNT_DIR 
 echo "Mounting completed."
 
 # Start the application
@@ -29,4 +28,4 @@ node index.js &
 
 # Exit immediately when one of the background processes terminate.
 wait -n
-# [END cloudrun_fs_script]
+# [END cloudrun_fuse_script]

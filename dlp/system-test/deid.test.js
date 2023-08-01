@@ -35,6 +35,7 @@ const dateShiftAmount = 30;
 const dateFields = 'birth_date,register_date';
 const keyName = 'KEY_NAME';
 const wrappedKey = 'WRAPPED_KEY';
+const unwrappedKey = 'YWJjZGVmZ2hpamtsbW5vcA==';
 
 const client = new DLP.DlpServiceClient();
 describe('deid', () => {
@@ -415,6 +416,390 @@ describe('deid', () => {
 
     try {
       await deIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_deidentify_free_text_with_fpe_using_surrogate
+  it('should de-identify table using Format Preserving Encryption (FPE) with surrogate', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deidentifyWithFpeSurrogate.js ${projectId} "My phone number is 4359916732" ALPHA_NUMERIC PHONE_NUMBER PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /PHONE_TOKEN\(10\):Vz6T6ff4J7/);
+  });
+
+  it('should handle de-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deidentifyWithFpeSurrogate.js ${projectId} "My phone numer is 4359916732" ALPHA_NUMERIC BAD_TYPE PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_reidentify_free_text_with_fpe_using_surrogate
+  it('should re-identify table using Format Preserving Encryption (FPE) with surrogate', () => {
+    let output;
+    try {
+      output = execSync(
+        `node reidentifyWithFpeSurrogate.js ${projectId} "My phone number is PHONE_TOKEN(10):Vz6T6ff4J7" ALPHA_NUMERIC PHONE_TOKEN "${unwrappedKey}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /My phone number is 4359916732/);
+  });
+
+  it('should handle re-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node reidentifyWithFpeSurrogate.js ${projectId} "My phone number is PHONE_TOKEN(10):Vz6T6ff4J7" ALPHA_NUMERIC PHONE_TOKEN INVALID_KEY`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_deterministic
+  it('should de-identify string using deterministic encryption', async () => {
+    const infoTypes = [{name: 'EMAIL_ADDRESS'}];
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    const CONSTANT_DATA = MOCK_DATA.DEIDENTIFY_WITH_DETEMINISTIC(
+      projectId,
+      string,
+      infoTypes,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    const mockDeidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_DEIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyWithDeterministic = proxyquire(
+      '../deidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await deIdentifyWithDeterministic(
+      projectId,
+      string,
+      'EMAIL_ADDRESS',
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    sinon.assert.calledOnceWithExactly(
+      mockDeidentifyContent,
+      CONSTANT_DATA.REQUEST_DEIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle de-identification errors', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+
+    const mockDeidentifyContent = sinon.stub().rejects(new Error('Failed'));
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'deidentifyContent',
+      mockDeidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const deIdentifyWithDeterministic = proxyquire(
+      '../deidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    try {
+      await deIdentifyWithDeterministic(
+        projectId,
+        string,
+        'EMAIL_ADDRESS',
+        keyName,
+        wrappedKey,
+        'EMAIL_ADDRESS_TOKEN'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_reidentify_deterministic
+  it('should re-identify string using deterministic encryption', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is EMAIL_ADDRESS_TOKEN';
+    const CONSTANT_DATA = MOCK_DATA.REIDENTIFY_WITH_DETEMINISTIC(
+      projectId,
+      string,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    const mockReidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyWithDeterministic = proxyquire(
+      '../reidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await reIdentifyWithDeterministic(
+      projectId,
+      string,
+      keyName,
+      wrappedKey,
+      'EMAIL_ADDRESS_TOKEN'
+    );
+
+    sinon.assert.calledOnceWithExactly(
+      mockReidentifyContent,
+      CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle re-identification errors', async () => {
+    const string =
+      'My name is Alicia Abernathy, and my email address is EMAIL_ADDRESS_TOKEN';
+
+    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyWithDeterministic = proxyquire(
+      '../reidentifyWithDeterministic.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    try {
+      await reIdentifyWithDeterministic(
+        projectId,
+        string,
+        keyName,
+        wrappedKey,
+        'EMAIL_ADDRESS_TOKEN'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_deidentify_table_with_crypto_hash
+  it('should deidentify table using defined crypto key', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithCryptoHash.js ${projectId} CRYPTO_KEY_1`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /"stringValue": user1@example.org/);
+    assert.notMatch(output, /"stringValue": user2@example.org/);
+    assert.notInclude(output, '858-555-0224');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableWithCryptoHash.js BAD_PROJECT_ID CRYPTO_KEY_1'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_table_with_multiple_crypto_hash
+  it('should transform columns in the table using two separate cryptographic hash transformations', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithMultipleCryptoHash.js ${projectId} CRYPTO_KEY_1 CRYPTO_KEY_2`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.notMatch(output, /"stringValue": user1@example.org/);
+    assert.notMatch(output, /"stringValue": user2@example.org/);
+    assert.notInclude(output, '858-555-0224');
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableWithMultipleCryptoHash.js BAD_PROJECT_ID CRYPTO_KEY_1 CRYPTO_KEY_2'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_reidentify_table_fpe
+  it('should re-identify table using Format Preserving Encryption (FPE)', async () => {
+    const CONSTANT_DATA = MOCK_DATA.REIDENTIFY_TABLE_WITH_FPE(
+      projectId,
+      'NUMERIC',
+      keyName,
+      wrappedKey
+    );
+
+    const mockReidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyTableWithFpe = proxyquire('../reidentifyTableWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await reIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
+
+    sinon.assert.calledOnceWithExactly(
+      mockReidentifyContent,
+      CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle re-identification errors', async () => {
+    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyTableWithFpe = proxyquire('../reidentifyTableWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    try {
+      await reIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_reidentify_text_fpe
+  it('should re-identify text using Format Preserving Encryption (FPE)', async () => {
+    const text = 'My phone number is PHONE_TOKEN(10):9617256398';
+    const CONSTANT_DATA = MOCK_DATA.REIDENTIFY_TEXT_WITH_FPE(
+      projectId,
+      text,
+      'NUMERIC',
+      keyName,
+      wrappedKey,
+      'PHONE_TOKEN'
+    );
+
+    const mockReidentifyContent = sinon
+      .stub()
+      .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyTextWithFpe = proxyquire('../reidentifyTextWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await reIdentifyTextWithFpe(
+      projectId,
+      text,
+      'NUMERIC',
+      keyName,
+      wrappedKey,
+      'PHONE_TOKEN'
+    );
+
+    sinon.assert.calledOnceWithExactly(
+      mockReidentifyContent,
+      CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
+    );
+  });
+
+  it('should handle re-identification errors', async () => {
+    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    const text = 'My phone number is PHONE_TOKEN(10):9617256398';
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'reidentifyContent',
+      mockReidentifyContent
+    );
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const reIdentifyTextWithFpe = proxyquire('../reidentifyTextWithFpe', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    try {
+      await reIdentifyTextWithFpe(
+        projectId,
+        text,
+        'NUMERIC',
+        keyName,
+        wrappedKey,
+        'PHONE_TOKEN'
+      );
     } catch (error) {
       assert.equal(error.message, 'Failed');
     }

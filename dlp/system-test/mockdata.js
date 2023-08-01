@@ -143,6 +143,412 @@ const MOCK_DATA = {
     },
     RESPONSE_DEIDENTIFY_CONTENT: [{item: {table: {}}}],
   }),
+  INSPECT_GCS_WITH_SAMPLING: (
+    projectId,
+    gcsUri,
+    topicId,
+    infoTypes,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: infoTypes,
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+          includeQuote: true,
+          excludeInfoTypes: true,
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: gcsUri},
+            bytesLimitPerFile: 200,
+            filesLimitPercent: 90,
+            fileTypes: [DLP.protos.google.privacy.dlp.v2.FileType.TEXT_FILE],
+            sampleMethod:
+              DLP.protos.google.privacy.dlp.v2.CloudStorageOptions.SampleMethod
+                .RANDOM_START,
+          },
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB: [
+      {
+        name: jobName,
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  DEIDENTIFY_WITH_DETEMINISTIC: (
+    projectId,
+    string,
+    infoTypes,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_DEIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      deidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              infoTypes,
+              primitiveTransformation: {
+                cryptoDeterministicConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  surrogateInfoType: {name: surrogateType},
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        infoTypes,
+      },
+      item: {
+        value: string,
+      },
+    },
+    RESPONSE_DEIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
+  REIDENTIFY_WITH_DETEMINISTIC: (
+    projectId,
+    string,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              infoTypes: [{name: surrogateType}],
+              primitiveTransformation: {
+                cryptoDeterministicConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  surrogateInfoType: {name: surrogateType},
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        customInfoTypes: [
+          {
+            infoType: {name: surrogateType},
+            surrogateType: {},
+          },
+        ],
+      },
+      item: {
+        value: string,
+      },
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
+  REIDENTIFY_TABLE_WITH_FPE: (projectId, alphabet, keyName, wrappedKey) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        recordTransformations: {
+          fieldTransformations: [
+            {
+              fields: [{name: 'Employee ID'}],
+              primitiveTransformation: {
+                cryptoReplaceFfxFpeConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  commonAlphabet: alphabet,
+                },
+              },
+            },
+          ],
+        },
+      },
+      item: {
+        table: {
+          headers: [{name: 'Employee ID'}],
+          rows: [{values: [{stringValue: '90511'}]}],
+        },
+      },
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {table: {}}}],
+  }),
+  REIDENTIFY_TEXT_WITH_FPE: (
+    projectId,
+    text,
+    alphabet,
+    keyName,
+    wrappedKey,
+    surrogateType
+  ) => ({
+    REQUEST_REIDENTIFY_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      reidentifyConfig: {
+        infoTypeTransformations: {
+          transformations: [
+            {
+              primitiveTransformation: {
+                cryptoReplaceFfxFpeConfig: {
+                  cryptoKey: {
+                    kmsWrapped: {
+                      wrappedKey: wrappedKey,
+                      cryptoKeyName: keyName,
+                    },
+                  },
+                  commonAlphabet: alphabet,
+                  surrogateInfoType: {
+                    name: surrogateType,
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+      inspectConfig: {
+        customInfoTypes: [
+          {
+            infoType: {
+              name: surrogateType,
+            },
+            surrogateType: {},
+          },
+        ],
+      },
+      item: {value: text},
+    },
+    RESPONSE_REIDENTIFY_CONTENT: [{item: {value: ''}}],
+  }),
+  INSPECT_GCS_SEND_TO_SCC: (projectId, gcsUri, jobName) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: gcsUri},
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
+  INSPECT_BIG_QUERY_SEND_TO_SCC: (
+    projectId,
+    dataProjectId,
+    datasetId,
+    tableId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+          includeQuote: true,
+        },
+        storageConfig: {
+          bigQueryOptions: {
+            tableReference: {
+              projectId: dataProjectId,
+              datasetId: datasetId,
+              tableId: tableId,
+            },
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {enable: true},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
+  INSPECT_DATASTORE_SEND_TO_SCC: (
+    projectId,
+    datastoreNamespace,
+    datastoreKind,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PERSON_NAME'},
+            {name: 'LOCATION'},
+            {name: 'PHONE_NUMBER'},
+          ],
+          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          limits: {
+            maxFindingsPerItem: 100,
+          },
+          includeQuote: true,
+        },
+        storageConfig: {
+          datastoreOptions: {
+            kind: {
+              name: datastoreKind,
+            },
+            partitionId: {
+              projectId: projectId,
+              namespaceId: datastoreNamespace,
+            },
+          },
+        },
+        actions: [
+          {
+            publishSummaryToCscc: {enable: true},
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
 };
 
 module.exports = {MOCK_DATA};

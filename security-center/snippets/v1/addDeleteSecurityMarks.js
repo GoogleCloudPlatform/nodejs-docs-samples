@@ -14,7 +14,7 @@
 'use strict';
 
 /**
- * Demostrates adding/updating at the same time as deleting security
+ * Demonstrates adding/updating at the same time as deleting security
  * marks from an asset.
  */
 function main(assetName = 'full asset path to add marks to') {
@@ -27,10 +27,10 @@ function main(assetName = 'full asset path to add marks to') {
 
   async function addDeleteSecurityMarks() {
     // assetName is the full resource path for the asset to update.
-    /*
-     * TODO(developer): Uncomment the following lines
-     */
-    // assetName = "organizations/123123342/assets/12312321";
+    // Specify the value of 'assetName' in one of the following formats:
+    //    `organizations/${org-id}/assets/${asset-id}`;
+    //    `projects/${project-id}/assets/${asset-id}`;
+    //    `folders/${folder-id}/assets/${asset-id}`;
     const [newMarks] = await client.updateSecurityMarks({
       securityMarks: {
         name: `${assetName}/securityMarks`,

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-// [START cloud_sql_postgres_knex_connect_connector]
+// [START cloud_sql_postgres_knex_auto_iam_authn]
 const Knex = require('knex');
 const {Connector} = require('@google-cloud/cloud-sql-connector');
 
@@ -42,7 +42,7 @@ const connectWithConnectorAutoIAMAuthn = async config => {
     client: 'pg',
     connection: {
       ...clientOpts,
-      user: process.env.IAM_DB_USER, // e.g. 'service-account-name'
+      user: process.env.IAM_DB_USER, // e.g. 'sa-name@project-id.iam'
       database: process.env.DB_NAME, // e.g. 'my-database'
     },
     // ... Specify additional properties here.
@@ -51,5 +51,5 @@ const connectWithConnectorAutoIAMAuthn = async config => {
   // Establish a connection to the database.
   return Knex(dbConfig);
 };
-// [END cloud_sql_postgres_knex_connect_connector]
+// [END cloud_sql_postgres_knex_auto_iam_authn]
 module.exports = connectWithConnectorAutoIAMAuthn;

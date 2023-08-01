@@ -30,7 +30,8 @@ async function main(
    */
 
   // Import from google cloud
-  const {DocumentSchemaServiceClient} = require('@google-cloud/contentwarehouse').v1;
+  const {DocumentSchemaServiceClient} =
+    require('@google-cloud/contentwarehouse').v1;
 
   // Create service client
   const serviceClient = new DocumentSchemaServiceClient();
@@ -51,7 +52,10 @@ async function main(
 
     // Print out response
     response.then(
-      result => console.log(`Success!\nDocument Schema Deleted: \n${JSON.stringify(result)}`),
+      result =>
+        console.log(
+          `Success!\nDocument Schema Deleted: \n${JSON.stringify(result)}`
+        ),
       error => console.log(`Failed!\n${error}`)
     );
   }

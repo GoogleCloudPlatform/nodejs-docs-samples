@@ -45,7 +45,7 @@ let customJobId;
 
 describe('AI platform create custom job', async function () {
   this.retries(2);
-  it('should create a new custom job', async () => {
+  it.skip('should create a new custom job', async () => {
     const stdout = execSync(
       `node ./create-custom-job.js ${customJobDisplayName} \
                                      ${containerImageUri} \

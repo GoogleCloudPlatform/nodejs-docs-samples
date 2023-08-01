@@ -27,8 +27,8 @@ const tableId = 'github_nested';
 const fieldId = 'url';
 
 const storage = new Storage();
-const bucketName = `test-bucket-${uuid.v4()}`;
 const testFile = 'resources/test.txt';
+const bucketName = `test-dlp-metadata-bucket-${uuid.v4()}`;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

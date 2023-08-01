@@ -48,14 +48,15 @@ async function main(
     // Document Schema
     const documentSchema = {};
     documentSchema.displayName = "My Test Schema";
-    documentSchema.propertyDefinitions = [propertyDefinition];
+    documentSchema.propertyDefinitions = [];
 
     request.documentSchema = documentSchema;
 
     // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}/
-    request.parent = `projects/${projectId}/locations/${location}/documentSchemas`;
-    request.requestMetadata = {userInfo: {id: userId}};
+    request.parent = `projects/${projectId}/locations/${location}/`;
+
+    //console.log(request);
 
     // Make Request
     const response = serviceClient.createDocumentSchema(request);

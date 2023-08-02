@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha system-test --timeout 600000"
+    "test": "c8 mocha -p -j 2 system-test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/vision": "^3.1.2",

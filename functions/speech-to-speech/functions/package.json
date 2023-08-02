@@ -24,7 +24,7 @@
     "storage"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 20000 test/*.test.js",
+    "test": "c8 mocha -p -j 2 --timeout 20000 test/*.test.js",
     "serve": "firebase serve --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",

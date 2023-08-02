@@ -8,8 +8,8 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "compute-test": "c8 mocha test/periodic.test.js --timeout=600000",
-    "test": "c8 mocha test/index.test.js --timeout=5000 --exit"
+    "compute-test": "c8 mocha -p -j 2 test/periodic.test.js --timeout=600000",
+    "test": "c8 mocha -p -j 2 test/index.test.js --timeout=5000 --exit"
   },
   "author": "Ace Nassri <anassri@google.com>",
   "license": "Apache-2.0",

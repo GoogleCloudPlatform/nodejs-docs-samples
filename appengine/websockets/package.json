@@ -11,7 +11,7 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "test": "c8 mocha --timeout 10000 --exit test/*.test.js",
+    "test": "c8 mocha -p -j 2 --timeout 10000 --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {

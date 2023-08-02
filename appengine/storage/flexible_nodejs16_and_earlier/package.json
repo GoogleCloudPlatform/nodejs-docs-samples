@@ -3,7 +3,7 @@
   "description": "Node.js Google Cloud Storage sample for Google App Engine",
   "scripts": {
     "start": "node app.js",
-    "test": "c8 mocha system-test/*.test.js --exit --timeout=30000"
+    "test": "c8 mocha -p -j 2 system-test/*.test.js --exit --timeout=30000"
   },
   "engines": {
     "node": "16.x.x"

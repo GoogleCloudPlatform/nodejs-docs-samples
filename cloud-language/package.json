@@ -12,7 +12,7 @@
     "resources"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 60000"
+    "test": "c8 mocha -p -j 2 --timeout 60000"
   },
   "dependencies": {
     "@google-cloud/language": "^5.1.0",

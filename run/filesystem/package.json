@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/index.test.js --exit",
-    "system-test": "c8 mocha test/system.test.js --timeout=360000 --exit"
+    "test": "c8 mocha -p -j 2 test/index.test.js --exit",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
     "node": ">=12.0.0"

@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha"
+    "test": "c8 mocha -p -j 2"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^6.0.0",

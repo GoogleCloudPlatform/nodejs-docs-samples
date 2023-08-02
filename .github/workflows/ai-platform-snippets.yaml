@@ -92,6 +92,8 @@ jobs:
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3
+      env:
+        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
       with:
         name: test-results
         path: ai-platform/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}

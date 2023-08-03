@@ -32,7 +32,7 @@ describe('creating managing windows instances tests', () => {
   const subnetworkName = 'regions/europe-central2/subnetworks/default-compute';
   const zone = 'europe-central2-b';
   const machineType = 'n1-standard-1';
-  const sourceImageFamily = 'windows-2012-r2';
+  const sourceImageFamily = 'windows-2022';
 
   before(async () => {
     const instances = await getStaleVMInstances();

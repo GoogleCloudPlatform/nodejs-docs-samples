@@ -15,7 +15,7 @@
     "test": "c8 mocha test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^3.0.0",
+    "@google-cloud/pubsub": "^4.0.0",
     "@google-cloud/storage": "^6.0.0",
     "@google-cloud/translate": "^7.0.0",
     "@google-cloud/vision": "^3.0.0"

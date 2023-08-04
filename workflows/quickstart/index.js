@@ -57,6 +57,7 @@ async function executeWorkflow(projectId, location, workflow) {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
+        // Provide runtime arguments as a JSON string
         argument: JSON.stringify(runtimeArgs),
       },
     });

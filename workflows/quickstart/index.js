@@ -19,7 +19,7 @@
 const projectId = process.argv[2] || process.env.GOOGLE_CLOUD_PROJECT;
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
-const searchTerm = process.argv[5] || null
+const searchTerm = process.argv[5] || null;
 
 // [START workflows_api_quickstart]
 const {ExecutionsClient} = require('@google-cloud/workflows');
@@ -53,7 +53,7 @@ async function executeWorkflow(projectId, location, workflow) {
 
   // Execute workflow
   try {
-    const runtimeArgs = searchTerm ? {'searchTerm': searchTerm} : {}
+    const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {

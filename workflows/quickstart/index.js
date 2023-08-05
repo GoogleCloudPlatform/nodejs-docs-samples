@@ -31,12 +31,14 @@ const client = new ExecutionsClient();
 // const projectId = 'my-project';
 // const location = 'us-central1';
 // const workflow = 'myFirstWorkflow';
+// const searchTerm = null
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
+ * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
  */
 async function executeWorkflow(projectId, location, workflow) {
   /**
@@ -55,7 +57,8 @@ async function executeWorkflow(projectId, location, workflow) {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        argument: JSON.stringify({}),
+        // Provide runtime arguments as a JSON string
+        argument: JSON.stringify(runtimeArgs),
       },
     });
     const executionName = createExecutionRes[0].name;

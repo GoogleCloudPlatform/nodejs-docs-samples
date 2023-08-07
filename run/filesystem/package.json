@@ -21,7 +21,7 @@
     "c8": "^8.0.0",
     "chai": "^4.3.7",
     "chai-http": "^4.4.0",
-    "google-auth-library": "^8.0.0",
+    "google-auth-library": "^9.0.0",
     "got": "^11.0.0",
     "mocha": "^10.2.0",
     "mock-fs": "^5.2.0",

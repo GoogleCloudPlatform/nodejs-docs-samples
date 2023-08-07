@@ -13,9 +13,9 @@
     "test": "c8 mocha test/*.test.js --timeout=30000 --exit"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^3.0.0",
+    "@google-cloud/pubsub": "^4.0.0",
     "express": "^4.17.1",
-    "google-auth-library": "^8.0.0",
+    "google-auth-library": "^9.0.0",
     "pug": "^3.0.0"
   },
   "devDependencies": {

@@ -20,8 +20,8 @@ on:
 jobs:
   remove_label:
     permissions:
+      contents: 'read'
       id-token: 'write'
-      pull-requests: 'write'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

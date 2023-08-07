@@ -46,7 +46,12 @@ function main(projectId, cloudFileUrl) {
 
     // Construct inspect configuration
     const inspectConfig = {
-      infoTypes: [{name: 'PERSON_NAME'}, {name: 'STREET_ADDRESS'}],
+      infoTypes: [
+        {name: 'EMAIL_ADDRESS'},
+        {name: 'PERSON_NAME'},
+        {name: 'LOCATION'},
+        {name: 'PHONE_NUMBER'},
+      ],
       includeQuote: true,
       minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.LIKELY,
       excludeInfoTypes: false,

@@ -7,7 +7,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "start": "node --loader=ts-node/esm index.ts",
+    "start": "node --loader=ts-node/esm",
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",

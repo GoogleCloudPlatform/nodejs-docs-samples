@@ -40,7 +40,7 @@ describe('functions_helloworld_http', () => {
 
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
   });
-  
+
   it('helloHttp: should print a name with query', () => {
     const mocks = getMocks();
     mocks.req.query = {name: 'John'};

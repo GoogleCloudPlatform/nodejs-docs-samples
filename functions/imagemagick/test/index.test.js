@@ -78,19 +78,7 @@ describe('functions/imagemagick tests', () => {
   describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
       const PORT = 8080;
-      let ffProc;
-      let ffProcHandler;
-
-      try {
-        const ff = await startFF(PORT);
-        ffProc = ff?.ffProc;
-        ffProcHandler = ff?.ffProcHandler;
-      } catch(error) {
-        console.log('---test check----');
-        console.log(error);
-
-        assert.fail(error);
-      }
+      const {ffProc, ffProcHandler} = await startFF(PORT);
 
       try {
         await request({
@@ -108,8 +96,13 @@ describe('functions/imagemagick tests', () => {
       }
       
       ffProc.kill();
-      const stdout = await ffProcHandler;
-      assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
+      
+      try {
+        const stdout = await ffProcHandler;
+        assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
+      } catch(error) {
+        assert.fail(error);
+      }
     });
 
     it('blurOffensiveImages successfully blurs offensive images', async () => {
@@ -132,14 +125,19 @@ describe('functions/imagemagick tests', () => {
       }
 
       ffProc.kill();
-      const stdout = await ffProcHandler;
+      
+      try {
+        const stdout = await ffProcHandler;
 
-      assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
-      assert.ok(
-        stdout.includes(
-          `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
-        )
-      );
+        assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
+        assert.ok(
+          stdout.includes(
+            `Uploaded blurred image to: gs://${BLURRED_BUCKET_NAME}/${testFiles.offensive}`
+          )
+        );
+      } catch(error) {
+        assert.fail(error);
+      }
 
       const exists = await storage
         .bucket(BLURRED_BUCKET_NAME)
@@ -169,8 +167,13 @@ describe('functions/imagemagick tests', () => {
       }
 
       ffProc.kill();
-      const stdout = await ffProcHandler;
-      assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
+      
+      try {
+        const stdout = await ffProcHandler;
+        assert.ok(stdout.includes(`Detected ${missingFileName} as OK.`));
+      } catch(error) {
+        assert.fail(error);
+      }
     });
   });
 

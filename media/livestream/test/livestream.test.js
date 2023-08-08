@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2023 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -34,11 +34,16 @@ const channelId = `nodejs-test-livestream-channel-${uniqueID}`;
 const channelName = `projects/${projectId}/locations/${location}/channels/${channelId}`;
 const eventId = `nodejs-test-livestream-event-${uniqueID}`;
 const eventName = `projects/${projectId}/locations/${location}/channels/${channelId}/events/${eventId}`;
+const assetId = `nodejs-test-livestream-asset-${uniqueID}`;
+const assetName = `projects/${projectId}/locations/${location}/assets/${assetId}`;
+const assetUri = 'gs://cloud-samples-data/media/ForBiggerEscapes.mp4';
 const outputUri = `gs://${bucketName}/test-output-channel/`;
+const poolId = 'default';
+const poolName = `projects/${projectId}/locations/${location}/pools/${poolId}`;
 const cwd = path.join(__dirname, '..');
 
 before(async () => {
-  // Delete outstanding channels and inputs created more than 3 hours ago
+  // Delete outstanding channels, inputs, and assets created more than 3 hours ago
   const {LivestreamServiceClient} = require('@google-cloud/livestream').v1;
   const livestreamServiceClient = new LivestreamServiceClient();
   const THREE_HOURS_IN_SEC = 60 * 60 * 3;
@@ -85,6 +90,17 @@ before(async () => {
         name: input.name,
       };
       await livestreamServiceClient.deleteInput(request);
+    }
+  }
+  const [assets] = await livestreamServiceClient.listAssets({
+    parent: livestreamServiceClient.locationPath(projectId, location),
+  });
+  for (const asset of assets) {
+    if (asset.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
+      const request = {
+        name: asset.name,
+      };
+      await livestreamServiceClient.deleteAsset(request);
     }
   }
 });
@@ -302,5 +318,56 @@ describe('Channel event functions', () => {
       {cwd}
     );
     assert.ok(output.includes('Deleted channel event'));
+  });
+});
+
+describe('Asset functions', () => {
+  it('should create an asset', () => {
+    const output = execSync(
+      `node createAsset.js ${projectId} ${location} ${assetId} ${assetUri}`,
+      {cwd}
+    );
+    assert.ok(output.includes(assetName));
+  });
+
+  it('should show a list of assets', () => {
+    const output = execSync(`node listAssets.js ${projectId} ${location}`, {
+      cwd,
+    });
+    assert.ok(output.includes(assetName));
+  });
+
+  it('should get an asset', () => {
+    const output = execSync(
+      `node getAsset.js ${projectId} ${location} ${assetId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(assetName));
+  });
+
+  it('should delete an asset', () => {
+    const output = execSync(
+      `node deleteAsset.js ${projectId} ${location} ${assetId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted asset'));
+  });
+});
+
+describe('Pool functions', () => {
+  it('should get a pool', () => {
+    const output = execSync(
+      `node getPool.js ${projectId} ${location} ${poolId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(poolName));
+  });
+
+  it('should update a pool', () => {
+    const output = execSync(
+      `node updatePool.js ${projectId} ${location} ${poolId} ''`,
+      {cwd}
+    );
+    assert.ok(output.includes(poolName));
   });
 });

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START functions_cloudevent_storage_unit_test]
-
 const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 describe('functions_cloudevent_storage', () => {
@@ -54,5 +53,4 @@ describe('functions_cloudevent_storage', () => {
     assert(console.log.calledWith('File: my-file.txt'));
   });
 });
-
 // [END functions_cloudevent_storage_unit_test]

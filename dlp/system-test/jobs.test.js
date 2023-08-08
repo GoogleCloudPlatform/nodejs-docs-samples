@@ -27,6 +27,7 @@ const testTableProjectId = 'bigquery-public-data';
 const testDatasetId = 'san_francisco';
 const testTableId = 'bikeshare_trips';
 const testColumnName = 'zip_code';
+const bucketName = 'nodejs-dlp-test-bucket';
 
 const client = new DLP.DlpServiceClient();
 
@@ -155,5 +156,43 @@ describe('test', () => {
     }
     console.log(output);
     assert.match(output, /Error in deleteJob/);
+  });
+
+  // dlp_create_job
+  it('should create job', () => {
+    const output = execSync(
+      `node createJob.js ${projectId} gs://${bucketName}/test.txt`
+    );
+    assert.match(output, /Job created successfully:/);
+  });
+
+  it('should handle job creation errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node createJob.js BAD_PROJECT_IDgs://${bucketName}/test.txt `
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_get_job
+  it('should get job details using job name', async () => {
+    const jobName = await createTestJob();
+    const output = execSync(`node getJob.js ${jobName}`);
+    assert.match(output, /Job .+ status: \w/);
+    await client.deleteDlpJob({name: jobName});
+  });
+
+  it('should handle error while fetching job details', () => {
+    let output;
+    try {
+      output = execSync('node getJob.js INVALID_JOB');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
   });
 });

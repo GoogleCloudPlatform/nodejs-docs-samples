@@ -1,4 +1,4 @@
-// Copyright 2017 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,16 +80,21 @@ describe('functions/imagemagick tests', () => {
       const PORT = 8080;
       const {ffProc, ffProcHandler} = await startFF(PORT);
 
-      await request({
-        url: `http://localhost:${PORT}/blurOffensiveImages`,
-        method: 'POST',
-        data: {
+      try {
+        await request({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          method: 'POST',
           data: {
-            bucket: BUCKET_NAME,
-            name: testFiles.safe,
+            data: {
+              bucket: BUCKET_NAME,
+              name: testFiles.safe,
+            },
           },
-        },
-      });
+        });
+      } catch(error) {
+        assert.fail(error);
+      }
+      
       ffProc.kill();
       const stdout = await ffProcHandler;
       assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
@@ -99,16 +104,20 @@ describe('functions/imagemagick tests', () => {
       const PORT = 8081;
       const {ffProc, ffProcHandler} = await startFF(PORT);
 
-      await request({
-        url: `http://localhost:${PORT}/blurOffensiveImages`,
-        method: 'POST',
-        data: {
+      try {
+        await request({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          method: 'POST',
           data: {
-            bucket: BUCKET_NAME,
-            name: testFiles.offensive,
+            data: {
+              bucket: BUCKET_NAME,
+              name: testFiles.offensive,
+            },
           },
-        },
-      });
+        });
+      } catch(error) {
+        assert.fail(error);
+      }
 
       ffProc.kill();
       const stdout = await ffProcHandler;
@@ -132,16 +141,20 @@ describe('functions/imagemagick tests', () => {
       const {ffProc, ffProcHandler} = await startFF(PORT);
       const missingFileName = 'file-does-not-exist.jpg';
 
-      await request({
-        url: `http://localhost:${PORT}/blurOffensiveImages`,
-        method: 'POST',
-        data: {
+      try {
+        await request({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          method: 'POST',
           data: {
-            bucket: BUCKET_NAME,
-            name: missingFileName,
+            data: {
+              bucket: BUCKET_NAME,
+              name: missingFileName,
+            },
           },
-        },
-      });
+        });
+      } catch(error) {
+        assert.fail(error);
+      }
 
       ffProc.kill();
       const stdout = await ffProcHandler;

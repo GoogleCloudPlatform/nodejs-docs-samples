@@ -3,6 +3,12 @@
     "config:base"
   ],
   "dependencyDashboardAutoclose": true,  
+  "schedule": "after 11am every 2 weeks on Monday",
+  "timezone": "America/Los_Angeles",
+  "stabilityDays": 5,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 4,
+  "rangeStrategy": "pin",
   "pinVersions": false,
   "rebaseStalePrs": false,
   "force": {

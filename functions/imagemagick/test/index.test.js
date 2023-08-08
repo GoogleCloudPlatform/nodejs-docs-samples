@@ -78,7 +78,19 @@ describe('functions/imagemagick tests', () => {
   describe('functions_imagemagick_setup functions_imagemagick_analyze functions_imagemagick_blur', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
       const PORT = 8080;
-      const {ffProc, ffProcHandler} = await startFF(PORT);
+      let ffProc;
+      let ffProcHandler;
+
+      try {
+        const ff = await startFF(PORT);
+        ffProc = ff?.ffProc;
+        ffProcHandler = ff?.ffProcHandler;
+      } catch(error) {
+        console.log('---test check----');
+        console.log(error);
+
+        assert.fail(error);
+      }
 
       try {
         await request({

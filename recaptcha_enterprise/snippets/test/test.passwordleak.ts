@@ -17,9 +17,9 @@
 
 'use strict';
 
-import {assert} from 'chai';
-import {it} from 'mocha';
 import * as cp from 'child_process';
+import {it} from 'mocha';
+import {strict as assert} from 'node:assert';
 
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 

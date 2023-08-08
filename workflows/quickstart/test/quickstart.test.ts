@@ -68,7 +68,7 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
   });
 
-  it('should execute the quickstart witout optional search term', async () => {
+  it('should execute the quickstart without optional search term', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
       `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`

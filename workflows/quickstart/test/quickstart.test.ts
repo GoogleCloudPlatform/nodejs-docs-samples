@@ -23,6 +23,7 @@ const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT as string;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
+const SEARCH_TERM = 'cloud';
 
 describe('Cloud Workflows Quickstart Tests', () => {
   before(async () => {
@@ -67,10 +68,23 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
   });
 
-  it('should execute the quickstart', async () => {
+  it('should execute the quickstart without optional search term', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
       `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+    );
+
+    assert.strictEqual(
+      result.length > 0,
+      true,
+      'Quickstart must return non-empty result'
+    );
+  }).timeout(5000);
+
+  it('should execute the quickstart with optional search term', async () => {
+    // Execute workflow, with long test timeout
+    const result = execSync(
+      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
     );
 
     assert.strictEqual(

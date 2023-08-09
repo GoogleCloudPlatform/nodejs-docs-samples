@@ -40,7 +40,6 @@
   "dlp",
   "document-ai",
   "document-warehouse",
-  "document-warehouse/test",
   "endpoints/getting-started",
   "endpoints/getting-started-grpc",
   "error-reporting",

@@ -41,15 +41,6 @@ jobs:
     with:
       name: 'healthcare-dicom'
       path: 'healthcare/dicom'
-  remove_label:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: |
-      github.event.action == 'labeled' &&
-      github.event.label.name == 'actions:force-run' &&
-      always()
-    uses: ./.github/workflows/remove-label.yaml
   flakybot:
     permissions:
       contents: 'read'

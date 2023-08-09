@@ -13,10 +13,13 @@
 // limitations under the License.
 
 // FF testing layer for declarative signatures
+
 // [START functions_http_unit_test]
 const {getFunction} = require('@google-cloud/functions-framework/testing');
+// [END functions_http_unit_test]
 
 describe('functions_helloworld_http', () => {
+  // [START functions_http_unit_test]
   const sinon = require('sinon');
   const assert = require('assert');
   require('../');
@@ -40,6 +43,7 @@ describe('functions_helloworld_http', () => {
 
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello World!'), true);
   });
+  // [END functions_http_unit_test]
 
   it('helloHttp: should print a name with query', () => {
     const mocks = getMocks();
@@ -61,4 +65,3 @@ describe('functions_helloworld_http', () => {
     assert.strictEqual(mocks.res.send.calledOnceWith('Hello John!'), true);
   });
 });
-// [END functions_http_unit_test]

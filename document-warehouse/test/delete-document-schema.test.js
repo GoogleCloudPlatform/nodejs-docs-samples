@@ -21,12 +21,11 @@ const sinon = require('sinon');
 const text = 'Document Schema Deleted';
 
 const {deleteDocumentSchema} = require('../delete-document-schema');
-  // TODO(developer): Uncomment these variables before running the sample.
-  /**
-   * const projectId = 'YOUR_PROJECT_ID';
-   * const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
-   * const documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID';
-   */
+  
+// TODO(developer): Fill in the variables below before running this test.
+const projectId = 'YOUR_PROJECT_ID';
+const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
+const documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID';
 
 describe('Delete document schema', () => {
   const stubConsole = function () {

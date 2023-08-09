@@ -39,32 +39,21 @@ async function main(
   // Delete Document Schema
   async function deleteDocumentSchema() {
     // Initialize request argument(s)
-    const request = {};
-
-    // The full resource name of the location, e.g.:
-    // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
-    request.name = `projects/${projectId}/locations/${location}/documentSchemas/${documentSchemaId}`;
-
-    console.log(request);
+    const request = {
+      // The full resource name of the location, e.g.:
+      // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
+      name: `projects/${projectId}/locations/${location}/documentSchemas/${documentSchemaId}`,
+    };
 
     // Make Request
-    const response = serviceClient.deleteDocumentSchema(request);
+    const response = await serviceClient.deleteDocumentSchema(request);
 
     // Print out response
-    response.then(
-      result =>
-        console.log(
-          `Success!\nDocument Schema Deleted: \n${JSON.stringify(result)}`
-        ),
-      error => console.log(`Failed!\n${error}`)
-    );
+    console.log(`Document Schema Deleted: ${response}`);
   }
 
   // [END contentwarehouse_delete_document_schema]
   await deleteDocumentSchema();
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+exports.deleteDocumentSchema = main;

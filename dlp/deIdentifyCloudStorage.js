@@ -118,12 +118,12 @@ async function main(
     };
 
     // Construct the job creation request to be sent by the client.
-    const request = {
+    const createDlpJobRequest = {
       parent: `projects/${projectId}/locations/global`,
       inspectJob: inspectJobConfig,
     };
     // Send the job creation request and process the response.
-    const [response] = await dlp.createDlpJob(request);
+    const [response] = await dlp.createDlpJob(createDlpJobRequest);
     const jobName = response.name;
 
     // Waiting for a maximum of 15 minutes for the job to get complete.

@@ -46,22 +46,19 @@ async function main(projectId, datasetId, sourceTableId, outputTableId) {
       tableId: sourceTableId,
     };
 
-    // Specify quasi-identifiers to analyze
+    // Specify the unique identifier in the source table for the k-anonymity analysis.
+    const uniqueIdField = {name: 'Name'};
+    
+    // These values represent the column names of quasi-identifiers to analyze
+    const quasiIds = [{name: 'Age'}, {name: 'Mystery'}];
+
+    // Configure the privacy metric to compute for re-identification risk analysis.
     const privacyMetric = {
       kAnonymityConfig: {
         entityId: {
-          field: {
-            name: 'Name',
-          },
+          field: uniqueIdField,
         },
-        quasiIds: [
-          {
-            name: 'Age',
-          },
-          {
-            name: 'Mystery',
-          },
-        ],
+        quasiIds: quasiIds,
       },
     };
     // Create action to publish job status notifications to BigQuery table.
@@ -80,19 +77,19 @@ async function main(projectId, datasetId, sourceTableId, outputTableId) {
     ];
 
     // Configure the risk analysis job to perform.
-    const riskJob = {
+    const riskAnalysisJob = {
       sourceTable: sourceTable,
       privacyMetric: privacyMetric,
       actions: action,
     };
     // Combine configurations into a request for the service.
-    const request = {
+    const createDlpJobRequest = {
       parent: `projects/${projectId}/locations/global`,
-      riskJob: riskJob,
+      riskJob: riskAnalysisJob,
     };
 
     // Send the request and receive response from the service
-    const [createdDlpJob] = await dlp.createDlpJob(request);
+    const [createdDlpJob] = await dlp.createDlpJob(createDlpJobRequest);
     const jobName = createdDlpJob.name;
 
     // Waiting for a maximum of 15 minutes for the job to get complete.

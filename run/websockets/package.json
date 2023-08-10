@@ -22,9 +22,9 @@
   "devDependencies": {
     "@types/express": "^4.17.17",
     "c8": "^8.0.0",
-    "google-auth-library": "^8.7.0",
+    "google-auth-library": "^9.0.0",
     "got": "^11.8.3",
     "mocha": "^10.2.0",
-    "puppeteer": "^20.8.2"
+    "puppeteer": "^21.0.0"
   }
 }

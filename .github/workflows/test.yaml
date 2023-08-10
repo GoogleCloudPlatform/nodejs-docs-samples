@@ -62,8 +62,7 @@ jobs:
       working-directory: .
     - name: install directory dependencies
       run: npm install
-    - run: npm run build
-      continue-on-error: true
+    - run: npm run build --if-present
     - name: set env vars for scheduled run
       if: github.event.action == 'schedule'
       run: |
@@ -74,6 +73,8 @@ jobs:
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3
+      env:
+        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
       with:
         name: test-results
         path: ${{ inputs.path }}/${{ env.MOCHA_REPORTER_OUTPUT }}

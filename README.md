@@ -49,7 +49,7 @@ To browse documentation pages that use the samples found in this repository, vis
 
 1. Run the sample:
 
-        node sample_file.js [args]...
+        npm start [args]...
 
 [cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
 

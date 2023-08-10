@@ -36,7 +36,7 @@ function main(projectId, string, words) {
   // const words = ['quasimodo'];
 
   async function inspectStringAugmentInfoType() {
-    // Construct item to inspect
+    // Specify the type and content to be inspected.
     const byteItem = {
       type: 'BYTES',
       data: Buffer.from(string),
@@ -49,29 +49,27 @@ function main(projectId, string, words) {
         words: words,
       },
     };
-    const infoType = {name: 'PERSON_NAME'};
 
-    // Construct a custom infotype detector that uses dictionary.
+    // Construct a custom infotype detector by augmenting the PERSON_NAME detector with a word list.
     const customInfoType = {
-      infoType: infoType,
+      infoType: {name: 'PERSON_NAME'},
       dictionary: dictionary,
     };
 
-    // Construct the inspect configuration.
     const inspectConfig = {
       customInfoTypes: [customInfoType],
       includeQuote: true,
     };
 
-    // Combine configurations into a request for the service.
-    const request = {
+    // Construct the Inspect request to be sent by the client.
+    const inspectRequest = {
       parent: `projects/${projectId}/locations/global`,
       inspectConfig: inspectConfig,
       item: item,
     };
 
     // Use the client to send the API request.
-    const [response] = await dlp.inspectContent(request);
+    const [response] = await dlp.inspectContent(inspectRequest);
 
     // Print Findings.
     const findings = response.result.findings;

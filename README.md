@@ -12,6 +12,9 @@ on Google Cloud Platform.
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
 
+To browse documentation pages that use the samples found in this repository,
+visit the [Google Cloud Samples][cloud_samples] page.
+
 ## Setup
 
 1. Install [Node.js version 10 or greater][node]
@@ -36,8 +39,6 @@ on Google Cloud Platform.
 [gcloud]: https://cloud.google.com/sdk/docs/install
 
 ## How to run a sample
-
-To browse documentation pages that use the samples found in this repository, visit the [Google Cloud Samples][cloud_samples] page.
 
 1. Change directory to one of the sample folders, e.g. `datastore`:
 

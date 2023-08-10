@@ -48,7 +48,7 @@ async function main(projectId, datasetId, sourceTableId, outputTableId) {
 
     // Specify the unique identifier in the source table for the k-anonymity analysis.
     const uniqueIdField = {name: 'Name'};
-    
+
     // These values represent the column names of quasi-identifiers to analyze
     const quasiIds = [{name: 'Age'}, {name: 'Mystery'}];
 

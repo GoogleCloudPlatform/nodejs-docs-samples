@@ -48,7 +48,12 @@ visit the [Google Cloud Samples][cloud_samples] page.
 
         npm install
 
-1. Run the sample:
+      * For samples with an available TypeScript variant, compile the 
+      TypeScript code:
+   
+                npm run build
+
+2. Run the sample:
 
         npm start [args]...
 

@@ -37,7 +37,7 @@ const modelDisplayName = `my-tuned-model-${timestampId}`
 const bucketName = `ucaip-samples-europe-west4/training_pipeline_output`;
 const bucketUri = `gs://${bucketName}/tune-model-nodejs`
 
-describe('Tune a model', () => {
+describe('Tune a code model', () => {
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');
@@ -72,7 +72,7 @@ describe('Tune a model', () => {
   beforeEach(stubConsole);
   afterEach(restoreConsole);
 
-  it('should prompt-tune an existing model', async () => {
+  it('should prompt-tune an existing code model', async () => {
     // Act
     await tuneModel(projectId, pipelineJobName, modelDisplayName, bucketUri);
 

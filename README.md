@@ -12,10 +12,6 @@ on Google Cloud Platform.
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
 
-## Google Cloud Samples
-
-To browse ready to use code samples check [Google Cloud Samples](https://cloud.google.com/docs/samples?l=nodejs).
-
 ## Setup
 
 1. Install [Node.js version 10 or greater][node]
@@ -41,6 +37,8 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
 ## How to run a sample
 
+To browse documentation pages that use the samples found in this repository, visit the [Google Cloud Samples][cloud_samples] page.
+
 1. Change directory to one of the sample folders, e.g. `datastore`:
 
         cd datastore/
@@ -52,6 +50,8 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 1. Run the sample:
 
         node sample_file.js [args]...
+
+[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
 
 ## Other sample applications
 

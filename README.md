@@ -7,11 +7,6 @@ Node.js samples for [Google Cloud Platform products][cloud].
 See [cloud.google.com/nodejs][cloud_nodejs] to get up and running with Node.js
 on Google Cloud Platform.
 
-[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
-[slack_link]: https://googlecloud-community.slack.com/
-[cloud]: https://cloud.google.com/
-[cloud_nodejs]: https://cloud.google.com/nodejs/
-
 To browse documentation pages that use the samples found in this repository,
 visit the [Google Cloud Samples][cloud_samples] page.
 
@@ -33,11 +28,6 @@ visit the [Google Cloud Samples][cloud_samples] page.
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
 
-[node]: https://nodejs.org/
-[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
-[gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
-[gcloud]: https://cloud.google.com/sdk/docs/install
-
 ## How to run a sample
 
 1. Change directory to one of the sample folders, e.g. `datastore`:
@@ -53,11 +43,9 @@ visit the [Google Cloud Samples][cloud_samples] page.
    
                 npm run build
 
-2. Run the sample:
+1. Run the sample:
 
         npm start [args]...
-
-[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
 
 ## Other sample applications
 
@@ -68,11 +56,19 @@ shows you how to use a variety of Google Cloud Platform features.
 
 View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 
-[bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
-[bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
-
 ## Contributing
 
 Contributions welcome! See the [Contributing Guide][contrib].
 
+[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
+[slack_link]: https://googlecloud-community.slack.com/
+[cloud]: https://cloud.google.com/
+[cloud_nodejs]: https://cloud.google.com/nodejs/
+[node]: https://nodejs.org/
+[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
+[gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
+[gcloud]: https://cloud.google.com/sdk/docs/install
+[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
+[bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
+[bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
 [contrib]: CONTRIBUTING.md

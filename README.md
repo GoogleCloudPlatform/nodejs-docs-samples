@@ -21,6 +21,7 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 ### Prerequisites
 
 1. Install [Node.js version 10 or greater][node]
+1. Install the [Google Cloud CLI (gcloud)][gcloud]
 1. Clone this repository:
 
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
@@ -36,8 +37,9 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
 
 [node]: https://nodejs.org/
-[auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
+[gcloud]: https://cloud.google.com/sdk/docs/install
 
 ### How to run a sample
 

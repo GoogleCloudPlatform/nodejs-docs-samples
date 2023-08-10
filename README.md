@@ -18,8 +18,6 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
 ## Setup
 
-### Prerequisites
-
 1. Install [Node.js version 10 or greater][node]
 1. Install the [Google Cloud CLI (gcloud)][gcloud]
 1. Clone this repository:
@@ -41,7 +39,7 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
 [gcloud]: https://cloud.google.com/sdk/docs/install
 
-### How to run a sample
+## How to run a sample
 
 1. Change directory to one of the sample folders, e.g. `datastore`:
 

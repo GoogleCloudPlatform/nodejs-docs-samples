@@ -21,9 +21,11 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 ### Prerequisites
 
 1. Install [Node.js version 10 or greater][node]
-1. Clone this repository:
+1. If Git is installed, clone this repository:
 
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
+
+    If not, you must install it to continue: go to the [official website](https://git-scm.com/downloads) and follow the instructions for your operating system. After doing that, you can clone the repository as shown above.
 
 1. Obtain authentication credentials.
 

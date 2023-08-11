@@ -17,7 +17,7 @@
 //  description: Inspects a text file stored on Google Cloud Storage with the Data Loss Prevention API, using Pub/Sub for job notifications.
 //  usage: node inspectGCSFile.js my-project filepath minLikelihood maxFindings infoTypes customInfoTypes includeQuote
 
-function main(
+async function main(
   projectId,
   bucketName,
   fileName,
@@ -150,11 +150,13 @@ function main(
       console.log('No findings.');
     }
   }
-  inspectGCSFile();
+  await inspectGCSFile();
   // [END dlp_inspect_gcs]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2)); 
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -185,3 +187,5 @@ function transformCLI(infoTypes, customInfoTypes) {
 
   return [infoTypes, customInfoTypes];
 }
+
+module.exports = main;

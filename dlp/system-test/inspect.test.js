@@ -159,110 +159,6 @@ describe('inspect', () => {
     assert.include(output, 'INVALID_ARGUMENT');
   });
 
-  // inspect_gcs_file_promise
-  it.skip('should inspect a GCS text file', () => {
-    const output = execSync(
-      `node inspectGCSFile.js ${projectId} ${bucket} test.txt ${topicName} ${subscriptionName}`
-    );
-    assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-    assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it.skip('should inspect multiple GCS text files', () => {
-    const output = execSync(
-      `node inspectGCSFile.js ${projectId} ${bucket} "*.txt" ${topicName} ${subscriptionName}`
-    );
-    assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-    assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it.skip('should handle a GCS file with no sensitive data', () => {
-    const output = execSync(
-      `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName}`
-    );
-    assert.match(output, /No findings/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it('should report GCS file handling errors', () => {
-    let output;
-    try {
-      output = execSync(
-        `node inspectGCSFile.js ${projectId} ${bucket} harmless.txt ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'INVALID_ARGUMENT');
-  });
-
-  // inspect_datastore
-  it.skip('should inspect Datastore', () => {
-    const output = execSync(
-      `node inspectDatastore.js ${projectId} Person ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
-    );
-    assert.match(output, /Found \d instance\(s\) of infoType EMAIL_ADDRESS/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it.skip('should handle Datastore with no sensitive data', () => {
-    const output = execSync(
-      `node inspectDatastore.js ${projectId} Harmless ${topicName} ${subscriptionName} --namespaceId DLP -p ${dataProject}`
-    );
-    assert.match(output, /No findings/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it('should report Datastore errors', () => {
-    let output;
-    try {
-      output = execSync(
-        `node inspectDatastore.js ${projectId} ${projectId} 'DLP' 'Person' ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'INVALID_ARGUMENT');
-  });
-
-  // inspect_bigquery
-  it.skip('should inspect a Bigquery table', () => {
-    const output = execSync(
-      `node inspectBigQuery.js ${projectId} integration_tests_dlp harmful ${topicName} ${subscriptionName} -p ${dataProject}`
-    );
-    assert.match(output, /Found \d instance\(s\) of infoType PHONE_NUMBER/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it.skip('should handle a Bigquery table with no sensitive data', () => {
-    const output = execSync(
-      `node inspectBigQuery.js ${projectId} integration_tests_dlp harmless ${topicName} ${subscriptionName} -p ${dataProject}`
-    );
-    assert.match(output, /No findings/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it('should report Bigquery table handling errors', () => {
-    let output;
-    try {
-      output = execSync(
-        `node inspectBigQuery.js ${projectId} ${dataProject} integration_tests_dlp harmless ${topicName} ${subscriptionName} 'LIKELIHOOD_UNSPECIFIED' '0' 'BAD_TYPE'`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'INVALID_ARGUMENT');
-  });
-
   // CLI options
   // This test is potentially flaky, possibly because of model changes.
   it('should have a minLikelihood option', () => {
@@ -949,7 +845,7 @@ describe('inspect', () => {
     assert.include(output, 'INVALID_PATH');
   });
 
-  // dlp_inspect_gcs_with_sampling
+  // dlp_inspect_gcs_send_to_scc
   it('should inspect a GCS file and send results to SCC', async () => {
     const jobName = 'test-job-name';
     const gcsUri = 'test-uri';
@@ -1457,6 +1353,488 @@ describe('inspect', () => {
       }
     );
     await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
+  });
+  // dlp_inspect_gcs
+  it('should inspect a GCS file', async () => {
+    const jobName = 'test-job-name';
+    const fileName = 'test-file';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_FILE(
+      projectId,
+      bucket,
+      fileName,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGCSFile = proxyquire('../inspectGCSFile', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    await inspectGCSFile(
+      projectId,
+      bucket,
+      fileName,
+      topicName,
+      subscriptionName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      'PERSON_NAME',
+      undefined,
+      jobName
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error while inspecting GCS file', async () => {
+    const jobName = 'test-job-name';
+    const fileName = 'test-file';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_GCS_FILE(
+      projectId,
+      bucket,
+      fileName,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectGCSFile = proxyquire('../inspectGCSFile', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    try {
+      await inspectGCSFile(
+        projectId,
+        bucket,
+        fileName,
+        topicName,
+        subscriptionName,
+        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        0,
+        'PERSON_NAME',
+        undefined,
+        jobName
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_inspect_bigquery
+  it('should inspect a bigquery table', async () => {
+    const jobName = 'test-job-name';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectBigQuery = proxyquire('../inspectBigQuery', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    await inspectBigQuery(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      subscriptionName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      'PERSON_NAME',
+      undefined
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error while inspecting big query table', async () => {
+    const jobName = 'test-job-name';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectBigQuery = proxyquire('../inspectBigQuery', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    try {
+      await inspectBigQuery(
+        projectId,
+        dataProject,
+        datasetId,
+        tableId,
+        topicName,
+        subscriptionName,
+        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        0,
+        'PERSON_NAME',
+        undefined
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_inspect_datastore
+  it('should inspect a datastore instance', async () => {
+    const jobName = 'test-job-name';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const nameSpaceId = 'MOCK_NAMESPACE_ID';
+    const kind = 'MOCK_KIND';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_DATASTORE(
+      projectId,
+      dataProject,
+      nameSpaceId,
+      kind,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectDatastore = proxyquire('../inspectDatastore', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    await inspectDatastore(
+      projectId,
+      dataProject,
+      nameSpaceId,
+      kind,
+      topicName,
+      subscriptionName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      'PERSON_NAME',
+      undefined
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error while inspecting datastore instance', async () => {
+    const jobName = 'test-job-name';
+    const infoTypes = [{name: 'PERSON_NAME'}];
+    const nameSpaceId = 'MOCK_NAMESPACE_ID';
+    const kind = 'MOCK_KIND';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_DATASTORE(
+      projectId,
+      dataProject,
+      nameSpaceId,
+      kind,
+      topicName,
+      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      0,
+      infoTypes,
+      undefined,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', () => sinon.stub());
+
+    const inspectDatastore = proxyquire('../inspectDatastore', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+
+    try {
+      await inspectDatastore(
+        projectId,
+        dataProject,
+        nameSpaceId,
+        kind,
+        topicName,
+        subscriptionName,
+        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        0,
+        'PERSON_NAME',
+        undefined
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_inspect_send_data_to_hybrid_job_trigger
+  it('should inspect bigquery table and send results to SCC', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_SEND_TO_SCC(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectBigquerySendToScc = proxyquire('../inspectBigquerySendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectBigquerySendToScc(projectId, dataProject, datasetId, tableId);
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if inspect job results into failure', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_BIG_QUERY_SEND_TO_SCC(
+      projectId,
+      dataProject,
+      datasetId,
+      tableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectBigQuerySendToScc = proxyquire('../inspectBigquerySendToScc', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await inspectBigQuerySendToScc(projectId, dataProject, datasetId, tableId);
     sinon.assert.calledOnce(mockGetDlpJob);
     sinon.assert.calledWithMatch(
       mockConsoleLog,

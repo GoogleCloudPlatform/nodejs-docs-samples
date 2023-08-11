@@ -1248,6 +1248,201 @@ const MOCK_DATA = {
       },
     },
   }),
+  INSPECT_GCS_FILE: (
+    projectId,
+    bucketName,
+    fileName,
+    topicId,
+    minLikelihood,
+    maxFindings,
+    infoTypes,
+    customInfoTypes,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: infoTypes,
+          customInfoTypes: customInfoTypes,
+          minLikelihood: minLikelihood,
+          limits: {
+            maxFindingsPerRequest: maxFindings,
+          },
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: `gs://${bucketName}/${fileName}`},
+          },
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB: [
+      {
+        name: jobName,
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  INSPECT_BIG_QUERY: (
+    projectId,
+    dataProjectId,
+    datasetId,
+    tableId,
+    topicId,
+    minLikelihood,
+    maxFindings,
+    infoTypes,
+    customInfoTypes,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: infoTypes,
+          customInfoTypes: customInfoTypes,
+          minLikelihood: minLikelihood,
+          limits: {
+            maxFindingsPerRequest: maxFindings,
+          },
+        },
+        storageConfig: {
+          bigQueryOptions: {
+            tableReference: {
+              projectId: dataProjectId,
+              datasetId: datasetId,
+              tableId: tableId,
+            },
+          },
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB: [
+      {
+        name: jobName,
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  INSPECT_DATASTORE: (
+    projectId,
+    dataProjectId,
+    namespaceId,
+    kind,
+    topicId,
+    minLikelihood,
+    maxFindings,
+    infoTypes,
+    customInfoTypes,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: infoTypes,
+          customInfoTypes: customInfoTypes,
+          minLikelihood: minLikelihood,
+          limits: {
+            maxFindingsPerRequest: maxFindings,
+          },
+        },
+        storageConfig: {
+          datastoreOptions: {
+            partitionId: {
+              projectId: dataProjectId,
+              namespaceId: namespaceId,
+            },
+            kind: {
+              name: kind,
+            },
+          },
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB: [
+      {
+        name: jobName,
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
 };
 
 module.exports = {MOCK_DATA};

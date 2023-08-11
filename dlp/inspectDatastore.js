@@ -19,7 +19,7 @@
 //  description: Inspect a Datastore instance using the Data Loss Prevention API using Pub/Sub for job notifications.
 //  usage: node inspectDatastore.js my-project dataProjectId namespaceId kind topicId subscriptionId minLikelihood maxFindings infoTypes customInfoTypes
 
-function main(
+async function main(
   projectId,
   dataProjectId,
   namespaceId,
@@ -161,11 +161,13 @@ function main(
       console.log('No findings.');
     }
   }
-  inspectDatastore();
+  await inspectDatastore();
   // [END dlp_inspect_datastore]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2)); 
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -196,3 +198,5 @@ function transformCLI(infoTypes, customInfoTypes) {
 
   return [infoTypes, customInfoTypes];
 }
+
+module.exports = main;

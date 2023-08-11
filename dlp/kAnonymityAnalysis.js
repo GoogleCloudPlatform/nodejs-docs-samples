@@ -17,7 +17,7 @@
 //  description: Computes the k-anonymity of a column set in a Google BigQuery table
 //  usage: node kAnonymityAnalysis.js my-project tableProjectId datasetId tableId topicId subscriptionId quasiIds
 
-function main(
+async function main(
   projectId,
   tableProjectId,
   datasetId,
@@ -141,11 +141,13 @@ function main(
       });
     });
   }
-  kAnonymityAnalysis();
+  await kAnonymityAnalysis();
   // [END dlp_k_anonymity]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2)); 
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -164,3 +166,5 @@ function transformCLI(quasiIds) {
     : undefined;
   return quasiIds;
 }
+
+module.exports = main;

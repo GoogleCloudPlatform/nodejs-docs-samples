@@ -795,6 +795,408 @@ const MOCK_DATA = {
       filter: `trigger_name=projects/${projectId}/jobTriggers/${jobTriggerId}`,
     },
   }),
+  K_ANONYMITY_ANALYSIS: (
+    projectId,
+    tableProjectId,
+    datasetId,
+    tableId,
+    topicId,
+    quasiIds,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        privacyMetric: {
+          kAnonymityConfig: {
+            quasiIds: quasiIds,
+          },
+        },
+        sourceTable: {
+          projectId: tableProjectId,
+          datasetId: datasetId,
+          tableId: tableId,
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          kAnonymityResult: {
+            equivalenceClassHistogramBuckets: [
+              {
+                bucketValues: [
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '["19","8291 3627 8250 1234"]',
+                        type: 'stringValue',
+                      },
+                    ],
+                    equivalenceClassSize: '1',
+                  },
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '["27","4231 5555 6781 9876"]',
+                        type: 'stringValue',
+                      },
+                    ],
+                    equivalenceClassSize: '1',
+                  },
+                ],
+                equivalenceClassSizeLowerBound: '1',
+                equivalenceClassSizeUpperBound: '1',
+                bucketSize: '2',
+                bucketValueCount: '2',
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  NUMERICAL_STATS: (
+    projectId,
+    tableProjectId,
+    datasetId,
+    tableId,
+    columnName,
+    topicId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        privacyMetric: {
+          numericalStatsConfig: {
+            field: {
+              name: columnName,
+            },
+          },
+        },
+        sourceTable: {
+          projectId: tableProjectId,
+          datasetId: datasetId,
+          tableId: tableId,
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          numericalStatsResult: {
+            quantileValues: [
+              {
+                stringValue: '20',
+                type: 'stringValue',
+              },
+              {
+                stringValue: '20',
+                type: 'stringValue',
+              },
+              {
+                stringValue: '45',
+                type: 'stringValue',
+              },
+            ],
+            minValue: {
+              stringValue: '20',
+              type: 'stringValue',
+            },
+            maxValue: {
+              stringValue: '45',
+              type: 'stringValue',
+            },
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  K_MAP_ESTIMATION_ANALYSIS: (
+    projectId,
+    tableProjectId,
+    datasetId,
+    tableId,
+    topicId,
+    regionCode,
+    quasiIds,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        privacyMetric: {
+          kMapEstimationConfig: {
+            quasiIds: quasiIds,
+            regionCode: regionCode,
+          },
+        },
+        sourceTable: {
+          projectId: tableProjectId,
+          datasetId: datasetId,
+          tableId: tableId,
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          kMapEstimationResult: {
+            kMapEstimationHistogram: [
+              {
+                bucketValues: [
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '20',
+                        type: 'integerValue',
+                      },
+                    ],
+                    estimatedAnonymity: '1',
+                  },
+                ],
+                minAnonymity: 1,
+                maxAnonymity: 1,
+                bucketSize: 5,
+                bucketValueCount: 1,
+              },
+              {
+                bucketValues: [
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '45',
+                        type: 'integerValue',
+                      },
+                    ],
+                    estimatedAnonymity: '2',
+                  },
+                ],
+                minAnonymity: 1,
+                maxAnonymity: 1,
+                bucketSize: 5,
+                bucketValueCount: 1,
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  L_DIVERSITY_ANALYSIS: (
+    projectId,
+    tableProjectId,
+    datasetId,
+    tableId,
+    topicId,
+    sensitiveAttribute,
+    quasiIds,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        privacyMetric: {
+          lDiversityConfig: {
+            quasiIds: quasiIds,
+            sensitiveAttribute: {
+              name: sensitiveAttribute,
+            },
+          },
+        },
+        sourceTable: {
+          projectId: tableProjectId,
+          datasetId: datasetId,
+          tableId: tableId,
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          lDiversityResult: {
+            sensitiveValueFrequencyHistogramBuckets: [
+              {
+                bucketValues: [
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '20',
+                        type: 'stringValue',
+                      },
+                    ],
+                    topSensitiveValues: [
+                      {
+                        value: {
+                          stringValue: '19',
+                          type: 'stringValue',
+                        },
+                        count: 1,
+                      },
+                    ],
+                    equivalenceClassSize: 1,
+                    numDistinctSensitiveValues: 1,
+                  },
+                ],
+                sensitiveValueFrequencyLowerBound: 1,
+                sensitiveValueFrequencyUpperBound: 1,
+                bucketSize: 1,
+                bucketValueCount: 1,
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
+  CATEGORICAL_STATS: (
+    projectId,
+    tableProjectId,
+    datasetId,
+    tableId,
+    columnName,
+    topicId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        privacyMetric: {
+          categoricalStatsConfig: {
+            field: {
+              name: columnName,
+            },
+          },
+        },
+        sourceTable: {
+          projectId: tableProjectId,
+          datasetId: datasetId,
+          tableId: tableId,
+        },
+        actions: [
+          {
+            pubSub: {
+              topic: `projects/${projectId}/topics/${topicId}`,
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          categoricalStatsResult: {
+            valueFrequencyHistogramBuckets: [
+              {
+                bucketValues: [
+                  {
+                    value: {
+                      stringValue: 'John',
+                      type: 'stringValue',
+                    },
+                    count: 2,
+                  },
+                ],
+                valueFrequencyLowerBound: 2,
+                valueFrequencyUpperBound: 2,
+                bucketSize: 2,
+                bucketValueCount: 1,
+              },
+              {
+                bucketValues: [
+                  {
+                    value: {
+                      stringValue: 'test',
+                      type: 'stringValue',
+                    },
+                    count: 1,
+                  },
+                ],
+                valueFrequencyLowerBound: 1,
+                valueFrequencyUpperBound: 1,
+                bucketSize: 1,
+                bucketValueCount: 1,
+              },
+            ],
+          },
+        },
+      },
+    ],
+    MOCK_MESSAGE: {
+      attributes: {
+        DlpJobName: jobName,
+      },
+      ack: sinon.stub(),
+      nack: sinon.stub(),
+    },
+  }),
 };
 
 module.exports = {MOCK_DATA};

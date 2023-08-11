@@ -19,7 +19,7 @@
 //  description: Computes risk metrics of a column of numbers in a Google BigQuery table.
 //  usage: node numericalRiskAnalysis.js my-project tableProjectId datasetId tableId columnName topicId subscriptionId
 
-function main(
+async function main(
   projectId,
   tableProjectId,
   datasetId,
@@ -151,12 +151,16 @@ function main(
     });
   }
 
-  numericalRiskAnalysis();
+  await numericalRiskAnalysis();
   // [END dlp_numerical_stats]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2)); 
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
 });
+
+module.exports = main;

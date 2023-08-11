@@ -17,7 +17,7 @@
 //  description: Computes the l-diversity of a column set in a Google BigQuery table.
 //  usage: node lDiversityAnalysis.js my-project tableProjectId datasetId tableId topicId subscriptionId sensitiveAttribute quasiIds
 
-function main(
+async function main(
   projectId,
   tableProjectId,
   datasetId,
@@ -156,11 +156,13 @@ function main(
     });
   }
 
-  lDiversityAnalysis();
+  await lDiversityAnalysis();
   // [END dlp_l_diversity]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -179,3 +181,5 @@ function transformCLI(quasiIds) {
     : undefined;
   return quasiIds;
 }
+
+module.exports = main;

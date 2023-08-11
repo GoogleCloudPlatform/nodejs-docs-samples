@@ -1175,4 +1175,42 @@ describe('inspect', () => {
       'Job Failed, Please check the configuration.'
     );
   });
+
+  // dlp_inspect_table
+  it('should inspect table with PERSON_NAME infotype', () => {
+    const output = execSync(`node inspectTable.js ${projectId}`);
+    assert.match(output, /Quote: \(206\) 555-0123/);
+    assert.match(output, /Findings: 1/);
+  });
+
+  it('should report any errors while inspecting a table', () => {
+    let output;
+    try {
+      output = execSync('node inspectTable.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_augment_infotypes
+  it('should inspect a string using augmented infotype', () => {
+    const output = execSync(
+      `node inspectStringAugmentInfoType.js ${projectId} "The patient's name is quasimodo" 'quasimodo'`
+    );
+    assert.match(output, /InfoType: PERSON_NAME/);
+    assert.match(output, /Quote: quasimodo/);
+  });
+
+  it('should handle errors while inspecting the string', () => {
+    let output;
+    try {
+      output = execSync(
+        'node inspectStringAugmentInfoType.js BAD_PROJECT_ID "The patient\'s name is quasimodo" "quasimodo"'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

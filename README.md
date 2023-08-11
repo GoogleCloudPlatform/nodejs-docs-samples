@@ -10,6 +10,12 @@ on Google Cloud Platform.
 To browse documentation pages that use the samples found in this repository,
 visit the [Google Cloud Samples][cloud_samples] page.
 
+[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
+[slack_link]: https://googlecloud-community.slack.com/
+[cloud]: https://cloud.google.com/
+[cloud_nodejs]: https://cloud.google.com/nodejs/
+[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
+
 ## Setup
 
 1. Install [Node.js version 10 or greater][node]
@@ -27,6 +33,10 @@ visit the [Google Cloud Samples][cloud_samples] page.
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
+[node]: https://nodejs.org/
+[gcloud]: https://cloud.google.com/sdk/docs/install
+[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
+[gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
 
 ## How to run a sample
 
@@ -56,19 +66,11 @@ shows you how to use a variety of Google Cloud Platform features.
 
 View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 
+[bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
+[bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
+
 ## Contributing
 
 Contributions welcome! See the [Contributing Guide][contrib].
 
-[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
-[slack_link]: https://googlecloud-community.slack.com/
-[cloud]: https://cloud.google.com/
-[cloud_nodejs]: https://cloud.google.com/nodejs/
-[node]: https://nodejs.org/
-[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
-[gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
-[gcloud]: https://cloud.google.com/sdk/docs/install
-[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
-[bookshelf_docs]: https://cloud.google.com/nodejs/getting-started/tutorial-app
-[bookshelf_code]: https://github.com/GoogleCloudPlatform/nodejs-getting-started
 [contrib]: CONTRIBUTING.md

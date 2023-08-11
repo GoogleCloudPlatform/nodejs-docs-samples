@@ -166,7 +166,7 @@ async function main(
 }
 
 // TODO(developer): Please uncomment below line before running sample
-// main(...process.argv.slice(2)); 
+// main(...process.argv.slice(2));
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

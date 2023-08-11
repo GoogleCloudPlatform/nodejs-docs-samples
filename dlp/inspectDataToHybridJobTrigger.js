@@ -57,7 +57,7 @@ async function main(projectId, string, jobTriggerId) {
       },
     };
     let jobName;
-    let fullTriggerName = `projects/${projectId}/jobTriggers/${jobTriggerId}`;
+    const fullTriggerName = `projects/${projectId}/jobTriggers/${jobTriggerId}`;
     // Activate the job trigger.
     try {
       const response = await dlpClient.activateJobTrigger({
@@ -109,7 +109,7 @@ async function main(projectId, string, jobTriggerId) {
     }
     // Finish the job once the inspection is complete.
     await dlpClient.finishDlpJob({name: jobName});
-    
+
     // Print out the results.
     const infoTypeStats = job.inspectDetails.result.infoTypeStats;
     if (infoTypeStats.length > 0) {

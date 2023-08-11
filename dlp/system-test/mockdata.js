@@ -742,6 +742,59 @@ const MOCK_DATA = {
       },
     ],
   }),
+  INSPECT_SEND_DATA_TO_HYBRID_JOB_TRIGGER: (
+    projectId,
+    string,
+    jobTriggerId,
+    jobName
+  ) => ({
+    REQUEST_HYBRID_INSPECT_JOB_TRIGGER: {
+      name: `projects/${projectId}/jobTriggers/${jobTriggerId}`,
+      hybridItem: {
+        item: {value: string},
+        findingDetails: {
+          containerDetails: {
+            full_path: '10.0.0.2:logs1:app1',
+            relative_path: 'app1',
+            root_path: '10.0.0.2:logs1',
+            type: 'logging_sys',
+            version: '1.2',
+          },
+          labels: {env: 'prod', 'appointment-bookings-comments': ''},
+        },
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'EMAIL_ADDRESS',
+                },
+              },
+            ],
+            processedBytes: 1,
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+    REQUEST_LIST_DLP_JOBS: {
+      parent: `projects/${projectId}/jobTriggers/${jobTriggerId}`,
+      filter: `trigger_name=projects/${projectId}/jobTriggers/${jobTriggerId}`,
+    },
+  }),
 };
 
 module.exports = {MOCK_DATA};

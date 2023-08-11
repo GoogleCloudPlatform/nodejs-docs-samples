@@ -19,7 +19,7 @@
 //  description: Demonstrate an example of a hybridInspect request sent to Cloud DLP for processing by a hybrid job trigger.
 //  usage: node inspectDataToHybridJobTrigger.js my-project string jobTriggerId
 
-function main(projectId, string, jobTriggerId) {
+async function main(projectId, string, jobTriggerId) {
   // [START dlp_inspect_send_data_to_hybrid_job_trigger]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -56,33 +56,73 @@ function main(projectId, string, jobTriggerId) {
         labels,
       },
     };
-
+    let jobName;
+    let fullTriggerName = `projects/${projectId}/jobTriggers/${jobTriggerId}`;
     // Activate the job trigger.
     try {
-      await dlpClient.activateJobTrigger({
-        name: `projects/${projectId}/jobTriggers/${jobTriggerId}`,
+      const response = await dlpClient.activateJobTrigger({
+        name: fullTriggerName,
       });
+      jobName = response[0].name;
     } catch (err) {
+      console.log(err);
+      if (err.code === 3) {
+        const response = await dlpClient.listDlpJobs({
+          parent: fullTriggerName,
+          filter: `trigger_name=${fullTriggerName}`,
+        });
+        jobName = response[0][0].name;
+      }
       // Ignore error related to job trigger already active
       if (err.code !== 3) {
         console.log(err.message);
         return;
       }
     }
-
     // Build the hybrid inspect request.
     const request = {
       name: `projects/${projectId}/jobTriggers/${jobTriggerId}`,
       hybridItem: hybridContentItem,
     };
-
     // Send the hybrid inspect request.
-    const [response] = await dlpClient.hybridInspectJobTrigger(request);
+    await dlpClient.hybridInspectJobTrigger(request);
+    // Waiting for a maximum of 15 minutes for the job to get complete.
+    let job;
+    let numOfAttempts = 30;
+    while (numOfAttempts > 0) {
+      // Fetch DLP Job status
+      [job] = await dlpClient.getDlpJob({name: jobName});
 
-    // Print the results
-    console.log(response);
+      if (job.state === 'FAILED') {
+        console.log('Job Failed, Please check the configuration.');
+        return;
+      }
+      // Check if the job has completed.
+      if (job.inspectDetails.result.processedBytes > 0) {
+        break;
+      }
+      // Sleep for a short duration before checking the job status again.
+      await new Promise(resolve => {
+        setTimeout(() => resolve(), 30000);
+      });
+      numOfAttempts -= 1;
+    }
+    // Finish the job once the inspection is complete.
+    await dlpClient.finishDlpJob({name: jobName});
+    
+    // Print out the results.
+    const infoTypeStats = job.inspectDetails.result.infoTypeStats;
+    if (infoTypeStats.length > 0) {
+      infoTypeStats.forEach(infoTypeStat => {
+        console.log(
+          `  Found ${infoTypeStat.count} instance(s) of infoType ${infoTypeStat.infoType.name}.`
+        );
+      });
+    } else {
+      console.log('No findings.');
+    }
   }
-  inspectDataToHybridJobTrigger();
+  await inspectDataToHybridJobTrigger();
   // [END dlp_inspect_send_data_to_hybrid_job_trigger]
 }
 
@@ -91,4 +131,7 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
+module.exports = main;

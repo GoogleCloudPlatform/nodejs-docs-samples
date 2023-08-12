@@ -804,4 +804,75 @@ describe('deid', () => {
       assert.equal(error.message, 'Failed');
     }
   });
+
+  // dlp_deidentify_dictionary_replacement
+  it('should replace sensitive data with replacement dict', () => {
+    let output;
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    const replacementDict = [
+      'izumi@example.com',
+      'alex@example.com',
+      'tal@example.com',
+    ];
+    try {
+      output = execSync(
+        `node deidentifyWithDictionaryReplacement.js ${projectId} "${string}" EMAIL_ADDRESS "${replacementDict.join(
+          ','
+        )}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, new RegExp(`${replacementDict.join('|')}`));
+  });
+
+  it('should handle de-identification errors', () => {
+    let output;
+    const replacementDict = [
+      'izumi@example.com',
+      'alex@example.com',
+      'tal@example.com',
+    ];
+    const string =
+      'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
+    try {
+      output = execSync(
+        `node deidentifyWithDictionaryReplacement.js ${projectId} "${string}" BAD_TYPE "${replacementDict.join(
+          ','
+        )}"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_table_primitive_bucketing
+  it('should de-identify table using bucketing configuration', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyTableWithBucketingConfig.js ${projectId}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /"stringValue": "High"/);
+    assert.match(output, /"stringValue": "Low"/);
+    assert.notMatch(output, /"stringValue": "Medium"/);
+    assert.notInclude(output, 'integerValue: 95');
+  });
+
+  it('should handle de-identification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        'node deIdentifyTableWithBucketingConfig.js BAD_PROJECT_ID'
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

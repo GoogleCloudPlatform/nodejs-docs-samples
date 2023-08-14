@@ -24,7 +24,6 @@ const searchTerm = process.argv[5] || null;
 // [START workflows_api_quickstart]
 const {ExecutionsClient} = require('@google-cloud/workflows');
 const client = new ExecutionsClient();
-
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow
@@ -56,7 +55,13 @@ async function executeWorkflow(projectId, location, workflow) {
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);
+    return executionName
+  } catch (e) {
+    console.error(`Error executing workflow: ${e}`);
+  }
+}
 
+async function printWorkflowResult(executionName) {
     // Wait for execution to finish, then print results.
     let executionFinished = false;
     let backoffDelay = 1000; // Start wait with delay of 1,000 ms
@@ -78,13 +83,11 @@ async function executeWorkflow(projectId, location, workflow) {
         return execution.result;
       }
     }
-  } catch (e) {
-    console.error(`Error executing workflow: ${e}`);
-  }
 }
-
-executeWorkflow(projectId, location, workflowName).catch(err => {
+executeWorkflow(projectId, location, workflowName)
+  .catch(err => { 
   console.error(err.message);
-  process.exitCode = 1;
-});
+    process.exitCode = 1;})
+  .then(value => {
+      printWorkflowResult(value)});
 // [END workflows_api_quickstart]

@@ -14,7 +14,7 @@
         "test": "c8 mocha test/*.test.js --timeout=60000"
     },
     "dependencies": {
-        "@google-cloud/iam": "^0.3.0"
+        "@google-cloud/iam": "^1.0.0"
     },
     "devDependencies": {
         "c8": "^8.0.0",

@@ -875,4 +875,32 @@ describe('deid', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_deidentify_replace_infotype
+  it('should replace the matched input values', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithReplaceInfoType.js ${projectId} "My name is Alicia Abernathy, and my email address is aabernathy@example.com." "EMAIL_ADDRESS"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(
+      output,
+      'My name is Alicia Abernathy, and my email address is [EMAIL_ADDRESS].'
+    );
+  });
+
+  it('should handle deidentification errors', () => {
+    let output;
+    try {
+      output = execSync(
+        `node deIdentifyWithReplaceInfoType.js ${projectId} "My name is Alicia Abernathy, and my email address is aabernathy@example.com." "BAD_TYPE"`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

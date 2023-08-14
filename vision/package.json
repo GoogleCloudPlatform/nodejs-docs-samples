@@ -20,7 +20,7 @@
     "yargs": "^17.7.1"
   },
   "devDependencies": {
-    "@google-cloud/storage": "^6.9.3",
+    "@google-cloud/storage": "^7.0.0",
     "@types/uuid": "^9.0.1",
     "@types/yargs": "^17.0.22",
     "c8": "^8.0.0",

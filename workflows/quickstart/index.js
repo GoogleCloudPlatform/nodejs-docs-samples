@@ -22,7 +22,7 @@ const workflowName = process.argv[4] || 'myFirstWorkflow';
 const searchTerm = process.argv[5] || null;
 
 // [START workflows_api_quickstart]
-const {ExecutionsClient} = require('@google-cloud/workflows');
+const { ExecutionsClient } = require('@google-cloud/workflows');
 const client = new ExecutionsClient();
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -31,7 +31,7 @@ const client = new ExecutionsClient();
  * @param {string} workflow The workflow name
  * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
 */
-
+// [START workflows_api_quickstart_execution]
 async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   // Execute workflow
   try {
@@ -48,7 +48,8 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
     console.error(`Error executing workflow: ${e}`);
   }
 }
-
+// [END workflows_api_quickstart_execution]
+// [START workflows_api_quickstart_result]
 async function printWorkflowResult(executionName) {
   /**
    * Sleeps the process N number of milliseconds.
@@ -81,10 +82,11 @@ async function printWorkflowResult(executionName) {
     }
   }
 }
-
+// [END workflows_api_quickstart_result]
+// [START workflows_api_quickstart_runtime_args]
 // Provide runtime arguments as a JSON string
 const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : {};
-
+// [END workflows_api_quickstart_runtime_args]
 executeWorkflow(projectId, location, workflowName, runtimeArgs)
   .then(value => {
     printWorkflowResult(value)

@@ -84,10 +84,11 @@ async function printWorkflowResult(executionName) {
       }
     }
 }
+
 executeWorkflow(projectId, location, workflowName)
-  .catch(err => { 
-  console.error(err.message);
-    process.exitCode = 1;})
   .then(value => {
-      printWorkflowResult(value)});
+    printWorkflowResult(value)})
+  .catch(err => { 
+    console.error(err.message);
+    process.exitCode = 1;});
 // [END workflows_api_quickstart]

@@ -21,7 +21,7 @@
 //  usage: node deIdentifyWithReplaceInfoType.js my-project string infoTypes
 
 function main(projectId, string, infoTypes) {
-  infoTypes = transformCLI(infoTypes);
+  infoTypes = parseInfotypes(infoTypes);
   // [START dlp_deidentify_replace_infotype]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
@@ -90,7 +90,7 @@ process.on('unhandledRejection', err => {
 
 main(...process.argv.slice(2));
 
-function transformCLI(infoTypes) {
+function parseInfotypes(infoTypes) {
   return infoTypes
     ? infoTypes.split(',').map(type => {
         return {name: type};

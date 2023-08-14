@@ -35,12 +35,10 @@ const client = new ExecutionsClient();
 async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   // Execute workflow
   try {
-    const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        // Provide runtime arguments as a JSON string
-        argument: JSON.stringify(runtimeArgs),
+        argument: runtimeArgs,
       },
     });
     const executionName = createExecutionRes[0].name;
@@ -84,10 +82,15 @@ async function printWorkflowResult(executionName) {
   }
 }
 
-executeWorkflow(projectId, location, workflowName)
+// Provide runtime arguments as a JSON string
+const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : {};
+
+executeWorkflow(projectId, location, workflowName, runtimeArgs)
   .then(value => {
-    printWorkflowResult(value)})
+    printWorkflowResult(value)
+  })
   .catch(err => {
     console.error(err.message);
-    process.exitCode = 1;});
+    process.exitCode = 1;
+  });
 // [END workflows_api_quickstart]

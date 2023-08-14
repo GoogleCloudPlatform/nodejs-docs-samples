@@ -32,17 +32,7 @@ const client = new ExecutionsClient();
  * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
 */
 
-/**
- * Sleeps the process N number of milliseconds.
- * @param {Number} ms The number of milliseconds to sleep.
- */
-function sleep(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
-async function executeWorkflow(projectId, location, workflow) {
+async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   // Execute workflow
   try {
     const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
@@ -62,33 +52,42 @@ async function executeWorkflow(projectId, location, workflow) {
 }
 
 async function printWorkflowResult(executionName) {
-    // Wait for execution to finish, then print results.
-    let executionFinished = false;
-    let backoffDelay = 1000; // Start wait with delay of 1,000 ms
-    console.log('Poll every second for result...');
-    while (!executionFinished) {
-      const [execution] = await client.getExecution({
-        name: executionName,
-      });
-      executionFinished = execution.state !== 'ACTIVE';
+  /**
+   * Sleeps the process N number of milliseconds.
+   * @param {Number} ms The number of milliseconds to sleep.
+  */
+  function sleep(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  }
+  // Wait for execution to finish, then print results.
+  let executionFinished = false;
+  let backoffDelay = 1000; // Start wait with delay of 1,000 ms
+  console.log('Poll every second for result...');
+  while (!executionFinished) {
+    const [execution] = await client.getExecution({
+      name: executionName,
+    });
+    executionFinished = execution.state !== 'ACTIVE';
 
-      // If we haven't seen the result yet, wait a second.
-      if (!executionFinished) {
-        console.log('- Waiting for results...');
-        await sleep(backoffDelay);
-        backoffDelay *= 2; // Double the delay to provide exponential backoff.
-      } else {
-        console.log(`Execution finished with state: ${execution.state}`);
-        console.log(execution.result);
-        return execution.result;
-      }
+    // If we haven't seen the result yet, wait a second.
+    if (!executionFinished) {
+      console.log('- Waiting for results...');
+      await sleep(backoffDelay);
+      backoffDelay *= 2; // Double the delay to provide exponential backoff.
+    } else {
+      console.log(`Execution finished with state: ${execution.state}`);
+      console.log(execution.result);
+      return execution.result;
     }
+  }
 }
 
 executeWorkflow(projectId, location, workflowName)
   .then(value => {
     printWorkflowResult(value)})
-  .catch(err => { 
+  .catch(err => {
     console.error(err.message);
     process.exitCode = 1;});
 // [END workflows_api_quickstart]

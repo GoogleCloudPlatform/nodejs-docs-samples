@@ -549,6 +549,42 @@ const MOCK_DATA = {
       },
     ],
   }),
+  INSPECT_WITH_STORED_INFOTYPE: (projectId, string, infoTypeId) => ({
+    REQUEST_INSPECT_CONTENT: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectConfig: {
+        customInfoTypes: [
+          {
+            infoType: {
+              name: 'GITHUB_LOGINS',
+            },
+            storedType: {
+              name: infoTypeId,
+            },
+          },
+        ],
+        includeQuote: true,
+      },
+      item: {
+        value: string,
+      },
+    },
+    RESPONSE_INSPECT_CONTENT: [
+      {
+        result: {
+          findings: [
+            {
+              infoType: {
+                name: infoTypeId,
+              },
+              quote: '(223) 456-7890',
+              likelihood: 'VERY_LIKELY',
+            },
+          ],
+        },
+      },
+    ],
+  }),
 };
 
 module.exports = {MOCK_DATA};

@@ -29,21 +29,21 @@ const client: ExecutionsClient = new ExecutionsClient();
  * @param {string} workflow The workflow name
  * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
  */
+/**
+ * Sleeps the process N number of milliseconds.
+ * @param {Number} ms The number of milliseconds to sleep.
+ */
+function sleep(ms: number): Promise<unknown> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function executeWorkflow(
   projectId: string,
   location: string,
   workflow: string
 ) {
-  /**
-   * Sleeps the process N number of milliseconds.
-   * @param {Number} ms The number of milliseconds to sleep.
-   */
-  function sleep(ms: number): Promise<unknown> {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  }
-
   // Execute workflow
   try {
     const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};

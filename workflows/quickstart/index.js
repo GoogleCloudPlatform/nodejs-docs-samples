@@ -49,18 +49,29 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   }
 }
 // [END workflows_api_quickstart_execution]
+// [START workflows_api_quickstart_sleep_helper]
+/**
+ * Sleeps the process N number of milliseconds.
+ * @param {Number} ms The number of milliseconds to sleep.
+ */
+function sleep(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+// [END workflows_api_quickstart_sleep_helper
 // [START workflows_api_quickstart_result]
 async function printWorkflowResult(executionName) {
   let backoffDelay = 1000;
   for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {
     const [execution] = await client.getExecution({ name: executionName });
     executionFinished = execution.state !== 'ACTIVE';
-    
+
     if (executionFinished) {
       console.log(execution.result);
     } else {
       console.log('- Waiting for results...');
-      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+      await sleep(backoffDelay);
     }
   }
 }

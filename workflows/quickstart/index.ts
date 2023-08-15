@@ -19,16 +19,43 @@ const workflowName = process.argv[4] || 'myFirstWorkflow';
 const searchTerm = process.argv[5] || null;
 
 // [START workflows_api_quickstart]
+
+// [START workflows_api_quickstart_client_libraries]
 import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();
+// [END workflows_api_quickstart_client_libraries]
 
+// [START workflows_api_quickstart_execution]
 /**
- * Executes a Workflow and waits for the results with exponential backoff.
- * @param {string} projectId The Google Cloud Project containing the workflow
- * @param {string} location The workflow location
- * @param {string} workflow The workflow name
- * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
- */
+ * Executes a Workflow
+ * @param {string} projectId The Google Cloud Project containing the Workflow
+ * @param {string} location The Workflow location
+ * @param {string} workflow The Workflow name
+ * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
+*/
+async function executeWorkflow(
+    projectId: string, 
+    location: string, 
+    workflow: string, 
+    runtimeArgs: string
+) {
+  try {
+    const createExecutionRes = await client.createExecution({
+      parent: client.workflowPath(projectId, location, workflow),
+      execution: {
+        argument: runtimeArgs,
+      },
+    });
+    const executionName = createExecutionRes[0].name;
+    console.log(`Created execution: ${executionName}`);
+    return executionName
+  } catch (e) {
+    console.error(`Error executing workflow: ${e}`);
+  }
+}
+// [END workflows_api_quickstart_execution]
+
+// [START workflows_api_quickstart_sleep_helper]
 /**
  * Sleeps the process N number of milliseconds.
  * @param {Number} ms The number of milliseconds to sleep.
@@ -38,53 +65,40 @@ function sleep(ms: number): Promise<unknown> {
     setTimeout(resolve, ms);
   });
 }
+// [END workflows_api_quickstart_sleep_helper
 
-async function executeWorkflow(
-  projectId: string,
-  location: string,
-  workflow: string
-) {
-  // Execute workflow
-  try {
-    const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
-    const createExecutionRes = await client.createExecution({
-      parent: client.workflowPath(projectId, location, workflow),
-      execution: {
-        // Provide runtime arguments as a JSON string
-        argument: JSON.stringify(runtimeArgs),
-      },
-    });
-    const executionName = createExecutionRes[0].name;
-    console.log(`Created execution: ${executionName}`);
+// [START workflows_api_quickstart_result]
+/**
+ * Waits for the results of an executed Workflow with exponential backoff.
+ * @param {string} executionName The name of the Workflow execution 
+*/
+async function printWorkflowResult(executionName: string) {
+  let backoffDelay = 1000;
+  for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {
+    const [execution] = await client.getExecution({ name: executionName });
+    executionFinished = execution.state !== 'ACTIVE';
 
-    // Wait for execution to finish, then print results.
-    let executionFinished = false;
-    let backoffDelay = 1000; // Start wait with delay of 1,000 ms
-    console.log('Poll every second for result...');
-    while (!executionFinished) {
-      const [execution] = await client.getExecution({
-        name: executionName,
-      });
-      executionFinished = execution.state !== 'ACTIVE';
-
-      // If we haven't seen the result yet, wait a second.
-      if (!executionFinished) {
-        console.log('- Waiting for results...');
-        await sleep(backoffDelay);
-        backoffDelay *= 2; // Double the delay to provide exponential backoff.
-      } else {
-        console.log(`Execution finished with state: ${execution.state}`);
-        console.log(execution.result);
-        return execution.result;
-      }
+    if (executionFinished) {
+      console.log(execution.result);
+    } else {
+      console.log('- Waiting for results...');
+      await sleep(backoffDelay);
     }
-  } catch (e) {
-    console.error(`Error executing workflow: ${e}`);
   }
 }
+// [END workflows_api_quickstart_result]
 
-executeWorkflow(projectId, location, workflowName).catch((err: Error) => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+// [START workflows_api_quickstart_runtime_args]
+// Provide runtime arguments as a JSON string
+const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : '{}';
+// [END workflows_api_quickstart_runtime_args]
+
+executeWorkflow(projectId, location, workflowName, runtimeArgs)
+  .then(value => {
+    printWorkflowResult(value!)
+  })
+  .catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
 // [END workflows_api_quickstart]

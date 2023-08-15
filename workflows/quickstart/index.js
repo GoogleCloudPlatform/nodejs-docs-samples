@@ -30,15 +30,13 @@ const client = new ExecutionsClient();
 
 // [START workflows_api_quickstart_execution]
 /**
- * Executes a Workflow and waits for the results with exponential backoff.
- * @param {string} projectId The Google Cloud Project containing the workflow
- * @param {string} location The workflow location
- * @param {string} workflow The workflow name
- * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
+ * Executes a Workflow
+ * @param {string} projectId The Google Cloud Project containing the Workflow
+ * @param {string} location The Workflow location
+ * @param {string} workflow The Workflow name
+ * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
 */
-// [START workflows_api_quickstart_execution]
 async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
-  // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
@@ -65,7 +63,12 @@ function sleep(ms) {
   });
 }
 // [END workflows_api_quickstart_sleep_helper
+
 // [START workflows_api_quickstart_result]
+/**
+ * Waits for the results of an executed Workflow with exponential backoff.
+ * @param {string} executionName The name of the Workflow execution 
+*/
 async function printWorkflowResult(executionName) {
   let backoffDelay = 1000;
   for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {

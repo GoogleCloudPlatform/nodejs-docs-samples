@@ -2,18 +2,30 @@
   "extends": [
     "config:base"
   ],
-  "dependencyDashboardAutoclose": true,  
-  "schedule": "after 11am every 2 weeks on Monday",
-  "timezone": "America/Los_Angeles",
-  "stabilityDays": 5,
-  "prConcurrentLimit": 0,
-  "prHourlyLimit": 4,
-  "rangeStrategy": "pin",
-  "pinVersions": false,
-  "rebaseStalePrs": false,
+  "baseBranches": ["main"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "matchBaseBranches": ["main"],
+      "addLabels": ["major"]
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "matchBaseBranches": ["main"],
+      "enabled": false
+    }
+  ],
   "force": {
     "constraints": {
       "node": "< 15.0.0"
     }
-  }
+  },
+  "prConcurrentLimit": 0,
+  "dependencyDashboardAutoclose": true,  
+  "schedule": "after 11am every 3 weeks on Monday",
+  "timezone": "America/Los_Angeles",
+  "stabilityDays": 15,
+  "rangeStrategy": "pin",
+  "pinVersions": false,
+  "rebaseStalePrs": false
 }

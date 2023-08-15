@@ -50,36 +50,23 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
 }
 // [END workflows_api_quickstart_execution]
 // [START workflows_api_quickstart_result]
-async function printWorkflowResult(executionName) {
-  /**
-   * Sleeps the process N number of milliseconds.
-   * @param {Number} ms The number of milliseconds to sleep.
-  */
-  function sleep(ms) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  }
-  // Wait for execution to finish, then print results.
-  let executionFinished = false;
-  let backoffDelay = 1000; // Start wait with delay of 1,000 ms
-  console.log('Poll every second for result...');
-  while (!executionFinished) {
-    const [execution] = await client.getExecution({
-      name: executionName,
-    });
-    executionFinished = execution.state !== 'ACTIVE';
-
-    // If we haven't seen the result yet, wait a second.
-    if (!executionFinished) {
-      console.log('- Waiting for results...');
-      await sleep(backoffDelay);
-      backoffDelay *= 2; // Double the delay to provide exponential backoff.
-    } else {
-      console.log(`Execution finished with state: ${execution.state}`);
-      console.log(execution.result);
-      return execution.result;
-    }
+async function printWorkflowResult(executionName, backoffDelay = 1000) {
+  console.log('- Waiting for results...');
+  const [execution] = await client.getExecution({
+    name: executionName,
+  });
+  const executionFinished = execution.state !== 'ACTIVE';
+  // Print results when execution is finished.
+  if (executionFinished) {
+    console.log(`Execution finished with state: ${execution.state}`);
+    console.log(execution.result);
+    return execution.result;
+  } else {
+    // If execution not finished, try again after backoff delay.
+    await setTimeout(() => {
+      console.log(`- Trying again in ${backoffDelay} ms`)
+      return printWorkflowResult(executionName, backoffDelay * 2)
+    }, backoffDelay)
   }
 }
 // [END workflows_api_quickstart_result]

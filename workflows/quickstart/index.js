@@ -50,23 +50,18 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
 }
 // [END workflows_api_quickstart_execution]
 // [START workflows_api_quickstart_result]
-async function printWorkflowResult(executionName, backoffDelay = 1000) {
-  console.log('- Waiting for results...');
-  const [execution] = await client.getExecution({
-    name: executionName,
-  });
-  const executionFinished = execution.state !== 'ACTIVE';
-  // Print results when execution is finished.
-  if (executionFinished) {
-    console.log(`Execution finished with state: ${execution.state}`);
-    console.log(execution.result);
-    return execution.result;
-  } else {
-    // If execution not finished, try again after backoff delay.
-    await setTimeout(() => {
-      console.log(`- Trying again in ${backoffDelay} ms`)
-      return printWorkflowResult(executionName, backoffDelay * 2)
-    }, backoffDelay)
+async function printWorkflowResult(executionName) {
+  let backoffDelay = 1000;
+  for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {
+    const [execution] = await client.getExecution({ name: executionName });
+    executionFinished = execution.state !== 'ACTIVE';
+    
+    if (executionFinished) {
+      console.log(execution.result);
+    } else {
+      console.log('- Waiting for results...');
+      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+    }
   }
 }
 // [END workflows_api_quickstart_result]

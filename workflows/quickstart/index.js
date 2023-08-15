@@ -88,7 +88,7 @@ async function printWorkflowResult(executionName) {
 
 // [START workflows_api_quickstart_runtime_args]
 // Provide runtime arguments as a JSON string
-const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : {};
+const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : '{}';
 // [END workflows_api_quickstart_runtime_args]
 
 executeWorkflow(projectId, location, workflowName, runtimeArgs)

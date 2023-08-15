@@ -53,18 +53,6 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
 }
 // [END workflows_api_quickstart_execution]
 
-// [START workflows_api_quickstart_sleep_helper]
-/**
- * Sleeps the process N number of milliseconds.
- * @param {Number} ms The number of milliseconds to sleep.
- */
-function sleep(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-// [END workflows_api_quickstart_sleep_helper
-
 // [START workflows_api_quickstart_result]
 /**
  * Waits for the results of an executed Workflow with exponential backoff.
@@ -80,7 +68,7 @@ async function printWorkflowResult(executionName) {
       console.log(execution.result);
     } else {
       console.log('- Waiting for results...');
-      await sleep(backoffDelay);
+      await new Promise(resolve => setTimeout(resolve, backoffDelay));
     }
   }
 }

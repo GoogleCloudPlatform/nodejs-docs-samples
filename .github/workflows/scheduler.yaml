@@ -41,6 +41,7 @@ jobs:
     with:
       name: 'scheduler'
       path: 'scheduler'
+      action: ${{ github.event.action }}
   flakybot:
     permissions:
       contents: 'read'

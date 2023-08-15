@@ -52,6 +52,7 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   }
 }
 // [END workflows_api_quickstart_execution]
+
 // [START workflows_api_quickstart_sleep_helper]
 /**
  * Sleeps the process N number of milliseconds.
@@ -84,10 +85,12 @@ async function printWorkflowResult(executionName) {
   }
 }
 // [END workflows_api_quickstart_result]
+
 // [START workflows_api_quickstart_runtime_args]
 // Provide runtime arguments as a JSON string
 const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : {};
 // [END workflows_api_quickstart_runtime_args]
+
 executeWorkflow(projectId, location, workflowName, runtimeArgs)
   .then(value => {
     printWorkflowResult(value)

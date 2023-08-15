@@ -22,8 +22,13 @@ const workflowName = process.argv[4] || 'myFirstWorkflow';
 const searchTerm = process.argv[5] || null;
 
 // [START workflows_api_quickstart]
+
+// [START workflows_api_quickstart_client_libraries]
 const { ExecutionsClient } = require('@google-cloud/workflows');
 const client = new ExecutionsClient();
+// [END workflows_api_quickstart_client_libraries]
+
+// [START workflows_api_quickstart_execution]
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow

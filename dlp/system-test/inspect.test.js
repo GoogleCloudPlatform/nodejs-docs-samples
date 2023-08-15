@@ -1213,4 +1213,85 @@ describe('inspect', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_inspect_column_values_w_custom_hotwords
+  it('should inspect a table excluding findings in a particular row', () => {
+    const output = execSync(`node inspectWithCustomHotwords.js ${projectId}`);
+    assert.match(output, /Findings: 1/);
+    assert.match(output, /Quote: 222-22-2222/);
+    assert.notMatch(output, /Quote: 111-11-1111/);
+  });
+
+  it('should handle errors while inspecting the table', () => {
+    let output;
+    try {
+      output = execSync('node inspectWithCustomHotwords.js BAD_PROJECT_ID');
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_inspect_with_stored_infotype
+  it('should inspect a string using stored infotype', async () => {
+    const string =
+      'My phone number is (223) 456-7890 and my email address is gary@example.com.';
+    const infoTypeId = 'MOCK_INFOTYPE';
+
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_WITH_STORED_INFOTYPE(
+      projectId,
+      string,
+      infoTypeId
+    );
+    const mockInspectContent = sinon
+      .stub()
+      .resolves(DATA_CONSTANTS.RESPONSE_INSPECT_CONTENT);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'inspectContent',
+      mockInspectContent
+    );
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectWithStoredInfotype = proxyquire(
+      '../inspectWithStoredInfotype',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    await inspectWithStoredInfotype(projectId, infoTypeId, string);
+    sinon.assert.calledOnceWithExactly(
+      mockInspectContent,
+      DATA_CONSTANTS.REQUEST_INSPECT_CONTENT
+    );
+  });
+
+  it('should handle error while inspecting the string', async () => {
+    const string =
+      'My phone number is (223) 456-7890 and my email address is gary@example.com.';
+    const infoTypeId = 'MOCK_INFOTYPE';
+    const mockInspectContent = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'inspectContent',
+      mockInspectContent
+    );
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectWithStoredInfotype = proxyquire(
+      '../inspectWithStoredInfotype',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+
+    try {
+      await inspectWithStoredInfotype(projectId, infoTypeId, string);
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
 });

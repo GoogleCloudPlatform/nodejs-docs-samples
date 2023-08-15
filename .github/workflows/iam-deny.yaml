@@ -52,7 +52,7 @@ jobs:
         service_account: 'kokoro-ca@isakovf-iam-deny-samples.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - uses: actions/setup-node@v3.7.0
+    - uses: actions/setup-node@v3.8.0
       with:
         node-version: 16
     - name: Get npm cache directory

@@ -17,7 +17,7 @@
     "test": "c8 mocha --loader=ts-node/esm --extension ts --timeout 10000 --exit"
   },
   "dependencies": {
-    "@google-cloud/scheduler": "^3.2.1"
+    "@google-cloud/scheduler": "^4.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.4",

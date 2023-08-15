@@ -24,7 +24,7 @@ const searchTerm = process.argv[5] || null;
 // [START workflows_api_quickstart]
 
 // [START workflows_api_quickstart_client_libraries]
-const { ExecutionsClient } = require('@google-cloud/workflows');
+const {ExecutionsClient} = require('@google-cloud/workflows');
 const client = new ExecutionsClient();
 // [END workflows_api_quickstart_client_libraries]
 
@@ -35,7 +35,7 @@ const client = new ExecutionsClient();
  * @param {string} location The Workflow location
  * @param {string} workflow The Workflow name
  * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
-*/
+ */
 async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   try {
     const createExecutionRes = await client.createExecution({
@@ -46,7 +46,7 @@ async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);
-    return executionName
+    return executionName;
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
@@ -68,12 +68,12 @@ function sleep(ms) {
 // [START workflows_api_quickstart_result]
 /**
  * Waits for the results of an executed Workflow with exponential backoff.
- * @param {string} executionName The name of the Workflow execution 
-*/
+ * @param {string} executionName The name of the Workflow execution
+ */
 async function printWorkflowResult(executionName) {
   let backoffDelay = 1000;
   for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {
-    const [execution] = await client.getExecution({ name: executionName });
+    const [execution] = await client.getExecution({name: executionName});
     executionFinished = execution.state !== 'ACTIVE';
 
     if (executionFinished) {
@@ -88,12 +88,14 @@ async function printWorkflowResult(executionName) {
 
 // [START workflows_api_quickstart_runtime_args]
 // Provide runtime arguments as a JSON string
-const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : '{}';
+const runtimeArgs = searchTerm
+  ? JSON.stringify({searchTerm: searchTerm})
+  : '{}';
 // [END workflows_api_quickstart_runtime_args]
 
 executeWorkflow(projectId, location, workflowName, runtimeArgs)
   .then(value => {
-    printWorkflowResult(value)
+    printWorkflowResult(value);
   })
   .catch(err => {
     console.error(err.message);

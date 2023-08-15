@@ -32,12 +32,12 @@ const client: ExecutionsClient = new ExecutionsClient();
  * @param {string} location The Workflow location
  * @param {string} workflow The Workflow name
  * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
-*/
+ */
 async function executeWorkflow(
-    projectId: string, 
-    location: string, 
-    workflow: string, 
-    runtimeArgs: string
+  projectId: string,
+  location: string,
+  workflow: string,
+  runtimeArgs: string
 ) {
   try {
     const createExecutionRes = await client.createExecution({
@@ -48,7 +48,7 @@ async function executeWorkflow(
     });
     const executionName = createExecutionRes[0].name;
     console.log(`Created execution: ${executionName}`);
-    return executionName
+    return executionName;
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
@@ -70,12 +70,12 @@ function sleep(ms: number): Promise<unknown> {
 // [START workflows_api_quickstart_result]
 /**
  * Waits for the results of an executed Workflow with exponential backoff.
- * @param {string} executionName The name of the Workflow execution 
-*/
+ * @param {string} executionName The name of the Workflow execution
+ */
 async function printWorkflowResult(executionName: string) {
   let backoffDelay = 1000;
   for (let executionFinished = false; !executionFinished; backoffDelay *= 2) {
-    const [execution] = await client.getExecution({ name: executionName });
+    const [execution] = await client.getExecution({name: executionName});
     executionFinished = execution.state !== 'ACTIVE';
 
     if (executionFinished) {
@@ -90,12 +90,14 @@ async function printWorkflowResult(executionName: string) {
 
 // [START workflows_api_quickstart_runtime_args]
 // Provide runtime arguments as a JSON string
-const runtimeArgs = searchTerm ? JSON.stringify({ searchTerm: searchTerm }) : '{}';
+const runtimeArgs = searchTerm
+  ? JSON.stringify({searchTerm: searchTerm})
+  : '{}';
 // [END workflows_api_quickstart_runtime_args]
 
 executeWorkflow(projectId, location, workflowName, runtimeArgs)
   .then(value => {
-    printWorkflowResult(value!)
+    printWorkflowResult(value!);
   })
   .catch(err => {
     console.error(err.message);

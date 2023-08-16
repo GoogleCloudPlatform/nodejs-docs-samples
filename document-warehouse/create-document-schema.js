@@ -42,6 +42,7 @@ async function main(
     const propertyDefinition = {};
     propertyDefinition.name = 'schema property 1'; // Must be unique within a document schema (case insensitive)
     propertyDefinition.displayName = 'searchable text';
+<<<<<<< HEAD
     propertyDefinition.isSearchable = true;
     propertyDefinition.textTypeOptions = {};
 
@@ -118,12 +119,14 @@ async function main(
     const propertyDefinition = {};
     propertyDefinition.name = "schema property 1"; // Must be unique within a document schema (case insensitive)
     propertyDefinition.displayName = "searchable text";
+=======
+>>>>>>> 3f394ebf (fix styling)
     propertyDefinition.isSearchable = true;
     propertyDefinition.textTypeOptions = {};
 
     // Document Schema
     const documentSchema = {};
-    documentSchema.displayName = "My Test Schema";
+    documentSchema.displayName = 'My Test Schema';
     documentSchema.propertyDefinitions = [];
 
     request.documentSchema = documentSchema;

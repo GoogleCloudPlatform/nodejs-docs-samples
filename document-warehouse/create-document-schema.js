@@ -40,14 +40,14 @@ async function main(
 
     // Property Definition
     const propertyDefinition = {};
-    propertyDefinition.name = "schema property 1"; // Must be unique within a document schema (case insensitive)
-    propertyDefinition.displayName = "searchable text";
+    propertyDefinition.name = 'schema property 1'; // Must be unique within a document schema (case insensitive)
+    propertyDefinition.displayName = 'searchable text';
     propertyDefinition.isSearchable = true;
     propertyDefinition.textTypeOptions = {};
 
     // Document Schema
     const documentSchema = {};
-    documentSchema.displayName = "My Test Schema";
+    documentSchema.displayName = 'My Test Schema';
     documentSchema.propertyDefinitions = [];
 
     request.documentSchema = documentSchema;

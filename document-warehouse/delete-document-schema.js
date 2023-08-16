@@ -29,7 +29,9 @@ async function main(
    * const documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID';
    */
 
+
   // Import from google cloud
+
   const {DocumentSchemaServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
   // Create service client

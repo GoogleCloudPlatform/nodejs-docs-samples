@@ -37,8 +37,8 @@ describe('Create and delete document schema', () => {
     const projectId = await iamClient.getProjectId();
     const request = {name: `projects/${projectId}`};
     const project = await projectClient.getProject(request);
-    const resources = (project[0].name).toString().split('/'); 
-    const projectNumber = resources[resources.length-1];
+    const resources = project[0].name.toString().split('/');
+    const projectNumber = resources[resources.length - 1];
     return projectNumber;
   }
 
@@ -53,7 +53,8 @@ describe('Create and delete document schema', () => {
   });
 
   it('should create a document schema', async () => {
-    const output = execSync(`node create-document-schema.js ${projectNumber} ${location}`);
+    const output = execSync(
+      `node create-document-schema.js ${projectNumber} ${location}`);
     documentSchema = JSON.parse(output)[0];
 
     assert.notEqual(documentSchema, null);
@@ -61,8 +62,9 @@ describe('Create and delete document schema', () => {
 
   it('should delete a document schema', async () => {
     getDocumentSchemaId();
-    const output = execSync(`node delete-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`);
-    
+    const output = execSync(
+      `node delete-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`);
+
     assert(output.startsWith(confirmationDeleted));
   });
 

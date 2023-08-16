@@ -37,6 +37,15 @@ const keyName = 'KEY_NAME';
 const wrappedKey = 'WRAPPED_KEY';
 const unwrappedKey = 'YWJjZGVmZ2hpamtsbW5vcA==';
 
+// Dummy resource names used in test cases mocking API Calls.
+const inputDirectory = 'MOCK_INPUT_DIRECTORY';
+const datasetId = 'MOCK_DATASET_ID';
+const tableId = 'MOCK_TABLE_ID';
+const outputDirectory = 'MOCK_OUTPUT_DIRECTORY';
+const deidentifyTemplateId = 'MOCK_DEIDENTIFY_TEMPLATE';
+const structuredDeidentifyTemplateId = 'MOCK_STRUCTURED_ DEIDENTIFY_TEMPLATE';
+const imageRedactTemplateId = 'MOCK_IMAGE_REDACT_TEMPLATE';
+
 const client = new DLP.DlpServiceClient();
 describe('deid', () => {
   let projectId;
@@ -902,5 +911,102 @@ describe('deid', () => {
       output = err.message;
     }
     assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_deidentify_cloud_storage
+  it('should de-identify a cloud storage directory', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.DEIDENTIFY_CLOUD_STORAGE(
+      projectId,
+      inputDirectory,
+      tableId,
+      datasetId,
+      outputDirectory,
+      deidentifyTemplateId,
+      structuredDeidentifyTemplateId,
+      imageRedactTemplateId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const deIdentifyCloudStorage = proxyquire('../deIdentifyCloudStorage', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await deIdentifyCloudStorage(
+      projectId,
+      inputDirectory,
+      tableId,
+      datasetId,
+      outputDirectory,
+      deidentifyTemplateId,
+      structuredDeidentifyTemplateId,
+      imageRedactTemplateId
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if inspect cloud storage job fails', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.DEIDENTIFY_CLOUD_STORAGE(
+      projectId,
+      inputDirectory,
+      tableId,
+      datasetId,
+      outputDirectory,
+      deidentifyTemplateId,
+      structuredDeidentifyTemplateId,
+      imageRedactTemplateId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const deIdentifyCloudStorage = proxyquire('../deIdentifyCloudStorage', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+
+    await deIdentifyCloudStorage(
+      projectId,
+      inputDirectory,
+      tableId,
+      datasetId,
+      outputDirectory,
+      deidentifyTemplateId,
+      structuredDeidentifyTemplateId,
+      imageRedactTemplateId
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
   });
 });

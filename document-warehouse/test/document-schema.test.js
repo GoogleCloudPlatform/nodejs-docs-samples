@@ -54,7 +54,8 @@ describe('Create and delete document schema', () => {
 
   it('should create a document schema', async () => {
     const output = execSync(
-      `node create-document-schema.js ${projectNumber} ${location}`);
+      `node create-document-schema.js ${projectNumber} ${location}`
+    );
     documentSchema = JSON.parse(output)[0];
 
     assert.notEqual(documentSchema, null);
@@ -63,9 +64,9 @@ describe('Create and delete document schema', () => {
   it('should delete a document schema', async () => {
     getDocumentSchemaId();
     const output = execSync(
-      `node delete-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`);
+      `node delete-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`
+    );
 
     assert(output.startsWith(confirmationDeleted));
   });
-
 });

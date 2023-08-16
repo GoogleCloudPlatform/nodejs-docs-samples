@@ -7,20 +7,19 @@ Node.js samples for [Google Cloud Platform products][cloud].
 See [cloud.google.com/nodejs][cloud_nodejs] to get up and running with Node.js
 on Google Cloud Platform.
 
+To browse documentation pages that use the samples found in this repository,
+visit the [Google Cloud Samples][cloud_samples] page.
+
 [slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
 [slack_link]: https://googlecloud-community.slack.com/
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
-
-## Google Cloud Samples
-
-To browse ready to use code samples check [Google Cloud Samples](https://cloud.google.com/docs/samples?l=nodejs).
+[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
 
 ## Setup
 
-### Prerequisites
-
 1. Install [Node.js version 10 or greater][node]
+1. Install the [Google Cloud CLI (gcloud)][gcloud]
 1. Clone this repository:
 
         git clone https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git
@@ -34,12 +33,12 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
     Read more about [Google Cloud Platform Authentication][gcp_auth].
 
-
 [node]: https://nodejs.org/
-[auth_command]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+[gcloud]: https://cloud.google.com/sdk/docs/install
+[auth_command]: https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login
 [gcp_auth]: https://cloud.google.com/docs/authentication#projects_and_resources
 
-### How to run a sample
+## How to run a sample
 
 1. Change directory to one of the sample folders, e.g. `datastore`:
 
@@ -49,9 +48,14 @@ To browse ready to use code samples check [Google Cloud Samples](https://cloud.g
 
         npm install
 
+      * For samples with an available TypeScript variant, compile the 
+      TypeScript code:
+   
+                npm run build
+
 1. Run the sample:
 
-        node sample_file.js [args]...
+        npm start [args]...
 
 ## Other sample applications
 

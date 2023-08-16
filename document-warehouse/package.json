@@ -4,12 +4,12 @@
     "license": "Apache-2.0",
     "author": "Google LLC",
     "scripts": {
-        "test": "c8 mocha test/*.js --timeout 600000"
+        "test": "c8 mocha test/*.test.js --timeout 600000"
     },
     "dependencies": {
         "@google-cloud/contentwarehouse": "^0.5.1",
-        "chai": "^4.3.7",
-        "sinon": "^15.2.0"
+        "@google-cloud/iam": "^1.0.0",
+        "@google-cloud/resource-manager": "^5.0.0",
     },
     "devDependencies": {
         "assert": "^2.0.0"

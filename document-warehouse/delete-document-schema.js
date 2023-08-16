@@ -30,8 +30,7 @@ async function main(
    */
 
   // Import from google cloud
-  const {DocumentSchemaServiceClient} =
-    require('@google-cloud/contentwarehouse').v1;
+  const {DocumentSchemaServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
   // Create service client
   const serviceClient = new DocumentSchemaServiceClient();
@@ -49,11 +48,14 @@ async function main(
     const response = await serviceClient.deleteDocumentSchema(request);
 
     // Print out response
-    console.log(`Document Schema Deleted: ${response}`);
+    console.log(`Document Schema Deleted: ${JSON.stringify(response)}`);
   }
 
   // [END contentwarehouse_delete_document_schema]
   await deleteDocumentSchema();
 }
 
-exports.deleteDocumentSchema = main;
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

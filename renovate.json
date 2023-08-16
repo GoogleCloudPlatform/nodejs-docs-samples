@@ -10,7 +10,7 @@
       "addLabels": ["major"]
     },
     {
-      "matchUpdateTypes": ["minor"],
+      "matchUpdateTypes": ["minor", "patch"],
       "matchBaseBranches": ["main"],
       "enabled": false
     }

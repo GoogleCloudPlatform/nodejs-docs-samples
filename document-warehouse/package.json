@@ -8,8 +8,8 @@
     },
     "dependencies": {
         "@google-cloud/contentwarehouse": "^0.5.1",
-        "chai": "^4.3.7",
-        "sinon": "^15.2.0"
+        "@google-cloud/iam": "^1.0.0",
+        "@google-cloud/resource-manager": "^5.0.0",
     },
     "devDependencies": {
         "assert": "^2.0.0"

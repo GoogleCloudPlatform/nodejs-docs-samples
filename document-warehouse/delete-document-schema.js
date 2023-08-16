@@ -31,7 +31,6 @@ async function main(
 
 
   // Import from google cloud
-
   const {DocumentSchemaServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
   // Create service client

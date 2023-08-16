@@ -13,7 +13,7 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "c8 mocha --exit test/*.test.js"
+    "test": "c8 mocha -p -j 2 --exit test/*.test.js"
   },
   "devDependencies": {
     "c8": "^8.0.0",

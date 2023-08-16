@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/app.test.js --check-leaks",
+    "test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=10000"
   },
   "dependencies": {

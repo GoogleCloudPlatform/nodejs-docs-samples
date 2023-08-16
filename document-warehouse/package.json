@@ -7,7 +7,7 @@
         "test": "c8 mocha -p -j 2 test/*.js --timeout 600000"
     },
     "dependencies": {
-        "@google-cloud/contentwarehouse": "^0.5.1"
+        "@google-cloud/contentwarehouse": "^1.0.0"
     },
     "devDependencies": {
       "assert": "^2.0.0"

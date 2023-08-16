@@ -15,8 +15,8 @@
     "test": "c8 mocha -p -j 2 --timeout 60000"
   },
   "dependencies": {
-    "@google-cloud/language": "^5.1.0",
-    "@google-cloud/storage": "^6.0.0",
+    "@google-cloud/language": "^6.0.0",
+    "@google-cloud/storage": "^7.0.0",
     "mathjs": "^11.0.0",
     "yargs": "^17.0.0"
   },

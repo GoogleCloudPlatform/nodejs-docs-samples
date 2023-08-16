@@ -213,4 +213,31 @@ describe('redact', () => {
     }
     assert.include(output, 'INVALID_ARGUMENT');
   });
+
+  // dlp_redact_image_colored_infotypes
+  it('should redact using color coded info types from an image', async () => {
+    const testName = 'redact-colored-info-type';
+    const output = execSync(
+      `node redactImageFileColoredInfoTypes.js ${projectId} ${testImage} ${testName}.actual.png`
+    );
+    assert.match(output, /Saved image redaction results to path/);
+    const difference = await getImageDiffPercentage(
+      `${testName}.actual.png`,
+      `${testResourcePath}/${testName}.expected.png`
+    );
+    assert.isBelow(difference, 0.1);
+  });
+
+  it('should report any error while redacting an image', () => {
+    const testName = 'redact-colored-info-type';
+    let output;
+    try {
+      output = execSync(
+        `node redactImageFileColoredInfoTypes.js BAD_PROJECT_ID ${testImage} ${testName}.actual.png`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'INVALID_ARGUMENT');
+  });
 });

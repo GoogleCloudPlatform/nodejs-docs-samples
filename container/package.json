@@ -14,7 +14,7 @@
     "test": "c8 mocha -p -j 2 system-test --timeout 1000000"
   },
   "dependencies": {
-    "@google-cloud/container": "^4.4.0"
+    "@google-cloud/container": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

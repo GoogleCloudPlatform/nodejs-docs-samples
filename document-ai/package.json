@@ -13,8 +13,8 @@
     "test": "c8 mocha -p -j 2 test/*.js --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/documentai": "^7.0.0",
-    "@google-cloud/storage": "^6.0.0",
+    "@google-cloud/documentai": "^8.0.0",
+    "@google-cloud/storage": "^7.0.0",
     "p-queue": "^6.6.2"
   },
   "devDependencies": {

@@ -41,15 +41,6 @@ jobs:
     with:
       name: 'functions-speech-to-speech-functions'
       path: 'functions/speech-to-speech/functions'
-  remove_label:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: |
-      github.event.action == 'labeled' &&
-      github.event.label.name == 'actions:force-run' &&
-      always()
-    uses: ./.github/workflows/remove-label.yaml
   flakybot:
     permissions:
       contents: 'read'

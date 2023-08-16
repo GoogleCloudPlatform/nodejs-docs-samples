@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^4.0.0",
-    "@google-cloud/storage": "^6.0.0",
+    "@google-cloud/storage": "^7.0.0",
     "@google-cloud/translate": "^7.0.0",
     "@google-cloud/vision": "^3.0.0"
   },

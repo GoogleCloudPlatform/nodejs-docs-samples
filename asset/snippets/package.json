@@ -13,7 +13,7 @@
   "private": true,
   "scripts": {
     "lint": "gts lint",
-    "test": "c8 mocha test --timeout 600000"
+    "test": "c8 mocha -p -j 2 test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/asset": "^5.0.0",

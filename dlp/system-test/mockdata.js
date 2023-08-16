@@ -585,6 +585,163 @@ const MOCK_DATA = {
       },
     ],
   }),
+  DEIDENTIFY_CLOUD_STORAGE: (
+    projectId,
+    inputDirectory,
+    tableId,
+    datasetId,
+    outputDirectory,
+    deidentifyTemplateId,
+    structuredDeidentifyTemplateId,
+    imageRedactTemplateId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      inspectJob: {
+        inspectConfig: {
+          infoTypes: [{name: 'PERSON_NAME'}, {name: 'EMAIL_ADDRESS'}],
+          includeQuote: true,
+        },
+        storageConfig: {
+          cloudStorageOptions: {
+            fileSet: {url: inputDirectory},
+          },
+        },
+        actions: [
+          {
+            deidentify: {
+              cloudStorageOutput: outputDirectory,
+              transformationConfig: {
+                deidentifyTemplate: deidentifyTemplateId,
+                structuredDeidentifyTemplate: structuredDeidentifyTemplateId,
+                imageRedactTemplate: imageRedactTemplateId,
+              },
+              transformationDetailsStorageConfig: {
+                table: {
+                  projectId: projectId,
+                  tableId: tableId,
+                  datasetId: datasetId,
+                },
+              },
+              fileTypes: [
+                {fileType: 'IMAGE'},
+                {fileType: 'CSV'},
+                {fileType: 'TEXT_FILE'},
+              ],
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        inspectDetails: {
+          result: {
+            infoTypeStats: [
+              {
+                count: 1,
+                infoType: {
+                  name: 'PERSON_NAME',
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
+  K_ANONYMITY_WITH_ENTITY_ID: (
+    projectId,
+    datasetId,
+    sourceTableId,
+    outputTableId,
+    jobName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      riskJob: {
+        sourceTable: {
+          projectId: projectId,
+          datasetId: datasetId,
+          tableId: sourceTableId,
+        },
+        privacyMetric: {
+          kAnonymityConfig: {
+            entityId: {field: {name: 'Name'}},
+            quasiIds: [{name: 'Age'}, {name: 'Mystery'}],
+          },
+        },
+        actions: [
+          {
+            saveFindings: {
+              outputConfig: {
+                table: {
+                  projectId: projectId,
+                  datasetId: datasetId,
+                  tableId: outputTableId,
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+    RESPONSE_GET_DLP_JOB_SUCCESS: [
+      {
+        name: jobName,
+        state: 'DONE',
+        riskDetails: {
+          kAnonymityResult: {
+            equivalenceClassHistogramBuckets: [
+              {
+                bucketValues: [
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '["19","8291 3627 8250 1234"]',
+                        type: 'stringValue',
+                      },
+                    ],
+                    equivalenceClassSize: '1',
+                  },
+                  {
+                    quasiIdsValues: [
+                      {
+                        stringValue: '["27","4231 5555 6781 9876"]',
+                        type: 'stringValue',
+                      },
+                    ],
+                    equivalenceClassSize: '1',
+                  },
+                ],
+                equivalenceClassSizeLowerBound: '1',
+                equivalenceClassSizeUpperBound: '1',
+                bucketSize: '2',
+                bucketValueCount: '2',
+              },
+            ],
+          },
+        },
+      },
+    ],
+    RESPONSE_GET_DLP_JOB_FAILED: [
+      {
+        name: jobName,
+        state: 'FAILED',
+        inspectDetails: {},
+      },
+    ],
+  }),
 };
 
 module.exports = {MOCK_DATA};

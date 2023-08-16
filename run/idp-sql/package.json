@@ -14,8 +14,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/app.test.js --timeout=120000 --exit",
-    "system-test": "c8 mocha test/system.test.js --timeout=1800000 --exit"
+    "test": "c8 mocha -p -j 2 test/app.test.js --timeout=120000 --exit",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {
     "express": "^4.16.2",

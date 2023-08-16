@@ -14,11 +14,11 @@
   },
   "scripts": {
     "start": "node app.js",
-    "system-test": "c8 mocha --exit test/*.test.js",
+    "system-test": "c8 mocha -p -j 2 --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^7.0.0",
+    "@google-cloud/datastore": "^8.0.0",
     "express": "^4.16.4"
   },
   "devDependencies": {

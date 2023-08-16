@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "node metrics-quickstart.js",
-    "test": "c8 mocha -- system-test/*.test.js --timeout=5000 --exit"
+    "test": "c8 mocha -p -j 2 -- system-test/*.test.js --timeout=5000 --exit"
   },
   "dependencies": {
     "@opencensus/core": "^0.1.0",

@@ -10,12 +10,12 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha"
+    "test": "c8 mocha -p -j 2"
   },
   "dependencies": {
     "@google-cloud/bigquery": "^7.0.0",
-    "@google-cloud/retail": "^2.1.1",
-    "@google-cloud/storage": "^6.0.0"
+    "@google-cloud/retail": "^3.0.0",
+    "@google-cloud/storage": "^7.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

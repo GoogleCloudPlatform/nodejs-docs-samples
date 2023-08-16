@@ -11,10 +11,10 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "test": "c8 mocha --timeout=60000"
+    "test": "c8 mocha -p -j 2 --timeout=60000"
   },
   "dependencies": {
-    "@google-cloud/text-to-speech": "^4.0.4",
+    "@google-cloud/text-to-speech": "^5.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

@@ -13,14 +13,14 @@
   "private": true,
   "scripts": {
     "lint": "gts lint",
-    "test": "c8 mocha test --timeout 600000"
+    "test": "c8 mocha -p -j 2 test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/asset": "^5.0.0",
     "@google-cloud/bigquery": "^7.0.0",
     "@google-cloud/compute": "^3.0.0",
     "@google-cloud/resource-manager": "^4.1.1",
-    "@google-cloud/storage": "^6.0.0"
+    "@google-cloud/storage": "^7.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

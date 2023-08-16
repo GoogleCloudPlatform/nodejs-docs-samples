@@ -8,18 +8,18 @@
   "author": "Google LLC",
   "repository": "googleapis/nodejs-secret-manager",
   "engines": {
-    "node": ">=12.0.0"
+    "node": "20.5.1"
   },
   "scripts": {
     "test": "c8 mocha --recursive test/ --timeout=800000"
   },
   "dependencies": {
-    "@google-cloud/secret-manager": "^5.0.0"
+    "@google-cloud/secret-manager": "5.0.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0"
+    "c8": "8.0.1",
+    "chai": "4.3.7",
+    "mocha": "10.2.0",
+    "uuid": "9.0.0"
   }
 }

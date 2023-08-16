@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": "20.5.1"
   },
   "scripts": {
     "build": "tsc -p .",
@@ -13,14 +13,14 @@
     "test": "c8 mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
   },
   "dependencies": {
-    "@google-cloud/workflows": "^2.3.1"
+    "@google-cloud/workflows": "2.3.2"
   },
   "devDependencies": {
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^18.14.6",
-    "c8": "^8.0.0",
-    "gts": "^5.0.0",
-    "mocha": "^10.2.0",
-    "ts-node": "^10.9.1"
+    "@types/mocha": "10.0.1",
+    "@types/node": "18.17.5",
+    "c8": "8.0.1",
+    "gts": "5.0.0",
+    "mocha": "10.2.0",
+    "ts-node": "10.9.1"
   }
 }

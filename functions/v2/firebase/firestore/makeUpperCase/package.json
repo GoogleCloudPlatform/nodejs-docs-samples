@@ -9,20 +9,20 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": "20.5.1"
   },
   "scripts": {
     "test": "c8 mocha -T 30s test/*.test.js"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "mocha": "^10.0.0",
-    "rewire": "^6.0.0",
-    "sinon": "^15.0.0"
+    "c8": "8.0.1",
+    "mocha": "10.2.0",
+    "rewire": "6.0.0",
+    "sinon": "15.2.0"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^6.0.0",
-    "@google-cloud/functions-framework": "^3.1.3",
-    "protobufjs": "^7.2.3"
+    "@google-cloud/firestore": "6.7.0",
+    "@google-cloud/functions-framework": "3.3.0",
+    "protobufjs": "7.2.4"
   }
 }

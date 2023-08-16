@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": "20.5.1"
   },
   "files": [
     "*.js"
@@ -13,15 +13,15 @@
     "test": "c8 mocha --timeout 2400000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/aiplatform": "^2.3.0",
-    "@google-cloud/bigquery": "^7.0.0",
-    "@google-cloud/storage": "^7.0.0"
+    "@google-cloud/aiplatform": "2.17.0",
+    "@google-cloud/bigquery": "7.1.1",
+    "@google-cloud/storage": "7.0.1"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0",
-    "sinon": "^15.1.2"
+    "c8": "8.0.1",
+    "chai": "4.3.7",
+    "mocha": "10.2.0",
+    "uuid": "9.0.0",
+    "sinon": "15.2.0"
   }
 }

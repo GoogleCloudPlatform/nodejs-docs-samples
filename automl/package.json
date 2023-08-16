@@ -9,7 +9,7 @@
   "repository": "googleapis/nodejs-automl",
   "private": true,
   "scripts": {
-    "test": "c8 mocha --timeout 9000000"
+    "test": "c8 mocha -p -j 2 --timeout 9000000"
   },
   "files": [
     "**/*.js",

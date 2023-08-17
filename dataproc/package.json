@@ -11,7 +11,7 @@
   "repository": "googleapis/nodejs-dataproc",
   "private": true,
   "scripts": {
-    "test": "c8 mocha system-test --timeout 600000"
+    "test": "c8 mocha -p -j 2 system-test --timeout 600000"
   },
   "dependencies": {
     "@google-cloud/dataproc": "^5.0.0",

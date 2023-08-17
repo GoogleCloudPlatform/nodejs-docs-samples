@@ -20,6 +20,10 @@ const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
 const cp = require('child_process');
 const DLP = require('@google-cloud/dlp');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
+
+const {MOCK_DATA} = require('./mockdata');
 
 const execSync = cmd => {
   return cp.execSync(cmd, {
@@ -33,6 +37,11 @@ const uniqueField = 'Name';
 const numericField = 'Age';
 const pubsub = new PubSub();
 const client = new DLP.DlpServiceClient();
+
+// Dummy resource names used in test cases mocking API Calls.
+const datasetId = 'MOCK_DATASET_ID';
+const sourceTableId = 'MOCK_SOURCE_TABLE';
+const outputTableId = 'MOCK_OUTPUT_TABLE';
 
 /*
  * The tests in this file rely on a table in BigQuery entitled
@@ -86,6 +95,7 @@ describe('risk', () => {
 
   // Delete risk analysis job created in the snippets.
   afterEach(async () => {
+    sinon.restore();
     const request = {
       name: jobName,
     };
@@ -232,5 +242,84 @@ describe('risk', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+  });
+
+  // dlp_k_anonymity_with_entity_id
+  it('should perform k-map analysis using entity ID', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.K_ANONYMITY_WITH_ENTITY_ID(
+      projectId,
+      datasetId,
+      sourceTableId,
+      outputTableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kAnonymityWithEntityIds = proxyquire('../kAnonymityWithEntityIds', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+    await kAnonymityWithEntityIds(
+      projectId,
+      datasetId,
+      sourceTableId,
+      outputTableId
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if risk job fails', async () => {
+    const jobName = 'test-job-name';
+    const DATA_CONSTANTS = MOCK_DATA.K_ANONYMITY_WITH_ENTITY_ID(
+      projectId,
+      datasetId,
+      sourceTableId,
+      outputTableId,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kAnonymityWithEntityIds = proxyquire('../kAnonymityWithEntityIds', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+    await kAnonymityWithEntityIds(
+      projectId,
+      datasetId,
+      sourceTableId,
+      outputTableId
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
   });
 });

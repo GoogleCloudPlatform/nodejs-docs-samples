@@ -15,7 +15,7 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "unit-test": "c8 mocha test/ --timeout=60000 --exit",
+    "unit-test": "c8 mocha -p -j 2 test/ --timeout=60000 --exit",
     "test": "npm run unit-test"
   },
   "dependencies": {

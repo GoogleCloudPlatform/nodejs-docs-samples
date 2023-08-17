@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "c8 mocha test/*.test.js --timeout=60000"
+    "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
   },
   "author": "",
   "license": "ISC",

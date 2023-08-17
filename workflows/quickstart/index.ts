@@ -91,7 +91,14 @@ async function executeWorkflow(
   }
 }
 
-executeWorkflow(projectId, location, workflowName).catch((err: Error) => {
+// [START workflows_api_quickstart_runtime_args]
+// Provide runtime arguments as a JSON string
+const runtimeArgs = searchTerm
+  ? JSON.stringify({searchTerm: searchTerm})
+  : '{}';
+// [END workflows_api_quickstart_runtime_args]
+
+executeWorkflow(projectId, location, workflowName, runtimeArgs).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });

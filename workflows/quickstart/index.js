@@ -89,6 +89,12 @@ async function executeWorkflow(projectId, location, workflow) {
     console.error(`Error executing workflow: ${e}`);
   }
 }
+// [START workflows_api_quickstart_runtime_args]
+// Provide runtime arguments as a JSON string
+const runtimeArgs = searchTerm
+  ? JSON.stringify({searchTerm: searchTerm})
+  : '{}';
+// [END workflows_api_quickstart_runtime_args]
 
 executeWorkflow(projectId, location, workflowName).catch(err => {
   console.error(err.message);

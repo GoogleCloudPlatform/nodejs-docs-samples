@@ -13,7 +13,7 @@
     "node": ">= 18.x.x"
   },
   "scripts": {
-    "system-test": "c8 mocha --exit test/*.test.js",
+    "system-test": "c8 mocha -p -j 2 --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {

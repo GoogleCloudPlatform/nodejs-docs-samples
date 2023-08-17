@@ -41,16 +41,6 @@ const client = new ExecutionsClient();
  * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
  */
 async function executeWorkflow(projectId, location, workflow) {
-  /**
-   * Sleeps the process N number of milliseconds.
-   * @param {Number} ms The number of milliseconds to sleep.
-   */
-  function sleep(ms) {
-    return new Promise(resolve => {
-      setTimeout(resolve, ms);
-    });
-  }
-
   // Execute workflow
   try {
     const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
@@ -77,7 +67,7 @@ async function executeWorkflow(projectId, location, workflow) {
       // If we haven't seen the result yet, wait a second.
       if (!executionFinished) {
         console.log('- Waiting for results...');
-        await sleep(backoffDelay);
+        await new Promise(resolve => setTimeout(resolve, backoffDelay));
         backoffDelay *= 2; // Double the delay to provide exponential backoff.
       } else {
         console.log(`Execution finished with state: ${execution.state}`);

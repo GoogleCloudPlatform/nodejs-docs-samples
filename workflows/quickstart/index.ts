@@ -97,8 +97,10 @@ const runtimeArgs = searchTerm
   : '{}';
 // [END workflows_api_quickstart_runtime_args]
 
-executeWorkflow(projectId, location, workflowName, runtimeArgs).catch((err: Error) => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+executeWorkflow(projectId, location, workflowName, runtimeArgs).catch(
+  (err: Error) => {
+    console.error(err.message);
+    process.exitCode = 1;
+  }
+);
 // [END workflows_api_quickstart]

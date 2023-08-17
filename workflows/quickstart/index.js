@@ -95,7 +95,7 @@ const runtimeArgs = searchTerm
   : '{}';
 // [END workflows_api_quickstart_runtime_args]
 
-executeWorkflow(projectId, location, workflowName).catch(err => {
+executeWorkflow(projectId, location, workflowName, runtimeArgs).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

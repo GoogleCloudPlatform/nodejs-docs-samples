@@ -40,7 +40,12 @@ const client = new ExecutionsClient();
  * @param {string} workflow The workflow name
  * @param {string} runtimeArgs Runtime arguments to pass to the Workflow as JSON string
  */
-async function executeWorkflow(projectId, location, workflow, runtimeArgs = '{}') {
+async function executeWorkflow(
+  projectId,
+  location,
+  workflow,
+  runtimeArgs = '{}'
+) {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.

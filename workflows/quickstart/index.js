@@ -38,7 +38,7 @@ const client = new ExecutionsClient();
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
- * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
+ * @param {string} runtimeArgs Runtime arguments to pass to the Workflow as JSON string
  */
 async function executeWorkflow(projectId, location, workflow, runtimeArgs) {
   /**

@@ -37,8 +37,7 @@ const modelDisplayName = `my-tuned-model-${timestampId}`
 const bucketName = `ucaip-samples-europe-west4/training_pipeline_output`;
 const bucketUri = `gs://${bucketName}/tune-model-nodejs`
 
-// TODO (b/295913150): Service account permission issue with pipeline tests
-describe.skip('Tune a model', () => {
+describe('Tune a model', () => {
   const stubConsole = function () {
     sinon.stub(console, 'error');
     sinon.stub(console, 'log');

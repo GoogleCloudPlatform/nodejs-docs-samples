@@ -16,7 +16,7 @@ const projectId =
   process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
-const searchTerm = process.argv[5] || null;
+const searchTerm = process.argv[5] || '';
 
 // [START workflows_api_quickstart]
 import {ExecutionsClient} from '@google-cloud/workflows';
@@ -41,7 +41,7 @@ async function executeWorkflow(
   projectId: string,
   location: string,
   workflow: string,
-  runtimeArgs = '{}'
+  searchTerm: string = ''  
 ) {
   /**
    * Sleeps the process N number of milliseconds.
@@ -53,12 +53,15 @@ async function executeWorkflow(
     });
   }
 
+  // Runtime arguments can be passed as a JSON string
+  const runtimeArgs = searchTerm ? JSON.stringify({searchTerm: searchTerm}) : '{}';
+
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        argument: runtimeArgs,
+        argument: runtimeArgs
       },
     });
     const executionName = createExecutionRes[0].name;
@@ -90,14 +93,7 @@ async function executeWorkflow(
   }
 }
 
-// [START workflows_api_quickstart_runtime_args]
-// Provide runtime arguments as a JSON string
-const runtimeArgs = searchTerm
-  ? JSON.stringify({searchTerm: searchTerm})
-  : '{}';
-// [END workflows_api_quickstart_runtime_args]
-
-executeWorkflow(projectId, location, workflowName, runtimeArgs).catch(
+executeWorkflow(projectId, location, workflowName, searchTerm).catch(
   (err: Error) => {
     console.error(err.message);
     process.exitCode = 1;

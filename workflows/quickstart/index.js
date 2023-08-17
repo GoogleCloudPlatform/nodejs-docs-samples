@@ -31,7 +31,7 @@ const client = new ExecutionsClient();
 // const projectId = 'my-project';
 // const location = 'us-central1';
 // const workflow = 'myFirstWorkflow';
-// const searchTerm = null;
+// const searchTerm = '';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -40,12 +40,7 @@ const client = new ExecutionsClient();
  * @param {string} workflow The workflow name
  * @param {string} runtimeArgs Runtime arguments to pass to the Workflow as JSON string
  */
-async function executeWorkflow(
-  projectId,
-  location,
-  workflow,
-  runtimeArgs = '{}'
-) {
+async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.
@@ -55,13 +50,19 @@ async function executeWorkflow(
       setTimeout(resolve, ms);
     });
   }
+  // [START workflows_api_quickstart_runtime_args]
+  // Runtime arguments can be passed as a JSON string
+  const runtimeArgs = searchTerm
+    ? JSON.stringify({searchTerm: searchTerm})
+    : '{}';
+  // [END workflows_api_quickstart_runtime_args]
 
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        argument: runtimeArgs,
+        argument: runtimeArgs
       },
     });
     const executionName = createExecutionRes[0].name;
@@ -93,14 +94,7 @@ async function executeWorkflow(
   }
 }
 
-// [START workflows_api_quickstart_runtime_args]
-// Provide runtime arguments as a JSON string
-const runtimeArgs = searchTerm
-  ? JSON.stringify({searchTerm: searchTerm})
-  : '{}';
-// [END workflows_api_quickstart_runtime_args]
-
-executeWorkflow(projectId, location, workflowName, runtimeArgs).catch(err => {
+executeWorkflow(projectId, location, workflowName, searchTerm).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

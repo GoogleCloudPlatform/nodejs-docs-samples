@@ -35,12 +35,13 @@ const client: ExecutionsClient = new ExecutionsClient();
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
- * @param {string} searchTerm Optional search term to pass as runtime argument to Workflow
+ * @param {string} runTimeArgs Runtime arguments to pass to the Workflow as JSON string
  */
 async function executeWorkflow(
   projectId: string,
   location: string,
-  workflow: string
+  workflow: string,
+  runtimeArgs: string
 ) {
   /**
    * Sleeps the process N number of milliseconds.
@@ -54,12 +55,10 @@ async function executeWorkflow(
 
   // Execute workflow
   try {
-    const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        // Provide runtime arguments as a JSON string
-        argument: JSON.stringify(runtimeArgs),
+        argument: runtimeArgs,
       },
     });
     const executionName = createExecutionRes[0].name;

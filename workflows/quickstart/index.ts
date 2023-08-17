@@ -23,14 +23,6 @@ import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();
 
 /**
- * TODO(developer): Uncomment these variables before running the sample.
- */
-// const projectId = 'my-project';
-// const location = 'us-central1';
-// const workflow = 'myFirstWorkflow';
-// const searchTerm = null;
-
-/**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location

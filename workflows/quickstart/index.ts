@@ -52,12 +52,12 @@ async function executeWorkflow(
       setTimeout(resolve, ms);
     });
   }
-// [START workflows_api_quickstart_runtime_args]
+  // [START workflows_api_quickstart_runtime_args]
   // Runtime arguments can be passed as a JSON string
   const runtimeArgs = searchTerm
     ? JSON.stringify({searchTerm: searchTerm})
     : '{}';
-// [END workflows_api_quickstart_runtime_args]
+  // [END workflows_api_quickstart_runtime_args]
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({

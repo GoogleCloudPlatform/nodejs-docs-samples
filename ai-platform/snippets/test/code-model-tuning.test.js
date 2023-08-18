@@ -18,24 +18,28 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const uuid = require('uuid')
+const uuid = require('uuid');
 const sinon = require('sinon');
+
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'europe-west4';
 
 const aiplatform = require('@google-cloud/aiplatform');
 const clientOptions = {
-  apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
+  apiEndpoint: `${location}-aiplatform.googleapis.com`,
 };
 const pipelineClient = new aiplatform.v1.PipelineServiceClient(clientOptions);
 
 const {tuneModel} = require('../code-model-tuning');
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'europe-west4';
-const timestampId = `${new Date().toISOString().replace(/(:|\.)/g, '-').toLowerCase()}`
-const pipelineJobName = `my-tuning-pipeline-${timestampId}`
-const modelDisplayName = `my-tuned-model-${timestampId}`
-const bucketName = `ucaip-samples-europe-west4/training_pipeline_output`;
-const bucketUri = `gs://${bucketName}/tune-model-nodejs`
+const timestampId = `${new Date()
+  .toISOString()
+  .replace(/(:|\.)/g, '-')
+  .toLowerCase()}`;
+const pipelineJobName = `my-tuning-pipeline-${timestampId}`;
+const modelDisplayName = `my-tuned-model-${timestampId}`;
+const bucketName = 'ucaip-samples-europe-west4/training_pipeline_output';
+const bucketUri = `gs://${bucketName}/tune-model-nodejs`;
 
 describe('Tune a code model', () => {
   const stubConsole = function () {
@@ -47,6 +51,17 @@ describe('Tune a code model', () => {
     console.log.restore();
     console.error.restore();
   };
+
+  beforeEach(stubConsole);
+  afterEach(restoreConsole);
+
+  it('should prompt-tune an existing code model', async () => {
+    // Act
+    await tuneModel(projectId, pipelineJobName, modelDisplayName, bucketUri);
+
+    // Assert
+    assert.include(console.log.firstCall.args, 'Tuning pipeline job:');
+  });
 
   after(async () => {
     // Cancel and delete the pipeline job
@@ -67,16 +82,5 @@ describe('Tune a code model', () => {
 
       return pipelineClient.deletePipeline(deleteRequest);
     });
-  });
-  
-  beforeEach(stubConsole);
-  afterEach(restoreConsole);
-
-  it('should prompt-tune an existing code model', async () => {
-    // Act
-    await tuneModel(projectId, pipelineJobName, modelDisplayName, bucketUri);
-
-    // Assert
-    assert.include(console.log.firstCall.args, 'Tuning pipeline job:');
   });
 });

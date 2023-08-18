@@ -40,7 +40,7 @@ async function main(
 
   // Specifies the location of the api endpoint
   const clientOptions = {
-    apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
+    apiEndpoint: `${location}-aiplatform.googleapis.com`,
   };
   const model = 'code-bison@001';
 
@@ -76,22 +76,19 @@ async function main(
       pipelineJob,
       pipelineJobId,
     };
-    await new Promise((resolve, reject) => {
-      pipelineClient.createPipelineJob(createPipelineRequest).then(
-        response => resolve(response),
-        e => reject(e)
-      );
-    }).then(response => {
-      const [result] = response;
-      console.log('Tuning pipeline job:');
-      console.log(`\tName: ${result.name}`);
-      console.log(
-        `\tCreate time: ${new Date(1970, 0, 1)
-          .setSeconds(result.createTime.seconds)
-          .toLocaleString()}`
-      );
-      console.log(`\tStatus: ${result.status}`);
-    });
+
+    const [response] = await pipelineClient.createPipelineJob(
+      createPipelineRequest
+    );
+
+    console.log('Tuning pipeline job:');
+    console.log(`\tName: ${response.name}`);
+    console.log(
+      `\tCreate time: ${new Date(1970, 0, 1)
+        .setSeconds(response.createTime.seconds)
+        .toLocaleString()}`
+    );
+    console.log(`\tStatus: ${response.status}`);
   }
 
   await tuneLLM();

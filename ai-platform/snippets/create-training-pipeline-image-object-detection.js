@@ -58,7 +58,7 @@ async function main(
     const trainingTaskInputsObj =
       new definition.AutoMlImageObjectDetectionInputs({
         disableEarlyStopping: false,
-        modelType: ModelType.CLOUD_HIGH_ACCURACY_1,
+        modelType: ModelType.CLOUD_1,
         budgetMilliNodeHours: 20000,
       });
 

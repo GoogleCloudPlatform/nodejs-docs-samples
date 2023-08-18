@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Google, Inc.
+ * Copyright 2023 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -86,9 +86,8 @@ function main(projectId, location, templateId) {
     };
 
     // Run request
-    const [jobTemplate] = await transcoderServiceClient.createJobTemplate(
-      request
-    );
+    const [jobTemplate] =
+      await transcoderServiceClient.createJobTemplate(request);
     console.log(`Job template: ${jobTemplate.name}`);
   }
 

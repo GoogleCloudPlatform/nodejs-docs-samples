@@ -51,11 +51,12 @@ async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
       setTimeout(resolve, ms);
     });
   }
-
+// [START workflows_api_quickstart_runtime_args]
   // Runtime arguments can be passed as a JSON string
   const runtimeArgs = searchTerm
     ? JSON.stringify({searchTerm: searchTerm})
     : '{}';
+// [END workflows_api_quickstart_runtime_args]
 // [START workflows_api_quickstart_execution]
   // Execute workflow
   try {

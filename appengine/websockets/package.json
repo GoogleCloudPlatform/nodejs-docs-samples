@@ -11,13 +11,13 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "test": "c8 mocha --timeout 10000 --exit test/*.test.js",
+    "test": "c8 mocha -p -j 2 --timeout 10000 --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
     "express": "^4.15.4",
     "pug": "^3.0.0",
-    "socket.io": "^4.6.1",
+    "socket.io": "4.7.2",
     "supertest": "^6.0.0"
   },
   "devDependencies": {

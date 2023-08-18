@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "c8 mocha -- system-test/*.test.js --timeout=5000 --exit"
+    "test": "c8 mocha -p -j 2 -- system-test/*.test.js --timeout=5000 --exit"
   },
   "author": "Yuri Grinshteyn",
   "license": "Apache-2.0",

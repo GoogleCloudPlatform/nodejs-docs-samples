@@ -10,10 +10,10 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 600000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 600000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/dialogflow-cx": "^3.1.2",
+    "@google-cloud/dialogflow-cx": "^4.0.0",
     "@google-cloud/functions-framework": "^3.2.0"
   },
   "devDependencies": {

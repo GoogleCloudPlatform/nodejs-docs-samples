@@ -68,9 +68,10 @@ function main(projectId, alertPolicyId, ...channelIds) {
             },
           },
         };
-        const newChannel = await notificationClient.createNotificationChannel(
-          createChannelRequest
-        );
+        const newChannel =
+          await notificationClient.createNotificationChannel(
+            createChannelRequest
+          );
         notificationChannels.push(newChannel);
       }
     }

@@ -19,23 +19,41 @@ const cp = require('child_process');
 const path = require('path');
 const assert = require('assert');
 
+const {PoliciesClient} = require('@google-cloud/iam').v2;
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
+const iamClient = new PoliciesClient();
+const projectClient = new ProjectsClient();
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const PROJECT_ID_PASS = 'YOUR_PROJECT_ID';
+
 const PROJECT_ID_FAILED = 'PROJECT_ID_WITHOUT_ACL';
-const LOCATION = 'us';
-const USER_ID = 'user:xxxx@example.com';
 const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
 
 describe('Fetch document acl', () => {
+  let projectNumber;
+  const location = 'us';
+
+  async function getProjectNumber() {
+    const projectId = await iamClient.getProjectId();
+    const request = {name: `projects/${projectId}`};
+    const project = await projectClient.getProject(request);
+    const resources = project[0].name.toString().split('/');
+    projectNumber = resources[resources.length - 1];
+  }
+
+  before(async () => {
+    await getProjectNumber();
+  })
+
   it('should get acl given only a projectId', async () => {
-    const stdout = execSync(`node ./fetch-acl.js ${PROJECT_ID_PASS} `, {cwd});
+    const stdout = execSync(`node ./fetch-acl.js ${projectNumber} `, {cwd});
     assert(stdout.startsWith('Success!'));
   });
 
   it('should get acl given a documentId', async () => {
     const stdout = execSync(
-      `node ./fetch-acl.js ${PROJECT_ID_PASS} ${LOCATION} ${USER_ID} ${DOCUMENT_ID}`,
+      `node ./fetch-acl.js ${projectNumber} ${location} ${DOCUMENT_ID}`,
       {cwd}
     );
     assert(stdout.startsWith('Success!'));

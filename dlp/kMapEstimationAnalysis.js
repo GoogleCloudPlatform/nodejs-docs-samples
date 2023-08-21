@@ -17,7 +17,7 @@
 //  description: Computes the k-map risk estimation of a column set in a Google BigQuery table.
 //  usage: node kMapEstimationAnalysis.js my-project tableProjectId datasetId tableId topicId subscriptionId regionCode quasiIds
 
-function main(
+async function main(
   projectId,
   tableProjectId,
   datasetId,
@@ -151,10 +151,12 @@ function main(
     });
   }
 
-  kMapEstimationAnalysis();
+  await kMapEstimationAnalysis();
   // [END dlp_k_map]
 }
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -178,3 +180,5 @@ function transformCLI(quasiIds, infoTypes) {
 
   return quasiIds;
 }
+
+module.exports = main;

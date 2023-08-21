@@ -18,23 +18,12 @@ const {assert} = require('chai');
 const {describe, it, before, after, afterEach} = require('mocha');
 const uuid = require('uuid');
 const {PubSub} = require('@google-cloud/pubsub');
-const cp = require('child_process');
 const DLP = require('@google-cloud/dlp');
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
 const {MOCK_DATA} = require('./mockdata');
 
-const execSync = cmd => {
-  return cp.execSync(cmd, {
-    encoding: 'utf-8',
-    stdio: [null, null, null],
-  });
-};
-
-const dataset = 'integration_tests_dlp';
-const uniqueField = 'Name';
-const numericField = 'Age';
 const pubsub = new PubSub();
 const client = new DLP.DlpServiceClient();
 
@@ -110,138 +99,663 @@ describe('risk', () => {
       });
   });
 
-  // numericalRiskAnalysis
-  it('should perform numerical risk analysis', () => {
-    const output = execSync(
-      `node numericalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
+  // dlp_k_anonymity_analysis
+  it('should perform k-anonymity analysis on a single field', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [
+      {name: 'AGE', infoType: {name: 0}},
+      {name: 'MYSTERY', infoType: {name: 1}},
+    ];
+    const DATA_CONSTANTS = MOCK_DATA.K_ANONYMITY_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      quasiIds,
+      jobName
     );
-    assert.match(output, /Value at 0% quantile:/);
-    assert.match(output, /Value at \d+% quantile:/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kAnonymityAnalysis = proxyquire('../kAnonymityAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    await kAnonymityAnalysis(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      subscriptionName,
+      'AGE,MYSTERY'
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
   });
 
-  it('should handle numerical risk analysis errors', () => {
-    let output;
+  it('should handle k-anonymity analysis errors', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [
+      {name: 'AGE', infoType: {name: 0}},
+      {name: 'MYSTERY', infoType: {name: 1}},
+    ];
+    const DATA_CONSTANTS = MOCK_DATA.K_ANONYMITY_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      quasiIds,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kAnonymityAnalysis = proxyquire('../kAnonymityAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
     try {
-      output = execSync(
-        `node numericalRiskAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${numericField} ${topicName} ${subscriptionName}`
+      await kAnonymityAnalysis(
+        projectId,
+        projectId,
+        datasetId,
+        sourceTableId,
+        topicName,
+        subscriptionName,
+        'AGE,MYSTERY'
       );
-    } catch (err) {
-      output = err.message;
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
     }
-    assert.include(output, 'NOT_FOUND');
   });
 
-  // categoricalRiskAnalysis
-  it('should perform categorical risk analysis on a string field', () => {
-    const output = execSync(
-      `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${uniqueField} ${topicName} ${subscriptionName}`
+  // dlp_numerical_stats
+  it('should perform numerical risk analysis', async () => {
+    const jobName = 'test-job-name';
+    const numericalColumn = 'AGE';
+    const DATA_CONSTANTS = MOCK_DATA.NUMERICAL_STATS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      jobName
     );
-    assert.match(output, /Most common value occurs \d time\(s\)/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it('should perform categorical risk analysis on a number field', () => {
-    const output = execSync(
-      `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${numericField} ${topicName} ${subscriptionName}`
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
     );
-    assert.match(output, /Most common value occurs \d time\(s\)/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const numericalRiskAnalysis = proxyquire('../numericalRiskAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    await numericalRiskAnalysis(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      subscriptionName
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
   });
 
-  it('should handle categorical risk analysis errors', () => {
-    let output;
+  it('should handle numerical risk analysis errors', async () => {
+    const jobName = 'test-job-name';
+    const numericalColumn = 'AGE';
+    const DATA_CONSTANTS = MOCK_DATA.NUMERICAL_STATS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const numericalRiskAnalysis = proxyquire('../numericalRiskAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
     try {
-      output = execSync(
-        `node categoricalRiskAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${uniqueField} ${topicName} ${subscriptionName}`
+      await numericalRiskAnalysis(
+        projectId,
+        projectId,
+        datasetId,
+        sourceTableId,
+        numericalColumn,
+        topicName,
+        subscriptionName
       );
-    } catch (err) {
-      output = err.message;
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
     }
-    assert.include(output, 'fail');
   });
 
-  // kAnonymityAnalysis
-  it('should perform k-anonymity analysis on a single field', () => {
-    const output = execSync(
-      `node kAnonymityAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} ${numericField}`
+  // dlp_k_map
+  it('should perform k-map analysis on a single field', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [{field: {name: 'Age'}, infoType: {name: 'AGE'}}];
+    const regionCode = 'US';
+    const DATA_CONSTANTS = MOCK_DATA.K_MAP_ESTIMATION_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      regionCode,
+      quasiIds,
+      jobName
     );
-    console.log(output);
-    assert.include(output, 'Quasi-ID values:');
-    assert.include(output, 'Class size:');
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
-
-  it('should handle k-anonymity analysis errors', () => {
-    let output;
-    try {
-      output = execSync(
-        `node kAnonymityAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField}`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'fail');
-  });
-
-  // kMapAnalysis
-  it('should perform k-map analysis on a single field', () => {
-    const output = execSync(
-      `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' ${numericField} AGE`
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
     );
-    assert.match(output, /Anonymity range: \[\d+, \d+\]/);
-    assert.match(output, /Size: \d/);
-    assert.match(output, /Values: \d{2}/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
-  });
 
-  it('should handle k-map analysis errors', () => {
-    let output;
-    try {
-      output = execSync(
-        `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField} AGE`
-      );
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'fail');
-  });
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-  it('should check that numbers of quasi-ids and info types are equal', () => {
-    assert.throws(() => {
-      execSync(
-        `node kMapEstimationAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} 'US' 'Age,Gender' AGE`
-      );
-    }, /3 INVALID_ARGUMENT: InfoType name cannot be empty of a TaggedField/);
-  });
-
-  // lDiversityAnalysis
-  it('should perform l-diversity analysis on a single field', () => {
-    const output = execSync(
-      `node lDiversityAnalysis.js ${projectId} ${projectId} ${dataset} harmful ${topicName} ${subscriptionName} ${uniqueField} ${numericField}`
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    assert.match(output, /Quasi-ID values:/);
-    assert.match(output, /Class size: \d/);
-    assert.match(output, /Sensitive value/);
-    assert.match(output, /Job created. Job name: /);
-    jobName = output.split(':')[1].trim();
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kMapEstimationAnalysis = proxyquire('../kMapEstimationAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    await kMapEstimationAnalysis(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      subscriptionName,
+      regionCode,
+      quasiIds[0].field.name,
+      quasiIds[0].infoType.name
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
   });
 
-  it('should handle l-diversity analysis errors', () => {
-    let output;
+  it('should handle k-map analysis errors', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [{field: {name: 'Age'}, infoType: {name: 'AGE'}}];
+    const regionCode = 'US';
+    const DATA_CONSTANTS = MOCK_DATA.K_MAP_ESTIMATION_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      regionCode,
+      quasiIds,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const kMapEstimationAnalysis = proxyquire('../kMapEstimationAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
     try {
-      output = execSync(
-        `node lDiversityAnalysis.js ${projectId} ${projectId} ${dataset} nonexistent ${topicName} ${subscriptionName} ${numericField}`
+      await kMapEstimationAnalysis(
+        projectId,
+        projectId,
+        datasetId,
+        sourceTableId,
+        topicName,
+        subscriptionName,
+        regionCode,
+        quasiIds[0].field.name,
+        quasiIds[0].infoType.name
       );
-    } catch (err) {
-      output = err.message;
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
     }
-    assert.include(output, 'fail');
+  });
+
+  // dlp_l_diversity
+  it('should perform l-diversity analysis on a single field', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [
+      {name: 'AGE', infoType: {name: 0}},
+      {name: 'MYSTERY', infoType: {name: 1}},
+    ];
+    const sensitiveAttribute = 'AGE';
+    const DATA_CONSTANTS = MOCK_DATA.L_DIVERSITY_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      sensitiveAttribute,
+      quasiIds,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const lDiversityAnalysis = proxyquire('../lDiversityAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    await lDiversityAnalysis(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      subscriptionName,
+      sensitiveAttribute,
+      'AGE,MYSTERY'
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle l-diversity analysis errors', async () => {
+    const jobName = 'test-job-name';
+    const quasiIds = [
+      {name: 'AGE', infoType: {name: 0}},
+      {name: 'MYSTERY', infoType: {name: 1}},
+    ];
+    const sensitiveAttribute = 'AGE';
+    const DATA_CONSTANTS = MOCK_DATA.L_DIVERSITY_ANALYSIS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      topicName,
+      sensitiveAttribute,
+      quasiIds,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const lDiversityAnalysis = proxyquire('../lDiversityAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    try {
+      await lDiversityAnalysis(
+        projectId,
+        projectId,
+        datasetId,
+        sourceTableId,
+        topicName,
+        subscriptionName,
+        sensitiveAttribute,
+        'AGE,MYSTERY'
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
+  });
+
+  // dlp_categorical_stats
+  it('should perform categorical risk analysis on a string field', async () => {
+    const jobName = 'test-job-name';
+    const numericalColumn = 'NAME';
+    const DATA_CONSTANTS = MOCK_DATA.CATEGORICAL_STATS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const categoricalRiskAnalysis = proxyquire(
+      '../categoricalRiskAnalysis.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+        '@google-cloud/pubsub': {PubSub: PubSub},
+      }
+    );
+    await categoricalRiskAnalysis(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      subscriptionName
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateDlpJob,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should handle error if categorical risk analysis job fails', async () => {
+    const jobName = 'test-job-name';
+    const numericalColumn = 'NAME';
+    const DATA_CONSTANTS = MOCK_DATA.CATEGORICAL_STATS(
+      projectId,
+      projectId,
+      datasetId,
+      sourceTableId,
+      numericalColumn,
+      topicName,
+      jobName
+    );
+    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createDlpJob',
+      mockCreateDlpJob
+    );
+
+    const topicHandlerStub = sinon.stub().returns({
+      get: sinon.stub().resolves([
+        {
+          subscription: sinon.stub().resolves({
+            removeListener: sinon.stub(),
+            on: sinon
+              .stub()
+              .withArgs('message')
+              .callsFake((eventName, handler) => {
+                handler(DATA_CONSTANTS.MOCK_MESSAGE);
+              }),
+          }),
+        },
+      ]),
+    });
+    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const categoricalRiskAnalysis = proxyquire('../categoricalRiskAnalysis', {
+      '@google-cloud/dlp': {DLP: DLP},
+      '@google-cloud/pubsub': {PubSub: PubSub},
+    });
+    try {
+      await categoricalRiskAnalysis(
+        projectId,
+        projectId,
+        datasetId,
+        sourceTableId,
+        numericalColumn,
+        topicName,
+        subscriptionName
+      );
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
   });
 
   // dlp_k_anonymity_with_entity_id

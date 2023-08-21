@@ -47,9 +47,8 @@ describe('Game Server Rollout Test', () => {
       parent: `projects/${projectId}/locations/global`,
       deploymentId: deploymentId,
     };
-    const [operation] = await deploymentClient.createGameServerDeployment(
-      request
-    );
+    const [operation] =
+      await deploymentClient.createGameServerDeployment(request);
     await operation.promise();
 
     const request2 = {
@@ -116,9 +115,8 @@ describe('Game Server Rollout Test', () => {
       ),
     };
 
-    const [rollout] = await deploymentClient.getGameServerDeploymentRollout(
-      request
-    );
+    const [rollout] =
+      await deploymentClient.getGameServerDeploymentRollout(request);
     assert.strictEqual(rollout.defaultGameServerConfig, '');
   });
 
@@ -164,9 +162,8 @@ describe('Game Server Rollout Test', () => {
 
     let rollout;
     try {
-      [rollout] = await deploymentClient.getGameServerDeploymentRollout(
-        request
-      );
+      [rollout] =
+        await deploymentClient.getGameServerDeploymentRollout(request);
     } catch (err) {
       if (err.message.includes(/The service is currently unavailable/)) {
         return;
@@ -200,9 +197,8 @@ describe('Game Server Rollout Test', () => {
         deploymentId
       ),
     };
-    const [operation2] = await deploymentClient.deleteGameServerDeployment(
-      request2
-    );
+    const [operation2] =
+      await deploymentClient.deleteGameServerDeployment(request2);
     await operation2.promise();
 
     // Delete the Realm

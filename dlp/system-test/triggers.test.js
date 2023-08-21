@@ -77,39 +77,6 @@ describe('triggers', () => {
     return triggerId;
   }
 
-  async function createHybridTrigger() {
-    const hybridJobTriggerId = `hybrid-job-trigger-${uuid.v4()}`;
-    await client.createJobTrigger({
-      parent: `projects/${projectId}/locations/global`,
-      triggerId: hybridJobTriggerId,
-      jobTrigger: {
-        triggers: [
-          {
-            manual: {},
-          },
-        ],
-        inspectJob: {
-          actions: [{jobNotificationEmails: {}}, {publishToStackdriver: {}}],
-          inspectConfig: {
-            infoTypes: [{name: 'EMAIL_ADDRESS'}],
-            minLikelihood: 'POSSIBLE',
-            includeQuote: true,
-          },
-          storageConfig: {
-            hybridOptions: {
-              description:
-                'Hybrid job for data from the comments field of a table that contains customer appointment bookings',
-              requiredFindingLabelKeys: ['appointment-bookings-comments'],
-              labels: {env: 'prod'},
-              tableOptions: {identifyingFields: [{name: 'booking_id'}]},
-            },
-          },
-        },
-      },
-    });
-    return hybridJobTriggerId;
-  }
-
   before(async () => {
     projectId = await client.getProjectId();
     fullTriggerName = `projects/${projectId}/locations/global/jobTriggers/${triggerName}`;
@@ -197,33 +164,6 @@ describe('triggers', () => {
     let output;
     try {
       output = execSync(`node updateTrigger.js ${projectId} BAD_TRIGGER_NAME`);
-    } catch (err) {
-      output = err.message;
-    }
-    assert.include(output, 'NOT_FOUND: Unknown trigger');
-  });
-
-  // dlp_inspect_data_to_hybrid_job_trigger
-  it('should send data for inspection to hybrid job trigger', async () => {
-    let output = '';
-    try {
-      tempTriggerName = await createHybridTrigger();
-      output = execSync(
-        `node inspectDataToHybridJobTrigger.js ${projectId} "My email is test@example.org" ${tempTriggerName}`
-      );
-    } catch (err) {
-      console.log(err);
-      output = err.message;
-    }
-    assert.match(output, /{}/);
-  });
-
-  it('should handle errors while sending data to hybrid job trigger', () => {
-    let output;
-    try {
-      output = execSync(
-        `node inspectDataToHybridJobTrigger.js ${projectId} "My email is test@example.org" BAD_HYBRID_TRIGGER_KEY`
-      );
     } catch (err) {
       output = err.message;
     }

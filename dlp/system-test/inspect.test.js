@@ -1294,4 +1294,173 @@ describe('inspect', () => {
       assert.equal(error.message, 'Failed');
     }
   });
+
+  // dlp_inspect_send_data_to_hybrid_job_trigger
+  it('should inspect data using hybrid job trigger that is inactive', async () => {
+    const jobName = 'test-job-name';
+    const string = 'My email is test@example.org';
+    const jobTriggerId = 'MOCK_JOB_TRIGGER_ID';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_SEND_DATA_TO_HYBRID_JOB_TRIGGER(
+      projectId,
+      string,
+      jobTriggerId,
+      jobName
+    );
+
+    const mockHybridInspectJobTrigger = sinon
+      .stub()
+      .resolves([{name: jobName}]);
+    const mockActivateJobTrigger = sinon.stub().resolves([{name: jobName}]);
+    const mockFinishDlpJob = sinon.stub().resolves();
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    const mockConsoleLog = sinon.stub();
+
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'hybridInspectJobTrigger',
+      mockHybridInspectJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'activateJobTrigger',
+      mockActivateJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'finishDlpJob',
+      mockFinishDlpJob
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectDataToHybridJobTrigger = proxyquire(
+      '../inspectDataToHybridJobTrigger.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+    await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
+    sinon.assert.calledOnceWithExactly(
+      mockHybridInspectJobTrigger,
+      DATA_CONSTANTS.REQUEST_HYBRID_INSPECT_JOB_TRIGGER
+    );
+    sinon.assert.calledOnce(mockGetDlpJob);
+  });
+
+  it('should inspect data using hybrid job trigger that is active', async () => {
+    const jobName = 'test-job-name';
+    const string = 'My email is test@example.org';
+    const jobTriggerId = 'MOCK_JOB_TRIGGER_ID';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_SEND_DATA_TO_HYBRID_JOB_TRIGGER(
+      projectId,
+      string,
+      jobTriggerId,
+      jobName
+    );
+
+    const mockHybridInspectJobTrigger = sinon
+      .stub()
+      .resolves([{name: jobName}]);
+    const mockActivateJobTrigger = sinon.stub().rejects({code: 3});
+    const mockFinishDlpJob = sinon.stub().resolves();
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
+    );
+    const mockConsoleLog = sinon.stub();
+    const mockListDlpJobs = sinon.stub().resolves([[{name: jobName}]]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'hybridInspectJobTrigger',
+      mockHybridInspectJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'activateJobTrigger',
+      mockActivateJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'finishDlpJob',
+      mockFinishDlpJob
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'listDlpJobs',
+      mockListDlpJobs
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectDataToHybridJobTrigger = proxyquire(
+      '../inspectDataToHybridJobTrigger.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+    await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
+    sinon.assert.calledOnceWithExactly(
+      mockHybridInspectJobTrigger,
+      DATA_CONSTANTS.REQUEST_HYBRID_INSPECT_JOB_TRIGGER
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockListDlpJobs,
+      DATA_CONSTANTS.REQUEST_LIST_DLP_JOBS
+    );
+  });
+
+  it('should handle error if hybrid job inspection fails', async () => {
+    const jobName = 'test-job-name';
+    const string = 'My email is test@example.org';
+    const jobTriggerId = 'MOCK_JOB_TRIGGER_ID';
+    const DATA_CONSTANTS = MOCK_DATA.INSPECT_SEND_DATA_TO_HYBRID_JOB_TRIGGER(
+      projectId,
+      string,
+      jobTriggerId,
+      jobName
+    );
+
+    const mockHybridInspectJobTrigger = sinon
+      .stub()
+      .resolves([{name: jobName}]);
+    const mockActivateJobTrigger = sinon
+      .stub()
+      .resolves([{name: jobTriggerId}]);
+    const mockFinishDlpJob = sinon.stub().resolves();
+    const mockGetDlpJob = sinon.fake.resolves(
+      DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
+    );
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'hybridInspectJobTrigger',
+      mockHybridInspectJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'activateJobTrigger',
+      mockActivateJobTrigger
+    );
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'finishDlpJob',
+      mockFinishDlpJob
+    );
+    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const inspectDataToHybridJobTrigger = proxyquire(
+      '../inspectDataToHybridJobTrigger.js',
+      {
+        '@google-cloud/dlp': {DLP: DLP},
+      }
+    );
+    await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
+    sinon.assert.calledOnce(mockGetDlpJob);
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'Job Failed, Please check the configuration.'
+    );
+  });
 });

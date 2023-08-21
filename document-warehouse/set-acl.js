@@ -56,7 +56,7 @@ async function main(
       // Full document resource name, e.g.:
       // projects/{project_id}/locations/{location}/documents/{document_id}
       request.resource = `projects/${projectId}/locations/${location}/documents/${documentId}`;
-      request.requestMetadata = {userInfo: {id: userId}};
+      //request.requestMetadata = {userInfo: {id: userId}};
     } else {
       // Full document resource name, e.g.: projects/{project_id}
       request.resource = `projects/${projectId}`;

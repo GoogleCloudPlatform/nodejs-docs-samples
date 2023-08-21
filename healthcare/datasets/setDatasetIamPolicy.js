@@ -52,9 +52,8 @@ const main = (
       },
     };
 
-    const dataset = await healthcare.projects.locations.datasets.setIamPolicy(
-      request
-    );
+    const dataset =
+      await healthcare.projects.locations.datasets.setIamPolicy(request);
     console.log(
       'Set dataset IAM policy:',
       JSON.stringify(dataset.data, null, 2)

@@ -76,9 +76,8 @@ describe('Game Servers Create Cluster Test', () => {
       // Provide full resource name of a Game Server Realm
       name: `projects/${projectId}/locations/${LOCATION}/realms/${realmId}/gameServerClusters/${gameClusterId}`,
     };
-    const [operation1] = await gameClustersClient.deleteGameServerCluster(
-      deleteClusterRequest
-    );
+    const [operation1] =
+      await gameClustersClient.deleteGameServerCluster(deleteClusterRequest);
     await operation1.promise();
 
     // Delete the realm

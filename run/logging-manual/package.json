@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 0",

@@ -8,6 +8,9 @@
     "test": "c8 mocha -p -j 2 test/index.test.js --exit",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=600000 --exit"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "author": "Google LLC",
   "license": "Apache-2.0",
   "devDependencies": {

@@ -9,18 +9,18 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "start": "node server/server.js",
-    "system-test": "c8 mocha test/*.test.js --timeout=60000 --exit",
+    "system-test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit",
     "test": "npm run system-test"
   },
   "dependencies": {
     "@google-cloud/cloud-sql-connector": "^0.5.0",
     "@google-cloud/functions-framework": "^3.0.0",
     "@google-cloud/logging-winston": "^5.0.0",
-    "@google-cloud/secret-manager": "^4.0.0",
+    "@google-cloud/secret-manager": "^5.0.0",
     "express": "^4.17.1",
     "pug": "^3.0.0",
     "tedious": "^16.1.0",

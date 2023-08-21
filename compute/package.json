@@ -3,7 +3,7 @@
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "repository": "googleapis/nodejs-compute",
   "private": true,
@@ -11,7 +11,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha test --timeout 1200000"
+    "test": "c8 mocha -p -j 2 test --timeout 1200000"
   },
   "dependencies": {
     "@google-cloud/compute": "^3.5.1",
@@ -20,7 +20,7 @@
     "nodemailer-smtp-transport": "^2.7.4"
   },
   "devDependencies": {
-    "@google-cloud/storage": "^6.0.0",
+    "@google-cloud/storage": "^7.0.0",
     "c8": "^8.0.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",

@@ -5,18 +5,18 @@
   "author": "Google LLC",
   "repository": "googleapis/nodejs-speech",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "*.js",
     "resources/"
   ],
   "scripts": {
-    "test": "c8 mocha system-test --timeout 600000"
+    "test": "c8 mocha -p -j 2 system-test --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/speech": "^5.1.0",
-    "@google-cloud/storage": "^6.0.0",
+    "@google-cloud/speech": "^6.0.0",
+    "@google-cloud/storage": "^7.0.0",
     "chalk": "^5.0.0",
     "fs.promises": "^0.1.2",
     "node-record-lpcm16": "^1.0.1",

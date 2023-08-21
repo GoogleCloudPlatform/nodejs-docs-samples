@@ -10,13 +10,13 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">=16.0.0"
   },
   "main": "main.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/app.test.js --timeout=10000 --exit",
-    "system-test": "c8 mocha test/system.test.js --timeout=480000 --exit"
+    "test": "c8 mocha -p -j 2 test/app.test.js --timeout=10000 --exit",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=480000 --exit"
   },
   "dependencies": {
     "express": "^4.17.1",

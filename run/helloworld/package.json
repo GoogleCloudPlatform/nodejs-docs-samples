@@ -6,11 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/index.test.js --exit",
-    "system-test": "NAME=Cloud c8 mocha test/system.test.js --timeout=180000"
+    "test": "c8 mocha -p -j 2 test/index.test.js --exit",
+    "system-test": "NAME=Cloud c8 mocha -p -j 2 test/system.test.js --timeout=180000"
   },
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">=16.0.0"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",

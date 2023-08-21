@@ -11,7 +11,7 @@
   "scripts": {
     "prepare": "npm run gcp-build",
     "pretest": "npm run gcp-build",
-    "test": "c8 mocha test/*.test.js --exit",
+    "test": "c8 mocha -p -j 2 test/*.test.js --exit",
     "lint": "gts lint",
     "start": "node ./index.js",
     "deploy": "gcloud app deploy",
@@ -22,7 +22,7 @@
     "gcp-build": "tsc -p ."
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^5.59.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "express": "^4.16.3"
   },
   "devDependencies": {

@@ -4,13 +4,13 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
-    "test": "c8 mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
+    "test": "c8 mocha -p -j 2 --loader=ts-node/esm --extension ts --timeout 600000 --exit"
   },
   "dependencies": {
     "@google-cloud/workflows": "^2.3.1"

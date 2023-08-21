@@ -18,6 +18,7 @@
 async function main(
   projectId = 'YOUR_PROJECT_ID',
   location = 'YOUR_PROJECT_LOCATION',
+  userId = 'user:xxxx@example.com',
   documentId = 'YOUR_DOCUMENT_ID'
 ) {
   // [START contentwarehouse_fetch_acl]
@@ -26,6 +27,7 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample.
    * const projectId = 'YOUR_PROJECT_ID';
    * const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
+   * const userId = "user:xxxx@example.com" // Format is "user:xxxx@example.com"
    * const documentId = 'YOUR_DOCUMENT_ID',
    */
 
@@ -43,6 +45,7 @@ async function main(
       // Full document resource name, e.g.:
       // projects/{project_id}/locations/{location}/documents/{document_id}
       request.resource = `projects/${projectId}/locations/${location}/documents/${documentId}`;
+      request.requestMetadata = {userInfo: {id: userId}};
     } else {
       // Full document resource name, e.g.: projects/{project_id}
       request.resource = `projects/${projectId}`;

@@ -7,6 +7,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/googleapis/nodejs-recaptcha-enterprise.git"

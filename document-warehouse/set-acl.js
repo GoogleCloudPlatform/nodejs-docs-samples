@@ -20,7 +20,6 @@ async function main(
   location = 'YOUR_PROJECT_LOCATION',
   policyRole = 'YOUR_REQUESTED_ROLE',
   policyMember = 'YOUR_REQUESTED_MEMBER',
-  userId = 'user:xxxx@example.com',
   documentId = 'YOUR_DOCUMENT_ID'
 ) {
   // [START contentwarehouse_set_acl]
@@ -30,7 +29,6 @@ async function main(
    * location = 'YOUR_PROJECT_LOCATION' // Format is 'us' or 'eu'
    * policyRole = 'YOUR_REQUESTED_ROLE',
    * policyMember = 'YOUR_REQUESTED_MEMBER',
-   * user_id = 'user:YOUR_SERVICE_ACCOUNT_ID' # Format is "user:xxxx@example.com"
    * document_id = 'YOUR_DOCUMENT_ID'
    */
 
@@ -56,7 +54,6 @@ async function main(
       // Full document resource name, e.g.:
       // projects/{project_id}/locations/{location}/documents/{document_id}
       request.resource = `projects/${projectId}/locations/${location}/documents/${documentId}`;
-      //request.requestMetadata = {userInfo: {id: userId}};
     } else {
       // Full document resource name, e.g.: projects/{project_id}
       request.resource = `projects/${projectId}`;

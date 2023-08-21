@@ -28,6 +28,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 const PROJECT_ID_FAILED = 'PROJECT_ID_WITHOUT_ACL';
+const USER_ID = 'user:xxxx@example.com';
 const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
 
 describe('Fetch document acl', () => {
@@ -53,7 +54,7 @@ describe('Fetch document acl', () => {
 
   it('should get acl given a documentId', async () => {
     const stdout = execSync(
-      `node ./fetch-acl.js ${projectNumber} ${location} ${DOCUMENT_ID}`,
+      `node ./fetch-acl.js ${projectNumber} ${location} ${USER_ID} ${DOCUMENT_ID}`,
       {cwd}
     );
     assert(stdout.startsWith('Success!'));

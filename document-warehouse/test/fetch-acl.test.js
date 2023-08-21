@@ -44,7 +44,7 @@ describe('Fetch document acl', () => {
 
   before(async () => {
     await getProjectNumber();
-  })
+  });
 
   it('should get acl given only a projectId', async () => {
     const stdout = execSync(`node ./fetch-acl.js ${projectNumber} `, {cwd});

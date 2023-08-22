@@ -29,7 +29,7 @@ const client: ExecutionsClient = new ExecutionsClient();
 // const projectId = 'my-project';
 // const location = 'us-central1';
 // const workflow = 'myFirstWorkflow';
-// const searchTerm = null;
+// const searchTerm = '';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -42,7 +42,7 @@ async function executeWorkflow(
   projectId: string,
   location: string,
   workflow: string,
-  searchTerm = ''
+  searchTerm: string
 ) {
   /**
    * Sleeps the process N number of milliseconds.

@@ -53,6 +53,7 @@ async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
   const runtimeArgs = searchTerm
     ? {searchTerm: searchTerm}
     : {};
+  // [START workflows_api_quickstart_execution]
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
@@ -89,6 +90,7 @@ async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
+  // [END workflows_api_quickstart_execution]
 }
 
 executeWorkflow(projectId, location, workflowName, searchTerm).catch(err => {

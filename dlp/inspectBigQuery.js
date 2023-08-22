@@ -17,7 +17,7 @@
 //  description: Inspects a BigQuery table using the Data Loss Prevention API using Pub/Sub for job notifications.
 //  usage: node inspectBigQuery.js my-project dataProjectId datasetId tableId topicId subscriptionId minLikelihood maxFindings infoTypes customInfoTypes
 
-function main(
+async function main(
   projectId,
   dataProjectId,
   datasetId,
@@ -158,11 +158,13 @@ function main(
     }
   }
 
-  inspectBigquery();
+  await inspectBigquery();
   // [END dlp_inspect_bigquery]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
@@ -193,3 +195,5 @@ function transformCLI(infoTypes, customInfoTypes) {
 
   return [infoTypes, customInfoTypes];
 }
+
+module.exports = main;

@@ -53,9 +53,7 @@ async function executeWorkflow(
     });
   }
   // Runtime arguments can be passed as a JSON string
-  const runtimeArgs = searchTerm
-    ? {searchTerm: searchTerm}
-    : {};
+  const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({

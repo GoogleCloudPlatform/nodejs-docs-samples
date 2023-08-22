@@ -50,9 +50,8 @@ async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
       setTimeout(resolve, ms);
     });
   }
-  const runtimeArgs = searchTerm
-    ? {searchTerm: searchTerm}
-    : {};
+  // Runtime arguments can be passed as a JSON string
+  const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({

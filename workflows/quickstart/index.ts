@@ -42,7 +42,7 @@ async function executeWorkflow(
   projectId: string,
   location: string,
   workflow: string,
-  searchTerm = ''
+  searchTerm: string = ''
 ) {
   /**
    * Sleeps the process N number of milliseconds.

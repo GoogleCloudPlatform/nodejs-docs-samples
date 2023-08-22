@@ -32,7 +32,7 @@ const client = new ExecutionsClient();
 // const projectId = 'my-project';
 // const location = 'us-central1';
 // const workflow = 'myFirstWorkflow';
-// const searchTerm = null;
+// const searchTerm = '';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
@@ -41,7 +41,7 @@ const client = new ExecutionsClient();
  * @param {string} workflow The workflow name
  * @param {string} searchTerm Optional search term to pass to the Workflow as a runtime argument
  */
-async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
+async function executeWorkflow(projectId, location, workflow, searchTerm) {
   /**
    * Sleeps the process N number of milliseconds.
    * @param {Number} ms The number of milliseconds to sleep.

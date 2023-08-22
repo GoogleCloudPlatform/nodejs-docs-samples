@@ -50,9 +50,7 @@ async function executeWorkflow(projectId, location, workflow, searchTerm = '') {
       setTimeout(resolve, ms);
     });
   }
-  const runtimeArgs = searchTerm
-    ? {searchTerm: searchTerm}
-    : {};
+  const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
   // [START workflows_api_quickstart_execution]
   // Execute workflow
   try {

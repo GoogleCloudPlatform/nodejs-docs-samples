@@ -18,7 +18,7 @@
 // title: Create stored infotype.
 // description: Uses the Data Loss Prevention API to create a stored infotype.
 // usage: node createStoredInfoType.js projectId  infoTypeId, outputPath, dataProjectId, datasetId, tableId, fieldName
-function main(
+async function main(
   projectId,
   infoTypeId,
   outputPath,
@@ -99,7 +99,7 @@ function main(
     // Print results
     console.log(`InfoType stored successfully: ${response.name}`);
   }
-  createStoredInfoType();
+  await createStoredInfoType();
   // [END dlp_create_stored_infotype]
 }
 
@@ -108,4 +108,7 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
+module.exports = main;

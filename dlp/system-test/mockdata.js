@@ -1197,6 +1197,57 @@ const MOCK_DATA = {
       nack: sinon.stub(),
     },
   }),
+  CREATE_STORED_INFOTYPE: (
+    projectId,
+    infoTypeId,
+    outputPath,
+    dataProjectId,
+    datasetId,
+    tableId,
+    fieldName
+  ) => ({
+    REQUEST_CREATE_DLP_JOB: {
+      parent: `projects/${projectId}/locations/global`,
+      config: {
+        displayName: 'GitHub usernames',
+        description: 'Dictionary of GitHub usernames used in commits',
+        largeCustomDictionary: {
+          outputPath: {
+            path: outputPath,
+          },
+          bigQueryField: {
+            table: {
+              datasetId: datasetId,
+              projectId: dataProjectId,
+              tableId: tableId,
+            },
+            field: {
+              name: fieldName,
+            },
+          },
+        },
+      },
+      storedInfoTypeId: infoTypeId,
+    },
+  }),
+  UPDATE_STORED_INFOTYPE: (projectId, infoTypeId, outputPath, fileSetUrl) => ({
+    REQUEST_UPDATE_STORED_INFOTYPE: {
+      name: `projects/${projectId}/storedInfoTypes/${infoTypeId}`,
+      config: {
+        largeCustomDictionary: {
+          outputPath: {
+            path: outputPath,
+          },
+          cloudStorageFileSet: {
+            url: fileSetUrl,
+          },
+        },
+      },
+      updateMask: {
+        paths: ['large_custom_dictionary.cloud_storage_file_set.url'],
+      },
+    },
+  }),
 };
 
 module.exports = {MOCK_DATA};

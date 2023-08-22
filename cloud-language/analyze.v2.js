@@ -161,39 +161,6 @@ async function analyzeEntitiesInFile(bucketName, fileName) {
   // [END language_entities_gcs]
 }
 
-async function analyzeSyntaxOfText(text) {
-  // [START language_syntax_text]
-  // Imports the Google Cloud client library
-  const language = require('@google-cloud/language').v2;
-
-  // Creates a client
-  const client = new language.LanguageServiceClient();
-
-  /**
-   * TODO(developer): Uncomment the following line to run this code.
-   */
-  // const text = 'Your text to analyze, e.g. Hello, world!';
-
-  // Prepares a document, representing the provided text
-  const document = {
-    content: text,
-    type: 'PLAIN_TEXT',
-  };
-
-  // Need to specify an encodingType to receive word offsets
-  const encodingType = 'UTF8';
-
-  // Detects the sentiment of the document
-  const [syntax] = await client.analyzeSyntax({document, encodingType});
-
-  console.log('Tokens:');
-  syntax.tokens.forEach(part => {
-    console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-    console.log('Morphology:', part.partOfSpeech);
-  });
-  // [END language_syntax_text]
-}
-
 async function classifyTextOfText(text) {
   // [START language_classify_text]
   // Imports the Google Cloud client library
@@ -275,27 +242,6 @@ require('yargs')
     {},
     opts => analyzeEntitiesInFile(opts.bucketName, opts.fileName)
   )
-  .command('syntax-text <text>', 'Detects syntax of a string.', {}, opts =>
-    analyzeSyntaxOfText(opts.text)
-  )
-  .command(
-    'syntax-file <bucketName> <fileName>',
-    'Detects syntax in a file in Google Cloud Storage.',
-    {},
-    opts => analyzeSyntaxInFile(opts.bucketName, opts.fileName)
-  )
-  .command(
-    'entity-sentiment-text <text>',
-    'Detects sentiment of the entities in a string.',
-    {},
-    opts => analyzeEntitySentimentOfText(opts.text)
-  )
-  .command(
-    'entity-sentiment-file <bucketName> <fileName>',
-    'Detects sentiment of the entities in a file in Google Cloud Storage.',
-    {},
-    opts => analyzeEntitySentimentInFile(opts.bucketName, opts.fileName)
-  )
   .command('classify-text <text>', 'Classifies text of a string.', {}, opts =>
     classifyTextOfText(opts.text)
   )
@@ -320,13 +266,6 @@ require('yargs')
     'Detects entities in gs://my-bucket/file.txt'
   )
   .example(
-    'node $0 syntax-text "President Obama is speaking at the White House."'
-  )
-  .example(
-    'node $0 syntax-file my-bucket file.txt',
-    'Detects syntax in gs://my-bucket/file.txt'
-  )
-  .example(
     'node $0 entity-sentiment-text "President Obama is speaking at the White House."'
   )
   .example(
@@ -335,10 +274,6 @@ require('yargs')
   )
   .example(
     'node $0 classify-text "Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."'
-  )
-  .example(
-    'node $0 classify-file my-bucket android_text.txt',
-    'Detects syntax in gs://my-bucket/android_text.txt'
   )
   .wrap(120)
   .recommendCommands()

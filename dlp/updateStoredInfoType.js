@@ -18,7 +18,7 @@
 //  title: Update stored infoType.
 //  description: Uses the Data Loss Prevention API to update a stored infoType.
 //  usage: node updateStoredInfoType.js projectId  infoTypeId, outputPath, fileSetUrl
-function main(projectId, infoTypeId, outputPath, fileSetUrl) {
+async function main(projectId, infoTypeId, outputPath, fileSetUrl) {
   // [START dlp_update_stored_infotype]
   // Import the required libraries
   const dlp = require('@google-cloud/dlp');
@@ -68,7 +68,7 @@ function main(projectId, infoTypeId, outputPath, fileSetUrl) {
     // Print the results.
     console.log(`InfoType updated successfully: ${JSON.stringify(response)}`);
   }
-  updateStoredInfoType();
+  await updateStoredInfoType();
   // [END dlp_update_stored_infotype]
 }
 
@@ -77,4 +77,7 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
+module.exports = main;

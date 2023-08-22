@@ -22,9 +22,10 @@ const workflowName = process.argv[4] || 'myFirstWorkflow';
 const searchTerm = process.argv[5] || '';
 
 // [START workflows_api_quickstart]
+// [START workflows_api_quickstart_client_libraries]
 const {ExecutionsClient} = require('@google-cloud/workflows');
 const client = new ExecutionsClient();
-
+// [END workflows_api_quickstart_client_libraries]
 /**
  * TODO(developer): Uncomment these variables before running the sample.
  */

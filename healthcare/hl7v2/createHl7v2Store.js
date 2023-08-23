@@ -41,9 +41,9 @@ const main = (
       hl7V2StoreId: hl7v2StoreId,
       resource: {
         parserConfig: {
-          version: 'V3'
-        }
-      }
+          version: 'V3',
+        },
+      },
     };
 
     await healthcare.projects.locations.datasets.hl7V2Stores.create(request);

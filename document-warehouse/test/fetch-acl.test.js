@@ -29,6 +29,7 @@ const cwd = path.join(__dirname, '..');
 
 const PROJECT_ID_FAILED = 'PROJECT_ID_WITHOUT_ACL';
 const DOCUMENT_ID = 'YOUR_DOCUMENT_ID';
+const USER_ID = 'user:xxxx@example.com';
 
 describe('Fetch document acl', () => {
   let projectNumber;
@@ -39,21 +40,22 @@ describe('Fetch document acl', () => {
     const request = {name: `projects/${projectId}`};
     const project = await projectClient.getProject(request);
     const resources = project[0].name.toString().split('/');
-    projectNumber = resources[resources.length - 1];
+    return resources[resources.length - 1];
   }
 
   before(async () => {
-    await getProjectNumber();
+    projectNumber = await getProjectNumber();
   });
 
   it('should get acl given only a projectId', async () => {
     const stdout = execSync(`node ./fetch-acl.js ${projectNumber} `, {cwd});
+    console.log(stdout);
     assert(stdout.startsWith('Success!'));
   });
 
   it('should get acl given a documentId', async () => {
     const stdout = execSync(
-      `node ./fetch-acl.js ${projectNumber} ${location} serviceAccount:kokoro-system-test@long-door-651.iam.gserviceaccount.com ${DOCUMENT_ID}`,
+      `node ./fetch-acl.js ${projectNumber} ${location} ${USER_ID} ${DOCUMENT_ID}`,
       {cwd}
     );
     assert(stdout.startsWith('Success!'));

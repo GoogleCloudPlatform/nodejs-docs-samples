@@ -6,17 +6,17 @@
   "author": "Google LLC",
   "repository": "GoogleCloudPlatform/nodejs-docs-samples",
   "engines": {
-    "node": ">=12.0.0"
+    "node": "20.5.1"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 system-test/*.test.js --timeout=60000"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0"
+    "c8": "8.0.1",
+    "mocha": "10.2.0",
+    "uuid": "9.0.0"
   },
   "dependencies": {
-    "@googleapis/healthcare": "^10.0.0"
+    "@googleapis/healthcare": "10.2.0"
   }
 }

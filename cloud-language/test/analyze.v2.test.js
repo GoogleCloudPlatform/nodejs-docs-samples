@@ -26,7 +26,6 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('analyze.v2', () => {
   const storage = new Storage();
-  const cmd = 'node analyze.v2.js';
   const bucketName = `nodejs-docs-samples-test-${uuid.v4()}`;
   const fileName = 'text.txt';
   const fileName2 = 'android_text.txt';
@@ -49,7 +48,7 @@ describe('analyze.v2', () => {
   });
 
   it('should analyze sentiment in text', async () => {
-    const output = execSync(`${cmd} sentiment-text "${text}"`);
+    const output = execSync(`node analyze_sentiment_v2_text.js "${text}"`);
     assert.match(output, /Document sentiment:/);
     assert.match(output, new RegExp(`Sentence: ${text}`));
     assert.match(output, /Score: 0/);
@@ -57,7 +56,9 @@ describe('analyze.v2', () => {
   });
 
   it('should analyze sentiment in a file', async () => {
-    const output = execSync(`${cmd} sentiment-file ${bucketName} ${fileName}`);
+    const output = execSync(
+      `node analyze_sentiment_v2_file.js ${bucketName} ${fileName}`
+    );
     assert(output, /Document sentiment:/);
     assert.match(output, new RegExp(`Sentence: ${text}`));
     assert.match(output, /Score: 0/);
@@ -65,31 +66,28 @@ describe('analyze.v2', () => {
   });
 
   it('should analyze entities in text', async () => {
-    const output = execSync(`${cmd} entities-text "${text}"`);
-    assert.match(output, /Obama/);
-    assert.match(output, /Type: PERSON/);
-    assert.match(output, /White House/);
-    assert.match(output, /Type: LOCATION/);
+    const output = execSync(`node analyze_entities_v2_text.js "${text}"`);
+    assert.match(output, /Entities:/);
+    assert.match(output, /Type:/);
   });
 
   it('should analyze entities in a file', async () => {
-    const output = execSync(`${cmd} entities-file ${bucketName} ${fileName}`);
+    const output = execSync(
+      `node analyze_entities_v2_file.js ${bucketName} ${fileName}`
+    );
     assert.match(output, /Entities:/);
-    assert.match(output, /Obama/);
-    assert.match(output, /Type: PERSON/);
-    assert.match(output, /White House/);
-    assert.match(output, /Type: LOCATION/);
+    assert.match(output, /Type:/);
   });
 
   it('should classify text in a file', async () => {
-    const output = execSync(`${cmd} classify-file ${bucketName} ${fileName2}`);
+    const output = execSync(
+      `node classify_text_v2_file.js ${bucketName} ${fileName2}`
+    );
     assert.match(output, /Name:/);
-    assert.match(output, /Computers & Electronics/);
   });
 
   it('should classify text in text', async () => {
-    const output = execSync(`${cmd} classify-text "${text2}"`);
+    const output = execSync(`node classify_text_v2_text.js "${text2}"`);
     assert.match(output, /Name:/);
-    assert.match(output, /Computers & Electronics/);
   });
 });

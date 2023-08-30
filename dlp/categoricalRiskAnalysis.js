@@ -19,7 +19,7 @@
 //   description: Computes risk metrics of a column of data in a Google BigQuery table.
 //   usage: node categoricalRiskAnalysis.js my-project nhtsa_traffic_fatalities accident_2015 state_name my-topic my-subscription bigquery-public-data
 
-function main(
+async function main(
   projectId,
   tableProjectId,
   datasetId,
@@ -150,12 +150,16 @@ function main(
     });
   }
 
-  categoricalRiskAnalysis();
+  await categoricalRiskAnalysis();
   // [END dlp_categorical_stats]
 }
 
-main(...process.argv.slice(2));
+// TODO(developer): Please uncomment below line before running sample
+// main(...process.argv.slice(2));
+
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
 });
+
+module.exports = main;

@@ -4,18 +4,18 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 2400000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^2.3.0",
-    "@google-cloud/bigquery": "^6.0.0",
-    "@google-cloud/storage": "^6.0.0"
+    "@google-cloud/bigquery": "^7.0.0",
+    "@google-cloud/storage": "^7.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

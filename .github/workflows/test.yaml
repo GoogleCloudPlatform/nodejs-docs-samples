@@ -43,7 +43,7 @@ jobs:
         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
         create_credentials_file: 'true'
         access_token_lifetime: 600s
-    - uses: actions/setup-node@v3.6.0
+    - uses: actions/setup-node@v3.8.0
       with:
         node-version: 16
     - name: Get npm cache directory
@@ -62,13 +62,13 @@ jobs:
       working-directory: .
     - name: install directory dependencies
       run: npm install
-    - run: npm run build
-      continue-on-error: true
-    - name: set env vars for scheduled run
+    - run: npm run build --if-present
+    - name: set testing env vars
+      run: echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+    - name: set testing env vars for scheduled run
       if: github.event.action == 'schedule'
       run: |
         echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
-        echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: npm test
     - name: upload test results for FlakyBot workflow

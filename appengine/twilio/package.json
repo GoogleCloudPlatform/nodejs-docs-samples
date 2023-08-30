@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "c8 mocha test/*.test.js"
+    "test": "c8 mocha -p -j 2 test/*.test.js"
   },
   "dependencies": {
     "express": "^4.16.4",

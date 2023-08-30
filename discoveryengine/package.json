@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "*.js"
@@ -13,7 +13,7 @@
     "test": "mocha test/*.js --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/discoveryengine": "^0.8.0",
+    "@google-cloud/discoveryengine": "^1.0.0",
     "p-queue": "^6.6.2"
   },
   "devDependencies": {

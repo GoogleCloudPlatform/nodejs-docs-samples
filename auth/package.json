@@ -9,17 +9,17 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
-    "test:auth": "c8 mocha system-test/auth.test.js --timeout=30000",
-    "test:downscoping": "c8 mocha system-test/downscoping.test.js --timeout=30000",
+    "test:auth": "c8 mocha -p -j 2 system-test/auth.test.js --timeout=30000",
+    "test:downscoping": "c8 mocha -p -j 2 system-test/downscoping.test.js --timeout=30000",
     "test": "npm -- run system-test",
-    "system-test": "c8 mocha system-test/*.test.js --timeout=30000"
+    "system-test": "c8 mocha -p -j 2 system-test/*.test.js --timeout=30000"
   },
   "dependencies": {
-    "@google-cloud/storage": "^6.0.0",
-    "google-auth-library": "^8.0.0",
+    "@google-cloud/storage": "^7.0.0",
+    "google-auth-library": "^9.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

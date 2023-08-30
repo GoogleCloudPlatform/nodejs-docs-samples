@@ -19,13 +19,19 @@ const {describe, it, before} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid');
 const DLP = require('@google-cloud/dlp');
+const {Storage} = require('@google-cloud/storage');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
+
+const {MOCK_DATA} = require('./mockdata');
 
 const dataProject = 'bigquery-public-data';
 const dataSetId = 'samples';
 const tableId = 'github_nested';
-const fieldId = 'url';
 
-const bucketName = process.env.BUCKET_NAME;
+const storage = new Storage();
+const testFile = 'resources/test.txt';
+const bucketName = `test-dlp-metadata-bucket-${uuid.v4()}`;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -35,10 +41,26 @@ describe('metadata', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
+    // Create a Cloud Storage bucket to be used for testing.
+    await storage.createBucket(bucketName);
+    await storage.bucket(bucketName).upload(testFile);
+    console.log(`Bucket ${bucketName} created.`);
+  });
+
+  after(async () => {
+    try {
+      const bucket = storage.bucket(bucketName);
+      await bucket.deleteFiles({force: true});
+      await bucket.delete();
+      console.log(`Bucket ${bucketName} deleted.`);
+    } catch (err) {
+      // ignore error
+    }
   });
 
   // Delete stored infotypes created in the snippets.
   afterEach(async () => {
+    sinon.restore();
     if (!storedInfoTypeId) {
       return;
     }
@@ -66,27 +88,147 @@ describe('metadata', () => {
   });
 
   // dlp_create_stored_infotype
-  it('should create a stored infotype', () => {
-    const infoTypeId = `stored-infoType-${uuid.v4()}`;
-    const infoTypeOutputPath = `gs://${bucketName}`;
-    const output = execSync(
-      `node createStoredInfoType.js ${projectId} ${infoTypeId} ${infoTypeOutputPath} ${dataProject} ${dataSetId} ${tableId} ${fieldId}`
+  it('should create a stored infotype', async () => {
+    const storedInfoTypeName = 'MOCK_INFOTYPE';
+    const infoTypeId = 'MOCK_INFOTYPE_ID';
+    const outputPath = 'MOCK_OUTPUT_PATH';
+    const fieldName = 'MOCK_FIELD';
+    const DATA_CONSTANTS = MOCK_DATA.CREATE_STORED_INFOTYPE(
+      projectId,
+      infoTypeId,
+      outputPath,
+      dataProject,
+      dataSetId,
+      tableId,
+      fieldName,
+      storedInfoTypeName
     );
-    assert.match(output, /InfoType stored successfully:/);
-    storedInfoTypeId = output.split(':')[1].trim();
+    const mockCreateStoredInfoType = sinon
+      .stub()
+      .resolves([{name: storedInfoTypeName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createStoredInfoType',
+      mockCreateStoredInfoType
+    );
+
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const createStoredInfoType = proxyquire('../createStoredInfoType', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+    await createStoredInfoType(
+      projectId,
+      infoTypeId,
+      outputPath,
+      dataProject,
+      dataSetId,
+      tableId,
+      fieldName
+    );
+    sinon.assert.calledOnceWithExactly(
+      mockCreateStoredInfoType,
+      DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
+    );
+    sinon.assert.calledWithExactly(
+      mockConsoleLog,
+      `InfoType stored successfully: ${storedInfoTypeName}`
+    );
   });
 
-  it('should handle stored infotype creation errors', () => {
-    let output;
-    const infoTypeId = `stored-infoType-${uuid.v4()}`;
-    const infoTypeOutputPath = 'INFOTYPE_OUTPUT_PATH';
+  it('should handle error while creating stored infotype', async () => {
+    const infoTypeId = 'MOCK_INFOTYPE_ID';
+    const outputPath = 'MOCK_OUTPUT_PATH';
+    const fieldName = 'MOCK_FIELD';
+    const mockCreateStoredInfoType = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'createStoredInfoType',
+      mockCreateStoredInfoType
+    );
+
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const createStoredInfoType = proxyquire('../createStoredInfoType', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
     try {
-      output = execSync(
-        `node createStoredInfoType.js BAD_PROJECT_ID ${infoTypeId} ${infoTypeOutputPath} ${dataProject} ${dataSetId} ${tableId} ${fieldId}`
+      await createStoredInfoType(
+        projectId,
+        infoTypeId,
+        outputPath,
+        dataProject,
+        dataSetId,
+        tableId,
+        fieldName
       );
-    } catch (err) {
-      output = err.message;
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
     }
-    assert.include(output, 'INVALID_ARGUMENT');
+  });
+
+  // dlp_update_stored_infotype
+  it('should update a stored infotype', async () => {
+    const storedInfoTypeName = 'MOCK_INFOTYPE';
+    const infoTypeId = 'MOCK_INFOTYPE_ID';
+    const outputPath = 'MOCK_OUTPUT_PATH';
+    const fileSetUrl = 'MOCK_FILE_SET_URL';
+    const DATA_CONSTANTS = MOCK_DATA.UPDATE_STORED_INFOTYPE(
+      projectId,
+      infoTypeId,
+      outputPath,
+      fileSetUrl
+    );
+    const mockUpdateStoredInfoType = sinon
+      .stub()
+      .resolves([{name: storedInfoTypeName}]);
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'updateStoredInfoType',
+      mockUpdateStoredInfoType
+    );
+
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const updateStoredInfoType = proxyquire('../updateStoredInfoType', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+    await updateStoredInfoType(projectId, infoTypeId, outputPath, fileSetUrl);
+
+    sinon.assert.calledWith(
+      mockUpdateStoredInfoType,
+      DATA_CONSTANTS.REQUEST_UPDATE_STORED_INFOTYPE
+    );
+    sinon.assert.calledWithMatch(
+      mockConsoleLog,
+      'InfoType updated successfully:'
+    );
+  });
+
+  it('should handle error while updating stored infotype', async () => {
+    const infoTypeId = 'MOCK_INFOTYPE_ID';
+    const outputPath = 'MOCK_OUTPUT_PATH';
+    const fileSetUrl = 'MOCK_FILE_SET_URL';
+    const mockUpdateStoredInfoType = sinon.stub().rejects(new Error('Failed'));
+    sinon.replace(
+      DLP.DlpServiceClient.prototype,
+      'updateStoredInfoType',
+      mockUpdateStoredInfoType
+    );
+
+    const mockConsoleLog = sinon.stub();
+    sinon.replace(console, 'log', mockConsoleLog);
+
+    const updateStoredInfoType = proxyquire('../updateStoredInfoType', {
+      '@google-cloud/dlp': {DLP: DLP},
+    });
+    try {
+      await updateStoredInfoType(projectId, infoTypeId, outputPath, fileSetUrl);
+    } catch (error) {
+      assert.equal(error.message, 'Failed');
+    }
   });
 });

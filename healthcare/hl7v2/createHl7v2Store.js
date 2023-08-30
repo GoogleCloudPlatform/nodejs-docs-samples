@@ -36,7 +36,15 @@ const main = (
     // const datasetId = 'my-dataset';
     // const hl7v2StoreId = 'my-hl7v2-store';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
-    const request = {parent, hl7V2StoreId: hl7v2StoreId};
+    const request = {
+      parent,
+      hl7V2StoreId: hl7v2StoreId,
+      resource: {
+        parserConfig: {
+          version: 'V3',
+        },
+      },
+    };
 
     await healthcare.projects.locations.datasets.hl7V2Stores.create(request);
     console.log(`Created HL7v2 store: ${hl7v2StoreId}`);

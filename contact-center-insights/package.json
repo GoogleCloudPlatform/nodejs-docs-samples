@@ -4,18 +4,18 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 600000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 600000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^6.0.0",
-    "@google-cloud/contact-center-insights": "^2.1.1",
-    "@google-cloud/pubsub": "^3.0.0"
+    "@google-cloud/bigquery": "^7.0.0",
+    "@google-cloud/contact-center-insights": "^3.0.0",
+    "@google-cloud/pubsub": "^4.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

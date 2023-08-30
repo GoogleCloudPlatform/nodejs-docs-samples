@@ -128,6 +128,20 @@ describe('samples', () => {
     assert.match(output, /Operation finished./);
   });
 
+  it('should create an instance with local SSD', async () => {
+    const projectId = await instancesClient.getProjectId();
+    const instanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
+
+    const output = execSync(`node createInstanceWithLocalSSD ${projectId} ${zone} ${instanceName}`);
+    assert.include(output, "Instance created with local SSD: ");
+
+    await instancesClient.delete({
+      project: projectId,
+      zone: zone,
+      instance: instanceName
+    });
+  }).timeout(100000);
+
   describe('usage export', () => {
     before(async () => {
       try {

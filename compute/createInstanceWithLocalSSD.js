@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function main(
-    projectId,
-    zone,
-    instanceName,
-) {
+function main(projectId, zone, instanceName) {
   // [START compute_instances_create_with_local_ssd]
   // TODO(developer): Uncomment and replace these variables before running the sample.
   // const projectId = 'YOUR_PROJECT_ID';
@@ -31,7 +27,7 @@ function main(
     const boot = true;
     const autoDelete = true;
     const diskType = `zones/${zone}/diskTypes/pd-standard}`;
-    const disks = []
+    const disks = [];
 
     // Get the latest debian image.
     // Retrieve the newest image that is part of a given family in a project.
@@ -40,21 +36,32 @@ function main(
     //    family: name of the image family you want to get image from.
     const imagesClient = new compute.ImagesClient();
     const [newestDebian] = await imagesClient.getFromFamily({
-      project: "debian-cloud",
-      family: "debian-11"
+      project: 'debian-cloud',
+      family: 'debian-11',
     });
 
     // Create the disks to be included in the instance.
-    disks.push(await createDiskFromImage(diskType, diskSizeGb, boot,
-        newestDebian.selfLink, autoDelete));
+    disks.push(
+      await createDiskFromImage(
+        diskType,
+        diskSizeGb,
+        boot,
+        newestDebian.selfLink,
+        autoDelete
+      )
+    );
     disks.push(await createLocalSsdDisk(zone));
 
     // Create the instance.
-    const [instance] = await createInstance(projectId, zone, instanceName,
-        disks);
+    const [instance] = await createInstance(
+      projectId,
+      zone,
+      instanceName,
+      disks
+    );
 
-    if (instance != null) {
-      console.log(`Instance created with local SSD: ${instance.name}`)
+    if (instance !== null) {
+      console.log(`Instance created with local SSD: ${instance.name}`);
     }
   }
 
@@ -78,8 +85,13 @@ function main(
   //
   //    autoDelete: boolean flag indicating whether this disk should be deleted
   //    with the VM that uses it.
-  async function createDiskFromImage(diskType, diskSizeGb, boot, sourceImage,
-      autoDelete) {
+  async function createDiskFromImage(
+    diskType,
+    diskSizeGb,
+    boot,
+    sourceImage,
+    autoDelete
+  ) {
     return {
       initializeParams: {
         sourceImage: sourceImage,
@@ -102,8 +114,8 @@ function main(
       type: 'SCRATCH',
       autoDelete: true,
       initializeParams: {
-        diskType: `zones/${zone}/diskTypes/local-ssd`
-      }
+        diskType: `zones/${zone}/diskTypes/local-ssd`,
+      },
     };
   }
 
@@ -122,12 +134,12 @@ function main(
     // machineType: machine type of the VM being created. This value uses the
     // following format: "zones/{zone}/machineTypes/{type_name}".
     // For example: "zones/europe-west3-c/machineTypes/f1-micro"
-    const typeName = "n1-standard-1";
+    const typeName = 'n1-standard-1';
     const machineType = `zones/${zone}/machineTypes/${typeName}`;
     // networkLink: name of the network you want the new instance to use.
     // For example: "global/networks/default" represents the network
     // named "default", which is created automatically for each project.
-    const networkLink = "global/networks/default";
+    const networkLink = 'global/networks/default';
 
     // Collect information into the Instance object.
     const [response] = await instancesClient.insert({
@@ -141,7 +153,7 @@ function main(
             name: networkLink,
           },
         ],
-        disks: disks
+        disks: disks,
       },
     });
 
@@ -160,7 +172,7 @@ function main(
     return instancesClient.get({
       project: projectId,
       zone: zone,
-      instance: instanceName
+      instance: instanceName,
     });
   }
 

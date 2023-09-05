@@ -49,8 +49,9 @@ async function main(tuningJobId, project, location = 'us-central1') {
       name,
     };
     // Get and print out a list of all the endpoints for this resource
-    const [response] =
-      await jobServiceClient.getHyperparameterTuningJob(request);
+    const [response] = await jobServiceClient.getHyperparameterTuningJob(
+      request
+    );
 
     console.log('Get hyperparameter tuning job response');
     console.log(`\tDisplay name: ${response.displayName}`);

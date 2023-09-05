@@ -54,8 +54,9 @@ async function main(modelId, evaluationId, project, location = 'us-central1') {
     };
 
     // Get and print out a list of all the evaluation slices for this resource
-    const [response] =
-      await modelServiceClient.listModelEvaluationSlices(request);
+    const [response] = await modelServiceClient.listModelEvaluationSlices(
+      request
+    );
     console.log('List model evaluation response', response);
     console.log(response);
   }

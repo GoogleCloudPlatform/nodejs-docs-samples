@@ -59,9 +59,8 @@ async function main(
     };
 
     // Get and print out a list of all the endpoints for this resource
-    const [response] = await modelServiceClient.getModelEvaluationSlice(
-      request
-    );
+    const [response] =
+      await modelServiceClient.getModelEvaluationSlice(request);
 
     console.log('Get model evaluation slice');
     console.log(`\tName : ${response.name}`);

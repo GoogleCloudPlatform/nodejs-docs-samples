@@ -43,7 +43,7 @@ function parseResponse(stdout) {
 
 let customJobId;
 
-describe.skip('AI platform create custom job', async function () {
+describe('AI platform create custom job', async function () {
   this.retries(2);
   it('should create a new custom job', async () => {
     const stdout = execSync(

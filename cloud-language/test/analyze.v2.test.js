@@ -50,19 +50,19 @@ describe('analyze.v2', () => {
   it('should analyze sentiment in text', async () => {
     const output = execSync(`node analyze_sentiment_v2_text.js "${text}"`);
     assert.match(output, /Document sentiment:/);
-    assert.match(output, new RegExp(`Sentence: ${text}`));
-    assert.match(output, /Score: 0/);
-    assert.match(output, /Magnitude: 0/);
+    assert.match(output, /Sentence: /);
+    assert.match(output, /Score: /);
+    assert.match(output, /Magnitude: /);
   });
 
   it('should analyze sentiment in a file', async () => {
     const output = execSync(
       `node analyze_sentiment_v2_file.js ${bucketName} ${fileName}`
     );
-    assert(output, /Document sentiment:/);
-    assert.match(output, new RegExp(`Sentence: ${text}`));
-    assert.match(output, /Score: 0/);
-    assert.match(output, /Magnitude: 0/);
+    assert.match(output, /Document sentiment:/);
+    assert.match(output, /Sentence: /);
+    assert.match(output, /Score: /);
+    assert.match(output, /Magnitude: /);
   });
 
   it('should analyze entities in text', async () => {

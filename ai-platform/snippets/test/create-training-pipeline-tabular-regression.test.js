@@ -43,7 +43,7 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe.skip('AI platform create training pipeline tabular regression', async function () {
+describe('AI platform create training pipeline tabular regression', async function () {
   this.retries(2);
   it('should create a new tabular regression training pipeline', async () => {
     const stdout = execSync(

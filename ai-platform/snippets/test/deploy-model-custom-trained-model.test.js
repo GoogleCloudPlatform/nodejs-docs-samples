@@ -32,8 +32,7 @@ const location = process.env.LOCATION;
 let deployedModelId;
 let endpointId;
 
-// TODO (#3302): temporarily skip this test to help test run stability diagnosis
-describe.skip('AI platform deploy model custom model', () => {
+describe('AI platform deploy model custom model', () => {
   it('should deploy the custom model in the specified endpoint', async () => {
     const endOut = execSync(
       `node ./create-endpoint.js ${endpointDisplayName} ${project} \

@@ -31,7 +31,7 @@ const location = process.env.LOCATION;
 
 let datasetId;
 
-describe.skip('AI platform create dataset image', () => {
+describe('AI platform create dataset image', () => {
   it('should create a new image dataset in the parent resource', async () => {
     const stdout = execSync(
       `node ./create-dataset-image.js ${datasetDisplayName} ${project} \

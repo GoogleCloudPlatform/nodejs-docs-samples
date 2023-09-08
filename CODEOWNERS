@@ -40,7 +40,7 @@ game-servers @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-s
 monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # SoDa teams
-cloud-sql @GoogleCloudPlatform/infra-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
+cloud-sql @GoogleCloudPlatform/infra-db-sdk @GoogleCloudPlatform/nodejs-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 storagetransfer @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/nodejs-samples-reviewers
 

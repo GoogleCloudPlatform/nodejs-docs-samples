@@ -14,11 +14,10 @@
  */
 
 'use strict';
-
 async function main(
   projectNumber = 'YOUR_PROJECT_NUMBER',
   location = 'YOUR_PROJECT_LOCATION',
-  schemaId = 'YOUR_DOCUMENT_SCHEMA_ID',
+  documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID',
 ) {
   // [START contentwarehouse_get_document_schema]
 
@@ -40,21 +39,16 @@ async function main(
     // Initialize request argument(s)
     const request = {};
 
-    // Full resource name of location, e.g.:
+    // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
-    const name = {
-      project: projectNumber,
-      location: `projects/${projectNumber}/locations/${location}/documentSchemas/${schemaId}`,
-      document_schema: schemaId,
-    }
-    request.name = name;
+    request.name = `projects/${projectNumber}/locations/${location}/documentSchemas/${documentSchemaId}`;
 
-    // Make request
+    // Make Request
     const response = serviceClient.getDocumentSchema(request);
 
     // Print out response
     response.then(
-      result => console.log(`${JSON.stringify(result)}`),
+      result => console.log(`Schema Found: ${JSON.stringify(result)}`),
       error => console.log(`${error}`)
     );
   }

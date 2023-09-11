@@ -24,6 +24,7 @@ const iamClient = new PoliciesClient();
 const projectClient = new ProjectsClient();
 
 const confirmationDeleted = 'Document Schema Deleted';
+const confirmationGet = 'Schema Found';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -59,6 +60,15 @@ describe('Create and delete document schema', () => {
     documentSchema = JSON.parse(output)[0];
 
     assert.notEqual(documentSchema, null);
+  });
+
+  it('should get created document schema', async () => {
+    getDocumentSchemaId();
+    const output = execSync(
+      `node get-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`
+    );
+
+    assert(output.startsWith(confirmationGet));
   });
 
   it('should delete a document schema', async () => {

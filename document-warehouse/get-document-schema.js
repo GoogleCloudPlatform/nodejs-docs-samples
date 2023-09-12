@@ -17,7 +17,7 @@
 async function main(
   projectNumber = 'YOUR_PROJECT_NUMBER',
   location = 'YOUR_PROJECT_LOCATION',
-  documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID',
+  documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID'
 ) {
   // [START contentwarehouse_get_document_schema]
 

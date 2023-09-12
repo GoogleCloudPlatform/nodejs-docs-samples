@@ -42,7 +42,8 @@ async function main(
 
     // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
-    request.name = `projects/${projectNumber}/locations/${location}/documentSchemas/${documentSchemaId}`;
+    const name = serviceClient.documentSchemaPath(projectNumber, location, documentSchemaId);
+    request.name = name;
 
     // Make Request
     const response = serviceClient.getDocumentSchema(request);

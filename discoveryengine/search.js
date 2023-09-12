@@ -67,7 +67,7 @@ async function main(
     const response = await client.search(request, {
       // Should disable autoPaginate to avoid iterate through all pages.
       autoPaginate: false,
-    })
+    });
     const results = response[IResponseParams.ISearchResponse].results;
 
     for (const result of results) {

@@ -32,7 +32,7 @@ const location = process.env.LOCATION;
 let deployedModelId;
 let endpointId;
 
-describe.skip('AI platform deploy model', () => {
+describe('AI platform deploy model', () => {
   it('should deploy the model in the specified endpoint', async () => {
     const endOut =
       execSync(`node ./create-endpoint.js ${endpointDisplayName} ${project} \

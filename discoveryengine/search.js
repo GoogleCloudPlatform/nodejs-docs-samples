@@ -57,10 +57,20 @@ async function main(
       servingConfig: name,
     };
 
-    // Perform search request
-    const response = await client.search(request);
+    const IResponseParams = {
+      ISearchResult: 0,
+      ISearchRequest: 1,
+      ISearchResponse: 2,
+    };
 
-    for (const result of response) {
+    // Perform search request
+    const response = await client.search(request, {
+      // Should disable autoPaginate to avoid iterate through all pages.
+      autoPaginate: false,
+    })
+    const results = response[IResponseParams.ISearchResponse].results;
+
+    for (const result of results) {
       console.log(result);
     }
   }

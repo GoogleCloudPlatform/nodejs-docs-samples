@@ -44,8 +44,9 @@ async function main(
     // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
     const name = serviceClient.documentSchemaPath(
       projectNumber,
-      location,
-      documentSchemaId);
+      location,     
+      documentSchemaId
+    );
     request.name = name;
 
     // Make Request

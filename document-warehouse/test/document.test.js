@@ -30,7 +30,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Document tests', () => {
   let projectNumber;
   const location = 'us';
-  const userId = 'serviceAccount:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
+  const userId =
+    'serviceAccount:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
 
   async function getProjectNumber() {
     const projectId = await iamClient.getProjectId();
@@ -40,7 +41,6 @@ describe('Document tests', () => {
     const projectNumber = resources[resources.length - 1];
     return projectNumber;
   }
-
 
   before(async () => {
     projectNumber = await getProjectNumber();

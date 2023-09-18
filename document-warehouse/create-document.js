@@ -17,7 +17,7 @@
 async function main(
   projectNumber = 'YOUR_PROJECT_NUMBER',
   location = 'YOUR_PROJECT_LOCATION',
-  userId = 'user:xxx@example.com',
+  userId = 'user:xxx@example.com'
 ) {
   // [START contentwarehouse_quickstart]
 
@@ -50,7 +50,7 @@ async function main(
 
     // Property Definition
     const propertyDefinition = {};
-    propertyDefinition.name = 'schema property 1'; // Must be unique within a document schema (case insensitive)
+    propertyDefinition.name = 'testPropertyDefinitionName'; // Must be unique within a document schema (case insensitive)
     propertyDefinition.displayName = 'searchable text';
     propertyDefinition.isSearchable = true;
     propertyDefinition.textTypeOptions = {};
@@ -58,24 +58,25 @@ async function main(
     // Document Schema
     const documentSchemaRequest = {};
     documentSchemaRequest.displayName = 'My Test Schema';
-    documentSchemaRequest.propertyDefinitions = [];
+    documentSchemaRequest.propertyDefinitions = [propertyDefinition];
 
     schemaRequest.documentSchema = documentSchemaRequest;
 
     // Create Document Schema
-    const documentSchema = await schemaClient.createDocumentSchema(schemaRequest);
+    const documentSchema =
+      await schemaClient.createDocumentSchema(schemaRequest);
 
     // Property Value Definition
     const documentProperty = {};
     documentProperty.name = propertyDefinition.name;
-    documentProperty.values = {textValues: ["GOOG"]}; //TODO: how to get the right object type for this?
+    documentProperty.textValues = {values: ['GOOG']};
 
     // Document Definition
     const document = {};
     document.displayName = 'My Test Document';
     document.documentSchemaName = documentSchema[0].name;
     document.plainText = "This is a sample of a document's text.";
-    document.properties = [];
+    document.properties = [documentProperty];
 
     documentRequest.document = document;
 

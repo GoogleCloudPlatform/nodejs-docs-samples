@@ -23,6 +23,7 @@ const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 const iamClient = new PoliciesClient();
 const projectClient = new ProjectsClient();
 
+const confirmationCreate = 'Document Schema Created';
 const confirmationDeleted = 'Document Schema Deleted';
 const confirmationGet = 'Schema Found';
 
@@ -60,7 +61,7 @@ describe('Document schema tests', () => {
     documentSchema = JSON.parse(output)[0];
     getDocumentSchemaId();
 
-    assert.notEqual(documentSchema, null);
+    assert(output.startsWith(confirmationCreate));
   });
 
   it('should get created document schema', async () => {

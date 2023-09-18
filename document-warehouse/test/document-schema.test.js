@@ -58,7 +58,7 @@ describe('Document schema tests', () => {
     const output = execSync(
       `node create-document-schema.js ${projectNumber} ${location}`
     );
-    documentSchema = JSON.parse(output)[0];
+    documentSchema = JSON.parse(output.slice(confirmationCreate.length + 2))[0];
     getDocumentSchemaId();
 
     assert(output.startsWith(confirmationCreate));

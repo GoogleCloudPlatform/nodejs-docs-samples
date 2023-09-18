@@ -63,7 +63,7 @@ async function main(
     schemaRequest.documentSchema = documentSchemaRequest;
 
     // Create Document Schema
-    const documentSchema = 
+    const documentSchema =
       await schemaClient.createDocumentSchema(schemaRequest);
 
     // Property Value Definition

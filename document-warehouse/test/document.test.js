@@ -31,7 +31,7 @@ describe('Document tests', () => {
   let projectNumber;
   const location = 'us';
   const userId =
-    'serviceAccount:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
+    'user:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
 
   async function getProjectNumber() {
     const projectId = await iamClient.getProjectId();

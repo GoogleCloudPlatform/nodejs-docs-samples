@@ -23,16 +23,14 @@ const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 const iamClient = new PoliciesClient();
 const projectClient = new ProjectsClient();
 
-const confirmationDeleted = 'Document Schema Deleted';
-const confirmationGet = 'Schema Found';
+const confirmationCreate = 'Document Created';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Document schema tests', () => {
+describe('Document tests', () => {
   let projectNumber;
-  let documentSchema;
-  let documentSchemaId;
   const location = 'us';
+  const userId = 'serviceAccount:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
 
   async function getProjectNumber() {
     const projectId = await iamClient.getProjectId();
@@ -43,39 +41,16 @@ describe('Document schema tests', () => {
     return projectNumber;
   }
 
-  function getDocumentSchemaId() {
-    const name = documentSchema.name;
-    const ids = name.split('/');
-    documentSchemaId = ids[ids.length - 1];
-  }
 
   before(async () => {
     projectNumber = await getProjectNumber();
   });
 
-  it('should create a document schema', async () => {
+  it('should create a document', async () => {
     const output = execSync(
-      `node create-document-schema.js ${projectNumber} ${location}`
-    );
-    documentSchema = JSON.parse(output)[0];
-    getDocumentSchemaId();
-
-    assert.notEqual(documentSchema, null);
-  });
-
-  it('should get created document schema', async () => {
-    const output = execSync(
-      `node get-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`
+      `node create-document.js ${projectNumber} ${location} ${userId}`
     );
 
-    assert(output.startsWith(confirmationGet));
-  });
-
-  it('should delete a document schema', async () => {
-    const output = execSync(
-      `node delete-document-schema.js ${projectNumber} ${location} ${documentSchemaId}`
-    );
-
-    assert(output.startsWith(confirmationDeleted));
+    assert(output.startsWith(confirmationCreate));
   });
 });

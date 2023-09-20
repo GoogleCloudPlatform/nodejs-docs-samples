@@ -57,10 +57,27 @@ async function main(
       servingConfig: name,
     };
 
-    // Perform search request
-    const response = await client.search(request);
+    const IResponseParams = {
+      ISearchResult: 0,
+      ISearchRequest: 1,
+      ISearchResponse: 2,
+    };
 
-    for (const result of response) {
+    // Perform search request
+    const response = await client.search(request, {
+      // Warning: Should always disable autoPaginate to avoid iterate through all pages.
+      //
+      // By default NodeJS SDK returns an iterable where you can iterate through all
+      // search results instead of only the limited number of results requested on
+      // pageSize, by sending multiple sequential search requests page-by-page while
+      // iterating, until it exhausts all the search results. This will be unexpected and
+      // may cause high Search API usage and long wait time, especially when the matched
+      // document numbers are huge.
+      autoPaginate: false,
+    });
+    const results = response[IResponseParams.ISearchResponse].results;
+
+    for (const result of results) {
       console.log(result);
     }
   }

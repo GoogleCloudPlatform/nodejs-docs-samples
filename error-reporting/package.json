@@ -9,19 +9,19 @@
     "!test/"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": "20.7.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "^3.0.4",
-    "express": "^4.16.3"
+    "@google-cloud/error-reporting": "3.0.5",
+    "express": "4.18.2"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "gaxios": "^6.0.0",
-    "mocha": "^10.0.0"
+    "c8": "8.0.1",
+    "chai": "4.3.8",
+    "gaxios": "6.1.1",
+    "mocha": "10.2.0"
   }
 }

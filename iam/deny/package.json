@@ -8,18 +8,18 @@
         "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
     },
     "engines": {
-        "node": ">=16.0.0"
+        "node": "20.7.0"
     },
     "scripts": {
         "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
     },
     "dependencies": {
-        "@google-cloud/iam": "^1.0.0"
+        "@google-cloud/iam": "1.0.1"
     },
     "devDependencies": {
-        "c8": "^8.0.0",
-        "chai": "^4.2.0",
-        "mocha": "^10.0.0",
-        "uuid": "^9.0.0"
+        "c8": "8.0.1",
+        "chai": "4.3.8",
+        "mocha": "10.2.0",
+        "uuid": "9.0.1"
     }
 }

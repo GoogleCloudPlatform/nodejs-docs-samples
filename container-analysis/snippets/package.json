@@ -8,20 +8,20 @@
     "*.js"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": "20.7.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 --timeout 100000 test/**.test.js"
   },
   "dependencies": {
-    "@google-cloud/containeranalysis": "^4.4.1",
-    "@google-cloud/pubsub": "^4.0.0",
-    "p-retry": "^5.0.0"
+    "@google-cloud/containeranalysis": "4.7.0",
+    "@google-cloud/pubsub": "4.0.6",
+    "p-retry": "5.1.2"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0"
+    "c8": "8.0.1",
+    "chai": "4.3.8",
+    "mocha": "10.2.0",
+    "uuid": "9.0.1"
   }
 }

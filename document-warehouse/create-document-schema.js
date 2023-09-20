@@ -41,7 +41,7 @@ async function main(
 
     // Property Definition
     const propertyDefinition = {};
-    propertyDefinition.name = 'schema property 1'; // Must be unique within a document schema (case insensitive)
+    propertyDefinition.name = 'testPropertyDefinitionName'; // Must be unique within a document schema (case insensitive)
     propertyDefinition.displayName = 'searchable text';
     propertyDefinition.isSearchable = true;
     propertyDefinition.textTypeOptions = {};
@@ -49,7 +49,7 @@ async function main(
     // Document Schema
     const documentSchema = {};
     documentSchema.displayName = 'My Test Schema';
-    documentSchema.propertyDefinitions = [];
+    documentSchema.propertyDefinitions = [propertyDefinition];
 
     request.documentSchema = documentSchema;
 
@@ -62,7 +62,8 @@ async function main(
 
     // Print out response
     response.then(
-      result => console.log(`${JSON.stringify(result)}`),
+      result =>
+        console.log(`Document Schema Created: ${JSON.stringify(result)}`),
       error => console.log(`${error}`)
     );
   }

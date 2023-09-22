@@ -19,7 +19,7 @@ async function main(
   location = 'YOUR_PROJECT_LOCATION',
   userId = 'user:xxx@example.com'
 ) {
-  // [START contentwarehouse_quickstart]
+  // [START contentwarehouse_create_document]
 
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -93,7 +93,7 @@ async function main(
     );
   }
 
-  // [END contentwarehouse_quickstart]
+  // [END contentwarehouse_create_document]
   await quickstart();
 }
 

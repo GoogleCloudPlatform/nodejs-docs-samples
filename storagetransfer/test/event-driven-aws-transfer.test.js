@@ -19,46 +19,51 @@
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 
-const {BucketManager, TransferJobManager, QueueManager, runSample} = require('./utils');
+const {
+  BucketManager,
+  TransferJobManager,
+  QueueManager,
+  runSample,
+} = require('./utils');
 
 describe('event-driven-aws-transfer', () => {
-    const testBucketManager = new BucketManager();
-    const testTransferJobManager = new TransferJobManager();
-    const testQueueManager = new QueueManager();
+  const testBucketManager = new BucketManager();
+  const testTransferJobManager = new TransferJobManager();
+  const testQueueManager = new QueueManager();
 
-    let projectId;
-    let s3SourceBucket;
-    let gcsSinkBucket;
-    let sqsQueueArn;
+  let projectId;
+  let s3SourceBucket;
+  let gcsSinkBucket;
+  let sqsQueueArn;
 
-    before(async () => {
-        testBucketManager.setupS3();
-        projectId = await testBucketManager.getProjectId();
-        s3SourceBucket = (await testBucketManager.generateS3Bucket());
-        gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
-        sqsQueueArn = await testQueueManager.generateSqsQueueArn();
-        console.log("Arn: " + sqsQueueArn);
-    });
+  before(async () => {
+    testBucketManager.setupS3();
+    projectId = await testBucketManager.getProjectId();
+    s3SourceBucket = await testBucketManager.generateS3Bucket();
+    gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
+    sqsQueueArn = await testQueueManager.generateSqsQueueArn();
+    console.log('Arn: ' + sqsQueueArn);
+  });
 
-    after(async () => {
-        await testBucketManager.deleteBuckets();
-        await testTransferJobManager.cleanUp();
-        await testQueueManager.deleteSqsQueues();
-    });
+  after(async () => {
+    await testBucketManager.deleteBuckets();
+    await testTransferJobManager.cleanUp();
+    await testQueueManager.deleteSqsQueues();
+  });
 
-    it('should create an event driven aws transfer', async () => {
-        const output = await runSample('event-driven-aws-transfer', [
-            projectId,
-            s3SourceBucket,
-            gcsSinkBucket,
-            sqsQueueArn
-        ]);
+  it('should create an event driven aws transfer', async () => {
+    const output = await runSample('event-driven-aws-transfer', [
+      projectId,
+      s3SourceBucket,
+      gcsSinkBucket,
+      sqsQueueArn,
+    ]);
 
-        assert.include(output, 'transferJobs/');
+    assert.include(output, 'transferJobs/');
 
-        // If it ran successfully and a job was created, delete it to clean up
-        const [jobName] = output.match(/transferJobs.*/);
+    // If it ran successfully and a job was created, delete it to clean up
+    const [jobName] = output.match(/transferJobs.*/);
 
-        testTransferJobManager.transferJobToCleanUp(jobName);
-    });
+    testTransferJobManager.transferJobToCleanUp(jobName);
+  });
 });

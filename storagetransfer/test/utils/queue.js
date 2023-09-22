@@ -22,75 +22,81 @@ const AWS = require('aws-sdk');
 const uuid = require('uuid');
 
 class QueueManager {
-    constructor() {
-        this.pubsub = new PubSub();
-        AWS.config.update({region: 'us-west-1'});
-        this.sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+  constructor() {
+    this.pubsub = new PubSub();
+    AWS.config.update({region: 'us-west-1'});
+    this.sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
-        /**
-         * @type {Topic[]}
-         */
-        this.pubsubTopics = [];
-        /**
-         * @type {Subscription[]}
-         */
-        this.pubsubSubscriptions = [];
-        /**
-         * @type {string[]}
-         */
-        this.sqsQueues = [];
+    /**
+     * @type {Topic[]}
+     */
+    this.pubsubTopics = [];
+    /**
+     * @type {Subscription[]}
+     */
+    this.pubsubSubscriptions = [];
+    /**
+     * @type {string[]}
+     */
+    this.sqsQueues = [];
+  }
+
+  async generatePubsubSubscriptionId() {
+    const topicId = `sts-topic-id-${uuid.v4()}`;
+    const topic = await this.pubsub.createTopic(topicId);
+    this.pubsubTopics.push(topic[0]);
+    const subscriptionId = `sts-subscription-id-${uuid.v4()}`;
+    const subscription = await this.pubsub
+      .topic(topicId)
+      .createSubscription(subscriptionId);
+    this.pubsubSubscriptions.push(subscription[0]);
+
+    return subscription[0].name;
+  }
+
+  async deletePubsubSubscriptionsAndTopics() {
+    for (const s of this.pubsubSubscriptions) {
+      this.pubsub.subscription(s.name).delete();
     }
-
-    async generatePubsubSubscriptionId() {
-        const topicId =  `sts-topic-id-${uuid.v4()}`;
-        const topic =  await(this.pubsub.createTopic(topicId));
-        this.pubsubTopics.push(topic[0]);
-        const subscriptionId = `sts-subscription-id-${uuid.v4()}`;
-        const subscription = await(this.pubsub.topic(topicId).createSubscription(subscriptionId));
-        this.pubsubSubscriptions.push(subscription[0]);
-
-        return subscription[0].name;
+    for (const t of this.pubsubTopics) {
+      this.pubsub.topic(t.name).delete();
     }
+  }
 
-    async deletePubsubSubscriptionsAndTopics() {
-        for(const s of this.pubsubSubscriptions) {
-            this.pubsub.subscription(s.name).delete();
+  async generateSqsQueueArn() {
+    return await new Promise((resolve, reject) => {
+      const queueName = `sts-queue-name-${uuid.v4()}`;
+      this.sqs.createQueue(
+        {QueueName: queueName},
+        (error, createQueueResult) => {
+          if (error) {
+            console.error(error);
+            return reject(error);
+          }
+          this.sqsQueues.push(createQueueResult.QueueUrl);
+          this.sqs.getQueueAttributes(
+            {
+              QueueUrl: createQueueResult.QueueUrl,
+              AttributeNames: ['QueueArn'],
+            },
+            (err, data) => {
+              if (err) {
+                console.error(err);
+                return reject(err);
+              }
+              resolve(data.Attributes['QueueArn']);
+            }
+          );
         }
-        for(const t of this.pubsubTopics) {
-            this.pubsub.topic(t.name).delete();
-        }
-    }
+      );
+    });
+  }
 
-    async generateSqsQueueArn() {
-        return await new Promise((resolve, reject) =>
-        {
-            const queueName = `sts-queue-name-${uuid.v4()}`;
-            this.sqs.createQueue({QueueName: queueName}, (error, createQueueResult) => {
-                if (error) {
-                    console.error(error);
-                    return reject(error);
-                }
-                this.sqsQueues.push(createQueueResult.QueueUrl);
-                this.sqs.getQueueAttributes({
-                    QueueUrl: createQueueResult.QueueUrl,
-                    AttributeNames: ["QueueArn"]
-                }, (err, data) => {
-                    if (err) {
-                        console.error(err);
-                        return reject(err);
-                    }
-                    resolve(data.Attributes["QueueArn"]);
-                });
-            });
-        });
+  async deleteSqsQueues() {
+    for (const q of this.sqsQueues) {
+      this.sqs.deleteQueue({QueueUrl: q});
     }
-
-    async deleteSqsQueues() {
-        for(const q of this.sqsQueues) {
-            this.sqs.deleteQueue({QueueUrl: q});
-        }
-    }
-
+  }
 }
 
 module.exports = {QueueManager};

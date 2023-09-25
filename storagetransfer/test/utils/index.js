@@ -19,9 +19,11 @@
 const bucket = require('./bucket');
 const sample = require('./sample');
 const transfer = require('./transfer');
+const queue = require('./queue');
 
 module.exports = {
   ...bucket,
   ...sample,
   ...transfer,
+  ...queue,
 };

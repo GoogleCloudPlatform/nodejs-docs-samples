@@ -16,7 +16,6 @@
 
 'use strict';
 
-// eslint-disable-next-line no-unused-vars
 const {PubSub} = require('@google-cloud/pubsub');
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
@@ -94,7 +93,7 @@ class QueueManager {
 
   async deleteSqsQueues() {
     for (const q of this.sqsQueues) {
-      this.sqs.deleteQueue({QueueUrl: q});
+      await this.sqs.deleteQueue({QueueUrl: q}).promise();
     }
   }
 }

@@ -21,7 +21,8 @@ on:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'
   pull_request:
-    types: [unlabeled]
+    branches-ignore:
+    - 'renovate/**'
     paths:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'

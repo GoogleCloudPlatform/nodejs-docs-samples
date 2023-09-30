@@ -14,16 +14,25 @@
 
 'use strict';
 
-function quickstart() {
-  // [START error_reporting_quickstart]
-  // Imports the Google Cloud client library
-  const {ErrorReporting} = require('@google-cloud/error-reporting');
+// [START error_reporting_quickstart]
+// Import the Google Cloud client library
+const {ErrorReporting} = require('@google-cloud/error-reporting');
 
+function quickstart() {
+  try {
+    throw new Error('Something went wrong');
+  } catch (exception) {
+    reportError(exception);
+  }
+}
+
+function reportError(exception) {
   // Instantiates a client
   const errors = new ErrorReporting();
 
-  // Reports a simple error
-  errors.report('Something broke!');
-  // [END error_reporting_quickstart]
+  // Reports an exception
+  errors.report(exception.stack);
 }
+// [END error_reporting_quickstart]
+
 quickstart();

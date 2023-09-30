@@ -18,8 +18,8 @@
     "@google-cloud/functions-framework": "^3.2.0",
     "@google-cloud/pubsub": "^4.0.0",
     "@google-cloud/storage": "^7.0.0",
-    "@google-cloud/translate": "^7.0.0",
-    "@google-cloud/vision": "^3.0.0",
+    "@google-cloud/translate": "^8.0.0",
+    "@google-cloud/vision": "^4.0.0",
     "cloudevents": "^8.0.0"
   },
   "devDependencies": {

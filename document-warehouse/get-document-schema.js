@@ -14,17 +14,18 @@
  */
 
 'use strict';
-
 async function main(
   projectNumber = 'YOUR_PROJECT_NUMBER',
-  location = 'YOUR_PROJECT_LOCATION'
+  location = 'YOUR_PROJECT_LOCATION',
+  documentSchemaId = 'YOUR_DOCUMENT_SCHEMA_ID'
 ) {
-  // [START contentwarehouse_create_document_schema]
+  // [START contentwarehouse_get_document_schema]
 
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    * const projectNumber = 'YOUR_PROJECT_NUMBER';
    * const location = 'YOUR_PROJECT_LOCATION'; // Format is 'us' or 'eu'
+   * const schemaId = 'YOUR_DOCUMENT_SCHEMA_ID';
    */
 
   // Import from google cloud
@@ -34,42 +35,32 @@ async function main(
   // Create service client
   const serviceClient = new DocumentSchemaServiceClient();
 
-  // Create Document Schema
-  async function createDocumentSchema() {
+  // Get Document Schema
+  async function getDocumentSchema() {
     // Initialize request argument(s)
     const request = {};
 
-    // Property Definition
-    const propertyDefinition = {};
-    propertyDefinition.name = 'testPropertyDefinitionName'; // Must be unique within a document schema (case insensitive)
-    propertyDefinition.displayName = 'searchable text';
-    propertyDefinition.isSearchable = true;
-    propertyDefinition.textTypeOptions = {};
-
-    // Document Schema
-    const documentSchema = {};
-    documentSchema.displayName = 'My Test Schema';
-    documentSchema.propertyDefinitions = [propertyDefinition];
-
-    request.documentSchema = documentSchema;
-
     // The full resource name of the location, e.g.:
-    // projects/{project_number}/locations/{location}
-    request.parent = `projects/${projectNumber}/locations/${location}`;
+    // projects/{project_number}/locations/{location}/documentSchemas/{document_schema_id}
+    const name = serviceClient.documentSchemaPath(
+      projectNumber,
+      location,
+      documentSchemaId
+    );
+    request.name = name;
 
     // Make Request
-    const response = serviceClient.createDocumentSchema(request);
+    const response = serviceClient.getDocumentSchema(request);
 
     // Print out response
     response.then(
-      result =>
-        console.log(`Document Schema Created: ${JSON.stringify(result)}`),
+      result => console.log(`Schema Found: ${JSON.stringify(result)}`),
       error => console.log(`${error}`)
     );
   }
 
-  // [END contentwarehouse_create_document_schema]
-  await createDocumentSchema();
+  // [END contentwarehouse_get_document_schema]
+  await getDocumentSchema();
 }
 
 main(...process.argv.slice(2)).catch(err => {

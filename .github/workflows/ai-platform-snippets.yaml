@@ -21,6 +21,7 @@ on:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'
   pull_request:
+    types: [unlabeled]
     paths:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'

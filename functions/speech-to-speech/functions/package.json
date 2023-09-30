@@ -35,7 +35,7 @@
     "@google-cloud/speech": "^6.0.0",
     "@google-cloud/storage": "^7.0.0",
     "@google-cloud/text-to-speech": "^5.0.0",
-    "@google-cloud/translate": "^7.0.0",
+    "@google-cloud/translate": "^8.0.0",
     "firebase-admin": "^11.0.0",
     "firebase-functions": "^4.0.0",
     "uuid": "^9.0.0"

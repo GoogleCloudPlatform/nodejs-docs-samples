@@ -59,7 +59,7 @@ describe('Document tests', () => {
     const output = execSync(
       `node quickstart.js ${projectNumber} ${location} ${userId}`
     );
-    document = JSON.parse(output.slice(confirmationCreate.length+2))[0]
+    document = JSON.parse(output.slice(confirmationCreate.length + 2))[0]
       .document;
     getDocumentId();
 

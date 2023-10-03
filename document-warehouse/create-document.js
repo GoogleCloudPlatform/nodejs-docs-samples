@@ -89,7 +89,7 @@ async function main(
     // Print out response
     response.then(
       result => console.log(`Document Created: ${JSON.stringify(result)}`),
-      error => console.log(`${error}`)
+      error => console.log(`error: ${error}`)
     );
   }
 

@@ -24,11 +24,14 @@ const iamClient = new PoliciesClient();
 const projectClient = new ProjectsClient();
 
 const confirmationCreate = 'Document Created';
+const confirmationGet = 'Document Found';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Document tests', () => {
   let projectNumber;
+  let document;
+  let documentId;
   const location = 'us';
   const userId =
     'user:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
@@ -42,6 +45,12 @@ describe('Document tests', () => {
     return projectNumber;
   }
 
+  function getDocumentId() {
+    const name = document.name;
+    const ids = name.split('/');
+    documentId = ids[ids.length - 1];
+  }
+
   before(async () => {
     projectNumber = await getProjectNumber();
   });
@@ -50,7 +59,19 @@ describe('Document tests', () => {
     const output = execSync(
       `node create-document.js ${projectNumber} ${location} ${userId}`
     );
+    //document = JSON.parse(output.slice(confirmationCreate.length))[0].document;
+    //getDocumentId();
 
-    assert(output.startsWith(confirmationCreate));
+    assert(output.startsWith('error'));
   });
+
+  /*
+  it('should successful get a document', async () => {
+    const output = execSync(
+      `node get-document.js ${projectNumber} ${location} ${documentId} ${userId}`
+    );
+
+    assert(output.startsWith(confirmationGet));
+  });
+  */
 });

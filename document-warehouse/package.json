@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "author": "Google LLC",
     "scripts": {
-        "test": "c8 mocha test/*test.js --timeout 600000"
+        "test": "c8 mocha test/*.test.js --timeout 600000"
     },
     "dependencies": {
         "@google-cloud/contentwarehouse": "^0.5.1",

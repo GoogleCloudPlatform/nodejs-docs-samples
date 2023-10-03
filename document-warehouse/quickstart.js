@@ -19,8 +19,7 @@ async function main(
   location = 'YOUR_PROJECT_LOCATION',
   userId = 'user:xxx@example.com'
 ) {
-  // [START contentwarehouse_create_document]
-
+  // [START contentwarehouse_quickstart]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    * const projectNumber = 'YOUR_PROJECT_NUMBER';
@@ -93,7 +92,7 @@ async function main(
     );
   }
 
-  // [END contentwarehouse_create_document]
+  // [END contentwarehouse_quickstart]
   await quickstart();
 }
 

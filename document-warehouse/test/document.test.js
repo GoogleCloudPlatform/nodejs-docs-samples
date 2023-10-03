@@ -57,7 +57,7 @@ describe('Document tests', () => {
 
   it('should create a document', async () => {
     const output = execSync(
-      `node create-document.js ${projectNumber} ${location} ${userId}`
+      `node quickstart.js ${projectNumber} ${location} ${userId}`
     );
     //document = JSON.parse(output.slice(confirmationCreate.length))[0].document;
     //getDocumentId();

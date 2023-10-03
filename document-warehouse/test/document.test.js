@@ -59,13 +59,12 @@ describe('Document tests', () => {
     const output = execSync(
       `node quickstart.js ${projectNumber} ${location} ${userId}`
     );
-    //document = JSON.parse(output.slice(confirmationCreate.length))[0].document;
-    //getDocumentId();
+    document = JSON.parse(output.slice(confirmationCreate.length))[0].document;
+    getDocumentId();
 
     assert(output.startsWith(confirmationCreate));
   });
 
-  /*
   it('should successful get a document', async () => {
     const output = execSync(
       `node get-document.js ${projectNumber} ${location} ${documentId} ${userId}`
@@ -73,5 +72,4 @@ describe('Document tests', () => {
 
     assert(output.startsWith(confirmationGet));
   });
-  */
 });

@@ -62,7 +62,7 @@ describe('Document tests', () => {
     //document = JSON.parse(output.slice(confirmationCreate.length))[0].document;
     //getDocumentId();
 
-    assert(output.startsWith('error'));
+    assert(output.startsWith(confirmationCreate));
   });
 
   /*

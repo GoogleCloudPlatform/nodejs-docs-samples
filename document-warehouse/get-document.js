@@ -31,8 +31,7 @@ async function main(
    */
 
   // Import from google cloud
-  const {DocumentServiceClient} =
-    require('@google-cloud/contentwarehouse').v1;
+  const {DocumentServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
   // Create service client
   const serviceClient = new DocumentServiceClient();

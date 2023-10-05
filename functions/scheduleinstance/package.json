@@ -21,6 +21,6 @@
     "sinon": "^15.0.0"
   },
   "dependencies": {
-    "@google-cloud/compute": "^3.1.0"
+    "@google-cloud/compute": "^4.0.0"
   }
 }

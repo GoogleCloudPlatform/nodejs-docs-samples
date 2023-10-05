@@ -48,7 +48,7 @@ describe('Document tests', () => {
 
   it('should create a document', async () => {
     const output = execSync(
-      `node create-document.js ${projectNumber} ${location} ${userId}`
+      `node quickstart.js ${projectNumber} ${location} ${userId}`
     );
 
     assert(output.startsWith(confirmationCreate));

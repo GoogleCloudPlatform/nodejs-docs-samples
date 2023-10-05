@@ -18,7 +18,7 @@
     "@google-cloud/pubsub": "^4.0.0",
     "@google-cloud/storage": "^7.0.0",
     "@google-cloud/translate": "^8.0.0",
-    "@google-cloud/vision": "^3.0.0"
+    "@google-cloud/vision": "^4.0.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

@@ -20,7 +20,6 @@ async function main(
   userId = 'user:xxx@example.com'
 ) {
   // [START contentwarehouse_quickstart]
-
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    * const projectNumber = 'YOUR_PROJECT_NUMBER';

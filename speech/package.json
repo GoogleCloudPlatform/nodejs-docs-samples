@@ -20,7 +20,7 @@
     "chalk": "^5.0.0",
     "fs.promises": "^0.1.2",
     "node-record-lpcm16": "^1.0.1",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

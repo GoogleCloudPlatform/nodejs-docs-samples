@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "mocha": "^10.0.0",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "supertest": "^6.0.0"
   }
 }

@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "node-fetch": "^2.6.1",
-    "sinon": "^15.0.0"
+    "sinon": "^16.0.0"
   }
 }

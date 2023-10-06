@@ -43,7 +43,7 @@ async function main(
 
     // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}/documents/{document_id}
-    documentRequest.name = `projects/${projectNumber}/locations/${location}/documents/${documentId}`;;
+    documentRequest.name = `projects/${projectNumber}/locations/${location}/documents/${documentId}`;
 
     // Metadata Definition
     documentRequest.requestMetadata = {userInfo: {id: userId}};

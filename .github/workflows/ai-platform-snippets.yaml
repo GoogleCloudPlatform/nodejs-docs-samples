@@ -33,7 +33,8 @@ on:
   - cron:  '0 0 * * 0'
 jobs:
   test:
-    if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+    if: (github.repository == 'GoogleCloudPlatform/nodejs-docs-samples' || github.repository == 'renovate-bot/nodejs-docs-samples') 
+        && (github.event.action != 'labeled' || github.event.label.name == 'actions:force-run')
     runs-on: ubuntu-latest
     timeout-minutes: 120
     permissions:
@@ -96,7 +97,16 @@ jobs:
       with:
         name: test-results
         path: ai-platform/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1        
+        retention-days: 1
+  remove_label:
+    # Ref: https://github.com/google-github-actions/auth#usage
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    if: |
+      github.event.action == 'labeled' &&
+      github.event.label.name == 'actions:force-run' && always()
+    uses: ./.github/workflows/remove-label.yaml
   flakybot:
     permissions:
       contents: 'read'

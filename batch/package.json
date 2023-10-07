@@ -10,8 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 600000 test/*.js",
-    "publish": "echo 'sample test; do not publish'"
+    "test": "c8 mocha -p -j 2 --timeout 500000 test/*.js"
   },
   "dependencies": {
     "@google-cloud/batch": "^1.0.0"

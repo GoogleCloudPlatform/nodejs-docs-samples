@@ -39,14 +39,12 @@ async function main(
   // Get Document Schema
   async function getDocument() {
     // Initialize request argument(s)
-    const documentRequest = {};
-
-    // The full resource name of the location, e.g.:
-    // projects/{project_number}/locations/{location}/documents/{document_id}
-    documentRequest.name = `projects/${projectNumber}/locations/${location}/documents/${documentId}`;
-
-    // Metadata Definition
-    documentRequest.requestMetadata = {userInfo: {id: userId}};
+    const documentRequest = {
+      // The full resource name of the document, e.g.:
+      // projects/{project_number}/locations/{location}/documents/{document_id}
+      name: serviceClient.projectLocationDocumentPath(projectNumber, location, documentId),
+      requestMetadata: {userInfo: {id: userId}}
+    };
 
     // Make Request
     const response = serviceClient.getDocument(documentRequest);

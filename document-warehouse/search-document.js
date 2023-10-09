@@ -47,16 +47,16 @@ async function main(
         query: documentQueryText,
         // File Type Filter
         fileTypeFilter: {
-          fileType: 'DOCUMENT'
-        }
+          fileType: 'DOCUMENT',
+        },
       },
       // Histogram Query
       histogramQueries: [
         {
-          histogramQuery: 'count("DocumentSchemaId")'
-        }
+          histogramQuery: 'count("DocumentSchemaId")',
+        },
       ],
-      requestMetadata: {userInfo: {id: userId}}
+      requestMetadata: {userInfo: {id: userId}},
     };
 
     // Make Request

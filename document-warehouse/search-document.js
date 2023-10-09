@@ -20,7 +20,7 @@ async function main(
   userId = 'user:xxx@example.com',
   documentQueryText = 'YOUR_DOCUMENT_QUERY'
 ) {
-  // [START contentwarehouse_quickstart]
+  // [START contentwarehouse_search_documents]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    * const projectNumber = 'YOUR_PROJECT_NUMBER';
@@ -72,7 +72,7 @@ async function main(
     );
   }
 
-  // [END contentwarehouse_quickstart]
+  // [END contentwarehouse_search_documents]
   await quickstart();
 }
 

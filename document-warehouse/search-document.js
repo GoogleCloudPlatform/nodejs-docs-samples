@@ -38,29 +38,26 @@ async function main(
   // Get Document Schema
   async function quickstart() {
     // Initialize request argument(s)
-    const searchRequest = {};
-
-    // The full resource name of the location, e.g.:
-    // projects/{project_number}/locations/{location}
-    searchRequest.parent = `projects/${projectNumber}/locations/${location}`;
-
-    // File Type Filter
-    const fileTypeFilter = {};
-    fileTypeFilter.fileType = 'DOCUMENT';
-
-    // Document Text Query
-    const documentQuery = {};
-    documentQuery.query = documentQueryText;
-    documentQuery.fileTypeFilter = fileTypeFilter;
-    searchRequest.documentQuery = documentQuery;
-
-    // Histogram Query
-    const histogramQuery = {};
-    histogramQuery.histogramQuery = 'count("DocumentSchemaId")';
-    searchRequest.histogramQueries = [histogramQuery];
-
-    // Metadata Definition
-    searchRequest.requestMetadata = {userInfo: {id: userId}};
+    const searchRequest = {
+      // The full resource name of the location, e.g.:
+      // projects/{project_number}/locations/{location}
+      parent: `projects/${projectNumber}/locations/${location}`,
+      // Document Text Query
+      documentQuery: {
+        query: documentQueryText,
+        // File Type Filter
+        fileTypeFilter: {
+          fileType: 'DOCUMENT'
+        }
+      },
+      // Histogram Query
+      histogramQueries: [
+        {
+          histogramQuery: 'count("DocumentSchemaId")'
+        }
+      ],
+      requestMetadata: {userInfo: {id: userId}}
+    };
 
     // Make Request
     const response = serviceClient.searchDocuments(searchRequest);

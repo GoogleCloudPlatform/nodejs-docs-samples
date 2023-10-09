@@ -36,7 +36,7 @@ async function main(
   const serviceClient = new DocumentServiceClient();
 
   // Get Document Schema
-  async function quickstart() {
+  async function searchDocuments() {
     // Initialize request argument(s)
     const searchRequest = {
       // The full resource name of the location, e.g.:
@@ -70,7 +70,7 @@ async function main(
   }
 
   // [END contentwarehouse_search_documents]
-  await quickstart();
+  await searchDocuments();
 }
 
 main(...process.argv.slice(2)).catch(err => {

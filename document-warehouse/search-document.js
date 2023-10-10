@@ -58,7 +58,6 @@ async function main(
           histogramQuery: 'count("DocumentSchemaId")',
         },
       ],
-      
       requestMetadata: {userInfo: {id: userId}},
     };
 

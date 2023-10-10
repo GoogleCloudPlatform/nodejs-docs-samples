@@ -62,7 +62,7 @@ async function main(
     };
 
     // Make Request
-    const response = serviceClient.searchDocuments(searchRequest);
+    const response = await serviceClient.searchDocuments(searchRequest);
 
     // Print out response
     response.then(

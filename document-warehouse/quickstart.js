@@ -83,7 +83,7 @@ async function main(
     documentRequest.requestMetadata = {userInfo: {id: userId}};
 
     // Make Request
-    const response = await serviceClient.createDocument(documentRequest);
+    const response = serviceClient.createDocument(documentRequest);
 
     // Print out response
     response.then(

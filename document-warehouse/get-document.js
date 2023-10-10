@@ -42,8 +42,12 @@ async function main(
     const documentRequest = {
       // The full resource name of the document, e.g.:
       // projects/{project_number}/locations/{location}/documents/{document_id}
-      name: serviceClient.projectLocationDocumentPath(projectNumber, location, documentId),
-      requestMetadata: {userInfo: {id: userId}}
+      name: serviceClient.projectLocationDocumentPath(
+        projectNumber,
+        location,
+        documentId
+      ),
+      requestMetadata: {userInfo: {id: userId}},
     };
 
     // Make Request

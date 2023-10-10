@@ -46,29 +46,35 @@ async function main(
       parent: parent,
       documentSchema: {
         displayName: 'My Test Schema',
-        propertyDefinitions: [{
-          name: 'testPropertyDefinitionName', // Must be unique within a document schema (case insensitive)
-          displayName: 'searchable text',
-          isSearchable: true,
-          textTypeOptions: {},
-        }],
+        propertyDefinitions:
+        [
+          {
+            name: 'testPropertyDefinitionName', // Must be unique within a document schema (case insensitive)
+            displayName: 'searchable text',
+            isSearchable: true,
+            textTypeOptions: {},
+          },
+        ],
       },
     };
 
     // Create Document Schema
     const documentSchema =
-        await schemaClient.createDocumentSchema(schemaRequest);
-    
+      await schemaClient.createDocumentSchema(schemaRequest);
+
     const documentRequest = {
       parent: parent,
       document: {
         displayName: 'My Test Document',
         documentSchemaName: documentSchema[0].name,
         plainText: "This is a sample of a document's text.",
-        properties: [{
-          name: 'testPropertyDefinitionName',
-          textValues: {values: ['GOOG']},
-        }],
+        properties:
+        [
+          {
+            name: 'testPropertyDefinitionName',
+            textValues: {values: ['GOOG']},
+          },
+        ],
       },
       requestMetadata: {userInfo: {id: userId}},
     };

@@ -25,6 +25,7 @@ const projectClient = new ProjectsClient();
 
 const confirmationCreate = 'Document Created';
 const confirmationGet = 'Document Found';
+const confirmationFound = 'Document Found';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -35,6 +36,7 @@ describe('Document tests', () => {
   const location = 'us';
   const userId =
     'user:kokoro-system-test@long-door-651.iam.gserviceaccount.com';
+  const queryText = 'sample';
 
   async function getProjectNumber() {
     const projectId = await iamClient.getProjectId();
@@ -72,5 +74,12 @@ describe('Document tests', () => {
     );
 
     assert(output.startsWith(confirmationGet));
+  });
+  it('should search and find a document', async () => {
+    const output = execSync(
+      `node search-document.js ${projectNumber} ${location} ${userId} ${queryText}`
+    );
+
+    assert(output.startsWith(confirmationFound));
   });
 });

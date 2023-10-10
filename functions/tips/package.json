@@ -9,17 +9,17 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "20.8.0"
   },
   "scripts": {
     "test": "echo \"Notice: tests moved into topic sub-directories\" && exit 0"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^4.0.0",
-    "mocha": "^10.0.0"
+    "@google-cloud/pubsub": "4.0.6",
+    "mocha": "10.2.0"
   },
   "devDependencies": {
-    "node-fetch": "^2.6.1",
-    "sinon": "^16.0.0"
+    "node-fetch": "2.7.0",
+    "sinon": "16.1.0"
   }
 }

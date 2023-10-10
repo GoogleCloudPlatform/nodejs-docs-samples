@@ -42,6 +42,7 @@ async function main(
       // The full resource name of the location, e.g.:
       // projects/{project_number}/locations/{location}
       parent: `projects/${projectNumber}/locations/${location}`,
+
       // Document Text Query
       documentQuery: {
         query: documentQueryText,
@@ -50,12 +51,14 @@ async function main(
           fileType: 'DOCUMENT',
         },
       },
+
       // Histogram Query
       histogramQueries: [
         {
           histogramQuery: 'count("DocumentSchemaId")',
         },
       ],
+      
       requestMetadata: {userInfo: {id: userId}},
     };
 

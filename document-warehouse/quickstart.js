@@ -46,7 +46,7 @@ async function main(
       parent: parent,
       documentSchema: {
         displayName: 'My Test Schema',
-        propertyDefinitions:[
+        propertyDefinitions: [
           {
             name: 'testPropertyDefinitionName', // Must be unique within a document schema (case insensitive)
             displayName: 'searchable text',
@@ -58,8 +58,9 @@ async function main(
     };
 
     // Create Document Schema
-    const documentSchema =
-      await schemaClient.createDocumentSchema(schemaRequest);
+    const documentSchema = await schemaClient.createDocumentSchema(
+      schemaRequest
+    );
 
     const documentRequest = {
       parent: parent,

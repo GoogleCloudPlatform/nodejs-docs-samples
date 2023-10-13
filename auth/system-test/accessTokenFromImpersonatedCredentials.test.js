@@ -21,9 +21,6 @@ const {execSync} = require('child_process');
 const cwd = path.join(__dirname, '..');
 const cmd = 'node accessTokenFromImpersonatedCredentials.js';
 
-const GOOGLE_CLOUD_PROJECT = 'long-door-651';
-process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
-
 const impersonatedServiceAccount = 'name@project.iam.gserviceaccount.com';
 const scope = 'https://www.googleapis.com/auth/cloud-platform';
 
@@ -32,5 +29,5 @@ it('should get an access token from an impersonated service account', () => {
     cwd,
     shell: true,
   });
-  assert.strictEqual(output.includes('Generated OAuth2 token.'), true);
+  assert.strictEqual(output.includes('Generated OAuth2 token'), true);
 });

@@ -62,7 +62,7 @@ function main(impersonatedServiceAccount, scope) {
     // to the target audience.
     const resp = await impersonatedCredentials.getAccessToken();
     // Token is in resp.token.
-    console.log('Generated OAuth2 token.');
+    console.log('Generated OAuth2 token with length %s', resp.token.length);
   }
 
   getAccessTokenFromImpersonatedCredentials();

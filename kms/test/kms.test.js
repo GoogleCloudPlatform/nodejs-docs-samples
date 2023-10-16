@@ -873,7 +873,6 @@ describe('Cloud KMS samples', () => {
       keyRingId,
       importedKeyId
     );
-    originalConsoleLog(createKeyResult.name);
 
     const createImportJobSample = require('../createImportJob');
     const createImportJobResult = await createImportJobSample.main(
@@ -911,6 +910,6 @@ describe('Cloud KMS samples', () => {
       importedKeyId,
       '1'
     );
-    assert.equal(checkKeyVersionStateResult, 'ENABLED');
+    assert.equal(checkKeyVersionStateResult.state, 'ENABLED');
   });
 });

@@ -43,9 +43,9 @@ async function main(
       parent: keyRingName,
       cryptoKeyId: id,
       cryptoKey: {
-        purpose: 'ASYMMETRIC_SIGN',
+        purpose: 'ENCRYPT_DECRYPT',
         versionTemplate: {
-          algorithm: 'EC_SIGN_P256_SHA256',
+          algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
           protectionLevel: 'HSM',
         },
         // Optional: ensure that only imported versions may be added to this key.

@@ -41,18 +41,10 @@ async function main(
   const cryptoKeyName = client.cryptoKeyPath(projectId, locationId, keyRingId, cryptoKeyId);
   const importJobName = client.importJobPath(projectId, locationId, keyRingId, importJobId);
 
-  // Depend on the NodeJS crypto package for local cryptography.
-  const crypto = require('crypto');
-
   async function wrapAndImportKey() {
-    // Generate an ECDSA keypair, and format the private key as PKCS #8 DER.
-    const { targetKey, } = crypto.generateKeyPairSync('ec', {
-      namedCurve: 'prime256v1',
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'der',
-      },
-    });
+    // Generate a 32-byte key to import.
+    const crypto = require('crypto');
+    const targetKey = crypto.randomBytes(32);
 
     const [importJob] = await client.getImportJob({ name: importJobName });
 
@@ -70,7 +62,7 @@ async function main(
     const [version] = await client.importCryptoKeyVersion({
       parent: cryptoKeyName,
       importJob: importJobName,
-      algorithm: 'EC_SIGN_P256_SHA256',
+      algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
       wrappedKey: wrappedTargetKey,
     });
 

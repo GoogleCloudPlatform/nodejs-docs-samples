@@ -31,6 +31,8 @@ const asymmetricSignRsaKeyId = v4();
 const hsmKeyId = v4();
 const symmetricKeyId = v4();
 const hmacKeyId = v4();
+const importJobId = v4();
+const importedKeyId = v4();
 
 const nodeMajorVersion = parseInt(process.version.match(/v?(\d+).*/)[1]);
 
@@ -43,6 +45,16 @@ const waitForState = async (name, state) => {
   while (version.state !== state) {
     await sleep(100);
     [version] = await client.getCryptoKeyVersion({name});
+  }
+};
+
+const waitForImportJobState = async (name, state) => {
+  const sleep = w => new Promise(r => setTimeout(r, w));
+
+  let [importJob] = await client.getImportJob({name});
+  while (importJob.state !== state) {
+    await sleep(100);
+    [importJob] = await client.getImportJob({name});
   }
 };
 
@@ -851,5 +863,54 @@ describe('Cloud KMS samples', () => {
     );
 
     assert.isTrue(result.success);
+  });
+
+  it('imports a key version (end to end)', async () => {
+    const createKeySample = require('../createKeyForImport');
+    await createKeySample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      importedKeyId
+    );
+
+    const createImportJobSample = require('../createImportJob');
+    const createImportJobResult = await createImportJobSample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      importJobId
+    );
+
+    await waitForImportJobState(createImportJobResult.name, 'ACTIVE');
+    const checkImportJobStateSample = require('../checkStateImportJob');
+    const checkImportJobStateResult = await checkImportJobStateSample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      importJobId
+    );
+    assert.equal(checkImportJobStateResult.state, 'ACTIVE');
+
+    const importManuallyWrappedKeySample = require('../importManuallyWrappedKey');
+    const importManuallyWrappedKeyResult =
+      await importManuallyWrappedKeySample.main(
+        projectId,
+        locationId,
+        keyRingId,
+        importedKeyId,
+        importJobId
+      );
+
+    await waitForState(importManuallyWrappedKeyResult.name, 'ENABLED');
+    const checkKeyVersionStateSample = require('../checkStateImportedKey');
+    const checkKeyVersionStateResult = await checkKeyVersionStateSample.main(
+      projectId,
+      locationId,
+      keyRingId,
+      importedKeyId,
+      '1'
+    );
+    assert.equal(checkKeyVersionStateResult.state, 'ENABLED');
   });
 });

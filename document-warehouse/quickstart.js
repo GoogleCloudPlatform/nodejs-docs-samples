@@ -37,50 +37,45 @@ async function main(
 
   // Get Document Schema
   async function quickstart() {
-    // Initialize request argument(s)
-    const schemaRequest = {};
-    const documentRequest = {};
-
     // The full resource name of the location, e.g.:
     // projects/{project_number}/locations/{location}
     const parent = `projects/${projectNumber}/locations/${location}`;
-    schemaRequest.parent = parent;
-    documentRequest.parent = parent;
 
-    // Property Definition
-    const propertyDefinition = {};
-    propertyDefinition.name = 'testPropertyDefinitionName'; // Must be unique within a document schema (case insensitive)
-    propertyDefinition.displayName = 'searchable text';
-    propertyDefinition.isSearchable = true;
-    propertyDefinition.textTypeOptions = {};
-
-    // Document Schema
-    const documentSchemaRequest = {};
-    documentSchemaRequest.displayName = 'My Test Schema';
-    documentSchemaRequest.propertyDefinitions = [propertyDefinition];
-
-    schemaRequest.documentSchema = documentSchemaRequest;
+    // Initialize request argument(s)
+    const schemaRequest = {
+      parent: parent,
+      documentSchema: {
+        displayName: 'My Test Schema',
+        propertyDefinitions: [
+          {
+            name: 'testPropertyDefinitionName', // Must be unique within a document schema (case insensitive)
+            displayName: 'searchable text',
+            isSearchable: true,
+            textTypeOptions: {},
+          },
+        ],
+      },
+    };
 
     // Create Document Schema
     const documentSchema =
       await schemaClient.createDocumentSchema(schemaRequest);
 
-    // Property Value Definition
-    const documentProperty = {};
-    documentProperty.name = propertyDefinition.name;
-    documentProperty.textValues = {values: ['GOOG']};
-
-    // Document Definition
-    const document = {};
-    document.displayName = 'My Test Document';
-    document.documentSchemaName = documentSchema[0].name;
-    document.plainText = "This is a sample of a document's text.";
-    document.properties = [documentProperty];
-
-    documentRequest.document = document;
-
-    // Metadata Definition
-    documentRequest.requestMetadata = {userInfo: {id: userId}};
+    const documentRequest = {
+      parent: parent,
+      document: {
+        displayName: 'My Test Document',
+        documentSchemaName: documentSchema[0].name,
+        plainText: "This is a sample of a document's text.",
+        properties: [
+          {
+            name: 'testPropertyDefinitionName',
+            textValues: {values: ['GOOG']},
+          },
+        ],
+      },
+      requestMetadata: {userInfo: {id: userId}},
+    };
 
     // Make Request
     const response = serviceClient.createDocument(documentRequest);
@@ -88,7 +83,7 @@ async function main(
     // Print out response
     response.then(
       result => console.log(`Document Created: ${JSON.stringify(result)}`),
-      error => console.log(`${error}`)
+      error => console.log(`error: ${error}`)
     );
   }
 

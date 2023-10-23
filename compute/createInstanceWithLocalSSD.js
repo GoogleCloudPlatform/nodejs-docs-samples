@@ -41,16 +41,15 @@ function main(projectId, zone, instanceName) {
     });
 
     // Create the disks to be included in the instance.
-    disks.push(
-      await createDiskFromImage(
-        diskType,
-        diskSizeGb,
-        boot,
-        newestDebian.selfLink,
-        autoDelete
-      )
+    disks.push(createDiskFromImage(
+            diskType,
+            diskSizeGb,
+            boot,
+            newestDebian.selfLink,
+            autoDelete
+        )
     );
-    disks.push(await createLocalSsdDisk(zone));
+    disks.push(createLocalSsdDisk(zone));
 
     // Create the instance.
     const [instance] = await createInstance(
@@ -85,7 +84,7 @@ function main(projectId, zone, instanceName) {
   //
   //    autoDelete: boolean flag indicating whether this disk should be deleted
   //    with the VM that uses it.
-  async function createDiskFromImage(
+  function createDiskFromImage(
     diskType,
     diskSizeGb,
     boot,
@@ -109,7 +108,7 @@ function main(projectId, zone, instanceName) {
   // no data and requires formatting before it can be used.
   // Args:
   //    zone: The zone in which the local SSD drive will be attached.
-  async function createLocalSsdDisk(zone) {
+  function createLocalSsdDisk(zone) {
     return {
       type: 'SCRATCH',
       autoDelete: true,

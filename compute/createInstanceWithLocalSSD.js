@@ -41,13 +41,14 @@ function main(projectId, zone, instanceName) {
     });
 
     // Create the disks to be included in the instance.
-    disks.push(createDiskFromImage(
-            diskType,
-            diskSizeGb,
-            boot,
-            newestDebian.selfLink,
-            autoDelete
-        )
+    disks.push(
+      createDiskFromImage(
+        diskType,
+        diskSizeGb,
+        boot,
+        newestDebian.selfLink,
+        autoDelete
+      )
     );
     disks.push(createLocalSsdDisk(zone));
 

@@ -16,28 +16,33 @@ const projectId =
   process.argv[2] || (process.env.GOOGLE_CLOUD_PROJECT as string);
 const location = process.argv[3] || 'us-central1';
 const workflowName = process.argv[4] || 'myFirstWorkflow';
+const searchTerm = process.argv[5] || '';
 
 // [START workflows_api_quickstart]
+// [START workflows_api_quickstart_client_libraries]
 import {ExecutionsClient} from '@google-cloud/workflows';
 const client: ExecutionsClient = new ExecutionsClient();
-
+// [END workflows_api_quickstart_client_libraries]
 /**
  * TODO(developer): Uncomment these variables before running the sample.
  */
 // const projectId = 'my-project';
 // const location = 'us-central1';
 // const workflow = 'myFirstWorkflow';
+// const searchTerm = '';
 
 /**
  * Executes a Workflow and waits for the results with exponential backoff.
  * @param {string} projectId The Google Cloud Project containing the workflow
  * @param {string} location The workflow location
  * @param {string} workflow The workflow name
+ * @param {string} searchTerm Optional search term to pass to the Workflow as a runtime argument
  */
 async function executeWorkflow(
   projectId: string,
   location: string,
-  workflow: string
+  workflow: string,
+  searchTerm: string
 ) {
   /**
    * Sleeps the process N number of milliseconds.
@@ -48,13 +53,15 @@ async function executeWorkflow(
       setTimeout(resolve, ms);
     });
   }
-
+  const runtimeArgs = searchTerm ? {searchTerm: searchTerm} : {};
+  // [START workflows_api_quickstart_execution]
   // Execute workflow
   try {
     const createExecutionRes = await client.createExecution({
       parent: client.workflowPath(projectId, location, workflow),
       execution: {
-        argument: JSON.stringify({}),
+        // Runtime arguments can be passed as a JSON string
+        argument: JSON.stringify(runtimeArgs),
       },
     });
     const executionName = createExecutionRes[0].name;
@@ -84,10 +91,13 @@ async function executeWorkflow(
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
   }
+  // [END workflows_api_quickstart_execution]
 }
 
-executeWorkflow(projectId, location, workflowName).catch((err: Error) => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+executeWorkflow(projectId, location, workflowName, searchTerm).catch(
+  (err: Error) => {
+    console.error(err.message);
+    process.exitCode = 1;
+  }
+);
 // [END workflows_api_quickstart]

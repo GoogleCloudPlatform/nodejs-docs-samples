@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "repository": "googleapis/nodejs-talent",
   "private": true,
@@ -12,12 +12,12 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 600000",
+    "test": "c8 mocha -p -j 2 --timeout 600000",
     "lint": "eslint src --ext .ts",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "@google-cloud/talent": "^5.0.0",
+    "@google-cloud/talent": "^6.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {

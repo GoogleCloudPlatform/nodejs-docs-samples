@@ -37,7 +37,7 @@ function main(
   zone,
   instanceName,
   machineType = 'n1-standard-1',
-  sourceImageFamily = 'windows-2012-r2',
+  sourceImageFamily = 'windows-2022',
   networkLink = 'global/networks/default',
   subnetworkLink = 'regions/europe-central2/subnetworks/default'
 ) {
@@ -49,7 +49,7 @@ function main(
   // const zone = 'europe-central2-b';
   // const instanceName = 'YOUR_INSTANCE_NAME';
   // const machineType = 'n1-standard-1';
-  // const sourceImageFamily = 'windows-2012-r2';
+  // const sourceImageFamily = 'windows-2022';
   // const networkLink = 'global/networks/default';
   // const subnetworkLink = 'regions/europe-central2/subnetworks/default';
 

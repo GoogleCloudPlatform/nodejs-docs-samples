@@ -7,20 +7,24 @@
   "author": "Google LLC",
   "scripts": {
     "start": "node index.js",
-    "system-test": "c8 mocha test/system.test.js --timeout=420000 --exit"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=420000 --exit"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   },
   "dependencies": {
     "@socket.io/redis-adapter": "^8.1.0",
     "express": "^4.18.2",
     "redis": "^4.6.5",
-    "socket.io": "^4.6.1"
+    "socket.io": "4.7.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "c8": "^8.0.0",
-    "google-auth-library": "^8.7.0",
+    "google-auth-library": "^9.0.0",
     "got": "^11.8.3",
     "mocha": "^10.2.0",
-    "puppeteer": "^20.0.0" 
+    "puppeteer": "^21.0.0"
   }
 }

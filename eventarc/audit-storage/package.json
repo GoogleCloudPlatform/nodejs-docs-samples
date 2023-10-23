@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "unit-test": "c8 mocha test/app.test.js --check-leaks",
+    "unit-test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
     "system-test": "test/runner.sh mocha test/system.test.js --timeout=11000",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run all-test"
@@ -27,7 +27,7 @@
     "c8": "^8.0.0",
     "got": "^11.5.0",
     "mocha": "^10.0.0",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "supertest": "^6.0.0"
   }
 }

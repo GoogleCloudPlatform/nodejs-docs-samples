@@ -1,5 +1,5 @@
 /**
- * Copyright 2022, Google, Inc.
+ * Copyright 2022 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,6 +40,7 @@ function main(projectId, location, sourceUri, adTagUri) {
       vodSession: {
         sourceUri: sourceUri,
         adTagUri: adTagUri,
+        adTracking: 'SERVER',
       },
     };
     const [session] = await stitcherClient.createVodSession(request);

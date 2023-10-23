@@ -36,9 +36,8 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}`;
     const request = {resource_};
 
-    const dataset = await healthcare.projects.locations.datasets.getIamPolicy(
-      request
-    );
+    const dataset =
+      await healthcare.projects.locations.datasets.getIamPolicy(request);
     console.log(
       'Got dataset IAM policy:',
       JSON.stringify(dataset.data, null, 2)

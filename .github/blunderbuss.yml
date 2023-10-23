@@ -27,12 +27,20 @@ assign_issues_by:
 - labels:
   - 'api: cloudsql'
   to:
-  - GoogleCloudPlatform/infra-db-dpes
+  - GoogleCloudPlatform/infra-db-sdk
 - labels:
-  - 'api: run'
+  - "api: appengine"
+  - "api: cloudbuild"
   - 'api: cloudfunctions'
+  - "api: cloudscheduler"
+  - "api: cloudtasks"
+  - "api: containeranalysis"
+  - "api: eventarc"
+  - "api: functions"
+  - "api: run"
+  - "api: workflows"
   to:
-  - GoogleCloudPlatform/aap-dpes
+  - GoogleCloudPlatform/torus-dpe  
 - labels:
   - 'api: dlp'
   to:
@@ -58,7 +66,20 @@ assign_prs_by:
 - labels:
   - 'api: cloudsql'
   to:
-  - GoogleCloudPlatform/infra-db-dpes
+  - GoogleCloudPlatform/infra-db-sdk
+- labels:
+  - "api: appengine"
+  - "api: cloudbuild"
+  - 'api: cloudfunctions'
+  - "api: cloudscheduler"
+  - "api: cloudtasks"
+  - "api: containeranalysis"
+  - "api: eventarc"
+  - "api: functions"
+  - "api: run"
+  - "api: workflows"
+  to:
+  - GoogleCloudPlatform/torus-dpe  
 - labels:
   - 'api: dlp'
   to:

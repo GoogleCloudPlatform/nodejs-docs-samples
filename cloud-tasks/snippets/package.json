@@ -5,17 +5,17 @@
   "author": "Google Inc.",
   "private": true,
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha --timeout 30000",
+    "test": "c8 mocha -p -j 2 --timeout 30000",
     "start": "node server.js"
   },
   "dependencies": {
-    "@google-cloud/tasks": "^3.0.4",
+    "@google-cloud/tasks": "^4.0.0",
     "express": "^4.16.3"
   },
   "devDependencies": {

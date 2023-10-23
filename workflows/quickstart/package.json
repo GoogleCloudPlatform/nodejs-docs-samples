@@ -4,23 +4,23 @@
   "main": "index.ts",
   "private": true,
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
-    "start": "node --loader=ts-node/esm index.ts",
+    "start": "node index.js",
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
     "test": "mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
   },
   "dependencies": {
-    "@google-cloud/workflows": "^2.3.1"
+    "@google-cloud/workflows": "^3.0.0",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.14.6",
-    "gts": "^3.1.1",
-    "mocha": "^10.2.0",
-    "ts-node": "^10.9.1"
+    "gts": "^5.0.0",
+    "mocha": "^10.2.0"
   }
 }

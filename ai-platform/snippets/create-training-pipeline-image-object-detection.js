@@ -58,7 +58,7 @@ async function main(
     const trainingTaskInputsObj =
       new definition.AutoMlImageObjectDetectionInputs({
         disableEarlyStopping: false,
-        modelType: ModelType.CLOUD_HIGH_ACCURACY_1,
+        modelType: ModelType.CLOUD_1,
         budgetMilliNodeHours: 20000,
       });
 
@@ -79,9 +79,8 @@ async function main(
     };
 
     // Create training pipeline request
-    const [response] = await pipelineServiceClient.createTrainingPipeline(
-      request
-    );
+    const [response] =
+      await pipelineServiceClient.createTrainingPipeline(request);
 
     console.log('Create training pipeline image object detection response');
     console.log(`Name : ${response.name}`);

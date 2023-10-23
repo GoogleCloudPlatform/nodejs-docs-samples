@@ -34,10 +34,67 @@ describe('triggers', () => {
   const minLikelihood = 'VERY_LIKELY';
   const maxFindings = 5;
   const bucketName = process.env.BUCKET_NAME;
+  let tempTriggerName = '';
+
+  async function createTempTrigger() {
+    const triggerId = `trigger-test-${uuid.v4()}`;
+    await client.createJobTrigger({
+      parent: `projects/${projectId}/locations/global`,
+      jobTrigger: {
+        inspectJob: {
+          inspectConfig: {
+            infoTypes: [{name: 'EMAIL_ADDRESS'}],
+            minLikelihood: 'LIKELIHOOD_UNSPECIFIED',
+            limits: {
+              maxFindingsPerRequest: 0,
+            },
+          },
+          storageConfig: {
+            cloudStorageOptions: {
+              fileSet: {url: `gs://${bucketName}/*`},
+            },
+            timeSpanConfig: {
+              enableAutoPopulationOfTimespanConfig: true,
+            },
+          },
+        },
+        displayName: triggerDisplayName,
+        description: triggerDescription,
+        triggers: [
+          {
+            schedule: {
+              recurrencePeriodDuration: {
+                seconds: 1 * 60 * 60 * 24, // Trigger the scan daily
+              },
+            },
+          },
+        ],
+        status: 'HEALTHY',
+      },
+      triggerId: triggerId,
+    });
+
+    return triggerId;
+  }
 
   before(async () => {
     projectId = await client.getProjectId();
     fullTriggerName = `projects/${projectId}/locations/global/jobTriggers/${triggerName}`;
+  });
+
+  // Delete triggers created in the snippets.
+  afterEach(async () => {
+    try {
+      if (tempTriggerName) {
+        const deleteJobTriggerRequest = {
+          name: `projects/${projectId}/locations/global/jobTriggers/${tempTriggerName}`,
+        };
+        await client.deleteJobTrigger(deleteJobTriggerRequest);
+        tempTriggerName = '';
+      }
+    } catch (err) {
+      throw `Error in deleting job/job trigger: ${err.message || err}`;
+    }
   });
 
   it('should create a trigger', () => {
@@ -87,5 +144,29 @@ describe('triggers', () => {
       output = err.message;
     }
     assert.include(output, 'fail');
+  });
+
+  // dlp_update_trigger
+  it('should update trigger', async () => {
+    let output = '';
+    try {
+      tempTriggerName = await createTempTrigger();
+      output = execSync(
+        `node updateTrigger.js ${projectId} ${tempTriggerName}`
+      );
+    } catch (err) {
+      output = err.message;
+    }
+    assert.match(output, /Updated Trigger:/);
+  });
+
+  it('should handle errors while updating trigger', () => {
+    let output;
+    try {
+      output = execSync(`node updateTrigger.js ${projectId} BAD_TRIGGER_NAME`);
+    } catch (err) {
+      output = err.message;
+    }
+    assert.include(output, 'NOT_FOUND: Unknown trigger');
   });
 });

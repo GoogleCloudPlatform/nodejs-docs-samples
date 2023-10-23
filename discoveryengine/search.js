@@ -19,7 +19,7 @@ async function main(
   projectId,
   location,
   collectionId,
-  searchEngineId,
+  dataStoreId,
   servingConfigId,
   searchQuery
 ) {
@@ -28,26 +28,33 @@ async function main(
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_LOCATION';              // Options: 'global'
+  // const location = 'YOUR_LOCATION';              // Options: 'global', 'us', 'eu'
   // const collectionId = 'default_collection';     // Options: 'default_collection'
-  // const searchEngineId = 'YOUR_SEARCH_ENGINE_ID' // Create in Cloud Console
+  // const dataStoreId = 'YOUR_DATA_STORE_ID'       // Create in Cloud Console
   // const servingConfigId = 'default_config';      // Options: 'default_config'
   // const searchQuery = 'Google';
 
   const {SearchServiceClient} = require('@google-cloud/discoveryengine').v1beta;
 
+  // For more information, refer to:
+  // https://cloud.google.com/generative-ai-app-builder/docs/locations#specify_a_multi-region_for_your_data_store
+  const apiEndpoint =
+    location === 'global'
+      ? 'discoveryengine.googleapis.com'
+      : `${location}-discoveryengine.googleapis.com`;
+
   // Instantiates a client
-  const client = new SearchServiceClient();
+  const client = new SearchServiceClient({apiEndpoint: apiEndpoint});
 
   async function search() {
     // The full resource name of the search engine serving configuration.
-    // Example: projects/{projectId}/locations/{location}/collections/{collectionId}/dataStores/{searchEngineId}/servingConfigs/{servingConfigId}
+    // Example: projects/{projectId}/locations/{location}/collections/{collectionId}/dataStores/{dataStoreId}/servingConfigs/{servingConfigId}
     // You must create a search engine in the Cloud Console first.
     const name = client.projectLocationCollectionDataStoreServingConfigPath(
       projectId,
       location,
       collectionId,
-      searchEngineId,
+      dataStoreId,
       servingConfigId
     );
 
@@ -57,10 +64,27 @@ async function main(
       servingConfig: name,
     };
 
-    // Perform search request
-    const response = await client.search(request);
+    const IResponseParams = {
+      ISearchResult: 0,
+      ISearchRequest: 1,
+      ISearchResponse: 2,
+    };
 
-    for (const result of response) {
+    // Perform search request
+    const response = await client.search(request, {
+      // Warning: Should always disable autoPaginate to avoid iterate through all pages.
+      //
+      // By default NodeJS SDK returns an iterable where you can iterate through all
+      // search results instead of only the limited number of results requested on
+      // pageSize, by sending multiple sequential search requests page-by-page while
+      // iterating, until it exhausts all the search results. This will be unexpected and
+      // may cause high Search API usage and long wait time, especially when the matched
+      // document numbers are huge.
+      autoPaginate: false,
+    });
+    const results = response[IResponseParams.ISearchResponse].results;
+
+    for (const result of results) {
       console.log(result);
     }
   }

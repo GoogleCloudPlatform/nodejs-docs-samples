@@ -9,13 +9,13 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">=16.0.0"
   },
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha test/app.test.js --exit",
-    "system-test": "c8 mocha test/system.test.js --timeout=360000 --exit"
+    "test": "c8 mocha -p -j 2 test/app.test.js --exit",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "dependencies": {
     "express": "^4.17.1",
@@ -23,10 +23,10 @@
   },
   "devDependencies": {
     "c8": "^8.0.0",
-    "google-auth-library": "^8.0.0",
+    "google-auth-library": "^9.0.0",
     "got": "^11.5.0",
     "mocha": "^10.0.0",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "supertest": "^6.0.0"
   }
 }

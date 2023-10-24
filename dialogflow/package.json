@@ -9,21 +9,21 @@
     "resources"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": "21.1.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 system-test --timeout=600000"
   },
   "dependencies": {
-    "@google-cloud/dialogflow": "^6.0.0",
-    "pb-util": "^1.0.0",
-    "yargs": "^17.0.0",
-    "@google-cloud/functions-framework": "^3.2.0"
+    "@google-cloud/dialogflow": "6.2.0",
+    "pb-util": "1.0.3",
+    "yargs": "17.7.2",
+    "@google-cloud/functions-framework": "3.3.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0"
+    "c8": "8.0.1",
+    "chai": "4.3.10",
+    "mocha": "10.2.0",
+    "uuid": "9.0.1"
   }
 }

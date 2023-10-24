@@ -19,7 +19,7 @@
   "devDependencies": {
     "c8": "^8.0.0",
     "mocha": "^10.0.0",
-    "nanoid": "^3.3.0",
+    "nanoid": "^5.0.0",
     "@google-cloud/storage": "^7.0.0",
     "@google-cloud/resource-manager": "^5.0.0",
     "@google-cloud/compute": "^4.0.0"    

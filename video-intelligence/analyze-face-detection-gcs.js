@@ -64,9 +64,9 @@ function main(gcsUri = 'YOUR_STORAGE_URI') {
 
         // Each segment includes timestamped objects that
         // include characteristics of the face detected.
-        const [firstTimestapedObject] = timestampedObjects;
+        const [firstTimestampedObject] = timestampedObjects;
 
-        for (const {name} of firstTimestapedObject.attributes) {
+        for (const {name} of firstTimestampedObject.attributes) {
           // Attributes include 'glasses', 'headwear', 'smiling'.
           console.log(`\tAttribute: ${name}; `);
         }

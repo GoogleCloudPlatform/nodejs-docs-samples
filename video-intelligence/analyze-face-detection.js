@@ -67,9 +67,9 @@ function main(path = 'YOUR_LOCAL_FILE') {
 
         // Each segment includes timestamped objects that
         // include characteristics of the face detected.
-        const [firstTimestapedObject] = timestampedObjects;
+        const [firstTimestampedObject] = timestampedObjects;
 
-        for (const {name} of firstTimestapedObject.attributes) {
+        for (const {name} of firstTimestampedObject.attributes) {
           // Attributes include 'glasses', 'headwear', 'smiling'.
           console.log(`\tAttribute: ${name}; `);
         }

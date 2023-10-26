@@ -56,7 +56,7 @@ describe('create windows os image tests', () => {
               diskName: diskName,
               diskSizeGb: '64',
               sourceImage:
-                'projects/windows-cloud/global/images/windows-server-2012-r2-dc-core-v20220314',
+                'projects/windows-cloud/global/images/windows-server-2022-dc-core-v20231011',
             },
             deviceName: diskName,
             autoDelete: true,

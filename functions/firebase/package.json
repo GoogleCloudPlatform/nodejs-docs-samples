@@ -19,6 +19,6 @@
     "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^6.0.0"
+    "@google-cloud/firestore": "^7.0.0"
   }
 }

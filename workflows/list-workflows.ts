@@ -14,7 +14,7 @@
 
 const [projectId, location] = process.argv.slice(2);
 
-// [START workflows_quickstart]
+// [START workflows_client_library]
 import {WorkflowsClient} from '@google-cloud/workflows';
 const client = new WorkflowsClient();
 
@@ -37,4 +37,4 @@ listWorkflows(projectId, location).catch((err: Error) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-// [END workflows_quickstart]
+// [END workflows_client_library]

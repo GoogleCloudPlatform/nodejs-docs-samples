@@ -5,6 +5,24 @@
 [shell_img]: http://gstatic.com/cloudssh/images/open-btn.png
 [shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=auth/README.md
 
+## Access token from impersonated credentials
+
+See the [documentation][auth-docs] for more information about authenticating for Google Cloud APIs.
+
+[auth-docs]: https://cloud.google.com/docs/authentication/production
+
+1. Install dependencies from `package.json`
+
+        $ npm install
+
+2. Set the environment variable `GOOGLE_CLOUD_PROJECT` to the project ID, set the environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the credential you're using. To run the sample, you need to provide the impersonated service account name and the scope.
+See the sample for information on how to set up the service accounts in your
+Google Cloud project.
+
+3. To run the individual accessTokenFromImpersonatedCredentials.js test, you can do:
+
+        $ npm run test:accessTokenFromImpersonatedCredentials
+
 ## Auth with Cloud Client
 
 See the [documentation][auth-docs] for more information about authenticating for Google Cloud APIs.

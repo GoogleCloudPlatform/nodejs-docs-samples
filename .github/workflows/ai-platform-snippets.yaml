@@ -43,7 +43,7 @@ jobs:
       run:
         working-directory: 'ai-platform/snippets'
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: uses: actions/checkout@v4.1.0
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@v1.1.1'

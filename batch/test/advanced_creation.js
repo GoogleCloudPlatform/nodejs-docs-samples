@@ -180,7 +180,7 @@ async function projectIdToNumber(projectId) {
   };
 
   // Run request
-  const response = resourcemanagerClient.getProject(request);
+  const response = await resourcemanagerClient.getProject(request);
   const projectNumber = response.name.split('/')[1];
   return projectNumber;
 }

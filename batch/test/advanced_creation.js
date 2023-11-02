@@ -180,7 +180,7 @@ async function projectIdToNumber(projectId) {
   };
 
   // Run request
-  const [response] = await resourcemanagerClient.getProject(request);
+  const response = resourcemanagerClient.getProject(request);
   const projectNumber = response.name.split('/')[1];
   return projectNumber;
 }
@@ -193,7 +193,7 @@ async function projectIdToNumber(projectId) {
  * @param {string} templateName - Name of the new template to create.
  */
 async function createTemplate(projectId, templateName) {
-  const [projectNumber] = await projectIdToNumber(projectId);
+  const projectNumber = projectIdToNumber(projectId);
   const serviceAccountAddress = `${projectNumber}-compute@developer.gserviceaccount.com`;
 
   const [response] = await instanceTemplatesClient.insert({

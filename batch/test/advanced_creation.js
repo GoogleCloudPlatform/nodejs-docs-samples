@@ -176,11 +176,11 @@ function sleep(ms) {
 async function projectIdToNumber(projectId) {
   // Construct request
   const request = {
-    name: projectId,
+    name: `projects/${projectId}`,
   };
 
   // Run request
-  const response = await resourcemanagerClient.getProject(request);
+  const [response] = await resourcemanagerClient.getProject(request);
   const projectNumber = response.name.split('/')[1];
   return projectNumber;
 }

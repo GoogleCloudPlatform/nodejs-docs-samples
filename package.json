@@ -27,10 +27,11 @@
     "gts": "^5.0.1",
     "mocha": "^10.2.0",
     "nunjucks": "^3.2.4",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "commander": "^11.0.0"
+    "commander": "^11.0.0",
+    "eslint": "^8.53.0"
   }
 }

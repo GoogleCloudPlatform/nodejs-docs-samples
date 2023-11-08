@@ -8,7 +8,7 @@ INTERFACE_ACTIONS="build test lint"
 .-PHONY: *
 
 # Default to current dir if not specified.
-dir=${dir:-.}
+dir ?= $(shell pwd)
 
 GOOGLE_CLOUD_PROJECT="${GOOGLE_SAMPLE_PROJECT}"
 

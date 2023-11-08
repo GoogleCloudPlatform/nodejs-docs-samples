@@ -89,7 +89,7 @@ function main(projectId, region, jobName, templateLink) {
   // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
   const allocationPolicy = new batch.AllocationPolicy();
   const instances = new batch.AllocationPolicy.InstancePolicyOrTemplate();
-  instances.templateLink = templateLink;
+  instances.instanceTemplate = templateLink;
   allocationPolicy.instances = [instances];
 
   const job = new batch.Job();

@@ -21,10 +21,10 @@ test: check-env build
 	cd ${dir}
 	npm test
 
-# TODO: check in w/ pattishin@ for consistent linting and/or fixing behavior.
-# Use the toplevel eslint config, for consistent linting practices across the repo.
 lint:
-	npx eslint --config .eslintrc.json ${dir}
+	cd ${dir}
+	npx gts fix
+	npx gts lint
 
 check-env:
 ifndef GOOGLE_SAMPLE_PROJECT

@@ -19,7 +19,7 @@ const crypto = require('crypto');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
-const {SLACK_SECRET, API_KEY} = process.env;
+const {SLACK_SECRET} = process.env;
 const SLACK_TIMESTAMP = Date.now();
 
 require('../index');

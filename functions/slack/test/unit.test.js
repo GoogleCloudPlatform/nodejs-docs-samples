@@ -104,7 +104,7 @@ afterEach(restoreConsole);
 
 describe('functions_slack_search', () => {
   before(async () => {
-    await import("../index.js");
+    require('../index.js');
   });
   it('Send fails if not a POST request', async () => {
     const error = new Error('Only POST requests are accepted');

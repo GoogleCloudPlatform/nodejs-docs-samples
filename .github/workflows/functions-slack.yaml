@@ -87,7 +87,7 @@ jobs:
     - run: npm test
       env:
         SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
-        API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
+        KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

@@ -61,46 +61,46 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     assert.ok(result.title.toLowerCase().includes('kolach'));
   });
 
-  // it('handles non-existent query', async () => {
-  //   const query = 'g1bb3r1shhhhhhh';
+  it('handles non-existent query', async () => {
+    const query = 'g1bb3r1shhhhhhh';
 
-  //   const server = functionsFramework.getTestServer('kgSearch');
-  //   const response = await supertest(server)
-  //     .post('/')
-  //     .set({
-  //       'x-slack-signature': generateSignature(query),
-  //       'x-slack-request-timestamp': SLACK_TIMESTAMP,
-  //     })
-  //     .send({text: query})
-  //     .expect(200);
+    const server = functionsFramework.getTestServer('kgSearch');
+    const response = await supertest(server)
+      .post('/')
+      .set({
+        'x-slack-signature': generateSignature(query),
+        'x-slack-request-timestamp': SLACK_TIMESTAMP,
+      })
+      .send({text: query})
+      .expect(200);
 
-  //   const results = response.body && response.body.attachments;
-  //   assert.ok(results);
+    const results = response.body && response.body.attachments;
+    assert.ok(results);
 
-  //   const result = results[0];
-  //   assert.ok(result);
-  //   assert.ok(result.text);
-  //   assert.ok(result.text.includes('No results'));
-  // });
+    const result = results[0];
+    assert.ok(result);
+    assert.ok(result.text);
+    assert.ok(result.text.includes('No results'));
+  });
 
-  // it('handles empty query', async () => {
-  //   const query = '';
+  it('handles empty query', async () => {
+    const query = '';
 
-  //   const server = functionsFramework.getTestServer('kgSearch');
-  //   await supertest(server)
-  //     .post('/')
-  //     .set({
-  //       'x-slack-signature': generateSignature(query),
-  //       'x-slack-request-timestamp': SLACK_TIMESTAMP,
-  //     })
-  //     .send({text: query})
-  //     .expect(400);
-  // });
+    const server = functionsFramework.getTestServer('kgSearch');
+    await supertest(server)
+      .post('/')
+      .set({
+        'x-slack-signature': generateSignature(query),
+        'x-slack-request-timestamp': SLACK_TIMESTAMP,
+      })
+      .send({text: query})
+      .expect(400);
+  });
 
-  // it('fails on missing signature', async () => {
-  //   const query = 'kolach';
+  it('fails on missing signature', async () => {
+    const query = 'kolach';
 
-  //   const server = functionsFramework.getTestServer('kgSearch');
-  //   await supertest(server).post('/').send({text: query}).expect(500);
-  // });
+    const server = functionsFramework.getTestServer('kgSearch');
+    await supertest(server).post('/').send({text: query}).expect(500);
+  });
 });

@@ -16,7 +16,7 @@
 
 # Use the official Node.js image.
 # https://hub.docker.com/_/node
-FROM node:20-slim
+FROM node:21-slim
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y \

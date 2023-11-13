@@ -10,7 +10,7 @@ INTERFACE_ACTIONS="build test lint"
 # Default to current dir if not specified.
 dir ?= $(shell pwd)
 
-GOOGLE_CLOUD_PROJECT="${GOOGLE_SAMPLE_PROJECT}"
+export GOOGLE_CLOUD_PROJECT = ${GOOGLE_SAMPLES_PROJECT}
 
 build:
 	cd ${dir}
@@ -27,8 +27,8 @@ lint:
 	npx gts lint
 
 check-env:
-ifndef GOOGLE_SAMPLE_PROJECT
-	$(error GOOGLE_SAMPLE_PROJECT environment variable is required to perform this action)
+ifndef GOOGLE_SAMPLES_PROJECT
+	$(error GOOGLE_SAMPLES_PROJECT environment variable is required to perform this action)
 endif
 
 list-actions:

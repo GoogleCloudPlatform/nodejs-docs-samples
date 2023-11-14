@@ -867,12 +867,7 @@ describe('Cloud KMS samples', () => {
 
   it('imports a key version (end to end)', async () => {
     const createKeySample = require('../createKeyForImport');
-    await createKeySample.main(
-      projectId,
-      locationId,
-      keyRingId,
-      importedKeyId
-    );
+    await createKeySample.main(projectId, locationId, keyRingId, importedKeyId);
 
     const createImportJobSample = require('../createImportJob');
     const createImportJobResult = await createImportJobSample.main(

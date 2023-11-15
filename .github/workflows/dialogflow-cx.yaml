@@ -61,7 +61,7 @@ jobs:
         secrets: |-
           agent_id:nodejs-docs-samples-tests/nodejs-docs-samples-dialogflow-cx-agent-id
           test_id:nodejs-docs-samples-tests/nodejs-docs-samples-dialogflow-cx-test-id
-    - uses: actions/setup-node@v3.8.0
+    - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16
     - name: Get npm cache directory

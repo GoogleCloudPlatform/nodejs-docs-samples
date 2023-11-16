@@ -58,7 +58,7 @@ jobs:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
-    - uses: actions/setup-node@v3.8.0
+    - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16
     - name: Get npm cache directory

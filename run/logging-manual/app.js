@@ -23,9 +23,8 @@ app.get('/', (req, res) => {
     const traceHeader = req.header('X-Cloud-Trace-Context');
     if (traceHeader && project) {
       const [trace] = traceHeader.split('/');
-      globalLogFields[
-        'logging.googleapis.com/trace'
-      ] = `projects/${project}/traces/${trace}`;
+      globalLogFields['logging.googleapis.com/trace'] =
+        `projects/${project}/traces/${trace}`;
     }
   }
 

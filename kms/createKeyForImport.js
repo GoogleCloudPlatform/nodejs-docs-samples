@@ -1,4 +1,4 @@
-// Copyright 2020 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,8 @@ async function main(
           algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
           protectionLevel: 'HSM',
         },
-        // Optional: ensure that only imported versions may be added to this key.
+        // Optional: ensure that only imported versions may be added to this
+        // key.
         importOnly: true,
       },
       // Do not allow KMS to generate an initial version of this key.

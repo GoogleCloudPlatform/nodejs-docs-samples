@@ -9,7 +9,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": "21.2.0"
   },
   "scripts": {
     "test": "echo \"No tests exist for this sample.\""

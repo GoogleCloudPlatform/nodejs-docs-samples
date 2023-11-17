@@ -1,6 +1,7 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "config:semverAllMonthly"
   ],
   "baseBranches": ["main"],
   "packageRules": [
@@ -20,12 +21,9 @@
       "node": "< 15.0.0"
     }
   },
-  "prConcurrentLimit": 0,
   "dependencyDashboardAutoclose": true,  
   "schedule": "after 11am every 3 weeks on Monday",
-  "timezone": "America/Los_Angeles",
   "stabilityDays": 15,
-  "rangeStrategy": "pin",
   "pinVersions": false,
-  "rebaseStalePrs": false
+  "rebaseStalePrs": true
 }

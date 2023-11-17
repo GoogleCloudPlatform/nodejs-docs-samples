@@ -103,6 +103,9 @@ beforeEach(stubConsole);
 afterEach(restoreConsole);
 
 describe('functions_slack_search', () => {
+  before(async () => {
+    require('../index.js');
+  });
   it('Send fails if not a POST request', async () => {
     const error = new Error('Only POST requests are accepted');
     error.code = 405;

@@ -43,7 +43,7 @@ jobs:
       run:
         working-directory: 'storagetransfer'
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: actions/checkout@v4.1.0
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@v1.1.1'
@@ -58,7 +58,7 @@ jobs:
         secrets: |-
           sts_aws_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-aws
           sts_azure_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-azure
-    - uses: actions/setup-node@v3.8.0
+    - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16
     - name: Get npm cache directory

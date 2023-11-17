@@ -43,7 +43,7 @@ jobs:
       run:
         working-directory: 'functions/slack'
     steps:
-    - uses: actions/checkout@v3.5.3
+    - uses: actions/checkout@v4.1.0
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@v1.1.1'
@@ -58,7 +58,7 @@ jobs:
         secrets: |-
           slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
           kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
-    - uses: actions/setup-node@v3.8.0
+    - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16
     - name: Get npm cache directory
@@ -87,7 +87,7 @@ jobs:
     - run: npm test
       env:
         SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
-        API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
+        KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

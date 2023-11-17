@@ -173,5 +173,3 @@ for d in dirs:
     f = typeless_samples_hermetic(targets=d)
     # Remove extra characters
     trim(files=f)
-    # Fix formatting
-    fix_hermetic(targets=d)

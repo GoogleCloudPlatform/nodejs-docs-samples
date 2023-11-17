@@ -40,9 +40,9 @@ visit the [Google Cloud Samples][cloud_samples] page.
 
 ## How to run a sample
 
-1. Change directory to one of the sample folders, e.g. `datastore`:
+1. Change directory to one of the sample folders, e.g. `run/helloworld`:
 
-        cd datastore/
+        cd run/helloworld
 
 1. Install the sample's dependencies (see the sample's README for details):
 

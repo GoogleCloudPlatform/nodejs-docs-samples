@@ -17,9 +17,9 @@ Console](https://console.cloud.google.com/apis/library).
 
         gcloud auth application-default login
 
-1. Change directory to one of the sample folders, e.g. `datastore`.
+1. Change directory to one of the sample folders, e.g. `run/helloworld`.
 
-        cd datastore/
+        cd run/helloworld
 
 1. Install the dependencies.
 

@@ -57,6 +57,7 @@ async function main(
       dataset_uri: helpers.toValue(datasetUri),
       large_model_reference: helpers.toValue(model),
       model_display_name: helpers.toValue(modelDisplayName),
+      accelerator_type: helpers.toValue('GPU'), // Optional: GPU or TPU
     };
 
     const runtimeConfig = {

@@ -76,7 +76,7 @@ jobs:
         echo "MOCHA_REPORTER_SUITENAME=ai-platform-snippets" >> $GITHUB_ENV
         echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-    - run: make test dir=aiplatform/snippets
+    - run: make test dir=ai-platform/snippets
       env:
         GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
         LOCATION: ${{ steps.secrets.outputs.location }}

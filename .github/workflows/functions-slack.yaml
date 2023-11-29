@@ -76,7 +76,7 @@ jobs:
         echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - name: Run Tests
-      run: make test dir=dialogflow-cx
+      run: make test dir=functions/slack
       env:
         GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
         SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}

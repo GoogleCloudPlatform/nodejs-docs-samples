@@ -78,6 +78,7 @@ jobs:
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: make test dir=aiplatform/snippets
       env:
+        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
         LOCATION: ${{ steps.secrets.outputs.location }}
         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
     - name: upload test results for FlakyBot workflow

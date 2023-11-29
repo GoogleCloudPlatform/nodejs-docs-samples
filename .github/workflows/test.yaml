@@ -17,10 +17,10 @@ name: Test Sample
 on:
   workflow_call:
     inputs:
-      name:  
+      name:
         required: true
         type: string
-      path:  
+      path:
         required: true
         type: string
 jobs:
@@ -30,9 +30,6 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-    defaults:
-      run:
-        working-directory: ${{ inputs.path }}
     steps:
     - uses: actions/checkout@v4.1.0
       with:
@@ -49,20 +46,14 @@ jobs:
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash
-      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}        
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
     - uses: actions/cache@v3
       id: npm-cache
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-     
-    - name: install repo dependencies
-      run: npm install
-      working-directory: .
-    - name: install directory dependencies
-      run: npm install
-    - run: npm run build --if-present
+          ${{ runner.os }}-node-
     - name: set testing env vars
       run: echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
     - name: set testing env vars for scheduled run
@@ -70,7 +61,10 @@ jobs:
       run: |
         echo "MOCHA_REPORTER_SUITENAME=${{ inputs.name }}" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-    - run: npm test
+    - name: Run Tests
+      run: make test dir=${{ inputs.path }}
+      env:
+        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

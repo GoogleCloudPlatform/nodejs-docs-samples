@@ -39,9 +39,6 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-    defaults:
-      run:
-        # working-directory: 'ai-platform/snippets'
     steps:
     - uses: actions/checkout@v4.1.0
       with:

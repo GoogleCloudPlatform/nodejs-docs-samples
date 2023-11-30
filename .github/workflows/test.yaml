@@ -64,7 +64,7 @@ jobs:
     - name: Run Tests
       run: make test dir=${{ inputs.path }}
       env:
-        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

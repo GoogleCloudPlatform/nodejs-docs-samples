@@ -20,15 +20,18 @@ on:
     paths:
     - 'healthcare/hl7v2/**'
     - '.github/workflows/healthcare-hl7v2.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'healthcare/hl7v2/**'
     - '.github/workflows/healthcare-hl7v2.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'healthcare/hl7v2/**'
     - '.github/workflows/healthcare-hl7v2.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

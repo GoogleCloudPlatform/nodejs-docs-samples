@@ -20,15 +20,18 @@ on:
     paths:
     - 'media/video-stitcher/**'
     - '.github/workflows/media-video-stitcher.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'media/video-stitcher/**'
     - '.github/workflows/media-video-stitcher.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'media/video-stitcher/**'
     - '.github/workflows/media-video-stitcher.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

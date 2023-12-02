@@ -10,16 +10,18 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js"
   },
   "dependencies": {
-    "@google-cloud/aiplatform": "^3.0.0"
+    "@google-cloud/aiplatform": "^3.0.0",
+    "@google-cloud/vertexai": "github:googleapis/nodejs-vertexai",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "c8": "^8.0.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
-    "uuid": "^9.0.0",
-    "sinon": "^16.0.0"
+    "sinon": "^16.0.0",
+    "uuid": "^9.0.0"
   }
 }

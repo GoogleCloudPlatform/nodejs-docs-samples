@@ -17,7 +17,7 @@
     "@google-cloud/billing": "^4.0.0",
     "@google-cloud/compute": "^4.0.0",
     "google-auth-library": "^9.0.0",
-    "googleapis": "^126.0.0",
+    "googleapis": "^128.0.0",
     "slack": "^11.0.1"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "mocha": "^10.0.0",
     "promise-retry": "^2.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^16.0.0",
+    "sinon": "^17.0.0",
     "wait-port": "^1.0.4"
   }
 }

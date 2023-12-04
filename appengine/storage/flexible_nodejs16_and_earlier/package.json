@@ -6,7 +6,7 @@
     "test": "c8 mocha -p -j 2 system-test/*.test.js --exit --timeout=30000"
   },
   "engines": {
-    "node": "16.x.x"
+    "node": "20.x"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.0.0",

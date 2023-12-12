@@ -37,6 +37,9 @@ const limit = rateLimit({
 app.use(limit);
 app.use(mntDir, express.static(mntDir));
 
+// configure express to know about Cloud Run's proxy
+app.set('trust proxy', 1)
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

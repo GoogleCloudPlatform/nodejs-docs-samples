@@ -65,8 +65,9 @@ async function main(
     };
 
     // Create Document Schema
-    const documentSchema =
-      await schemaClient.createDocumentSchema(schemaRequest);
+    const documentSchema = await schemaClient.createDocumentSchema(
+      schemaRequest
+    );
 
     const documentRequest = {
       parent: parent,

@@ -37,7 +37,10 @@ async function main(
   //Import service client from google cloud
   const {DocumentServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
-  const apiEndpoint = `${location}-contentwarehouse.googleapis.com`;
+  const apiEndpoint =
+    location === 'us'
+      ? 'contentwarehouse.googleapis.com'
+      : `${location}-contentwarehouse.googleapis.com`;
 
   // Create client
   const serviceClient = new DocumentServiceClient({apiEndpoint: apiEndpoint});

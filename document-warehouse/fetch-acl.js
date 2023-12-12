@@ -34,8 +34,10 @@ async function main(
   // Import from google cloud
   const {DocumentServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
+  const apiEndpoint = `${location}-contentwarehouse.googleapis.com`;
+
   // Create service client
-  const serviceClient = new DocumentServiceClient();
+  const serviceClient = new DocumentServiceClient({apiEndpoint: apiEndpoint});
 
   // Fetches access control policies on project or document level.
   async function fetchACL() {

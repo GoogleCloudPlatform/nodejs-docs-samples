@@ -33,8 +33,12 @@ async function main(
   // Import from google cloud
   const {DocumentServiceClient} = require('@google-cloud/contentwarehouse').v1;
 
+  const apiEndpoint = `${location}-contentwarehouse.googleapis.com`;
+
   // Create service client
-  const serviceClient = new DocumentServiceClient();
+  const serviceClient = new DocumentServiceClient({
+    apiEndpoint: apiEndpoint,
+  });
 
   // Get Document Schema
   async function getDocument() {

@@ -14,18 +14,12 @@
 
 const {VertexAI} = require('@google-cloud/vertexai');
 
-function wait(time) {
-  return new Promise(resolve => {
-    setTimeout(resolve, time);
-  });
-}
-
 async function createNonStreamingChat(
   projectId = 'PROJECT_ID',
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_multiturn_chat]
+  // [START aiplatform_gemini_multiturn_chat_nonstreaming]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -62,7 +56,7 @@ async function createNonStreamingChat(
   const response3 = result3.response.candidates[0].content.parts[0].text;
   console.log('Chat bot: ', response3);
 
-  // [END aiplatform_gemini_multiturn_chat]
+  // [END aiplatform_gemini_multiturn_chat_nonstreaming]
 }
 
 createNonStreamingChat(...process.argv.slice(2)).catch(err => {

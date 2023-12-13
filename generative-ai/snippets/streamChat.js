@@ -37,7 +37,7 @@ async function createStreamChat(
 
   const chat = generativeModel.startChat({});
   const chatInput1 = 'How can I learn more about that?';
-  
+
   console.log(`User: ${chatInput1}`);
 
   const result1 = await chat.sendMessageStream(chatInput1);

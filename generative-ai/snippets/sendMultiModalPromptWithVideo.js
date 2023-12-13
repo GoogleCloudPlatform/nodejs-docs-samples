@@ -27,37 +27,41 @@ async function sendMultiModalPromptWithVideo(
   // const location = 'us-central1';
   // const model = 'chosen-genai-model';
 
-   // Initialize Vertex with your Cloud project and location
-   const vertexAI = new VertexAI({project: projectId, location: location});
- 
-   const generativeVisionModel = vertexAI.preview.getGenerativeModel({
-     model: model,
-   });  
- 
-   // Pass multimodal prompt
-   const request = {
-     contents: [{
-       role: 'user', 
-       parts: [
-        {
-          text: 'What is in the video?',
-        },
-         {
-           fileData: {
-             fileUri: 'gs://cloud-samples-data/video/animals.mp4',
-             mimeType: 'video/mp4'
-           }
-         },
-       ]}],
-   };
- 
+  // Initialize Vertex with your Cloud project and location
+  const vertexAI = new VertexAI({project: projectId, location: location});
+
+  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+    model: model,
+  });
+
+  // Pass multimodal prompt
+  const request = {
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'What is in the video?',
+          },
+          {
+            fileData: {
+              fileUri: 'gs://cloud-samples-data/video/animals.mp4',
+              mimeType: 'video/mp4',
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   // Create the response
   const response = await generativeVisionModel.generateContent(request);
-   // Wait for the response to complete
+  // Wait for the response to complete
   const aggregatedResponse = await response.response;
   // Select the text from the response
-  const fullTextResponse = aggregatedResponse.candidates[0].content.parts[0].text;
- 
+  const fullTextResponse =
+    aggregatedResponse.candidates[0].content.parts[0].text;
+
   console.log(fullTextResponse);
 
   // [END aiplatform_gemini_single_turn_video]

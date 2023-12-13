@@ -19,7 +19,7 @@ async function createStreamContent(
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_function_calling]
+  // [START aiplatform_gemini_content]
 
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -52,7 +52,7 @@ async function createStreamContent(
     process.stdout.write(item.candidates[0].content.parts[0].text);
   }
 
-  // [END aiplatform_gemini_function_calling]
+  // [END aiplatform_gemini_content]
 }
 
 createStreamContent(...process.argv.slice(2)).catch(err => {

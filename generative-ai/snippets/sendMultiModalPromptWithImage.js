@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START aiplatform_gemini_single_turn_multi_image]
 const {VertexAI} = require('@google-cloud/vertexai');
 const axios = require('axios');
 
@@ -20,28 +21,23 @@ async function getBase64(url) {
   return Buffer.from(image.data).toString('base64');
 }
 
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_single_turn_multi_image]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'your-project-id';
-  // const location = 'us-central1';
-  // const model = 'chosen-genai-model';
-
   // For images, the SDK supports base64 strings
   const landmarkImage1 = await getBase64(
     'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png'
   );
   const landmarkImage2 = await getBase64(
-    'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png'
+    'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark2.png'
   );
   const landmarkImage3 = await getBase64(
-    'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png'
+    'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark3.png'
   );
 
   // Initialize Vertex with your Cloud project and location
@@ -96,9 +92,8 @@ async function sendMultiModalPromptWithImage(
     aggregatedResponse.candidates[0].content.parts[0].text;
 
   console.log(fullTextResponse);
-
-  // [END aiplatform_gemini_single_turn_multi_image]
 }
+// [END aiplatform_gemini_single_turn_multi_image]
 
 sendMultiModalPromptWithImage(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

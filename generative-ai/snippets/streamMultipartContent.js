@@ -42,9 +42,9 @@ async function createStreamMultipartContent(
 
   // For images, the SDK supports both Google Cloud Storage URI and base64 strings
   const filePart = {
-    file_data: {
-      file_uri: image,
-      mime_type: mimeType,
+    fileData: {
+      fileUri: image,
+      mimeType: mimeType,
     },
   };
 

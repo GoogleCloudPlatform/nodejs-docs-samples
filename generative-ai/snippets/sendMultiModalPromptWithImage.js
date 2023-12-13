@@ -13,7 +13,7 @@
 // limitations under the License.
 
 const {VertexAI} = require('@google-cloud/vertexai');
-const axios = require("axios");
+const axios = require('axios');
 
 async function getBase64(url) {
   let image = await axios.get(url, {responseType: 'arraybuffer'});

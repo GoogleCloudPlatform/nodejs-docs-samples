@@ -20,12 +20,12 @@ async function createStreamChat(
   model = 'MODEL'
 ) {
   // [START aiplatform_gemini_multiturn_chat]
-
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const projectId = 'your-project-id';
   // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
 
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -36,9 +36,10 @@ async function createStreamChat(
   });
 
   const chat = generativeModel.startChat({});
-
   const chatInput1 = 'How can I learn more about that?';
+  
   console.log(`User: ${chatInput1}`);
+
   const result1 = await chat.sendMessageStream(chatInput1);
   for await (const item of result1.stream) {
     console.log(item.candidates[0].content.parts[0].text);

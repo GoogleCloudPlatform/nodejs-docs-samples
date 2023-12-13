@@ -20,6 +20,14 @@ async function sendMultiModalPromptWithImage(
   model = 'MODEL'
 ) {
   // [START aiplatform_gemini_single_turn_video]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  // const projectId = 'your-project-id';
+  // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
+
+
   // [END aiplatform_gemini_single_turn_video]
 }
 

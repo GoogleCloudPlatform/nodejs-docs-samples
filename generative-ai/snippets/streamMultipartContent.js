@@ -28,6 +28,7 @@ async function createStreamMultipartContent(
    */
   // const projectId = 'your-project-id';
   // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
   // const image = 'gs://generativeai-downloads/images/scones.jpg'; // Google Cloud Storage image
   // const mimeType = 'image/jpeg';
 

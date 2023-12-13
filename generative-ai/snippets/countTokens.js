@@ -26,7 +26,7 @@ async function countTokens(
    */
   // const projectId = 'your-project-id';
   // const location = 'us-central1';
-  // const model = 'gemini-pro';
+  // const model = 'chosen-genai-model';
 
   // Initialize Vertex with your Cloud project and location
   const vertex_ai = new VertexAI({project: projectId, location: location});

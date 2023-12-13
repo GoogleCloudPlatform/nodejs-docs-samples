@@ -13,6 +13,12 @@
 // limitations under the License.
 
 const {VertexAI} = require('@google-cloud/vertexai');
+const axios = require("axios");
+
+async function getBase64(url) {
+  let image = await axios.get(url, {responseType: 'arraybuffer'});
+  return Buffer.from(image.data).toString('base64');
+}
 
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
@@ -20,6 +26,67 @@ async function sendMultiModalPromptWithImage(
   model = 'MODEL'
 ) {
   // [START aiplatform_gemini_single_turn_multi_image]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  // const projectId = 'your-project-id';
+  // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
+
+   // For images, the SDK supports base64 strings
+  const landmarkImage1 = await getBase64('https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png');
+  const landmarkImage2 = await getBase64('https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png');
+  const landmarkImage3 = await getBase64('https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark1.png');
+
+  // Initialize Vertex with your Cloud project and location
+  const vertexAI = new VertexAI({project: projectId, location: location});
+
+  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+    model: model,
+  });  
+
+  // Pass multimodal prompt
+  const request = {
+    contents: [{
+      role: 'user', 
+      parts: [
+        {
+          inlineData: {
+            data: landmarkImage1, 
+            mimeType: 'image/png'
+          }
+        },
+      {
+          text: 'city: Rome, Landmark: the Colosseum',
+        },
+      
+        {
+          inlineData: {
+            data: landmarkImage2,
+            mimeType: 'image/png'
+          },
+        },
+        {
+          text: 'city: Beijing, Landmark: Forbidden City',
+        },
+        {
+          inlineData: {
+            data: landmarkImage3,
+            mimeType: 'image/png'
+          },
+        }
+      ]}],
+  };
+
+ // Create the response
+ const response = await generativeVisionModel.generateContent(request);
+  // Wait for the response to complete
+ const aggregatedResponse = await response.response;
+ // Select the text from the response
+ const fullTextResponse = aggregatedResponse.candidates[0].content.parts[0].text;
+
+ console.log(fullTextResponse);
+  
   // [END aiplatform_gemini_single_turn_multi_image]
 }
 

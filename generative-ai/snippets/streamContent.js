@@ -26,6 +26,7 @@ async function createStreamContent(
    */
   // const projectId = 'your-project-id';
   // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
 
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});

@@ -28,6 +28,7 @@ async function createStreamMultipartContent(
    */
   // const projectId = 'your-project-id';
   // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
   // const image = 'gs://generativeai-downloads/images/scones.jpg'; // Google Cloud Storage image
   // const mimeType = 'image/jpeg';
 
@@ -41,9 +42,9 @@ async function createStreamMultipartContent(
 
   // For images, the SDK supports both Google Cloud Storage URI and base64 strings
   const filePart = {
-    file_data: {
-      file_uri: image,
-      mime_type: mimeType,
+    fileData: {
+      fileUri: image,
+      mimeType: mimeType,
     },
   };
 

@@ -45,6 +45,7 @@ path:
         eventarc: "eventarc"
         error-reporting: "clouderrorreporting"
         functions: "cloudfunctions"
+        generative-ai: "genai"
         game-servers: "gameservices"
         healthcare: "healhcare"
         iam: "iam"

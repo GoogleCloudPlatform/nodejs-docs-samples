@@ -41,9 +41,9 @@ async function createNonStreamingMultipartContent(
 
   // For images, the SDK supports both Google Cloud Storage URI and base64 strings
   const filePart = {
-    file_data: {
-      file_uri: image,
-      mime_type: mimeType,
+    fileSata: {
+      fileUri: image,
+      mimeType: mimeType,
     },
   };
 
@@ -57,8 +57,8 @@ async function createNonStreamingMultipartContent(
 
   console.log('Prompt Text:');
   console.log(request.contents[0].parts[0].text);
-  console.log('Non-Streaming Response Text:');
 
+  console.log('Non-Streaming Response Text:');
   // Create the response stream
   const responseStream =
     await generativeVisionModel.generateContentStream(request);

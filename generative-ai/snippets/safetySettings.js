@@ -18,14 +18,18 @@ const {
   HarmBlockThreshold,
 } = require('@google-cloud/vertexai');
 
-async function createStreamContent() {
+async function setSafetySettings(
+  projectId = 'PROJECT_ID',
+  location = 'LOCATION_ID',
+  model = 'MODEL'
+) {
   // [START aiplatform_gemini_safety_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  const projectId = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro';
+  // const projectId = 'your-project-id';
+  // const location = 'us-central1';
+  // const model = 'chosen-genai-model';
 
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -66,7 +70,7 @@ async function createStreamContent() {
   // [END aiplatform_gemini_safety_settings]
 }
 
-createStreamContent(...process.argv.slice(3)).catch(err => {
+setSafetySettings(...process.argv.slice(3)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

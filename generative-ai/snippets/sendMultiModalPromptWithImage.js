@@ -19,14 +19,11 @@ async function sendMultiModalPromptWithImage(
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_single_turn_multi_image]  
- 
-
- 
- // [END aiplatform_gemini_single_turn_multi_image]
+  // [START aiplatform_gemini_single_turn_multi_image]
+  // [END aiplatform_gemini_single_turn_multi_image]
 }
 
 sendMultiModalPromptWithImage(...process.argv.slice(2)).catch(err => {
- console.error(err.message);
- process.exitCode = 1;
+  console.error(err.message);
+  process.exitCode = 1;
 });

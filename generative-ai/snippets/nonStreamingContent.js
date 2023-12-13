@@ -19,8 +19,8 @@ async function createNonStreamingContent(
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_function_calling]    
-  
+  // [START aiplatform_gemini_function_calling]
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -54,7 +54,7 @@ async function createNonStreamingContent(
     aggregatedResponse.candidates[0].content.parts[0].text;
 
   console.log(fullTextResponse);
-  
+
   // [END aiplatform_gemini_function_calling]
 }
 

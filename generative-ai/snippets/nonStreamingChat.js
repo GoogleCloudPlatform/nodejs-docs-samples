@@ -16,7 +16,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 
 function wait(time) {
   return new Promise(resolve => {
-      setTimeout(resolve, time);
+    setTimeout(resolve, time);
   });
 }
 
@@ -27,8 +27,8 @@ async function createNonStreamingChat(
 ) {
   // TODO: Find better method. Setting delay to give api time to respond, otherwise it will 404
   // await wait(10);
-  
-  // [START aiplatform_gemini_multiturn_chat]  
+
+  // [START aiplatform_gemini_multiturn_chat]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -63,7 +63,7 @@ async function createNonStreamingChat(
   const result3 = await chat.sendMessage(chatInput3);
   const response3 = result3.response.candidates[0].content.parts[0].text;
   console.log('Chat bot: ', response3);
-  
+
   // [END aiplatform_gemini_multiturn_chat]
 }
 

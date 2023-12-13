@@ -31,6 +31,8 @@ describe('Safety settings', async () => {
     );
 
     // Expect rejection due to safety concerns
-    assert(output.match('This response stream terminated due to safety concerns'));
+    assert(
+      output.match('This response stream terminated due to safety concerns')
+    );
   });
 });

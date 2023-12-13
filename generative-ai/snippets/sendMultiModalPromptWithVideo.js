@@ -19,10 +19,7 @@ async function sendMultiModalPromptWithImage(
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_single_turn_video]  
-
-
-  
+  // [START aiplatform_gemini_single_turn_video]
   // [END aiplatform_gemini_single_turn_video]
 }
 

@@ -30,7 +30,7 @@ describe('Count tokens', async () => {
       `node ./countTokens.js ${project} ${location} ${model}`
     );
 
-    // Expect 6 tokens 
+    // Expect 6 tokens
     assert(output.match('totalTokens: 6'));
   });
 });

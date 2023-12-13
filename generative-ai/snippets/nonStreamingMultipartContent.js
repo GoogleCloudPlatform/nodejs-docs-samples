@@ -21,7 +21,7 @@ async function createNonStreamingMultipartContent(
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {
-  // [START aiplatform_gemini_get_started] 
+  // [START aiplatform_gemini_get_started]
 
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -48,7 +48,7 @@ async function createNonStreamingMultipartContent(
   };
 
   const textPart = {
-    text: 'Use several paragraphs to describe what is happening in this picture.',
+    text: 'what is shown in this image?',
   };
 
   const request = {
@@ -71,8 +71,8 @@ async function createNonStreamingMultipartContent(
     aggregatedResponse.candidates[0].content.parts[0].text;
 
   console.log(fullTextResponse);
-   
-  // [END aiplatform_gemini_get_started] 
+
+  // [END aiplatform_gemini_get_started]
 }
 
 createNonStreamingMultipartContent(...process.argv.slice(2)).catch(err => {

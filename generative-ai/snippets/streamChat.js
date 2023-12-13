@@ -19,7 +19,7 @@ async function createStreamChat(
   location = 'LOCATION_ID',
   model = 'MODEL'
 ) {
-  // [START aiplatform_gemini_multiturn_chat] 
+  // [START aiplatform_gemini_multiturn_chat]
 
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -43,7 +43,7 @@ async function createStreamChat(
   for await (const item of result1.stream) {
     console.log(item.candidates[0].content.parts[0].text);
   }
-  
+
   // [END aiplatform_gemini_multiturn_chat]
 }
 

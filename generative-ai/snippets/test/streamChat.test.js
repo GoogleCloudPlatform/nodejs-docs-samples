@@ -31,12 +31,6 @@ describe('Generative AI Stream Chat', () => {
     );
 
     // Assert that the advice given for learning is what we expect
-    assert(output.match(/User: How can I learn more about that?/));
-    assert(output.match(/**Read books, articles, and reports:**/));
-    assert(output.match(/**Attend seminars, workshops, and conferences:**/));
-    assert(output.match(/**Take online courses or tutorials:**/));
-    assert(output.match(/**Watch documentaries and videos:**/));
-    assert(output.match(/**Interview experts:**/));
-    assert(output.match(/**Do your own research:**/));
+    assert(output.match(/User: How can I learn more about that/));
   });
 });

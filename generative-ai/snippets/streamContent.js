@@ -20,7 +20,7 @@ async function createStreamContent(
   model = 'MODEL'
 ) {
   // [START aiplatform_gemini_function_calling]
-  
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -50,7 +50,7 @@ async function createStreamContent(
   for await (const item of responseStream.stream) {
     process.stdout.write(item.candidates[0].content.parts[0].text);
   }
-  
+
   // [END aiplatform_gemini_function_calling]
 }
 

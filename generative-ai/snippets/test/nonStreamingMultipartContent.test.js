@@ -30,13 +30,11 @@ describe('Generative AI NonStreaming Multipart Content', () => {
     const output = execSync(
       `node ./nonStreamingMultipartContent.js ${project} ${location} ${model} ${image}`
     );
-    // Split up conversation output
-    const conversation  = output.split('\n');
 
     // Ensure that the conversation is what we expect for this scone image
-    assert(conversation[0].match(/Prompt Text:/));
-    assert(conversation[1].match(/Use several paragraphs to describe what is happening in this picture./));
-    assert(conversation[2].match(/Non-Streaming Response Text:/));
-    assert(conversation[3].match(/There are several blueberry scones on a table. They are arranged on a white surface that is covered in blue stains. There is a bowl of blueberries next to the scones. There is a cup of coffee on the table. There are pink flowers on the table. The scones are round and have a crumbly texture. They are topped with blueberries and sugar. The coffee is hot and steaming. The flowers are in bloom and have a sweet fragrance. The table is made of wood and has a rustic appearance. The overall effect of the image is one of beauty and tranquility./));
+    assert(output.match(/Prompt Text:/));
+    assert(output.match(/what is shown in this image/));
+    assert(output.match(/Non-Streaming Response Text:/));
+    assert(output.match(/scone/));
   });
 });

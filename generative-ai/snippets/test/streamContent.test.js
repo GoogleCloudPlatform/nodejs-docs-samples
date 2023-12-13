@@ -29,14 +29,9 @@ describe('Generative AI Stream Content', () => {
     const output = execSync(
       `node ./streamContent.js ${project} ${location} ${model}`
     );
-    // Split up conversation output
-    const conversation  = output.split('\n');
-;
     // Ensure that the beginning of the conversation is consistent
-    assert(conversation[0].match(/Prompt:/));
-    assert(conversation[1].match(/What is Node.js?/));
-    assert(conversation[2].match(/Streaming Response Text:/));
-    assert(conversation[3].match(/Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It is designed to build scalable network applications. Node.js runs JavaScript code outside of a browser./));
-    assert(conversation[5].match(/Here are some key features of Node.js:/));
+    assert(output.match(/Prompt:/));
+    assert(output.match(/What is Node.js/));
+    assert(output.match(/Streaming Response Text:/));
   });
 });

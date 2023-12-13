@@ -31,11 +31,11 @@ describe('Generative AI Stream Multipart Content', () => {
       `node ./streamMultipartContent.js ${project} ${location} ${model} ${image}`
     );
     // Split up conversation output
-    const conversation  = output.split('\n');
+    const conversation = output.split('\n');
 
     // Ensure that the conversation is what we expect for this scone image
     assert(conversation[0].match(/Prompt Text:/));
-    assert(conversation[1].match(/Use several paragraphs to describe what is happening in this picture./));
+    assert(conversation[1].match(/what is shown in this image/));
     assert(conversation[2].match(/Streaming Response Text:/));
     assert(conversation[3].match(/scones/));
   });

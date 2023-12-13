@@ -12,59 +12,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { VertexAI, HarmCategory, HarmBlockThreshold } = require('@google-cloud/vertexai');
+const {
+  VertexAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} = require('@google-cloud/vertexai');
 
-async function createStreamContent(
-) {
-    // [START aiplatform_gemini_safety_settings]  
-    /**
-     * TODO(developer): Uncomment these variables before running the sample.
-     */
-    const projectId = 'cloud-llm-preview1';
-    const location = 'us-central1';
-    const model = 'gemini-pro'
+async function createStreamContent() {
+  // [START aiplatform_gemini_safety_settings]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  const projectId = 'cloud-llm-preview1';
+  const location = 'us-central1';
+  const model = 'gemini-pro';
 
-    // Initialize Vertex with your Cloud project and location
-    const vertexAI = new VertexAI({ project: projectId, location: location });
+  // Initialize Vertex with your Cloud project and location
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
-    // Instantiate the model
-    const generativeModel = vertexAI.preview.getGenerativeModel({
-        model: model,
-        // The following parameters are optional
-        // They can also be passed to individual content generation requests
-        safety_settings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-          },
-        ],
-        generation_config: {max_output_tokens: 256},
-    });
+  // Instantiate the model
+  const generativeModel = vertexAI.preview.getGenerativeModel({
+    model: model,
+    // The following parameters are optional
+    // They can also be passed to individual content generation requests
+    safety_settings: [
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+      },
+    ],
+    generation_config: {max_output_tokens: 256},
+  });
 
-    const request = {
-        contents: [{ role: 'user', parts: [{ text: 'Tell me something dangerous.' }] }],
-    };
+  const request = {
+    contents: [{role: 'user', parts: [{text: 'Tell me something dangerous.'}]}],
+  };
 
-    console.log('Prompt:');
-    console.log(request.contents[0].parts[0].text);
-    console.log('Streaming Response Text:');
+  console.log('Prompt:');
+  console.log(request.contents[0].parts[0].text);
+  console.log('Streaming Response Text:');
 
-    // Create the response stream
-    const responseStream = await generativeModel.generateContentStream(request);
+  // Create the response stream
+  const responseStream = await generativeModel.generateContentStream(request);
 
-    // Log the text response as it streams
-    for await (const item of responseStream.stream) {
-        if (item.candidates[0].finishReason === 'SAFETY') {
-            console.log('This response stream terminated due to safety concerns.')
-        } else {
-            process.stdout.write(item.candidates[0].content.parts[0].text);
-        }
+  // Log the text response as it streams
+  for await (const item of responseStream.stream) {
+    if (item.candidates[0].finishReason === 'SAFETY') {
+      console.log('This response stream terminated due to safety concerns.');
+    } else {
+      process.stdout.write(item.candidates[0].content.parts[0].text);
     }
-    // [END aiplatform_gemini_safety_settings]  
+  }
+  // [END aiplatform_gemini_safety_settings]
 }
 
-
 createStreamContent(...process.argv.slice(3)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
+  console.error(err.message);
+  process.exitCode = 1;
 });

@@ -22,7 +22,7 @@ async function createStreamMultipartContent(
   mimeType = 'image/jpeg'
 ) {
   // [START aiplatform_gemini_get_started]
-  
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -48,7 +48,7 @@ async function createStreamMultipartContent(
   };
 
   const textPart = {
-    text: 'Use several paragraphs to describe what is happening in this picture.',
+    text: 'what is shown in this image?',
   };
 
   const request = {
@@ -67,7 +67,7 @@ async function createStreamMultipartContent(
   for await (const item of responseStream.stream) {
     process.stdout.write(item.candidates[0].content.parts[0].text);
   }
-  
+
   // [END aiplatform_gemini_get_started]
 }
 

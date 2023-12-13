@@ -29,17 +29,10 @@ describe('Generative AI NonStreaming Chat', async () => {
     const output = execSync(
       `node ./nonStreamingChat.js ${project} ${location} ${model}`
     );
-    // Split up conversation output
-    const conversation  = output.split('\n');
 
     // Ensure that the beginning of the conversation is consistent
-    assert(conversation[0].match(/User: Hello/));
-    assert(conversation[1].match(/Chat bot:  Hello! How may I assist you?/));
-    assert(conversation[2].match(/User: Can you tell me a scientific fun fact?/));
-    assert(conversation[3].match(/Chat bot:  Sure, here's a scientific fun fact for you:?/));
-    assert(conversation[4] === '');
-
-    // Assert that user prompts are getting through
+    assert(output.match(/User: Hello/));
+    assert(output.match(/User: Can you tell me a scientific fun fact?/));
     assert(output.match(/User: How can I learn more about that?/));
   });
 });

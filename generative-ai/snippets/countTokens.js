@@ -12,41 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { VertexAI } = require('@google-cloud/vertexai');
+const {VertexAI} = require('@google-cloud/vertexai');
 
 async function countTokens(
-    projectId = 'PROJECT_ID',
-    location = 'LOCATION_ID',
-    model = 'MODEL'
+  projectId = 'PROJECT_ID',
+  location = 'LOCATION_ID',
+  model = 'MODEL'
 ) {
-    // [START aiplatform_gemini_token_count]  
+  // [START aiplatform_gemini_token_count]
 
-    /**
-     * TODO(developer): Uncomment these variables before running the sample.
-     */
-    // const projectId = 'your-project-id';
-    // const location = 'us-central1';
-    // const model = 'gemini-pro';
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  // const projectId = 'your-project-id';
+  // const location = 'us-central1';
+  // const model = 'gemini-pro';
 
-    // Initialize Vertex with your Cloud project and location
-    const vertex_ai = new VertexAI({ project: projectId, location: location });
+  // Initialize Vertex with your Cloud project and location
+  const vertex_ai = new VertexAI({project: projectId, location: location});
 
-    // Instantiate the model
-    const generativeModel = vertex_ai.preview.getGenerativeModel({
-        model: model,
-    });
+  // Instantiate the model
+  const generativeModel = vertex_ai.preview.getGenerativeModel({
+    model: model,
+  });
 
-    const req = {
-        contents: [{ role: 'user', parts: [{ text: 'How are you doing today?' }] }],
-    };
+  const req = {
+    contents: [{role: 'user', parts: [{text: 'How are you doing today?'}]}],
+  };
 
-    const countTokensResp = await generativeModel.countTokens(req);
-    console.log('count tokens response: ', countTokensResp);
-    
-    // [END aiplatform_gemini_token_count]  
+  const countTokensResp = await generativeModel.countTokens(req);
+  console.log('count tokens response: ', countTokensResp);
+
+  // [END aiplatform_gemini_token_count]
 }
 
 countTokens(...process.argv.slice(2)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
+  console.error(err.message);
+  process.exitCode = 1;
 });

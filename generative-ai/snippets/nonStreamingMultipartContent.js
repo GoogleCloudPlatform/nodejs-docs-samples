@@ -41,7 +41,7 @@ async function createNonStreamingMultipartContent(
 
   // For images, the SDK supports both Google Cloud Storage URI and base64 strings
   const filePart = {
-    fileSata: {
+    fileData: {
       fileUri: image,
       mimeType: mimeType,
     },

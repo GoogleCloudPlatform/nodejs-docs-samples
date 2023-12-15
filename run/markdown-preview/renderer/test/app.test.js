@@ -12,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-const assert = require('assert');
-const path = require('path');
-const sinon = require('sinon');
-const supertest = require('supertest');
+import assert from 'assert';
+import path from 'path';
+import sinon from 'sinon';
+import supertest from 'supertest';
 
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
+    import app from path.join(__dirname, '..', 'app');
     request = supertest(app);
   });
 

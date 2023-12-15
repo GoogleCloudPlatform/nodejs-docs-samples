@@ -36,7 +36,9 @@ const renderRequest = async markdown => {
       'Content-Type': 'text/plain',
     },
     body: markdown,
-    timeout: 3000,
+    timeout: {
+		  request: 10000
+	  }
   };
 
   try {

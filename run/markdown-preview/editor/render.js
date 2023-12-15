@@ -15,7 +15,7 @@
 // [START cloudrun_secure_request]
 // [START run_secure_request]
 
-import { GoogleAuth } from 'google-auth-library';
+import {GoogleAuth} from 'google-auth-library';
 import got from 'got';
 
 const auth = new GoogleAuth();
@@ -37,8 +37,8 @@ const renderRequest = async markdown => {
     },
     body: markdown,
     timeout: {
-		  request: 10000
-	  }
+      request: 10000,
+    },
   };
 
   try {

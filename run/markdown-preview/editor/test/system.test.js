@@ -14,8 +14,8 @@
 
 import assert from 'assert';
 import got from 'got';
-import { execSync } from 'child_process';
-import { GoogleAuth } from 'google-auth-library';
+import {execSync} from 'child_process';
+import {GoogleAuth} from 'google-auth-library';
 
 const auth = new GoogleAuth();
 

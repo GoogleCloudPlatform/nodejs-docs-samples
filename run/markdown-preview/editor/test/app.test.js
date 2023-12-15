@@ -13,13 +13,12 @@
 // limitations under the License.
 
 import assert from 'assert';
-import path from 'path';
 import supertest from 'supertest';
+import {app, buildRenderedHtml} from '../app.js';
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
     it('should successfully load the index page', async () => {
-      import { app } from path.join(__dirname, '..', 'app');
       const request = supertest(app);
       await request.get('/').retry(3).expect(200);
     });
@@ -29,7 +28,6 @@ describe('Editor unit tests', () => {
     let template;
 
     before(async () => {
-      import { buildRenderedHtml } from path.join(__dirname, '..', 'app');
       template = await buildRenderedHtml();
     });
 
@@ -46,7 +44,6 @@ describe('Integration tests', () => {
 
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      import { app } from path.join(__dirname, '..', 'app');
       request = supertest(app);
     });
 

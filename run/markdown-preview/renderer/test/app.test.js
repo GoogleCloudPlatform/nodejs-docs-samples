@@ -13,15 +13,14 @@
 // limitations under the License.
 
 import assert from 'assert';
-import path from 'path';
 import sinon from 'sinon';
 import supertest from 'supertest';
+import {app} from '../app.js';
 
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    import app from path.join(__dirname, '..', 'app');
     request = supertest(app);
   });
 

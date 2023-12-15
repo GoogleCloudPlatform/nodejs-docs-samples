@@ -13,7 +13,9 @@
 // limitations under the License.
 
 import app from './app.js';
-import pkg from './package.json' assert { type: "json" };
+import fs from 'fs';
+
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 const PORT = parseInt(process.env.PORT) || 8080;
 

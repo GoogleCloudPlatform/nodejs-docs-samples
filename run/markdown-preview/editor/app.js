@@ -28,12 +28,14 @@ export const buildRenderedHtml = async () => {
   const dirname = process.cwd();
 
   try {
-    markdownDefault = await fs.promises.readFile(dirname + '/templates/markdown.md');
+    markdownDefault = await fs.promises.readFile(
+      dirname + '/templates/markdown.md'
+    );
     compiledTemplate = handlebars.compile(
       await fs.promises.readFile(dirname + '/templates/index.html', 'utf8')
     );
     renderedHtml = compiledTemplate({default: markdownDefault});
-    
+
     return renderedHtml;
   } catch (err) {
     throw Error('Error loading template: ', err);

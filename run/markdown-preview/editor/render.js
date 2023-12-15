@@ -14,8 +14,10 @@
 
 // [START cloudrun_secure_request]
 // [START run_secure_request]
-const {GoogleAuth} = require('google-auth-library');
-const got = require('got');
+
+import { GoogleAuth } from 'google-auth-library';
+import got from 'got';
+
 const auth = new GoogleAuth();
 
 let client, serviceUrl;
@@ -61,4 +63,4 @@ const renderRequest = async markdown => {
 // [END run_secure_request]
 // [END cloudrun_secure_request]
 
-module.exports = renderRequest;
+export default renderRequest;

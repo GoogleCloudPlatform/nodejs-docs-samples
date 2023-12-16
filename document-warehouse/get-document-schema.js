@@ -32,8 +32,15 @@ async function main(
   const {DocumentSchemaServiceClient} =
     require('@google-cloud/contentwarehouse').v1;
 
+  const apiEndpoint =
+    location === 'us'
+      ? 'contentwarehouse.googleapis.com'
+      : `${location}-contentwarehouse.googleapis.com`;
+
   // Create service client
-  const serviceClient = new DocumentSchemaServiceClient();
+  const serviceClient = new DocumentSchemaServiceClient({
+    apiEndpoint: apiEndpoint,
+  });
 
   // Get Document Schema
   async function getDocumentSchema() {

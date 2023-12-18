@@ -52,7 +52,7 @@ async function createNonStreamingMultipartContent(
   };
 
   const request = {
-    contents: [{role: 'user', parts: [textPart, filePart]}],
+    contents: [{role: 'user', parts: [filePart, textPart]}],
   };
 
   console.log('Prompt Text:');

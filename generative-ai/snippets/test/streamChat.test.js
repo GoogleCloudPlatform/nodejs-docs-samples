@@ -17,17 +17,16 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Generative AI Stream Chat', () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro';
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'europe-west4';
+const model = 'gemini-pro';
 
+describe('Generative AI Stream Chat', () => {
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./streamChat.js ${project} ${location} ${model}`
+      `node ./streamChat.js ${projectId} ${location} ${model}`
     );
 
     // Assert that the advice given for learning is what we expect

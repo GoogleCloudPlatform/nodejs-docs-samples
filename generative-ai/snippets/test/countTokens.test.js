@@ -17,17 +17,16 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Count tokens', async () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro';
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'europe-west4';
+const model = 'gemini-pro';
 
+describe('Count tokens', async () => {
   it('should count tokens', async () => {
     const output = execSync(
-      `node ./countTokens.js ${project} ${location} ${model}`
+      `node ./countTokens.js ${projectId} ${location} ${model}`
     );
 
     // Expect 6 tokens

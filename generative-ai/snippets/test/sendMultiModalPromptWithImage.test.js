@@ -17,17 +17,16 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Generative AI Stream MultiModal with Image', () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro-vision';
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'europe-west4';
+const model = 'gemini-pro-vision';
 
+describe('Generative AI Stream MultiModal with Image', () => {
   it('should create stream multimodal content', async () => {
     const output = execSync(
-      `node ./sendMultiModalPromptWithImage.js ${project} ${location} ${model}`
+      `node ./sendMultiModalPromptWithImage.js ${projectId} ${location} ${model}`
     );
     // Ensure that the conversation is what we expect for these images
     assert(output.match(/Paris/));

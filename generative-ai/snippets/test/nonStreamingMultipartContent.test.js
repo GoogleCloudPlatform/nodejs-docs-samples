@@ -20,7 +20,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'europe-west4';
+const location = process.env.LOCATION;
 const model = 'gemini-pro-vision';
 
 describe('Generative AI NonStreaming Multipart Content', () => {

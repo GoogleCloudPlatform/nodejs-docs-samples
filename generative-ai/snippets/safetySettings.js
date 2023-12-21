@@ -12,25 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START aiplatform_gemini_safety_settings]
 const {
   VertexAI,
   HarmCategory,
   HarmBlockThreshold,
 } = require('@google-cloud/vertexai');
 
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
 async function setSafetySettings(
   projectId = 'PROJECT_ID',
-  location = 'LOCATION_ID',
-  model = 'MODEL'
+  location = 'us-central1',
+  model = 'gemini-pro'
 ) {
-  // [START aiplatform_gemini_safety_settings]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'your-project-id';
-  // const location = 'us-central1';
-  // const model = 'chosen-genai-model';
-
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
 
@@ -67,8 +63,8 @@ async function setSafetySettings(
       process.stdout.write(item.candidates[0].content.parts[0].text);
     }
   }
-  // [END aiplatform_gemini_safety_settings]
 }
+// [END aiplatform_gemini_safety_settings]
 
 setSafetySettings(...process.argv.slice(3)).catch(err => {
   console.error(err.message);

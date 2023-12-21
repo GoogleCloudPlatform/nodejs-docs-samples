@@ -12,26 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START aiplatform_gemini_get_started]
 const {VertexAI} = require('@google-cloud/vertexai');
 
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
 async function createStreamMultipartContent(
   projectId = 'PROJECT_ID',
-  location = 'LOCATION_ID',
-  model = 'MODEL',
+  location = 'us-central1',
+  model = 'gemini-pro-vision',
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {
-  // [START aiplatform_gemini_get_started]
-
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const projectId = 'your-project-id';
-  // const location = 'us-central1';
-  // const model = 'chosen-genai-model';
-  // const image = 'gs://generativeai-downloads/images/scones.jpg'; // Google Cloud Storage image
-  // const mimeType = 'image/jpeg';
-
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
 
@@ -68,9 +61,8 @@ async function createStreamMultipartContent(
   for await (const item of responseStream.stream) {
     process.stdout.write(item.candidates[0].content.parts[0].text);
   }
-
-  // [END aiplatform_gemini_get_started]
 }
+// [END aiplatform_gemini_get_started]
 
 createStreamMultipartContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

@@ -21,9 +21,8 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createNonStreamingContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-pro',
+  model = 'gemini-pro'
 ) {
-
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
 

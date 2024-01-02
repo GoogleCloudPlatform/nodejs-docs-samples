@@ -78,7 +78,7 @@ jobs:
     - name: Run Tests
       run: make test dir=ai-platform/snippets
       env:
-        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
         LOCATION: ${{ steps.secrets.outputs.location }}
         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
     - name: upload test results for FlakyBot workflow

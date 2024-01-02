@@ -78,7 +78,7 @@ jobs:
     - name: Run Tests
       run: make test dir=dialogflow-cx
       env:
-        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
+         GOOGLE_SAMPLES_PROJECT: "long-door-651"
         AGENT_ID: ${{ steps.secrets.outputs.agent_id }}
         TEST_ID: ${{ steps.secrets.outputs.test_id }}
         AGENT_PROJECT_ID: nodejs-docs-samples-tests

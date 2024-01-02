@@ -78,7 +78,7 @@ jobs:
     - name: Run Tests
       run: make test dir=functions/slack
       env:
-        GOOGLE_SAMPLES_PROJECT: "nodejs-docs-samples-tests"
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
         SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
         KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
     - name: upload test results for FlakyBot workflow

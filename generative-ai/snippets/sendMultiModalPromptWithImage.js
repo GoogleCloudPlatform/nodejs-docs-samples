@@ -26,8 +26,8 @@ async function getBase64(url) {
  */
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
-  location = 'LOCATION_ID',
-  model = 'MODEL'
+  location = 'us-central1',
+  model = 'gemini-pro-vision'
 ) {
   // For images, the SDK supports base64 strings
   const landmarkImage1 = await getBase64(

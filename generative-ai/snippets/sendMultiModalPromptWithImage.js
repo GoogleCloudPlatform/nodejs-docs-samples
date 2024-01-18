@@ -54,7 +54,7 @@ async function sendMultiModalPromptWithImage(
         role: 'user',
         parts: [
           {
-            inlineData: {
+            inline_data: {
               data: landmarkImage1,
               mimeType: 'image/png',
             },
@@ -64,7 +64,7 @@ async function sendMultiModalPromptWithImage(
           },
 
           {
-            inlineData: {
+            inline_data: {
               data: landmarkImage2,
               mimeType: 'image/png',
             },
@@ -73,7 +73,7 @@ async function sendMultiModalPromptWithImage(
             text: 'city: Beijing, Landmark: Forbidden City',
           },
           {
-            inlineData: {
+            inline_data: {
               data: landmarkImage3,
               mimeType: 'image/png',
             },

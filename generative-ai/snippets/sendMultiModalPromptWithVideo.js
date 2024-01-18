@@ -37,9 +37,9 @@ async function sendMultiModalPromptWithVideo(
         role: 'user',
         parts: [
           {
-            fileData: {
-              fileUri: 'gs://cloud-samples-data/video/animals.mp4',
-              mimeType: 'video/mp4',
+            file_data: {
+              file_uri: 'gs://cloud-samples-data/video/animals.mp4',
+              mime_type: 'video/mp4',
             },
           },
           {

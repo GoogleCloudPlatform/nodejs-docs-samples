@@ -14,7 +14,7 @@
 
 // [START cloudrun_helloworld_service]
 // [START run_helloworld_service]
-const express = require('express');
+import express from 'express';
 const app = express();
 
 app.get('/', (req, res) => {
@@ -30,4 +30,4 @@ app.listen(port, () => {
 // [END cloudrun_helloworld_service]
 
 // Exports for testing purposes.
-module.exports = app;
+export default app;

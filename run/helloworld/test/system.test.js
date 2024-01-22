@@ -33,23 +33,23 @@ const get = (route, base_url) => {
 
 let BASE_URL, ID_TOKEN;
 describe('End-to-End Tests', () => {
-  const {GOOGLE_CLOUD_PROJECT} = process.env;
+  const { GOOGLE_CLOUD_PROJECT } = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
-  let {SERVICE_NAME} = process.env;
+  let { SERVICE_NAME } = process.env;
   if (!SERVICE_NAME) {
     SERVICE_NAME = 'helloworld';
     console.log(
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  let {NAME} = process.env;
+  let { NAME } = process.env;
   if (!NAME) {
     NAME = 'Cloud';
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
-  const {SAMPLE_VERSION} = process.env;
+  const { SAMPLE_VERSION } = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
   before(async () => {
@@ -62,13 +62,13 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+    execSync(buildCmd, { timeout: 240000 }); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+      `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
     );
 
     BASE_URL = url.toString('utf-8').trim();

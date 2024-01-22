@@ -13,9 +13,8 @@
 // limitations under the License.
 
 import assert from 'assert';
-import path from 'path';
 import supertest from 'supertest';
-import app from '../index.js'
+import app from '../index.js';
 
 let request;
 describe('Unit Tests', () => {

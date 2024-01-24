@@ -20,15 +20,18 @@ on:
     paths:
     - 'service-directory/snippets/**'
     - '.github/workflows/service-directory-snippets.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'service-directory/snippets/**'
     - '.github/workflows/service-directory-snippets.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'service-directory/snippets/**'
     - '.github/workflows/service-directory-snippets.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -20,15 +20,18 @@ on:
     paths:
     - 'endpoints/getting-started-grpc/**'
     - '.github/workflows/endpoints-getting-started-grpc.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'endpoints/getting-started-grpc/**'
     - '.github/workflows/endpoints-getting-started-grpc.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'endpoints/getting-started-grpc/**'
     - '.github/workflows/endpoints-getting-started-grpc.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

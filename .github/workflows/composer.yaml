@@ -20,15 +20,18 @@ on:
     paths:
     - 'composer/**'
     - '.github/workflows/composer.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'composer/**'
     - '.github/workflows/composer.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'composer/**'
     - '.github/workflows/composer.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

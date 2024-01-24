@@ -20,15 +20,18 @@ on:
     paths:
     - 'eventarc/generic/**'
     - '.github/workflows/eventarc-generic.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'eventarc/generic/**'
     - '.github/workflows/eventarc-generic.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'eventarc/generic/**'
     - '.github/workflows/eventarc-generic.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -12,6 +12,7 @@
         "@google-cloud/resource-manager": "^5.0.0"
     },
     "devDependencies": {
-        "assert": "^2.0.0"
+        "assert": "^2.0.0",
+        "c8": "^8.0.1"
     }
 }

@@ -20,15 +20,18 @@ on:
     paths:
     - 'document-ai/**'
     - '.github/workflows/document-ai.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'document-ai/**'
     - '.github/workflows/document-ai.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'document-ai/**'
     - '.github/workflows/document-ai.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

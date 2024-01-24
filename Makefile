@@ -13,6 +13,7 @@ dir ?= $(shell pwd)
 export GOOGLE_CLOUD_PROJECT = ${GOOGLE_SAMPLES_PROJECT}
 
 build:
+	npm install
 	cd ${dir}
 	npm install
 	npm run build --if-present

@@ -20,15 +20,18 @@ on:
     paths:
     - 'appengine/pubsub/**'
     - '.github/workflows/appengine-pubsub.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'appengine/pubsub/**'
     - '.github/workflows/appengine-pubsub.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'appengine/pubsub/**'
     - '.github/workflows/appengine-pubsub.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

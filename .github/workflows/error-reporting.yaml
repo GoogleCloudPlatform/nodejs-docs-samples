@@ -20,15 +20,18 @@ on:
     paths:
     - 'error-reporting/**'
     - '.github/workflows/error-reporting.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'error-reporting/**'
     - '.github/workflows/error-reporting.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'error-reporting/**'
     - '.github/workflows/error-reporting.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

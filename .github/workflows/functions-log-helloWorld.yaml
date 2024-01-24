@@ -20,15 +20,18 @@ on:
     paths:
     - 'functions/log/helloWorld/**'
     - '.github/workflows/functions-log-helloWorld.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'functions/log/helloWorld/**'
     - '.github/workflows/functions-log-helloWorld.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'functions/log/helloWorld/**'
     - '.github/workflows/functions-log-helloWorld.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

@@ -20,15 +20,18 @@ on:
     paths:
     - 'kms/**'
     - '.github/workflows/kms.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'kms/**'
     - '.github/workflows/kms.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'kms/**'
     - '.github/workflows/kms.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

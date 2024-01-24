@@ -20,15 +20,18 @@ on:
     paths:
     - 'recaptcha_enterprise/snippets/**'
     - '.github/workflows/recaptcha-enterprise.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'recaptcha_enterprise/snippets/**'
     - '.github/workflows/recaptcha-enterprise.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'recaptcha_enterprise/snippets/**'
     - '.github/workflows/recaptcha-enterprise.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

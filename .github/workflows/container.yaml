@@ -20,15 +20,18 @@ on:
     paths:
     - 'container/**'
     - '.github/workflows/container.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'container/**'
     - '.github/workflows/container.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'container/**'
     - '.github/workflows/container.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

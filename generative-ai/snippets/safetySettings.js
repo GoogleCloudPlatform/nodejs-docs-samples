@@ -31,7 +31,7 @@ async function setSafetySettings(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
     // The following parameters are optional
     // They can also be passed to individual content generation requests

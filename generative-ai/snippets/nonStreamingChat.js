@@ -27,7 +27,7 @@ async function createNonStreamingChat(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

@@ -29,7 +29,7 @@ async function createNonStreamingMultipartContent(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+  const generativeVisionModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

@@ -20,9 +20,15 @@ const {RecaptchaEnterpriseServiceClient} =
  * @param projectId: GCloud Project ID
  * @param recaptchaSiteKey: Site key obtained by registering a domain/app to use recaptcha services.
  * @param token: The token obtained from the client on passing the recaptchaSiteKey.
+ * @param expectedAction: The expected action for this type of event.
  * @returns Assessment
  */
-async function createAssessment(projectId, recaptchaSiteKey, token) {
+async function createAssessment(
+  projectId,
+  recaptchaSiteKey,
+  token,
+  expectedAction
+) {
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
 
@@ -34,6 +40,7 @@ async function createAssessment(projectId, recaptchaSiteKey, token) {
       event: {
         siteKey: recaptchaSiteKey,
         token: token,
+        expectedAction: expectedAction,
       },
     },
   });

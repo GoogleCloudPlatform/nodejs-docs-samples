@@ -50,7 +50,7 @@ async function createStreamMultipartContent(
   };
 
   console.log('Prompt Text:');
-  console.log(request.contents[0].parts[0].text);
+  console.log(request.contents[0].parts[1].text);
   console.log('Streaming Response Text:');
 
   // Create the response stream

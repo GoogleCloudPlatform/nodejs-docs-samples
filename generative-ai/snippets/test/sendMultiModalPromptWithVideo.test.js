@@ -30,6 +30,6 @@ describe('Generative AI Stream MultiModal with Video', () => {
       `node ./sendMultiModalPromptWithVideo.js ${project} ${location} ${model}`
     );
     // Ensure that the conversation is what we expect for these images
-    assert(output.match(/advertisement/));
+    assert(output.match(/Zootopia/));
   });
 });

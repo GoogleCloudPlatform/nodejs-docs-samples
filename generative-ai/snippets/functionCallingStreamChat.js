@@ -14,8 +14,8 @@
 
 // [START aiplatform_gemini_function_calling_chat]
 const {
-    VertexAI,
-    FunctionDeclarationSchemaType
+  VertexAI,
+  FunctionDeclarationSchemaType,
 } = require('@google-cloud/vertexai');
 
 const functionDeclarations = [
@@ -27,7 +27,7 @@ const functionDeclarations = [
         parameters: {
           type: FunctionDeclarationSchemaType.OBJECT,
           properties: {
-            location: { type: FunctionDeclarationSchemaType.STRING },
+            location: {type: FunctionDeclarationSchemaType.STRING},
             unit: {
               type: FunctionDeclarationSchemaType.STRING,
               enum: ['celsius', 'fahrenheit'],
@@ -44,8 +44,7 @@ const functionResponseParts = [
   {
     functionResponse: {
       name: 'get_current_weather',
-      response:
-        { name: 'get_current_weather', content: { weather: 'super nice' } },
+      response: {name: 'get_current_weather', content: {weather: 'super nice'}},
     },
   },
 ];
@@ -59,7 +58,7 @@ async function functionCallingStreamChat(
   model = 'gemini-pro'
 ) {
   // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({ project: projectId, location: location });
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
   const generativeModel = vertexAI.preview.getGenerativeModel({
@@ -78,7 +77,7 @@ async function functionCallingStreamChat(
   for await (const item of result1.stream) {
     console.log(item.candidates[0]);
   }
-  const response1 = await result1.response;
+  await result1.response;
 
   // Send a follow up message with a FunctionResponse
   const result2 = await chat.sendMessageStream(functionResponseParts);

@@ -74,17 +74,16 @@ async function functionCallingStreamChat(
           {
             functionCall: {
               name: 'get_current_weather',
-              args: {'location': 'Boston'},
+              args: {location: 'Boston'},
             },
-          }
+          },
         ],
       },
       {role: 'function', parts: functionResponseParts},
     ],
     tools: functionDeclarations,
   };
-  const streamingResp =
-    await generativeModel.generateContentStream(request);
+  const streamingResp = await generativeModel.generateContentStream(request);
   for await (const item of streamingResp.stream) {
     console.log(item.candidates[0].content.parts[0].text);
   }

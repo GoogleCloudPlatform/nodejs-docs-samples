@@ -15,7 +15,7 @@
 // [START aiplatform_gemini_function_calling_chat]
 const {
   VertexAI,
-  FunctionDeclarationSchemaType
+  FunctionDeclarationSchemaType,
 } = require('@google-cloud/vertexai');
 
 const functionDeclarations = [
@@ -31,13 +31,13 @@ const functionDeclarations = [
             unit: {
               type: FunctionDeclarationSchemaType.STRING,
               enum: ['celsius', 'fahrenheit'],
-           },
-         },
+            },
+          },
           required: ['location'],
-       },
-     },
+        },
+      },
     ],
- },
+  },
 ];
 
 const functionResponseParts = [
@@ -46,8 +46,8 @@ const functionResponseParts = [
       name: 'get_current_weather',
       response:
         {name: 'get_current_weather', content: {weather: 'super nice'}},
-   },
- },
+    },
+  },
 ];
 
 /**
@@ -59,17 +59,17 @@ async function functionCallingStreamChat(
   model = 'gemini-pro'
 ) {
   // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
+  const vertexAI = new VertexAI({ project: projectId, location: location });
 
   // Instantiate the model
   const generativeModel = vertexAI.preview.getGenerativeModel({
     model: model,
- });
+  });
 
   // Create a chat session and pass your function declarations
   const chat = generativeModel.startChat({
     tools: functionDeclarations,
- });
+  });
 
   const chatInput1 = 'What is the weather in Boston?';
 
@@ -77,14 +77,14 @@ async function functionCallingStreamChat(
   const result1 = await chat.sendMessageStream(chatInput1);
   for await (const item of result1.stream) {
     console.log(item.candidates[0]);
- }
+  }
   const response1 = await result1.response;
 
   // Send a follow up message with a FunctionResponse
   const result2 = await chat.sendMessageStream(functionResponseParts);
   for await (const item of result2.stream) {
     console.log(item.candidates[0]);
- }
+  }
 
   // This should include a text response from the model using the response content
   // provided above

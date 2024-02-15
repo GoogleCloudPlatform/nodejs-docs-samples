@@ -15,7 +15,7 @@
 // [START aiplatform_gemini_function_calling_chat]
 const {
   VertexAI,
-  FunctionDeclarationSchemaType
+  FunctionDeclarationSchemaType,
 } = require('@google-cloud/vertexai');
 
 const functionDeclarations = [

@@ -13,7 +13,10 @@
 // limitations under the License.
 
 // [START aiplatform_gemini_function_calling_content]
-const { VertexAI, FunctionDeclarationSchemaType } = require('@google-cloud/vertexai');
+const {
+  VertexAI,
+  FunctionDeclarationSchemaType,
+} = require('@google-cloud/vertexai');
 
 const functionDeclarations = [
   {
@@ -36,50 +39,58 @@ const functionDeclarations = [
     ],
   },
 ];
-  
-  const functionResponseParts = [
-    {
-      functionResponse: {
-        name: 'get_current_weather',
-        response:
-            {name: 'get_current_weather', content: {weather: 'super nice'}},
-      },
+
+const functionResponseParts = [
+  {
+    functionResponse: {
+      name: 'get_current_weather',
+      response: {name: 'get_current_weather', content: {weather: 'super nice'}},
     },
-  ];
+  },
+];
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function functionCallingStreamChat(
-    projectId = 'PROJECT_ID',
-    location = 'us-central1',
-    model = 'gemini-pro'
+  projectId = 'PROJECT_ID',
+  location = 'us-central1',
+  model = 'gemini-pro'
 ) {
-    // Initialize Vertex with your Cloud project and location
-    const vertexAI = new VertexAI({ project: projectId, location: location });
+  // Initialize Vertex with your Cloud project and location
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
-    // Instantiate the model
-    const generativeModel = vertexAI.preview.getGenerativeModel({
-        model: model,
-    });
+  // Instantiate the model
+  const generativeModel = vertexAI.preview.getGenerativeModel({
+    model: model,
+  });
 
-    const request = {
-        contents: [
-          {role: 'user', parts: [{text: 'What is the weather in Boston?'}]},
-          {role: 'model', parts: [{functionCall: {name: 'get_current_weather', args: {'location': 'Boston'}}}]},
-          {role: 'function', parts: functionResponseParts}
+  const request = {
+    contents: [
+      {role: 'user', parts: [{text: 'What is the weather in Boston?'}]},
+      {
+        role: 'model',
+        parts: [
+          {
+            functionCall: {
+              name: 'get_current_weather',
+              args: {location: 'Boston'},
+            },
+          },
         ],
-        tools: functionDeclarations,
-      };
-      const streamingResp =
-          await generativeModel.generateContentStream(request);
-      for await (const item of streamingResp.stream) {
-        console.log(item.candidates[0].content.parts[0].text);
-      }    
+      },
+      {role: 'function', parts: functionResponseParts},
+    ],
+    tools: functionDeclarations,
+  };
+  const streamingResp = await generativeModel.generateContentStream(request);
+  for await (const item of streamingResp.stream) {
+    console.log(item.candidates[0].content.parts[0].text);
+  }
 }
 // [END aiplatform_gemini_function_calling_content]
 
 functionCallingStreamChat(...process.argv.slice(2)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
+  console.error(err.message);
+  process.exitCode = 1;
 });

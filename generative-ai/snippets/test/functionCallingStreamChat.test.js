@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Generative AI Function Calling Stream Chat', () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
-  const model = 'gemini-pro';
+  const model = 'gemini-1.0-pro';
 
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(

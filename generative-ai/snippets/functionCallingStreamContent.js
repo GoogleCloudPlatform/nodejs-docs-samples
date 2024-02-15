@@ -19,7 +19,7 @@ const functionDeclarations = [
     {
       function_declarations: [
         {
-          name: "get_current_weather",
+          name: 'get_current_weather',
           description: 'get weather in a given location',
           parameters: {
             type: FunctionDeclarationSchemaType.OBJECT,
@@ -40,9 +40,9 @@ const functionDeclarations = [
   const functionResponseParts = [
     {
       functionResponse: {
-        name: "get_current_weather",
+        name: 'get_current_weather',
         response:
-            {name: "get_current_weather", content: {weather: "super nice"}},
+            {name: 'get_current_weather', content: {weather: 'super nice'}},
       },
     },
   ];

@@ -37,7 +37,7 @@ async function createNonStreamingChat(
   console.log(`User: ${chatInput1}`);
 
   const result1 = await chat.sendMessage(chatInput1);
-  const response1 = await result1.response;
+  const response1 = result1.response;
   const text1 = response1.candidates[0].content.parts[0].text;
   console.log('Chat bot: ', text1);
 

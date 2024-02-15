@@ -20,15 +20,18 @@ on:
     paths:
     - 'speech/**'
     - '.github/workflows/speech.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     paths:
     - 'speech/**'
     - '.github/workflows/speech.yaml'
+    - '.github/workflows/test.yaml'
   pull_request_target:
     types: [labeled]
     paths:
     - 'speech/**'
     - '.github/workflows/speech.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:

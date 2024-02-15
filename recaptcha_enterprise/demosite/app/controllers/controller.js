@@ -74,7 +74,8 @@ const onHomepageLoad = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.token
+      req.body.token,
+      recaptchaAction
     );
 
     // Check if the token is valid, score is above threshold score and the action equals expected.
@@ -117,7 +118,8 @@ const onSignup = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.token
+      req.body.token,
+      recaptchaAction
     );
 
     // Check if the token is valid, score is above threshold score and the action equals expected.
@@ -162,7 +164,8 @@ const onLogin = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.token
+      req.body.token,
+      recaptchaAction
     );
 
     // Check if the token is valid, score is above threshold score and the action equals expected.
@@ -207,7 +210,8 @@ const onStoreCheckout = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.token
+      req.body.token,
+      recaptchaAction
     );
 
     // Check if the token is valid, score is above threshold score and the action equals expected.
@@ -251,7 +255,8 @@ const onCommentSubmit = async (req, res) => {
     const assessmentResponse = await createAssessment(
       context.project_id,
       context.site_key,
-      req.body.token
+      req.body.token,
+      recaptchaAction
     );
 
     // Check if the token is valid, score is above threshold score and the action equals expected.

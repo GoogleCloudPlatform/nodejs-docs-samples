@@ -15,6 +15,7 @@
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=20000"
   },
   "devDependencies": {
+    "c8": "^8.0.1",
     "mocha": "^10.0.0",
     "sinon": "^16.0.0"
   }

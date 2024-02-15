@@ -21,7 +21,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function sendMultiModalPromptWithVideo(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-pro-vision'
+  model = 'gemini-1.0-pro-vision'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});

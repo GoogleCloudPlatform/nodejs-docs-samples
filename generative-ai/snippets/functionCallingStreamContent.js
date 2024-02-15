@@ -16,26 +16,26 @@
 const { VertexAI, FunctionDeclarationSchemaType } = require('@google-cloud/vertexai');
 
 const functionDeclarations = [
-    {
-      function_declarations: [
-        {
-          name: 'get_current_weather',
-          description: 'get weather in a given location',
-          parameters: {
-            type: FunctionDeclarationSchemaType.OBJECT,
-            properties: {
-              location: {type: FunctionDeclarationSchemaType.STRING},
-              unit: {
-                type: FunctionDeclarationSchemaType.STRING,
-                enum: ['celsius', 'fahrenheit'],
-              },
+  {
+    function_declarations: [
+      {
+        name: 'get_current_weather',
+        description: 'get weather in a given location',
+        parameters: {
+          type: FunctionDeclarationSchemaType.OBJECT,
+          properties: {
+            location: {type: FunctionDeclarationSchemaType.STRING},
+            unit: {
+              type: FunctionDeclarationSchemaType.STRING,
+              enum: ['celsius', 'fahrenheit'],
             },
-            required: ['location'],
           },
+          required: ['location'],
         },
-      ],
-    },
-  ];
+      },
+    ],
+  },
+];
   
   const functionResponseParts = [
     {

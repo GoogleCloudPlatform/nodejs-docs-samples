@@ -71,7 +71,7 @@ async function functionCallingStreamChat(
       {
         role: 'model',
         parts: [
-            {
+          {
             functionCall: {
               name: 'get_current_weather',
               args: {'location': 'Boston'},

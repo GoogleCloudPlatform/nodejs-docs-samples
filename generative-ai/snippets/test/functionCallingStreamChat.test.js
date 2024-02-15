@@ -20,16 +20,17 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Generative AI Stream MultiModal with Video', () => {
+describe('Generative AI Function Calling Stream Chat', () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
-  const model = 'gemini-pro-vision';
+  const model = 'gemini-pro';
 
-  it('should create stream multimodal content', async () => {
+  it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./sendMultiModalPromptWithVideo.js ${project} ${location} ${model}`
+      `node ./functionCallingStreamChat.js ${project} ${location} ${model}`
     );
-    // Ensure that the conversation is what we expect for these images
-    assert(output.match(/Zootopia/));
+
+    // Assert that the response is what we expect
+    assert(output.match(/The weather in Boston is super nice./));
   });
 });

@@ -43,7 +43,7 @@ async function sendMultiModalPromptWithImage(
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
 
-  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+  const generativeVisionModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

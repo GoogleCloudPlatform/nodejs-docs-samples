@@ -29,7 +29,7 @@ async function createStreamMultipartContent(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+  const generativeVisionModel = vertexAI.getGenerativeModel({
     model: model,
   });
 
@@ -50,7 +50,7 @@ async function createStreamMultipartContent(
   };
 
   console.log('Prompt Text:');
-  console.log(request.contents[0].parts[0].text);
+  console.log(request.contents[0].parts[1].text);
   console.log('Streaming Response Text:');
 
   // Create the response stream

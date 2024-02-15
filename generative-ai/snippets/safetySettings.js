@@ -31,7 +31,7 @@ async function setSafetySettings(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
     // The following parameters are optional
     // They can also be passed to individual content generation requests
@@ -59,6 +59,7 @@ async function setSafetySettings(
   for await (const item of responseStream.stream) {
     if (item.candidates[0].finishReason === 'SAFETY') {
       console.log('This response stream terminated due to safety concerns.');
+      break;
     } else {
       process.stdout.write(item.candidates[0].content.parts[0].text);
     }
@@ -66,7 +67,7 @@ async function setSafetySettings(
 }
 // [END aiplatform_gemini_safety_settings]
 
-setSafetySettings(...process.argv.slice(3)).catch(err => {
+setSafetySettings(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

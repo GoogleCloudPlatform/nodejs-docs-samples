@@ -30,6 +30,6 @@ describe('Generative AI Stream MultiModal with Image', () => {
       `node ./sendMultiModalPromptWithImage.js ${project} ${location} ${model}`
     );
     // Ensure that the conversation is what we expect for these images
-    assert(output.match(/Paris/));
+    assert(output.match(/city: Rio de Janeiro, Landmark: Christ the Redeemer/));
   });
 });

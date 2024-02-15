@@ -24,10 +24,10 @@ async function countTokens(
   model = 'gemini-pro'
 ) {
   // Initialize Vertex with your Cloud project and location
-  const vertex_ai = new VertexAI({project: projectId, location: location});
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertex_ai.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

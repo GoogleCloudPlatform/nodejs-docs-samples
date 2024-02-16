@@ -21,14 +21,22 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-pro-vision';
+const model = 'gemini-1.0-pro-vision';
 
 describe('Generative AI Stream MultiModal with Video', () => {
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.\
+   * (Not necessary if passing values as arguments)
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_LOCATION';
+  // const model = 'gemini-1.0-pro-vision';
+  
   it('should create stream multimodal content', async () => {
     const output = execSync(
       `node ./sendMultiModalPromptWithVideo.js ${projectId} ${location} ${model}`
     );
     // Ensure that the conversation is what we expect for these images
-    assert(output.match(/advertisement/));
+    assert(output.match(/Zootopia/));
   });
 });

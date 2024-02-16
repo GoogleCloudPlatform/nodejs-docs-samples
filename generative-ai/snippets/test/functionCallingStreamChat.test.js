@@ -21,22 +21,23 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-vision';
+const model = 'gemini-1.0-pro';
 
-describe('Generative AI Stream MultiModal with Image', () => {
+describe('Generative AI Function Calling Stream Chat', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro-vision';
-  
-  it('should create stream multimodal content', async () => {
+  // const model = 'gemini-1.0-pro';
+
+  it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./sendMultiModalPromptWithImage.js ${projectId} ${location} ${model}`
+      `node ./functionCallingStreamChat.js ${projectId} ${location} ${model}`
     );
-    // Ensure that the conversation is what we expect for these images
-    assert(output.match(/city: Rio de Janeiro, Landmark: Christ the Redeemer/));
+
+    // Assert that the response is what we expect
+    assert(output.match(/The weather in Boston is super nice./));
   });
 });

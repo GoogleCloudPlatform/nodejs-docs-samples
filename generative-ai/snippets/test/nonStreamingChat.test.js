@@ -44,3 +44,4 @@ describe('Generative AI NonStreaming Chat', async () => {
       assert(output.match(/User: How can I learn more about that?/));
     });
   });
+});

@@ -31,7 +31,7 @@ describe('Generative AI Stream MultiModal with Video', () => {
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro-vision';
-  
+
   it('should create stream multimodal content', async () => {
     const output = execSync(
       `node ./sendMultiModalPromptWithVideo.js ${projectId} ${location} ${model}`

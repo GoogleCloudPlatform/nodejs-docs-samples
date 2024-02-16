@@ -31,7 +31,7 @@ describe('Generative AI Stream Content', () => {
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
-  
+
   it('should create stream content', async () => {
     const output = execSync(
       `node ./streamContent.js ${projectId} ${location} ${model}`

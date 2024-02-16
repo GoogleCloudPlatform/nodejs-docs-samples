@@ -18,12 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-  
+
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 const model = 'gemini-1.0-pro';
 
-describe('Count tokens', async () => {  
+describe('Count tokens', async () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -31,7 +31,7 @@ describe('Count tokens', async () => {
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
-  
+
   it('should count tokens', async () => {
     const output = execSync(
       `node ./countTokens.js ${projectId} ${location} ${model}`

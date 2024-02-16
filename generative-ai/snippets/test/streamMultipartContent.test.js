@@ -31,7 +31,7 @@ describe('Generative AI Stream Multipart Content', () => {
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro-vision';
-  
+
   const image = 'gs://generativeai-downloads/images/scones.jpg';
 
   it('should create stream multipart content', async () => {

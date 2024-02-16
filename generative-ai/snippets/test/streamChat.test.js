@@ -31,7 +31,7 @@ describe('Generative AI Stream Chat', () => {
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
-  
+
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
       `node ./streamChat.js ${projectId} ${location} ${model}`

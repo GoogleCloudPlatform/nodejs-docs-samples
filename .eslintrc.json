@@ -12,6 +12,10 @@
     "node/no-unsupported-features/es-syntax": ["off"]
   },
   "parserOptions": {
+    "ecmaVersion": 7,
+    "ecmaFeatures": {
+      "jsx": true
+    },
     "sourceType": "module"
   }
 }

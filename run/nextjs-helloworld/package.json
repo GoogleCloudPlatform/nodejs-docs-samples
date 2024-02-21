@@ -1,6 +1,6 @@
 {
   "name": "helloworld",
-  "description": "Simple hello world sample in Next.js",
+  "description": "Hello world sample in Next.js",
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev --turbo",

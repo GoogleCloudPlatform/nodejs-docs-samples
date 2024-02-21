@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "c8 mocha -p -j 2 test/index.test.js --exit",
+    "system-test": "NAME=Cloud c8 mocha -p -j 2 test/system.test.js --timeout=180000"
   },
   "engines": {
     "node": ">=20.0.0"

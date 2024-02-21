@@ -27,7 +27,7 @@ async function getBase64(url) {
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-pro-vision'
+  model = 'gemini-1.0-pro-vision'
 ) {
   // For images, the SDK supports base64 strings
   const landmarkImage1 = await getBase64(
@@ -43,7 +43,7 @@ async function sendMultiModalPromptWithImage(
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
 
-  const generativeVisionModel = vertexAI.preview.getGenerativeModel({
+  const generativeVisionModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

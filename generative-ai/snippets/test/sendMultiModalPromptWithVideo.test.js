@@ -23,13 +23,13 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Generative AI Stream MultiModal with Video', () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
-  const model = 'gemini-pro-vision';
+  const model = 'gemini-1.0-pro-vision';
 
   it('should create stream multimodal content', async () => {
     const output = execSync(
       `node ./sendMultiModalPromptWithVideo.js ${project} ${location} ${model}`
     );
     // Ensure that the conversation is what we expect for these images
-    assert(output.match(/advertisement/));
+    assert(output.match(/Zootopia/));
   });
 });

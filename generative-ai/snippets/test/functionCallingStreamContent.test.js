@@ -20,18 +20,17 @@ const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-describe('Generative AI Stream Content', () => {
+describe('Generative AI Function Calling Stream Content', () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
   const model = 'gemini-1.0-pro';
 
-  it('should create stream content', async () => {
+  it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./streamContent.js ${project} ${location} ${model}`
+      `node ./functionCallingStreamContent.js ${project} ${location} ${model}`
     );
-    // Ensure that the beginning of the conversation is consistent
-    assert(output.match(/Prompt:/));
-    assert(output.match(/What is Node.js/));
-    assert(output.match(/Streaming Response Text:/));
+
+    // Assert that the response is what we expect
+    assert(output.match(/The weather in Boston is super nice./));
   });
 });

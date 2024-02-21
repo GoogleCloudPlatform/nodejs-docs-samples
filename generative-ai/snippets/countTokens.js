@@ -21,13 +21,13 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function countTokens(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-pro'
+  model = 'gemini-1.0-pro'
 ) {
   // Initialize Vertex with your Cloud project and location
-  const vertex_ai = new VertexAI({project: projectId, location: location});
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertex_ai.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
   });
 

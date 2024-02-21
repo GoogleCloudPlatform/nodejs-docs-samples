@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Generative AI NonStreaming Multipart Content', () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
-  const model = 'gemini-pro-vision';
+  const model = 'gemini-1.0-pro-vision';
   const image = 'gs://generativeai-downloads/images/scones.jpg';
 
   it('should create nonstreaming multipart content and begin the conversation the same in each instance', async () => {

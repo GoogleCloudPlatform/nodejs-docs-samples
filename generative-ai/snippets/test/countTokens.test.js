@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Count tokens', async () => {
   const project = 'cloud-llm-preview1';
   const location = 'us-central1';
-  const model = 'gemini-pro';
+  const model = 'gemini-1.0-pro';
 
   it('should count tokens', async () => {
     const output = execSync(

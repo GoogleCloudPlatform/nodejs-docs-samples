@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.;
 
+// [START cloudrun_nextjs_helloworld_service]
+// [START run_nextjs_helloworld_service]
 export default function RootLayout({children}) {
   return (
     <html lang="en">
@@ -19,3 +21,5 @@ export default function RootLayout({children}) {
     </html>
   );
 }
+// [END run_nextjs_helloworld_service]
+// [END cloudrun_nextjs_helloworld_service]

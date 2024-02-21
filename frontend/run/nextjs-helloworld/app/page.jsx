@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START cloudrun_nextjs_helloworld_service]
+// [START run_nextjs_helloworld_service]
 export default function Page() {
   return <h1>Hello, Next.js!</h1>;
 }
+// [END run_nextjs_helloworld_service]
+// [END cloudrun_nextjs_helloworld_service]

@@ -48,7 +48,7 @@ images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
 
 substitutions:
-  _SERVICE: logging-manual
+  _SERVICE: nextjs-helloworld
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed

@@ -17,18 +17,26 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+const model = 'gemini-1.0-pro-vision';
+
 describe('Generative AI Stream Multipart Content', () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro-vision';
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.\
+   * (Not necessary if passing values as arguments)
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_LOCATION';
+  // const model = 'gemini-1.0-pro-vision';
+
   const image = 'gs://generativeai-downloads/images/scones.jpg';
 
   it('should create stream multipart content', async () => {
     const output = execSync(
-      `node ./streamMultipartContent.js ${project} ${location} ${model} ${image}`
+      `node ./streamMultipartContent.js ${projectId} ${location} ${model} ${image}`
     );
     // Split up conversation output
     const conversation = output.split('\n');

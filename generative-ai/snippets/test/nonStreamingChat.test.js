@@ -17,22 +17,31 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+const model = 'gemini-1.0-pro';
+
 describe('Generative AI NonStreaming Chat', async () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro';
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.\
+   * (Not necessary if passing values as arguments)
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_LOCATION';
+  // const model = 'gemini-1.0-pro';
 
-  it('should create nonstreaming chat and begin the conversation the same in each instance', async () => {
-    const output = execSync(
-      `node ./nonStreamingChat.js ${project} ${location} ${model}`
-    );
+  describe('Generative AI NonStreaming Chat', async () => {
+    it('should create nonstreaming chat and begin the conversation the same in each instance', async () => {
+      const output = execSync(
+        `node ./nonStreamingChat.js ${projectId} ${location} ${model}`
+      );
 
-    // Ensure that the beginning of the conversation is consistent
-    assert(output.match(/User: Hello/));
-    assert(output.match(/User: Can you tell me a scientific fun fact?/));
-    assert(output.match(/User: How can I learn more about that?/));
+      // Ensure that the beginning of the conversation is consistent
+      assert(output.match(/User: Hello/));
+      assert(output.match(/User: Can you tell me a scientific fun fact?/));
+      assert(output.match(/User: How can I learn more about that?/));
+    });
   });
 });

@@ -17,17 +17,24 @@
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const projectId = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+const model = 'gemini-1.0-pro';
+
 describe('Safety settings', async () => {
-  const project = 'cloud-llm-preview1';
-  const location = 'us-central1';
-  const model = 'gemini-pro';
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.\
+   * (Not necessary if passing values as arguments)
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_LOCATION';
+  // const model = 'gemini-1.0-pro';
 
   it('should reject a dangerous request', async () => {
     const output = execSync(
-      `node ./safetySettings.js ${project} ${location} ${model}`
+      `node ./safetySettings.js ${projectId} ${location} ${model}`
     );
 
     // Expect rejection due to safety concerns

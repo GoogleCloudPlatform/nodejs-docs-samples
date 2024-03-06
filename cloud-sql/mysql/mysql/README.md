@@ -1,6 +1,5 @@
 # Connecting to Cloud SQL - MySQL
 
-
 ## Before you begin
 
 1. If you haven't already, set up a Node.js Development Environment by following

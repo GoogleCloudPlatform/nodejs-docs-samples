@@ -82,13 +82,13 @@ describe('End-to-End Tests', () => {
   });
 
   after(() => {
-    let cleanUpCmd =
+    /*let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
-    execSync(cleanUpCmd);
+    execSync(cleanUpCmd);*/
   });
 
   it('Service uses the NAME override', async () => {

@@ -29,5 +29,7 @@ app.listen(port, () => {
 // [END run_helloworld_service]
 // [END cloudrun_helloworld_service]
 
+// Hello
+
 // Exports for testing purposes.
 export default app;

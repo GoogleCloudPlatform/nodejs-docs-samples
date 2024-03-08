@@ -7,7 +7,7 @@
    [create a
    project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project).
 
-1. Create a 2nd Gen Cloud SQL Instance by following these
+1. Create a Cloud SQL Instance by following these
    [instructions](https://cloud.google.com/sql/docs/mysql/create-instance). Note
    the instance connection name, database user, and database password that you
    create.

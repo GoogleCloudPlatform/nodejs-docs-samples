@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^18.15.11",
+    "@types/node": "^20.0.0",
     "@types/yargs": "^17.0.19",
     "c8": "^8.0.0",
     "eslint": "^8.34.0",

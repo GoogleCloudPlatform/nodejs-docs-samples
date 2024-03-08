@@ -12,7 +12,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "^8.0.0",
+    "@google-cloud/debug-agent": "^9.0.0",
     "@google-cloud/functions-framework": "^3.1.0",
     "escape-html": "^1.0.3"
   },

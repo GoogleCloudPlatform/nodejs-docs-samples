@@ -31,7 +31,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "commander": "^11.0.0",
+    "commander": "^12.0.0",
     "eslint": "^8.53.0"
   }
 }

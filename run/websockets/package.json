@@ -11,7 +11,7 @@
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=420000 --exit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@socket.io/redis-adapter": "^8.1.0",

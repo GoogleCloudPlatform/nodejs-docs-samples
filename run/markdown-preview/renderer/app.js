@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const express = require('express');
-const MarkdownIt = require('markdown-it');
+import express from 'express';
+import MarkdownIt from 'markdown-it';
 
 const app = express();
 app.use(express.text());
@@ -40,4 +40,4 @@ app.post('/', (req, res) => {
 });
 
 // Export for testing purposes.
-module.exports = app;
+export default app;

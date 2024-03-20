@@ -6,7 +6,7 @@
     "!system-test/"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 system-test/ --recursive --timeout 6000000"

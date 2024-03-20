@@ -18,6 +18,6 @@
     "uuid": "^9.0.0"
   },
   "dependencies": {
-    "@googleapis/healthcare": "^10.0.0"
+    "@googleapis/healthcare": "^13.0.0"
   }
 }

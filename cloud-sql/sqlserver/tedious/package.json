@@ -23,7 +23,7 @@
     "@google-cloud/secret-manager": "^5.0.0",
     "express": "^4.17.1",
     "pug": "^3.0.0",
-    "tedious": "^16.1.0",
+    "tedious": "^17.0.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {

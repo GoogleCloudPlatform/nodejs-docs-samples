@@ -36,13 +36,13 @@
     "@google-cloud/storage": "^7.0.0",
     "@google-cloud/text-to-speech": "^5.0.0",
     "@google-cloud/translate": "^8.0.0",
-    "firebase-admin": "^11.0.0",
+    "firebase-admin": "^12.0.0",
     "firebase-functions": "^4.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^3.0.0",
-    "c8": "^8.0.0",
+    "c8": "^9.0.0",
     "child-process-promise": "^2.2.1",
     "gaxios": "^6.0.0",
     "mocha": "^10.0.0",

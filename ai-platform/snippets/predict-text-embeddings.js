@@ -22,22 +22,17 @@ async function main(
   model = 'text-embedding-preview-0409',
   texts = 'banana bread?;banana muffins?',
   tasks = 'QUESTION_ANSWERING;FACT_VERIFICATION',
-  apis = 'us-central1-aiplatform.googleapis.com'
+  apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
-   */
-  // const project = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
-  const clientOptions = {apiEndpoint: apis};
-  const publisher = 'google';
-  const match = apis.match(/(?<Location>.+)(-autopush|-staging)?-aiplatform.+/);
+  const clientOptions = {apiEndpoint: apiEndpoint};
+  const match = apiEndpoint.match(
+    /(?<Location>.+)(-autopush|-staging)?-aiplatform.+/
+  );
   const location = match ? match.groups.Location : 'us-centra11';
-  const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
+  const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
   const elastic = [
     'text-embedding-preview-0409',
     'text-multilingual-embedding-preview-0409',

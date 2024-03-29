@@ -18,10 +18,12 @@
 
 // [START aiplatform_sdk_embedding]
 async function main(
-    project, model = 'text-embedding-preview-0409',
-    texts = 'banana bread?;banana muffins?',
-    tasks = 'QUESTION_ANSWERING;FACT_VERIFICATION',
-    apis = 'us-central1-aiplatform.googleapis.com') {
+  project,
+  model = 'text-embedding-preview-0409',
+  texts = 'banana bread?;banana muffins?',
+  tasks = 'QUESTION_ANSWERING;FACT_VERIFICATION',
+  apis = 'us-central1-aiplatform.googleapis.com'
+) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -30,23 +32,25 @@ async function main(
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
-  const {helpers} = aiplatform;  // helps construct protobuf.Value objects.
+  const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apis};
   const publisher = 'google';
   const match = apis.match(/(?<Location>.+)(-autopush|-staging)?-aiplatform.+/);
   const location = match ? match.groups.Location : 'us-centra11';
-  const endpoint = `projects/${project}/locations/${location}/publishers/${
-      publisher}/models/${model}`;
+  const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
   const elastic = [
     'text-embedding-preview-0409',
     'text-multilingual-embedding-preview-0409',
   ].includes(model);
-  const parameters = helpers.toValue(elastic ? {outputDimensionality: 192} : {});
+  const parameters = helpers.toValue(
+    elastic ? {outputDimensionality: 192} : {}
+  );
 
   async function callPredict() {
     const taskTypes = tasks.split(';');
-    const instances = texts.split(';').map(
-        ((e, i) => helpers.toValue({content: e, taskType: taskTypes[i]})));
+    const instances = texts
+      .split(';')
+      .map((e, i) => helpers.toValue({content: e, taskType: taskTypes[i]}));
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
@@ -55,7 +59,7 @@ async function main(
     for (const prediction of predictions) {
       const embeddings = prediction.structValue.fields.embeddings;
       const values = embeddings.structValue.fields.values.listValue.values;
-      console.log(`Got prediction: ` + JSON.stringify(values));
+      console.log('Got prediction: ' + JSON.stringify(values));
     }
   }
 

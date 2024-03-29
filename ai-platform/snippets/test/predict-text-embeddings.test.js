@@ -17,22 +17,35 @@
 'use strict';
 
 const path = require('path');
-const { assert } = require('chai');
-const { describe, it } = require('mocha');
+const {assert} = require('chai');
+const {describe, it} = require('mocha');
 
 const cp = require('child_process');
-const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 const project = process.env.CAIP_PROJECT_ID;
 const model = 'textembedding-gecko@003';
-const texts = ['banana bread?', 'banana muffin?', 'banana?', 'recipe?', 'muffin recipe?'].join(';');
-const tasks = ['RETRIEVAL_QUERY', 'RETRIEVAL_DOCUMENT', 'SEMANTIC_SIMILARITY', 'CLASSIFICATION', 'CLUSTERING'].join(';');
+const texts = [
+  'banana bread?',
+  'banana muffin?',
+  'banana?',
+  'recipe?',
+  'muffin recipe?',
+].join(';');
+const tasks = [
+  'RETRIEVAL_QUERY',
+  'RETRIEVAL_DOCUMENT',
+  'SEMANTIC_SIMILARITY',
+  'CLASSIFICATION',
+  'CLUSTERING',
+].join(';');
 
 describe('AI platform predict text embeddings', () => {
   it('should make predictions using a large language model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} ${model} '${texts}' '${tasks}'` , { cwd }
+      `node ./predict-text-embeddings.js ${project} ${model} '${texts}' '${tasks}'`,
+      {cwd}
     );
     assert.match(stdout, /Got predict response/);
   });

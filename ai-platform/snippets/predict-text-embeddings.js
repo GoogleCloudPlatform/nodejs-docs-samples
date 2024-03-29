@@ -16,8 +16,12 @@
 
 'use strict';
 
-async function main(project, location = 'us-central1') {
-  // [START aiplatform_sdk_embedding]
+// [START aiplatform_sdk_embedding]
+async function main(
+    project, model = 'text-embedding-preview-0409',
+    texts = 'banana bread?;banana muffins?',
+    tasks = 'QUESTION_ANSWERING;FACT_VERIFICATION',
+    apis = 'us-central1-aiplatform.googleapis.com') {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -25,61 +29,39 @@ async function main(project, location = 'us-central1') {
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
   const aiplatform = require('@google-cloud/aiplatform');
-
-  // Imports the Google Cloud Prediction service client
   const {PredictionServiceClient} = aiplatform.v1;
-
-  // Import the helper module for converting arbitrary protobuf.Value objects.
-  const {helpers} = aiplatform;
-
-  // Specifies the location of the api endpoint
-  const clientOptions = {
-    apiEndpoint: 'us-central1-aiplatform.googleapis.com',
-  };
-
+  const {helpers} = aiplatform;  // helps construct protobuf.Value objects.
+  const clientOptions = {apiEndpoint: apis};
   const publisher = 'google';
-  const model = 'textembedding-gecko@001';
-
-  // Instantiates a client
-  const predictionServiceClient = new PredictionServiceClient(clientOptions);
+  const match = apis.match(/(?<Location>.+)(-autopush|-staging)?-aiplatform.+/);
+  const location = match ? match.groups.Location : 'us-centra11';
+  const endpoint = `projects/${project}/locations/${location}/publishers/${
+      publisher}/models/${model}`;
+  const elastic = [
+    'text-embedding-preview-0409',
+    'text-multilingual-embedding-preview-0409',
+  ].includes(model);
+  const parameters = helpers.toValue(elastic ? {outputDimensionality: 192} : {});
 
   async function callPredict() {
-    // Configure the parent resource
-    const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
-
-    const instance = {
-      content: 'What is life?',
-    };
-    const instanceValue = helpers.toValue(instance);
-    const instances = [instanceValue];
-
-    const parameter = {
-      temperature: 0,
-      maxOutputTokens: 256,
-      topP: 0,
-      topK: 1,
-    };
-    const parameters = helpers.toValue(parameter);
-
-    const request = {
-      endpoint,
-      instances,
-      parameters,
-    };
-
-    // Predict request
-    const [response] = await predictionServiceClient.predict(request);
-    console.log('Get text embeddings response');
+    const taskTypes = tasks.split(';');
+    const instances = texts.split(';').map(
+        ((e, i) => helpers.toValue({content: e, taskType: taskTypes[i]})));
+    const request = {endpoint, instances, parameters};
+    const client = new PredictionServiceClient(clientOptions);
+    const [response] = await client.predict(request);
+    console.log('Got predict response');
     const predictions = response.predictions;
-    console.log('\tPredictions :');
     for (const prediction of predictions) {
-      console.log(`\t\tPrediction : ${JSON.stringify(prediction)}`);
+      const embeddings = prediction.structValue.fields.embeddings;
+      const values = embeddings.structValue.fields.values.listValue.values;
+      console.log(`Got prediction: ` + JSON.stringify(values));
     }
   }
 
   callPredict();
-  // [END aiplatform_sdk_embedding]
 }
+// [END aiplatform_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

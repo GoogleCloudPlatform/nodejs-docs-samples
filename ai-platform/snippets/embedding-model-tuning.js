@@ -51,21 +51,20 @@ async function main(
     batch_size: batchSize,
     iterations: iterations,
   };
+  const runtimeConfig = {
+    gcsOutputDirectory: outputDir,
+    parameterValues: Object.fromEntries(
+      Object.entries(params).map(([k, v]) => [k, helpers.toValue(v)])
+    ),
+  };
+  const pipelineJob = {
+    templateUri:
+      'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2',
+    displayName: pipelineJobDisplayName,
+    runtimeConfig,
+  };
   async function createTuneJob() {
-    const runtimeConfig = {
-      gcsOutputDirectory: outputDir,
-      parameterValues: Object.fromEntries(
-        Object.entries(params).map(([k, v]) => [k, helpers.toValue(v)])
-      ),
-    };
-    const pipelineJob = {
-      templateUri:
-        'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2',
-      displayName: pipelineJobDisplayName,
-      runtimeConfig,
-    };
-    const createPipelineRequest = {parent, pipelineJob};
-    const [response] = await client.createPipelineJob(createPipelineRequest);
+    const [response] = await client.createPipelineJob({parent, pipelineJob});
     console.log(`job_name: ${response.name}`);
     console.log(`job_state: ${response.state}`);
   }

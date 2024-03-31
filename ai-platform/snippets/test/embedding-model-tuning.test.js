@@ -37,7 +37,7 @@ describe('AI platform tune text-embedding models', () => {
     );
     const match = stdout.match(/job_name: (?<N>\S+).+job_state: (?<S>\S+)/s);
     assert.isNotNull(match);
-    assert.notEqual(match.groups.State, 'PIPELINE_STATE_FAILED');
+    assert.notEqual(match.groups.S, 'PIPELINE_STATE_FAILED');
     job_names[0] = match.groups.N;
   });
 });

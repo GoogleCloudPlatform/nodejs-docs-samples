@@ -33,18 +33,18 @@ const texts = [
   'recipe?',
   'muffin recipe?',
 ].join(';');
-const tasks = [
-  'RETRIEVAL_QUERY',
-  'RETRIEVAL_DOCUMENT',
-  'SEMANTIC_SIMILARITY',
-  'CLASSIFICATION',
-  'CLUSTERING',
-].join(';');
 
-describe('AI platform predict text embeddings', () => {
-  it('should make predictions using a large language model', async () => {
+describe('predict text embeddings', () => {
+  it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} ${model} '${texts}' '${tasks}'`,
+      `node ./predict-text-embeddings.js ${project} ${model} '${texts}' RETRIEVAL_DOCUMENT`,
+      {cwd}
+    );
+    assert.match(stdout, /Got predict response/);
+  });
+  it('should get text embeddings using the preview model', async () => {
+    const stdout = execSync(
+      `node ./predict-text-embeddings-preview.js ${project} ${model} '${texts}' QUESTION_ANSWERING 256`,
       {cwd}
     );
     assert.match(stdout, /Got predict response/);

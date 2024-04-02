@@ -42,9 +42,9 @@ async function main(
   const clientOptions = {
     apiEndpoint: 'europe-west4-aiplatform.googleapis.com',
   };
-  const model = 'text-bison@001';
-
   const pipelineClient = new PipelineServiceClient(clientOptions);
+
+  const model = 'text-bison@001';
 
   async function tuneLLM() {
     // Configure the parent resource

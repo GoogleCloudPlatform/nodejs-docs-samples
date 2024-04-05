@@ -28,9 +28,7 @@ async function main(
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const match = apiEndpoint.match(
-    /(?<Location>.+)(-autopush|-staging)?-aiplatform.+/
-  );
+  const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
   const location = match ? match.groups.Location : 'us-centra11';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
 

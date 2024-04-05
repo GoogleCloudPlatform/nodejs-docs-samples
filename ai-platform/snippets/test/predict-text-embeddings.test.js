@@ -25,7 +25,6 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 const project = process.env.CAIP_PROJECT_ID;
-const model = 'textembedding-gecko@003';
 const texts = [
   'banana bread?',
   'banana muffin?',
@@ -37,14 +36,14 @@ const texts = [
 describe('predict text embeddings', () => {
   it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} ${model} '${texts}' RETRIEVAL_DOCUMENT`,
+      `node ./predict-text-embeddings.js ${project} textembedding-gecko@003 '${texts}' RETRIEVAL_DOCUMENT`,
       {cwd}
     );
     assert.match(stdout, /Got predict response/);
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings-preview.js ${project} ${model} '${texts}' QUESTION_ANSWERING 256`,
+      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0409 '${texts}' QUESTION_ANSWERING 256`,
       {cwd}
     );
     assert.match(stdout, /Got predict response/);

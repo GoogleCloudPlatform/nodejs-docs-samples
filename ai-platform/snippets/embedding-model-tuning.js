@@ -36,7 +36,7 @@ async function main(
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
 
   const client = new PipelineServiceClient({apiEndpoint});
-  const match = apiEndpoint.match(/(?<L>.+)(-autopush|-staging)?-aiplatform.+/);
+  const match = apiEndpoint.match(/(?<L>\w+-\w+)/);
   const location = match ? match.groups.L : 'us-centra11';
   const parent = `projects/${project}/locations/${location}`;
   const params = {

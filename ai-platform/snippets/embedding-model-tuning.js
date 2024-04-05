@@ -28,8 +28,8 @@ async function main(
   corpusPath = 'gs://embedding-customization-pipeline/dataset/corpus.jsonl',
   trainLabelPath = 'gs://embedding-customization-pipeline/dataset/train.tsv',
   testLabelPath = 'gs://embedding-customization-pipeline/dataset/test.tsv',
-  batchSize = 50,
-  iterations = 300
+  batchSize = 128,
+  iterations = 1000
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
   const {PipelineServiceClient} = aiplatform.v1;

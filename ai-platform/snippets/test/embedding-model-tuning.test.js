@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const apiEndpoint = 'us-central1-aiplatform.googleapis.com';
 const project = process.env.CAIP_PROJECT_ID;
 const outputDir = 'gs://ucaip-samples-us-central1/training_pipeline_output';
-const job_names = [''];
+const job_names = [null];
 
 describe('AI platform tune text-embedding models', () => {
   it('should make tuned-text embedding models', async () => {
@@ -44,6 +44,6 @@ describe('AI platform tune text-embedding models', () => {
 after(async () => {
   const pipelineClient = new aiplatform.v1.PipelineServiceClient({apiEndpoint});
   pipelineClient.cancelPipelineJob({name: job_names[0]}).then(() => {
-    return pipelineClient.deletePipeline({name: job_names[0]});
+    return pipelineClient.deletePipelineJob({name: job_names[0]});
   });
 });

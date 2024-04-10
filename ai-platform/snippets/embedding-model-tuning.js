@@ -37,7 +37,7 @@ async function main(
 
   const client = new PipelineServiceClient({apiEndpoint});
   const match = apiEndpoint.match(/(?<L>\w+-\w+)/);
-  const location = match ? match.groups.L : 'us-centra11';
+  const location = match ? match.groups.L : 'us-central1';
   const parent = `projects/${project}/locations/${location}`;
   const params = {
     project: project,

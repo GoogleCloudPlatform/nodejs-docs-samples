@@ -1,5 +1,7 @@
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
+# Google Cloud Platform Node.js Samples
+
 Node.js samples for [Google Cloud Platform products][cloud].
 
 See [cloud.google.com/nodejs][cloud_nodejs] to get up and running with Node.js
@@ -8,15 +10,13 @@ on Google Cloud Platform.
 To browse documentation pages that use the samples found in this repository,
 visit the [Google Cloud Samples][cloud_samples] page.
 
-[slack_badge]: https://img.shields.io/badge/slack-Google%20Cloud%20Platform-E01563.svg
-[slack_link]: https://googlecloud-community.slack.com/
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
 [cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
 
 ## Setup
 
-1. Install [Node.js version 10 or greater][node]
+1. Install [Node.js version 14 or greater][node]
 1. Install the [Google Cloud CLI (gcloud)][gcloud]
 1. Clone this repository:
 

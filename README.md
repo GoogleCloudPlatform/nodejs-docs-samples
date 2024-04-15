@@ -12,7 +12,7 @@ visit the [Google Cloud Samples][cloud_samples] page.
 
 [cloud]: https://cloud.google.com/
 [cloud_nodejs]: https://cloud.google.com/nodejs/
-[cloud_samples]: https://cloud.google.com/docs/samples?l=python&language=nodejs%2Ctypescript
+[cloud_samples]: https://cloud.google.com/docs/samples?language=nodejs%2Ctypescript
 
 ## Setup
 

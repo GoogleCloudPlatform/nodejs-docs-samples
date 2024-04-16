@@ -4,6 +4,9 @@
     "config:semverAllMonthly"
   ],
   "baseBranches": ["main"],
+  "ignorePaths": [
+     "**/flexible_nodejs16_and_earlier/**"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],

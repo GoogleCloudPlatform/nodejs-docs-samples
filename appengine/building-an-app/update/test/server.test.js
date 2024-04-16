@@ -45,7 +45,7 @@ describe('gae_update_app', () => {
         assert.strictEqual(response.text, 'Hello from App Engine!');
       });
   });
-})
+});
 
 describe('gae_add_display_form add_display_form', () => {
   it('should display form', async () => {

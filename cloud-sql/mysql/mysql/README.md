@@ -16,21 +16,18 @@
    [instructions](https://cloud.google.com/sql/docs/mysql/create-manage-databases).
    Note the database name.
 
-1. Create a service account following these
-   [instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating),
-   and then grant the `roles/cloudsql.client` role following these
-   [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role).
-   Download a JSON key to use to authenticate your connection.
+1. Set up [Application Default Credentials][adc]
 
 1. Use the information noted in the previous steps:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='my-db-user'
 export DB_PASS='my-db-pass'
 export DB_NAME='my_db'
 ```
+
+[adc]: https://cloud.google.com/docs/authentication/provide-credentials-adc
 
 Note: Defining credentials in environment variables is convenient, but not
 secure. For a more secure solution, use [Secret
@@ -61,7 +58,6 @@ launch the proxy as shown below.
 Use these terminal commands to initialize environment variables:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export INSTANCE_HOST='127.0.0.1'
 export DB_PORT='3306'
 export DB_USER='<DB_USER_NAME>'
@@ -72,7 +68,7 @@ export DB_NAME='<DB_NAME>'
 Then use this command to launch the proxy in the background:
 
 ```bash
-./cloud_sql_proxy -instances=<project-id>:<region>:<instance-name>=tcp:3306 -credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+./cloud-sql-proxy --port=3306 "$INSTANCE_CONNECTION_NAME" &
 ```
 
 #### Windows/PowerShell
@@ -80,7 +76,6 @@ Then use this command to launch the proxy in the background:
 Use these PowerShell commands to initialize environment variables:
 
 ```powershell
-$env:GOOGLE_APPLICATION_CREDENTIALS="<CREDENTIALS_JSON_FILE>"
 $env:INSTANCE_HOST="127.0.0.1"
 $env:DB_PORT="3306"
 $env:DB_USER="<DB_USER_NAME>"
@@ -91,7 +86,7 @@ $env:DB_NAME="<DB_NAME>"
 Then use this command to launch the proxy in a separate PowerShell session:
 
 ```powershell
-Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "-instances=<project-id>:<region>:<instance-name>=tcp:3306 -credential_file=<CREDENTIALS_JSON_FILE>"
+Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "<project-id>:<region>:<instance-name> --port=3306"
 ```
 
 ### Launch proxy with Unix Domain Socket
@@ -110,7 +105,6 @@ sudo chown -R $USER ./cloudsql
 Use these terminal commands to initialize other environment variables as well:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export INSTANCE_UNIX_SOCKET='./cloudsql/<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export DB_USER='<DB_USER_NAME>'
 export DB_PASS='<DB_PASSWORD>'
@@ -120,7 +114,7 @@ export DB_NAME='<DB_NAME>'
 Then use this command to launch the proxy in the background:
 
 ```bash
-./cloud_sql_proxy -dir=./cloudsql --instances=$INSTANCE_CONNECTION_NAME --credential_file=$GOOGLE_APPLICATION_CREDENTIALS &
+./cloud-sql-proxy --unix-socket=./cloudsql "$INSTANCE_CONNECTION_NAME" &
 ```
 
 ### Testing the application

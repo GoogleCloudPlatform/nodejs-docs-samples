@@ -15,14 +15,17 @@
 'use strict';
 
 // [START app]
+// [START gae_update_app]
 const express = require('express');
 const path = require('path');
 
 const app = express();
 
 // [START enable_parser]
+// [START gae_enable_parser]
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.urlencoded({extended: true}));
+// [END gae_enable_parser]
 // [END enable_parser]
 
 app.get('/', (req, res) => {
@@ -30,12 +33,15 @@ app.get('/', (req, res) => {
 });
 
 // [START add_display_form]
+// [START gae_add_display_form]
 app.get('/submit', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/form.html'));
 });
+// [END gae_add_display_form]
 // [END add_display_form]
 
 // [START add_post_handler]
+// [START gae_add_post_handler]
 app.post('/submit', (req, res) => {
   console.log({
     name: req.body.name,
@@ -43,6 +49,7 @@ app.post('/submit', (req, res) => {
   });
   res.send('Thanks for your message!');
 });
+// [END gae_add_post_handler]
 // [END add_post_handler]
 
 // Listen to the App Engine-specified port, or 8080 otherwise
@@ -50,6 +57,7 @@ const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
+// [END gae_update_app]
 // [END app]
 
 module.exports = app;

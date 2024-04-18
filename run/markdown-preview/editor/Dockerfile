@@ -29,7 +29,7 @@ COPY package*.json ./
 # RUN npm ci --omit=dev
 # if you need to include development dependencies during development
 # of your application, use:
-# RUN npm install -dev
+# RUN npm install --dev
 
 RUN npm install --omit=dev
 

@@ -27,9 +27,14 @@ WORKDIR /usr/src/app
 # Copying this first prevents re-running npm install on every code change.
 COPY package*.json ./
 
-# Install production dependencies.
-# If you add a package-lock.json, speed your build by switching to 'npm ci'.
-# RUN npm ci --only=production
+# Install dependencies.
+# if you need a deterministic and repeatable build create a 
+# package-lock.json file and use npm ci:
+# RUN npm ci --omit=dev
+# if you need to include development dependencies during development
+# of your application, use:
+# RUN npm install -dev
+
 RUN npm install --omit=dev
 
 # Copy local code to the container image.

@@ -18,11 +18,11 @@
     "express-rate-limit": "^7.0.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.3.7",
+    "c8": "^9.0.0",
+    "chai": "^5.0.0",
     "chai-http": "^4.4.0",
     "google-auth-library": "^9.0.0",
-    "got": "^11.0.0",
+    "got": "^14.0.0",
     "mocha": "^10.2.0",
     "mock-fs": "^5.2.0",
     "supertest": "^6.3.3"

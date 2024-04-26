@@ -33,7 +33,7 @@ async function analyze_pdf(projectId = 'PROJECT_ID') {
   };
   const textPart = {
     text: `
-    Your are a very professional document summarization specialist.
+    You are a very professional document summarization specialist.
     Please summarize the given document.`,
   };
 

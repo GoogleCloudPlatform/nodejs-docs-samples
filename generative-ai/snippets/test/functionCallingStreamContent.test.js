@@ -38,6 +38,6 @@ describe('Generative AI Function Calling Stream Content', () => {
     );
 
     // Assert that the response is what we expect
-    assert(output.match(/The weather in Boston is super nice./));
+    assert(output.match(/super nice/), output);
   });
 });

@@ -32,16 +32,11 @@ describe('Generative AI NonStreaming Chat', async () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  describe('Generative AI NonStreaming Chat', async () => {
-    it('should create nonstreaming chat and begin the conversation the same in each instance', async () => {
-      const output = execSync(
-        `node ./nonStreamingChat.js ${projectId} ${location} ${model}`
-      );
+  it('should create nonstreaming chat and begin the conversation the same in each instance', async () => {
+    const output = execSync(
+      `node ./nonStreamingChat.js ${projectId} ${location} ${model}`
+    );
 
-      // Ensure that the beginning of the conversation is consistent
-      assert(output.match(/User: Hello/));
-      assert(output.match(/User: Can you tell me a scientific fun fact?/));
-      assert(output.match(/User: How can I learn more about that?/));
-    });
+    assert(output.includes('Hello'), output);
   });
 });

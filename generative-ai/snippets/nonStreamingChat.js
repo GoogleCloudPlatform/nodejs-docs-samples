@@ -33,27 +33,19 @@ async function createNonStreamingChat(
 
   const chat = generativeModel.startChat({});
 
-  const chatInput1 = 'Hello';
-  console.log(`User: ${chatInput1}`);
+  const result1 = await chat.sendMessage('Hello');
+  const response1 = await result1.response;
+  console.log('Chat response 1: ', JSON.stringify(response1));
 
-  const result1 = await chat.sendMessage(chatInput1);
-  const response1 = result1.response;
-  const text1 = response1.candidates[0].content.parts[0].text;
-  console.log('Chat bot: ', text1);
-
-  const chatInput2 = 'Can you tell me a scientific fun fact?';
-  console.log(`User: ${chatInput2}`);
-  const result2 = await chat.sendMessage(chatInput2);
+  const result2 = await chat.sendMessage(
+    'Can you tell me a scientific fun fact?'
+  );
   const response2 = await result2.response;
-  const text2 = response2.candidates[0].content.parts[0].text;
-  console.log('Chat bot: ', text2);
+  console.log('Chat response 2: ', JSON.stringify(response2));
 
-  const chatInput3 = 'How can I learn more about that?';
-  console.log(`User: ${chatInput3}`);
-  const result3 = await chat.sendMessage(chatInput3);
+  const result3 = await chat.sendMessage('How can I learn more about that?');
   const response3 = await result3.response;
-  const text3 = response3.candidates[0].content.parts[0].text;
-  console.log('Chat bot: ', text3);
+  console.log('Chat response 3: ', JSON.stringify(response3));
 }
 // [END aiplatform_gemini_multiturn_chat_nonstreaming]
 

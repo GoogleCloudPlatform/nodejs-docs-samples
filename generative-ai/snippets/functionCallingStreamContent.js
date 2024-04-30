@@ -79,7 +79,7 @@ async function functionCallingStreamChat(
           },
         ],
       },
-      {role: 'function', parts: functionResponseParts},
+      {role: 'user', parts: functionResponseParts},
     ],
     tools: functionDeclarations,
   };

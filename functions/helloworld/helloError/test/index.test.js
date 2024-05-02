@@ -13,8 +13,6 @@
 // limitations under the License.
 
 const assert = require('assert');
-const sinon = require('sinon');
-
 const program = require('..');
 
 describe('index.test.js', () => {

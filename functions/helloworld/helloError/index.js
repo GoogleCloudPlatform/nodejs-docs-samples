@@ -28,5 +28,5 @@ exports.helloError = (event, context, callback) => {
   // [START functions_helloworld_error]
   // These WILL be reported to Error Reporting
   throw new Error('I failed you'); // Will cause a cold start if not caught
+   // [END functions_helloworld_error]
  };
- // [END functions_helloworld_error]

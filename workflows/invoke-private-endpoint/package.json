@@ -1,0 +1,27 @@
+{
+  "name": "workflows-hello-private-endpoint",
+  "description": "Simple Hello World Node.js sample for Workflows",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "c8 mocha -p -j 2 --exit test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "c8": "^8.0.0",
+    "mocha": "^10.0.0",
+    "supertest": "^6.0.0"
+  }
+}

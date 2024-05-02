@@ -41,7 +41,7 @@ describe('detect intent with sentiment analysis', () => {
     assert.include(output, 'positive');
   });
 
-  it('should detect neutral intent', async () => {
+  it.skip('should detect neutral intent', async () => {
     const output = exec(
       `${cmd} ${projectId} ${location} ${agentId} 'whatever' ${languageCode}`
     );

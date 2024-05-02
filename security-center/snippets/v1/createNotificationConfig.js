@@ -19,21 +19,23 @@ function main(
   pubsubTopic = 'projects/{your-project}/topics/{your-topic}'
 ) {
   // [START securitycenter_create_notification_config]
-  // npm install @google-cloud/security-center/
+  // npm install '@google-cloud/security-center'
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
   const client = new SecurityCenterClient();
 
-  // organizationId = "your-org-id";
+  // parent: must be in one of the following formats:
+  //    `organizations/${organization_id}`
+  //    `projects/${project_id}`
+  //    `folders/${folder_id}`
   // configId = "your-config-name";
   // pubsubTopic = "projects/{your-project}/topics/{your-topic}";
   // Ensure this Service Account has the "pubsub.topics.setIamPolicy" permission on this topic.
-
-  const orgName = client.organizationPath(organizationId);
+  const parent = `organizations/${organizationId}`;
 
   async function createNotificationConfig() {
     const [response] = await client.createNotificationConfig({
-      parent: orgName,
+      parent: parent,
       configId: configId,
       notificationConfig: {
         description: 'Sample config for node.js',

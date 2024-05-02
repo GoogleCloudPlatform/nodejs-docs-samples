@@ -1,6 +1,6 @@
 {
-  "name": "appengine-cloudsql-postgres",
-  "description": "Node.js PostgreSQL sample for Cloud SQL on App Engine.",
+  "name": "cloudsql-postgres",
+  "description": "Node.js PostgreSQL sample for Cloud SQL.",
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
@@ -10,24 +10,26 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "start": "node server/server.js",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
-    "test": "mocha test/*.test.js --timeout=60000 --exit"
+    "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
-    "@google-cloud/logging-winston": "^5.0.0",
-    "@google-cloud/secret-manager": "^4.0.0",
+    "@google-cloud/cloud-sql-connector": "^1.0.0",
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/logging-winston": "^6.0.0",
+    "@google-cloud/secret-manager": "^5.0.0",
     "express": "^4.16.2",
-    "knex": "^2.0.0",
+    "knex": "^3.0.0",
     "pg": "^8.0.0",
     "pug": "^3.0.0",
-    "winston": "^3.1.0",
-    "yargs": "^17.0.0"
+    "winston": "^3.1.0"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "mocha": "^10.0.0",
     "supertest": "^6.0.0"
   }

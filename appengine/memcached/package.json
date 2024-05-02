@@ -10,13 +10,14 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha --exit test/*.test.js"
+    "test": "c8 mocha -p -j 2 --exit test/*.test.js"
   },
   "dependencies": {
     "express": "^4.16.4",
     "memjs": "^1.2.0"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "wait-port": "^1.0.4"

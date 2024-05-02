@@ -72,9 +72,8 @@ async function main(
     };
 
     // Create training pipeline request
-    const [response] = await pipelineServiceClient.createTrainingPipeline(
-      request
-    );
+    const [response] =
+      await pipelineServiceClient.createTrainingPipeline(request);
 
     console.log('Create training pipeline text entity extraction response :');
     console.log(`Name : ${response.name}`);

@@ -1,6 +1,6 @@
-# Use the official Node.js 10 image.
+# Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:10
+FROM node:20-slim
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
@@ -10,8 +10,15 @@ WORKDIR /usr/src/app
 # Copying this separately prevents re-running npm install on every code change.
 COPY package.json package*.json ./
 
-# Install production dependencies.
-RUN npm install --only=production
+# Install dependencies.
+# if you need a deterministic and repeatable build create a 
+# package-lock.json file and use npm ci:
+# RUN npm ci --omit=dev
+# if you need to include development dependencies during development
+# of your application, use:
+# RUN npm install --dev
+
+RUN npm install --omit=dev
 
 # Copy local code to the container image.
 COPY . .

@@ -9,16 +9,17 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js --timeout=20000 --exit"
+    "test": "c8 mocha -p -j 2 test/*.test.js --timeout=20000 --exit"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^6.0.0",
+    "@google-cloud/bigquery": "^7.0.0",
     "@google-cloud/functions-framework": "^3.1.0"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "mocha": "^10.0.0",
     "supertest": "^6.0.0"
   }

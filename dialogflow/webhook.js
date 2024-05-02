@@ -15,9 +15,10 @@
 'use strict';
 
 // [START dialogflow_es_webhook]
+const functions = require('@google-cloud/functions-framework');
 
 // TODO: Add handleWebhook to 'Entry point' in the Google Cloud Function
-exports.handleWebhook = (request, response) => {
+functions.http('handleWebhook', (request, response) => {
   const tag = request.body.queryResult.intent.displayName;
 
   let jsonResponse = {};
@@ -61,5 +62,5 @@ exports.handleWebhook = (request, response) => {
     };
   }
   response.send(jsonResponse);
-};
+});
 // [END dialogflow_es_webhook]

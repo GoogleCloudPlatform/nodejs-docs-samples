@@ -15,15 +15,15 @@
 'use strict';
 
 // [START cloud_tasks_appengine_quickstart]
-const bodyParser = require('body-parser');
 const express = require('express');
 
 const app = express();
 app.enable('trust proxy');
 
+// Set the Content-Type of the Cloud Task to ensure compatibility
 // By default, the Content-Type header of the Task request is set to "application/octet-stream"
 // see https://cloud.google.com/tasks/docs/reference/rest/v2beta3/projects.locations.queues.tasks#AppEngineHttpRequest
-app.use(bodyParser.raw({type: 'application/octet-stream'}));
+app.use(express.text());
 
 app.get('/', (req, res) => {
   // Basic index to verify app is serving
@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 app.post('/log_payload', (req, res) => {
   // Log the request payload
-  console.log('Received task with payload: %s', req.body);
+  console.log(`Received task with payload: ${req.body}`);
   res.send(`Printed task payload: ${req.body}`).end();
 });
 
@@ -41,7 +41,7 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(process.env.PORT || 8080, () => {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });

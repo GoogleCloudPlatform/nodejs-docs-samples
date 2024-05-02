@@ -15,17 +15,18 @@
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "unit-test": "mocha test/ --timeout=60000 --exit",
+    "unit-test": "c8 mocha -p -j 2 test/ --timeout=60000 --exit",
     "test": "npm run unit-test"
   },
   "dependencies": {
     "express": "^4.16.4"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "chai": "^4.2.0",
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "supertest": "^6.0.0",
     "wait-port": "^1.0.4"
   }

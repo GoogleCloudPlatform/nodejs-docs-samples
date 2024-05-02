@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
+import assert from 'assert';
+import supertest from 'supertest';
+import app from '../index.js';
 
 let request;
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'index'));
     request = supertest(app);
   });
 

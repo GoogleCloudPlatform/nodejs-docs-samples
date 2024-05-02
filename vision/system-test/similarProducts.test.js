@@ -29,16 +29,16 @@ const gcsUri = 'gs://cloud-samples-data/vision/product_search/shoes_1.jpg';
 
 const productSearch = new vision.ProductSearchClient();
 
-let testSimilarProducts;
-
 // Refs: https://github.com/googleapis/nodejs-vision/issues/1025
 describe.skip('similar products', () => {
   let projectId;
+  let testSimilarProducts;
+
   before(async () => {
     projectId = await productSearch.getProjectId();
 
     // Shared fixture data for product tests
-    //Need to have a product set already imported and indexed
+    // Need to have a product set already imported and indexed
     // (gs://nodejs-docs-samples/product-search/indexed_product_sets.csv)
     testSimilarProducts = {
       projectId,
@@ -52,6 +52,7 @@ describe.skip('similar products', () => {
       testSimilarProducts.productSetId
     );
   });
+
   it('should check if similar product exists to one provided in local file with no filter', async () => {
     const output = execSync(
       `${cmd}/getSimilarProducts "${testSimilarProducts.projectId}" "${testSimilarProducts.location}" "${testSimilarProducts.productSetId}" "${testSimilarProducts.productCategory}" "${localPath}" "${filter[0]}"`

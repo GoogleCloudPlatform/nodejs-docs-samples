@@ -10,28 +10,29 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha test/app.test.js --timeout=120000 --exit",
-    "system-test": "mocha test/system.test.js --timeout=1800000 --exit"
+    "test": "c8 mocha -p -j 2 test/app.test.js --timeout=120000 --exit",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=1800000 --exit"
   },
   "dependencies": {
     "express": "^4.16.2",
     "firebase-admin": "^11.0.0",
-    "gcp-metadata": "^5.0.0",
-    "google-auth-library": "^8.0.0",
+    "gcp-metadata": "^6.0.0",
+    "google-auth-library": "^9.0.0",
     "handlebars": "^4.7.6",
-    "knex": "^2.0.0",
+    "knex": "^3.0.0",
     "pg": "^8.0.0",
-    "winston": "3.8.2"
+    "winston": "3.10.0"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "got": "^11.7.0",
     "mocha": "^10.0.0",
     "short-uuid": "^4.1.0",
-    "sinon": "^15.0.0",
+    "sinon": "^16.0.0",
     "supertest": "^6.0.0"
   }
 }

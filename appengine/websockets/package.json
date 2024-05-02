@@ -6,22 +6,23 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "16.x.x"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
-    "test": "mocha --exit test/*.test.js",
+    "test": "c8 mocha -p -j 2 --timeout 10000 --exit test/*.test.js",
     "e2e-test": "samples test deploy"
   },
   "dependencies": {
     "express": "^4.15.4",
     "pug": "^3.0.0",
-    "socket.io": "^4.0.0",
+    "socket.io": "4.7.2",
     "supertest": "^6.0.0"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "mocha": "^10.0.0",
-    "puppeteer": "^15.0.0"
+    "puppeteer": "^21.0.0"
   }
 }

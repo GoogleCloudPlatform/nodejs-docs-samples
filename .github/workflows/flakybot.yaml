@@ -1,0 +1,53 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: FlakyBot
+
+on:
+  workflow_call:
+
+env:
+  FLAKYBOT_VERSION: '1.2.0'
+
+jobs:
+  flakybot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: authenticate
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
+          service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
+          create_credentials_file: 'true'
+          access_token_lifetime: 600s
+      - name: download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: test-results
+      - name: download FlakyBot
+        run: |
+          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${{ env.FLAKYBOT_VERSION }}.tar.gz -o flakybot.tar.gz
+          tar xzf flakybot.tar.gz
+          cp -rT repo-automation-bots-flakybot-v${{ env.FLAKYBOT_VERSION}}/packages/flakybot/ .
+      - uses: actions/setup-go@v4
+        with:
+          cache: true
+          cache-dependency-path: '${{ github.workspace }}/go.sum'
+          go-version-file: '${{ github.workspace }}/go.mod'
+      - name: run FlakyBot
+        run: go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

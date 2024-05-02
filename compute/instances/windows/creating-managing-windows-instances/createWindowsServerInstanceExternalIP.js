@@ -31,7 +31,7 @@ function main(
   zone,
   instanceName,
   machineType = 'n1-standard-1',
-  sourceImageFamily = 'windows-2012-r2'
+  sourceImageFamily = 'windows-2022'
 ) {
   // [START compute_create_windows_instance_external_ip]
   /**
@@ -41,7 +41,7 @@ function main(
   // const zone = 'europe-central2-b';
   // const instanceName = 'YOUR_INSTANCE_NAME';
   // const machineType = 'n1-standard-1';
-  // const sourceImageFamily = 'windows-2012-r2';
+  // const sourceImageFamily = 'windows-2022';
 
   const compute = require('@google-cloud/compute');
 

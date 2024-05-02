@@ -176,7 +176,7 @@ function sleep(ms) {
 async function projectIdToNumber(projectId) {
   // Construct request
   const request = {
-    name: projectId,
+    name: `projects/${projectId}`,
   };
 
   // Run request
@@ -193,7 +193,7 @@ async function projectIdToNumber(projectId) {
  * @param {string} templateName - Name of the new template to create.
  */
 async function createTemplate(projectId, templateName) {
-  const projectNumber = projectIdToNumber(projectId);
+  const projectNumber = await projectIdToNumber(projectId);
   const serviceAccountAddress = `${projectNumber}-compute@developer.gserviceaccount.com`;
 
   const [response] = await instanceTemplatesClient.insert({

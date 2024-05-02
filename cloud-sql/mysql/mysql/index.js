@@ -234,4 +234,4 @@ exports.votes = (req, res) => {
   }
 };
 
-module.exports = app;
+module.exports.app = app;

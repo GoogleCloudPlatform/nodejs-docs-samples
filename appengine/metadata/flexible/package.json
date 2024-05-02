@@ -10,10 +10,10 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": "16.x.x"
+    "node": ">= 18.x.x"
   },
   "scripts": {
-    "system-test": "mocha --exit test/*.test.js",
+    "system-test": "c8 mocha -p -j 2 --exit test/*.test.js",
     "test": "npm run system-test"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
+    "c8": "^8.0.0",
     "mocha": "^10.0.0",
     "supertest": "^6.0.0"
   }

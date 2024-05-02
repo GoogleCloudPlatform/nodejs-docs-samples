@@ -14,6 +14,8 @@
 'use strict';
 
 const express = require('express');
+const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js');
+const createConnectorPool = require('./connect-connector.js');
 const createTcpPool = require('./connect-tcp.js');
 const createUnixSocketPool = require('./connect-unix.js');
 
@@ -117,8 +119,17 @@ const createPool = async () => {
       throw err;
     }
   }
-
-  if (process.env.INSTANCE_HOST) {
+  if (process.env.INSTANCE_CONNECTION_NAME) {
+    // Uses the Cloud SQL Node.js Connector when INSTANCE_CONNECTION_NAME
+    // (e.g., project:region:instance) is defined
+    if (process.env.DB_IAM_USER) {
+      //  Either a DB_USER or a DB_IAM_USER should be defined. If both are
+      //  defined, DB_IAM_USER takes precedence
+      return createConnectorIAMAuthnPool(config);
+    } else {
+      return createConnectorPool(config);
+    }
+  } else if (process.env.INSTANCE_HOST) {
     // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
     return createTcpPool(config);
   } else if (process.env.INSTANCE_UNIX_SOCKET) {
@@ -219,7 +230,8 @@ const httpGet = async (req, res) => {
         voteDiff = spacesTotalVotes - tabsTotalVotes;
       }
       leaderMessage =
-        `${leadTeam} are winning by ${voteDiff} vote` + voteDiff > 1 ? 's' : '';
+        `${leadTeam} are winning by ${voteDiff} vote` +
+        (voteDiff > 1 ? 's' : '');
     } else {
       leaderMessage = 'TABS and SPACES are evenly matched!';
     }
@@ -295,4 +307,4 @@ exports.votes = (req, res) => {
   }
 };
 
-module.exports = app;
+module.exports.app = app;

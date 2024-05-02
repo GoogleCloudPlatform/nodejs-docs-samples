@@ -3,23 +3,31 @@
   "private": true,
   "main": "quickstart.js",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
-    "*.js"
+    "*.js",
+    "*.ts"
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "start": "node app.js",
-    "test": "mocha --timeout 10000 --exit"
+    "build": "tsc -p .",
+    "fix": "gts fix",
+    "lint": "gts lint",
+    "test": "c8 mocha -p -j 2 --loader=ts-node/esm --extension ts --timeout 10000 --exit"
   },
   "dependencies": {
-    "@google-cloud/scheduler": "^3.0.5",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "@google-cloud/scheduler": "^4.0.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0"
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.13.0",
+    "c8": "^8.0.0",
+    "chai": "^4.3.7",
+    "gts": "^5.0.0",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
   }
 }

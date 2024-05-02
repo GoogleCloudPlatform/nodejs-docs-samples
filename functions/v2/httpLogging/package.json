@@ -6,20 +6,19 @@
   "author": "Google LLC",
   "main": "index.js",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "mocha test/*.test.js",
+    "test": "c8 mocha -p -j 2 test/*.test.js",
     "start": "npx @google-cloud/functions-framework --target=structuredLogging"
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.1",
-    "@google-cloud/logging": "^10.0.0"
+    "@google-cloud/logging": "^11.0.0"
   },
   "devDependencies": {
-    "assert": "^2.0.0",
-    "child_process": "^1.0.2",
+    "c8": "^8.0.0",
     "mocha": "^10.0.0",
-    "sinon": "^15.0.0"
+    "sinon": "^16.0.0"
   }
 }

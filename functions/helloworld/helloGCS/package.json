@@ -9,26 +9,25 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
-    "unit-test": "mocha test/*unit*test.js test/*integration*test.js --timeout=6000 --exit",
-    "system-test": "mocha test/*system*test.js --timeout=600000 --exit",
+    "unit-test": "c8 mocha -p -j 2 test/*unit*test.js test/*integration*test.js --timeout=6000 --exit",
+    "system-test": "c8 mocha -p -j 2 test/*system*test.js --timeout=600000 --exit",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run unit-test"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.0",
-    "escape-html": "^1.0.3"
+    "@google-cloud/functions-framework": "^3.1.0"
   },
   "devDependencies": {
-    "@google-cloud/storage": "^6.0.0",
-    "gaxios": "^5.0.0",
+    "@google-cloud/storage": "^7.0.0",
+    "c8": "^8.0.0",
+    "gaxios": "^6.0.0",
     "mocha": "^10.0.0",
     "moment": "^2.24.0",
     "promise-retry": "^2.0.0",
-    "sinon": "^15.0.0",
-    "supertest": "^6.0.0",
+    "sinon": "^16.0.0",
     "uuid": "^9.0.0",
     "wait-port": "^1.0.4"
   }

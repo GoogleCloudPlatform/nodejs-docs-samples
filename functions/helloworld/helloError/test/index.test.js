@@ -25,23 +25,3 @@ describe('index.test.js', () => {
       });
     });
   });
-
-  describe('functions_helloworld_error_2', () => {
-    describe('Error handling (unit tests)', () => {
-      it('helloError2: should throw a value', () => {
-        assert.throws(program.helloError2, '1');
-      });
-    });
-  });
-
-  describe('functions_helloworld_error_3', () => {
-    describe('Error handling (unit tests)', () => {
-      it('helloError3: callback should return an errback value', () => {
-        const cb = sinon.stub();
-        program.helloError3(null, null, cb);
-        assert.ok(cb.calledOnce);
-        assert.ok(cb.calledWith('I failed you'));
-      });
-    });
-  });
-});

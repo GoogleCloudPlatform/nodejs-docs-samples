@@ -25,3 +25,4 @@ describe('index.test.js', () => {
       });
     });
   });
+});

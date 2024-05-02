@@ -14,8 +14,6 @@
 
 'use strict';
 
-const functions = require('@google-cloud/functions-framework');
-
 /* eslint-disable no-unused-vars */
 
 /**

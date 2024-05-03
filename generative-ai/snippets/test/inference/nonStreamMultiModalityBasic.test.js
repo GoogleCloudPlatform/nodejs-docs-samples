@@ -23,7 +23,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 const model = 'gemini-1.5-pro-preview-0409';
 
-describe('Generative AI Multimodal prompt', () => {
+describe('Generative AI Multimodal Text Inference', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)

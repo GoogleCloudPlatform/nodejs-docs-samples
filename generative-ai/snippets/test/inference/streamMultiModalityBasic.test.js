@@ -23,7 +23,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 const model = 'gemini-1.5-pro-preview-0409';
 
-describe('Generative AI Basic Text Inference Streaming', () => {
+describe('Generative AI Basic Multimodal Text Inference Streaming', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)

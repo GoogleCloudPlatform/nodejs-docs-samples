@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_non_stream_multimodality_basic]
+// [START generativeaionvertexai_stream_multimodality_basic]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -50,11 +50,13 @@ async function generateContent(
     ],
   };
 
-  const result = await generativeModel.generateContent(request);
+  const result = await generativeModel.generateContentStream(request);
 
-  console.log(result.response.candidates[0].content.parts[0].text);
+  for await (const item of result.stream) {
+    console.log(item.candidates[0].content.parts[0].text);
+  }
 }
-// [END generativeaionvertexai_non_stream_multimodality_basic]
+// [END generativeaionvertexai_stream_multimodality_basic]
 
 generateContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

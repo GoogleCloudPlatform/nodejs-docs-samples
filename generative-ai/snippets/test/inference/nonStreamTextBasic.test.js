@@ -20,13 +20,24 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const location = process.env.LOCATION;
+const model = 'gemini-1.0-pro';
 
-describe('Summarize audio', async () => {
-  it('should summarize audio', async () => {
+describe('Generative AI Basic Text Inference', () => {
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.\
+   * (Not necessary if passing values as arguments)
+   */
+  // const projectId = 'YOUR_PROJECT_ID';
+  // const location = 'YOUR_LOCATION';
+  // const model = 'gemini-1.0-pro';
+
+  it('should create a generateive text model and infer text from a prompt', async () => {
     const output = execSync(
-      `node ./gemini-audio-summarization.js ${projectId}`
+      `node ./inference/nonStreamTextBasic.js ${projectId} ${location} ${model}`
     );
 
-    assert(output.length > 0);
+    // Assert that the correct prompt was issued
+    assert(output.match(/Write a story about a magic backpack/));
   });
 });

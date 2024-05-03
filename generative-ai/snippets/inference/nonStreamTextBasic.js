@@ -13,46 +13,46 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_non_stream_text_basic]
-const { VertexAI } = require('@google-cloud/vertexai');
+const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function generateContent(
-    projectId = 'PROJECT_ID',
-    location = 'us-central1',
-    model = 'gemini-1.0-pro'
+  projectId = 'PROJECT_ID',
+  location = 'us-central1',
+  model = 'gemini-1.0-pro'
 ) {
-    // Initialize Vertex with your Cloud project and location
-    const vertexAI = new VertexAI({ project: projectId, location: location });
+  // Initialize Vertex with your Cloud project and location
+  const vertexAI = new VertexAI({project: projectId, location: location});
 
-    // Instantiate the model
-    const generativeModel = vertexAI.getGenerativeModel({
-        model: model
-    });
+  // Instantiate the model
+  const generativeModel = vertexAI.getGenerativeModel({
+    model: model,
+  });
 
-    const request = {
-        contents: [
-            {
-                role: "user",
-                parts: [
-                    {
-                        text: "Write a story about a magic backpack."
-                    }
-                ]
-            }
-        ]
-    };
+  const request = {
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'Write a story about a magic backpack.',
+          },
+        ],
+      },
+    ],
+  };
 
-    console.log(JSON.stringify(request));
+  console.log(JSON.stringify(request));
 
-    const result = await generativeModel.generateContent(request);
+  const result = await generativeModel.generateContent(request);
 
-    console.log(result.response.candidates[0].content.parts[0].text);
+  console.log(result.response.candidates[0].content.parts[0].text);
 }
 // [END generativeaionvertexai_non_stream_text_basic]
 
 generateContent(...process.argv.slice(2)).catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
+  console.error(err.message);
+  process.exitCode = 1;
 });

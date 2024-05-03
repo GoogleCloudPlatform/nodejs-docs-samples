@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro';
+const model = 'gemini-1.5-pro-preview-0409';
 
 describe('Generative AI Basic Text Inference Streaming', () => {
   /**
@@ -30,7 +30,7 @@ describe('Generative AI Basic Text Inference Streaming', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.5-pro-preview-0409';
 
   it('should create a generative text model and infer text from a prompt, streaming the results', async () => {
     const output = execSync(

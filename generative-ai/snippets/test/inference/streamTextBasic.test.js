@@ -21,9 +21,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.5-pro-preview-0409';
+const model = 'gemini-1.0-pro';
 
-describe('Generative AI Multimodal prompt', () => {
+describe('Generative AI Basic Text Inference Streaming', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,9 +32,9 @@ describe('Generative AI Multimodal prompt', () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  it('should generate text based on a prompt containing text, a video, and an image', async () => {
+  it('should create a generative text model and infer text from a prompt, streaming the results', async () => {
     const output = execSync(
-      `node ./inference/nonStreamMultiModalityBasic.js ${projectId} ${location} ${model}`
+      `node ./inference/streamTextBasic.js ${projectId} ${location} ${model}`
     );
     assert(output.length > 0);
   });

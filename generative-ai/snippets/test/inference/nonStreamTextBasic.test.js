@@ -32,7 +32,7 @@ describe('Generative AI Basic Text Inference', () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  it('should create a generateive text model and infer text from a prompt', async () => {
+  it('should create a generative text model and infer text from a prompt', async () => {
     const output = execSync(
       `node ./inference/nonStreamTextBasic.js ${projectId} ${location} ${model}`
     );

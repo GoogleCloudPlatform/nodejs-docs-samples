@@ -32,7 +32,6 @@ async function generateContent(
       {
         role: 'user',
         parts: [
-          {text: 'Are following video and image correlated?'},
           {
             file_data: {
               file_uri: 'gs://cloud-samples-data/video/animals.mp4',
@@ -41,10 +40,11 @@ async function generateContent(
           },
           {
             file_data: {
-              file_uri: 'gs://generativeai-downloads/images/character.jpg',
+              file_uri: 'gs://cloud-samples-data/generative-ai/image/character.jpg',
               mime_type: 'image/jpeg',
             },
           },
+          {text: 'Are following video and image correlated?'},
         ],
       },
     ],

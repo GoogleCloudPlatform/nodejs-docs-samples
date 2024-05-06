@@ -56,7 +56,7 @@ const toolConfig = {
 const generationConfig = {
   temperature: 0.95,
   topP: 1.0,
-  maxOutputTokens: 8192
+  maxOutputTokens: 8192,
 };
 
 /**

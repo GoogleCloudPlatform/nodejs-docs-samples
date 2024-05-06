@@ -45,7 +45,7 @@ async function generateContent(
               mime_type: 'image/jpeg',
             },
           },
-          {text: 'Are following video and image correlated?'},
+          {text: 'Are this video and image correlated?'},
         ],
       },
     ],

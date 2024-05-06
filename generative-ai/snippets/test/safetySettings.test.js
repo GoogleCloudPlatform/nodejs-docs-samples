@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-001';
+const model = 'gemini-1.0-pro-002';
 
 describe('Safety settings', async () => {
   /**

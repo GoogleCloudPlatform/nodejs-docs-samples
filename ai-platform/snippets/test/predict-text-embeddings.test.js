@@ -34,18 +34,19 @@ const texts = [
 ].join(';');
 
 describe('predict text embeddings', () => {
-  it('should get text embeddings using the latest model', async () => {
+  it('should get text embeddings using the 004 model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} textembedding-gecko@003 '${texts}' RETRIEVAL_DOCUMENT`,
-      {cwd}
-    );
+        `node ./predict-text-embeddings.js ${project} text-embedding-004 '${
+            texts}' QUESTION_ANSWERING 256`,
+        {cwd});
     assert.match(stdout, /Got predict response/);
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0409 '${texts}' QUESTION_ANSWERING 256`,
-      {cwd}
-    );
+        `node ./predict-text-embeddings-preview.js ${
+            project} text-embedding-preview-0409 '${
+            texts}' QUESTION_ANSWERING 256`,
+        {cwd});
     assert.match(stdout, /Got predict response/);
   });
 });

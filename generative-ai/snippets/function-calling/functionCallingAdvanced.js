@@ -62,7 +62,7 @@ const generationConfig = {
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function functionCallingBasic(
+async function functionCallingAdvanced(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
   model = 'gemini-1.0-pro'
@@ -93,7 +93,7 @@ async function functionCallingBasic(
 }
 // [END generativeaionvertexai_function_calling_advanced]
 
-functionCallingBasic(...process.argv.slice(2)).catch(err => {
+functionCallingAdvanced(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

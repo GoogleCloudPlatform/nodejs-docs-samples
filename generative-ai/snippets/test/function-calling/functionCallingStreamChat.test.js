@@ -21,9 +21,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro';
+const model = 'gemini-1.5-pro-preview-0409';
 
-describe('Generative AI Function Calling Stream Content', () => {
+describe('Generative AI Function Calling Stream Chat', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -34,10 +34,10 @@ describe('Generative AI Function Calling Stream Content', () => {
 
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./functionCallingStreamContent.js ${projectId} ${location} ${model}`
+      `node ./function-calling/functionCallingStreamChat.js ${projectId} ${location} ${model}`
     );
 
     // Assert that the response is what we expect
-    assert(output.match(/super nice/), output);
+    assert(output.match(/The weather in Boston is super nice./));
   });
 });

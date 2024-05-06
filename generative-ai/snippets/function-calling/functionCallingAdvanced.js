@@ -53,6 +53,12 @@ const toolConfig = {
   },
 };
 
+const generationConfig = {
+  temperature: 0.95,
+  topP: 1.0,
+  maxOutputTokens: 8192
+};
+
 /**
  * TODO(developer): Update these variables before running the sample.
  */
@@ -80,6 +86,7 @@ async function functionCallingBasic(
     ],
     tools: functionDeclarations,
     tool_config: toolConfig,
+    generation_config: generationConfig,
   };
   const result = await generativeModel.generateContent(request);
   console.log(JSON.stringify(result.response.candidates[0].content));

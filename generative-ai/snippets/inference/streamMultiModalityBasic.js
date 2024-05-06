@@ -40,7 +40,8 @@ async function generateContent(
           },
           {
             file_data: {
-              file_uri: 'gs://cloud-samples-data/generative-ai/image/character.jpg',
+              file_uri:
+                'gs://cloud-samples-data/generative-ai/image/character.jpg',
               mime_type: 'image/jpeg',
             },
           },

@@ -22,7 +22,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const projectId = process.env.CAIP_PROJECT_ID;
 
 describe('Summarize audio', async () => {
-  it('should summerize audio', async () => {
+  it('should summarize audio', async () => {
     const output = execSync(
       `node ./gemini-audio-summarization.js ${projectId}`
     );

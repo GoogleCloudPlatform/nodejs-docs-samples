@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 const model = 'gemini-1.5-pro-preview-0409';
 
-describe('Generative AI Function Calling Stream Chat', () => {
+describe('Generative AI Multimodal Text Inference', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,12 +32,10 @@ describe('Generative AI Function Calling Stream Chat', () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.5-pro-preview-0409';
 
-  it('should create stream chat and begin the conversation the same in each instance', async () => {
+  it('should generate text based on a prompt containing text, a video, and an image', async () => {
     const output = execSync(
-      `node ./functionCallingStreamChat.js ${projectId} ${location} ${model}`
+      `node ./inference/nonStreamMultiModalityBasic.js ${projectId} ${location} ${model}`
     );
-
-    // Assert that the response is what we expect
-    assert(output.match(/The weather in Boston is super nice./));
+    assert(output.length > 0);
   });
 });

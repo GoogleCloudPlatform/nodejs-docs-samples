@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,23 +21,23 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.5-pro-preview-0409';
+const model = 'gemini-1.0-pro';
 
-describe('Generative AI Function Calling Stream Chat', () => {
+describe('Generative AI Basic Text Inference', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-pro-preview-0409';
+  // const model = 'gemini-1.0-pro';
 
-  it('should create stream chat and begin the conversation the same in each instance', async () => {
+  it('should create a generative text model and infer text from a prompt', async () => {
     const output = execSync(
-      `node ./functionCallingStreamChat.js ${projectId} ${location} ${model}`
+      `node ./inference/nonStreamTextBasic.js ${projectId} ${location} ${model}`
     );
 
-    // Assert that the response is what we expect
-    assert(output.match(/The weather in Boston is super nice./));
+    // Assert that the correct prompt was issued
+    assert(output.match(/Write a story about a magic backpack/));
   });
 });

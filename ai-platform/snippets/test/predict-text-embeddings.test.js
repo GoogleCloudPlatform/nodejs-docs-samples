@@ -34,9 +34,10 @@ const texts = [
 ].join(';');
 
 describe('predict text embeddings', () => {
-  it('should get text embeddings using the 004 model', async () => {
+  it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-        `node ./predict-text-embeddings.js ${project} text-embedding-004 '${
+        `node ./predict-text-embeddings.js ${
+            project} text-embedding-004 '${
             texts}' QUESTION_ANSWERING 256`,
         {cwd});
     assert.match(stdout, /Got predict response/);

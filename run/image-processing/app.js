@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 // [START cloudrun_imageproc_controller]
-// [START run_imageproc_controller]
 
 const express = require('express');
 const app = express();
@@ -58,7 +57,6 @@ app.post('/', async (req, res) => {
     res.status(500).send();
   }
 });
-// [END run_imageproc_controller]
 // [END cloudrun_imageproc_controller]
 
 module.exports = app;

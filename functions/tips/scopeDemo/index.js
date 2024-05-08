@@ -16,7 +16,6 @@
 
 // [START functions_tips_scopes]
 // [START cloudrun_tips_global_scope]
-// [START run_tips_global_scope]
 const functions = require('@google-cloud/functions-framework');
 
 // TODO(developer): Define your own computations
@@ -39,6 +38,5 @@ functions.http('scopeDemo', (req, res) => {
 
   res.send(`Per instance: ${instanceVar}, per function: ${functionVar}`);
 });
-// [END run_tips_global_scope]
 // [END cloudrun_tips_global_scope]
 // [END functions_tips_scopes]

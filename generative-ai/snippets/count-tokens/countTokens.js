@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_token_count]
 // [START aiplatform_gemini_token_count]
 const {VertexAI} = require('@google-cloud/vertexai');
 
@@ -39,6 +40,7 @@ async function countTokens(
   console.log('count tokens response: ', countTokensResp);
 }
 // [END aiplatform_gemini_token_count]
+// [END generativeaionvertexai_gemini_token_count]
 
 countTokens(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

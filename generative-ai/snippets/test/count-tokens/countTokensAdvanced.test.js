@@ -21,9 +21,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-002';
+const model = 'gemini-1.5-pro-preview-0409';
 
-describe('Count tokens', async () => {
+describe('Count tokens advanced', async () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,12 +32,13 @@ describe('Count tokens', async () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  it('should count tokens', async () => {
+  it('should count tokens in a multimodal prompt', async () => {
     const output = execSync(
-      `node ./count-tokens/countTokens.js ${projectId} ${location} ${model}`
+      `node ./count-tokens/countTokensAdvanced.js ${projectId} ${location} ${model}`
     );
 
-    // Expect 6 tokens
-    assert(output.match('totalTokens: 6'));
+    // Expect 16822 tokens and 30 characters in prompt
+    assert(output.match('Prompt Token Count: 16822'));
+    assert(output.match('Prompt Character Count: 30'));
   });
 });

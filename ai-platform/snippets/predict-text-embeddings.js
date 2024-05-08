@@ -32,8 +32,8 @@ async function main(
   const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
   const location = match ? match.groups.Location : 'us-centra11';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = 
-    outputDimensionality > 0 
+  const parameters =
+    outputDimensionality > 0
       ? helpers.toValue(outputDimensionality)
       : helpers.toValue(256);
 

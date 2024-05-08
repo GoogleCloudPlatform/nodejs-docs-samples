@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,26 +20,11 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-001';
 
-describe('Safety settings', async () => {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
-   */
-  // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+describe('Get sentiment score from text input', async () => {
+  it('should get sentiment score from text input', async () => {
+    const output = execSync(`node ./gemini-text-input.js ${projectId}`);
 
-  it('should reject a dangerous request', async () => {
-    const output = execSync(
-      `node ./safetySettings.js ${projectId} ${location} ${model}`
-    );
-
-    // Expect rejection due to safety concerns
-    assert(
-      output.match('This response stream terminated due to safety concerns')
-    );
+    assert(output.length > 0);
   });
 });

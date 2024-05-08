@@ -52,7 +52,7 @@ const functionResponseParts = [
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function functionCallingStreamChat(
+async function functionCallingStreamContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
   model = 'gemini-1.0-pro-002'
@@ -61,7 +61,7 @@ async function functionCallingStreamChat(
   const vertexAI = new VertexAI({project: projectId, location: location});
 
   // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
+  const generativeModel = vertexAI.getGenerativeModel({
     model: model,
   });
 
@@ -90,7 +90,7 @@ async function functionCallingStreamChat(
 }
 // [END aiplatform_gemini_function_calling_content]
 
-functionCallingStreamChat(...process.argv.slice(2)).catch(err => {
+functionCallingStreamContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

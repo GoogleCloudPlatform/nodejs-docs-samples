@@ -16,7 +16,7 @@
 
 'use strict';
 
-// [START generativeaionvertexai_sdk_embedding]
+// [START aiplatform_sdk_embedding]
 async function main(
   project,
   model = 'text-embedding-004',
@@ -32,7 +32,9 @@ async function main(
   const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
   const location = match ? match.groups.Location : 'us-centra11';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = outputDimensionality > 0 ? helpers.toValue(outputDimensionality) : helpers.toValue(256);
+  const parameters = outputDimensionality > 0 ?
+      helpers.toValue(outputDimensionality) :
+      helpers.toValue(256);
 
   async function callPredict() {
     const instances = texts
@@ -52,7 +54,7 @@ async function main(
 
   callPredict();
 }
-// [END generativeaionvertexai_sdk_embedding]
+// [END aiplatform_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

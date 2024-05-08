@@ -15,7 +15,6 @@
 const {logger} = require('./logging'); // Import winston logger instance
 
 // [START cloudrun_user_auth_jwt]
-// [START run_user_auth_jwt]
 const firebase = require('firebase-admin');
 // Initialize Firebase Admin SDK
 firebase.initializeApp();
@@ -43,7 +42,6 @@ const authenticateJWT = (req, res, next) => {
     return res.sendStatus(401);
   }
 };
-// [END run_user_auth_jwt]
 // [END cloudrun_user_auth_jwt]
 
 let project;

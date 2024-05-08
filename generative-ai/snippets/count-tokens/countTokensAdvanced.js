@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_token_count]
-// [START aiplatform_gemini_token_count]
+// [START generativeaionvertexai_gemini_token_count_advanced]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -52,19 +51,20 @@ async function countTokens(
 
   const countTokensResp = await generativeModel.countTokens(req);
   console.log('Prompt Token Count:', countTokensResp.totalTokens);
-  console.log('Prompt Character Count:', countTokensResp.totalBillableCharacters);
+  console.log(
+    'Prompt Character Count:',
+    countTokensResp.totalBillableCharacters
+  );
 
   // Sent text to Gemini
   const result = await generativeModel.generateContent(req);
   const usageMetadata = result.response.usageMetadata;
 
-  console.log("Prompt Token Count:", usageMetadata.promptTokenCount);
-  console.log("Candidates Token Count:", usageMetadata.candidatesTokenCount);
-  console.log("Total Token Count:", usageMetadata.totalTokenCount);
-
+  console.log('Prompt Token Count:', usageMetadata.promptTokenCount);
+  console.log('Candidates Token Count:', usageMetadata.candidatesTokenCount);
+  console.log('Total Token Count:', usageMetadata.totalTokenCount);
 }
-// [END aiplatform_gemini_token_count]
-// [END generativeaionvertexai_gemini_token_count]
+// [END generativeaionvertexai_gemini_token_count_advanced]
 
 countTokens(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

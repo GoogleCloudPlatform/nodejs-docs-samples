@@ -57,7 +57,7 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-describe('functions_tips_scopes cloudrun_tips_global_scope run_tips_global_scope', () => {
+describe('functions_tips_scopes cloudrun_tips_global_scope', () => {
   const computations = sinon.spy(require('../computations'));
 
   require('..');

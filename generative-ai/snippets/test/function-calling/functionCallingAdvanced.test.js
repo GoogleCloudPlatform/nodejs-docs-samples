@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-002';
+const model = 'gemini-1.0-pro-001';
 
-describe('Generative AI Function Calling Stream Content', () => {
+describe('Generative AI Function Calling Advanced', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,12 +32,12 @@ describe('Generative AI Function Calling Stream Content', () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  it('should create stream chat and begin the conversation the same in each instance', async () => {
+  it('should define multiple functions and have the model invoke the specified one', async () => {
     const output = execSync(
-      `node ./functionCallingStreamContent.js ${projectId} ${location} ${model}`
+      `node ./function-calling/functionCallingAdvanced.js ${projectId} ${location} ${model}`
     );
 
     // Assert that the response is what we expect
-    assert(output.match(/super nice/), output);
+    assert(output.match(/get_product_sku/));
   });
 });

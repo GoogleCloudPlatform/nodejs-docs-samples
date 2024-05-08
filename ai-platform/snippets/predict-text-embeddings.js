@@ -33,7 +33,7 @@ async function main(
   const location = match ? match.groups.Location : 'us-centra11';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
   const parameters =
-      outputDimensionality > 0
+    outputDimensionality > 0
       ? helpers.toValue(outputDimensionality)
       : helpers.toValue(256);
 

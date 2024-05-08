@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
   const project = process.env.GOOGLE_CLOUD_PROJECT;
 
   // [START cloudrun_manual_logging]
-  // [START run_manual_logging]
 
   // Uncomment and populate this variable in your code:
   // const project = 'The project ID of your function or Cloud Run service';
@@ -52,7 +51,6 @@ app.get('/', (req, res) => {
   // Serialize to a JSON string and output.
   console.log(JSON.stringify(entry));
 
-  // [END run_manual_logging]
   // [END cloudrun_manual_logging]
 
   res.send('Hello Logger!');

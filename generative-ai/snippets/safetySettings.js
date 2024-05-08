@@ -41,7 +41,12 @@ async function setSafetySettings(
         threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
       },
     ],
-    generation_config: {max_output_tokens: 256},
+    generation_config: {
+      max_output_tokens: 256,
+      temperature: 0.4,
+      top_p: 1,
+      top_k: 16,
+    },
   });
 
   const request = {
@@ -64,6 +69,7 @@ async function setSafetySettings(
       process.stdout.write(item.candidates[0].content.parts[0].text);
     }
   }
+  console.log('This response stream terminated due to safety concerns.');
 }
 // [END aiplatform_gemini_safety_settings]
 

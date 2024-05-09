@@ -21,9 +21,10 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
+const datastore_id = process.env.DATASTORE_ID;
 const model = 'gemini-1.0-pro-002';
 
-describe('Google search grounding', async () => {
+describe('Private data grounding', async () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,11 +33,10 @@ describe('Google search grounding', async () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-1.0-pro';
 
-  it('should ground results in public search data', async () => {
-    // const output = execSync(
-    //   `node ./grounding/groundingPrivateDataBasic.js ${projectId} ${location} ${model}`
-    // );
-    // TODO: update test once projects are allowlisted for grounding
-    assert(true);
+  it('should ground results in private VertexAI search data', async () => {
+    const output = execSync(
+      `node ./grounding/groundingPrivateDataBasic.js ${projectId} ${location} ${model} ${datastore_id}`
+    );
+    assert(output.match(/GroundingMetadata/));
   });
 });

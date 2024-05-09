@@ -25,7 +25,8 @@ const {
 async function generateContentWithGoogleSearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-002'
+  model = 'gemini-1.0-pro-002',
+  dataStoreId = 'DATASTORE_ID'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -43,18 +44,23 @@ async function generateContentWithGoogleSearchGrounding(
     generationConfig: {maxOutputTokens: 256},
   });
 
-  const googleSearchRetrievalTool = {
-    googleSearchRetrieval: {},
+  const vertexAIRetrievalTool = {
+    retrieval: {
+      vertexAiSearch: {
+        datastore: `projects/${projectId}/locations/global/collections/default_collection/dataStores/${dataStoreId}`,
+      },
+      disableAttribution: false,
+    },
   };
 
   const request = {
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [{retrieval: {googleSearchRetrieval: {}}}],
+    tools: [vertexAIRetrievalTool],
   };
 
   const result = await generativeModelPreview.generateContent(request);
   const response = result.response;
-  const groundingMetadata = response.candidates[0].groundingMetadata;
+  const groundingMetadata = response.candidates[0];
   console.log('Response: ', JSON.stringify(response.candidates[0]));
   console.log('GroundingMetadata is: ', JSON.stringify(groundingMetadata));
 }

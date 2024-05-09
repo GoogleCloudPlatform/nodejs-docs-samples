@@ -22,7 +22,7 @@ const {
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function generateContentWithGoogleSearchGrounding(
+async function generateContentWithVertexAISearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
   model = 'gemini-1.0-pro-002',
@@ -66,7 +66,7 @@ async function generateContentWithGoogleSearchGrounding(
 }
 // [END generativeaionvertexai_grounding_private_data_basic]
 
-generateContentWithGoogleSearchGrounding(...process.argv.slice(2)).catch(
+generateContentWithVertexAIGrounding(...process.argv.slice(2)).catch(
   err => {
     console.error(err.message);
     process.exitCode = 1;

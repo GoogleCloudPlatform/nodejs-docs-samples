@@ -66,7 +66,7 @@ async function generateContentWithVertexAISearchGrounding(
 }
 // [END generativeaionvertexai_grounding_private_data_basic]
 
-generateContentWithVertexAIGrounding(...process.argv.slice(2)).catch(err => {
+generateContentWithVertexAISearchGrounding(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

@@ -20,9 +20,7 @@ FROM node:10-alpine
 WORKDIR /usr/src/app
 
 # [START cloudrun_system_package_alpine]
-# [START run_system_package_alpine]
 RUN apk --no-cache add graphviz ttf-ubuntu-font-family
-# [END run_system_package_alpine]
 # [END cloudrun_system_package_alpine]
 
 # Copy application dependency manifests to the container image.

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_grounding_public_data_basic]
+// [START generativeaionvertexai_grounding_private_data_basic]
 const {
   VertexAI,
   HarmCategory,
@@ -64,7 +64,7 @@ async function generateContentWithGoogleSearchGrounding(
   console.log('Response: ', JSON.stringify(response.candidates[0]));
   console.log('GroundingMetadata is: ', JSON.stringify(groundingMetadata));
 }
-// [END generativeaionvertexai_grounding_public_data_basic]
+// [END generativeaionvertexai_grounding_private_data_basic]
 
 generateContentWithGoogleSearchGrounding(...process.argv.slice(2)).catch(
   err => {

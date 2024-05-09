@@ -49,16 +49,13 @@ async function generateContentWithGoogleSearchGrounding(
 
   const request = {
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [googleSearchRetrievalTool],
+    tools: [{retrieval: {googleSearchRetrieval: {}}}],
   };
 
   const result = await generativeModelPreview.generateContent(request);
   const response = result.response;
   const groundingMetadata = response.candidates[0].groundingMetadata;
-  console.log(
-    'Response: ',
-    JSON.stringify(response.candidates[0].content.parts[0].text)
-  );
+  console.log('Response: ', JSON.stringify(response.candidates[0]));
   console.log('GroundingMetadata is: ', JSON.stringify(groundingMetadata));
 }
 // [END generativeaionvertexai_grounding_public_data_basic]

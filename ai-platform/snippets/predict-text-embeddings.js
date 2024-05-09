@@ -30,7 +30,7 @@ async function main(
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
   const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
-  const location = match ? match.groups.Location : 'us-centra11';
+  const location = match ? match.groups.Location : 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
   const parameters =
     outputDimensionality > 0

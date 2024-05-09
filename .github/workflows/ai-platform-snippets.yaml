@@ -55,6 +55,7 @@ jobs:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
+          datastore_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore_id
     - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16

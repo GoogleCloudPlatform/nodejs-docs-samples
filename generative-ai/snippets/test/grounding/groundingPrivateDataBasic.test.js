@@ -19,7 +19,7 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
+const projectId = process.env.LONG_PROJECT_ID;
 const location = process.env.LOCATION;
 const datastore_id = process.env.DATASTORE_ID;
 const model = 'gemini-1.0-pro-002';

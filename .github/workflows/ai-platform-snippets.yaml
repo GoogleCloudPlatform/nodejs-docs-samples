@@ -56,6 +56,7 @@ jobs:
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
           datastore_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore-id
+          long_project_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-long-project-id
     - uses: actions/setup-node@v4.0.0
       with:
         node-version: 16
@@ -83,6 +84,7 @@ jobs:
         LOCATION: ${{ steps.secrets.outputs.location }}
         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
         DATASTORE_ID: ${{ steps.secrets.outputs.datastore_id }}
+        LONG_PROJECT_ID: ${{ steps.secrets.outputs.long_project_id }}
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

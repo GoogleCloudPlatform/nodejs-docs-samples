@@ -54,7 +54,7 @@ function main(organizationId) {
   }
 
   createSource();
-  // [END securitycenter_create_source]
+  // [END securitycenter_create_source_v2]
 }
 
 main(...process.argv.slice(2));

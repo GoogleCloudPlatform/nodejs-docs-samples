@@ -57,8 +57,8 @@ jobs:
       with:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
-          location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
-    - uses: actions/setup-node@v4.0.0
+          location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-locatiodatastore_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore-id uses: actions/setup-node@v4.0.0
+          datastore_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore-id
       with:
         node-version: 18
     - name: Get npm cache directory
@@ -86,8 +86,10 @@ jobs:
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: npm test
       env:
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
         LOCATION: ${{ steps.secrets.outputs.location }}
-        CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}      
+        CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}  
+        DATASTORE_ID: ${{ steps.secrets.outputs.datastore_id }}    
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

@@ -19,24 +19,28 @@
 // [START aiplatform_sdk_embedding]
 async function main(
   project,
-  model = 'textembedding-gecko@003',
+  model = 'text-embedding-004',
   texts = 'banana bread?;banana muffins?',
-  task = 'RETRIEVAL_DOCUMENT',
+  task = 'QUESTION_ANSWERING',
+  outputDimensionality = 0,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
-  const location = match ? match.groups.Location : 'us-centra11';
+  const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
+  const parameters =
+    outputDimensionality > 0
+      ? helpers.toValue(outputDimensionality)
+      : helpers.toValue(256);
 
   async function callPredict() {
     const instances = texts
       .split(';')
       .map(e => helpers.toValue({content: e, taskType: task}));
-    const request = {endpoint, instances};
+    const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
     console.log('Got predict response');

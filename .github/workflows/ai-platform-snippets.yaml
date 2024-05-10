@@ -83,7 +83,6 @@ jobs:
         LOCATION: ${{ steps.secrets.outputs.location }}
         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
         DATASTORE_ID: ${{ steps.secrets.outputs.datastore_id }}
-        LONG_PROJECT_ID: ${{ steps.secrets.outputs.long_project_id }}
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

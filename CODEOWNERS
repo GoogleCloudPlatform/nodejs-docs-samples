@@ -49,7 +49,6 @@ composer @GoogleCloudPlatform/cloud-dpes-composer @GoogleCloudPlatform/nodejs-sa
 monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Data & AI
-ai-platform @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 generative-ai @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 automl @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 cloud-language @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -73,6 +72,7 @@ vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-revi
 functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Self-service
+ai-platform @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding
 asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team @GoogleCloudPlatform/nodejs-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers

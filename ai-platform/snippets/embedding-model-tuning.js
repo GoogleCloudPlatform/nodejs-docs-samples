@@ -24,10 +24,10 @@ async function main(
   pipelineJobDisplayName = 'embedding-customization-pipeline-sample',
   baseModelVersionId = 'textembedding-gecko@003',
   taskType = 'DEFAULT',
-  queriesPath = 'gs://embedding-customization-pipeline/dataset/queries.jsonl',
-  corpusPath = 'gs://embedding-customization-pipeline/dataset/corpus.jsonl',
-  trainLabelPath = 'gs://embedding-customization-pipeline/dataset/train.tsv',
-  testLabelPath = 'gs://embedding-customization-pipeline/dataset/test.tsv',
+  corpusPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/corpus.jsonl',
+  queriesPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/queries.jsonl',
+  trainLabelPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/train.tsv',
+  testLabelPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/test.tsv',
   batchSize = 128,
   iterations = 1000
 ) {

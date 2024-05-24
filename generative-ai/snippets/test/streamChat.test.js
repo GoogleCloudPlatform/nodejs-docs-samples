@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-002';
+const model = 'gemini-1.5-flash-001';
 
 describe('Generative AI Stream Chat', () => {
   /**

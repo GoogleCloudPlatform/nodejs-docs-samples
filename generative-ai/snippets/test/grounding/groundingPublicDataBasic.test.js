@@ -30,12 +30,12 @@ describe('Google search grounding', async () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.0-pro-002';
 
   it('should ground results in public search data', async () => {
     const output = execSync(
       `node ./grounding/groundingPublicDataBasic.js ${projectId} ${location} ${model}`
     );
-    assert(output.match(/webSearchQueries.*Why is the sky blue?/));
+    assert(output.match(/webSearchQueries.*why is the sky blue?/));
   });
 });

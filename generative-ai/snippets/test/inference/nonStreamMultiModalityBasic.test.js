@@ -30,7 +30,7 @@ describe('Generative AI Multimodal Text Inference', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-pro-preview-0409';
+  // const model = 'gemini-1.5-flash-001';
 
   it('should generate text based on a prompt containing text, a video, and an image', async () => {
     const output = execSync(

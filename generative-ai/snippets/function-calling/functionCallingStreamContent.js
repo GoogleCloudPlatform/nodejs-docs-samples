@@ -55,7 +55,7 @@ const functionResponseParts = [
 async function functionCallingStreamContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-002'
+  model = 'gemini-1.5-flash-001'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});

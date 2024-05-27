@@ -31,7 +31,7 @@ describe('Private data grounding', async () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.0-pro-002';
 
   it('should ground results in private VertexAI search data', async () => {
     const output = execSync(

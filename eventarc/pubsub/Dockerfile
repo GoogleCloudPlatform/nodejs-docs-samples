@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START eventarc_pubsub_dockerfile]
-
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
 FROM node:20-slim
@@ -26,7 +24,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies.
-# if you need a deterministic and repeatable build create a 
+# if you need a deterministic and repeatable build create a
 # package-lock.json file and use npm ci:
 # RUN npm ci --omit=dev
 # if you need to include development dependencies during development
@@ -40,5 +38,3 @@ COPY . .
 
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
-
-# [END eventarc_pubsub_dockerfile]

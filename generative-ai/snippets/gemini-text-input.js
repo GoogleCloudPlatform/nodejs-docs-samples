@@ -22,28 +22,13 @@ async function generate_from_text_input(projectId = 'PROJECT_ID') {
   const vertexAI = new VertexAI({project: projectId, location: 'us-central1'});
 
   const generativeModel = vertexAI.getGenerativeModel({
-    model: 'gemini-1.0-pro-002',
+    model: 'gemini-1.5-flash-001',
   });
 
-  // Does the returned sentiment score match the reviewer's movie rating?
-  const textPart = {
-    text: `
-    Give a score from 1 - 10 to suggest if the following movie review is
-    negative or positive (1 is most negative, 10 is most positive, 5 will be
-    neutral). Include an explanation.
+  const prompt =
+    "What's a good name for a flower shop that specializes in selling bouquets of dried flowers?";
 
-    The movie takes some time to build, but that is part of its beauty. By the
-    time you are hooked, this tale of friendship and hope is thrilling and
-    affecting, until the very last scene. You will find yourself rooting for
-    the hero every step of the way. This is the sharpest, most original
-    animated film I have seen in years. I would give it 8 out of 10 stars.`,
-  };
-
-  const request = {
-    contents: [{role: 'user', parts: [textPart]}],
-  };
-
-  const resp = await generativeModel.generateContent(request);
+  const resp = await generativeModel.generateContent(prompt);
   const contentResponse = await resp.response;
   console.log(JSON.stringify(contentResponse));
 }

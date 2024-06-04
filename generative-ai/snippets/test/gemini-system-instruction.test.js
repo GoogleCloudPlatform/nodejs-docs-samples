@@ -21,8 +21,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Set sytem instruction', async () => {
-  it('should set sytem instruction', async () => {
+describe('Set system instruction', async () => {
+  it('should set system instruction', async () => {
     const output = execSync(`node ./gemini-system-instruction.js ${projectId}`);
 
     assert(output.length > 0);

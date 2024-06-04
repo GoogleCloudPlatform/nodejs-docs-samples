@@ -22,14 +22,16 @@ async function main(
   project,
   outputDir,
   pipelineJobDisplayName = 'embedding-customization-pipeline-sample',
-  baseModelVersionId = 'textembedding-gecko@003',
+  baseModelVersionId = 'text-embedding-004',
   taskType = 'DEFAULT',
-  queriesPath = 'gs://embedding-customization-pipeline/dataset/queries.jsonl',
-  corpusPath = 'gs://embedding-customization-pipeline/dataset/corpus.jsonl',
-  trainLabelPath = 'gs://embedding-customization-pipeline/dataset/train.tsv',
-  testLabelPath = 'gs://embedding-customization-pipeline/dataset/test.tsv',
+  corpusPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/corpus.jsonl',
+  queriesPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/queries.jsonl',
+  trainLabelPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/train.tsv',
+  testLabelPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/test.tsv',
+  outputDimensionality = 768,
+  learningRateMultiplier = 1.0,
   batchSize = 128,
-  iterations = 1000
+  trainSteps = 1000
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
   const {PipelineServiceClient} = aiplatform.v1;
@@ -40,8 +42,6 @@ async function main(
   const location = match ? match.groups.L : 'us-central1';
   const parent = `projects/${project}/locations/${location}`;
   const params = {
-    project: project,
-    location: location,
     base_model_version_id: baseModelVersionId,
     task_type: taskType,
     queries_path: queriesPath,
@@ -49,7 +49,9 @@ async function main(
     train_label_path: trainLabelPath,
     test_label_path: testLabelPath,
     batch_size: batchSize,
-    iterations: iterations,
+    train_steps: trainSteps,
+    output_dimensionality: outputDimensionality,
+    learning_rate_multiplier: learningRateMultiplier,
   };
   const runtimeConfig = {
     gcsOutputDirectory: outputDir,
@@ -59,7 +61,7 @@ async function main(
   };
   const pipelineJob = {
     templateUri:
-      'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.2',
+      'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.3',
     displayName: pipelineJobDisplayName,
     runtimeConfig,
   };

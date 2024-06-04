@@ -65,12 +65,6 @@ security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPla
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers
 healthcare @GoogleCloudPlatform/healthcare-life-sciences @GoogleCloudPlatform/nodejs-samples-reviewers
-functions @GoogleCloudPlatform/nodejs-samples-reviewers
-appengine @GoogleCloudPlatform/nodejs-samples-reviewers
-run @GoogleCloudPlatform/nodejs-samples-reviewers
-scheduler @GoogleCloudPlatform/nodejs-samples-reviewers
-cloud-tasks @GoogleCloudPlatform/nodejs-samples-reviewers
-workflows @GoogleCloudPlatform/nodejs-samples-reviewers
-eventarc @GoogleCloudPlatform/nodejs-samples-reviewers
-cloudbuild @GoogleCloudPlatform/nodejs-samples-reviewers
-container-analysis @GoogleCloudPlatform/nodejs-samples-reviewers
+
+
+

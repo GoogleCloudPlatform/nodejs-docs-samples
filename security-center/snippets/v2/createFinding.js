@@ -83,4 +83,3 @@ function main(organizationId, sourceId, location = 'global', category = 'LOW_RIS
 }
 
 main(...process.argv.slice(2));
-

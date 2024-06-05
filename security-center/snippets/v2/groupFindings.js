@@ -16,17 +16,17 @@
 'use strict';
 
 /**
- * Demonstrates how to filter and list findings by category
+ * Group all findings under a parent type across all sources by their specified properties
+ * (e.g category, state).
  */
-function main(organizationId, location = 'global') {
-  // [START securitycenter_list_filtered_findings_v2]
+function main(organizationId, sourceId, location = 'global') {
+  // [START securitycenter_group_all_findings_v2]
   // Imports the Google Cloud client library.
   const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-  
-    /**
+     /**
    *  Required. Name of the source to groupBy. If no location is specified,
    *  finding is assumed to be in global.
    *   The following list shows some examples:
@@ -36,33 +36,42 @@ function main(organizationId, location = 'global') {
    *  `folders/[folder_id]/sources/[source_id]/locations/[location_id]`
    *  `projects/[project_id]/sources/[source_id]`
    *  `projects/[project_id]/sources/[source_id]/locations/[location_id]`
-   *  To groupBy across all sources provide a source_id of `-`.
+   *  To groupBy across all sources provide a source_id of `-`. The following
+   *  list shows some examples:
+   *  `organizations/{organization_id}/sources/-`
+   *  `organizations/{organization_id}/sources/-/locations/[location_id]`
+   *  `folders/{folder_id}/sources/-`
+   *  `folders/{folder_id}/sources/-/locations/[location_id]`
+   *  `projects/{project_id}/sources/-`
+   *  `projects/{project_id}/sources/-/locations/[location_id]`
    */
-  const parent =  `organizations/${organizationId}/sources/-/locations/${location}`;
+  const parent =  `organizations/${organizationId}/sources/${sourceId}/locations/${location}`;
 
-  // Listing all findings of category "MEDIUM_RISK_ONE".
-  const filter = 'category="MEDIUM_RISK_ONE"';
-
-  // Build the list findings with filter request.
-  const listFilteredFindingsRequest = {
+   // Supported grouping properties: resource_name/ category/ state/ parent/ severity.
+   // Multiple properties should be separated by comma.
+   const groupBy = 'category,state';
+    
+  // Build the group findings request.
+  const groupFindingsRequest = {
     parent,
-    filter,
+    groupBy,
   };
 
-  async function listFilteredFindings() {
+  async function groupFindings() {
 
-     // Call the API.
-    const iterable = client.listFindingsAsync(listFilteredFindingsRequest);
+    // Call the API.
+    const iterable = client.groupFindingsAsync(groupFindingsRequest);
     let count = 0;
-
+    
     for await (const response of iterable) {
         console.log(
-            `${++count} ${response.finding.name} ${response.finding.resourceName}`
+            `${++count} ${response.properties.category} ${response.properties.state}`
         );
     }
   }
-  listFilteredFindings();
-  // [END securitycenter_list_filtered_findings_v2]
+
+  groupFindings();
+  // [END securitycenter_group_all_findings_v2]
 }
 
 main(...process.argv.slice(2));

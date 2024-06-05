@@ -16,46 +16,45 @@
 'use strict';
 
 /**
- * List all findings under a given parent resource.
+ *  Lists all mute rules present under the resource type in the given location.
  */
 function main(organizationId, location = 'global') {
-  // [START securitycenter_list_all_findings_v2]
+  // [START securitycenter_list_mute_configs_v2]
   // Imports the Google Cloud client library.
   const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-   /**
-   *  Required. Name of the source the findings belong to. If no location is
-   *  specified, the default is global. The following list shows some examples:
-   *  `organizations/[organization_id]/sources/[source_id]/locations/[location_id]`
-   *  `folders/[folder_id]/sources/[source_id]`
-   *  `folders/[folder_id]/sources/[source_id]/locations/[location_id]`
-   *  `projects/[project_id]/sources/[source_id]`
-   *  `projects/[project_id]/sources/[source_id]/locations/[location_id]`
+    /**
+   *  Required. The parent, which owns the collection of mute configs. Its format
+   *  is "organizations/[organization_id]", "folders/[folder_id]",
+   *  "projects/[project_id]",
+   *  "organizations/[organization_id]/locations/[location_id]",
+   *  "folders/[folder_id]/locations/[location_id]",
+   *  "projects/[project_id]/locations/[location_id]".
    */
-  const parent =  `organizations/${organizationId}/sources/-/locations/${location}`;
+  const parent =  `organizations/${organizationId}/locations/${location}`;
 
-  // Build the list findings request.
-  const listFindingsRequest = {
+  // Build the request.
+  const listMuteRulesRequest = {
     parent,
   };
 
-  async function listAllFindings() {
+  async function listAllMuteRules() {
 
     // Call the API.
-    const iterable = client.listFindingsAsync(listFindingsRequest);
+    const iterable = client.listMuteConfigsAsync(listMuteRulesRequest);
     let count = 0;
     
     for await (const response of iterable) {
         console.log(
-            `${++count} ${response.finding.name} ${response.finding.resourceName}`
+            `${++count} ${response.name}`
         );
     }
   }
 
-  listAllFindings();
-  // [END securitycenter_list_all_findings_v2]
+  listAllMuteRules();
+  // [END securitycenter_list_mute_configs_v2]
 }
 
 main(...process.argv.slice(2));

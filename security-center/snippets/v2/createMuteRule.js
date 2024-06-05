@@ -21,7 +21,7 @@
 function main(organizationId, location = 'global') {
   // [START securitycenter_create_mute_config_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
   const uuidv1 = require('uuid').v1;
 
   // Create a Security Center client
@@ -41,19 +41,19 @@ function main(organizationId, location = 'global') {
    *  with a letter, must end with either a letter or a number, and must be 63
    *  characters or less.
    */
-  const muteConfigId = 'muteid-'+uuidv1().replace(/-/g, '').substring(0, 20);
+  const muteConfigId = 'muteid-' + uuidv1().replace(/-/g, '').substring(0, 20);
 
   const name = `${parent}/muteConfigs/${muteConfigId}`;
 
   // Build the muteRuleConfig object.
   const muteConfig = {
-    name:name,
+    name: name,
     description: "Mute low-medium IAM grants excluding 'compute' resources",
     filter:
-      "severity=\"LOW\" OR severity=\"MEDIUM\" AND " +
-      "category=\"Persistence: IAM Anomalous Grant\" AND " +
-      "-resource.type:\"compute\"",
-    type: "STATIC",
+      'severity="LOW" OR severity="MEDIUM" AND ' +
+      'category="Persistence: IAM Anomalous Grant" AND ' +
+      '-resource.type:"compute"',
+    type: 'STATIC',
   };
 
   // Build the create mute rule request.
@@ -64,12 +64,11 @@ function main(organizationId, location = 'global') {
   };
 
   async function createMuteRuleConfig() {
-
     // Call the API.
     const [muteConfig] = await client.createMuteConfig(createMuteRuleRequest);
     console.log('New mute rule config created: %j', muteConfig);
   }
-  
+
   createMuteRuleConfig();
   // [END securitycenter_create_mute_config_v2]
 }

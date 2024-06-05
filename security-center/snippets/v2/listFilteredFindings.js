@@ -21,12 +21,12 @@
 function main(organizationId, location = 'global') {
   // [START securitycenter_list_filtered_findings_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-  
-    /**
+
+  /**
    *  Required. Name of the source to groupBy. If no location is specified,
    *  finding is assumed to be in global.
    *   The following list shows some examples:
@@ -38,7 +38,7 @@ function main(organizationId, location = 'global') {
    *  `projects/[project_id]/sources/[source_id]/locations/[location_id]`
    *  To groupBy across all sources provide a source_id of `-`.
    */
-  const parent =  `organizations/${organizationId}/sources/-/locations/${location}`;
+  const parent = `organizations/${organizationId}/sources/-/locations/${location}`;
 
   // Listing all findings of category "MEDIUM_RISK_ONE".
   const filter = 'category="MEDIUM_RISK_ONE"';
@@ -50,15 +50,14 @@ function main(organizationId, location = 'global') {
   };
 
   async function listFilteredFindings() {
-
-     // Call the API.
+    // Call the API.
     const iterable = client.listFindingsAsync(listFilteredFindingsRequest);
     let count = 0;
 
     for await (const response of iterable) {
-        console.log(
-            `${++count} ${response.finding.name} ${response.finding.resourceName}`
-        );
+      console.log(
+        `${++count} ${response.finding.name} ${response.finding.resourceName}`
+      );
     }
   }
   listFilteredFindings();

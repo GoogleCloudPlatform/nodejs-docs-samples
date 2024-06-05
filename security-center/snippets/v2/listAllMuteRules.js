@@ -21,11 +21,11 @@
 function main(organizationId, location = 'global') {
   // [START securitycenter_list_mute_configs_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-    /**
+  /**
    *  Required. The parent, which owns the collection of mute configs. Its format
    *  is "organizations/[organization_id]", "folders/[folder_id]",
    *  "projects/[project_id]",
@@ -33,7 +33,7 @@ function main(organizationId, location = 'global') {
    *  "folders/[folder_id]/locations/[location_id]",
    *  "projects/[project_id]/locations/[location_id]".
    */
-  const parent =  `organizations/${organizationId}/locations/${location}`;
+  const parent = `organizations/${organizationId}/locations/${location}`;
 
   // Build the request.
   const listMuteRulesRequest = {
@@ -41,15 +41,12 @@ function main(organizationId, location = 'global') {
   };
 
   async function listAllMuteRules() {
-
     // Call the API.
     const iterable = client.listMuteConfigsAsync(listMuteRulesRequest);
     let count = 0;
-    
+
     for await (const response of iterable) {
-        console.log(
-            `${++count} ${response.name}`
-        );
+      console.log(`${++count} ${response.name}`);
     }
   }
 

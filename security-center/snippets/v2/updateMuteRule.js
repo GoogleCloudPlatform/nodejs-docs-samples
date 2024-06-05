@@ -18,10 +18,10 @@
 /**
  * Updates an existing mute configuration.
  */
-function main(organizationId, muteConfigId ,location = 'global',) {
+function main(organizationId, muteConfigId, location = 'global') {
   // [START securitycenter_update_mute_config_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
@@ -30,7 +30,7 @@ function main(organizationId, muteConfigId ,location = 'global',) {
   /**
    *  The list of fields to be updated.
    *  If empty all mutable fields will be updated.
-  */
+   */
   const updateMask = {
     paths: ['description'],
   };
@@ -38,27 +38,26 @@ function main(organizationId, muteConfigId ,location = 'global',) {
   // Build the mute rule object.
   const muteConfig = {
     name,
-    description: "Updated mute config description",
+    description: 'Updated mute config description',
     updateMask,
     filter:
-    "severity=\"LOW\" OR severity=\"MEDIUM\" AND " +
-    "category=\"Persistence: IAM Anomalous Grant\" AND " +
-    "-resource.type:\"compute\"",
-    type: "STATIC",
+      'severity="LOW" OR severity="MEDIUM" AND ' +
+      'category="Persistence: IAM Anomalous Grant" AND ' +
+      '-resource.type:"compute"',
+    type: 'STATIC',
   };
 
   // Build the update mute rule request.
   const updateMuteConfigRequest = {
-    muteConfig
+    muteConfig,
   };
 
   async function updateMuteConfig() {
-
     // Call the API.
     const [muteConfig] = await client.updateMuteConfig(updateMuteConfigRequest);
     console.log('Update mute rule config: %j', muteConfig);
   }
-  
+
   updateMuteConfig();
   // [END securitycenter_update_mute_config_v2]
 }

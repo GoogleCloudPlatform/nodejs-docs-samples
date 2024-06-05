@@ -21,7 +21,7 @@
 function main(organizationId, muteConfigId) {
   // [START securitycenter_create_mute_config_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
@@ -44,12 +44,11 @@ function main(organizationId, muteConfigId) {
   };
 
   async function createMuteRuleConfig() {
-
     // Call the API.
     const [muteConfig] = await client.getMuteConfig(getMuteRuleRequest);
     console.log('Get mute rule config: %j', muteConfig);
   }
-  
+
   createMuteRuleConfig();
   // [END securitycenter_create_mute_config_v2]
 }

@@ -18,10 +18,15 @@
 /**
  * Demonstrates how to create a new security finding in CSCC.
  */
-function main(organizationId, sourceId, location = 'global', category = 'LOW_RISK_ONE') {
+function main(
+  organizationId,
+  sourceId,
+  location = 'global',
+  category = 'LOW_RISK_ONE'
+) {
   // [START securitycenter_create_finding_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
   const uuid = require('uuid');
 
   // Create a Security Center client
@@ -72,12 +77,11 @@ function main(organizationId, sourceId, location = 'global', category = 'LOW_RIS
   };
 
   async function createFinding() {
-
     // Call the API.
     const [finding] = await client.createFinding(createFindingRequest);
     console.log('New finding created: %j', finding);
   }
-  
+
   createFinding();
   // [END securitycenter_create_finding_v2]
 }

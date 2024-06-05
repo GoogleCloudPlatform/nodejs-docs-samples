@@ -23,7 +23,7 @@
 function main(organizationId, sourceId, findingId, location = 'global') {
   // [START securitycenter_set_mute_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
@@ -45,16 +45,15 @@ function main(organizationId, sourceId, findingId, location = 'global') {
   // Build the request.
   const setMuteRequest = {
     name,
-    mute: 'MUTED' 
+    mute: 'MUTED',
   };
 
   async function setMute() {
-
     // Call the API.
     const [finding] = await client.setMute(setMuteRequest);
     console.log('Mute value for the finding: %j', finding.mute);
   }
-  
+
   setMute();
   // [END securitycenter_set_mute_v2]
 }

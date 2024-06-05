@@ -23,12 +23,12 @@
 function main(organizationId, projectId, location = 'global') {
   // [START securitycenter_bulk_mute_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
 
-   /**
+  /**
    *  Required. The parent, at which bulk action needs to be applied. If no
    *  location is specified, findings are updated in global. The following list
    *  shows some examples:
@@ -49,17 +49,16 @@ function main(organizationId, projectId, location = 'global') {
   // Build the request.
   const bulkMuteFindingRequest = {
     parent,
-    filter
+    filter,
   };
 
   async function callBulkMuteFindings() {
-
     // Call the API.
     const [operation] = await client.bulkMuteFindings(bulkMuteFindingRequest);
     const [response] = await operation.promise();
     console.log('Bulk mute findings completed successfully: %j', response);
   }
-  
+
   callBulkMuteFindings();
   // [END securitycenter_bulk_mute_v2]
 }

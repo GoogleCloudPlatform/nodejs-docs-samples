@@ -21,11 +21,11 @@
 function main(organizationId, location = 'global') {
   // [START securitycenter_list_all_findings_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-   /**
+  /**
    *  Required. Name of the source the findings belong to. If no location is
    *  specified, the default is global. The following list shows some examples:
    *  `organizations/[organization_id]/sources/[source_id]/locations/[location_id]`
@@ -34,7 +34,7 @@ function main(organizationId, location = 'global') {
    *  `projects/[project_id]/sources/[source_id]`
    *  `projects/[project_id]/sources/[source_id]/locations/[location_id]`
    */
-  const parent =  `organizations/${organizationId}/sources/-/locations/${location}`;
+  const parent = `organizations/${organizationId}/sources/-/locations/${location}`;
 
   // Build the list findings request.
   const listFindingsRequest = {
@@ -42,15 +42,14 @@ function main(organizationId, location = 'global') {
   };
 
   async function listAllFindings() {
-
     // Call the API.
     const iterable = client.listFindingsAsync(listFindingsRequest);
     let count = 0;
-    
+
     for await (const response of iterable) {
-        console.log(
-            `${++count} ${response.finding.name} ${response.finding.resourceName}`
-        );
+      console.log(
+        `${++count} ${response.finding.name} ${response.finding.resourceName}`
+      );
     }
   }
 

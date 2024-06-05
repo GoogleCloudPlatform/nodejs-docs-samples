@@ -14,91 +14,98 @@
  * limitations under the License.
  */
 
-const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
-const { assert } = require('chai');
-const { execSync } = require('child_process');
-const exec = cmd => execSync(cmd, { encoding: 'utf8' });
-const { describe, it, before } = require('mocha');
+const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
+const {assert} = require('chai');
+const {execSync} = require('child_process');
+const exec = cmd => execSync(cmd, {encoding: 'utf8'});
+const {describe, it, before} = require('mocha');
 const uuidv1 = require('uuid').v1;
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 const location = 'global';
 
 describe('Client with mute rule V2', async () => {
-    let data;
-    before(async () => {
-        // Creates a new client.
-        const client = new SecurityCenterClient();
-          
-        // Build the create mute rule request.
-        const muteId = 'muteid-'+uuidv1().replace(/-/g, '').substring(0, 20);
-        const createMuteRuleRequest = {
-        parent:`organizations/${organizationId}/locations/${location}`,
-        muteConfigId:muteId,
-        muteConfig:{
-            name:`organizations/${organizationId}/locations/${location}/muteConfigs/${muteId}`,
-            description: "Mute low-medium IAM grants excluding 'compute' resources",
-            filter:
-                "severity=\"LOW\" OR severity=\"MEDIUM\" AND " +
-                "category=\"Persistence: IAM Anomalous Grant\" AND " +
-                "-resource.type:\"compute\"",
-            type: "STATIC",
-            },
-        };
+  let data;
+  before(async () => {
+    // Creates a new client.
+    const client = new SecurityCenterClient();
 
-        const [muteConfigResponse] = await client
-            .createMuteConfig(createMuteRuleRequest)
-            .catch(error => console.error(error));
+    // Build the create mute rule request.
+    const muteId = 'muteid-' + uuidv1().replace(/-/g, '').substring(0, 20);
+    const createMuteRuleRequest = {
+      parent: `organizations/${organizationId}/locations/${location}`,
+      muteConfigId: muteId,
+      muteConfig: {
+        name: `organizations/${organizationId}/locations/${location}/muteConfigs/${muteId}`,
+        description: "Mute low-medium IAM grants excluding 'compute' resources",
+        filter:
+          'severity="LOW" OR severity="MEDIUM" AND ' +
+          'category="Persistence: IAM Anomalous Grant" AND ' +
+          '-resource.type:"compute"',
+        type: 'STATIC',
+      },
+    };
 
-        const muteConfigId = muteConfigResponse.name.split('/')[5];
+    const [muteConfigResponse] = await client
+      .createMuteConfig(createMuteRuleRequest)
+      .catch(error => console.error(error));
 
-        data = {
-            orgId: organizationId,
-            muteConfigId: muteConfigId,
-            muteConfigName: muteConfigResponse.name,
-            untouchedMuteConfigName: "",
-        };
-        console.log('my data %j', data);
-    });
+    const muteConfigId = muteConfigResponse.name.split('/')[5];
 
-    after(async () => {
-        const client = new SecurityCenterClient();
+    data = {
+      orgId: organizationId,
+      muteConfigId: muteConfigId,
+      muteConfigName: muteConfigResponse.name,
+      untouchedMuteConfigName: '',
+    };
+    console.log('my data %j', data);
+  });
 
-        const name = `organizations/${organizationId}/locations/${location}/muteConfigs/${data.muteConfigId}`;
-        await client.deleteMuteConfig({name: name}).catch(error => console.error(error));
-    });
+  after(async () => {
+    const client = new SecurityCenterClient();
 
-    it('client can create mute rule V2', () => {
-        const output = exec(`node v2/createMuteRule.js ${data.orgId}`);
-        assert.match(output, new RegExp(data.orgId));
-        assert.match(output, /New mute rule config created/);
-        assert.notMatch(output, /undefined/);
-    });
+    const name = `organizations/${organizationId}/locations/${location}/muteConfigs/${data.muteConfigId}`;
+    await client
+      .deleteMuteConfig({name: name})
+      .catch(error => console.error(error));
+  });
 
-    it('client can list all mute rules V2', () => {
-        const output = exec(`node v2/listAllMuteRules.js ${data.orgId}`);
-        assert.match(output, new RegExp(data.orgId));
-        assert.match(output, new RegExp(data.untouchedMuteConfigName));
-        assert.notMatch(output, /undefined/);
-    });
+  it('client can create mute rule V2', () => {
+    const output = exec(`node v2/createMuteRule.js ${data.orgId}`);
+    assert.match(output, new RegExp(data.orgId));
+    assert.match(output, /New mute rule config created/);
+    assert.notMatch(output, /undefined/);
+  });
 
-    it('client can get a mute rule V2', () => {
-        const output = exec(`node v2/getMuteRule.js ${data.orgId} ${data.muteConfigId}`);
-        assert.match(output, new RegExp(data.muteConfigName));
-        assert.match(output, /Get mute rule config/);
-        assert.notMatch(output, /undefined/);
-    });
+  it('client can list all mute rules V2', () => {
+    const output = exec(`node v2/listAllMuteRules.js ${data.orgId}`);
+    assert.match(output, new RegExp(data.orgId));
+    assert.match(output, new RegExp(data.untouchedMuteConfigName));
+    assert.notMatch(output, /undefined/);
+  });
 
-    it('client can update a mute rule V2', () => {
-        const output = exec(`node v2/updateMuteRule.js ${data.orgId} ${data.muteConfigId}`);
-        assert.match(output, /Update mute rule config/);
-        assert.notMatch(output, /undefined/);
-    });
+  it('client can get a mute rule V2', () => {
+    const output = exec(
+      `node v2/getMuteRule.js ${data.orgId} ${data.muteConfigId}`
+    );
+    assert.match(output, new RegExp(data.muteConfigName));
+    assert.match(output, /Get mute rule config/);
+    assert.notMatch(output, /undefined/);
+  });
 
-    it('client can delete a mute rule V2', () => {
-        const output = exec(`node v2/deleteMuteRule.js ${data.orgId} ${data.muteConfigId}`);
-        assert.match(output, /Delete mute rule config/);
-        assert.notMatch(output, /undefined/);
-    });
+  it('client can update a mute rule V2', () => {
+    const output = exec(
+      `node v2/updateMuteRule.js ${data.orgId} ${data.muteConfigId}`
+    );
+    assert.match(output, /Update mute rule config/);
+    assert.notMatch(output, /undefined/);
+  });
 
+  it('client can delete a mute rule V2', () => {
+    const output = exec(
+      `node v2/deleteMuteRule.js ${data.orgId} ${data.muteConfigId}`
+    );
+    assert.match(output, /Delete mute rule config/);
+    assert.notMatch(output, /undefined/);
+  });
 });

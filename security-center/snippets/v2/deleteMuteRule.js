@@ -21,12 +21,12 @@
 function main(organizationId, muteConfigId, location = 'global') {
   // [START securitycenter_delete_mute_config_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
 
-    /**
+  /**
    *  Required. Name of the mute config to delete. The following list shows some
    *  examples of the format:
    *  `organizations/{organization}/muteConfigs/{config_id}`
@@ -44,12 +44,11 @@ function main(organizationId, muteConfigId, location = 'global') {
   };
 
   async function deleteMuteConfig() {
-
     // Call the API.
     const [muteConfig] = await client.deleteMuteConfig(deleteMuteRuleRequest);
     console.log('Delete mute rule config: %j', muteConfig);
   }
-  
+
   deleteMuteConfig();
   // [END securitycenter_delete_mute_config_v2]
 }

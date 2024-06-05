@@ -21,15 +21,15 @@
 function main(organizationId) {
   // [START securitycenter_create_source_v2]
   // Imports the Google Cloud client library.
-  const { SecurityCenterClient } = require('@google-cloud/security-center').v2;
+  const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
 
   // Create a new Security Center client
   const client = new SecurityCenterClient();
 
   /**
-  *  Required. Resource name of the new source's parent. Its format should be
-  *  "organizations/[organization_id]".
-  */
+   *  Required. Resource name of the new source's parent. Its format should be
+   *  "organizations/[organization_id]".
+   */
   const parent = client.organizationPath(organizationId);
 
   // Build the source object.
@@ -47,7 +47,6 @@ function main(organizationId) {
   // The source is not visible in the Security Command Center dashboard
   // until it generates findings.
   async function createSource() {
-
     // Call the API
     const [source] = await client.createSource(createSourceRequest);
     console.log('New Source created: %j', source);

@@ -65,6 +65,3 @@ security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPla
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers
 healthcare @GoogleCloudPlatform/healthcare-life-sciences @GoogleCloudPlatform/nodejs-samples-reviewers
-
-
-

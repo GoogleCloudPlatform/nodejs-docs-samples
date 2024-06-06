@@ -6,8 +6,6 @@
 
 # Kokoro
 .kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
 
 # Infrastructure
 auth @GoogleCloudPlatform/googleapis-auth @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers

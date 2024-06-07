@@ -6,18 +6,6 @@
 
 # Kokoro
 .kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
-.kokoro/functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-docs-samples-owners
-
-# Serverless, Orchestration, DevOps
-appengine @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-run @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-scheduler @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-cloud-tasks @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-workflows @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-eventarc @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-cloudbuild @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
-container-analysis @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/nodejs-samples-reviewers
 
 # Infrastructure
 auth @GoogleCloudPlatform/googleapis-auth @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
@@ -29,7 +17,6 @@ orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-rev
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers @GoogleCloudPlatform/nodejs-samples-reviewers
 secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
-security-center @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 
@@ -68,13 +55,11 @@ translate @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-r
 video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers
 
-# Assisted
-functions @GoogleCloudPlatform/torus-dpe @GoogleCloudPlatform/functions-framework-google @GoogleCloudPlatform/nodejs-samples-reviewers
-
 # Self-service
 ai-platform @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding
-asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/cloud-asset-platform-team @GoogleCloudPlatform/nodejs-samples-reviewers
+asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/nodejs-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers
+security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPlatform/nodejs-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers
 healthcare @GoogleCloudPlatform/healthcare-life-sciences @GoogleCloudPlatform/nodejs-samples-reviewers

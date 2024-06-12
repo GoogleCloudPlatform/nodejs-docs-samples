@@ -49,7 +49,7 @@ describe('analyze.v2', () => {
 
   it('should analyze sentiment in text', async () => {
     const output = execSync(`node analyze_sentiment_v2_text.js "${text}"`);
-    assert.match(output, /Document sentiment:/);
+    assert.match(output, /This should fail!/);
     assert.match(output, /Sentence: /);
     assert.match(output, /Score: /);
     assert.match(output, /Magnitude: /);

@@ -18,7 +18,7 @@ async function main(text) {
   async function analyzeSentimentOfText() {
     // [START language_sentiment_text]
     // Imports the Google Cloud client library
-    const language = require('@google-cloud/language').v2;
+    const language = require('@google-cloud/language').v2
 
     // Creates a client
     const client = new language.LanguageServiceClient();

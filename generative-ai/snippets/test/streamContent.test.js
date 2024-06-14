@@ -30,7 +30,7 @@ describe('Generative AI Stream Content', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.5-flash-001';
 
   it('should create stream content', async () => {
     const output = execSync(

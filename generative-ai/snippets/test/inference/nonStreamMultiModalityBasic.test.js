@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.5-pro-preview-0409';
+const model = 'gemini-1.5-flash-001';
 
 describe('Generative AI Multimodal Text Inference', () => {
   /**

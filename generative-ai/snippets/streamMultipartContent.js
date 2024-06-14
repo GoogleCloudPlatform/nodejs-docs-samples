@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_get_started]
 // [START aiplatform_gemini_get_started]
 const {VertexAI} = require('@google-cloud/vertexai');
 
@@ -21,7 +22,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createStreamMultipartContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-vision-001',
+  model = 'gemini-1.5-flash-001',
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {
@@ -63,6 +64,7 @@ async function createStreamMultipartContent(
   }
 }
 // [END aiplatform_gemini_get_started]
+// [END generativeaionvertexai_gemini_get_started]
 
 createStreamMultipartContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

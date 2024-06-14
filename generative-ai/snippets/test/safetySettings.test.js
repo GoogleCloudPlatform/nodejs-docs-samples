@@ -30,7 +30,7 @@ describe('Safety settings', async () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.5-flash-001';
 
   it('should reject a dangerous request', async () => {
     const output = execSync(

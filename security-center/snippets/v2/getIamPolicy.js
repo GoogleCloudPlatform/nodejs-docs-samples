@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict';
+'use strict'; 
 
 //Demonstrates how to retrieve IAM policies for a source.
 function main(organizationId, sourceId) {

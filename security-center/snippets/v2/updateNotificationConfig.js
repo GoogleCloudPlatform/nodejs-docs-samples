@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict';
+'use strict'; 
 
 /**
  * Update an existing notification config.

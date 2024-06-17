@@ -24,7 +24,7 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
 const projectId = process.env['GOOGLE_PROJECT_ID'];
-const location = 'global';
+const location = 'global'; 
 
 describe('Client with Notifications v2', async () => {
   let data;

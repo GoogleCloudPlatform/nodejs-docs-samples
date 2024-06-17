@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'; 
+'use strict';
 
 //Delete a notification config.
 function main(projectId, notificationId, location = 'global') {

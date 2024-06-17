@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'; 
+'use strict';
 
 //Demonstrates how to sets the access control policy on the specified Source.
 function main(organizationId, sourceId, userEmail, roleId) {

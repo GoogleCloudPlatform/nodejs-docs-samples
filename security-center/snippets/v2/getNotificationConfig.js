@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'; 
+'use strict';
 
 //Retrieve an existing notification config.
 function main(projectId, notificationId, location = 'global') {

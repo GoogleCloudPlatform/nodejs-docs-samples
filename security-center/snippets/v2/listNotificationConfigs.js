@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'use strict'; 
+'use strict';
 
 function main(projectId, location = 'global') {
   // [START securitycenter_list_notification_configs_v2]

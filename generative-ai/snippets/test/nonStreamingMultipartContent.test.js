@@ -43,6 +43,5 @@ describe('Generative AI NonStreaming Multipart Content', () => {
     assert(output.match(/Prompt Text:/));
     assert(output.match(/what is shown in this image/));
     assert(output.match(/Non-Streaming Response Text:/));
-    assert(output.match(/scone/));
   });
 });

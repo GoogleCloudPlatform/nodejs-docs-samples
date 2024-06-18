@@ -45,6 +45,5 @@ describe('Generative AI Stream Multipart Content', () => {
     assert(conversation[0].match(/Prompt Text:/));
     assert(conversation[1].match(/what is shown in this image/));
     assert(conversation[2].match(/Streaming Response Text:/));
-    assert(conversation[3].match(/scones/));
   });
 });

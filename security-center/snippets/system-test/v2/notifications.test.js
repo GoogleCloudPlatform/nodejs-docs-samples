@@ -23,7 +23,6 @@ const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
-const projectId = process.env['GOOGLE_PROJECT_ID'];
 const location = 'global';
 
 describe('Client with Notifications v2', async () => {
@@ -32,6 +31,7 @@ describe('Client with Notifications v2', async () => {
     const client = new SecurityCenterClient();
     const configId = 'notif-config-test-node-create-' + uuidv1();
     const topicName = 'test_topic';
+    const projectId = await client.getProjectId();
     const parent = `projects/${projectId}/locations/${location}`;
     const pubsubTopic = `projects/${projectId}/topics/${topicName}`;
 

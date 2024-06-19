@@ -81,7 +81,7 @@ describe('Client with sources and findings V2', async () => {
       findingName: finding.name,
       untouchedFindingName: untouchedFinding.name,
     };
-    console.log('my data %j', data);
+    console.log('my data findings %j', data);
   });
 
   it('client can create source V2', () => {
@@ -153,6 +153,33 @@ describe('Client with sources and findings V2', async () => {
       `node v2/bulkMuteFindings.js ${data.orgId} ${data.projectId}`
     );
     assert.match(output, /Bulk mute findings completed successfully/);
+    assert.notMatch(output, /undefined/);
+  });
+
+  it('client can get IAM policy V2', () => {
+    const output = exec(
+      `node v2/getIamPolicy.js ${data.orgId} ${data.sourceId}`
+    );
+    assert.match(output, /IAM policies for a source/);
+    assert.notMatch(output, /undefined/);
+  });
+
+  it('client can retrieve IAM policies V2', () => {
+    const permission = 'securitycenter.findings.update';
+    const output = exec(
+      `node v2/testIam.js ${data.orgId} ${data.sourceId} ${permission}`
+    );
+    assert.match(output, /IAM permission to test/);
+    assert.notMatch(output, /undefined/);
+  });
+
+  it('client can sets the access control policy on the specified Source V2', () => {
+    const userEmail = 'csccclienttest@gmail.com';
+    const role = 'roles/securitycenter.findingsEditor';
+    const output = exec(
+      `node v2/setIamPolicy.js ${data.orgId} ${data.sourceId} ${userEmail} ${role}`
+    );
+    assert.match(output, /Updated policy/);
     assert.notMatch(output, /undefined/);
   });
 });

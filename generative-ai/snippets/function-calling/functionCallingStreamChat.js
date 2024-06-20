@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_function_calling_chat]
 // [START aiplatform_gemini_function_calling_chat]
 const {
   VertexAI,
@@ -91,6 +92,7 @@ async function functionCallingStreamChat(
   console.log(response2.candidates[0].content.parts[0].text);
 }
 // [END aiplatform_gemini_function_calling_chat]
+// [END generativeaionvertexai_gemini_function_calling_chat]
 
 functionCallingStreamChat(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

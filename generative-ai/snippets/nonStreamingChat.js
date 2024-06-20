@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
 // [START aiplatform_gemini_multiturn_chat_nonstreaming]
 const {VertexAI} = require('@google-cloud/vertexai');
 
@@ -48,6 +49,7 @@ async function createNonStreamingChat(
   console.log('Chat response 3: ', JSON.stringify(response3));
 }
 // [END aiplatform_gemini_multiturn_chat_nonstreaming]
+// [END generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
 
 createNonStreamingChat(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

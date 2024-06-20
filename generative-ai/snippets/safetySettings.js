@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_safety_settings]
 // [START aiplatform_gemini_safety_settings]
 const {
   VertexAI,
@@ -72,6 +73,7 @@ async function setSafetySettings(
   console.log('This response stream terminated due to safety concerns.');
 }
 // [END aiplatform_gemini_safety_settings]
+// [END generativeaionvertexai_gemini_safety_settings]
 
 setSafetySettings(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

@@ -14,12 +14,12 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/pubsub": "^4.0.0",
-    "@google-cloud/security-center": "^8.0.0"
+    "@google-cloud/security-center": "^8.7.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",
     "chai": "^4.2.0",
-    "mocha": "^10.0.0",
+    "mocha": "^10.4.0",
     "uuid": "^9.0.0"
   }
 }

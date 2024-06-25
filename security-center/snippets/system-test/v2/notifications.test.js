@@ -61,7 +61,7 @@ describe('Client with Notifications v2', async () => {
     const output = exec(
       `node v2/createNotificationConfig.js ${data.projectId} ${data.topicName}`
     );
-    assert.match(output, new RegExp(data.projectId));
+    assert(output.includes(data.projectId));
     assert.match(output, /Notification configuration creation successful/);
     assert.notMatch(output, /undefined/);
   });
@@ -70,14 +70,14 @@ describe('Client with Notifications v2', async () => {
     const output = exec(
       `node v2/getNotificationConfig.js ${data.projectId} ${data.notificationConfigs}`
     );
-    assert.match(output, new RegExp(data.notificationName));
+    assert(output.includes(data.notificationName));
     assert.match(output, /Notification config/);
     assert.notMatch(output, /undefined/);
   });
 
   it('client can list configs v2', () => {
     const output = exec(`node v2/listNotificationConfigs.js ${data.projectId}`);
-    assert.match(output, new RegExp(data.projectId));
+    assert(output.includes(data.projectId));
     assert.notMatch(output, /undefined/);
   });
 
@@ -85,7 +85,7 @@ describe('Client with Notifications v2', async () => {
     const output = exec(
       `node v2/updateNotificationConfig.js ${data.projectId} ${data.notificationConfigs} ${data.topicName}`
     );
-    assert.match(output, new RegExp(data.notificationName));
+    assert(output.includes(data.notificationName));
     assert.match(output, /Notification configuration update successful/);
     assert.notMatch(output, /undefined/);
   });

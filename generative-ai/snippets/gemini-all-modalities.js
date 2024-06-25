@@ -22,7 +22,7 @@ async function analyze_all_modalities(projectId = 'PROJECT_ID') {
   const vertexAI = new VertexAI({project: projectId, location: 'us-central1'});
 
   const generativeModel = vertexAI.getGenerativeModel({
-    model: 'gemini-1.5-pro-preview-0409',
+    model: 'gemini-1.5-flash-001',
   });
 
   const videoFilePart = {

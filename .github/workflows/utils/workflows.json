@@ -94,5 +94,6 @@
   "video-intelligence",
   "vision/productSearch",
   "workflows",
-  "workflows/invoke-private-endpoint"
+  "workflows/invoke-private-endpoint",
+  "security-center/snippets/v2"
 ]

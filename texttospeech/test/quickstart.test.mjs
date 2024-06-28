@@ -18,7 +18,7 @@ import { describe, it } from 'mocha';
 import * as cp from 'child_process';
 import { assert } from 'chai';
 
-const outputFile = 'output.mp3';
+const outputFile = 'quickstart_output.mp3';
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('quickstart', () => {

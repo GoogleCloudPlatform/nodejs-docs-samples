@@ -15,8 +15,6 @@
 // [START generativeaionvertexai_grounding_public_data_basic]
 const {
   VertexAI,
-  HarmCategory,
-  HarmBlockThreshold,
 } = require('@google-cloud/vertexai');
 
 /**

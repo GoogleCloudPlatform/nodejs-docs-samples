@@ -32,14 +32,6 @@ async function generateContentWithGoogleSearchGrounding(
 
   const generativeModelPreview = vertexAI.preview.getGenerativeModel({
     model: model,
-    // The following parameters are optional
-    // They can also be passed to individual content generation requests
-    safetySettings: [
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-    ],
     generationConfig: {maxOutputTokens: 256},
   });
 

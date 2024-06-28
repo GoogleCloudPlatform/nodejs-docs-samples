@@ -39,7 +39,7 @@ async function main() {
     const [response] = await client.synthesizeSpeech(request);
 
     // Write the binary audio content to a local file
-    await fs.writeFile('output.mp3', response.audioContent, 'binary');
+    await fs.writeFile('quickstart_output.mp3', response.audioContent, 'binary');
     console.log('Audio content written to file: output.mp3');
   } catch (error) {
     console.error('Error:', error); // Handle errors

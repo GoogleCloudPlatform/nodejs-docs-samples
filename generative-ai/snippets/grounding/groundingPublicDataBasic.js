@@ -14,7 +14,7 @@
 
 // [START generativeaionvertexai_grounding_public_data_basic]
 const {
-  VertexAI,
+  VertexAI
 } = require('@google-cloud/vertexai');
 
 /**

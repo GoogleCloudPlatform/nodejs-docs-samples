@@ -13,9 +13,7 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_grounding_public_data_basic]
-const {
-  VertexAI
-} = require('@google-cloud/vertexai');
+const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
  * TODO(developer): Update these variables before running the sample.

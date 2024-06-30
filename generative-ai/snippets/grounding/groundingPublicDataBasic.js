@@ -41,7 +41,7 @@ async function generateContentWithGoogleSearchGrounding(
   };
 
   const result = await generativeModelPreview.generateContent(request);
-  const response = result.response;
+  const response = await result.response;
   const groundingMetadata = response.candidates[0].groundingMetadata;
   console.log(
     'Response: ',

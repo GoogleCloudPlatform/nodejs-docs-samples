@@ -25,6 +25,10 @@ const projectId = process.env.GCLOUD_PROJECT;
 const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
+const labelKey = 'secretmanager';
+const labelValue = 'rocks';
+const labelKeyUpdated = 'gcp';
+const labelValueUpdated = 'rock';
 
 let secret;
 let version;
@@ -40,6 +44,9 @@ describe('Secret Manager samples', () => {
         replication: {
           automatic: {},
         },
+	labels: {
+	  [labelKey]: labelValue,
+	},
       },
     });
 
@@ -91,6 +98,16 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-4`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }	  
   });
 
   it('runs the quickstart', async () => {
@@ -108,13 +125,21 @@ describe('Secret Manager samples', () => {
     );
     assert.match(output, new RegExp('Created secret'));
   });
-
+  
   it('creates a secret with userManaged replication', async () => {
     const output = execSync(
       `node createUmmrSecret.js projects/${projectId} ${secretId}-3 us-east1 us-east4`
     );
     assert.match(output, new RegExp('Created secret'));
   });
+
+  it('creates a secret with labels', async () => {
+    const output = execSync(
+      `node createSecretWithLabels.js projects/${projectId} ${secretId}-4 ${labelKey} ${labelValue}`
+    );
+    assert.match(output, new RegExp('Created secret'));
+  });
+
 
   it('lists secrets', async () => {
     const output = execSync(`node listSecrets.js projects/${projectId}`);
@@ -124,6 +149,11 @@ describe('Secret Manager samples', () => {
   it('gets a secret', async () => {
     const output = execSync(`node getSecret.js ${secret.name}`);
     assert.match(output, new RegExp(`Found secret ${secret.name}`));
+  });
+
+  it('view a secret labels', async () => {
+    const output = execSync(`node viewSecretLabels.js ${secret.name}`);
+    assert.match(output, new RegExp(`${labelKey}`));
   });
 
   it('updates a secret', async () => {
@@ -136,11 +166,21 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
 
+  it('create or updates a secret labels', async () => {
+    const output = execSync(`node createUpdateSecretLabel.js ${secret.name} ${labelKeyUpdated} ${labelValueUpdated}`);
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
+  });	
+
   it('deletes a secret', async () => {
     const output = execSync(
       `node deleteSecret.js projects/${projectId}/secrets/${secretId}-2`
     );
     assert.match(output, new RegExp('Deleted secret'));
+  });
+
+  it('deletes a secret label', async () => {
+    const output = execSync(`node deleteSecretLabel.js ${secret.name} ${labelKey}`);
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
 
   it('accesses secret versions', async () => {

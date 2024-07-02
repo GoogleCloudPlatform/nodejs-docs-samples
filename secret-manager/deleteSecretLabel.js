@@ -14,7 +14,10 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret', labelKey = 'secretmanager') {
+async function main(
+  name = 'projects/my-project/secrets/my-secret',
+  labelKey = 'secretmanager'
+) {
   // [START secretmanager_delete_secret_label]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -33,12 +36,11 @@ async function main(name = 'projects/my-project/secrets/my-secret', labelKey = '
       name: name,
     });
 
-    const policy = secret.replication.replication;
     return secret;
   }
- 
+
   async function deleteSecretLabel() {
-    var oldSecret = await getSecret();
+    const oldSecret = await getSecret();
     delete oldSecret.labels[labelKey];
     const [secret] = await client.updateSecret({
       secret: {

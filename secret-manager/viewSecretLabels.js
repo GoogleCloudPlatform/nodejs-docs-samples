@@ -29,10 +29,10 @@ async function main(name = 'projects/my-project/secrets/my-secret') {
 
   async function getSecretLabels() {
     const [secret] = await client.getSecret({
-	    name: name,
+      name: name,
     });
 
-    for(const key in secret.labels){
+    for (const key in secret.labels) {
       console.log(`${key} : ${secret.labels[key]}`);
     }
   }

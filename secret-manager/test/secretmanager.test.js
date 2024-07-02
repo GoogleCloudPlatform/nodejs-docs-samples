@@ -44,9 +44,9 @@ describe('Secret Manager samples', () => {
         replication: {
           automatic: {},
         },
-	labels: {
-	  [labelKey]: labelValue,
-	},
+        labels: {
+          [labelKey]: labelValue,
+        },
       },
     });
 
@@ -107,7 +107,7 @@ describe('Secret Manager samples', () => {
       if (!err.message.includes('NOT_FOUND')) {
         throw err;
       }
-    }	  
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -125,7 +125,7 @@ describe('Secret Manager samples', () => {
     );
     assert.match(output, new RegExp('Created secret'));
   });
-  
+
   it('creates a secret with userManaged replication', async () => {
     const output = execSync(
       `node createUmmrSecret.js projects/${projectId} ${secretId}-3 us-east1 us-east4`
@@ -139,7 +139,6 @@ describe('Secret Manager samples', () => {
     );
     assert.match(output, new RegExp('Created secret'));
   });
-
 
   it('lists secrets', async () => {
     const output = execSync(`node listSecrets.js projects/${projectId}`);
@@ -167,9 +166,11 @@ describe('Secret Manager samples', () => {
   });
 
   it('create or updates a secret labels', async () => {
-    const output = execSync(`node createUpdateSecretLabel.js ${secret.name} ${labelKeyUpdated} ${labelValueUpdated}`);
+    const output = execSync(
+      `node createUpdateSecretLabel.js ${secret.name} ${labelKeyUpdated} ${labelValueUpdated}`
+    );
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
-  });	
+  });
 
   it('deletes a secret', async () => {
     const output = execSync(
@@ -179,7 +180,9 @@ describe('Secret Manager samples', () => {
   });
 
   it('deletes a secret label', async () => {
-    const output = execSync(`node deleteSecretLabel.js ${secret.name} ${labelKey}`);
+    const output = execSync(
+      `node deleteSecretLabel.js ${secret.name} ${labelKey}`
+    );
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
 

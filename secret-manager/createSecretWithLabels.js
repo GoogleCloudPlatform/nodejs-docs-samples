@@ -14,8 +14,12 @@
 
 'use strict';
 
-async function main(parent = 'projects/my-project', secretId = 'my-secret', 
-	labelKey = 'secretmanager', labelValue = 'rocks') {
+async function main(
+  parent = 'projects/my-project',
+  secretId = 'my-secret',
+  labelKey = 'secretmanager',
+  labelValue = 'rocks'
+) {
   // [START secretmanager_create_secret_with_labels]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -23,7 +27,7 @@ async function main(parent = 'projects/my-project', secretId = 'my-secret',
   // const parent = 'projects/my-project';
   // const secretId = 'my-secret';
   // const labelKey = 'secretmanager';
-  // const labelValue = 'rocks'; 
+  // const labelValue = 'rocks';
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -39,9 +43,9 @@ async function main(parent = 'projects/my-project', secretId = 'my-secret',
         replication: {
           automatic: {},
         },
-	labels: {
-	  [labelKey]: labelValue,
-	}
+        labels: {
+          [labelKey]: labelValue,
+        },
       },
     });
 

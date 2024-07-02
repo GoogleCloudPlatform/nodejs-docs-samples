@@ -14,14 +14,18 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret', labelKey = 'gcp', labelValue = 'rocks') {
+async function main(
+  name = 'projects/my-project/secrets/my-secret',
+  labelKey = 'gcp',
+  labelValue = 'rocks'
+) {
   // [START secretmanager_create_update_secret_label]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const name = 'projects/my-project/secrets/my-secret';
   // const labelKey = 'gcp';
-  // const labelValue = 'rocks'; 
+  // const labelValue = 'rocks';
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -34,12 +38,11 @@ async function main(name = 'projects/my-project/secrets/my-secret', labelKey = '
       name: name,
     });
 
-    const policy = secret.replication.replication;
     return secret;
   }
- 
+
   async function createUpdateSecretLabel() {
-    var oldSecret = await getSecret();
+    const oldSecret = await getSecret();
     oldSecret.labels[labelKey] = labelValue;
     const [secret] = await client.updateSecret({
       secret: {

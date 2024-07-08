@@ -44,7 +44,7 @@ async function main(projectId, locationId) {
   }
 
   listRegionalSecrets();
-  // [END secretmanager_list_regioanl_secrets]
+  // [END secretmanager_list_regional_secrets]
 }
 
 const args = process.argv.slice(2);

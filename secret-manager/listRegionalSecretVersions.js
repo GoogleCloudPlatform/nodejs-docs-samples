@@ -14,20 +14,27 @@
 
 'use strict';
 
-async function main(parent = 'projects/my-project/secrets/my-secret') {
-  // [START secretmanager_list_secret_versions]
+async function main(projectId, locationId, secretId) {
+  // [START secretmanager_list_regional_secret_versions]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const parent = 'projects/my-project/secrets/my-secret';
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
+
+  const parent = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function listSecretVersions() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function listRegionalSecretVersions() {
     const [versions] = await client.listSecretVersions({
       parent: parent,
     });
@@ -37,8 +44,8 @@ async function main(parent = 'projects/my-project/secrets/my-secret') {
     });
   }
 
-  listSecretVersions();
-  // [END secretmanager_list_secret_versions]
+  listRegionalSecretVersions();
+  // [END secretmanager_list_regional_secret_versions]
 }
 
 const args = process.argv.slice(2);

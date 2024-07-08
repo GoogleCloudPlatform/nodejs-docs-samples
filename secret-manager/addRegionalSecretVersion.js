@@ -14,23 +14,29 @@
 
 'use strict';
 
-async function main(parent = 'projects/my-project/secrets/my-secret') {
-  // [START secretmanager_add_secret_version]
+async function main(projectId, locationId, secretId) {
+  // [START secretmanager_add_regional_secret_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const parent = 'projects/my-project/secrets/my-secret';
+  // const projectId = 'my-project';
+  // const locationId = 'location';
+  // const secretId = 'my-secret';
 
+  const parent = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
+
   // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const client = new SecretManagerServiceClient(options);
 
   // Payload is the plaintext data to store in the secret
   const payload = Buffer.from('my super secret data', 'utf8');
 
-  async function addSecretVersion() {
+  async function addRegionalSecretVersion() {
     const [version] = await client.addSecretVersion({
       parent: parent,
       payload: {
@@ -38,11 +44,11 @@ async function main(parent = 'projects/my-project/secrets/my-secret') {
       },
     });
 
-    console.log(`Added secret version ${version.name}`);
+    console.log(`Added regional secret version ${version.name}`);
   }
 
-  addSecretVersion();
-  // [END secretmanager_add_secret_version]
+  addRegionalSecretVersion();
+  // [END secretmanager_add_regional_secret_version]
 }
 
 const args = process.argv.slice(2);

@@ -14,35 +14,36 @@
 
 'use strict';
 
-async function main(parent = 'projects/my-project', secretId = 'my-secret') {
-  // [START secretmanager_create_secret]
+async function main(projectId, locationId, secretId) {
+  // [START secretmanager_create_regional_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const parent = 'projects/my-project/location/locationId';
+  // const projectId = 'my-project'
+  // const locationId = 'locationId';
   // const secretId = 'my-secret';
+  const parent = `projects/${projectId}/locations/${locationId}`;
 
   // Imports the Secret Manager libray
-  
-  const {SecretManagerServiceClient, ClientOptions} = require('@google-cloud/secret-manager');
+
+  const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
   const options = {};
-  options.apiEndpoint = "staging-secretmanager.us-central1.rep.sandbox.googleapis.com"
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
   // Instantiates a client
   const client = new SecretManagerServiceClient(options);
 
-  async function createSecret() {
+  async function createRegionalSecret() {
     const [secret] = await client.createSecret({
       parent: parent,
       secretId: secretId,
-      secret: {},
     });
 
-    console.log(`Created secret ${secret.name}`);
+    console.log(`Created regional secret ${secret.name}`);
   }
 
-  createSecret();
-  // [END secretmanager_create_secret]
+  createRegionalSecret();
+  // [END secretmanager_create_regional_secret]
 }
 
 const args = process.argv.slice(2);

@@ -14,27 +14,31 @@
 
 'use strict';
 
-async function main(
-  name = 'projects/my-project/secrets/my-secret',
-  member = 'user:you@example.com'
-) {
-  // [START secretmanager_iam_grant_access]
+async function main(projectId, locationId, secretId, member) {
+  // [START secretmanager_iam_grant_access_regional_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const name = 'projects/my-project/secrets/my-secret';
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
   // const member = 'user:you@example.com';
   //
   // NOTE: Each member must be prefixed with its type. See the IAM documentation
   // for more information: https://cloud.google.com/iam/docs/overview.
 
+  const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
+
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function grantAccess() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function grantAccessRegionalSecret() {
     // Get the current IAM policy.
     const [policy] = await client.getIamPolicy({
       resource: name,
@@ -55,8 +59,8 @@ async function main(
     console.log(`Updated IAM policy for ${name}`);
   }
 
-  grantAccess();
-  // [END secretmanager_iam_grant_access]
+  grantAccessRegionalSecret();
+  // [END secretmanager_iam_grant_access_regional_secret]
 }
 
 const args = process.argv.slice(2);

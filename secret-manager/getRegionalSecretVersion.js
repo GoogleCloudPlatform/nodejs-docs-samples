@@ -14,21 +14,29 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret/versions/1') {
-  // [START secretmanager_get_secret_version]
+async function main(projectId, locationId, secretId, version) {
+  // [START secretmanager_get_regional_secret_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const name = 'projects/my-project/secrets/my-secret/versions/5';
-  // const name = 'projects/my-project/secrets/my-secret/versions/latest';
+
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
+  // const versionId = 'my-version';
+
+  const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}/versions/${version}`;
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function getSecretVersion() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function getRegionalSecretVersion() {
     const [version] = await client.getSecretVersion({
       name: name,
     });
@@ -36,8 +44,8 @@ async function main(name = 'projects/my-project/secrets/my-secret/versions/1') {
     console.info(`Found secret ${version.name} with state ${version.state}`);
   }
 
-  getSecretVersion();
-  // [END secretmanager_get_secret_version]
+  getRegionalSecretVersion();
+  // [END secretmanager_get_regional_secret_version]
 }
 
 const args = process.argv.slice(2);

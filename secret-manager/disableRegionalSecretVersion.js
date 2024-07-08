@@ -14,20 +14,28 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret/versions/1') {
-  // [START secretmanager_disable_secret_version]
+async function main(projectId, locationId, secretId, version) {
+  // [START secretmanager_disable_regional_secret_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const name = 'projects/my-project/secrets/my-secret/versions/5';
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
+  // const versionId = 'my-version';
+
+  const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}/versions/${version}`;
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function disableSecretVersion() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function disableRegionalSecretVersion() {
     const [version] = await client.disableSecretVersion({
       name: name,
     });
@@ -35,8 +43,8 @@ async function main(name = 'projects/my-project/secrets/my-secret/versions/1') {
     console.info(`Disabled ${version.name}`);
   }
 
-  disableSecretVersion();
-  // [END secretmanager_disable_secret_version]
+  disableRegionalSecretVersion();
+  // [END secretmanager_disable_regional_secret_version]
 }
 
 const args = process.argv.slice(2);

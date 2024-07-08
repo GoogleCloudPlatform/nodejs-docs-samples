@@ -14,29 +14,36 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret') {
-  // [START secretmanager_delete_secret]
+async function main(projectId, locationId, secretId) {
+  // [START secretmanager_delete_regional_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const name = 'projects/my-project/secrets/my-secret';
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
+
+  const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function deleteSecret() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function deleteRegionalSecret() {
     await client.deleteSecret({
       name: name,
     });
 
-    console.log(`Deleted secret ${name}`);
+    console.log(`Deleted regional secret ${name}`);
   }
 
-  deleteSecret();
-  // [END secretmanager_delete_secret]
+  deleteRegionalSecret();
+  // [END secretmanager_delete_regional_secret]
 }
 
 const args = process.argv.slice(2);

@@ -14,31 +14,36 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret') {
-  // [START secretmanager_get_secret]
+async function main(projectId, locationId, secretId) {
+  // [START secretmanager_get_regional_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const name = 'projects/my-project/secrets/my-secret';
+  // const projectId = 'my-project';
+  // const locationId = 'my-location';
+  // const secretId = 'my-secret';
+
+  const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Instantiates a client
-  const client = new SecretManagerServiceClient();
+  const options = {};
+  options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
-  async function getSecret() {
+  // Instantiates a client
+  const client = new SecretManagerServiceClient(options);
+
+  async function getRegionalSecret() {
     const [secret] = await client.getSecret({
       name: name,
     });
 
-    const policy = secret.replication.replication;
-
-    console.info(`Found secret ${secret.name} (${policy})`);
+    console.info(`Found secret ${secret.name}`);
   }
 
-  getSecret();
-  // [END secretmanager_get_secret]
+  getRegionalSecret();
+  // [END secretmanager_get_regional_secret]
 }
 
 const args = process.argv.slice(2);

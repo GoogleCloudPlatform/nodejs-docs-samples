@@ -22,7 +22,7 @@ async function main(
   model = 'text-embedding-preview-0409',
   texts = 'banana bread?;banana muffins?',
   task = 'QUESTION_ANSWERING',
-  outputDimensionality = 256,
+  dimensionality = 256,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
@@ -31,7 +31,9 @@ async function main(
   const clientOptions = {apiEndpoint: apiEndpoint};
   const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = helpers.toValue(outputDimensionality);
+  const parameters = helpers.toValue({
+    outputDimensionality: parseInt(dimensionality),
+  });
 
   async function callPredict() {
     const instances = texts

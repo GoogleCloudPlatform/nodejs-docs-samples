@@ -39,7 +39,7 @@ async function main(
   async function callPredict() {
     const instances = texts
       .split(';')
-      .map(e => helpers.toValue({content: e, taskType: task}));
+      .map(e => helpers.toValue({content: e, task_type: task}));
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);

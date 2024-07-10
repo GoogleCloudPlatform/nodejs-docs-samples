@@ -43,11 +43,11 @@ async function main(
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
     const predictions = response.predictions;
-    const embeddings = predictions.map(p =>
-      p.structValue.fields.embeddings.structValue.fields.values.listValue.values.map(
-        v => v.numberValue
-      )
-    );
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
     console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
 

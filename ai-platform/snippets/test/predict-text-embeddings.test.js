@@ -42,7 +42,9 @@ describe('predict text embeddings', () => {
     );
     const embeddings = JSON.parse(stdout.split('\n').filter(Boolean).at(-1));
     assert.equal(texts.length, embeddings.length);
-    assert.equal(dimensionality, embeddings[0].length);
+    for (const embedding of embeddings) {
+      assert.equal(dimensionality, embedding.length);
+    }
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
@@ -51,6 +53,8 @@ describe('predict text embeddings', () => {
     );
     const embeddings = JSON.parse(stdout.split('\n').filter(Boolean).at(-1));
     assert.equal(texts.length, embeddings.length);
-    assert.equal(dimensionality, embeddings[0].length);
+    for (const embedding of embeddings) {
+      assert.equal(dimensionality, embedding.length);
+    }
   });
 });

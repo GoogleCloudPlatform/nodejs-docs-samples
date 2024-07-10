@@ -40,7 +40,7 @@ describe('predict text embeddings', () => {
       `node ./predict-text-embeddings.js ${project} text-embedding-004 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
       {cwd}
     );
-    const embeddings = JSON.parse(stdout.split('\n').filter(Boolean).at(-1));
+    const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));
     assert.equal(texts.length, embeddings.length);
     for (const embedding of embeddings) {
       assert.equal(dimensionality, embedding.length);
@@ -51,7 +51,7 @@ describe('predict text embeddings', () => {
       `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0409 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
       {cwd}
     );
-    const embeddings = JSON.parse(stdout.split('\n').filter(Boolean).at(-1));
+    const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));
     assert.equal(texts.length, embeddings.length);
     for (const embedding of embeddings) {
       assert.equal(dimensionality, embedding.length);

@@ -28,6 +28,7 @@ async function main(projectId, locationId, secretId) {
 
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
+  // Adding the endpoint to call the regional secret manager sever
   const options = {};
   options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
   // Instantiates a client

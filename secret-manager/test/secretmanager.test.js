@@ -142,6 +142,16 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-3`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -240,7 +250,7 @@ describe('Secret Manager samples', () => {
 
   it('deletes a regional secret', async () => {
     const output = execSync(
-      `node deleteRegionalSecret.js ${projectId} ${locationId} ${secretId}-2`
+      `node deleteRegionalSecret.js ${projectId} ${locationId} ${secretId}-3`
     );
     assert.match(output, new RegExp('Deleted regional secret'));
   });

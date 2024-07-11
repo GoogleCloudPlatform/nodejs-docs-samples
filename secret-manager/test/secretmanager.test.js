@@ -21,8 +21,8 @@ const {v4} = require('uuid');
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 const client = new SecretManagerServiceClient();
 
-const projectId = process.env.GCLOUD_PROJECT;
-const locationId = process.env.GCLOUD_LOCATION;
+let projectId;
+const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
 const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
@@ -42,6 +42,9 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Secret Manager samples', () => {
   before(async () => {
+
+    projectId = await client.getProjectId();
+
     [secret] = await client.createSecret({
       parent: `projects/${projectId}`,
       secretId: secretId,
@@ -70,6 +73,12 @@ describe('Secret Manager samples', () => {
         data: Buffer.from(payload),
       },
     });
+
+    await regionalClient.createSecret({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      secretId: `${secretId}-3`,
+    });
+
   });
 
   after(async () => {

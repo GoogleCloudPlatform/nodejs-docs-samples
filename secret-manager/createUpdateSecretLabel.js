@@ -14,11 +14,7 @@
 
 'use strict';
 
-async function main(
-  name = 'projects/my-project/secrets/my-secret',
-  labelKey = 'gcp',
-  labelValue = 'rocks'
-) {
+async function main(name, labelKey, labelValue) {
   // [START secretmanager_create_update_secret_label]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

@@ -14,7 +14,7 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret') {
+async function main(name) {
   // [START secretmanager_view_secret_labels]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

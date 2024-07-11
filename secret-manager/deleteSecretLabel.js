@@ -14,10 +14,7 @@
 
 'use strict';
 
-async function main(
-  name = 'projects/my-project/secrets/my-secret',
-  labelKey = 'secretmanager'
-) {
+async function main(name, labelKey) {
   // [START secretmanager_delete_secret_label]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

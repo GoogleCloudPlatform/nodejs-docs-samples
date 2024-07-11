@@ -104,6 +104,16 @@ describe('Secret Manager samples', () => {
     }
 
     try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-quickstart`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
       await client.deleteSecret({
         name: `${secret.name}-2`,
       });
@@ -140,6 +150,15 @@ describe('Secret Manager samples', () => {
     );
     assert.match(stdout, new RegExp('Created secret'));
     assert.match(stdout, new RegExp('Added secret version'));
+    assert.match(stdout, new RegExp('Payload: bar'));
+  });
+
+  it('runs the regional quickstart', async () => {
+    const stdout = execSync(
+      `node regionalQuickstart.js ${projectId} ${locationId} ${secretId}-quickstart bar`
+    );
+    assert.match(stdout, new RegExp('Created regional secret'));
+    assert.match(stdout, new RegExp('Added regional secret version'));
     assert.match(stdout, new RegExp('Payload: bar'));
   });
 

@@ -12,25 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Import Google Cloud client library
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
-// Import other required libraries
 import fs from 'fs/promises';
 
 async function main() {
-  // Create the TextToSpeechClient
+  // Create a Text-to-Speech client instance
   const client = new TextToSpeechClient();
 
-  // The text to synthesize
+  // The text that should be converted to speech
   const text = 'hello, world!';
 
-  // Construct the request
+  // Configure the text-to-speech request
   const request = {
     input: { text },
     // Select the language and SSML voice gender (optional)
     voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
-    // Select the type of audio encoding
+    // Configure the audio format of the output
     audioConfig: { audioEncoding: 'MP3' },
   };
 
@@ -38,11 +36,11 @@ async function main() {
     // Performs the text-to-speech request
     const [response] = await client.synthesizeSpeech(request);
 
-    // Write the binary audio content to a local file
+    // Save the generated binary audio content to a local file
     await fs.writeFile('quickstart_output.mp3', response.audioContent, 'binary');
     console.log('Audio content written to file: output.mp3');
   } catch (error) {
-    console.error('Error:', error); // Handle errors
+    console.error('Error:', error);
   }
 }
 

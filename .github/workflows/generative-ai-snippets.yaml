@@ -61,7 +61,7 @@ jobs:
           datastore_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore-id
     - uses: actions/setup-node@v4.0.0 
       with:
-        node-version: 21
+        node-version: 18
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash

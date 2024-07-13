@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,13 @@
 
 'use strict';
 
-function main(projectId, location, vodConfigId) {
-  // [START videostitcher_create_vod_session]
+function main(projectId, location) {
+  // [START videostitcher_list_vod_configs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // vodConfigId = 'my-vod-config-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,28 +29,21 @@ function main(projectId, location, vodConfigId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createVodSession() {
-    // Construct request
-    const request = {
+  async function listVodConfigs() {
+    const iterable = await stitcherClient.listVodConfigsAsync({
       parent: stitcherClient.locationPath(projectId, location),
-      vodSession: {
-        vodConfig: stitcherClient.vodConfigPath(
-          projectId,
-          location,
-          vodConfigId
-        ),
-        adTracking: 'SERVER',
-      },
-    };
-    const [session] = await stitcherClient.createVodSession(request);
-    console.log(`VOD session: ${session.name}`);
+    });
+    console.info('VOD configs:');
+    for await (const response of iterable) {
+      console.log(response.name);
+    }
   }
 
-  createVodSession();
-  // [END videostitcher_create_vod_session]
+  listVodConfigs();
+  // [END videostitcher_list_vod_configs]
 }
 
-// node createVodSession.js <projectId> <location> <vodConfigId>
+// node listVodConfigs.js <projectId> <location>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

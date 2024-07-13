@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@
 'use strict';
 
 function main(projectId, location, vodConfigId) {
-  // [START videostitcher_create_vod_session]
+  // [START videostitcher_get_vod_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -30,28 +30,20 @@ function main(projectId, location, vodConfigId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createVodSession() {
+  async function getVodConfig() {
     // Construct request
     const request = {
-      parent: stitcherClient.locationPath(projectId, location),
-      vodSession: {
-        vodConfig: stitcherClient.vodConfigPath(
-          projectId,
-          location,
-          vodConfigId
-        ),
-        adTracking: 'SERVER',
-      },
+      name: stitcherClient.vodConfigPath(projectId, location, vodConfigId),
     };
-    const [session] = await stitcherClient.createVodSession(request);
-    console.log(`VOD session: ${session.name}`);
+    const [vodConfig] = await stitcherClient.getVodConfig(request);
+    console.log(`VOD config: ${vodConfig.name}`);
   }
 
-  createVodSession();
-  // [END videostitcher_create_vod_session]
+  getVodConfig();
+  // [END videostitcher_get_vod_config]
 }
 
-// node createVodSession.js <projectId> <location> <vodConfigId>
+// node getVodConfig.js <projectId> <location> <vodConfigId>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

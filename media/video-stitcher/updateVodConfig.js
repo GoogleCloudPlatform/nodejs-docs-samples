@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,15 @@
 
 'use strict';
 
-function main(projectId, location, vodConfigId) {
-  // [START videostitcher_create_vod_session]
+function main(projectId, location, vodConfigId, sourceUri) {
+  // [START videostitcher_update_vod_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
   // vodConfigId = 'my-vod-config-id';
+  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,28 +31,29 @@ function main(projectId, location, vodConfigId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function createVodSession() {
+  async function updateVodConfig() {
     // Construct request
     const request = {
-      parent: stitcherClient.locationPath(projectId, location),
-      vodSession: {
-        vodConfig: stitcherClient.vodConfigPath(
-          projectId,
-          location,
-          vodConfigId
-        ),
-        adTracking: 'SERVER',
+      vodConfig: {
+        name: stitcherClient.vodConfigPath(projectId, location, vodConfigId),
+        sourceUri: sourceUri,
+      },
+      updateMask: {
+        paths: ['sourceUri'],
       },
     };
-    const [session] = await stitcherClient.createVodSession(request);
-    console.log(`VOD session: ${session.name}`);
+
+    const [operation] = await stitcherClient.updateVodConfig(request);
+    const [response] = await operation.promise();
+    console.log(`Updated VOD config: ${response.name}`);
+    console.log(`Updated sourceUri: ${response.sourceUri}`);
   }
 
-  createVodSession();
-  // [END videostitcher_create_vod_session]
+  updateVodConfig();
+  // [END videostitcher_update_vod_config]
 }
 
-// node createVodSession.js <projectId> <location> <vodConfigId>
+// node updateVodConfig.js <projectId> <location> <vodConfigId> <sourceUri>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

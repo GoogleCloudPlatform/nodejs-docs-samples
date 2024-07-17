@@ -172,7 +172,7 @@ describe('Secret Manager samples', () => {
 
   it('runs the regional quickstart', async () => {
     const stdout = execSync(
-      `node regionalQuickstart.js ${projectId} ${locationId} ${secretId}-quickstart bar`
+      `node regional_samples/regionalQuickstart.js ${projectId} ${locationId} ${secretId}-quickstart bar`
     );
     assert.match(stdout, new RegExp('Created regional secret'));
     assert.match(stdout, new RegExp('Added regional secret version'));
@@ -188,7 +188,7 @@ describe('Secret Manager samples', () => {
 
   it('creates a regional secret', async () => {
     const output = execSync(
-      `node createRegionalSecret.js ${projectId} ${locationId} ${secretId}-2`
+      `node regional_samples/createRegionalSecret.js ${projectId} ${locationId} ${secretId}-2`
     );
     assert.match(output, new RegExp('Created regional secret'));
   });
@@ -207,7 +207,7 @@ describe('Secret Manager samples', () => {
 
   it('lists regional secrets', async () => {
     const output = execSync(
-      `node listRegionalSecrets.js ${projectId} ${locationId}`
+      `node regional_samples/listRegionalSecrets.js ${projectId} ${locationId}`
     );
     assert.match(output, new RegExp(`${regionalSecret.name}`));
   });
@@ -219,7 +219,7 @@ describe('Secret Manager samples', () => {
 
   it('gets a regional secret', async () => {
     const output = execSync(
-      `node getRegionalSecret.js ${projectId} ${locationId} ${secretId}`
+      `node regional_samples/getRegionalSecret.js ${projectId} ${locationId} ${secretId}`
     );
     assert.match(output, new RegExp(`Found secret ${regionalSecret.name}`));
   });
@@ -231,7 +231,7 @@ describe('Secret Manager samples', () => {
 
   it('updates a regional secret', async () => {
     const output = execSync(
-      `node updateRegionalSecret.js ${projectId} ${locationId} ${secretId}`
+      `node regional_samples/updateRegionalSecret.js ${projectId} ${locationId} ${secretId}`
     );
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });
@@ -243,7 +243,7 @@ describe('Secret Manager samples', () => {
 
   it('updates a regional secret with an alias', async () => {
     const output = execSync(
-      `node updateRegionalSecretWithAlias.js ${projectId} ${locationId} ${secretId}`
+      `node regional_samples/updateRegionalSecretWithAlias.js ${projectId} ${locationId} ${secretId}`
     );
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });
@@ -257,7 +257,7 @@ describe('Secret Manager samples', () => {
 
   it('deletes a regional secret', async () => {
     const output = execSync(
-      `node deleteRegionalSecret.js ${projectId} ${locationId} ${secretId}-3`
+      `node regional_samples/deleteRegionalSecret.js ${projectId} ${locationId} ${secretId}-3`
     );
     assert.match(output, new RegExp('Deleted regional secret'));
   });
@@ -269,7 +269,7 @@ describe('Secret Manager samples', () => {
 
   it('accesses regional secret versions', async () => {
     const output = execSync(
-      `node accessRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
+      `node regional_samples/accessRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(payload));
   });
@@ -281,7 +281,7 @@ describe('Secret Manager samples', () => {
 
   it('adds regional secret versions', async () => {
     const output = execSync(
-      `node addRegionalSecretVersion.js ${projectId} ${locationId} ${secretId}`
+      `node regional_samples/addRegionalSecretVersion.js ${projectId} ${locationId} ${secretId}`
     );
     assert.match(output, new RegExp('Added regional secret version'));
   });
@@ -293,7 +293,7 @@ describe('Secret Manager samples', () => {
 
   it('list regional secret versions', async () => {
     const output = execSync(
-      `node listRegionalSecretVersions.js ${projectId} ${locationId} ${secretId}`
+      `node regional_samples/listRegionalSecretVersions.js ${projectId} ${locationId} ${secretId}`
     );
     assert.match(output, new RegExp(`${regionalVersion.name}`));
   });
@@ -305,7 +305,7 @@ describe('Secret Manager samples', () => {
 
   it('grants access to regional secret', async () => {
     const output = execSync(
-      `node iamGrantAccessWithRegionalSecret.js ${projectId} ${locationId} ${secretId} ${iamUser}`
+      `node regional_samples/iamGrantAccessWithRegionalSecret.js ${projectId} ${locationId} ${secretId} ${iamUser}`
     );
     assert.match(output, new RegExp('Updated IAM policy'));
   });
@@ -319,7 +319,7 @@ describe('Secret Manager samples', () => {
 
   it('revokes access permissions for regional secret', async () => {
     const output = execSync(
-      `node iamRevokeAccessWithRegionalSecret.js ${projectId} ${locationId} ${secretId} ${iamUser}`
+      `node regional_samples/iamRevokeAccessWithRegionalSecret.js ${projectId} ${locationId} ${secretId} ${iamUser}`
     );
     assert.match(output, new RegExp('Updated IAM policy'));
   });
@@ -331,7 +331,7 @@ describe('Secret Manager samples', () => {
 
   it('gets regional secret version', async () => {
     const output = execSync(
-      `node getRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
+      `node regional_samples/getRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Found secret ${regionalVersion.name}`));
   });
@@ -343,7 +343,7 @@ describe('Secret Manager samples', () => {
 
   it('disables regional secret versions', async () => {
     const output = execSync(
-      `node disableRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
+      `node regional_samples/disableRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Disabled ${regionalVersion.name}`));
   });
@@ -355,7 +355,7 @@ describe('Secret Manager samples', () => {
 
   it('enables regional secret versions', async () => {
     const output = execSync(
-      `node enableRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
+      `node regional_samples/enableRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Enabled ${regionalVersion.name}`));
   });
@@ -367,7 +367,7 @@ describe('Secret Manager samples', () => {
 
   it('destroys regional secret versions', async () => {
     const output = execSync(
-      `node destroyRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
+      `node regional_samples/destroyRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Destroyed ${regionalVersion.name}`));
   });

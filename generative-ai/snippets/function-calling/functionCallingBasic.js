@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_function_calling]
 // [START generativeaionvertexai_function_calling_basic]
 const {
   VertexAI,
@@ -66,6 +67,7 @@ async function functionCallingBasic(
   console.log(JSON.stringify(result.response.candidates[0].content));
 }
 // [END generativeaionvertexai_function_calling_basic]
+// [END generativeaionvertexai_function_calling]
 
 functionCallingBasic(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

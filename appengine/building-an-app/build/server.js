@@ -14,7 +14,6 @@
 
 'use strict';
 
-// [START app]
 // [START gae_app]
 const express = require('express');
 const app = express();
@@ -29,6 +28,5 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
 // [END gae_app]
-// [END app]
 
 module.exports = app;

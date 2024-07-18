@@ -83,7 +83,7 @@ jobs:
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: npm test
       env:
-        GCLOUD_ORGANIZATION: 1081635000895
+        GCLOUD_ORGANIZATION: ${{ vars.GCLOUD_ORGANIZATION }}
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

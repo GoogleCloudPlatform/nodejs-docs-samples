@@ -22,11 +22,12 @@ const {describe, it, before} = require('mocha');
 const uuid = require('uuid');
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
-const [projectId] = process.env['GOOGLE_CLOUD_PROJECT'];
+const projectId = process.env['GOOGLE_CLOUD_PROJECT'];
 const location = 'global';
 
 describe('Client with sources and findings V2', async () => {
   let data;
+
   before(async () => {
     // Creates a new client.
     const client = new SecurityCenterClient();

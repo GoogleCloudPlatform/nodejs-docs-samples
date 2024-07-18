@@ -41,6 +41,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+    run: |
+      echo "GCLOUD_ORGANIZATION=1081635000895" >> $GITHUB_ENV
     uses: ./.github/workflows/test.yaml
     with:
       name: 'security-center-snippets-v2'

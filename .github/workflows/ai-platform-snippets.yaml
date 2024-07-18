@@ -21,11 +21,11 @@ on:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'
   pull_request:
-    paths:
-    - 'ai-platform/snippets/**'
-    - '.github/workflows/ai-platform-snippets.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'ai-platform/snippets/**'
     - '.github/workflows/ai-platform-snippets.yaml'

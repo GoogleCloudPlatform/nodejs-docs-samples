@@ -18,16 +18,19 @@ on:
     branches:
     - main
     paths:
-    - 'security-center/snippets/**'
+    - 'security-center/snippets/v1/**'
+    - 'security-center/snippets/package.json'
     - '.github/workflows/security-center-snippets.yaml'
   pull_request:
     paths:
-    - 'security-center/snippets/**'
+    - 'security-center/snippets/v1/**'
+    - 'security-center/snippets/package.json'
     - '.github/workflows/security-center-snippets.yaml'
   pull_request_target:
     types: [labeled]
     paths:
-    - 'security-center/snippets/**'
+    - 'security-center/snippets/v1/**'
+    - 'security-center/snippets/package.json'
     - '.github/workflows/security-center-snippets.yaml'
   schedule:
   - cron:  '0 0 * * 0'
@@ -58,14 +61,14 @@ jobs:
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash
-      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}        
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
     - uses: actions/cache@v3
       id: npm-cache
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-   
+          ${{ runner.os }}-node-
     - name: install repo dependencies
       run: npm install
       working-directory: .
@@ -89,7 +92,7 @@ jobs:
       with:
         name: test-results
         path: security-center/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1        
+        retention-days: 1
   flakybot:
     permissions:
       contents: 'read'

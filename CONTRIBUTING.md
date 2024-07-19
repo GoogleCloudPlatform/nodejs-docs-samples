@@ -39,7 +39,7 @@ If the tests for a sample change do not run, they can be triggered by adding the
 
 If tests need to be triggered multiple times, manually remove `actions:force-run` and then re-add this label.
 
-The label will not be automatically removed. Please remove it before merging the Pull Request.
+The automatic clean-up of labels is currently disabled. Please remove the actions:force-run before merging the Pull Request.
 
 ## Adding new samples
 

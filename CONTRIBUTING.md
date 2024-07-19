@@ -33,7 +33,7 @@ Console](https://console.cloud.google.com/apis/library).
 
 ### Running the tests for a Pull Request
 
-When a Pull Request is opened, reopened, or has new commits pushed the tests will be run.
+When a Pull Request is opened, reopened, or has new commits pushed the sample tests (unit, integration, end-to-end) will be run.
 
 If the tests for a sample change do not run, they can be triggered by adding the `actions:force-run` label.
 

@@ -34,6 +34,11 @@ on:
   schedule:
     - cron: '0 0 * * 0'
 jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    permissions: { }
+    steps:
+    - run: echo "${{github.event.action}} - ${{github.event.label.name}}"
   test:
     permissions:
       contents: 'read'

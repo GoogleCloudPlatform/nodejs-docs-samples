@@ -16,23 +16,23 @@ name: functions-pubsub
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/pubsub/**'
-      - '.github/workflows/functions-pubsub.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/pubsub/**'
+    - '.github/workflows/functions-pubsub.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/pubsub/**'
-      - '.github/workflows/functions-pubsub.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/pubsub/**'
+    - '.github/workflows/functions-pubsub.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -42,8 +42,8 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'functions/pubsub/publish'
-          - 'functions/pubsub/subscribe'
+        - 'functions/pubsub/publish'
+        - 'functions/pubsub/subscribe'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-pubsub'

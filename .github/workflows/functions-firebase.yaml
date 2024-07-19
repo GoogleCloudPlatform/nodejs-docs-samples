@@ -16,23 +16,23 @@ name: functions-firebase
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/firebase/**'
-      - '.github/workflows/functions-firebase.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/firebase/**'
+    - '.github/workflows/functions-firebase.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/firebase/**'
-      - '.github/workflows/functions-firebase.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/firebase/**'
+    - '.github/workflows/functions-firebase.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -42,12 +42,12 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'functions/firebase/helloAnalytics'
-          - 'functions/firebase/helloAuth'
-          - 'functions/firebase/helloFirestore'
-          - 'functions/firebase/helloRemoteConfig'
-          - 'functions/firebase/helloRTDB'
-          - 'functions/firebase/makeUpperCase'
+        - 'functions/firebase/helloAnalytics'
+        - 'functions/firebase/helloAuth'
+        - 'functions/firebase/helloFirestore'
+        - 'functions/firebase/helloRemoteConfig'
+        - 'functions/firebase/helloRTDB'
+        - 'functions/firebase/makeUpperCase'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-firebase'

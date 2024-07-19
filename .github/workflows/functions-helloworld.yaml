@@ -16,23 +16,23 @@ name: functions-helloworld
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/helloworld/**'
-      - '.github/workflows/functions-helloworld.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/helloworld/**'
+    - '.github/workflows/functions-helloworld.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/helloworld/**'
-      - '.github/workflows/functions-helloworld.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/helloworld/**'
+    - '.github/workflows/functions-helloworld.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -42,11 +42,11 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'functions/helloworld/helloError'
-          - 'functions/helloworld/helloGCS'
-          - 'functions/helloworld/helloPubSub'
-          - 'functions/helloworld/helloworldGet'
-          - 'functions/helloworld/helloworldHttp'
+        - 'functions/helloworld/helloError'
+        - 'functions/helloworld/helloGCS'
+        - 'functions/helloworld/helloPubSub'
+        - 'functions/helloworld/helloworldGet'
+        - 'functions/helloworld/helloworldHttp'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-helloworld'

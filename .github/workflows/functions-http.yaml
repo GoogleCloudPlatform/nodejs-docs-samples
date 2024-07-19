@@ -16,23 +16,23 @@ name: functions-http
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/http/**'
-      - '.github/workflows/functions-http.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/http/**'
+    - '.github/workflows/functions-http.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/http/**'
-      - '.github/workflows/functions-http.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/http/**'
+    - '.github/workflows/functions-http.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -42,10 +42,10 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'functions/http/corsEnabledFunction'
-          - 'functions/http/corsEnabledFunctionAuth'
-          - 'functions/http/httpContent'
-          - 'functions/http/httpMethods'
+        - 'functions/http/corsEnabledFunction'
+        - 'functions/http/corsEnabledFunctionAuth'
+        - 'functions/http/httpContent'
+        - 'functions/http/httpMethods'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-http'

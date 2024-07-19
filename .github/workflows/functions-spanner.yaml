@@ -16,23 +16,23 @@ name: functions-spanner
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/spanner/**'
-      - '.github/workflows/functions-spanner.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/spanner/**'
+    - '.github/workflows/functions-spanner.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/spanner/**'
-      - '.github/workflows/functions-spanner.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/spanner/**'
+    - '.github/workflows/functions-spanner.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:

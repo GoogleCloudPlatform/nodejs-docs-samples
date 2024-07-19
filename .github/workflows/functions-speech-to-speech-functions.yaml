@@ -16,23 +16,23 @@ name: functions-speech-to-speech-functions
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/speech-to-speech/functions/**'
-      - '.github/workflows/functions-speech-to-speech-functions.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/speech-to-speech/functions/**'
+    - '.github/workflows/functions-speech-to-speech-functions.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/speech-to-speech/functions/**'
-      - '.github/workflows/functions-speech-to-speech-functions.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/speech-to-speech/functions/**'
+    - '.github/workflows/functions-speech-to-speech-functions.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:

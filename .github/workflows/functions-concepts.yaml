@@ -16,23 +16,23 @@ name: functions-concepts
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/concepts/**'
-      - '.github/workflows/functions-concepts.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/concepts/**'
+    - '.github/workflows/functions-concepts.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/concepts/**'
-      - '.github/workflows/functions-concepts.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/concepts/**'
+    - '.github/workflows/functions-concepts.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -42,13 +42,13 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'functions/concepts/afterResponse'
-          - 'functions/concepts/afterTimeout'
-          - 'functions/concepts/backgroundTermination'
-          - 'functions/concepts/filesystem'
-          - 'functions/concepts/httpTermination'
-          - 'functions/concepts/requests'
-          - 'functions/concepts/stateless'
+        - 'functions/concepts/afterResponse'
+        - 'functions/concepts/afterTimeout'
+        - 'functions/concepts/backgroundTermination'
+        - 'functions/concepts/filesystem'
+        - 'functions/concepts/httpTermination'
+        - 'functions/concepts/requests'
+        - 'functions/concepts/stateless'
     uses: ./.github/workflows/test.yaml
     with:
       name: 'functions-concepts'

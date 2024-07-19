@@ -16,23 +16,23 @@ name: functions-scheduleinstance
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - 'functions/scheduleinstance/**'
-      - '.github/workflows/functions-scheduleinstance.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/scheduleinstance/**'
+    - '.github/workflows/functions-scheduleinstance.yaml'
+    - '.github/workflows/test.yaml'
   pull_request:
     types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
-      - 'functions/scheduleinstance/**'
-      - '.github/workflows/functions-scheduleinstance.yaml'
-      - '.github/workflows/test.yaml'
+    - 'functions/scheduleinstance/**'
+    - '.github/workflows/functions-scheduleinstance.yaml'
+    - '.github/workflows/test.yaml'
   schedule:
-    - cron: '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:

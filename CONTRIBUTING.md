@@ -37,7 +37,7 @@ When a Pull Request is opened, reopened, or has new commits pushed the tests wil
 
 If the tests for a sample change do not run, they can be triggered by adding the `actions:force-run` label.
 
-If tests need to be triggered a second time, manually remove and re-add this label.
+If tests need to be triggered multiple times, manually remove `actions:force-run` and then re-add this label.
 
 The label will not be automatically removed. Please remove it before merging the Pull Request.
 

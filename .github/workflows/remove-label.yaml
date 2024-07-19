@@ -24,4 +24,4 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - run: echo "Skipping label removal for reduced permissions. Please remove the 'actions:force-run' label manually."
+    - run: echo "Label removal is currently skipped. Please remove the 'actions:force-run' label manually. See b/354216420"

@@ -21,16 +21,16 @@ on:
     - 'storagetransfer/**'
     - '.github/workflows/storagetransfer.yaml'
   pull_request:
-    paths:
-    - 'storagetransfer/**'
-    - '.github/workflows/storagetransfer.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'storagetransfer/**'
     - '.github/workflows/storagetransfer.yaml'
   schedule:
-  - cron:  '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -64,14 +64,13 @@ jobs:
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash
-      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}        
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
     - uses: actions/cache@v3
       id: npm-cache
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-   
+        restore-keys: "${{ runner.os }}-node-   \n"
     - name: install repo dependencies
       run: npm install
       working-directory: .
@@ -86,7 +85,7 @@ jobs:
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: npm test
       env:
-        AWS_ACCESS_KEY_ID : ${{ fromJSON(steps.secrets.outputs.sts_aws_secret).AccessKeyId }}
+        AWS_ACCESS_KEY_ID: ${{ fromJSON(steps.secrets.outputs.sts_aws_secret).AccessKeyId }}
         AWS_SECRET_ACCESS_KEY: ${{ fromJSON(steps.secrets.outputs.sts_aws_secret).SecretAccessKey }}
         AZURE_STORAGE_ACCOUNT: ${{ fromJSON(steps.secrets.outputs.sts_azure_secret).StorageAccount }}
         AZURE_CONNECTION_STRING: ${{ fromJSON(steps.secrets.outputs.sts_azure_secret).ConnectionString }}
@@ -99,7 +98,7 @@ jobs:
       with:
         name: test-results
         path: storagetransfer/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1        
+        retention-days: 1
   flakybot:
     permissions:
       contents: 'read'

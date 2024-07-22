@@ -96,20 +96,17 @@ before(async () => {
     .split(/\r?\n/)
     .forEach(line => {
       if (line.includes(`locations/${location}/slates/${slateIdPrefix}`)) {
-        this.nextId = line.split('/').pop();
-        let createTime = this.nextId.split('-').pop();
-        createTime = parseInt(createTime);
+        const nextId = line.split('/').pop();
+        let createTime = nextId.split('-').pop();
+        createTime = Number(createTime);
         if (
           isNaN(createTime) === false &&
           createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
         ) {
           try {
-            execSync(
-              `node deleteSlate.js ${projectId} ${location} ${this.nextId}`,
-              {
-                cwd,
-              }
-            );
+            execSync(`node deleteSlate.js ${projectId} ${location} ${nextId}`, {
+              cwd,
+            });
           } catch (err) {
             if (err.message.includes('NOT_FOUND')) {
               // Ignore not found error
@@ -134,16 +131,16 @@ before(async () => {
       if (
         line.includes(`locations/${location}/vodConfigs/${vodConfigIdPrefix}`)
       ) {
-        this.nextId = line.split('/').pop();
-        let createTime = this.nextId.split('-').pop();
-        createTime = parseInt(createTime);
+        const nextId = line.split('/').pop();
+        let createTime = nextId.split('-').pop();
+        createTime = Number(createTime);
         if (
           isNaN(createTime) === false &&
           createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
         ) {
           try {
             execSync(
-              `node deleteVodConfig.js ${projectId} ${location} ${this.nextId}`,
+              `node deleteVodConfig.js ${projectId} ${location} ${nextId}`,
               {
                 cwd,
               }
@@ -172,16 +169,16 @@ before(async () => {
       if (
         line.includes(`locations/${location}/liveConfigs/${liveConfigIdPrefix}`)
       ) {
-        this.nextId = line.split('/').pop();
-        let createTime = this.nextId.split('-').pop();
-        createTime = parseInt(createTime);
+        const nextId = line.split('/').pop();
+        let createTime = nextId.split('-').pop();
+        createTime = Number(createTime);
         if (
           isNaN(createTime) === false &&
           createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
         ) {
           try {
             execSync(
-              `node deleteLiveConfig.js ${projectId} ${location} ${this.nextId}`,
+              `node deleteLiveConfig.js ${projectId} ${location} ${nextId}`,
               {
                 cwd,
               }
@@ -209,16 +206,16 @@ before(async () => {
         line.includes(`locations/${location}/cdnKeys/${cloudCdnKeyIdPrefix}`) ||
         line.includes(`locations/${location}/cdnKeys/${akamaiCdnKeyIdPrefix}`)
       ) {
-        this.nextId = line.split('/').pop();
-        let createTime = this.nextId.split('-').pop();
-        createTime = parseInt(createTime);
+        const nextId = line.split('/').pop();
+        let createTime = nextId.split('-').pop();
+        createTime = Number(createTime);
         if (
           isNaN(createTime) === false &&
           createTime < DATE_NOW_SEC - ONE_HOUR_IN_SEC
         ) {
           try {
             execSync(
-              `node deleteCdnKey.js ${projectId} ${location} ${this.nextId}`,
+              `node deleteCdnKey.js ${projectId} ${location} ${nextId}`,
               {
                 cwd,
               }

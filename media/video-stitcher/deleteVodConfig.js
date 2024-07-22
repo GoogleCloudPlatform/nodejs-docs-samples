@@ -40,13 +40,12 @@ function main(projectId, location, vodConfigId) {
     console.log('Deleted VOD config');
   }
 
-  deleteVodConfig();
+  deleteVodConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_delete_vod_config]
 }
 
 // node deleteVodConfig.js <projectId> <location> <vodConfigId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

@@ -47,13 +47,12 @@ function main(projectId, location, vodConfigId) {
     console.log(`VOD session: ${session.name}`);
   }
 
-  createVodSession();
+  createVodSession().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_vod_session]
 }
 
 // node createVodSession.js <projectId> <location> <vodConfigId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

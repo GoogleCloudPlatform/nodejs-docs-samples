@@ -39,13 +39,12 @@ function main(projectId, location) {
     }
   }
 
-  listVodConfigs();
+  listVodConfigs().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_list_vod_configs]
 }
 
 // node listVodConfigs.js <projectId> <location>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

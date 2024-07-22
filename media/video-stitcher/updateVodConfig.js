@@ -49,13 +49,12 @@ function main(projectId, location, vodConfigId, sourceUri) {
     console.log(`Updated sourceUri: ${response.sourceUri}`);
   }
 
-  updateVodConfig();
+  updateVodConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_update_vod_config]
 }
 
 // node updateVodConfig.js <projectId> <location> <vodConfigId> <sourceUri>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

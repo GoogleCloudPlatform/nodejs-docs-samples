@@ -49,13 +49,12 @@ function main(projectId, location, vodConfigId, sourceUri, adTagUri) {
     console.log(`response.name: ${response.name}`);
   }
 
-  createVodConfig();
+  createVodConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_vod_config]
 }
 
 // node createVodConfig.js <projectId> <location> <vodConfigId> <sourceUri> <adTagUri>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

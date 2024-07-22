@@ -17,30 +17,11 @@ name: Remove Label
 on:
   workflow_call:
 
+permissions: {}
+
 jobs:
   remove_label:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          try {
-            const event = JSON.parse(
-              require("fs").readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
-            );
-            await github.rest.issues.removeLabel({
-              name: "actions:force-run",
-              owner: "GoogleCloudPlatform",
-              repo: "nodejs-docs-samples",
-              issue_number: event.pull_request.number,
-            });
-          } catch (e) {
-            if (!e.message.includes("Label does not exist")) {
-              throw e;
-            }
-          }
+    - run: echo "Label removal is currently skipped. Please remove the 'actions:force-run' label manually. See b/354216420"

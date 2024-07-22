@@ -22,18 +22,17 @@ on:
     - '.github/workflows/video-intelligence.yaml'
     - '.github/workflows/test.yaml'
   pull_request:
-    paths:
-    - 'video-intelligence/**'
-    - '.github/workflows/video-intelligence.yaml'
-    - '.github/workflows/test.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'video-intelligence/**'
     - '.github/workflows/video-intelligence.yaml'
     - '.github/workflows/test.yaml'
   schedule:
-  - cron:  '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:

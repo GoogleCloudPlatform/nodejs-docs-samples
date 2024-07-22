@@ -22,12 +22,11 @@ on:
     - '.github/workflows/functions-env_vars.yaml'
     - '.github/workflows/test.yaml'
   pull_request:
-    paths:
-    - 'functions/env_vars/**'
-    - '.github/workflows/functions-env_vars.yaml'
-    - '.github/workflows/test.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'functions/env_vars/**'
     - '.github/workflows/functions-env_vars.yaml'

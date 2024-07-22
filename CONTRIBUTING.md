@@ -9,7 +9,9 @@ a great sample but it is not used in Google's official documentation, there are
 better suited places to publish it such as a [community
 tutorial](https://cloud.google.com/community/).
 
-## Run the tests for a single sample
+## Run the tests
+
+### Run the tests locally for a single sample
 
 1. Obtain authentication credentials. Depending on the sample, you need to
 enable the appropriate APIs in the [Cloud
@@ -28,6 +30,16 @@ Console](https://console.cloud.google.com/apis/library).
 1. Run the tests.
 
         npm test
+
+### Running the tests for a Pull Request
+
+When a Pull Request is opened, reopened, or has new commits pushed the sample tests (unit, integration, end-to-end) will be run.
+
+If the tests for a sample change do not run, they can be triggered by adding the `actions:force-run` label.
+
+If tests need to be triggered multiple times, manually remove `actions:force-run` and then re-add this label.
+
+The automatic clean-up of labels is currently disabled. Please remove the actions:force-run before merging the Pull Request.
 
 ## Adding new samples
 

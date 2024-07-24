@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // [START aiplatform_gemini_function_calling_content]
+// [START generativeaionvertexai_gemini_function_calling_content]
 const {
   VertexAI,
   FunctionDeclarationSchemaType,
@@ -89,6 +90,7 @@ async function functionCallingStreamContent(
   }
 }
 // [END aiplatform_gemini_function_calling_content]
+// [END generativeaionvertexai_gemini_function_calling_content]
 
 functionCallingStreamContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

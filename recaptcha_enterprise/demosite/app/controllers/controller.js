@@ -1,16 +1,8 @@
-// Copyright 2023 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/**
+ * @license
+ * Copyright 2023 Google Inc. All Rights Reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 // Sample threshold score for classification of bad / not bad action. The threshold score
 // can be used to trigger secondary actions like MFA.
@@ -66,50 +58,6 @@ const comment = (req, res) => {
 };
 
 const {createAssessment} = require('../recaptcha/createAssessment');
-// On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the score.
-const onHomepageLoad = async (req, res) => {
-  try {
-    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
-    const recaptchaAction = PROPERTIES.get('recaptcha_action.home');
-    const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.token,
-      recaptchaAction
-    );
-
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    // Take action based on the result (BAD / NOT_BAD).
-    //
-    // If result.label is NOT_BAD:
-    // Load the home page.
-    // Business logic.
-    //
-    // If result.label is BAD:
-    // Trigger email/ phone verification flow.
-    const result = checkForBadAction(assessmentResponse, recaptchaAction);
-    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
-
-    // Below code is only used to send response to the client for demo purposes.
-    // DO NOT send scores or other assessment response to the client.
-    // Return the response.
-    result.score =
-      assessmentResponse.riskAnalysis && assessmentResponse.riskAnalysis.score
-        ? assessmentResponse.riskAnalysis.score.toFixed(1)
-        : (0.0).toFixed(1);
-
-    res.json({
-      data: result,
-    });
-  } catch (e) {
-    res.json({
-      data: {
-        error_msg: e,
-      },
-    });
-  }
-};
-
 // On signup button click, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onSignup = async (req, res) => {
   try {
@@ -323,7 +271,6 @@ module.exports = {
   login,
   store,
   comment,
-  onHomepageLoad,
   onSignup,
   onLogin,
   onStoreCheckout,

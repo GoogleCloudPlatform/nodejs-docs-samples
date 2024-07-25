@@ -39,8 +39,10 @@ function main(bucketName) {
     };
 
     // Run request
-    const response = await controlClient.listFolders(request);
-    console.log(`${response.response.folders}.`);
+    const [folders] = await controlClient.listFolders(request);
+    for (const curFolder of folders) {
+      console.log(curFolder.name);
+    }
   }
 
   callListFolders();

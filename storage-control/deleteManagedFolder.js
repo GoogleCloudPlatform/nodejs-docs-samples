@@ -33,7 +33,7 @@ function main(bucketName, managedFolderName) {
   const controlClient = new StorageControlClient();
 
   async function callDeleteManagedFolder() {
-    const managedFolderPath = controlClient.folderPath(
+    const managedFolderPath = controlClient.managedFolderPath(
       '_',
       bucketName,
       managedFolderName
@@ -45,8 +45,8 @@ function main(bucketName, managedFolderName) {
     };
 
     // Run request
-    const response = await controlClient.deleteManagedFolder(request);
-    console.log(`Deleted managed folder: ${response.name}.`);
+    await controlClient.deleteManagedFolder(request);
+    console.log(`Deleted managed folder: ${managedFolderName}.`);
   }
 
   callDeleteManagedFolder();

@@ -42,7 +42,7 @@ function main(bucketName, folderName) {
     };
 
     // Run request
-    const response = await controlClient.createFolder(request);
+    const [response] = await controlClient.createFolder(request);
     console.log(`Created folder: ${response.name}.`);
   }
 

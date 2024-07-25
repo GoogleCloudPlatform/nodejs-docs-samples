@@ -41,8 +41,8 @@ function main(bucketName, folderName) {
     };
 
     // Run request
-    const response = await controlClient.deleteFolder(request);
-    console.log(`Deleted folder: ${response.name}.`);
+    await controlClient.deleteFolder(request);
+    console.log(`Deleted folder: ${folderName}.`);
   }
 
   callDeleteFolder();

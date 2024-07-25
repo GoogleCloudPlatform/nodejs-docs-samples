@@ -41,7 +41,7 @@ function main(bucketName, folderName) {
     };
 
     // Run request
-    const response = await controlClient.getFolder(request);
+    const [response] = await controlClient.getFolder(request);
     console.log(`Got folder: ${response.name}.`);
   }
 

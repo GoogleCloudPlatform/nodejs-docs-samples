@@ -38,8 +38,10 @@ function main(bucketName) {
     };
 
     // Run request
-    const response = await controlClient.listManagedFolders(request);
-    console.log(`${response.response.folders}.`);
+    const [folders] = await controlClient.listManagedFolders(request);
+    for (const curManagedFolder of folders) {
+      console.log(curManagedFolder.name);
+    }
   }
 
   callListManagedFolders();

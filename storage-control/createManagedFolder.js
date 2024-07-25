@@ -38,11 +38,11 @@ function main(bucketName, managedFolderName) {
     // Create the request
     const request = {
       parent: bucketPath,
-      folderId: managedFolderName,
+      managedFolderId: managedFolderName,
     };
 
     // Run request
-    const response = await controlClient.createManagedFolder(request);
+    const [response] = await controlClient.createManagedFolder(request);
     console.log(`Created managed folder: ${response.name}.`);
   }
 

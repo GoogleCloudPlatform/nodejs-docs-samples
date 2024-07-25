@@ -33,7 +33,7 @@ function main(bucketName, managedFolderName) {
   const controlClient = new StorageControlClient();
 
   async function callGetManagedFolder() {
-    const managedFolderPath = controlClient.folderPath(
+    const managedFolderPath = controlClient.managedFolderPath(
       '_',
       bucketName,
       managedFolderName
@@ -45,7 +45,7 @@ function main(bucketName, managedFolderName) {
     };
 
     // Run request
-    const response = await controlClient.getManagedFolder(request);
+    const [response] = await controlClient.getManagedFolder(request);
     console.log(`Got managed folder: ${response.name}.`);
   }
 

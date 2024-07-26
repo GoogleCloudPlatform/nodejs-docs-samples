@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_content]
 // [START aiplatform_gemini_content]
 const {VertexAI} = require('@google-cloud/vertexai');
 
@@ -21,7 +22,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createStreamContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro'
+  model = 'gemini-1.5-flash-001'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -48,6 +49,7 @@ async function createStreamContent(
   }
 }
 // [END aiplatform_gemini_content]
+// [END generativeaionvertexai_gemini_content]
 
 createStreamContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

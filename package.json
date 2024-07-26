@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.0.0-alpha.1",
-    "gts": "^5.0.1",
+    "gts": "5.3.0",
     "mocha": "^10.2.0",
     "nunjucks": "^3.2.4",
     "prettier": "^3.0.3",

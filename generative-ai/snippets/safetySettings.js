@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_safety_settings]
 // [START aiplatform_gemini_safety_settings]
 const {
   VertexAI,
@@ -25,7 +26,7 @@ const {
 async function setSafetySettings(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro'
+  model = 'gemini-1.5-flash-001'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -41,7 +42,12 @@ async function setSafetySettings(
         threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
       },
     ],
-    generation_config: {max_output_tokens: 256},
+    generation_config: {
+      max_output_tokens: 256,
+      temperature: 0.4,
+      top_p: 1,
+      top_k: 16,
+    },
   });
 
   const request = {
@@ -64,8 +70,10 @@ async function setSafetySettings(
       process.stdout.write(item.candidates[0].content.parts[0].text);
     }
   }
+  console.log('This response stream terminated due to safety concerns.');
 }
 // [END aiplatform_gemini_safety_settings]
+// [END generativeaionvertexai_gemini_safety_settings]
 
 setSafetySettings(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

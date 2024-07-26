@@ -23,7 +23,6 @@ const app = express();
 fs.accessSync('/usr/bin/dot', fs.constants.X_OK);
 
 // [START cloudrun_system_package_handler]
-// [START run_system_package_handler]
 app.get('/diagram.png', (req, res) => {
   try {
     const image = createDiagram(req.query.dot);
@@ -41,11 +40,9 @@ app.get('/diagram.png', (req, res) => {
     }
   }
 });
-// [END run_system_package_handler]
 // [END cloudrun_system_package_handler]
 
 // [START cloudrun_system_package_exec]
-// [START run_system_package_exec]
 // Generate a diagram based on a graphviz DOT diagram description.
 const createDiagram = dot => {
   if (!dot) {
@@ -66,7 +63,6 @@ const createDiagram = dot => {
   });
   return image;
 };
-// [END run_system_package_exec]
 // [END cloudrun_system_package_exec]
 
 module.exports = app;

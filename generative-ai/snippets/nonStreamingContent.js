@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START generativeaionvertexai_gemini_content_nonstreaming]
 // [START aiplatform_gemini_content_nonstreaming]
 const {VertexAI} = require('@google-cloud/vertexai');
 
@@ -21,7 +22,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createNonStreamingContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro'
+  model = 'gemini-1.5-flash-001'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -32,26 +33,26 @@ async function createNonStreamingContent(
   });
 
   const request = {
-    contents: [{role: 'user', parts: [{text: 'What is Node.js?'}]}],
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'Write a story about a magic backpack.',
+          },
+        ],
+      },
+    ],
   };
 
-  console.log('Prompt:');
-  console.log(request.contents[0].parts[0].text);
-  console.log('Non-Streaming Response Text:');
+  console.log(JSON.stringify(request));
 
-  // Create the response stream
-  const responseStream = await generativeModel.generateContentStream(request);
+  const result = await generativeModel.generateContent(request);
 
-  // Wait for the response stream to complete
-  const aggregatedResponse = await responseStream.response;
-
-  // Select the text from the response
-  const fullTextResponse =
-    aggregatedResponse.candidates[0].content.parts[0].text;
-
-  console.log(fullTextResponse);
+  console.log(result.response.text);
 }
 // [END aiplatform_gemini_content_nonstreaming]
+// [END generativeaionvertexai_gemini_content_nonstreaming]
 
 createNonStreamingContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

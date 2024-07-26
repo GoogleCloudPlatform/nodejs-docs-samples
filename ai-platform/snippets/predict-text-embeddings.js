@@ -17,40 +17,45 @@
 'use strict';
 
 // [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
-  model = 'textembedding-gecko@003',
+  model = 'text-embedding-004',
   texts = 'banana bread?;banana muffins?',
-  task = 'RETRIEVAL_DOCUMENT',
+  task = 'QUESTION_ANSWERING',
+  dimensionality = 0,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
-  const location = match ? match.groups.Location : 'us-centra11';
+  const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
 
   async function callPredict() {
     const instances = texts
       .split(';')
-      .map(e => helpers.toValue({content: e, taskType: task}));
-    const request = {endpoint, instances};
+      .map(e => helpers.toValue({content: e, task_type: task}));
+    const parameters = helpers.toValue(
+      dimensionality > 0 ? {outputDimensionality: parseInt(dimensionality)} : {}
+    );
+    const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
-    console.log('Got predict response');
     const predictions = response.predictions;
-    for (const prediction of predictions) {
-      const embeddings = prediction.structValue.fields.embeddings;
-      const values = embeddings.structValue.fields.values.listValue.values;
-      console.log('Got prediction: ' + JSON.stringify(values));
-    }
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
+    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
 
   callPredict();
 }
 // [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

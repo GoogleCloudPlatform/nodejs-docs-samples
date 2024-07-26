@@ -21,7 +21,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createStreamMultipartContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-vision',
+  model = 'gemini-1.5-flash-001',
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START cloudrun_secure_request]
-// [START run_secure_request]
 const {GoogleAuth} = require('google-auth-library');
 const got = require('got');
 const auth = new GoogleAuth();
@@ -58,7 +57,6 @@ const renderRequest = async markdown => {
   }
 };
 
-// [END run_secure_request]
 // [END cloudrun_secure_request]
 
 module.exports = renderRequest;

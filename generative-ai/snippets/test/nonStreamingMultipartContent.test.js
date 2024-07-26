@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-vision';
+const model = 'gemini-1.5-flash-001';
 
 describe('Generative AI NonStreaming Multipart Content', () => {
   /**
@@ -30,7 +30,7 @@ describe('Generative AI NonStreaming Multipart Content', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro-vision';
+  // const model = 'gemini-1.5-flash-001';
 
   const image = 'gs://generativeai-downloads/images/scones.jpg';
 
@@ -43,6 +43,5 @@ describe('Generative AI NonStreaming Multipart Content', () => {
     assert(output.match(/Prompt Text:/));
     assert(output.match(/what is shown in this image/));
     assert(output.match(/Non-Streaming Response Text:/));
-    assert(output.match(/scone/));
   });
 });

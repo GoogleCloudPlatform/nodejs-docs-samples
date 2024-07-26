@@ -21,16 +21,16 @@ on:
     - 'dialogflow-cx/**'
     - '.github/workflows/dialogflow-cx.yaml'
   pull_request:
-    paths:
-    - 'dialogflow-cx/**'
-    - '.github/workflows/dialogflow-cx.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'dialogflow-cx/**'
     - '.github/workflows/dialogflow-cx.yaml'
   schedule:
-  - cron:  '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:
@@ -78,7 +78,7 @@ jobs:
     - name: Run Tests
       run: make test dir=dialogflow-cx
       env:
-         GOOGLE_SAMPLES_PROJECT: "long-door-651"
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
         AGENT_ID: ${{ steps.secrets.outputs.agent_id }}
         TEST_ID: ${{ steps.secrets.outputs.test_id }}
         AGENT_PROJECT_ID: nodejs-docs-samples-tests

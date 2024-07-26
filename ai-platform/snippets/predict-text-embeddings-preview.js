@@ -22,32 +22,33 @@ async function main(
   model = 'text-embedding-preview-0409',
   texts = 'banana bread?;banana muffins?',
   task = 'QUESTION_ANSWERING',
-  outputDimensionality = 256,
+  dimensionality = 256,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
-  const location = match ? match.groups.Location : 'us-centra11';
+  const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = helpers.toValue(outputDimensionality);
+  const parameters = helpers.toValue({
+    outputDimensionality: parseInt(dimensionality),
+  });
 
   async function callPredict() {
     const instances = texts
       .split(';')
-      .map(e => helpers.toValue({content: e, taskType: task}));
+      .map(e => helpers.toValue({content: e, task_type: task}));
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
-    console.log('Got predict response');
     const predictions = response.predictions;
-    for (const prediction of predictions) {
-      const embeddings = prediction.structValue.fields.embeddings;
-      const values = embeddings.structValue.fields.values.listValue.values;
-      console.log('Got prediction: ' + JSON.stringify(values));
-    }
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
+    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
 
   callPredict();

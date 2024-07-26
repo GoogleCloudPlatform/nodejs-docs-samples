@@ -17,6 +17,7 @@
 'use strict';
 
 // [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
   model = 'text-embedding-004',
@@ -54,6 +55,7 @@ async function main(
   callPredict();
 }
 // [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

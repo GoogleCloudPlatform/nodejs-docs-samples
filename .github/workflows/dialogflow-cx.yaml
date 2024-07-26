@@ -21,16 +21,16 @@ on:
     - 'dialogflow-cx/**'
     - '.github/workflows/dialogflow-cx.yaml'
   pull_request:
-    paths:
-    - 'dialogflow-cx/**'
-    - '.github/workflows/dialogflow-cx.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - 'dialogflow-cx/**'
     - '.github/workflows/dialogflow-cx.yaml'
   schedule:
-  - cron:  '0 0 * * 0'
+  - cron: '0 0 * * 0'
 jobs:
   test:
     permissions:

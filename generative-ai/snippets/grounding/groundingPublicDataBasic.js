@@ -13,11 +13,7 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_grounding_public_data_basic]
-const {
-  VertexAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} = require('@google-cloud/vertexai');
+const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -32,14 +28,6 @@ async function generateContentWithGoogleSearchGrounding(
 
   const generativeModelPreview = vertexAI.preview.getGenerativeModel({
     model: model,
-    // The following parameters are optional
-    // They can also be passed to individual content generation requests
-    safetySettings: [
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-    ],
     generationConfig: {maxOutputTokens: 256},
   });
 
@@ -53,7 +41,7 @@ async function generateContentWithGoogleSearchGrounding(
   };
 
   const result = await generativeModelPreview.generateContent(request);
-  const response = result.response;
+  const response = await result.response;
   const groundingMetadata = response.candidates[0].groundingMetadata;
   console.log(
     'Response: ',

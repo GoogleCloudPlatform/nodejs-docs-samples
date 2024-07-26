@@ -17,6 +17,7 @@
 'use strict';
 
 // [START aiplatform_genai_code_model_tuning]
+// [START generativeaionvertexai_genai_code_model_tuning]
 async function main(
   apiEndpoint,
   project,
@@ -74,6 +75,7 @@ async function main(
   await createTuneJob();
 }
 // [END aiplatform_genai_code_model_tuning]
+// [END generativeaionvertexai_genai_code_model_tuning]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

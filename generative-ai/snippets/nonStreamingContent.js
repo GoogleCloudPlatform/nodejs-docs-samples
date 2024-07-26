@@ -33,24 +33,23 @@ async function createNonStreamingContent(
   });
 
   const request = {
-    contents: [{role: 'user', parts: [{text: 'What is Node.js?'}]}],
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'Write a story about a magic backpack.',
+          },
+        ],
+      },
+    ],
   };
 
-  console.log('Prompt:');
-  console.log(request.contents[0].parts[0].text);
-  console.log('Non-Streaming Response Text:');
+  console.log(JSON.stringify(request));
 
-  // Create the response stream
-  const responseStream = await generativeModel.generateContentStream(request);
+  const result = await generativeModel.generateContent(request);
 
-  // Wait for the response stream to complete
-  const aggregatedResponse = await responseStream.response;
-
-  // Select the text from the response
-  const fullTextResponse =
-    aggregatedResponse.candidates[0].content.parts[0].text;
-
-  console.log(fullTextResponse);
+  console.log(result.response.text);
 }
 // [END aiplatform_gemini_content_nonstreaming]
 // [END generativeaionvertexai_gemini_content_nonstreaming]

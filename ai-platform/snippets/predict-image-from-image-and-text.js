@@ -23,6 +23,7 @@ async function main(
   textPrompt
 ) {
   // [START aiplatform_sdk_text_image_embedding]
+  // [START generativeaionvertexai_sdk_text_image_embedding]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -91,6 +92,7 @@ async function main(
 
   await predictImageFromImageAndText();
   // [END aiplatform_sdk_text_image_embedding]
+  // [END generativeaionvertexai_sdk_text_image_embedding]
 }
 
 exports.predictImageFromImageAndText = main;

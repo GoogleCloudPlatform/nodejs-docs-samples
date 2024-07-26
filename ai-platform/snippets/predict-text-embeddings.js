@@ -17,6 +17,7 @@
 'use strict';
 
 // [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
   model = 'text-embedding-004',
@@ -42,18 +43,19 @@ async function main(
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
-    console.log('Got predict response');
     const predictions = response.predictions;
-    for (const prediction of predictions) {
-      const embeddings = prediction.structValue.fields.embeddings;
-      const values = embeddings.structValue.fields.values.listValue.values;
-      console.log('Got prediction: ' + JSON.stringify(values));
-    }
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
+    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
 
   callPredict();
 }
 // [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

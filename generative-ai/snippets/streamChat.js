@@ -41,6 +41,7 @@ async function createStreamChat(
     console.log(item.candidates[0].content.parts[0].text);
   }
 }
+
 // [END generativeaionvertexai_gemini_multiturn_chat_stream]
 
 createStreamChat(...process.argv.slice(2)).catch(err => {

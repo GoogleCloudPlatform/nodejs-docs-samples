@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,13 @@
 
 'use strict';
 
-function main(projectId, location, sessionId) {
-  // [START videostitcher_list_vod_stitch_details]
+function main(projectId, location) {
+  // [START videostitcher_list_vod_configs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // sessionId = 'my-session-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,24 +29,22 @@ function main(projectId, location, sessionId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function listVodStitchDetails() {
-    // Construct request
-    const request = {
-      parent: stitcherClient.vodSessionPath(projectId, location, sessionId),
-    };
-    const iterable = await stitcherClient.listVodStitchDetailsAsync(request);
-    console.log('VOD stitch details:');
+  async function listVodConfigs() {
+    const iterable = await stitcherClient.listVodConfigsAsync({
+      parent: stitcherClient.locationPath(projectId, location),
+    });
+    console.info('VOD configs:');
     for await (const response of iterable) {
       console.log(response.name);
     }
   }
 
-  listVodStitchDetails().catch(err => {
+  listVodConfigs().catch(err => {
     console.error(err.message);
     process.exitCode = 1;
   });
-  // [END videostitcher_list_vod_stitch_details]
+  // [END videostitcher_list_vod_configs]
 }
 
-// node listVodStitchDetails.js <projectId> <location> <sessionId>
+// node listVodConfigs.js <projectId> <location>
 main(...process.argv.slice(2));

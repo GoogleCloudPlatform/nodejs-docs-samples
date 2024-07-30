@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,18 @@
 
 'use strict';
 
-function main(projectId, location, sessionId) {
-  // [START videostitcher_list_vod_stitch_details]
+function main(projectId, location, vodConfigId, sourceUri, adTagUri) {
+  // [START videostitcher_create_vod_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // sessionId = 'my-session-id';
+  // vodConfigId = 'my-vod-config-id';
+  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
+  // See VMAP Pre-roll
+  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
+  // adTagUri = 'https://pubads.g.doubleclick.net/gampad/ads...';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,24 +34,27 @@ function main(projectId, location, sessionId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function listVodStitchDetails() {
+  async function createVodConfig() {
     // Construct request
     const request = {
-      parent: stitcherClient.vodSessionPath(projectId, location, sessionId),
+      parent: stitcherClient.locationPath(projectId, location),
+      vodConfig: {
+        sourceUri: sourceUri,
+        adTagUri: adTagUri,
+      },
+      vodConfigId: vodConfigId,
     };
-    const iterable = await stitcherClient.listVodStitchDetailsAsync(request);
-    console.log('VOD stitch details:');
-    for await (const response of iterable) {
-      console.log(response.name);
-    }
+    const [operation] = await stitcherClient.createVodConfig(request);
+    const [response] = await operation.promise();
+    console.log(`response.name: ${response.name}`);
   }
 
-  listVodStitchDetails().catch(err => {
+  createVodConfig().catch(err => {
     console.error(err.message);
     process.exitCode = 1;
   });
-  // [END videostitcher_list_vod_stitch_details]
+  // [END videostitcher_create_vod_config]
 }
 
-// node listVodStitchDetails.js <projectId> <location> <sessionId>
+// node createVodConfig.js <projectId> <location> <vodConfigId> <sourceUri> <adTagUri>
 main(...process.argv.slice(2));

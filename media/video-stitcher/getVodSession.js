@@ -39,13 +39,12 @@ function main(projectId, location, sessionId) {
     console.log(`VOD session: ${session.name}`);
   }
 
-  getVodSession();
+  getVodSession().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_vod_session]
 }
 
 // node getVodSession.js <projectId> <location> <sessionId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

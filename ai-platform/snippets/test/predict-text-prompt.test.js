@@ -24,17 +24,11 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-const project = process.env.CAIP_PROJECT_ID;
-const location = 'us-central1';
-
 describe('AI platform predict text prompt', () => {
   it('should make predictions using a large language model', async () => {
-    const stdout = execSync(
-      `node ./predict-text-prompt.js ${project} ${location}`,
-      {
-        cwd,
-      }
-    );
+    const stdout = execSync('node ./predict-text-prompt.js', {
+      cwd,
+    });
     assert.match(stdout, /Get text prompt response/);
   });
 });

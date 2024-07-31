@@ -19,9 +19,9 @@
 // [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
-  model = 'text-embedding-preview-0409',
+  model = 'text-embedding-preview-0815',
   texts = 'banana bread?;banana muffins?',
-  task = 'QUESTION_ANSWERING',
+  task = 'CODE_RETRIEVAL_QUERY',
   outputDimensionality = 256,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {

@@ -43,7 +43,7 @@ describe('predict text embeddings', () => {
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0409 '${texts}' QUESTION_ANSWERING 256`,
+      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0815 '${texts}' CODE_RETRIEVAL_QUERY 256`,
       {cwd}
     );
     assert.match(stdout, /Got predict response/);

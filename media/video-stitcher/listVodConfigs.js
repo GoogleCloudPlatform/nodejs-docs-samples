@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,13 @@
 
 'use strict';
 
-function main(projectId, location, cdnKeyId) {
-  // [START videostitcher_delete_cdn_key]
+function main(projectId, location) {
+  // [START videostitcher_list_vod_configs]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // cdnKeyId = 'my-cdn-key';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,22 +29,22 @@ function main(projectId, location, cdnKeyId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function deleteCdnKey() {
-    // Construct request
-    const request = {
-      name: stitcherClient.cdnKeyPath(projectId, location, cdnKeyId),
-    };
-    const [operation] = await stitcherClient.deleteCdnKey(request);
-    await operation.promise();
-    console.log('Deleted CDN key');
+  async function listVodConfigs() {
+    const iterable = await stitcherClient.listVodConfigsAsync({
+      parent: stitcherClient.locationPath(projectId, location),
+    });
+    console.info('VOD configs:');
+    for await (const response of iterable) {
+      console.log(response.name);
+    }
   }
 
-  deleteCdnKey().catch(err => {
+  listVodConfigs().catch(err => {
     console.error(err.message);
     process.exitCode = 1;
   });
-  // [END videostitcher_delete_cdn_key]
+  // [END videostitcher_list_vod_configs]
 }
 
-// node deleteCdnKey.js <projectId> <location> <cdnKeyId>
+// node listVodConfigs.js <projectId> <location>
 main(...process.argv.slice(2));

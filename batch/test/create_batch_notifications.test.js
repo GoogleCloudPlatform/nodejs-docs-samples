@@ -22,13 +22,37 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
+const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const batchClient = new BatchServiceClient();
+
+async function deleteJob(projectId, region, jobId) {
+  const request = {
+    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
+  };
+  try {
+    await batchClient.deleteJob(request);
+  } catch (err) {
+    console.error('Error deleting job:', err);
+  }
+}
 
 describe('Create batch notifications', async () => {
-  const PROJECT_ID = process.env.CAIP_PROJECT_ID;
-  const TOPIC_ID = 'topic-id';
-  const pubsubTopic = `projects/${PROJECT_ID}/topics/${TOPIC_ID}`;
+  const jobName = 'job-name-batch-notifications';
+  const region = 'europe-central2';
+  const topicId = 'topic-id';
+
+  let projectId;
+
+  before(async () => {
+    projectId = await batchClient.getProjectId();
+  });
+
+  after(async () => {
+    await deleteJob(projectId, region, jobName);
+  });
 
   it('should create a new job with batch notifications', async () => {
+    const pubsubTopic = `projects/${projectId}/topics/${topicId}`;
     const expectedNotifications = [
       {
         pubsubTopic,
@@ -48,7 +72,7 @@ describe('Create batch notifications', async () => {
       },
     ];
 
-    const response = execSync('node ./create/create_batch_notification.js', {
+    const response = execSync('node ./create/create_batch_notifications.js', {
       cwd,
     });
 

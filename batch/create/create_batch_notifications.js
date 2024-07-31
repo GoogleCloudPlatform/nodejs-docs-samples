@@ -16,27 +16,27 @@
 
 'use strict';
 
-// [START batch_notification]
-/**
- * TODO(developer): Uncomment these variables before running the sample.
- */
-const PROJECT_ID = process.env.CAIP_PROJECT_ID;
-// Name of the region you want to use to run the job. Regions that are
-// available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
-const REGION = 'europe-central2';
-// The name of the job that will be created.
-// It needs to be unique for each project and region pair.
-const JOB_NAME = 'job-name';
-// The Pub/Sub topic ID to send the notifications to.
-const TOPIC_ID = 'topic-id';
-
 async function main() {
+  // [START batch_notifications]
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');
   const batch = batchLib.protos.google.cloud.batch.v1;
 
   // Instantiates a client
   const batchClient = new batchLib.v1.BatchServiceClient();
+
+  /**
+   * TODO(developer): Update these variables before running the sample.
+   */
+  const PROJECT_ID = await batchClient.getProjectId();
+  // Name of the region you want to use to run the job. Regions that are
+  // available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
+  const REGION = 'europe-central2';
+  // The name of the job that will be created.
+  // It needs to be unique for each project and region pair.
+  const JOB_NAME = 'job-name-batch-notifications';
+  // The Pub/Sub topic ID to send the notifications to.
+  const TOPIC_ID = 'topic-id';
 
   // Define what will be done as part of the job.
   const task = new batch.TaskSpec();
@@ -88,7 +88,7 @@ async function main() {
   // The job's parent is the project and region in which the job will run
   const parent = `projects/${PROJECT_ID}/locations/${REGION}`;
 
-  async function callCreateBatchNotification() {
+  async function callCreateBatchNotifications() {
     // Construct request
     const request = {
       parent,
@@ -101,8 +101,8 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchNotification();
-  // [END batch_notification]
+  callCreateBatchNotifications();
+  // [END batch_notifications]
 }
 
 process.on('unhandledRejection', err => {

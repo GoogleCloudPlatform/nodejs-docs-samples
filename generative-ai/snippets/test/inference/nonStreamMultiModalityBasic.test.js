@@ -19,23 +19,9 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
-const model = 'gemini-1.5-flash-001';
-
 describe('Generative AI Multimodal Text Inference', () => {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
-   */
-  // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-flash-001';
-
   it('should generate text based on a prompt containing text, a video, and an image', async () => {
-    const output = execSync(
-      `node ./inference/nonStreamMultiModalityBasic.js ${projectId} ${location} ${model}`
-    );
+    const output = execSync('node ./inference/nonStreamMultiModalityBasic.js');
     assert(output.length > 0);
   });
 });

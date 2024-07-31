@@ -49,13 +49,12 @@ function main(projectId, location, slateId, slateUri) {
     console.log(`Updated uri: ${response.uri}`);
   }
 
-  updateSlate();
+  updateSlate().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_update_slate]
 }
 
 // node updateSlate.js <projectId> <location> <slateId> <slateUri>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

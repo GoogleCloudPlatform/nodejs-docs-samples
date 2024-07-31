@@ -38,7 +38,18 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps: 
+      - id: secrets
+        uses: 'google-github-actions/get-secretmanager-secrets@v1'
+        with:
+          secrets: |-
+            caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
+        env:
+          CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+  run_tests:
     uses: ./.github/workflows/test.yaml
     with:
       name: 'batch'
@@ -49,4 +60,4 @@ jobs:
       id-token: 'write'
     if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
     uses: ./.github/workflows/flakybot.yaml
-    needs: [test]
+    needs: [test, run_tests]

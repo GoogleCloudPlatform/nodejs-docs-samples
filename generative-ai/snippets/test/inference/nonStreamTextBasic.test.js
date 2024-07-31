@@ -19,23 +19,9 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
-const model = 'gemini-1.5-flash-001';
-
 describe('Generative AI Basic Text Inference', () => {
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
-   */
-  // const projectId = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-flash-001';
-
   it('should create a generative text model and infer text from a prompt', async () => {
-    const output = execSync(
-      `node ./inference/nonStreamTextBasic.js ${projectId} ${location} ${model}`
-    );
+    const output = execSync('node ./inference/nonStreamTextBasic.js');
 
     // Assert that the correct prompt was issued
     assert(output.match(/Write a story about a magic backpack/));

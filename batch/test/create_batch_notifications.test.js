@@ -48,7 +48,7 @@ describe('Create batch notifications', async () => {
       },
     ];
 
-    const response = execSync('node ./create/create_batch_notification.js', {
+    const response = execSync('node ./create/create_batch_notifications.js', {
       cwd,
     });
 

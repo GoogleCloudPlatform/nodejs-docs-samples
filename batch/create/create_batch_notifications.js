@@ -16,7 +16,7 @@
 
 'use strict';
 
-// [START batch_notification]
+// [START batch_notifications]
 /**
  * TODO(developer): Uncomment these variables before running the sample.
  */
@@ -88,7 +88,7 @@ async function main() {
   // The job's parent is the project and region in which the job will run
   const parent = `projects/${PROJECT_ID}/locations/${REGION}`;
 
-  async function callCreateBatchNotification() {
+  async function callCreateBatchNotifications() {
     // Construct request
     const request = {
       parent,
@@ -101,8 +101,8 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchNotification();
-  // [END batch_notification]
+  callCreateBatchNotifications();
+  // [END batch_notifications]
 }
 
 process.on('unhandledRejection', err => {

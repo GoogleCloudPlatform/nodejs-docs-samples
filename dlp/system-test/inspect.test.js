@@ -79,6 +79,14 @@ describe('inspect', () => {
     assert.match(output, /Info type: EMAIL_ADDRESS/);
   });
 
+  // inspect_string
+  it('should inspect a string using a regional endpoint', () => {
+    const output = execSync(
+      `node inspectStringRep.js ${projectId} us-west1 "I'm Gary and my email is gary@example.com"`
+    );
+    assert.match(output, /Info type: EMAIL_ADDRESS/);
+  });
+
   it('should inspect a string with custom dictionary', () => {
     const output = execSync(
       `node inspectString.js ${projectId} "I'm Gary and my email is gary@example.com" 'LIKELIHOOD_UNSPECIFIED' '0' 'PHONE_NUMBER' "Gary,email"`

@@ -16,29 +16,42 @@
 
 'use strict';
 
+// [START batch_create_custom_service_account]
+// Imports the Batch library
+const batchLib = require('@google-cloud/batch');
+const batch = batchLib.protos.google.cloud.batch.v1;
+// Instantiates a client
+const batchClient = new batchLib.v1.BatchServiceClient();
+
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
+// Project ID or project number of the Google Cloud project you want to use.
+const PROJECT_ID = 'project-id';
+// Name of the region you want to use to run the job. Regions that are
+// available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
+const REGION = 'europe-central2';
+// The name of the job that will be created.
+// It needs to be unique for each project and region pair.
+const JOB_NAME = 'batch-service-account-job';
+// The email address of your service account.
+const SERVICE_ACCOUNT_EMAIL = 'email';
+
 async function main() {
-  // [START batch_create_custom_service_account]
-  // Imports the Batch library
-  const batchLib = require('@google-cloud/batch');
-  const batch = batchLib.protos.google.cloud.batch.v1;
+  await callCreateBatchServiceAccountJob(
+    PROJECT_ID,
+    REGION,
+    JOB_NAME,
+    SERVICE_ACCOUNT_EMAIL
+  );
+}
 
-  // Instantiates a client
-  const batchClient = new batchLib.v1.BatchServiceClient();
-
-  /**
-   * TODO(developer): Update these variables before running the sample.
-   */
-  // Project ID or project number of the Google Cloud project you want to use.
-  const projectId = await batchClient.getProjectId();
-  // Name of the region you want to use to run the job. Regions that are
-  // available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
-  const region = 'europe-central2';
-  // The name of the job that will be created.
-  // It needs to be unique for each project and region pair.
-  const jobName = 'batch-service-account-job';
-  // The email address of your service account.
-  const serviceAccountEmail = `custom-service-account-email@${projectId}.iam.gserviceaccount.com`;
-
+async function callCreateBatchServiceAccountJob(
+  projectId,
+  region,
+  jobName,
+  serviceAccountEmail
+) {
   // Define what will be done as part of the job.
   const runnable = new batch.Runnable({
     script: new batch.Runnable.Script({
@@ -79,25 +92,21 @@ async function main() {
       destination: batch.LogsPolicy.Destination.CLOUD_LOGGING,
     }),
   });
+
   // The job's parent is the project and region in which the job will run
   const parent = `projects/${projectId}/locations/${region}`;
+  // Construct request
+  const request = {
+    parent,
+    jobId: jobName,
+    job,
+  };
 
-  async function callCreateBatchServiceAccountJob() {
-    // Construct request
-    const request = {
-      parent,
-      jobId: jobName,
-      job,
-    };
-
-    // Run request
-    const [response] = await batchClient.createJob(request);
-    console.log(JSON.stringify(response));
-  }
-
-  callCreateBatchServiceAccountJob();
-  // [END batch_create_custom_service_account]
+  // Run request
+  const [response] = await batchClient.createJob(request);
+  console.log(JSON.stringify(response));
 }
+// [END batch_create_custom_service_account]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);
@@ -105,3 +114,7 @@ process.on('unhandledRejection', err => {
 });
 
 main();
+
+module.exports = {
+  callCreateBatchServiceAccountJob,
+};

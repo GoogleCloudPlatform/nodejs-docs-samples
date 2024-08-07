@@ -16,25 +16,14 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 const {describe, it} = require('mocha');
-const cp = require('child_process');
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const {
+  callCreateBatchNotifications,
+} = require('../create/create_batch_notifications');
+const {deleteJob, getJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
-
-async function deleteJob(projectId, region, jobId) {
-  const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
-  };
-  try {
-    await batchClient.deleteJob(request);
-  } catch (err) {
-    console.error('Error deleting job:', err);
-  }
-}
 
 describe('Create batch notifications', async () => {
   const jobName = 'job-name-batch-notifications';
@@ -48,7 +37,7 @@ describe('Create batch notifications', async () => {
   });
 
   after(async () => {
-    await deleteJob(projectId, region, jobName);
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
   it('should create a new job with batch notifications', async () => {
@@ -72,10 +61,11 @@ describe('Create batch notifications', async () => {
       },
     ];
 
-    const response = execSync('node ./create/create_batch_notifications.js', {
-      cwd,
-    });
+    await callCreateBatchNotifications(projectId, region, jobName, topicId);
+    const createdJob = (
+      await getJob(batchClient, projectId, region, jobName)
+    )[0];
 
-    assert.deepEqual(JSON.parse(response).notifications, expectedNotifications);
+    assert.deepEqual(createdJob.notifications, expectedNotifications);
   });
 });

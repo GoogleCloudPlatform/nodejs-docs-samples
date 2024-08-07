@@ -16,50 +16,57 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('assert');
 const {describe, it} = require('mocha');
-const cp = require('child_process');
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
+const {
+  callCreateBatchServiceAccountJob,
+} = require('../create/create_batch_using_service_account');
+const {deleteJob, getJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
+const resourceManagerClient = new ProjectsClient();
 
-async function deleteJob(projectId, region, jobId) {
+async function getProjectNumber(projectId) {
+  // Construct request
   const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
+    name: `projects/${projectId}`,
   };
-  try {
-    await batchClient.deleteJob(request);
-  } catch (err) {
-    console.error('Error deleting job:', err);
-  }
+
+  // Run request
+  const [response] = await resourceManagerClient.getProject(request);
+  const projectNumber = response.name.split('/')[1];
+  return projectNumber;
 }
 
 describe('Create batch using service account', async () => {
   const jobName = 'batch-service-account-job';
   const region = 'europe-central2';
-  let projectId;
-  // PROJECT_NUMBER-compute@developer.gserviceaccount.com
+  let projectId, serviceAccountEmail;
 
   before(async () => {
     projectId = await batchClient.getProjectId();
+    serviceAccountEmail = `${await getProjectNumber(projectId)}-compute@developer.gserviceaccount.com`;
   });
 
-  after(async () => {
-    await deleteJob(projectId, region, jobName);
+  afterEach(async () => {
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
   it('should create a new job using serviceAccount', async () => {
-    const response = JSON.parse(
-      execSync('node ./create/create_batch_using_service_account.js', {
-        cwd,
-      })
+    await callCreateBatchServiceAccountJob(
+      projectId,
+      region,
+      jobName,
+      serviceAccountEmail
     );
+    const createdJob = (
+      await getJob(batchClient, projectId, region, jobName)
+    )[0];
 
     assert.equal(
-      response.allocationPolicy.serviceAccount.email,
-      `custom-service-account-email@${projectId}.iam.gserviceaccount.com`
+      createdJob.allocationPolicy.serviceAccount.email,
+      serviceAccountEmail
     );
   });
 });

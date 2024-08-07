@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 ENV REDISHOST redis
 ENV REDISPORT 6379

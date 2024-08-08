@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_single_turn_video]
-// [START aiplatform_gemini_single_turn_video]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -61,7 +60,6 @@ async function sendMultiModalPromptWithVideo(
 
   console.log(fullTextResponse);
 }
-// [END aiplatform_gemini_single_turn_video]
 // [END generativeaionvertexai_gemini_single_turn_video]
 
 sendMultiModalPromptWithVideo(...process.argv.slice(2)).catch(err => {

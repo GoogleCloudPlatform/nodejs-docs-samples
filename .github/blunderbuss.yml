@@ -50,6 +50,10 @@ assign_issues_by:
   - 'api: documentai'
   to:
   - GoogleCloudPlatform/document-ai-samples-contributors
+- labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization
 
 assign_prs_by:
 - labels:
@@ -89,3 +93,7 @@ assign_prs_by:
     - 'api: documentai'
   to:
     - GoogleCloudPlatform/document-ai-samples-contributors
+- labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization

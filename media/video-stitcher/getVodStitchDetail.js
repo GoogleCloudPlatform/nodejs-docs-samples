@@ -45,13 +45,12 @@ function main(projectId, location, sessionId, stitchDetailId) {
     console.log(`VOD stitch detail: ${stitchDetail.name}`);
   }
 
-  getVodStitchDetail();
+  getVodStitchDetail().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_vod_stitch_detail]
 }
 
 // node getVodStitchDetail.js <projectId> <location> <sessionId> <stitchDetailId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

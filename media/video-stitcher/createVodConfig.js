@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,18 @@
 
 'use strict';
 
-function main(projectId, location, cdnKeyId) {
-  // [START videostitcher_delete_cdn_key]
+function main(projectId, location, vodConfigId, sourceUri, adTagUri) {
+  // [START videostitcher_create_vod_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // cdnKeyId = 'my-cdn-key';
+  // vodConfigId = 'my-vod-config-id';
+  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
+  // See VMAP Pre-roll
+  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
+  // adTagUri = 'https://pubads.g.doubleclick.net/gampad/ads...';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,22 +34,27 @@ function main(projectId, location, cdnKeyId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function deleteCdnKey() {
+  async function createVodConfig() {
     // Construct request
     const request = {
-      name: stitcherClient.cdnKeyPath(projectId, location, cdnKeyId),
+      parent: stitcherClient.locationPath(projectId, location),
+      vodConfig: {
+        sourceUri: sourceUri,
+        adTagUri: adTagUri,
+      },
+      vodConfigId: vodConfigId,
     };
-    const [operation] = await stitcherClient.deleteCdnKey(request);
-    await operation.promise();
-    console.log('Deleted CDN key');
+    const [operation] = await stitcherClient.createVodConfig(request);
+    const [response] = await operation.promise();
+    console.log(`response.name: ${response.name}`);
   }
 
-  deleteCdnKey().catch(err => {
+  createVodConfig().catch(err => {
     console.error(err.message);
     process.exitCode = 1;
   });
-  // [END videostitcher_delete_cdn_key]
+  // [END videostitcher_create_vod_config]
 }
 
-// node deleteCdnKey.js <projectId> <location> <cdnKeyId>
+// node createVodConfig.js <projectId> <location> <vodConfigId> <sourceUri> <adTagUri>
 main(...process.argv.slice(2));

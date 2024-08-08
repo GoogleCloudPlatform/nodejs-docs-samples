@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,14 +15,15 @@
 
 'use strict';
 
-function main(projectId, location, cdnKeyId) {
-  // [START videostitcher_delete_cdn_key]
+function main(projectId, location, vodConfigId, sourceUri) {
+  // [START videostitcher_update_vod_config]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // cdnKeyId = 'my-cdn-key';
+  // vodConfigId = 'my-vod-config-id';
+  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -30,22 +31,30 @@ function main(projectId, location, cdnKeyId) {
   // Instantiates a client
   const stitcherClient = new VideoStitcherServiceClient();
 
-  async function deleteCdnKey() {
+  async function updateVodConfig() {
     // Construct request
     const request = {
-      name: stitcherClient.cdnKeyPath(projectId, location, cdnKeyId),
+      vodConfig: {
+        name: stitcherClient.vodConfigPath(projectId, location, vodConfigId),
+        sourceUri: sourceUri,
+      },
+      updateMask: {
+        paths: ['sourceUri'],
+      },
     };
-    const [operation] = await stitcherClient.deleteCdnKey(request);
-    await operation.promise();
-    console.log('Deleted CDN key');
+
+    const [operation] = await stitcherClient.updateVodConfig(request);
+    const [response] = await operation.promise();
+    console.log(`Updated VOD config: ${response.name}`);
+    console.log(`Updated sourceUri: ${response.sourceUri}`);
   }
 
-  deleteCdnKey().catch(err => {
+  updateVodConfig().catch(err => {
     console.error(err.message);
     process.exitCode = 1;
   });
-  // [END videostitcher_delete_cdn_key]
+  // [END videostitcher_update_vod_config]
 }
 
-// node deleteCdnKey.js <projectId> <location> <cdnKeyId>
+// node updateVodConfig.js <projectId> <location> <vodConfigId> <sourceUri>
 main(...process.argv.slice(2));

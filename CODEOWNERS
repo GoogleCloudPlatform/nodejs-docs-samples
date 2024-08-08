@@ -22,7 +22,7 @@ kms @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-secrets-team
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 

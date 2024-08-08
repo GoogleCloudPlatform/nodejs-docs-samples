@@ -21,7 +21,6 @@ const {
   login,
   store,
   comment,
-  onHomepageLoad,
   onSignup,
   onLogin,
   onStoreCheckout,
@@ -36,7 +35,6 @@ router.get('/store', store);
 router.get('/comment', comment);
 
 // Submit action URL rules.
-router.post('/on_homepage_load', onHomepageLoad);
 router.post('/on_signup', onSignup);
 router.post('/on_login', onLogin);
 router.post('/on_store_checkout', onStoreCheckout);

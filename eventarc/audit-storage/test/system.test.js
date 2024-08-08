@@ -13,20 +13,18 @@
 // limitations under the License.
 
 const assert = require('assert');
-const got = require('got');
 
-const request = (method, route, base_url) => {
+const request = async (method, route, base_url) => {
   const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" environment variable is required.');
   }
 
-  return got(new URL(route, base_url.trim()), {
+  return await fetch(new URL(route, base_url.trim()), {
     headers: {
       Authorization: `Bearer ${ID_TOKEN.trim()}`,
     },
-    method: method || 'get',
-    throwHttpErrors: false,
+    method: method ? method.toUpperCase() : 'GET',
   });
 };
 
@@ -47,10 +45,6 @@ describe('End-to-End Tests', () => {
       throw Error(err);
     }
 
-    assert.strictEqual(
-      response.statusCode,
-      400,
-      'Bad Requests status not found'
-    );
+    assert.strictEqual(response.status, 400, 'Bad Requests status not found');
   });
 });

@@ -148,9 +148,7 @@ async function main() {
   // [END batch_create_persistent_disk_job]
 }
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
+main().catch(err => {
+  console.error(err);
   process.exitCode = 1;
 });
-
-main();

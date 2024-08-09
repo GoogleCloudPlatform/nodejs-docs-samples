@@ -25,18 +25,6 @@ async function deleteJob(batchClient, projectId, region, jobId) {
   }
 }
 
-async function getJob(batchClient, projectId, region, jobId) {
-  const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
-  };
-  try {
-    return await batchClient.getJob(request);
-  } catch (err) {
-    console.error('Fetching job failed: ', err);
-  }
-}
-
 module.exports = {
   deleteJob,
-  getJob,
 };

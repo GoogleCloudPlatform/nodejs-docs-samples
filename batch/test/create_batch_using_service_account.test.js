@@ -24,7 +24,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
-const {deleteJob, getJob} = require('./batchClient_operations');
+const {deleteJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 const resourceManagerClient = new ProjectsClient();
 
@@ -55,15 +55,15 @@ describe('Create batch job using service account', async () => {
   });
 
   it('should create a new job using serviceAccount', async () => {
-    execSync('node ./create/create_batch_using_service_account.js', {
-      cwd,
-    });
-    const createdJob = (
-      await getJob(batchClient, projectId, region, jobName)
-    )[0];
+    const response = execSync(
+      'node ./create/create_batch_using_service_account.js',
+      {
+        cwd,
+      }
+    );
 
     assert.equal(
-      createdJob.allocationPolicy.serviceAccount.email,
+      JSON.parse(response).allocationPolicy.serviceAccount.email,
       serviceAccountEmail
     );
   });

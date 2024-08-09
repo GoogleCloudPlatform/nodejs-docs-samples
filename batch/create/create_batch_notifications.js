@@ -16,38 +16,28 @@
 
 'use strict';
 
-// [START batch_notifications]
-// Imports the Batch library
-const batchLib = require('@google-cloud/batch');
-const batch = batchLib.protos.google.cloud.batch.v1;
-
-// Instantiates a client
-const batchClient = new batchLib.v1.BatchServiceClient();
-
-/**
- * TODO(developer): Update these variables before running the sample.
- */
-// Project ID or project number of the Google Cloud project you want to use.
-const PROJECT_ID = 'project-id';
-// Name of the region you want to use to run the job. Regions that are
-// available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
-const REGION = 'europe-central2';
-// The name of the job that will be created.
-// It needs to be unique for each project and region pair.
-const JOB_NAME = 'job-name-batch-notifications';
-// The Pub/Sub topic ID to send the notifications to.
-const TOPIC_ID = 'topic-id';
-
 async function main() {
-  await callCreateBatchNotifications(PROJECT_ID, REGION, JOB_NAME, TOPIC_ID);
-}
+  // [START batch_notifications]
+  // Imports the Batch library
+  const batchLib = require('@google-cloud/batch');
+  const batch = batchLib.protos.google.cloud.batch.v1;
 
-async function callCreateBatchNotifications(
-  projectId,
-  region,
-  jobName,
-  topicId
-) {
+  // Instantiates a client
+  const batchClient = new batchLib.v1.BatchServiceClient();
+
+  /**
+   * TODO(developer): Update these variables before running the sample.
+   */
+  const PROJECT_ID = await batchClient.getProjectId();
+  // Name of the region you want to use to run the job. Regions that are
+  // available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
+  const REGION = 'europe-central2';
+  // The name of the job that will be created.
+  // It needs to be unique for each project and region pair.
+  const JOB_NAME = 'job-name-batch-notifications';
+  // The Pub/Sub topic ID to send the notifications to.
+  const TOPIC_ID = 'topic-id';
+
   // Define what will be done as part of the job.
   const task = new batch.TaskSpec();
   const runnable = new batch.Runnable();
@@ -66,7 +56,7 @@ async function callCreateBatchNotifications(
   group.taskSpec = task;
 
   const job = new batch.Job();
-  job.name = jobName;
+  job.name = JOB_NAME;
   job.taskGroups = [group];
   job.labels = {env: 'testing', type: 'script'};
   // We use Cloud Logging as it's an option available out of the box
@@ -75,20 +65,20 @@ async function callCreateBatchNotifications(
 
   // Create batch notification when job state changed
   const notification1 = new batch.JobNotification();
-  notification1.pubsubTopic = `projects/${projectId}/topics/${topicId}`;
+  notification1.pubsubTopic = `projects/${PROJECT_ID}/topics/${TOPIC_ID}`;
   notification1.message = {
     type: 'JOB_STATE_CHANGED',
   };
 
   // Create batch notification when task state changed
   const notification2 = new batch.JobNotification();
-  notification2.pubsubTopic = `projects/${projectId}/topics/${topicId}`;
+  notification2.pubsubTopic = `projects/${PROJECT_ID}/topics/${TOPIC_ID}`;
   notification2.message = {
     type: 'TASK_STATE_CHANGED',
     newTaskState: 'FAILED',
   };
 
-  job.name = jobName;
+  job.name = JOB_NAME;
   job.taskGroups = [group];
   job.notifications = [notification1, notification2];
   job.labels = {env: 'testing', type: 'script'};
@@ -96,17 +86,22 @@ async function callCreateBatchNotifications(
   job.logsPolicy = new batch.LogsPolicy();
   job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
   // The job's parent is the project and region in which the job will run
-  const parent = `projects/${projectId}/locations/${region}`;
-  // Construct request
-  const request = {
-    parent,
-    jobId: jobName,
-    job,
-  };
+  const parent = `projects/${PROJECT_ID}/locations/${REGION}`;
 
-  // Run request
-  const [response] = await batchClient.createJob(request);
-  console.log(JSON.stringify(response));
+  async function callCreateBatchNotifications() {
+    // Construct request
+    const request = {
+      parent,
+      jobId: JOB_NAME,
+      job,
+    };
+
+    // Run request
+    const [response] = await batchClient.createJob(request);
+    console.log(JSON.stringify(response));
+  }
+
+  callCreateBatchNotifications();
   // [END batch_notifications]
 }
 
@@ -116,7 +111,3 @@ process.on('unhandledRejection', err => {
 });
 
 main();
-
-module.exports = {
-  callCreateBatchNotifications,
-};

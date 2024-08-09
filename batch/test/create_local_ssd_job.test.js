@@ -16,19 +16,30 @@
 
 'use strict';
 
+const path = require('path');
 const assert = require('assert');
 const {describe, it} = require('mocha');
+const cp = require('child_process');
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const {callCreateLocalSsdJob} = require('../create/create_local_ssd_job');
-const {deleteJob, getJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
+
+async function deleteJob(projectId, region, jobId) {
+  const request = {
+    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
+  };
+  try {
+    await batchClient.deleteJob(request);
+  } catch (err) {
+    console.error('Error deleting job:', err);
+  }
+}
 
 describe('Create batch local ssd job', async () => {
   const jobName = 'batch-local-ssd-job';
   const region = 'europe-central2';
-  const localSsdName = 'ssd-name';
-  const machineType = 'c3d-standard-8-lssd';
-  const ssdSize = 375;
+
   let projectId;
 
   before(async () => {
@@ -36,41 +47,35 @@ describe('Create batch local ssd job', async () => {
   });
 
   after(async () => {
-    await deleteJob(batchClient, projectId, region, jobName);
+    await deleteJob(projectId, region, jobName);
   });
 
   it('should create a new job with local ssd', async () => {
     const disks = [
       {
-        deviceName: localSsdName,
+        deviceName: 'ssd-name',
         newDisk: {
           type: 'local-ssd',
-          sizeGb: ssdSize,
+          sizeGb: '375',
           diskInterface: 'NVMe',
         },
         attached: 'newDisk',
       },
     ];
 
-    await callCreateLocalSsdJob(
-      projectId,
-      region,
-      jobName,
-      localSsdName,
-      machineType,
-      ssdSize
+    const response = JSON.parse(
+      execSync('node ./create/create_local_ssd_job.js', {
+        cwd,
+      })
     );
-    const createdJob = (
-      await getJob(batchClient, projectId, region, jobName)
-    )[0];
 
     assert.deepEqual(
-      createdJob.allocationPolicy.instances[0].policy.disks,
+      response.allocationPolicy.instances[0].policy.disks,
       disks
     );
     assert.equal(
-      createdJob.allocationPolicy.instances[0].policy.machineType,
-      machineType
+      response.allocationPolicy.instances[0].policy.machineType,
+      'c3d-standard-8-lssd'
     );
   });
 });

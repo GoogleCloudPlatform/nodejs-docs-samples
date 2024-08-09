@@ -16,13 +16,14 @@
 
 'use strict';
 
+const path = require('path');
 const assert = require('assert');
 const {describe, it} = require('mocha');
+const cp = require('child_process');
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
-const {
-  callCreateBatchServiceAccountJob,
-} = require('../create/create_batch_using_service_account');
 const {deleteJob, getJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 const resourceManagerClient = new ProjectsClient();
@@ -39,7 +40,7 @@ async function getProjectNumber(projectId) {
   return projectNumber;
 }
 
-describe('Create batch using service account', async () => {
+describe('Create batch job using service account', async () => {
   const jobName = 'batch-service-account-job';
   const region = 'europe-central2';
   let projectId, serviceAccountEmail;
@@ -54,12 +55,9 @@ describe('Create batch using service account', async () => {
   });
 
   it('should create a new job using serviceAccount', async () => {
-    await callCreateBatchServiceAccountJob(
-      projectId,
-      region,
-      jobName,
-      serviceAccountEmail
-    );
+    execSync('node ./create/create_batch_using_service_account.js', {
+      cwd,
+    });
     const createdJob = (
       await getJob(batchClient, projectId, region, jobName)
     )[0];

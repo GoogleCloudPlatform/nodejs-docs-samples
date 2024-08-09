@@ -55,14 +55,6 @@ async function main() {
   group.taskCount = 3;
   group.taskSpec = task;
 
-  const job = new batch.Job();
-  job.name = JOB_NAME;
-  job.taskGroups = [group];
-  job.labels = {env: 'testing', type: 'script'};
-  // We use Cloud Logging as it's an option available out of the box
-  job.logsPolicy = new batch.LogsPolicy();
-  job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
-
   // Create batch notification when job state changed
   const notification1 = new batch.JobNotification();
   notification1.pubsubTopic = `projects/${PROJECT_ID}/topics/${TOPIC_ID}`;
@@ -78,6 +70,7 @@ async function main() {
     newTaskState: 'FAILED',
   };
 
+  const job = new batch.Job();
   job.name = JOB_NAME;
   job.taskGroups = [group];
   job.notifications = [notification1, notification2];

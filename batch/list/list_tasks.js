@@ -25,7 +25,7 @@
  *  The '-' character cannot be the first or the last one.
  * @param {string} groupName - name of the group of tasks. Usually it's `group0`.
  */
-function main(projectId, region, jobName, groupName) {
+async function main(projectId, region, jobName, groupName) {
   // [START batch_list_tasks]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
@@ -63,12 +63,11 @@ function main(projectId, region, jobName, groupName) {
     }
   }
 
-  callListTasks();
+  await callListTasks();
   // [END batch_list_tasks]
 }
 
-process.on('unhandledRejection', err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));

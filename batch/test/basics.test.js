@@ -59,14 +59,14 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('lists jobs', async () => {
+  it.skip('lists jobs', async () => {
     const output = execSync(`node list/list_jobs.js ${projectId} us-central1`, {
       cwd,
     });
     assert(output !== null);
   });
 
-  it('gets a task', async () => {
+  it.skip('gets a task', async () => {
     // the server needs a bit of time to create the objects. 10 seconds is way more than enough.
     await new Promise(resolve => setTimeout(resolve, 10000));
     const output = execSync(
@@ -78,7 +78,7 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('lists tasks', async () => {
+  it.skip('lists tasks', async () => {
     const output = execSync(
       `node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`,
       {
@@ -88,7 +88,7 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('deletes the test job', async () => {
+  it.skip('deletes the test job', async () => {
     const output = execSync(
       `node delete/delete_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {

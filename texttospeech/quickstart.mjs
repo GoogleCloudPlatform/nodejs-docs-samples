@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TextToSpeechClient } from '@google-cloud/text-to-speech';
-
-import fs from 'fs/promises';
+import {writeFile} from 'node:fs/promises';
+import {TextToSpeechClient} from '@google-cloud/text-to-speech';
 
 async function main() {
   // Create a Text-to-Speech client instance
@@ -23,25 +22,26 @@ async function main() {
   // The text that should be converted to speech
   const text = 'hello, world!';
 
+  const outputFile = 'quickstart_output.mp3';
+
   // Configure the text-to-speech request
   const request = {
-    input: { text },
+    input: {text},
     // Select the language and SSML voice gender (optional)
-    voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
+    voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
     // Configure the audio format of the output
-    audioConfig: { audioEncoding: 'MP3' },
+    audioConfig: {audioEncoding: 'MP3'},
   };
 
-  try {
-    // Performs the text-to-speech request
-    const [response] = await client.synthesizeSpeech(request);
+  // Performs the text-to-speech request
+  const [response] = await client.synthesizeSpeech(request);
 
-    // Save the generated binary audio content to a local file
-    await fs.writeFile('quickstart_output.mp3', response.audioContent, 'binary');
-    console.log('Audio content written to file: output.mp3');
-  } catch (error) {
-    console.error('Error:', error);
-  }
+  // Save the generated binary audio content to a local file
+  await writeFile(outputFile, response.audioContent, 'binary');
+  console.log(`Audio content written to file: ${outputFile}`);
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

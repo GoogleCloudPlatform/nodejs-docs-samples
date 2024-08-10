@@ -12,31 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import fs from 'fs/promises';
-import { existsSync } from 'node:fs';
-import { describe, it } from 'mocha';
-import * as cp from 'child_process';
-import { assert } from 'chai';
+import assert from 'node:assert/strict';
+import {existsSync, unlinkSync} from 'node:fs';
+import * as cp from 'node:child_process';
 
-const outputFile = 'quickstart_output.mp3';
+import {after, beforeEach, describe, it} from 'mocha';
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const outputFile = 'quickstart_output.mp3';
+
+function removeOutput() {
+  try {
+    // Remove if outputFile exists
+    unlinkSync(outputFile);
+  } catch {
+    // OK to ignore error if outputFile doesn't exist already
+  }
+}
 
 describe('quickstart', () => {
-    before(() => {
-        try {
-            fs.unlinkSync(outputFile);
-        } catch (err) {
-            // Ignores error if unable to delete the outputFile
-        }
-    })
+  // Remove file if it exists
+  beforeEach(() => {
+    removeOutput();
+  });
 
-    it('should synthesize speech to local mp3 file', async () => {
-      // Verifies that outputFile doesn't exist 
-      assert.strictEqual(existsSync(outputFile), false);
-      const output = execSync(
-        `node quickstart.mjs`
-      );
-      assert.match(output, /Audio content written to file: output.mp3/);
-      assert.ok(existsSync(outputFile));
-    });
+  // Remove file after testing
+  after(() => {
+    removeOutput();
+  });
+
+  it('should synthesize speech to local mp3 file', () => {
+    // Verifies that outputFile doesn't exist
+    assert.equal(
+      existsSync(outputFile),
+      false,
+      `found pre-existing ${outputFile}, please rename or remove and retry the test`
+    );
+    const output = execSync('node quickstart.mjs');
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
+    );
+    assert.ok(existsSync(outputFile));
+  });
 });

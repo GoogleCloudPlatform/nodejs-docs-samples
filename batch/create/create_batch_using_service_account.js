@@ -98,7 +98,7 @@ async function main() {
     const [response] = await batchClient.createJob(request);
     console.log(JSON.stringify(response));
   }
-  callCreateBatchServiceAccountJob();
+  await callCreateBatchServiceAccountJob();
   // [END batch_create_custom_service_account]
 }
 

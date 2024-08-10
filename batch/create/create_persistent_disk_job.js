@@ -17,7 +17,7 @@
 'use strict';
 
 async function main() {
-  // [START batch_create_local_ssd_job]
+  // [START batch_create_persistent_disk_job]
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');
   const batch = batchLib.protos.google.cloud.batch.v1;
@@ -28,36 +28,55 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
+  // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await batchClient.getProjectId();
+  // The name of the job that will be created.
+  // It needs to be unique for each project and region pair.
+  const jobName = 'batch-create-persistent-disk-job';
   // Name of the region you want to use to run the job. Regions that are
   // available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
   const region = 'europe-central2';
-  // The name of the job that will be created.
-  // It needs to be unique for each project and region pair.
-  const jobName = 'batch-local-ssd-job';
-  // The name of a local SSD created for this job.
-  const localSsdName = 'ssd-name';
-  // The machine type, which can be predefined or custom, of the job's VMs.
-  // The allowed number of local SSDs depends on the machine type
-  // for your job's VMs are listed on: https://cloud.google.com/compute/docs/disks#localssds
-  const machineType = 'c3d-standard-8-lssd';
-  // The size of all the local SSDs in GB. Each local SSD is 375 GB,
-  // so this value must be a multiple of 375 GB.
-  // For example, for 2 local SSDs, set this value to 750 GB.
-  const ssdSize = 375;
+  // The name of an existing persistent disk.
+  const existingPersistentDiskName = 'existing-persistent-disk-name';
+  // The name of the new persistent disk.
+  const newPersistentDiskName = 'new-persistent-disk-name';
+  // The size of the new persistent disk in GB.
+  // The allowed sizes depend on the type of persistent disk,
+  // but the minimum is often 10 GB (10) and the maximum is often 64 TB (64000).
+  const diskSize = 10;
+  // The location of an existing persistent disk. For more info :
+  // https://cloud.google.com/batch/docs/create-run-job-storage#gcloud
+  const location = 'regions/us-central1';
+  // The disk type of the new persistent disk, either pd-standard,
+  // pd-balanced, pd-ssd, or pd-extreme. For Batch jobs, the default is pd-balanced.
+  const newDiskType = 'pd-balanced';
 
   // Define what will be done as part of the job.
   const runnable = new batch.Runnable({
     script: new batch.Runnable.Script({
       commands: [
         '-c',
-        'echo Hello world! This is task ${BATCH_TASK_INDEX}. This job has a total of ${BATCH_TASK_COUNT} tasks.',
+        'echo Hello world! This is task ${BATCH_TASK_INDEX}.' +
+          '>> /mnt/disks/NEW_PERSISTENT_DISK_NAME/output_task_${BATCH_TASK_INDEX}.txt',
       ],
     }),
   });
 
+  // Define volumes and their parameters to be mounted to a VM.
+  const newVolume = new batch.Volume({
+    deviceName: newPersistentDiskName,
+    mountPath: `/mnt/disks/${newPersistentDiskName}`,
+    mountOptions: ['rw', 'async'],
+  });
+
+  const existingVolume = new batch.Volume({
+    deviceName: existingPersistentDiskName,
+    mountPath: `/mnt/disks/${existingPersistentDiskName}`,
+  });
+
   const task = new batch.TaskSpec({
     runnables: [runnable],
+    volumes: [newVolume, existingVolume],
     maxRetryCount: 2,
     maxRunDuration: {seconds: 3600},
   });
@@ -68,25 +87,35 @@ async function main() {
     taskSpec: task,
   });
 
+  const newDisk = new batch.AllocationPolicy.Disk({
+    type: newDiskType,
+    sizeGb: diskSize,
+  });
+
   // Policies are used to define on what kind of virtual machines the tasks will run on.
+  // Read more about local disks here: https://cloud.google.com/compute/docs/disks/persistent-disks
   const instancePolicy = new batch.AllocationPolicy.InstancePolicy({
-    machineType,
     disks: [
+      // Create configuration for new disk
       new batch.AllocationPolicy.AttachedDisk({
-        deviceName: localSsdName,
-        // For example, local SSD uses type "local-ssd".
-        // Persistent disks and boot disks use "pd-balanced", "pd-extreme", "pd-ssd"
-        // or "pd-standard".
-        newDisk: new batch.AllocationPolicy.AttachedDisk({
-          type: 'local-ssd',
-          sizeGb: ssdSize,
-        }),
+        deviceName: newPersistentDiskName,
+        newDisk,
+      }),
+      // Create link to existing disk
+      new batch.AllocationPolicy.AttachedDisk({
+        existingDisk: `projects/${projectId}/${location}/disks/${existingPersistentDiskName}`,
+        deviceName: existingPersistentDiskName,
       }),
     ],
   });
 
+  const locationPolicy = new batch.AllocationPolicy.LocationPolicy({
+    allowedLocations: [location],
+  });
+
   const allocationPolicy = new batch.AllocationPolicy.InstancePolicyOrTemplate({
     instances: [{policy: instancePolicy}],
+    location: locationPolicy,
   });
 
   const job = new batch.Job({
@@ -102,7 +131,7 @@ async function main() {
   // The job's parent is the project and region in which the job will run
   const parent = `projects/${projectId}/locations/${region}`;
 
-  async function callCreateBatchGPUJob() {
+  async function callCreateBatchPersistentDiskJob() {
     // Construct request
     const request = {
       parent,
@@ -115,11 +144,11 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  await callCreateBatchGPUJob();
-  // [END batch_create_local_ssd_job]
+  await callCreateBatchPersistentDiskJob();
+  // [END batch_create_persistent_disk_job]
 }
 
 main().catch(err => {
-  console.error(err.message);
+  console.error(err);
   process.exitCode = 1;
 });

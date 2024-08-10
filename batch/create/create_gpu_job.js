@@ -113,13 +113,11 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchGPUJob();
+  await callCreateBatchGPUJob();
   // [END batch_create_gpu_job]
 }
 
-process.on('unhandledRejection', err => {
+main().catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
-main();

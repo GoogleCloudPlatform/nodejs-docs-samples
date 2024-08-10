@@ -144,7 +144,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchPersistentDiskJob();
+  await callCreateBatchPersistentDiskJob();
   // [END batch_create_persistent_disk_job]
 }
 

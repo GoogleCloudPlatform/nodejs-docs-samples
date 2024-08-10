@@ -28,7 +28,7 @@
  *   "projects/{project_id}/global/instanceTemplates/{template_name}"
  *   "{template_name}" - if the template is defined in the same project as used to create the Job.
  */
-function main(projectId, region, jobName, templateLink) {
+async function main(projectId, region, jobName, templateLink) {
   // [START batch_create_job_with_template]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
@@ -117,12 +117,11 @@ function main(projectId, region, jobName, templateLink) {
     console.log(response);
   }
 
-  callCreateJob();
+  await callCreateJob();
   // [END batch_create_job_with_template]
 }
 
-process.on('unhandledRejection', err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));

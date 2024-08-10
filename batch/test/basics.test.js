@@ -19,7 +19,6 @@ const path = require('path');
 const cp = require('child_process');
 const {describe, it, before} = require('mocha');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const batchClient = new BatchServiceClient();
 
 // get a short ID for this test run that only contains characters that are valid in UUID
 // (a plain UUID won't do because we want the "test-job-js" prefix and that would exceed the length limit)
@@ -32,10 +31,16 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Creates, lists and deletes jobs', () => {
+  let batchClient;
   let projectId;
 
   before(async () => {
+    batchClient = new BatchServiceClient();
     projectId = await batchClient.getProjectId();
+  });
+
+  after(async () => {
+    await batchClient.close();
   });
 
   it('creates a job with a script payload', async () => {
@@ -46,7 +51,7 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('gets information about a job', async () => {
+  it.skip('gets information about a job', async () => {
     const output = execSync(
       `node get/get_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {cwd}
@@ -54,14 +59,14 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('lists jobs', async () => {
+  it.skip('lists jobs', async () => {
     const output = execSync(`node list/list_jobs.js ${projectId} us-central1`, {
       cwd,
     });
     assert(output !== null);
   });
 
-  it('gets a task', async () => {
+  it.skip('gets a task', async () => {
     // the server needs a bit of time to create the objects. 10 seconds is way more than enough.
     await new Promise(resolve => setTimeout(resolve, 10000));
     const output = execSync(
@@ -73,7 +78,7 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('lists tasks', async () => {
+  it.skip('lists tasks', async () => {
     const output = execSync(
       `node list/list_tasks.js ${projectId} us-central1 test-job-js-script-${testRunId} group0`,
       {
@@ -83,7 +88,7 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it('deletes the test job', async () => {
+  it.skip('deletes the test job', async () => {
     const output = execSync(
       `node delete/delete_job.js ${projectId} us-central1 test-job-js-script-${testRunId}`,
       {

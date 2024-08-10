@@ -59,10 +59,11 @@ describe('Creates, lists and deletes jobs', () => {
     assert(output !== null);
   });
 
-  it.skip('lists jobs', async () => {
+  it('lists jobs', async () => {
     const output = execSync(`node list/list_jobs.js ${projectId} us-central1`, {
       cwd,
     });
+    console.error(output);
     assert(output !== null);
   });
 

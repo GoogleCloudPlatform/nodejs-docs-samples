@@ -18,17 +18,17 @@ const {VertexAI} = require('@google-cloud/vertexai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function generateContent(
-  projectId = 'PROJECT_ID',
-  location = 'us-central1',
-  model = 'gemini-1.5-flash-001'
-) {
+const PROJECT_ID = process.env.CAIP_PROJECT_ID;
+const LOCATION = process.env.LOCATION;
+const MODEL = 'gemini-1.5-flash-001';
+
+async function generateContent() {
   // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
+  const vertexAI = new VertexAI({project: PROJECT_ID, location: LOCATION});
 
   // Instantiate the model
   const generativeModel = vertexAI.getGenerativeModel({
-    model: model,
+    model: MODEL,
   });
 
   const request = {
@@ -53,7 +53,7 @@ async function generateContent(
 }
 // [END generativeaionvertexai_stream_text_basic]
 
-generateContent(...process.argv.slice(2)).catch(err => {
+generateContent().catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

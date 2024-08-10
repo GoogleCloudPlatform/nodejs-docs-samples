@@ -36,8 +36,7 @@ async function getProjectNumber(projectId) {
 
   // Run request
   const [response] = await resourceManagerClient.getProject(request);
-  const projectNumber = response.name.split('/')[1];
-  return projectNumber;
+  return response.name.split('/')[1];
 }
 
 describe('Create batch job using service account', async () => {

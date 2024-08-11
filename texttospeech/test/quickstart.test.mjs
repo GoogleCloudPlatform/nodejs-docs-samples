@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,19 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+import assert from 'node:assert/strict';
+import {existsSync, unlinkSync} from 'node:fs';
+import * as cp from 'node:child_process';
 
-const assert = require('node:assert/strict');
-const cp = require('node:child_process');
-const {existsSync, unlinkSync} = require('node:fs');
-
-const {after, before, describe, it} = require('mocha');
+import {after, beforeEach, describe, it} from 'mocha';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cmd = 'node audioProfile.js';
-const text =
-  '"Hello Everybody!  This is an Audio Profile Optimized Sound Byte."';
-const outputFile = 'phonetest.mp3';
+const outputFile = 'quickstart_output.mp3';
 
 function removeOutput() {
   try {
@@ -35,20 +30,25 @@ function removeOutput() {
   }
 }
 
-describe('audio profile', () => {
-  before(() => {
-    // Remove file if it already exists
+describe('quickstart', () => {
+  // Remove file if it exists
+  beforeEach(() => {
     removeOutput();
   });
 
+  // Remove file after testing
   after(() => {
-    // Remove file after testing
     removeOutput();
   });
 
-  it('should synthesize human audio using hardware profile', () => {
-    assert.equal(existsSync(outputFile), false);
-    const output = execSync(`${cmd} ${text} ${outputFile}`);
+  it('should synthesize speech to local mp3 file', () => {
+    // Verifies that outputFile doesn't exist
+    assert.equal(
+      existsSync(outputFile),
+      false,
+      `found pre-existing ${outputFile}, please rename or remove and retry the test`
+    );
+    const output = execSync('node quickstart.mjs');
     assert.ok(
       new RegExp(`Audio content written to file: ${outputFile}`).test(output)
     );

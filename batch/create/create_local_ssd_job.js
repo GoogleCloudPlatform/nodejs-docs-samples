@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,13 +115,11 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchGPUJob();
+  await callCreateBatchGPUJob();
   // [END batch_create_local_ssd_job]
 }
 
-process.on('unhandledRejection', err => {
+main().catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
-main();

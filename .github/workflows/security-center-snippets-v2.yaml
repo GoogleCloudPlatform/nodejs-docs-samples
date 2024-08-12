@@ -30,7 +30,7 @@ on:
     paths:
       - 'security-center/snippets/v2/**'
       - 'security-center/snippets/package.json'
-      - '.github/workflows/security-center-snippets.yaml'
+      - '.github/workflows/security-center-snippets-v2.yaml'
   schedule:
     - cron: '0 0 * * 0'
 jobs:

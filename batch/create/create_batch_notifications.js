@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,14 +55,6 @@ async function main() {
   group.taskCount = 3;
   group.taskSpec = task;
 
-  const job = new batch.Job();
-  job.name = JOB_NAME;
-  job.taskGroups = [group];
-  job.labels = {env: 'testing', type: 'script'};
-  // We use Cloud Logging as it's an option available out of the box
-  job.logsPolicy = new batch.LogsPolicy();
-  job.logsPolicy.destination = batch.LogsPolicy.Destination.CLOUD_LOGGING;
-
   // Create batch notification when job state changed
   const notification1 = new batch.JobNotification();
   notification1.pubsubTopic = `projects/${PROJECT_ID}/topics/${TOPIC_ID}`;
@@ -78,6 +70,7 @@ async function main() {
     newTaskState: 'FAILED',
   };
 
+  const job = new batch.Job();
   job.name = JOB_NAME;
   job.taskGroups = [group];
   job.notifications = [notification1, notification2];
@@ -101,13 +94,11 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchNotifications();
+  await callCreateBatchNotifications();
   // [END batch_notifications]
 }
 
-process.on('unhandledRejection', err => {
+main().catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
-main();

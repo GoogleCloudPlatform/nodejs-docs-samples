@@ -14,28 +14,39 @@
 
 'use strict';
 
-const fs = require('fs');
-const {assert} = require('chai');
-const {describe, it, after} = require('mocha');
-const cp = require('child_process');
+const assert = require('node:assert/strict');
+const cp = require('node:child_process');
+const {existsSync, unlinkSync} = require('node:fs');
+
+const {after, beforeEach, describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const outputFile = 'output.mp3';
 
+function removeOutput() {
+  try {
+    // Remove if outputFile exists
+    unlinkSync(outputFile);
+  } catch {
+    // OK to ignore error if outputFile doesn't exist already
+  }
+}
+
 describe('quickstart', () => {
+  // Remove file if it already exists
+  beforeEach(() => {
+    removeOutput();
+  });
+
+  // Remove file after testing
   after(() => {
-    try {
-      fs.unlinkSync(outputFile);
-    } catch (err) {
-      // Ignore error
-    }
+    removeOutput();
   });
 
   it('should synthesize speech to local mp3 file', () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+    assert.equal(existsSync(outputFile), false);
     const stdout = execSync('node quickstart');
     assert.match(stdout, /Audio content written to file: output.mp3/);
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(existsSync(outputFile));
   });
 });

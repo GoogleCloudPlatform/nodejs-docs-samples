@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
  * Usually it's `group0`.
  * @param {number} taskNumber - number of the task you want to look up.
  */
-function main(projectId, region, jobName, groupName, taskNumber) {
+async function main(projectId, region, jobName, groupName, taskNumber) {
   // [START batch_get_task]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
@@ -70,12 +70,11 @@ function main(projectId, region, jobName, groupName, taskNumber) {
     console.log(response);
   }
 
-  callGetJob();
+  await callGetJob();
   // [END batch_get_task]
 }
 
-process.on('unhandledRejection', err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));

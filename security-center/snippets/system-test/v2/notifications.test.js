@@ -48,6 +48,12 @@ describe('Client with Notifications v2', async () => {
     client = new SecurityCenterClient();
 
     pubSubClient = new PubSub();
+    // A previous test failure can result the topic hanging around
+    try {
+      await pubSubClient.topic(topicName).delete();
+    } catch {
+      // Ignore if the topic doesn't already exist
+    }
     await pubSubClient.createTopic(topicName);
 
     const notificationConfig = {

@@ -46,7 +46,7 @@ async function main() {
 
   // Define what will be done as part of the job.
   const runnable = new batch.Runnable({
-    script: new batch.Runnable.Container({
+    container: new batch.Runnable.Container({
       imageUri: 'gcr.io/google-containers/busybox',
       entrypoint: '/bin/sh',
       commands: ['-c', 'echo Hello world! This is task ${BATCH_TASK_INDEX}.'],

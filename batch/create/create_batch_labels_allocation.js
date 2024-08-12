@@ -117,9 +117,7 @@ async function main() {
   // [END batch_labels_allocation]
 }
 
-process.on('unhandledRejection', err => {
+main().catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
-main();

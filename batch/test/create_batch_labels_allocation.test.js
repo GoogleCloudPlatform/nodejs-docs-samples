@@ -41,7 +41,7 @@ describe('Create batch labels allocation', async () => {
 
   it('should create a new job with allocation policy labels', async () => {
     const expectedAllocationLabels = {
-      'batch-job-id': 'batch-labels-allocation-job',
+      'batch-job-id': jobName,
       vm_label_name_1: 'vmLabelValue1',
       vm_label_name_2: 'vmLabelValue2',
     };

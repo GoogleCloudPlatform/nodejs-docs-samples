@@ -23,22 +23,13 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const {deleteJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 
-async function deleteJob(projectId, region, jobId) {
-  const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
-  };
-  try {
-    await batchClient.deleteJob(request);
-  } catch (err) {
-    console.error('Error deleting job:', err);
-  }
-}
-
-describe('Create batch GPU job', async () => {
-  const jobName = 'batch-gpu-job';
+describe('Create batch using secret manager', async () => {
+  const jobName = 'batch-job-secret-manager';
   const region = 'europe-central2';
+
   let projectId;
 
   before(async () => {
@@ -46,36 +37,23 @@ describe('Create batch GPU job', async () => {
   });
 
   after(async () => {
-    await deleteJob(projectId, region, jobName);
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
-  it('should create a new job with GPU', async () => {
-    const accelerators = [
-      {
-        type: 'nvidia-l4',
-        count: '1',
-        installGpuDrivers: false,
-        driverVersion: '',
-      },
-    ];
+  it('should create a new job using secret manager', async () => {
+    const secretName = 'secretName';
+    const version = 'version';
+    const expectedSecretVariables = {
+      secretVariableName: `projects/${projectId}/secrets/${secretName}/versions/${version}`,
+    };
 
-    const response = JSON.parse(
-      execSync('node ./create/create_gpu_job.js', {
-        cwd,
-      })
-    );
+    const response = execSync('node ./create/create_using_secret_manager.js', {
+      cwd,
+    });
 
     assert.deepEqual(
-      response.allocationPolicy.instances[0].policy.accelerators,
-      accelerators
-    );
-    assert.equal(
-      response.allocationPolicy.instances[0].policy.machineType,
-      'g2-standard-4'
-    );
-    assert.equal(
-      response.allocationPolicy.instances[0].installGpuDrivers,
-      false
+      JSON.parse(response).taskGroups[0].taskSpec.environment.secretVariables,
+      expectedSecretVariables
     );
   });
 });

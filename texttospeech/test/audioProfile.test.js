@@ -14,34 +14,44 @@
 
 'use strict';
 
-const fs = require('fs');
-const {assert} = require('chai');
-const {describe, it, after} = require('mocha');
-const cp = require('child_process');
+const assert = require('node:assert/strict');
+const cp = require('node:child_process');
+const {existsSync, unlinkSync} = require('node:fs');
+
+const {after, before, describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const cmd = 'node audioProfile.js';
 const text =
   '"Hello Everybody!  This is an Audio Profile Optimized Sound Byte."';
 const outputFile = 'phonetest.mp3';
 
+function removeOutput() {
+  try {
+    // Remove if outputFile exists
+    unlinkSync(outputFile);
+  } catch {
+    // OK to ignore error if outputFile doesn't exist already
+  }
+}
+
 describe('audio profile', () => {
-  after(() => {
-    function unlink(outputFile) {
-      try {
-        fs.unlinkSync(outputFile);
-      } catch (err) {
-        // Ignore error
-      }
-    }
-    [outputFile].map(unlink);
+  before(() => {
+    // Remove file if it already exists
+    removeOutput();
   });
 
-  it('should synthesize human audio using hardware profile', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+  after(() => {
+    // Remove file after testing
+    removeOutput();
+  });
+
+  it('should synthesize human audio using hardware profile', () => {
+    assert.equal(existsSync(outputFile), false);
     const output = execSync(`${cmd} ${text} ${outputFile}`);
-    assert.match(output, new RegExp('Audio content written to file:'));
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
+    );
+    assert.ok(existsSync(outputFile));
   });
 });

@@ -15,25 +15,40 @@
  */
 'use strict';
 
-const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
-const uuidv1 = require('uuid').v1;
+const {execSync} = require('node:child_process');
+
 const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const {execSync} = require('child_process');
+const {describe, it, before, after} = require('mocha');
+const uuidv1 = require('uuid').v1;
+
+const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
+const {PubSub} = require('@google-cloud/pubsub');
+
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 const organizationId = process.env['GCLOUD_ORGANIZATION'];
-const projectId = process.env['GOOGLE_CLOUD_PROJECT'];
+const projectId = process.env['GOOGLE_SAMPLES_PROJECT'];
 const location = 'global';
 
 describe('Client with Notifications v2', async () => {
+  let client;
+  let pubSubClient;
+  let topicName;
+  let parent;
+  let pubsubTopic;
+
   let data;
+
   before(async () => {
-    const client = new SecurityCenterClient();
     const configId = 'notif-config-test-node-create-' + uuidv1();
-    const topicName = 'test_topic';
-    const parent = `projects/${projectId}/locations/${location}`;
-    const pubsubTopic = `projects/${projectId}/topics/${topicName}`;
+    topicName = 'test_topic';
+    parent = `projects/${projectId}/locations/${location}`;
+    pubsubTopic = `projects/${projectId}/topics/${topicName}`;
+
+    client = new SecurityCenterClient();
+
+    pubSubClient = new PubSub();
+    await pubSubClient.createTopic(topicName);
 
     const notificationConfig = {
       description: 'Sample config for node v2',
@@ -57,6 +72,11 @@ describe('Client with Notifications v2', async () => {
     };
     console.log('my data notification %j', data);
   });
+
+  after(async () => {
+    await pubSubClient.topic(topicName).delete();
+  });
+
   it('client can create config v2', () => {
     const output = exec(
       `node v2/createNotificationConfig.js ${data.projectId} ${data.topicName}`

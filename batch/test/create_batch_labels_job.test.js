@@ -26,8 +26,8 @@ const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const {deleteJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 
-describe('Create batch labels allocation', async () => {
-  const jobName = 'batch-labels-allocation-job';
+describe('Create batch labels for job', async () => {
+  const jobName = 'batch-labels-job';
   const region = 'europe-central2';
   let projectId;
 
@@ -39,22 +39,18 @@ describe('Create batch labels allocation', async () => {
     await deleteJob(batchClient, projectId, region, jobName);
   });
 
-  it('should create a new job with allocation policy labels', async () => {
-    const expectedAllocationLabels = {
-      'batch-job-id': jobName,
-      vm_label_name_1: 'vmLabelValue1',
-      vm_label_name_2: 'vmLabelValue2',
+  it('should create a new job with labels', async () => {
+    const expectedJobLabels = {
+      job_label_name_1: 'job_label_value1',
+      job_label_name_2: 'job_label_value2',
     };
 
     const response = JSON.parse(
-      execSync('node ./create/create_batch_labels_allocation.js', {
+      execSync('node ./create/create_batch_labels_job.js', {
         cwd,
       })
     );
 
-    assert.deepEqual(
-      response.allocationPolicy.labels,
-      expectedAllocationLabels
-    );
+    assert.deepEqual(response.labels, expectedJobLabels);
   });
 });

@@ -17,7 +17,7 @@
 'use strict';
 
 async function main() {
-  // [START batch_labels_allocation]
+  // [START batch_labels_job]
   // Imports the Batch library
   const batchLib = require('@google-cloud/batch');
   const batch = batchLib.protos.google.cloud.batch.v1;
@@ -34,19 +34,21 @@ async function main() {
   const region = 'europe-central2';
   // The name of the job that will be created.
   // It needs to be unique for each project and region pair.
-  const jobName = 'batch-labels-allocation-job';
+  const jobName = 'batch-labels-job';
   // Name of the label1 to be applied for your Job.
-  const labelName1 = 'vm_label_name_1';
+  const labelName1 = 'job_label_name_1';
   // Value for the label1 to be applied for your Job.
-  const labelValue1 = 'vmLabelValue1';
+  const labelValue1 = 'job_label_value1';
   // Name of the label2 to be applied for your Job.
-  const labelName2 = 'vm_label_name_2';
+  const labelName2 = 'job_label_name_2';
   // Value for the label2 to be applied for your Job.
-  const labelValue2 = 'vmLabelValue2';
+  const labelValue2 = 'job_label_value2';
 
   // Define what will be done as part of the job.
   const runnable = new batch.Runnable({
-    script: new batch.Runnable.Script({
+    container: new batch.Runnable.Container({
+      imageUri: 'gcr.io/google-containers/busybox',
+      entrypoint: '/bin/sh',
       commands: ['-c', 'echo Hello world! This is task ${BATCH_TASK_INDEX}.'],
     }),
   });
@@ -72,35 +74,23 @@ async function main() {
     taskSpec: task,
   });
 
-  // Policies are used to define on what kind of virtual machines the tasks will run on.
-  // In this case, we tell the system to use "e2-standard-4" machine type.
-  // Read more about machine types here: https://cloud.google.com/compute/docs/machine-types
-  const instancePolicy = new batch.AllocationPolicy.InstancePolicy({
-    machineType: 'e2-standard-4',
-  });
-
-  const allocationPolicy = new batch.AllocationPolicy({
-    instances: [{policy: instancePolicy}],
-  });
-  // Labels and their value to be applied to the job and its resources.
-  allocationPolicy.labels[labelName1] = labelValue1;
-  allocationPolicy.labels[labelName2] = labelValue2;
-
   const job = new batch.Job({
     name: jobName,
     taskGroups: [group],
-    labels: {env: 'testing', type: 'script'},
-    allocationPolicy,
     // We use Cloud Logging as it's an option available out of the box
     logsPolicy: new batch.LogsPolicy({
       destination: batch.LogsPolicy.Destination.CLOUD_LOGGING,
     }),
   });
 
+  // Labels and their value to be applied to the job and its resources.
+  job.labels[labelName1] = labelValue1;
+  job.labels[labelName2] = labelValue2;
+
   // The job's parent is the project and region in which the job will run
   const parent = `projects/${projectId}/locations/${region}`;
 
-  async function callCreateBatchLabelsAllocation() {
+  async function callCreateBatchLabelsJob() {
     // Construct request
     const request = {
       parent,
@@ -113,8 +103,8 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchLabelsAllocation();
-  // [END batch_labels_allocation]
+  callCreateBatchLabelsJob();
+  // [END batch_labels_job]
 }
 
 main().catch(err => {

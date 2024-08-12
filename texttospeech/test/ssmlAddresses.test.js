@@ -14,39 +14,42 @@
 
 'use strict';
 
-const fs = require('fs');
-const {assert} = require('chai');
-const {describe, it, before, after} = require('mocha');
-const cp = require('child_process');
+const assert = require('node:assert/strict');
+const cp = require('node:child_process');
+const {existsSync, unlinkSync} = require('node:fs');
+
+const {after, beforeEach, describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const cmd = 'node ssmlAddresses.js';
 const outputFile = 'resources/example.mp3';
 
+function removeOutput() {
+  try {
+    // Remove if outputFile exists
+    unlinkSync(outputFile);
+  } catch {
+    // OK to ignore error if outputFile doesn't exist already
+  }
+}
+
 describe('ssmlAddresses', () => {
   // delete 'resources/example.mp3' file if it already exists
-  before(() => {
-    try {
-      fs.unlinkSync(outputFile);
-    } catch (e) {
-      // don't throw an exception
-    }
+  beforeEach(() => {
+    removeOutput();
   });
 
   // delete 'resources/example.mp3' file
   after(() => {
-    fs.unlinkSync(outputFile);
-    assert.strictEqual(fs.existsSync(outputFile), false);
+    removeOutput();
   });
 
-  it('synthesize speech to local mp3 file', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
-    const stdout = execSync(`${cmd}`);
-    assert.match(
-      stdout,
-      /Audio content written to file resources\/example.mp3/
+  it('synthesize speech to local mp3 file', () => {
+    assert.equal(existsSync(outputFile), false);
+    const output = execSync(`${cmd}`);
+    assert.ok(
+      new RegExp(`Audio content written to file ${outputFile}`).test(output)
     );
-    assert.strictEqual(fs.existsSync(outputFile), true);
+    assert.ok(existsSync(outputFile));
   });
 });

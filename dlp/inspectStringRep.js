@@ -19,7 +19,7 @@
 //  description: Inspect a string using the Data Loss Prevention API.
 //  usage: node inspectString.js my-project string minLikelihood maxFindings infoTypes customInfoTypes includeQuote
 
-function main(
+async function main(
   projectId,
   repLocation,
   string,
@@ -100,11 +100,15 @@ function main(
       console.log('No findings.');
     }
   }
-  inspectString();
+
+  await inspectString();
   // [END dlp_inspect_string_rep]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});
 
 function transformCLI(infoTypes, customInfoTypes) {
   infoTypes = infoTypes

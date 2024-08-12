@@ -77,8 +77,8 @@ jobs:
     - name: set env vars for scheduled run
       if: github.event.action == 'schedule'
       run: |
-        echo "MOCHA_REPORTER_SUITENAME=security-center-snippets" >> $GITHUB_ENV
-        echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER_SUITENAME=security-center-snippets-v1" >> $GITHUB_ENV
+        echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log_v1.xml" >> $GITHUB_ENV
         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
     - run: npm test
       env:
@@ -87,7 +87,7 @@ jobs:
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3
       env:
-        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
+        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log_v1.xml"
       with:
         name: test-results
         path: security-center/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}

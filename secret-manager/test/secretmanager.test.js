@@ -158,7 +158,6 @@ describe('Secret Manager samples', () => {
     }
 
     try {
-
       await client.deleteSecret({
         name: `${secret.name}-4`,
       });
@@ -264,7 +263,6 @@ describe('Secret Manager samples', () => {
     const output = execSync(`node updateSecretWithAlias.js ${secret.name}`);
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });
-
 
   it('create or updates a secret labels', async () => {
     const output = execSync(

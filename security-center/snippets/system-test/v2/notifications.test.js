@@ -81,7 +81,11 @@ describe('Client with Notifications v2', async () => {
   });
 
   after(async () => {
-    await pubSubClient.topic(topicName).delete();
+    try {
+      await pubSubClient.topic(topicName).delete();
+    } catch {
+      // Ignore if the topic doesn't exist
+    }
   });
 
   it('client can create config v2', () => {

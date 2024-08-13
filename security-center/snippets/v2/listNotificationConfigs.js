@@ -16,7 +16,7 @@
 
 'use strict';
 
-function main(projectId, location = 'global') {
+async function main(projectId, location = 'global') {
   // [START securitycenter_list_notification_configs_v2]
   // npm install @google-cloud/security-center/
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -40,8 +40,11 @@ function main(projectId, location = 'global') {
     }
   }
 
-  listNotificationConfigs();
+  await listNotificationConfigs();
   // [END securitycenter_list_notification_configs_v2]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

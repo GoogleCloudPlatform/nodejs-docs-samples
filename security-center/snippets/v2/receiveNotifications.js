@@ -16,7 +16,7 @@
 
 'use strict';
 
-function main(
+async function main(
   projectId = 'your-project-id',
   subscriptionId = 'your-subscription-id'
 ) {
@@ -56,8 +56,11 @@ function main(
     }, 10000);
   }
 
-  listenForMessages();
+  await listenForMessages();
   // [END securitycenter_receive_notifications]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

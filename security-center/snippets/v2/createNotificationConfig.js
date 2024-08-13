@@ -20,7 +20,7 @@
  * Creates a notification config in a project under a given location.
  * Ensure the ServiceAccount has the "pubsub.topics.setIamPolicy" permission on the new topic.
  */
-function main(projectId, topicName, location = 'global') {
+async function main(projectId, topicName, location = 'global') {
   // [START securitycenter_create_notification_config_v2]
   // npm install '@google-cloud/security-center'
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -71,8 +71,11 @@ function main(projectId, topicName, location = 'global') {
     console.log('Notification configuration creation successful: %j', response);
   }
 
-  createNotificationConfig();
+  await createNotificationConfig();
   // [END securitycenter_create_notification_config_v2]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

@@ -17,7 +17,7 @@
 'use strict';
 
 //Retrieve an existing notification config.
-function main(projectId, notificationId, location = 'global') {
+async function main(projectId, notificationId, location = 'global') {
   // [START securitycenter_get_notification_config_v2]
   // npm install '@google-cloud/security-center'
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -44,8 +44,11 @@ function main(projectId, notificationId, location = 'global') {
     console.log('Notification config: %j', response);
   }
 
-  getNotificationConfig();
+  await getNotificationConfig();
   // [END securitycenter_get_notification_config_v2]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

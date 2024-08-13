@@ -19,11 +19,12 @@ const {describe, it} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-const organization_id = process.env['GCLOUD_ORGANIZATION'];
+// TODO(developers): update for your own environment
+const organizationId = '1081635000895';
 
 describe('listAssetsandChanges', () => {
   it('should print projects with state changes', () => {
-    const output = exec(`node v1/listAssetsAndChanges.js ${organization_id}`);
+    const output = exec(`node v1/listAssetsAndChanges.js ${organizationId}`);
     assert.match(output, /(ADDED|ACTIVE)/);
     assert.equal(4, output.match(/\n/g).length + 1, '== number of projects');
     assert.notMatch(output, /undefined/);

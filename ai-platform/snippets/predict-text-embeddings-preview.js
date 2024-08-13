@@ -19,9 +19,9 @@
 // [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
-  model = 'text-embedding-preview-0409',
-  texts = 'banana bread?;banana muffins?',
-  task = 'QUESTION_ANSWERING',
+  model = 'text-embedding-preview-0815',
+  texts = 'Retrieve a function that adds two numbers;def func(a, b): return a + b',
+  task = 'CODE_RETRIEVAL_QUERY',
   dimensionality = 256,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {
@@ -29,26 +29,25 @@ async function main(
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const location = 'us-central1';
+  const match = apiEndpoint.match(/(?<Location>\w+-\w+)/);
+  const location = match ? match.groups.Location : 'us-centra11';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = helpers.toValue({
-    outputDimensionality: parseInt(dimensionality),
-  });
+  const parameters = helpers.toValue(dimensionality);
 
   async function callPredict() {
     const instances = texts
       .split(';')
-      .map(e => helpers.toValue({content: e, task_type: task}));
+      .map(e => helpers.toValue({content: e, taskType: task}));
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
+    console.log('Got predict response');
     const predictions = response.predictions;
-    const embeddings = predictions.map(p => {
-      const embeddingsProto = p.structValue.fields.embeddings;
-      const valuesProto = embeddingsProto.structValue.fields.values;
-      return valuesProto.listValue.values.map(v => v.numberValue);
-    });
-    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
+    for (const prediction of predictions) {
+      const embeddings = prediction.structValue.fields.embeddings;
+      const values = embeddings.structValue.fields.values.listValue.values;
+      console.log('Got prediction: ' + JSON.stringify(values));
+    }
   }
 
   callPredict();

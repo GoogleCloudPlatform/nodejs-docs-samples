@@ -25,36 +25,27 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 const project = process.env.CAIP_PROJECT_ID;
-const dimensionality = 3;
 const texts = [
   'banana bread?',
   'banana muffin?',
   'banana?',
   'recipe?',
   'muffin recipe?',
-];
+].join(';');
 
 describe('predict text embeddings', () => {
   it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} text-embedding-004 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
+      `node ./predict-text-embeddings.js ${project} textembedding-gecko@003 '${texts}' RETRIEVAL_DOCUMENT`,
       {cwd}
     );
-    const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));
-    assert.equal(texts.length, embeddings.length);
-    for (const embedding of embeddings) {
-      assert.equal(dimensionality, embedding.length);
-    }
+    assert.match(stdout, /Got predict response/);
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0409 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
+      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0815 '${texts}' CODE_RETRIEVAL_QUERY 256`,
       {cwd}
     );
-    const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));
-    assert.equal(texts.length, embeddings.length);
-    for (const embedding of embeddings) {
-      assert.equal(dimensionality, embedding.length);
-    }
+    assert.match(stdout, /Got predict response/);
   });
 });

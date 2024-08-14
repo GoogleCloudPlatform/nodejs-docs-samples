@@ -124,7 +124,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchCustomNetwork();
+  await callCreateBatchCustomNetwork();
   // [END batch_create_custom_network]
 }
 

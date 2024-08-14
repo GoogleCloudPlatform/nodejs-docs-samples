@@ -15,7 +15,7 @@
 'use strict';
 
 const proxyquire = require('proxyquire').noPreserveCache();
-const assert = require('assert');
+const {assert} = require('chai');
 
 process.env.MAILJET_API_KEY = 'foo';
 process.env.MAILJET_API_SECRET = 'bar';

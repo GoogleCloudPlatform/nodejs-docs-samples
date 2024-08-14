@@ -17,11 +17,13 @@
 'use strict';
 
 // [START generativeaionvertexai_sdk_embedding]
+// Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
+// Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
 async function main(
   project,
   model = 'text-embedding-preview-0815',
-  texts = 'Retrieve a function that adds two numbers;def func(a, b): return a + b',
-  task = 'CODE_RETRIEVAL_QUERY',
+  texts = 'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5',
+  task = 'RETRIEVAL_DOCUMENT',
   dimensionality = 256,
   apiEndpoint = 'us-central1-aiplatform.googleapis.com'
 ) {

@@ -104,7 +104,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchLabelsJob();
+  await callCreateBatchLabelsJob();
   // [END batch_labels_job]
 }
 

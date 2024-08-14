@@ -106,7 +106,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchCustomEvents();
+  await callCreateBatchCustomEvents();
   // [END batch_custom_events]
 }
 

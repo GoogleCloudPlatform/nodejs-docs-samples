@@ -114,7 +114,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchLabelsAllocation();
+  await callCreateBatchLabelsAllocation();
   // [END batch_labels_allocation]
 }
 

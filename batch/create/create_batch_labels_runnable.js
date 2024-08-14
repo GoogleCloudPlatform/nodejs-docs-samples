@@ -119,7 +119,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchLabelsRunnable();
+  await callCreateBatchLabelsRunnable();
   // [END batch_labels_runnable]
 }
 

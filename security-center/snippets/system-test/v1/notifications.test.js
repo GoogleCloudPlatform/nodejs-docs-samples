@@ -21,7 +21,8 @@ const {describe, it, before, after} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-const organizationId = process.env['GCLOUD_ORGANIZATION'];
+// TODO(developers): update for your own environment
+const organizationId = '1081635000895';
 const orgName = 'organizations/' + organizationId;
 const pubsubTopic = 'projects/project-a-id/topics/notifications-sample-topic';
 

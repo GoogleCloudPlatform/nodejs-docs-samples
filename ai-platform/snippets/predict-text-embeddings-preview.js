@@ -17,6 +17,7 @@
 'use strict';
 
 // [START generativeaionvertexai_sdk_embedding]
+
 // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
 // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
 async function main(

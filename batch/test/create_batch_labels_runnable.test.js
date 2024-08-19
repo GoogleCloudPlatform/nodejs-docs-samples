@@ -27,8 +27,8 @@ const {deleteJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 
 describe('Create batch labels runnable', async () => {
-  const runnableName = 'batch-labels-runnable';
-  const region = 'europe-central2';
+  const jobName = 'example-job';
+  const region = 'us-central1';
   let projectId;
 
   before(async () => {
@@ -36,7 +36,7 @@ describe('Create batch labels runnable', async () => {
   });
 
   after(async () => {
-    await deleteJob(batchClient, projectId, region, runnableName);
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
   it('should create a new job with labels for runnables', async () => {
@@ -44,13 +44,13 @@ describe('Create batch labels runnable', async () => {
       {
         executable: 'container',
         labels: {
-          runnable_label_name_1: 'runnable_label_value1',
+          RUNNABLE_LABEL_NAME1: 'RUNNABLE_LABEL_VALUE1',
         },
       },
       {
         executable: 'script',
         labels: {
-          runnable_label_name_2: 'runnable_label_value2',
+          RUNNABLE_LABEL_NAME2: 'RUNNABLE_LABEL_VALUE2',
         },
       },
     ];

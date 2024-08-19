@@ -27,7 +27,7 @@ const {deleteJob} = require('./batchClient_operations');
 const batchClient = new BatchServiceClient();
 
 describe('Create batch custom network', async () => {
-  const runnableName = 'batch-custom-network';
+  const jobName = 'example-job';
   const region = 'europe-central2';
   let projectId;
 
@@ -36,7 +36,7 @@ describe('Create batch custom network', async () => {
   });
 
   after(async () => {
-    await deleteJob(batchClient, projectId, region, runnableName);
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
   it('should create a new job with custom network', async () => {

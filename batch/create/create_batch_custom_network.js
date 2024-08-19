@@ -35,7 +35,7 @@ async function main() {
   const region = 'europe-central2';
   // The name of the job that will be created.
   // It needs to be unique for each project and region pair.
-  const jobName = 'batch-custom-network';
+  const jobName = 'example-job';
   // The name of a VPC network in the current project or a Shared VPC network that is hosted by
   // or shared with the current project.
   const network = 'global/networks/test-network';

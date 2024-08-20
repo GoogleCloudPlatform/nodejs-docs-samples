@@ -25,7 +25,7 @@ async function main() {
   // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
   // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
   const texts =
-      'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';
+    'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';
   const task = 'RETRIEVAL_DOCUMENT';
   const dimensionality = 256;
   const apiEndpoint = 'us-central1-aiplatform.googleapis.com';

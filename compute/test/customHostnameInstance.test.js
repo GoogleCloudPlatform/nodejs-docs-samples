@@ -19,7 +19,7 @@ const compute = require('@google-cloud/compute');
 const {describe, it} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
-const assert = require('node:assert/strict');
+const {assert} = require('chai');
 
 const instancesClient = new compute.InstancesClient();
 

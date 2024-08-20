@@ -15,7 +15,7 @@
 'use strict';
 
 const proxyquire = require('proxyquire');
-const assert = require('node:assert/strict');
+const {assert} = require('chai');
 
 process.env.SENDGRID_API_KEY = 'foo';
 

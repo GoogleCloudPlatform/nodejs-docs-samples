@@ -18,7 +18,7 @@ const compute = require('@google-cloud/compute');
 
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-const assert = require('node:assert/strict');
+const {assert} = require('chai');
 
 const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
 

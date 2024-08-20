@@ -82,6 +82,7 @@ jobs:
     - run: npm test
       env:
         GCLOUD_ORGANIZATION: 1081635000895
+        GOOGLE_SAMPLES_PROJECT: "long-door-651"
     - name: upload test results for FlakyBot workflow
       if: github.event.action == 'schedule' && always()
       uses: actions/upload-artifact@v3

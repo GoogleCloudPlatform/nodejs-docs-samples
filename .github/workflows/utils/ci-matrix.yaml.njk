@@ -21,11 +21,11 @@ on:
     - '{{path}}/**'
     - '.github/workflows/{{name}}.yaml'
   pull_request:
-    paths:
-    - '{{path}}/**'
-    - '.github/workflows/{{name}}.yaml'
-  pull_request_target:
-    types: [labeled]
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
     paths:
     - '{{path}}/**'
     - '.github/workflows/{{name}}.yaml'

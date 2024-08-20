@@ -39,13 +39,12 @@ function main(projectId, location) {
     }
   }
 
-  listSlates();
+  listSlates().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_list_slates]
 }
 
 // node listSlates.js <projectId> <location>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

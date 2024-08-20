@@ -50,13 +50,12 @@ function main(projectId, cdnKeyId, akamaiTokenKey) {
     console.log(`CDN key: ${response.name}`);
   }
 
-  createCdnKeyAkamai();
+  createCdnKeyAkamai().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_cdn_key_akamai]
 }
 
 // node createCdnKeyAkamai.js <projectId> <cdnKeyId> <akamaiTokenKey> <location> <hostname>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

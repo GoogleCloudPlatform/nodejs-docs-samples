@@ -17,9 +17,9 @@
     "@google-cloud/security-center": "^8.7.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
+    "c8": "^10.0.0",
     "chai": "^4.2.0",
     "mocha": "^10.4.0",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   }
 }

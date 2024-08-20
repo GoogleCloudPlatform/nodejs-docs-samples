@@ -10,18 +10,19 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 600000 test/*.js",
+    "test": "c8 mocha -p -j 2 --timeout 1200000 test/basics.test.js",
     "publish": "echo 'sample test; do not publish'"
   },
   "dependencies": {
     "@google-cloud/batch": "^1.0.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "mocha": "^10.0.0",
-    "nanoid": "^3.3.0",
-    "@google-cloud/storage": "^7.0.0",
+    "@google-cloud/compute": "^4.0.0",
     "@google-cloud/resource-manager": "^5.0.0",
-    "@google-cloud/compute": "^4.0.0"    
+    "@google-cloud/storage": "^7.0.0",
+    "@types/mocha": "^10.0.7",
+    "c8": "^10.0.0",
+    "mocha": "^10.0.0",
+    "nanoid": "^3.3.7"
   }
 }

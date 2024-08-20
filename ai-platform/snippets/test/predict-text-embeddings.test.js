@@ -37,7 +37,7 @@ const texts = [
 describe('predict text embeddings', () => {
   it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} text-embedding-004 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
+      `node ./predict-text-embeddings.js`,
       {cwd}
     );
     const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));
@@ -48,7 +48,7 @@ describe('predict text embeddings', () => {
   });
   it('should get text embeddings using the preview model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings-preview.js ${project} text-embedding-preview-0815 '${texts.join(';')}' CODE_RETRIEVAL_QUERY ${dimensionality}`,
+      `node ./predict-text-embeddings-preview.js`,
       {cwd}
     );
     const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));

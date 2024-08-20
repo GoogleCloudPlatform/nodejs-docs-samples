@@ -29,7 +29,7 @@ async function main() {
     'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';
   const task = 'RETRIEVAL_DOCUMENT';
   const dimensionality = 256;
-  const apiEndpoint = 'us-central1-aiplatform.googleapis.com';
+  const apiEndpoint = 'us-central1-aiplatform.googleapis.com:443';
 
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;

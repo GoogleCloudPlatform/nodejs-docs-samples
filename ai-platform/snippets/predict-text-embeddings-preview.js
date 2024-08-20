@@ -20,8 +20,8 @@ async function main() {
   // [START generativeaionvertexai_sdk_embedding]
 
   // TODO(developer): Update the following for your own use case.
-  project = 'cloud-ai-platform-samples';
-  model = 'text-embedding-preview-0815';
+  const project = 'cloud-ai-platform-samples';
+  const model = 'text-embedding-preview-0815';
   // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
   // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
   const texts = 'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';

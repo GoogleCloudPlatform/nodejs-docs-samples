@@ -22,7 +22,7 @@
     "gcp-build": "tsc -p ."
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "express": "^4.16.3"
   },
   "devDependencies": {

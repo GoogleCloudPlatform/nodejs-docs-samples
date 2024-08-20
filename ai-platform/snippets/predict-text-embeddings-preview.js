@@ -20,8 +20,9 @@ async function main() {
   // [START generativeaionvertexai_sdk_embedding]
 
   // TODO(developer): Update the following for your own use case.
-  const project = 'cloud-ai-platform-samples';
+  const project = 'long-door-651';
   const model = 'text-embedding-preview-0815';
+  const location = 'us-central1';
   // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
   // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
   const texts =
@@ -34,7 +35,6 @@ async function main() {
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
   const parameters = helpers.toValue({
     outputDimensionality: parseInt(dimensionality),

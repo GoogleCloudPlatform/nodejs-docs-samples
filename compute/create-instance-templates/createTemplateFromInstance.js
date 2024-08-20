@@ -50,7 +50,7 @@ function main(projectId, instance, templateName) {
               // Replace the original boot disk image used in your instance with a Rocky Linux image.
               instantiateFrom: 'CUSTOM_IMAGE',
               customImage:
-                'projects/debian-cloud/global/images/family/debian-10',
+                'projects/rocky-linux-cloud/global/images/family/rocky-linux-8',
               // Override the auto_delete setting.
               autoDelete: true,
             },

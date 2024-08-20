@@ -55,7 +55,7 @@ async function main() {
     });
     console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
-  callPredict();
+  await callPredict();
   // [END generativeaionvertexai_sdk_embedding]
 }
 

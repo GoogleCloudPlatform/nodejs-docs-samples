@@ -28,7 +28,7 @@ async function main() {
   const texts =
     'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';
   const task = 'RETRIEVAL_DOCUMENT';
-  const dimensionality = 256;
+  const dimensionality = 3;
   const apiEndpoint = 'us-central1-aiplatform.googleapis.com';
 
   const aiplatform = require('@google-cloud/aiplatform');

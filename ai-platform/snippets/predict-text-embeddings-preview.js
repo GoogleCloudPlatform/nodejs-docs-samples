@@ -16,13 +16,11 @@
 
 'use strict';
 
-async function main(project) {
+async function main() {
   // [START generativeaionvertexai_sdk_embedding]
 
-  // TODO(developer): Update the following for your own use case.\
-  // Uncomment these variables before running the sample.\
-  // (Not necessary if passing values as arguments)
-  // const project = 'YOUR_PROJECT_ID';
+  // TODO(developer): Update the following for your own use case.
+  const project = 'long-door-651';
   const model = 'text-embedding-preview-0815';
   const location = 'us-central1';
   // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.

@@ -47,7 +47,8 @@ describe('predict text embeddings', () => {
     }
   });
   it('should get text embeddings using the preview model', async () => {
-    const stdout = execSync(`node ./predict-text-embeddings-preview.js ${project}`, 
+    const stdout = execSync(
+        `node ./predict-text-embeddings-preview.js ${project}`,
       {cwd}
     );
     const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));

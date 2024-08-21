@@ -16,12 +16,13 @@
 
 async function deleteJob(batchClient, projectId, region, jobId) {
   const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
+    name: `projects/${projectId}/locations/${region}/jobs/${jobId}666`,
   };
   try {
     await batchClient.deleteJob(request);
   } catch (err) {
     console.error('Deleting job failed: ', err);
+    throw new Error(err);
   }
 }
 

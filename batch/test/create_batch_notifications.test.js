@@ -20,27 +20,17 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
+const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const {deleteJob} = require('./batchClient_operations');
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const batchClient = new BatchServiceClient();
-
-async function deleteJob(projectId, region, jobId) {
-  const request = {
-    name: `projects/${projectId}/locations/${region}/jobs/${jobId}`,
-  };
-  try {
-    await batchClient.deleteJob(request);
-  } catch (err) {
-    console.error('Error deleting job:', err);
-  }
-}
 
 describe('Create batch notifications', async () => {
   const jobName = 'job-name-batch-notifications';
   const region = 'europe-central2';
   const topicId = 'topic-id';
-
+  const batchClient = new BatchServiceClient();
   let projectId;
 
   before(async () => {
@@ -48,7 +38,7 @@ describe('Create batch notifications', async () => {
   });
 
   after(async () => {
-    await deleteJob(projectId, region, jobName);
+    await deleteJob(batchClient, projectId, region, jobName);
   });
 
   it('should create a new job with batch notifications', async () => {

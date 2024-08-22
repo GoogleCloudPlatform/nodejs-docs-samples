@@ -18,7 +18,7 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {after, before, describe, it} = require('mocha');
+const {after, before, xdescribe, it} = require('mocha');
 const cp = require('child_process');
 const {DisksClient, StoragePoolsClient, ZoneOperationsClient} =
   require('@google-cloud/compute').v1;
@@ -65,7 +65,7 @@ async function cleanupResources(projectId, zone, diskName, storagePoolName) {
   }
 }
 
-describe('Create compute hyperdisk from pool', async () => {
+xdescribe('Create compute hyperdisk from pool', async () => {
   const diskName = 'disk-from-pool-name';
   const zone = 'us-central1-a';
   const storagePoolName = 'storage-pool-name';

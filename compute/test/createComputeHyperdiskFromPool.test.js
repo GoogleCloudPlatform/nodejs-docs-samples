@@ -30,7 +30,7 @@ const cwd = path.join(__dirname, '..');
 describe('Create compute hyperdisk from pool', async () => {
   const diskName = 'disk-name';
   const zone = 'europe-central2-b';
-  const storagePoolName = 'storage-pool-name';
+  const storagePoolName = 'storage-pool-hyperdisk';
   const disksClient = new DisksClient();
   const storagePoolsClient = new StoragePoolsClient();
   let projectId;

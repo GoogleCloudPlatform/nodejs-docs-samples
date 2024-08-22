@@ -37,7 +37,7 @@ async function main() {
   // The name of the new disk
   const diskName = 'disk-name';
   // The name of the storage pool
-  const storagePoolName = 'storage-pool-hyperdisk';
+  const storagePoolName = 'storage-pool-name';
   // Link to the storagePool you want to use. Use format:
   // https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/storagePools/{storagePoolName}
   const storagePool = `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/storagePools/${storagePoolName}`;

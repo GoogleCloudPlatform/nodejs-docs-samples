@@ -20,9 +20,8 @@ const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-const {StoragePoolsClient} = require('@google-cloud/compute');
 const {DisksClient} = require('@google-cloud/compute').v1;
-const {createStoragePool, deleteStoragePool, deleteDisk} = require('./util');
+const {deleteDisk} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
@@ -30,29 +29,16 @@ const cwd = path.join(__dirname, '..');
 describe('Create compute hyperdisk from pool', async () => {
   const diskName = 'disk-name';
   const zone = 'europe-central2-b';
-  const storagePoolName = 'storage-pool-hyperdisk';
+  const storagePoolName = 'storage-pool-name';
   const disksClient = new DisksClient();
-  const storagePoolsClient = new StoragePoolsClient();
   let projectId;
 
   before(async () => {
     projectId = await disksClient.getProjectId();
-    await createStoragePool(
-      storagePoolsClient,
-      projectId,
-      zone,
-      storagePoolName
-    );
   });
 
   after(async () => {
     await deleteDisk(disksClient, projectId, zone, diskName);
-    await deleteStoragePool(
-      storagePoolsClient,
-      projectId,
-      zone,
-      storagePoolName
-    );
   });
 
   it('should create a new hyperdisk from pool', () => {

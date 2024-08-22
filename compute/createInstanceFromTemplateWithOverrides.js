@@ -26,7 +26,7 @@
  *    https://cloud.google.com/sdk/gcloud/reference/compute/machine-types/list
  * @param {string} newDiskSourceImage - Path the the disk image you want to use for your new
  *    disk. This can be one of the public images
- *    (like "projects/debian-cloud/global/images/family/debian-10")
+ *    (like "projects/debian-cloud/global/images/family/debian-11")
  *    or a private image you have access to.
  *    For a list of available public images, see the documentation:
  *    http://cloud.google.com/compute/docs/images
@@ -37,7 +37,7 @@ function main(
   instanceName,
   instanceTemplateName,
   machineType = 'n1-standard-2',
-  newDiskSourceImage = 'projects/debian-cloud/global/images/family/debian-10'
+  newDiskSourceImage = 'projects/debian-cloud/global/images/family/debian-11'
 ) {
   // [START compute_instances_create_from_template_with_overrides]
   /**
@@ -48,7 +48,7 @@ function main(
   // const instanceName = 'YOUR_INSTANCE_NAME';
   // const instanceTemplateName = 'YOUR_INSTANCE_TEMPLATE_NAME';
   // const machineType = 'n1-standard-1';
-  // const newDiskSourceImage = 'projects/debian-cloud/global/images/family/debian-10';
+  // const newDiskSourceImage = 'projects/debian-cloud/global/images/family/debian-11';
 
   const compute = require('@google-cloud/compute');
 

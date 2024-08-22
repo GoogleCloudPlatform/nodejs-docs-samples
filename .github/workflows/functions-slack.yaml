@@ -50,8 +50,8 @@ jobs:
         create_credentials_file: 'true'
         access_token_lifetime: 600s
     - id: secrets
-        uses: 'google-github-actions/get-secretmanager-secrets@v2'
-        with:
+      uses: 'google-github-actions/get-secretmanager-secrets@v2'
+      with:
           secrets: |-
             slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
             kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
@@ -59,12 +59,12 @@ jobs:
       with:
           node-version: 16
     - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
     - uses: actions/cache@v4
-        id: npm-cache
-        with:
+      id: npm-cache
+      with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |

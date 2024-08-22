@@ -70,7 +70,7 @@ async function main() {
 
     let operation = response.latestResponse;
 
-    // Wait for the create disk operation to complete.
+    // Wait for the create storage pool operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({
         operation: operation.name,

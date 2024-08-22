@@ -20,9 +20,10 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
+const {StoragePoolsClient} = require('@google-cloud/compute').v1;
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const {StoragePoolsClient} = require('@google-cloud/compute').v1;
 const storagePoolsClient = new StoragePoolsClient();
 
 async function deleteStoragePool(projectId, zone, storagePoolName) {
@@ -34,6 +35,7 @@ async function deleteStoragePool(projectId, zone, storagePoolName) {
     });
   } catch (err) {
     console.error('Deleting storage pool failed: ', err);
+    throw new Error(err);
   }
 }
 

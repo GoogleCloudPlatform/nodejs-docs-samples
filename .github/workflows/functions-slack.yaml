@@ -12,88 +12,94 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+---
 name: functions-slack
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - 'functions/slack/**'
-    - '.github/workflows/functions-slack.yaml'
+      - functions/slack/**
+      - .github/workflows/functions-slack.yaml
   pull_request:
     types:
-    - opened
-    - reopened
-    - synchronize
-    - labeled
+      - opened
+      - reopened
+      - synchronize
+      - labeled
     paths:
-    - 'functions/slack/**'
-    - '.github/workflows/functions-slack.yaml'
+      - functions/slack/**
+      - .github/workflows/functions-slack.yaml
   schedule:
-  - cron: '0 0 * * 0'
+    - cron: 0 0 * * 0
 jobs:
   test:
     permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+      contents: read
+      id-token: write
+    if: github.event.action != 'labeled' || github.event.label.name ==
+      'actions:force-run'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
-    - uses: actions/checkout@v4.1.0
-      with:
-        ref: ${{github.event.pull_request.head.sha}}
-    - uses: 'google-github-actions/auth@v2.1.3'
-      with:
-        workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
-        service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
-        create_credentials_file: 'true'
-        access_token_lifetime: 600s
-    - id: secrets
-        uses: 'google-github-actions/get-secretmanager-secrets@v2'
+      - uses: actions/checkout@v4.1.0
         with:
-          secrets: |-
+          ref: ${{github.event.pull_request.head.sha}}
+      - uses: google-github-actions/auth@v2.1.3
+        with:
+          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          create_credentials_file: "true"
+          access_token_lifetime: 600s
+      - id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v1
+        with:
+          secrets: >-
             slack_secret:nodejs-docs-samples-tests/nodejs-docs-samples-slack-secret
+
             kg_api_key:nodejs-docs-samples-tests/nodejs-docs-samples-kg-api-key
-    - uses: actions/setup-node@v4.0.0
-      with:
+      - uses: actions/setup-node@v4.0.0
+        with:
           node-version: 16
-    - name: Get npm cache directory
+      - name: Get npm cache directory
         id: npm-cache-dir
         shell: bash
         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-    - uses: actions/cache@v4
+      - uses: actions/cache@v4
         id: npm-cache
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-    - name: set env vars for scheduled run
-      if: github.event.action == 'schedule'
-      run: |
+        with: null
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+      - name: set env vars for scheduled run
+        if: github.event.action == 'schedule'
+        run: >
           echo "MOCHA_REPORTER_SUITENAME=functions-slack" >> $GITHUB_ENV
+
           echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
+
           echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-    - name: Run Tests
-      run: make test dir=functions/slack
-      env:
-          GOOGLE_SAMPLES_PROJECT: "long-door-651"
+      - name: Run Tests
+        run: make test dir=functions/slack
+        env:
+          GOOGLE_SAMPLES_PROJECT: long-door-651
           SLACK_SECRET: ${{ steps.secrets.outputs.slack_secret }}
           KG_API_KEY: ${{ steps.secrets.outputs.kg_api_key }}
-    - name: upload test results for FlakyBot workflow
-      if: github.event.action == 'schedule' && always()
-      uses: actions/upload-artifact@v3
-      env:
-          MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
-      with:
+      - name: upload test results for FlakyBot workflow
+        if: github.event.action == 'schedule' && always()
+        uses: actions/upload-artifact@v3
+        env:
+          MOCHA_REPORTER_OUTPUT: ${{github.run_id}}_sponge_log.xml
+        with:
           name: test-results
           path: functions/slack/${{ env.MOCHA_REPORTER_OUTPUT }}
           retention-days: 1
   flakybot:
     permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
+      contents: read
+      id-token: write
+    if: github.event_name == 'schedule' && always()
     uses: ./.github/workflows/flakybot.yaml
-    needs: [test]
+    needs:
+      - test

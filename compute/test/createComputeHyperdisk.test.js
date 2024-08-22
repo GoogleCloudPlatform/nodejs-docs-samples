@@ -20,26 +20,16 @@ const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
+const {DisksClient} = require('@google-cloud/compute').v1;
+const {deleteDisk} = require('./util');
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const {DisksClient} = require('@google-cloud/compute').v1;
-const disksClient = new DisksClient();
-
-async function deleteDisk(projectId, zone, diskName) {
-  try {
-    await disksClient.delete({
-      project: projectId,
-      disk: diskName,
-      zone,
-    });
-  } catch (err) {
-    console.error('Deleting job failed: ', err);
-  }
-}
 
 describe('Create compute hyperdisk', async () => {
   const diskName = 'disk-name';
   const zone = 'europe-central2-b';
+  const disksClient = new DisksClient();
   let projectId;
 
   before(async () => {
@@ -47,7 +37,7 @@ describe('Create compute hyperdisk', async () => {
   });
 
   after(async () => {
-    await deleteDisk(projectId, zone, diskName);
+    await deleteDisk(disksClient, projectId, zone, diskName);
   });
 
   it('should create a new hyperdisk', () => {

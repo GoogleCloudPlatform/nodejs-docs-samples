@@ -82,8 +82,22 @@ async function deleteInstance(zone, instanceName) {
   }
 }
 
+async function deleteDisk(disksClient, projectId, zone, diskName) {
+  try {
+    await disksClient.delete({
+      project: projectId,
+      disk: diskName,
+      zone,
+    });
+  } catch (err) {
+    console.error('Deleting disk failed: ', err);
+    throw new Error(err);
+  }
+}
+
 module.exports = {
   generateTestId,
   getStaleVMInstances,
   deleteInstance,
+  deleteDisk,
 };

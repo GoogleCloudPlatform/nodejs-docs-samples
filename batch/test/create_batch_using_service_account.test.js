@@ -22,7 +22,6 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
-const {deleteJob} = require('./batchClient_operations');
 
 const cwd = path.join(__dirname, '..');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
@@ -51,7 +50,9 @@ describe('Create batch job using service account', async () => {
   });
 
   afterEach(async () => {
-    await deleteJob(batchClient, projectId, region, jobName);
+    await batchClient.deleteJob({
+      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+    });
   });
 
   it('should create a new job using serviceAccount', async () => {

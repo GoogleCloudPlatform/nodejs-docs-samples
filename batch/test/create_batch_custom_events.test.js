@@ -21,7 +21,6 @@ const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cwd = path.join(__dirname, '..');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const {deleteJob} = require('./batchClient_operations');
 
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
@@ -37,7 +36,9 @@ describe('Create batch custom events job', async () => {
   });
 
   after(async () => {
-    await deleteJob(batchClient, projectId, region, jobName);
+    await batchClient.deleteJob({
+      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+    });
   });
 
   it('should create a new job with custom events', () => {

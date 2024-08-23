@@ -24,24 +24,11 @@ const {StoragePoolsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const storagePoolsClient = new StoragePoolsClient();
-
-async function deleteStoragePool(projectId, zone, storagePoolName) {
-  try {
-    await storagePoolsClient.delete({
-      project: projectId,
-      storagePool: storagePoolName,
-      zone,
-    });
-  } catch (err) {
-    console.error('Deleting storage pool failed: ', err);
-    throw new Error(err);
-  }
-}
 
 describe('Create compute hyperdisk pool', async () => {
   const storagePoolName = 'storage-pool-name';
   const zone = 'us-central1-a';
+  const storagePoolsClient = new StoragePoolsClient();
   let projectId;
 
   before(async () => {
@@ -49,7 +36,11 @@ describe('Create compute hyperdisk pool', async () => {
   });
 
   after(async () => {
-    await deleteStoragePool(projectId, zone, storagePoolName);
+    await storagePoolsClient.delete({
+      project: projectId,
+      storagePool: storagePoolName,
+      zone,
+    });
   });
 
   it('should create a new storage pool', () => {

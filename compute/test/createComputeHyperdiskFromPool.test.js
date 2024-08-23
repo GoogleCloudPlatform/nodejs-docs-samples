@@ -20,25 +20,47 @@ const path = require('path');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
-const {DisksClient} = require('@google-cloud/compute').v1;
-const {deleteDisk} = require('./util');
+const {DisksClient, StoragePoolsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute hyperdisk from pool', async () => {
-  const diskName = 'disk-name';
+  const diskName = 'disk-name-from-pool';
   const zone = 'europe-central2-b';
-  const storagePoolName = 'storage-pool-name';
+  const storagePoolName = 'storage-pool-name-hyperdisk';
   const disksClient = new DisksClient();
+  const storagePoolsClient = new StoragePoolsClient();
   let projectId;
 
   before(async () => {
     projectId = await disksClient.getProjectId();
+    await storagePoolsClient.insert({
+      project: projectId,
+      storagePoolResource: {
+        name: storagePoolName,
+        poolProvisionedCapacityGb: 10240,
+        poolProvisionedIops: 10000,
+        poolProvisionedThroughput: 1024,
+        storagePoolType: `projects/${projectId}/zones/${zone}/storagePoolTypes/hyperdisk-balanced`,
+        capacityProvisioningType: 'advanced',
+        zone,
+      },
+      zone,
+    });
   });
 
   after(async () => {
-    await deleteDisk(disksClient, projectId, zone, diskName);
+    await disksClient.delete({
+      project: projectId,
+      disk: diskName,
+      zone,
+    });
+    await storagePoolsClient.delete({
+      project: projectId,
+      storagePool: storagePoolName,
+      zone,
+    });
   });
 
   it('should create a new hyperdisk from pool', () => {

@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {StoragePoolsClient} = require('@google-cloud/compute').v1;
 
@@ -33,6 +33,16 @@ describe('Create compute hyperdisk pool', async () => {
 
   before(async () => {
     projectId = await storagePoolsClient.getProjectId();
+    try {
+      // Ensure resource is deleted attempting to recreate it
+      await storagePoolsClient.delete({
+        project: projectId,
+        storagePool: storagePoolName,
+        zone,
+      });
+    } catch {
+      // ok to ignore (resource doesn't exist)
+    }
   });
 
   after(async () => {

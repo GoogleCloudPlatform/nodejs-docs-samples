@@ -73,11 +73,23 @@ describe('Create compute hyperdisk from pool', async () => {
   });
 
   after(async () => {
-    await disksClient.delete({
-      project: projectId,
-      disk: diskName,
-      zone,
-    });
+    // Trying to delete the disk too quickly seems to fail
+    const deleteDisk = async () => {
+      setTimeout(async () => {
+        await disksClient.delete({
+          project: projectId,
+          disk: diskName,
+          zone,
+        });
+      }, 120 * 1000); // wait two minutes
+    };
+
+    try {
+      await deleteDisk();
+    } catch {
+      // Try one more time after repeating the delay
+      await deleteDisk();
+    }
     await storagePoolsClient.delete({
       project: projectId,
       storagePool: storagePoolName,

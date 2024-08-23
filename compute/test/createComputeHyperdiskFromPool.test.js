@@ -90,11 +90,24 @@ describe('Create compute hyperdisk from pool', async () => {
       // Try one more time after repeating the delay
       await deleteDisk();
     }
-    await storagePoolsClient.delete({
-      project: projectId,
-      storagePool: storagePoolName,
-      zone,
-    });
+
+    // Need enough time after removing the disk before removing the pool
+    const deletePool = async () => {
+      setTimeout(async () => {
+        await storagePoolsClient.delete({
+          project: projectId,
+          storagePool: storagePoolName,
+          zone,
+        });
+      }, 120 * 1000); // wait two minutes
+    };
+
+    try {
+      await deletePool();
+    } catch {
+      // Try one more time after repeating the delay
+      await deletePool();
+    }
   });
 
   it('should create a new hyperdisk from pool', () => {

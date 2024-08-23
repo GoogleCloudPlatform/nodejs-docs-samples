@@ -18,10 +18,9 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {DisksClient} = require('@google-cloud/compute').v1;
-const {deleteDisk} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
@@ -34,10 +33,24 @@ describe('Create compute hyperdisk', async () => {
 
   before(async () => {
     projectId = await disksClient.getProjectId();
+    try {
+      // Ensure resource is deleted attempting to recreate it
+      await disksClient.delete({
+        project: projectId,
+        disk: diskName,
+        zone,
+      });
+    } catch {
+      // ok to ignore (resource doesn't exist)
+    }
   });
 
   after(async () => {
-    await deleteDisk(disksClient, projectId, zone, diskName);
+    await disksClient.delete({
+      project: projectId,
+      disk: diskName,
+      zone,
+    });
   });
 
   it('should create a new hyperdisk', () => {

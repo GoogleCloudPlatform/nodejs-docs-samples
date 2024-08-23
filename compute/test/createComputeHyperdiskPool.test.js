@@ -18,38 +18,39 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {StoragePoolsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const storagePoolsClient = new StoragePoolsClient();
 
-async function deleteStoragePool(projectId, zone, storagePoolName) {
-  try {
+describe('Create compute hyperdisk pool', async () => {
+  const storagePoolName = 'storage-pool-name';
+  const zone = 'us-central1-a';
+  const storagePoolsClient = new StoragePoolsClient();
+  let projectId;
+
+  before(async () => {
+    projectId = await storagePoolsClient.getProjectId();
+    try {
+      // Ensure resource is deleted attempting to recreate it
+      await storagePoolsClient.delete({
+        project: projectId,
+        storagePool: storagePoolName,
+        zone,
+      });
+    } catch {
+      // ok to ignore (resource doesn't exist)
+    }
+  });
+
+  after(async () => {
     await storagePoolsClient.delete({
       project: projectId,
       storagePool: storagePoolName,
       zone,
     });
-  } catch (err) {
-    console.error('Deleting storage pool failed: ', err);
-    throw new Error(err);
-  }
-}
-
-describe('Create compute hyperdisk pool', async () => {
-  const storagePoolName = 'storage-pool-name';
-  const zone = 'us-central1-a';
-  let projectId;
-
-  before(async () => {
-    projectId = await storagePoolsClient.getProjectId();
-  });
-
-  after(async () => {
-    await deleteStoragePool(projectId, zone, storagePoolName);
   });
 
   it('should create a new storage pool', () => {

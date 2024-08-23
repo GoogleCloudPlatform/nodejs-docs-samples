@@ -18,14 +18,9 @@ const path = require('path');
 const cp = require('child_process');
 const {describe, it, before} = require('mocha');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const batchClient = new BatchServiceClient();
 const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
 const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
-const resourcemanagerClient = new ProjectsClient();
 const compute = require('@google-cloud/compute');
-const instanceTemplatesClient = new compute.InstanceTemplatesClient();
-
 // get a short ID for this test run that only contains characters that are valid in UUID
 // (a plain UUID won't do because we want the "test-job-js" prefix and that would exceed the length limit)
 const {customAlphabet} = require('nanoid');
@@ -35,6 +30,11 @@ const testRunId = customAlphabet(allowedChars, allowedChars.length)();
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cwd = path.join(__dirname, '..');
+
+const batchClient = new BatchServiceClient();
+const storage = new Storage();
+const resourcemanagerClient = new ProjectsClient();
+const instanceTemplatesClient = new compute.InstanceTemplatesClient();
 
 describe('Create jobs with container, template and bucket', () => {
   let projectId;

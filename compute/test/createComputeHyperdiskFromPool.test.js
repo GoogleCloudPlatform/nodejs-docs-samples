@@ -43,8 +43,9 @@ describe('Create compute hyperdisk from pool', async () => {
         disk: diskName,
         zone,
       });
-    } catch {
-      // Ok to ignore (resource doesn't exist)
+    } catch (err) {
+      // Should be ok to ignore (resource doesn't exist)
+      console.error(err);
     }
 
     try {
@@ -53,8 +54,9 @@ describe('Create compute hyperdisk from pool', async () => {
         storagePool: storagePoolName,
         zone,
       });
-    } catch {
-      // Ok to ignore (resource doesn't exist)
+    } catch (err) {
+      // Should be ok to ignore (resource doesn't exist)
+      console.error(err);
     }
 
     await storagePoolsClient.insert({

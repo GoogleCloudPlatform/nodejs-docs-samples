@@ -35,9 +35,9 @@ async function main() {
   // The zone where your VM and new disk are located.
   const zone = 'europe-central2-b';
   // The name of the new disk
-  const diskName = 'disk-name-from-pool';
+  const diskName = 'disk-from-pool-name';
   // The name of the storage pool
-  const storagePoolName = 'storage-pool-name-hyperdisk';
+  const storagePoolName = 'storage-pool-name';
   // Link to the storagePool you want to use. Use format:
   // https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/storagePools/{storagePoolName}
   const storagePool = `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/storagePools/${storagePoolName}`;

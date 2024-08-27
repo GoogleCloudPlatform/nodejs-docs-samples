@@ -66,12 +66,10 @@ async function cleanupResources(projectId, zone, diskName, storagePoolName) {
 }
 
 describe('Create compute hyperdisk from pool', async () => {
-  const diskName = 'disk-name-from-pool';
+  const diskName = 'disk-from-pool-name';
   const zone = 'europe-central2-b';
-  const storagePoolName = 'storage-pool-name-hyperdisk';
+  const storagePoolName = 'storage-pool-name';
   const disksClient = new DisksClient();
-  const storagePoolsClient = new StoragePoolsClient();
-  const zoneOperationsClient = new ZoneOperationsClient();
   let projectId;
 
   before(async () => {
@@ -84,34 +82,20 @@ describe('Create compute hyperdisk from pool', async () => {
       // Should be ok to ignore (resources do not exist)
       console.error(err);
     }
-
-    const [response] = await storagePoolsClient.insert({
-      project: projectId,
-      storagePoolResource: {
-        name: storagePoolName,
-        poolProvisionedCapacityGb: 10240,
-        poolProvisionedIops: 10000,
-        poolProvisionedThroughput: 1024,
-        storagePoolType: `projects/${projectId}/zones/${zone}/storagePoolTypes/hyperdisk-balanced`,
-        capacityProvisioningType: 'advanced',
-        zone,
-      },
-      zone,
-    });
-    let operation = response.latestResponse;
-
-    // Wait for the insert pool operation to complete.
-    while (operation.status !== 'DONE') {
-      [operation] = await zoneOperationsClient.wait({
-        operation: operation.name,
-        project: projectId,
-        zone: operation.zone.split('/').pop(),
-      });
-    }
   });
 
   after(async () => {
     await cleanupResources(projectId, zone, diskName, storagePoolName);
+  });
+
+  it('should create a new storage pool', () => {
+    const response = JSON.parse(
+      execSync('node ./disks/createComputeHyperdiskPool.js', {
+        cwd,
+      })
+    );
+
+    assert.equal(response.name, storagePoolName);
   });
 
   it('should create a new hyperdisk from pool', () => {

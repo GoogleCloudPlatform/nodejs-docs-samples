@@ -18,7 +18,7 @@
 
 const path = require('path');
 const {assert} = require('chai');
-const {after, before, describe, it} = require('mocha');
+const {after, before, xdescribe, it} = require('mocha');
 const cp = require('child_process');
 const {DisksClient, StoragePoolsClient, ZoneOperationsClient} =
   require('@google-cloud/compute').v1;

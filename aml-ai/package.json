@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-docs-samples-aml-ai",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": "GoogleCloudPlatform/nodejs-docs-samples",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha -p -j 2 system-test/*.test.js --timeout=60000"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "google-auth-library": "^9.0.0",
+    "mocha": "^10.0.0"
+  }
+}

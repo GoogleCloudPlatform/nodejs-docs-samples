@@ -31,12 +31,10 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
-  // The ID of the project where you want to use.
+  // The ID of the project that you want to use.
   const projectId = await regionInstanceTemplatesClient.getProjectId();
   // The region in which to create a template.
   const region = 'us-central1';
-  // The zone in which to create a template.
-  const zone = `${region}-a`;
   // The name of the new template to create.
   const templateName = 'region-template-name';
 
@@ -45,7 +43,8 @@ async function main() {
     // Define the boot disk for the instance template
     const disk = new compute.AttachedDisk({
       initializeParams: new compute.AttachedDiskInitializeParams({
-        sourceImage: 'projects/debian-cloud/global/images/family/debian-11',
+        sourceImage:
+          'projects/debian-cloud/global/images/debian-12-bookworm-v20240815',
         diskSizeGb: '100',
         diskType: 'pd-balanced',
       }),
@@ -55,43 +54,44 @@ async function main() {
     });
 
     // Define the network interface for the instance template
-    // Note: The subnetwork must be in the same region as the instance template.
-    const network = new compute.Network({
-      name: 'network-name',
-      subnetworks: [
-        `projects/${projectId}/regions/${region}/subnetworks/default`,
-      ],
+    const network = new compute.NetworkInterface({
+      network: `projects/${projectId}/global/networks/default`,
+    });
+
+    // Define instance template
+    const instanceTemplate = new compute.InstanceTemplate({
+      name: templateName,
+      properties: {
+        disks: [disk],
+        region,
+        machineType: 'e2-medium',
+        // The template connects the instance to the `default` network,
+        // without specifying a subnetwork.
+        networkInterfaces: [network],
+      },
     });
 
     const [response] = await regionInstanceTemplatesClient.insert({
       project: projectId,
-      // region: 'us-central1-a',
-      instanceTemplateResource: {
-        name: templateName,
-        properties: {
-          disks: [disk],
-          machineType: 'n1-standard-1',
-          // The template connects the instance to the `default` network,
-          // without specifying a subnetwork.
-          networkInterfaces: [network],
-        },
-      },
+      region,
+      instanceTemplateResource: instanceTemplate,
     });
+
     let operation = response.latestResponse;
-    console.log(operation);
 
     // Wait for the create operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await regionOperationsClient.wait({
         operation: operation.name,
         project: projectId,
-        zone: operation.zone.split('/').pop(),
+        region,
       });
     }
+
     const createdTemplate = (
       await regionInstanceTemplatesClient.get({
         project: projectId,
-        zone,
+        region,
         instanceTemplate: templateName,
       })
     )[0];

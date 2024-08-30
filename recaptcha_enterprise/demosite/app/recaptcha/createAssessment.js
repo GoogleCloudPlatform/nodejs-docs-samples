@@ -21,6 +21,9 @@ const {RecaptchaEnterpriseServiceClient} =
  * @param recaptchaSiteKey: Site key obtained by registering a domain/app to use recaptcha services.
  * @param token: The token obtained from the client on passing the recaptchaSiteKey.
  * @param expectedAction: The expected action for this type of event.
+ * @param userIpAddress: IP address of the user sending a request.
+ * @param userAgent: User agent is included in the HTTP request in the request header.
+ * @param ja3: JA3 associated with the request.
  * @returns Assessment
  */
 async function createAssessment(
@@ -46,7 +49,7 @@ async function createAssessment(
         expectedAction: expectedAction,
         userIpAddress: userIpAddress,
         userAgent: userAgent,
-        ja3: ja3
+        ja3: ja3,
       },
     },
   });

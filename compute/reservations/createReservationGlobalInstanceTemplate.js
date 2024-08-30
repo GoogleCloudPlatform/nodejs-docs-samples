@@ -35,13 +35,13 @@ async function main() {
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  const reservationName = 'reservation-global-01';
+  const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
   // The location of the instance template.
   const location = 'global';
   // The name of an existing instance template.
-  const instanceTemplateName = 'global-instance-template-for-reservation-name';
+  const instanceTemplateName = 'global-template-name';
 
   async function callCreateComputeReservationGlobalInstanceTemplate() {
     // Create reservation for 3 VMs in zone us-central1-a by specifying a global instance template.

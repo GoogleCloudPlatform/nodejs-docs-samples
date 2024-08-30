@@ -20,70 +20,19 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
-const {
-  ReservationsClient,
-  InstanceTemplatesClient,
-  GlobalOperationsClient,
-  ZoneOperationsClient,
-} = require('@google-cloud/compute').v1;
+const {ReservationsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-async function cleanupResources(
-  projectId,
-  zone,
-  reservationName,
-  instanceTemplateName
-) {
-  const reservationsClient = new ReservationsClient();
-  const instanceTemplatesClient = new InstanceTemplatesClient();
-  const globalOperationsClient = new GlobalOperationsClient();
-  const zoneOperationsClient = new ZoneOperationsClient();
-
-  // Delete reservation
-  const [reservationResponse] = await reservationsClient.delete({
-    project: projectId,
-    reservation: reservationName,
-    zone,
-  });
-
-  let reservationOperation = reservationResponse.latestResponse;
-
-  // Wait for the delete reservation operation to complete.
-  while (reservationOperation.status !== 'DONE') {
-    [reservationOperation] = await zoneOperationsClient.wait({
-      operation: reservationOperation.name,
-      project: projectId,
-      zone: reservationOperation.zone.split('/').pop(),
-    });
-  }
-  // Delete template
-  const [templateResponse] = await instanceTemplatesClient.delete({
-    project: projectId,
-    instanceTemplate: instanceTemplateName,
-  });
-  let templateOperation = templateResponse.latestResponse;
-
-  // Wait for the delete template operation to complete.
-  while (templateOperation.status !== 'DONE') {
-    [templateOperation] = await globalOperationsClient.wait({
-      operation: templateOperation.name,
-      project: projectId,
-    });
-  }
-}
-
 describe('Create compute reservation using global instance template', async () => {
-  const reservationName = 'reservation-global-01';
-  const instanceTemplateName = 'global-instance-template-for-reservation-name';
-  const zone = 'us-central1-a';
+  const reservationName = 'reservation-01';
+  const instanceTemplateName = 'global-template-name';
   const reservationsClient = new ReservationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-
     // Create instance template
     execSync(
       `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
@@ -93,12 +42,18 @@ describe('Create compute reservation using global instance template', async () =
     );
   });
 
-  after(async () => {
-    await cleanupResources(
-      projectId,
-      zone,
-      reservationName,
-      instanceTemplateName
+  after(() => {
+    // Delete reservation
+    execSync('node ./reservations/deleteReservation.js', {
+      cwd,
+    });
+
+    // Delete template
+    execSync(
+      `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
+      {
+        cwd,
+      }
     );
   });
 

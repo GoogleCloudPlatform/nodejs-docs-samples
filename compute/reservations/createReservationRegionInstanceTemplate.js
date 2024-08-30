@@ -35,16 +35,15 @@ async function main() {
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  const reservationName = 'reservation-regional-01';
+  const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
   // The name of an existing instance template.
-  const instanceTemplateName =
-    'regional-instance-template-for-reservation-name';
+  const instanceTemplateName = 'region-template-name';
   // The location of the instance template.
   // For a regional instance template: regions/REGION. Replace REGION with the region where the instance template is located.
   // If you specify a regional instance template, then you can only reserve VMs within the same region as the template's region.
-  const location = `regions/${zone}`;
+  const location = `regions/${zone.slice(0, -2)}`;
 
   async function callCreateComputeReservationGlobalInstanceTemplate() {
     // Create reservation for 3 VMs in zone us-central1-a by specifying a global instance template.

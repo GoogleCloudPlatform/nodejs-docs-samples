@@ -51,7 +51,7 @@ function main(projectId, zone, instanceName, deleteProtection) {
             initializeParams: {
               diskSizeGb: '10',
               sourceImage:
-                'projects/debian-cloud/global/images/family/debian-10',
+                'projects/debian-cloud/global/images/family/debian-11',
             },
             autoDelete: true,
             boot: true,

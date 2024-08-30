@@ -17,46 +17,49 @@
 'use strict';
 
 const path = require('path');
-const assert = require('node:assert/strict');
-const {describe, it} = require('mocha');
+const {assert} = require('chai');
+const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
-const {BatchServiceClient} = require('@google-cloud/batch').v1;
+const {DisksClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create batch labels allocation', async () => {
-  const jobName = 'batch-labels-allocation-job';
-  const region = 'europe-central2';
-  const batchClient = new BatchServiceClient();
+describe('Create compute hyperdisk', async () => {
+  const diskName = 'disk-name';
+  const zone = 'europe-central2-b';
+  const disksClient = new DisksClient();
   let projectId;
 
   before(async () => {
-    projectId = await batchClient.getProjectId();
+    projectId = await disksClient.getProjectId();
+    try {
+      // Ensure resource is deleted attempting to recreate it
+      await disksClient.delete({
+        project: projectId,
+        disk: diskName,
+        zone,
+      });
+    } catch {
+      // ok to ignore (resource doesn't exist)
+    }
   });
 
   after(async () => {
-    await batchClient.deleteJob({
-      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+    await disksClient.delete({
+      project: projectId,
+      disk: diskName,
+      zone,
     });
   });
 
-  it('should create a new job with allocation policy labels', async () => {
-    const expectedAllocationLabels = {
-      'batch-job-id': jobName,
-      vm_label_name_1: 'vmLabelValue1',
-      vm_label_name_2: 'vmLabelValue2',
-    };
-
+  it('should create a new hyperdisk', () => {
     const response = JSON.parse(
-      execSync('node ./create/create_batch_labels_allocation.js', {
+      execSync('node ./disks/createComputeHyperdisk.js', {
         cwd,
       })
     );
 
-    assert.deepEqual(
-      response.allocationPolicy.labels,
-      expectedAllocationLabels
-    );
+    assert.equal(response.name, diskName);
   });
 });

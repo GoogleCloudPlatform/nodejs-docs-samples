@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
+const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const {BatchServiceClient} = require('@google-cloud/batch').v1;
@@ -25,9 +25,9 @@ const {BatchServiceClient} = require('@google-cloud/batch').v1;
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create batch labels runnable', async () => {
+describe('Create batch custom network', async () => {
   const jobName = 'example-job';
-  const region = 'us-central1';
+  const region = 'europe-central2';
   const batchClient = new BatchServiceClient();
   let projectId;
 
@@ -41,35 +41,23 @@ describe('Create batch labels runnable', async () => {
     });
   });
 
-  it('should create a new job with labels for runnables', async () => {
-    const expectedRunnableLabels = [
-      {
-        executable: 'container',
-        labels: {
-          RUNNABLE_LABEL_NAME1: 'RUNNABLE_LABEL_VALUE1',
+  it('should create a new job with custom network', async () => {
+    const expectedNetwork = {
+      networkInterfaces: [
+        {
+          network: 'global/networks/test-network',
+          noExternalIpAddress: true,
+          subnetwork: `regions/${region}/subnetworks/subnet`,
         },
-      },
-      {
-        executable: 'script',
-        labels: {
-          RUNNABLE_LABEL_NAME2: 'RUNNABLE_LABEL_VALUE2',
-        },
-      },
-    ];
+      ],
+    };
 
     const response = JSON.parse(
-      execSync('node ./create/create_batch_labels_runnable.js', {
+      execSync('node ./create/create_batch_custom_network.js', {
         cwd,
       })
     );
-    const runnables = response.taskGroups[0].taskSpec.runnables;
 
-    runnables.forEach((runnable, index) => {
-      assert.equal(
-        runnable.executable,
-        expectedRunnableLabels[index].executable
-      );
-      assert.deepEqual(runnable.labels, expectedRunnableLabels[index].labels);
-    });
+    assert.deepEqual(response.allocationPolicy.network, expectedNetwork);
   });
 });

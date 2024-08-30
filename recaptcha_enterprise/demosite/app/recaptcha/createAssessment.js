@@ -27,7 +27,10 @@ async function createAssessment(
   projectId,
   recaptchaSiteKey,
   token,
-  expectedAction
+  expectedAction,
+  userIpAddress,
+  userAgent,
+  ja3
 ) {
   // <!-- ATTENTION: reCAPTCHA Example (Server Part 2/2) Starts -->
   const client = new RecaptchaEnterpriseServiceClient();
@@ -41,6 +44,9 @@ async function createAssessment(
         siteKey: recaptchaSiteKey,
         token: token,
         expectedAction: expectedAction,
+        userIpAddress: userIpAddress,
+        userAgent: userAgent,
+        ja3: ja3
       },
     },
   });

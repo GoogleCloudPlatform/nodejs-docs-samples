@@ -36,7 +36,7 @@ async function main() {
   // The region in which to create a template.
   const region = 'us-central1';
   // The name of the new template to create.
-  const templateName = 'region-template-name';
+  const templateName = 'pernament-region-template-name';
 
   // Create a new instance template with the provided name and a specific instance configuration.
   async function createRegionTemplate() {

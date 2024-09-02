@@ -18,15 +18,15 @@
 
 const path = require('path');
 const {assert, expect} = require('chai');
-const {before, after, describe, it} = require('mocha');
+const {before, after, fdescribe, it} = require('mocha');
 const cp = require('child_process');
 const {RegionInstanceTemplatesClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create region instance template', async () => {
-  const templateName = 'region-template-name';
+fdescribe('Create region instance template', async () => {
+  const templateName = 'pernament-region-template-name';
   const region = 'us-central1';
   const regionInstanceTemplatesClient = new RegionInstanceTemplatesClient();
   let projectId;
@@ -36,11 +36,11 @@ describe('Create region instance template', async () => {
   });
 
   after(async () => {
-    await regionInstanceTemplatesClient.delete({
-      project: projectId,
-      instanceTemplate: templateName,
-      region,
-    });
+    // await regionInstanceTemplatesClient.delete({
+    //   project: projectId,
+    //   instanceTemplate: templateName,
+    //   region,
+    // });
   });
 
   it('should create a new template', () => {

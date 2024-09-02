@@ -16,8 +16,8 @@
 
 'use strict';
 
-async function main() {
-  // [START compute_reservation_create_for_global_instance_template]
+async function main(location, instanceTemplateName) {
+  // [START compute_reservation_create_template]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
@@ -38,13 +38,27 @@ async function main() {
   const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
-  // The location of the instance template.
-  const location = 'global';
-  // The name of an existing instance template.
-  const instanceTemplateName = 'global-template-name';
 
-  async function callCreateComputeReservationGlobalInstanceTemplate() {
-    // Create reservation for 3 VMs in zone us-central1-a by specifying a global instance template.
+  /**
+   * The name of an existing instance template.
+   * TODO(developer): Uncomment and update instanceTemplateName before running the sample.
+   */
+  // const instanceTemplateName = 'pernament-region-template-name';
+
+  /**
+   * // The location of the instance template.
+   * TODO(developer): Uncomment the `location` variable depending on which template you want to use.
+   */
+
+  // The location for a regional instance template: regions/{region}. Replace region with the region where the instance template is located.
+  // If you specify a regional instance template, then you can only reserve VMs within the same region as the template's region.
+  // const location = `regions/${zone.slice(0, -2)}`;
+
+  // The location for a global instance template.
+  // const location = 'global';
+
+  async function callCreateComputeReservationInstanceTemplate() {
+    // Create reservation for 3 VMs in zone us-central1-a by specifying a instance template.
     const specificReservation = new compute.AllocationSpecificSKUReservation({
       count: vmsNumber,
       sourceInstanceTemplate: `projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`,
@@ -84,11 +98,11 @@ async function main() {
     console.log(JSON.stringify(createdReservation));
   }
 
-  await callCreateComputeReservationGlobalInstanceTemplate();
-  // [END compute_reservation_create_for_global_instance_template]
+  await callCreateComputeReservationInstanceTemplate();
+  // [END compute_reservation_create_template]
 }
 
-main().catch(err => {
-  console.error(err);
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
   process.exitCode = 1;
 });

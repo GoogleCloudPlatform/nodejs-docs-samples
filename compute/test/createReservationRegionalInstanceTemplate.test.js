@@ -20,60 +20,33 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
-const {
-  ReservationsClient,
-  RegionInstanceTemplatesClient,
-  RegionOperationsClient,
-} = require('@google-cloud/compute').v1;
+const {ReservationsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using regional instance template', async () => {
   const reservationName = 'reservation-01';
-  const instanceTemplateName = 'region-template-name';
-  const zone = 'us-central1-a';
+  const instanceTemplateName = 'pernament-region-template-name';
+  const location = 'regions/us-central1';
   const reservationsClient = new ReservationsClient();
-  const instanceTemplatesClient = new RegionInstanceTemplatesClient();
-  const regionOperationsClient = new RegionOperationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-    // Create instance template
-    execSync('node ./create-instance-templates/createRegionTemplate.js', {
-      cwd,
-    });
   });
 
-  after(async () => {
+  after(() => {
     // Delete reservation
     execSync('node ./reservations/deleteReservation.js', {
       cwd,
     });
-
-    // Delete template
-    const [templateResponse] = await instanceTemplatesClient.delete({
-      project: projectId,
-      instanceTemplate: instanceTemplateName,
-      region: zone.slice(0, -2),
-    });
-    let templateOperation = templateResponse.latestResponse;
-
-    // Wait for the delete template operation to complete.
-    while (templateOperation.status !== 'DONE') {
-      [templateOperation] = await regionOperationsClient.wait({
-        operation: templateOperation.name,
-        project: projectId,
-        region: zone.slice(0, -2),
-      });
-    }
   });
 
   it('should create a new reservation', () => {
     const response = JSON.parse(
       execSync(
-        'node ./reservations/createReservationRegionInstanceTemplate.js',
+        `node ./reservations/createReservationInstanceTemplate.js ${location} ${instanceTemplateName}`,
         {
           cwd,
         }
@@ -84,7 +57,7 @@ describe('Create compute reservation using regional instance template', async ()
     assert.equal(response.specificReservation.count, '3');
     assert.equal(
       response.specificReservation.sourceInstanceTemplate,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/regions/${zone.slice(0, -2)}/instanceTemplates/${instanceTemplateName}`
+      `https://www.googleapis.com/compute/v1/projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`
     );
   });
 });

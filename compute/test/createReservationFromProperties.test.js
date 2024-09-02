@@ -18,28 +18,19 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
-const {ReservationsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation by specyfing properties directly', async () => {
   const reservationName = 'reservation-01';
-  const zone = 'us-central1-a';
-  const reservationsClient = new ReservationsClient();
-  let projectId;
-
-  before(async () => {
-    projectId = await reservationsClient.getProjectId();
-  });
 
   after(async () => {
-    await reservationsClient.delete({
-      project: projectId,
-      reservation: reservationName,
-      zone,
+    // // Delete reservation
+    execSync('node ./reservations/deleteReservation.js', {
+      cwd,
     });
   });
 

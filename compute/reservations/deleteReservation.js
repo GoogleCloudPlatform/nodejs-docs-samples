@@ -25,9 +25,9 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
-  // The ID of the project where you want to reserve resources and where the instance template exists.
+  // The ID of the project where your reservation is located.
   const projectId = await reservationsClient.getProjectId();
-  // The zone, where the reservation is done
+  // The zone where your reservation is located.
   const zone = 'us-central1-a';
   // The name of the reservation to delete.
   const reservationName = 'reservation-01';
@@ -39,7 +39,9 @@ async function main() {
       reservation: reservationName,
       zone,
     });
+
     let operation = response.latestResponse;
+
     // Wait for the delete reservation operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({

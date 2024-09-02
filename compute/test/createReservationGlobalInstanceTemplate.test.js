@@ -27,13 +27,14 @@ const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using global instance template', async () => {
   const reservationName = 'reservation-01';
-  const instanceTemplateName = 'global-template-name';
+  const instanceTemplateName = 'pernament-global-template-name';
+  const location = 'global';
   const reservationsClient = new ReservationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-    // Create instance template
+    // Create template
     execSync(
       `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
       {
@@ -47,7 +48,6 @@ describe('Create compute reservation using global instance template', async () =
     execSync('node ./reservations/deleteReservation.js', {
       cwd,
     });
-
     // Delete template
     execSync(
       `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
@@ -60,7 +60,7 @@ describe('Create compute reservation using global instance template', async () =
   it('should create a new reservation', () => {
     const response = JSON.parse(
       execSync(
-        'node ./reservations/createReservationGlobalInstanceTemplate.js',
+        `node ./reservations/createReservationInstanceTemplate.js ${location} ${instanceTemplateName}`,
         {
           cwd,
         }
@@ -71,7 +71,7 @@ describe('Create compute reservation using global instance template', async () =
     assert.equal(response.specificReservation.count, '3');
     assert.equal(
       response.specificReservation.sourceInstanceTemplate,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/global/instanceTemplates/${instanceTemplateName}`
+      `https://www.googleapis.com/compute/v1/projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`
     );
   });
 });

@@ -33,7 +33,7 @@ async function main() {
   // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await storagePoolClient.getProjectId();
   // Name of the zone in which you want to create the storagePool.
-  const zone = 'us-central1-a';
+  const zone = 'europe-central2-b';
   // Name of the storagePool you want to create.
   const storagePoolName = 'storage-pool-name';
   // The type of disk you want to create. This value uses the following format:

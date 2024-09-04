@@ -30,6 +30,10 @@ const labelKey = 'secretmanager';
 const labelValue = 'rocks';
 const labelKeyUpdated = 'gcp';
 const labelValueUpdated = 'rock';
+const annotationKey = 'annotationkey';
+const annotationValue = 'annotationvalue';
+const annotationKeyUpdated = 'updatedannotationekey';
+const annotationValueUpdated = 'updatedannotationvalue';
 
 let secret;
 let regionalSecret;
@@ -58,6 +62,9 @@ describe('Secret Manager samples', () => {
         labels: {
           [labelKey]: labelValue,
         },
+        annotations: {
+          [annotationKey]: annotationValue,
+        }
       },
     });
 
@@ -170,6 +177,16 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-5`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -218,6 +235,13 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp('Created secret'));
   });
 
+  it('creates a secret with annotations', async () => {
+    const output = execSync(
+      `node createSecretWithAnnotations.js projects/${projectId} ${secretId}-5 ${annotationKey} ${annotationValue}`
+    );
+    assert.match(output, new RegExp('Created secret'));
+  });
+
   it('lists secrets', async () => {
     const output = execSync(`node listSecrets.js projects/${projectId}`);
     assert.match(output, new RegExp(`${secret.name}`));
@@ -238,6 +262,11 @@ describe('Secret Manager samples', () => {
   it('view a secret labels', async () => {
     const output = execSync(`node viewSecretLabels.js ${secret.name}`);
     assert.match(output, new RegExp(`${labelKey}`));
+  });
+
+  it('view a secret annotations', async () => {
+    const output = execSync(`node viewSecretAnnotations.js ${secret.name}`);
+    assert.match(output, new RegExp(`${annotationKey}`));
   });
 
   it('gets a regional secret', async () => {
@@ -267,6 +296,13 @@ describe('Secret Manager samples', () => {
   it('create or updates a secret labels', async () => {
     const output = execSync(
       `node createUpdateSecretLabel.js ${secret.name} ${labelKeyUpdated} ${labelValueUpdated}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
+  });
+
+  it('edits a secret annotation', async () => {
+    const output = execSync(
+      `node editSecretAnnotations.js ${secret.name} ${annotationKeyUpdated} ${annotationValueUpdated}`
     );
     assert.match(output, new RegExp(`Updated secret ${secret.name}`));
   });

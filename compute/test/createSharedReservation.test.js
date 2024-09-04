@@ -16,68 +16,67 @@
 
 'use strict';
 
-const path = require('path');
-const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
-const cp = require('child_process');
-const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {after, describe, it} = require('mocha');
+const {expect} = require('chai');
+const sinon = require('sinon');
+const createSharedReservation = require('../reservations/createSharedReservation.js');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
-
-describe('Create compute reservation by specyfing properties directly', async () => {
+describe('Create compute shared reservation using global instance template', async () => {
   const reservationName = 'reservation-01';
-  const zone = 'us-central1-a';
-  const reservationsClient = new ReservationsClient();
-  let projectId;
-
-  before(async () => {
-    projectId = await reservationsClient.getProjectId();
-  });
-
-  after(async () => {
-    await reservationsClient.delete({
-      project: projectId,
-      reservation: reservationName,
-      zone,
-    });
-  });
-
-  it('should create a new reservation', () => {
-    const instanceProperties = {
-      _machineType: 'machineType',
-      _minCpuPlatform: 'minCpuPlatform',
-      guestAccelerators: [
-        {
-          _acceleratorCount: 'acceleratorCount',
-          _acceleratorType: 'acceleratorType',
-          acceleratorCount: 1,
-          acceleratorType: 'nvidia-tesla-t4',
+  const reservation = {
+    name: reservationName,
+    shareSettings: {
+      shareType: 'SPECIFIC_PROJECTS',
+      projectMap: {
+        consumer_project_id: {
+          projectId: 'consumer_project_id',
         },
-      ],
-      localSsds: [
+      },
+    },
+  };
+  let reservationsClientMock;
+  let zoneOperationsClientMock;
+
+  before(() => {
+    reservationsClientMock = {
+      getProjectId: sinon.stub().resolves('project_id'),
+      insert: sinon.stub().resolves([
         {
-          diskSizeGb: '375',
-          interface: 'NVME',
-          _diskSizeGb: 'diskSizeGb',
-          _interface: 'interface',
+          latestResponse: {
+            status: 'DONE',
+            name: 'operation-1234567890',
+            zone: {
+              value: 'us-central1-a',
+            },
+          },
         },
-      ],
-      machineType: 'n1-standard-4',
-      minCpuPlatform: 'Intel Skylake',
+      ]),
+      get: sinon.stub().resolves([reservation]),
     };
+    zoneOperationsClientMock = {
+      wait: sinon.stub().resolves([
+        {
+          latestResponse: {
+            status: 'DONE',
+          },
+        },
+      ]),
+    };
+  });
 
-    const response = JSON.parse(
-      execSync('node ./reservations/createReservationFromProperties.js', {
-        cwd,
-      })
+  after(() => {
+    sinon.restore();
+  });
+
+  it('should create and log new shared reservation', async () => {
+    sinon.stub(console, 'log');
+
+    await createSharedReservation(
+      reservationsClientMock,
+      zoneOperationsClientMock
     );
 
-    assert.equal(response.name, reservationName);
-    assert.equal(response.specificReservation.count, '3');
-    assert.deepEqual(
-      response.specificReservation.instanceProperties,
-      instanceProperties
-    );
+    expect(console.log.calledOnce).to.be.true;
+    expect(console.log.calledWith(reservation)).to.be.true;
   });
 });

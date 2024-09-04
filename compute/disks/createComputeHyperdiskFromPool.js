@@ -33,7 +33,7 @@ async function main() {
   // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await disksClient.getProjectId();
   // The zone where your VM and new disk are located.
-  const zone = 'europe-central2-b';
+  const zone = 'us-central1-a';
   // The name of the new disk
   const diskName = 'disk-from-pool-name';
   // The name of the storage pool

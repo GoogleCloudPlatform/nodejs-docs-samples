@@ -49,6 +49,9 @@ async function main(storagePoolName) {
   const provisionedIops = 10000;
   // The throughput in MBps to provision for the storage pool.
   const provisionedThroughput = 1024;
+  // Optional: The performance provisioning type of the storage pool.
+  // The allowed values are advanced and standard. If not specified, the value advanced is used.
+  const performanceProvisioningType = 'advanced';
 
   async function callCreateComputeHyperdiskPool() {
     // Create a storagePool.
@@ -58,6 +61,7 @@ async function main(storagePoolName) {
       poolProvisionedIops: provisionedIops,
       poolProvisionedThroughput: provisionedThroughput,
       storagePoolType,
+      performanceProvisioningType,
       capacityProvisioningType,
       zone,
     });

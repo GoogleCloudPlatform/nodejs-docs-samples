@@ -26,35 +26,31 @@ steps:
       --network default || echo 'Connector already created.'
 
 - id: 'Build Container Image'
-  #name: 'gcr.io/cloud-builders/docker'
-  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
+  name: 'gcr.io/cloud-builders/docker'
   entrypoint: '/bin/bash'
   args:
   - '-c'
   - |
-    ./test/retry.sh "docker build -t gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} ."
+    ./test/retry.sh "docker build -t ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} ."
 
 - id: 'Push Container Image'
-  #name: 'gcr.io/cloud-builders/docker'
-  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
+  name: 'gcr.io/cloud-builders/docker'
   entrypoint: '/bin/bash'
   args:
   - '-c'
   - |
     #./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
-    #./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
-    ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
+    ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
 
 - id: 'Deploy to Cloud Run'
-  #name: 'gcr.io/cloud-builders/docker'
-  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
+  name: 'gcr.io/cloud-builders/docker'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
     ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
       #--image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
-      --image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      --image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} \
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
@@ -63,7 +59,7 @@ steps:
 
 images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
-- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE}
 
 substitutions:
   _SERVICE: websockets

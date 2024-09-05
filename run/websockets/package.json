@@ -7,7 +7,7 @@
   "author": "Google LLC",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "echo \"Info: no unit tests\"",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=420000 --exit"
   },
   "engines": {

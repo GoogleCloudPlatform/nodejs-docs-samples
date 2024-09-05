@@ -67,7 +67,7 @@ async function cleanupResources(projectId, zone, diskName, storagePoolName) {
 
 describe('Create compute hyperdisk from pool', async () => {
   const diskName = 'disk-from-pool-name';
-  const zone = 'europe-central2-b';
+  const zone = 'us-central1-a';
   const storagePoolName = 'storage-pool-name';
   const disksClient = new DisksClient();
   let projectId;

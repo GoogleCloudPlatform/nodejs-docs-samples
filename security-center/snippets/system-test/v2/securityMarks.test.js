@@ -20,7 +20,7 @@ const {describe, it, before} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-const organizationId = process.env['GCLOUD_ORGANIZATION'];
+const organizationId = '1081635000895';
 
 describe('Client with SourcesAndFindings', async () => {
   let data;
@@ -69,7 +69,7 @@ describe('Client with SourcesAndFindings', async () => {
     console.log('My data security marks %j', data);
   });
 
-  it('client can add security marks to finding v2', () => {
+  it('client can add security marks to finding v2', done => {
     const output = exec(
       `node v2/addFindingSecurityMarks.js ${data.findingName}`
     );
@@ -79,9 +79,10 @@ describe('Client with SourcesAndFindings', async () => {
     assert.match(output, /key_b/);
     assert.match(output, /value_b/);
     assert.notMatch(output, /undefined/);
+    done();
   });
 
-  it('client can list findings with security marks v2', () => {
+  it('client can list findings with security marks v2', done => {
     // Ensure marks are set.
     exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
     const output = exec(
@@ -90,9 +91,10 @@ describe('Client with SourcesAndFindings', async () => {
     assert(!output.includes(data.findingName));
     assert(output.includes(data.untouchedFindingName));
     assert.notMatch(output, /undefined/);
+    done();
   });
 
-  it('client can delete and update findings with security marks v2', () => {
+  it('client can delete and update findings with security marks v2', done => {
     // Ensure marks are set.
     exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
     const output = exec(
@@ -104,9 +106,10 @@ describe('Client with SourcesAndFindings', async () => {
     assert.notMatch(output, /key_b/);
     assert.notMatch(output, /value_b/);
     assert.notMatch(output, /undefined/);
+    done();
   });
 
-  it('client can delete and update findings with security marks v2', () => {
+  it('client can delete and update findings with security marks v2', done => {
     // Ensure marks are set.
     exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
     const output = exec(`node v2/deleteSecurityMarks.js ${data.findingName}`);
@@ -116,5 +119,6 @@ describe('Client with SourcesAndFindings', async () => {
     assert.notMatch(output, /key_b/);
     assert.notMatch(output, /value_b/);
     assert.notMatch(output, /undefined/);
+    done();
   });
 });

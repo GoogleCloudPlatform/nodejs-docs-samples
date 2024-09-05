@@ -123,7 +123,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchNfsJob();
+  await callCreateBatchNfsJob();
   // [END batch_create_nfs_job]
 }
 

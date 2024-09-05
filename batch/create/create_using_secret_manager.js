@@ -99,7 +99,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateUsingSecretManager();
+  await callCreateUsingSecretManager();
   // [END batch_create_using_secret_manager]
 }
 

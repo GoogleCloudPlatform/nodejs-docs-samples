@@ -28,6 +28,7 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
+  // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await batchClient.getProjectId();
   // Name of the region you want to use to run the job. Regions that are
   // available for Batch are listed on: https://cloud.google.com/batch/docs/get-started#locations
@@ -105,7 +106,7 @@ async function main() {
     console.log(JSON.stringify(response));
   }
 
-  callCreateBatchCustomEvents();
+  await callCreateBatchCustomEvents();
   // [END batch_custom_events]
 }
 

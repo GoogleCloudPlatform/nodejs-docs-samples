@@ -17,6 +17,11 @@
       "matchUpdateTypes": ["minor", "patch"],
       "matchBaseBranches": ["main"],
       "enabled": false
+    },
+    {
+       "groupName": "GitHub Actions",
+       "matchManagers": ["github-actions"],
+       "pinDigests": true,
     }
   ],
   "force": {

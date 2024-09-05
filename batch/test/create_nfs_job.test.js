@@ -17,19 +17,18 @@
 'use strict';
 
 const path = require('path');
-const assert = require('assert');
+const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
+const {BatchServiceClient} = require('@google-cloud/batch').v1;
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-const {BatchServiceClient} = require('@google-cloud/batch').v1;
-const {deleteJob} = require('./batchClient_operations');
-const batchClient = new BatchServiceClient();
 
 describe('Create batch NFS job', async () => {
   const jobName = 'batch-nfs-job';
   const region = 'europe-central2';
-
+  const batchClient = new BatchServiceClient();
   let projectId;
 
   before(async () => {
@@ -37,7 +36,9 @@ describe('Create batch NFS job', async () => {
   });
 
   after(async () => {
-    await deleteJob(batchClient, projectId, region, jobName);
+    await batchClient.deleteJob({
+      name: `projects/${projectId}/locations/${region}/jobs/${jobName}`,
+    });
   });
 
   it('should create a new job with NFS', async () => {

@@ -62,7 +62,7 @@ describe('Client with bigquery export V2', async () => {
     console.log('my data bigQueryExport %j', data);
   });
 
-  it('client can create bigquery export V2', (done) => {
+  it('client can create bigquery export V2', done => {
     const output = exec(
       `node ../../v2/createBigQueryExport.js ${data.orgId} ${dataset}`
     );
@@ -72,7 +72,7 @@ describe('Client with bigquery export V2', async () => {
     done();
   });
 
-  it('client can list all bigquery export V2', (done) => {
+  it('client can list all bigquery export V2', done => {
     const output = exec(`node ../../v2/listAllBigQueryExports.js ${data.orgId}`);
     assert(output.includes(data.bigQueryExportName));
     assert.match(output, /Sources/);
@@ -80,7 +80,7 @@ describe('Client with bigquery export V2', async () => {
     done();
   });
 
-  it('client can get a bigquery export V2', (done) => {
+  it('client can get a bigquery export V2', done => {
     const output = exec(
       `node ../../v2/getBigQueryExport.js ${data.orgId} ${data.bigQueryExportId}`
     );
@@ -90,7 +90,7 @@ describe('Client with bigquery export V2', async () => {
     done();
   });
 
-  it('client can update a bigquery export V2', (done) => {
+  it('client can update a bigquery export V2', done => {
     const output = exec(
       `node ../../v2/updateBigQueryExport.js ${data.orgId} ${data.bigQueryExportId} ${dataset}`
     );
@@ -99,7 +99,7 @@ describe('Client with bigquery export V2', async () => {
     done();
   });
 
-  it('client can delete a bigquery export V2', (done) => {
+  it('client can delete a bigquery export V2', done => {
     const output = exec(
       `node ../../v2/deleteBigQueryExport.js ${data.orgId} ${data.bigQueryExportId}`
     );

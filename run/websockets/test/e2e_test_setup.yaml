@@ -26,7 +26,8 @@ steps:
       --network default || echo 'Connector already created.'
 
 - id: 'Build Container Image'
-  name: 'gcr.io/cloud-builders/docker'
+  #name: 'gcr.io/cloud-builders/docker'
+  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
   entrypoint: '/bin/bash'
   args:
   - '-c'
@@ -34,7 +35,8 @@ steps:
     ./test/retry.sh "docker build -t gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} ."
 
 - id: 'Push Container Image'
-  name: 'gcr.io/cloud-builders/docker'
+  #name: 'gcr.io/cloud-builders/docker'
+  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
   entrypoint: '/bin/bash'
   args:
   - '-c'
@@ -44,13 +46,15 @@ steps:
     ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
 
 - id: 'Deploy to Cloud Run'
-  name: 'gcr.io/cloud-builders/gcloud:latest'
+  #name: 'gcr.io/cloud-builders/docker'
+  name: 'us-central1-docker.pkg.dev/nodejs-docs-samples/websockets:manual'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
     ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
-      --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      #--image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+      --image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
@@ -58,7 +62,8 @@ steps:
     ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}"
 
 images:
-- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
+#- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
+- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
 
 substitutions:
   _SERVICE: websockets

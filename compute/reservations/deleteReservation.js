@@ -39,7 +39,9 @@ async function main() {
       reservation: reservationName,
       zone,
     });
+
     let operation = response.latestResponse;
+
     // Wait for the delete reservation operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({

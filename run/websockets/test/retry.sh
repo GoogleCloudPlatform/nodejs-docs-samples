@@ -35,6 +35,7 @@ runIfSuccessful() {
   echo "running cmd #1: $1"
   # $($1 > /dev/null)
   if [ $? -eq 0 ]; then
+    echo "cmd #1 succeeded"
     echo "running cmd #2: $2"
     # $($2 > /dev/null)
   fi

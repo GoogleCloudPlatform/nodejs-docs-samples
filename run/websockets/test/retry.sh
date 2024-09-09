@@ -41,7 +41,7 @@ runIfSuccessful() {
 }
 
 # Define max retries
-max_attempts=3;
+max_attempts="${MAX_ATTEMPTS:-3}"
 attempt_num=1;
 
 arg1="$1"

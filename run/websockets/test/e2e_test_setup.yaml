@@ -50,13 +50,13 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
+    MAX_ATTEMPTS=5 ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
       --source . \
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
       --vpc-connector ${_CONNECTOR}" \
-    ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}; echo ${_VERSION}"
+    ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} echo ${_VERSION}"
 
 #images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

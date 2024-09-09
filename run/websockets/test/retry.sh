@@ -32,11 +32,11 @@
 # Usage: try "cmd1" "cmd2"
 # If first cmd executes successfully then execute second cmd
 runIfSuccessful() {
-  echo "running: $1"
-  $($1 > /dev/null)
+  echo "running cmd #1: $1"
+  # $($1 > /dev/null)
   if [ $? -eq 0 ]; then
-    echo "running: $2"
-    $($2 > /dev/null)
+    echo "running cmd #2: $2"
+    # $($2 > /dev/null)
   fi
 }
 

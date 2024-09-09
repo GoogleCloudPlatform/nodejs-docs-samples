@@ -56,8 +56,7 @@ steps:
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
       --vpc-connector ${_CONNECTOR}" \
-    echo "${_VERSION}"
-    # ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}"
+    ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}; echo ${_VERSION}"
 
 #images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

@@ -56,8 +56,8 @@ describe('End-to-End Tests', () => {
 
     // Retrieve URL of Cloud Run service
     const url = execSync(
-      `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--region=${REGION} --format='value(status.url)'`
+      `./test/retry.sh "gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
+        `--region=${REGION} --format='value(status.url)'"`
     );
 
     BASE_URL = url.toString('utf-8').trim();

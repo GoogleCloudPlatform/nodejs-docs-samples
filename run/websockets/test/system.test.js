@@ -17,6 +17,7 @@ const got = require('got');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
+const util = require("node:util");
 const auth = new GoogleAuth();
 
 describe('End-to-End Tests', () => {
@@ -55,10 +56,26 @@ describe('End-to-End Tests', () => {
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
-    const url = execSync(
-      `./test/retry.sh "gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--region=${REGION} --format='value(status.url)'"`
-    );
+    // const url = execSync(
+    //   `./test/retry.sh "gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
+    //     `--region=${REGION} --format='value(status.url)'"`
+    // );
+
+    let url;
+    async function describeService() {
+      const exec = util.promisify(require('node:child_process').exec);
+      const cmd =
+        `./test/retry.sh "gcloud run services describe ` +
+        `--project=${GOOGLE_CLOUD_PROJECT} ` +
+        `--region=${REGION} ` +
+        `--format='value(status.url)'"` +
+        `${SERVICE_NAME} `;
+      const {stdout, stderr} = await exec(cmd);
+      url = stdout.toString().trim();
+      console.log(`url: ${url}`);
+      console.error('stderr:', stderr);
+    }
+    await describeService();
 
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');

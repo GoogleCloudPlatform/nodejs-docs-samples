@@ -42,6 +42,8 @@ steps:
 #    #./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
 #    ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
 
+    # --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
+    # --image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} \
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/docker'
   entrypoint: /bin/bash
@@ -49,8 +51,6 @@ steps:
   - '-c'
   - |
     ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
-      #--image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
-      #--image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} \
       --source . \
       --allow-unauthenticated \
       --region ${_REGION} \
@@ -67,4 +67,4 @@ substitutions:
   _CONNECTOR: my-connector
   _REGION: us-central1
   _REDISHOST: localhost
-  #_VERSION: manual
+  _VERSION: manual

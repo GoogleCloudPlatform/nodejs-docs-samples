@@ -34,4 +34,4 @@ steps:
 substitutions:
   _SERVICE: websockets
   _REGION: us-central1
-  #_VERSION: manual
+  _VERSION: manual

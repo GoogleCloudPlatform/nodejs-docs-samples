@@ -25,22 +25,22 @@ steps:
       --range 10.8.0.0/28 \
       --network default || echo 'Connector already created.'
 
-- id: 'Build Container Image'
-  name: 'gcr.io/cloud-builders/docker'
-  entrypoint: '/bin/bash'
-  args:
-  - '-c'
-  - |
-    ./test/retry.sh "docker build -t ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} ."
-
-- id: 'Push Container Image'
-  name: 'gcr.io/cloud-builders/docker'
-  entrypoint: '/bin/bash'
-  args:
-  - '-c'
-  - |
-    #./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
-    ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
+#- id: 'Build Container Image'
+#  name: 'gcr.io/cloud-builders/docker'
+#  entrypoint: '/bin/bash'
+#  args:
+#  - '-c'
+#  - |
+#    ./test/retry.sh "docker build -t ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} ."
+#
+#- id: 'Push Container Image'
+#  name: 'gcr.io/cloud-builders/docker'
+#  entrypoint: '/bin/bash'
+#  args:
+#  - '-c'
+#  - |
+#    #./test/retry.sh "docker push gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}"
+#    ./test/retry.sh "gcloud artifacts docker images delete ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} --quiet"
 
 - id: 'Deploy to Cloud Run'
   name: 'gcr.io/cloud-builders/docker'
@@ -50,20 +50,21 @@ steps:
   - |
     ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
       #--image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
-      --image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} \
+      #--image ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE} \
+      --source . \
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
       --vpc-connector ${_CONNECTOR}"
     ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}"
 
-images:
+#images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
-- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE}
+#- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE}
 
 substitutions:
   _SERVICE: websockets
-  _VERSION: manual
   _CONNECTOR: my-connector
   _REGION: us-central1
   _REDISHOST: localhost
+  #_VERSION: manual

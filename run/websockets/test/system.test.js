@@ -75,6 +75,11 @@ describe('End-to-End Tests', () => {
       console.log(`url: ${url}`);
       console.error('stderr:', stderr);
     }
+
+    await new Promise(resolve => {
+      setTimeout(resolve, 2 * 60 * 1000); // 2m
+    });
+
     await describeService();
 
     BASE_URL = url.toString('utf-8').trim();
@@ -105,7 +110,7 @@ describe('End-to-End Tests', () => {
     // if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
     //
     console.log('Starting Cleanup...');
-    execSync(cleanUpCmd);
+    //execSync(cleanUpCmd);
     console.log('Cleanup complete.');
   });
 

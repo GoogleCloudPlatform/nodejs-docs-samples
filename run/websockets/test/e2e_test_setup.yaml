@@ -55,9 +55,9 @@ steps:
       --allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars REDISHOST=${_REDISHOST} \
-      --vpc-connector ${_CONNECTOR}"
-    ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}"
+      --vpc-connector ${_CONNECTOR}" \
     echo "${_VERSION}"
+    # ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}"
 
 #images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

@@ -27,6 +27,8 @@ steps:
       ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION}" \
         "gcloud run services delete ${_SERVICE} --region ${_REGION} --quiet"
 
+      echo "${_VERSION}"
+
 #images:
 #- gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
 #- ${_REGION}-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/${_SERVICE}

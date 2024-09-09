@@ -34,18 +34,21 @@ describe('End-to-End Tests', () => {
     );
   }
   const CONNECTOR = 'my-connector';
+  const {SAMPLE_VERSION} = process.env;
   const REGION = 'us-central1';
   let browser, browserPage;
   const {REDISHOST} = process.env;
   if (!REDISHOST) {
     throw Error('"REDISHOST" env var not found.');
   }
+
   before(async () => {
     // Deploy service using Cloud Build
-    const buildCmd =
+    let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION},_REDISHOST=${REDISHOST},_CONNECTOR=${CONNECTOR}`;
+    if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {stdio: 'inherit'}); // timeout at 4 mins
@@ -78,10 +81,12 @@ describe('End-to-End Tests', () => {
       await browser.close();
     }
 
-    const cleanUpCmd =
+    let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
+    if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+
     console.log('Starting Cleanup...');
     execSync(cleanUpCmd);
     console.log('Cleanup complete.');

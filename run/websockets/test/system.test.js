@@ -17,7 +17,7 @@ const got = require('got');
 const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const puppeteer = require('puppeteer');
-const util = require("node:util");
+const util = require('node:util');
 const auth = new GoogleAuth();
 
 describe('End-to-End Tests', () => {
@@ -65,10 +65,10 @@ describe('End-to-End Tests', () => {
     async function describeService() {
       const exec = util.promisify(require('node:child_process').exec);
       const cmd =
-        `./test/retry.sh "gcloud run services describe ` +
+        './test/retry.sh "gcloud run services describe ' +
         `--project=${GOOGLE_CLOUD_PROJECT} ` +
         `--region=${REGION} ` +
-        `--format='value(status.url)'"` +
+        "--format='value(status.url)'\"" +
         `${SERVICE_NAME} `;
       const {stdout, stderr} = await exec(cmd);
       url = stdout.toString().trim();

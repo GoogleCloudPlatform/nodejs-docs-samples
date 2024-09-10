@@ -50,7 +50,7 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
+    ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --source . \
       --allow-unauthenticated \
       --region ${_REGION} \

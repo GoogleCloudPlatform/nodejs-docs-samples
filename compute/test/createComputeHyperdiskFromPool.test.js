@@ -20,17 +20,56 @@ const path = require('path');
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
-const {DisksClient, StoragePoolsClient} = require('@google-cloud/compute').v1;
+const {DisksClient, StoragePoolsClient, ZoneOperationsClient} =
+  require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create compute hyperdisk from pool', async () => {
-  const diskName = 'disk-name-from-pool';
-  const zone = 'europe-central2-b';
-  const storagePoolName = 'storage-pool-name-hyperdisk';
+async function cleanupResources(projectId, zone, diskName, storagePoolName) {
   const disksClient = new DisksClient();
   const storagePoolsClient = new StoragePoolsClient();
+  const zoneOperationsClient = new ZoneOperationsClient();
+  // Delete disk attached to storagePool
+  const [diskResponse] = await disksClient.delete({
+    project: projectId,
+    disk: diskName,
+    zone,
+  });
+
+  let diskOperation = diskResponse.latestResponse;
+
+  // Wait for the delete disk operation to complete.
+  while (diskOperation.status !== 'DONE') {
+    [diskOperation] = await zoneOperationsClient.wait({
+      operation: diskOperation.name,
+      project: projectId,
+      zone: diskOperation.zone.split('/').pop(),
+    });
+  }
+
+  const [poolResponse] = await storagePoolsClient.delete({
+    project: projectId,
+    storagePool: storagePoolName,
+    zone,
+  });
+  let poolOperation = poolResponse.latestResponse;
+
+  // Wait for the delete pool operation to complete.
+  while (poolOperation.status !== 'DONE') {
+    [poolOperation] = await zoneOperationsClient.wait({
+      operation: poolOperation.name,
+      project: projectId,
+      zone: poolOperation.zone.split('/').pop(),
+    });
+  }
+}
+
+describe('Create compute hyperdisk from pool', async () => {
+  const diskName = 'disk-from-pool-name';
+  const zone = 'us-central1-a';
+  const storagePoolName = 'storage-pool-name';
+  const disksClient = new DisksClient();
   let projectId;
 
   before(async () => {
@@ -38,78 +77,25 @@ describe('Create compute hyperdisk from pool', async () => {
 
     // Ensure resources are deleted before attempting to recreate them
     try {
-      await disksClient.delete({
-        project: projectId,
-        disk: diskName,
-        zone,
-      });
+      await cleanupResources(projectId, zone, diskName, storagePoolName);
     } catch (err) {
-      // Should be ok to ignore (resource doesn't exist)
+      // Should be ok to ignore (resources do not exist)
       console.error(err);
     }
-
-    try {
-      await storagePoolsClient.delete({
-        project: projectId,
-        storagePool: storagePoolName,
-        zone,
-      });
-    } catch (err) {
-      // Should be ok to ignore (resource doesn't exist)
-      console.error(err);
-    }
-
-    await storagePoolsClient.insert({
-      project: projectId,
-      storagePoolResource: {
-        name: storagePoolName,
-        poolProvisionedCapacityGb: 10240,
-        poolProvisionedIops: 10000,
-        poolProvisionedThroughput: 1024,
-        storagePoolType: `projects/${projectId}/zones/${zone}/storagePoolTypes/hyperdisk-balanced`,
-        capacityProvisioningType: 'advanced',
-        zone,
-      },
-      zone,
-    });
   });
 
   after(async () => {
-    // Trying to delete the disk too quickly seems to fail
-    const deleteDisk = async () => {
-      setTimeout(async () => {
-        await disksClient.delete({
-          project: projectId,
-          disk: diskName,
-          zone,
-        });
-      }, 120 * 1000); // wait two minutes
-    };
+    await cleanupResources(projectId, zone, diskName, storagePoolName);
+  });
 
-    try {
-      await deleteDisk();
-    } catch {
-      // Try one more time after repeating the delay
-      await deleteDisk();
-    }
+  it('should create a new storage pool', () => {
+    const response = JSON.parse(
+      execSync('node ./disks/createComputeHyperdiskPool.js', {
+        cwd,
+      })
+    );
 
-    // Need enough time after removing the disk before removing the pool
-    const deletePool = async () => {
-      setTimeout(async () => {
-        await storagePoolsClient.delete({
-          project: projectId,
-          storagePool: storagePoolName,
-          zone,
-        });
-      }, 120 * 1000); // wait two minutes
-    };
-
-    try {
-      await deletePool();
-    } catch {
-      // Try one more time after repeating the delay
-      await deletePool();
-    }
+    assert.equal(response.name, storagePoolName);
   });
 
   it('should create a new hyperdisk from pool', () => {

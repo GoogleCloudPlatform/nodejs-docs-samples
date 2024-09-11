@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(reservationsClient, zoneOperationsClient) {
+async function main() {
   // [START compute_reservation_create_shared]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -26,9 +26,9 @@ async function main(reservationsClient, zoneOperationsClient) {
    * TODO(developer): Uncomment reservationsClient and zoneOperationsClient before running the sample.
    */
   // Instantiate a reservationsClient
-  // reservationsClient = new computeLib.ReservationsClient();
+  const reservationsClient = new computeLib.ReservationsClient();
   // Instantiate a zoneOperationsClient
-  // zoneOperationsClient = new computeLib.ZoneOperationsClient();
+  const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
    * TODO(developer): Update these variables before running the sample.
@@ -60,8 +60,8 @@ async function main(reservationsClient, zoneOperationsClient) {
         // The IDs of projects that can consume this reservation. You can include up to 100 consumer projects.
         // These projects must be in the same organization as the owner project.
         // Don't include the owner project. By default, it is already allowed to consume the reservation.
-        consumer_project_id: {
-          projectId: 'consumer_project_id',
+        consumerId: {
+          projectId: 'consumerId',
         },
       },
     });
@@ -106,10 +106,7 @@ async function main(reservationsClient, zoneOperationsClient) {
   // [END compute_reservation_create_shared]
 }
 
-module.exports = main;
-
-// TODO(developer): Uncomment below lines before running the sample.
-// main().catch(err => {
-//   console.error(err);
-//   process.exitCode = 1;
-// });
+main().catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

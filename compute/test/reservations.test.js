@@ -19,7 +19,6 @@
 const path = require('path');
 const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
-const {expect} = require('chai');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
 
@@ -112,9 +111,8 @@ describe('Compute reservation', async () => {
       throw new Error('Reservation was not deleted.');
     } catch (error) {
       // Assert that the error message indicates the reservation wasn't found
-      expect(error.message).to.include(
-        `The resource 'projects/${projectId}/zones/${zone}/reservations/${reservationName}' was not found`
-      );
+      const expected = `The resource 'projects/${projectId}/zones/${zone}/reservations/${reservationName}' was not found`;
+      assert(error.message && error.message.includes(expected));
     }
   });
 });

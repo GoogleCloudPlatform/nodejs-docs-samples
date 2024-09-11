@@ -30,7 +30,7 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
-  // The ID of the project where you want to reserve resources and where the instance template exists.
+  // The ID of the project where you want to reserve resources.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';

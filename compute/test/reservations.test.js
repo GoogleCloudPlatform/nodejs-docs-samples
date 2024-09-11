@@ -111,7 +111,7 @@ describe('Compute reservation', async () => {
       throw new Error('Reservation was not deleted.');
     } catch (error) {
       // Assert that the error message indicates the reservation wasn't found
-      const expected = `The resource 'projects/${projectId}/zones/${zone}/reservations/${reservationName}' was not found`
+      const expected = `The resource 'projects/${projectId}/zones/${zone}/reservations/${reservationName}' was not found`;
       assert(error.message && error.message.includes(expected));
     }
   });

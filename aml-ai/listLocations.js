@@ -15,7 +15,7 @@
 
 'use strict';
 
-const main = (projectId = process.env.GOOGLE_CLOUD_PROJECT) => {
+const main = async () => {
   // [START antimoneylaunderingai_list_locations]
   // Import google-auth-library for authentication.
   const {GoogleAuth} = require('google-auth-library');
@@ -25,17 +25,26 @@ const main = (projectId = process.env.GOOGLE_CLOUD_PROJECT) => {
       scopes: 'https://www.googleapis.com/auth/cloud-platform',
       headers: {'Content-Type': 'application/json; charset=utf-8'},
     });
-    // TODO(developer): uncomment these lines before running the sample
-    // const projectId = 'my-project-id';
+    // TODO(developer): update the project ID as needed
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
     const url = `https://financialservices.googleapis.com/v1/projects/${projectId}/locations`;
     const client = await auth.getClient();
-    const response = await client.request({url, method: 'GET'});
+    let response;
+    try {
+      response = await client.request({url, method: 'GET'});
+    } catch (err) {
+      throw new Error(`API request failed: ${err}`);
+    }
+
     console.log(JSON.stringify(response.data));
   };
 
-  listLocations();
+  return await listLocations();
   // [END antimoneylaunderingai_list_locations]
 };
 
-// node listLocations.js <projectId>
-main(...process.argv.slice(2));
+// node listLocations.js
+main().catch(err => {
+  console.log(err);
+  process.exitCode = 1;
+});

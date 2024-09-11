@@ -21,10 +21,9 @@ const cwd = path.join(__dirname, '..');
 const {execSync} = require('child_process');
 const {it} = require('mocha');
 
-const projectId = process.env.GCLOUD_PROJECT;
 const cloudRegion = 'us-central1';
 
 it('should get the AML AI API locations', () => {
-  const output = execSync(`node listLocations.js ${projectId}`, {cwd});
+  const output = execSync('node listLocations.js', {cwd});
   assert.ok(output.includes(cloudRegion));
 });

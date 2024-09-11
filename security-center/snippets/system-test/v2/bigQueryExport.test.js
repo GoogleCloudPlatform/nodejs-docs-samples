@@ -22,7 +22,7 @@ const {describe, it, before} = require('mocha');
 const uuidv1 = require('uuid').v1;
 
 const organizationId = '1081635000895';
-const projectId = 'project-a-id'
+const projectId = 'project-a-id';
 const dataset = `projects/${projectId}/datasets/sampledataset`;
 const location = 'global';
 
@@ -73,9 +73,7 @@ describe('Client with bigquery export V2', async () => {
   });
 
   it('client can list all bigquery export V2', done => {
-    const output = exec(
-      `node v2/listAllBigQueryExports.js ${data.orgId}`
-    );
+    const output = exec(`node v2/listAllBigQueryExports.js ${data.orgId}`);
     assert(output.includes(data.bigQueryExportName));
     assert.match(output, /Sources/);
     assert.notMatch(output, /undefined/);

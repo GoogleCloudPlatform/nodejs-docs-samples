@@ -42,9 +42,11 @@ const main = (
       name,
       updateMask: 'notificationConfigs',
       resource: {
-        notificationConfigs: {
-          pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
-        },
+        notificationConfigs: [
+          {
+            pubsubTopic: `projects/${projectId}/topics/${pubsubTopic}`,
+          },
+        ],
       },
     };
 

@@ -17,34 +17,36 @@
 'use strict';
 
 const {beforeEach, afterEach, describe, it} = require('mocha');
-const {expect} = require('chai');
+const path = require('path');
+const assert = require('node:assert/strict');
+const cp = require('child_process');
 const sinon = require('sinon');
-const computeLib = require('@google-cloud/compute');
-const createSharedReservation = require('../reservations/createSharedReservation.js');
-const sharedReservationConsumerProjectsUpdate = require('../reservations/sharedReservationConsumerProjectsUpdate.js');
-const compute = computeLib.protos.google.cloud.compute.v1;
+
+const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const cwd = path.join(__dirname, '..');
 
 describe('Compute shared reservation', async () => {
-  const reservationName = 'reservation-01';
+  let ReservationsClient, ZoneOperationsClient;
+  const reservationName = `shared-reservation-e2e3f${Math.random()}`;
   const projectId = 'project_id';
   const zone = 'us-central1-a';
-  const reservation = new compute.Reservation({
+  const reservation = {
     name: reservationName,
     resourcePolicies: {},
     specificReservationRequired: true,
-    specificReservation: new compute.AllocationSpecificSKUReservation({
+    specificReservation: {
       count: 3,
       sourceInstanceTemplate: `projects/${projectId}/global/instanceTemplates/global-instance-template-name`,
-    }),
-    shareSettings: new compute.ShareSettings({
+    },
+    shareSettings: {
       shareType: 'SPECIFIC_PROJECTS',
       projectMap: {
         consumerId: {
           projectId: 'consumerId',
         },
       },
-    }),
-  });
+    },
+  };
   const updatedReservation = {
     ...reservation,
     shareSettings: {
@@ -64,80 +66,62 @@ describe('Compute shared reservation', async () => {
       },
     },
   };
-  let reservationsClientMock;
-  let zoneOperationsClientMock;
-  let insertMock;
-  let updateMock;
-  let getMock;
 
   beforeEach(() => {
-    sinon.stub(console, 'log');
-    insertMock = sinon.stub().resolves([operationResponse]);
-    updateMock = sinon.stub().resolves([operationResponse]);
-    getMock = sinon.stub();
-    reservationsClientMock = {
-      getProjectId: sinon.stub().resolves(projectId),
-      insert: insertMock,
-      update: updateMock,
-      get: getMock,
-    };
-    zoneOperationsClientMock = {
-      wait: sinon.stub().resolves([
-        {
-          latestResponse: {
-            status: 'DONE',
-          },
+    ({ReservationsClient, ZoneOperationsClient} =
+      require('@google-cloud/compute').v1);
+
+    sinon
+      .stub(ReservationsClient.prototype, 'getProjectId')
+      .resolves(projectId);
+    sinon
+      .stub(ReservationsClient.prototype, 'insert')
+      .resolves([operationResponse]);
+    sinon
+      .stub(ReservationsClient.prototype, 'update')
+      .resolves([operationResponse]);
+    sinon.stub(ZoneOperationsClient.prototype, 'wait').resolves([
+      {
+        latestResponse: {
+          status: 'DONE',
         },
-      ]),
-    };
+      },
+    ]);
   });
 
   afterEach(() => {
     sinon.restore();
   });
 
-  it('should create and log new shared reservation', async () => {
-    getMock.resolves([reservation]);
+  it('should create new shared reservation', async () => {
+    sinon.stub(ReservationsClient.prototype, 'get').resolves([reservation]);
 
-    await createSharedReservation(
-      reservationsClientMock,
-      zoneOperationsClientMock
+    const response = JSON.parse(
+      execSync(
+        `node ./reservations/createSharedReservation.js ${reservationName}`,
+        {
+          cwd,
+        }
+      )
     );
 
-    expect(insertMock.calledOnce).to.be.true;
-    expect(
-      insertMock.calledWith({
-        project: projectId,
-        reservationResource: reservation,
-        zone,
-      })
-    ).to.be.true;
-    expect(console.log.calledOnce).to.be.true;
-    expect(console.log.calledWith(reservation)).to.be.true;
+    assert.deepEqual(response, reservation);
   });
 
-  it('should update consumer projects in shared reservation and log updated reservation', async () => {
-    getMock.resolves([updatedReservation]);
+  it('should update consumer projects in shared reservation', async () => {
+    sinon
+      .stub(ReservationsClient.prototype, 'get')
+      .resolves([updatedReservation]);
 
-    await sharedReservationConsumerProjectsUpdate(
-      reservationsClientMock,
-      zoneOperationsClientMock
+    const response = JSON.parse(
+      execSync(
+        `node ./reservations/sharedReservationConsumerProjectsUpdate.js ${reservationName}`,
+        {
+          cwd,
+        }
+      )
     );
 
-    expect(updateMock.calledOnce).to.be.true;
-    expect(
-      updateMock.calledWith({
-        project: projectId,
-        reservation: reservationName,
-        paths: 'shareSettings.projectMap.newConsumerId',
-        zone,
-        reservationResource: {
-          name: reservationName,
-          shareSettings: updatedReservation.shareSettings,
-        },
-      })
-    ).to.be.true;
-    expect(console.log.calledOnce).to.be.true;
-    expect(console.log.calledWith(updatedReservation)).to.be.true;
+    assert.deepEqual(response, updatedReservation);
   });
 });

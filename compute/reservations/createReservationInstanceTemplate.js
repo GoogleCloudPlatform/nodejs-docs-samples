@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(location, instanceTemplateName) {
+async function main(reservationName, location, instanceTemplateName) {
   // [START compute_reservation_create_template]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,14 +28,14 @@ async function main(location, instanceTemplateName) {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The ID of the project where you want to reserve resources and where the instance template exists.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  const reservationName = 'reservation-01';
+  // const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
 

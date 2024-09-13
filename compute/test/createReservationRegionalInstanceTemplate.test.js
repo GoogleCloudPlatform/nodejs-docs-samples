@@ -26,7 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using regional instance template', async () => {
-  const reservationName = 'reservation-01';
+  const reservationName = `regional-reservation-04bf4ed${Math.floor(Math.random() * 10 + 1)}`;
   const instanceTemplateName = 'pernament-region-template-name';
   const location = 'regions/us-central1';
   const reservationsClient = new ReservationsClient();
@@ -38,7 +38,7 @@ describe('Create compute reservation using regional instance template', async ()
 
   after(() => {
     // Delete reservation
-    execSync('node ./reservations/deleteReservation.js', {
+    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
       cwd,
     });
   });
@@ -46,7 +46,7 @@ describe('Create compute reservation using regional instance template', async ()
   it('should create a new reservation', () => {
     const response = JSON.parse(
       execSync(
-        `node ./reservations/createReservationInstanceTemplate.js ${location} ${instanceTemplateName}`,
+        `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
         {
           cwd,
         }

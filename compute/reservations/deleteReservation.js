@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 'use strict';
-async function main() {
+async function main(reservationName) {
   // [START compute_reservation_delete]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -23,14 +23,14 @@ async function main() {
   // Instantiate a zoneOperationsClient
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The ID of the project where your reservation is located.
   const projectId = await reservationsClient.getProjectId();
   // The zone where your reservation is located.
   const zone = 'us-central1-a';
   // The name of the reservation to delete.
-  const reservationName = 'reservation-01';
+  // const reservationName = 'reservation-01';
 
   async function callDeleteReservation() {
     // Delete the reservation
@@ -54,7 +54,7 @@ async function main() {
   await callDeleteReservation();
   // [END compute_reservation_delete]
 }
-main().catch(err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

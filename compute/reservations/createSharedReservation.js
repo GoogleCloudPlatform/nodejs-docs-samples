@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main() {
+async function main(reservationsClient, zoneOperationsClient) {
   // [START compute_reservation_create_shared]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -26,9 +26,9 @@ async function main() {
    * TODO(developer): Uncomment reservationsClient and zoneOperationsClient before running the sample.
    */
   // Instantiate a reservationsClient
-  const reservationsClient = new computeLib.ReservationsClient();
+  // reservationsClient = new computeLib.ReservationsClient();
   // Instantiate a zoneOperationsClient
-  const zoneOperationsClient = new computeLib.ZoneOperationsClient();
+  // zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
    * TODO(developer): Update these variables before running the sample.
@@ -106,7 +106,10 @@ async function main() {
   // [END compute_reservation_create_shared]
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main().catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

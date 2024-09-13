@@ -18,28 +18,25 @@
 
 'use strict';
 
-async function main(reservationsClient, zoneOperationsClient) {
-  // [START compute_reservation_consumer_projects_update]
+// [START compute_reservation_consumer_projects_update]
 
-  /**
-   * TODO(developer): Uncomment computeLib, reservationsClient and zoneOperationsClient before running the sample.
-   */
-  // Import the Compute library
-  // const computeLib = require('@google-cloud/compute');
-  // Instantiate a reservationsClient
-  // reservationsClient = new computeLib.ReservationsClient();
-  // Instantiate a zoneOperationsClient
-  // zoneOperationsClient = new computeLib.ZoneOperationsClient();
+// Import the Compute library
+const computeLib = require('@google-cloud/compute');
+// Instantiate a reservationsClient
+const reservationsClient = new computeLib.ReservationsClient();
+// Instantiate a zoneOperationsClient
+const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
+async function main(reservationName) {
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The ID of the owner project, which is the project used to create the shared reservation.
   const projectId = await reservationsClient.getProjectId();
   // The zone where the shared reservation is located.
   const zone = 'us-central1-a';
   // The name of an existing shared reservation.
-  const reservationName = 'reservation-01';
+  // const reservationName = 'reservation-01';
   // The ID of project to share the reservation with.
   const consumerId = 'newConsumerId';
 
@@ -95,7 +92,7 @@ async function main(reservationsClient, zoneOperationsClient) {
   // [END compute_reservation_consumer_projects_update]
 }
 
-main().catch(err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

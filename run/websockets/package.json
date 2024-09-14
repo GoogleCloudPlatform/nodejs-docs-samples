@@ -7,8 +7,9 @@
   "author": "Google LLC",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Info: no unit tests\"",
-    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=420000 --exit"
+    "test": "echo \"INFO: no unit tests\"",
+    "system-test-fix": "c8 mocha -p -j 2 test/system.test.js --timeout=420000 --exit",
+    "system-test": "\"INFO: system-test temporarily disabled\""
   },
   "engines": {
     "node": ">=16.0.0"

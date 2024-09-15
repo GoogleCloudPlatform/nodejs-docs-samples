@@ -26,6 +26,6 @@
     "google-auth-library": "^9.0.0",
     "got": "^11.5.0",
     "mocha": "^10.2.0",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^23.0.0"
   }
 }

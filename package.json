@@ -22,7 +22,7 @@
     "@typescript-eslint/parser": "^8.0.0",
     "c8": "^10.0.0",
     "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-n": "^17.0.0",
+    "eslint-plugin-n": "^14.0.0",
     "eslint-plugin-prettier": "^5.0.0-alpha.1",
     "gts": "5.3.0",
     "mocha": "^10.2.0",

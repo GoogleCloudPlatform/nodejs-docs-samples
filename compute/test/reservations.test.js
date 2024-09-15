@@ -18,29 +18,22 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create compute reservation by specyfing properties directly', async () => {
+describe('Compute reservation', async () => {
   const reservationName = 'reservation-01';
   const zone = 'us-central1-a';
   const reservationsClient = new ReservationsClient();
   let projectId;
+  let reservation;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-  });
-
-  after(async () => {
-    await reservationsClient.delete({
-      project: projectId,
-      reservation: reservationName,
-      zone,
-    });
   });
 
   it('should create a new reservation', () => {
@@ -67,17 +60,59 @@ describe('Create compute reservation by specyfing properties directly', async ()
       minCpuPlatform: 'Intel Skylake',
     };
 
-    const response = JSON.parse(
+    reservation = JSON.parse(
       execSync('node ./reservations/createReservationFromProperties.js', {
         cwd,
       })
     );
 
-    assert.equal(response.name, reservationName);
-    assert.equal(response.specificReservation.count, '3');
+    assert.equal(reservation.name, reservationName);
+    assert.equal(reservation.specificReservation.count, '3');
     assert.deepEqual(
-      response.specificReservation.instanceProperties,
+      reservation.specificReservation.instanceProperties,
       instanceProperties
     );
+  });
+
+  it('should return reservation', () => {
+    const response = JSON.parse(
+      execSync('node ./reservations/getReservation.js', {
+        cwd,
+      })
+    );
+
+    assert.deepEqual(response, reservation);
+  });
+
+  it('should return list of reservations', () => {
+    const response = JSON.parse(
+      execSync('node ./reservations/getReservations.js', {
+        cwd,
+      })
+    );
+
+    assert.deepEqual(response, [reservation]);
+  });
+
+  it('should delete reservation', async () => {
+    execSync('node ./reservations/deleteReservation.js', {
+      cwd,
+    });
+
+    try {
+      // Try to get the deleted reservation
+      await reservationsClient.get({
+        project: projectId,
+        zone,
+        reservation: reservationName,
+      });
+
+      // If the reservation is found, the test should fail
+      throw new Error('Reservation was not deleted.');
+    } catch (error) {
+      // Assert that the error message indicates the reservation wasn't found
+      const expected = `The resource 'projects/${projectId}/zones/${zone}/reservations/${reservationName}' was not found`;
+      assert(error.message && error.message.includes(expected));
+    }
   });
 });

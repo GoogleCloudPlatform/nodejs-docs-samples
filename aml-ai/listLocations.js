@@ -45,6 +45,6 @@ const main = async () => {
 
 // node listLocations.js
 main().catch(err => {
-  console.log(err);
+  console.error(err);
   process.exitCode = 1;
 });

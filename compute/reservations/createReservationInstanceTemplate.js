@@ -16,8 +16,8 @@
 
 'use strict';
 
-async function main() {
-  // [START compute_reservation_create]
+async function main(location, instanceTemplateName) {
+  // [START compute_reservation_create_template]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
@@ -30,7 +30,7 @@ async function main() {
   /**
    * TODO(developer): Update these variables before running the sample.
    */
-  // The ID of the project where you want to reserve resources.
+  // The ID of the project where you want to reserve resources and where the instance template exists.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
@@ -38,44 +38,35 @@ async function main() {
   const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
-  // Machine type to use for each VM.
-  const machineType = 'n1-standard-4';
 
-  async function callCreateComputeReservationFromProperties() {
-    // Create specific reservation for 3 VMs that each use an N1 predefined machine type with 4 vCPUs.
+  /**
+   * The name of an existing instance template.
+   * TODO(developer): Uncomment and update instanceTemplateName before running the sample.
+   */
+  // const instanceTemplateName = 'pernament-region-template-name';
+
+  /**
+   * // The location of the instance template.
+   * TODO(developer): Uncomment the `location` variable depending on which template you want to use.
+   */
+
+  // The location for a regional instance template: regions/{region}. Replace region with the region where the instance template is located.
+  // If you specify a regional instance template, then you can only reserve VMs within the same region as the template's region.
+  // const location = `regions/${zone.slice(0, -2)}`;
+
+  // The location for a global instance template.
+  // const location = 'global';
+
+  async function callCreateComputeReservationInstanceTemplate() {
+    // Create reservation for 3 VMs in zone us-central1-a by specifying a instance template.
     const specificReservation = new compute.AllocationSpecificSKUReservation({
       count: vmsNumber,
-      instanceProperties: {
-        machineType,
-        // To have the reserved VMs use a specific minimum CPU platform instead of the zone's default CPU platform.
-        minCpuPlatform: 'Intel Skylake',
-        // If you want to attach GPUs to your reserved N1 VMs, update and uncomment guestAccelerators if needed.
-        guestAccelerators: [
-          {
-            // The number of GPUs to add per reserved VM.
-            acceleratorCount: 1,
-            // Supported GPU model for N1 VMs. Ensure that your chosen GPU model is available in the zone,
-            // where you want to reserve resources.
-            acceleratorType: 'nvidia-tesla-t4',
-          },
-        ],
-        // If you want to add local SSD disks to each reserved VM, update and uncomment localSsds if needed.
-        // You can specify up to 24 Local SSD disks. Each Local SSD disk is 375 GB.
-        localSsds: [
-          {
-            diskSizeGb: 375,
-            // The type of interface you want each Local SSD disk to use. Specify one of the following values: NVME or SCSI.
-            // Make sure that the machine type you specify for the reserved VMs supports the chosen disk interfaces.
-            interface: 'NVME',
-          },
-        ],
-      },
+      sourceInstanceTemplate: `projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`,
     });
 
     // Create a reservation.
     const reservation = new compute.Reservation({
       name: reservationName,
-      zone,
       specificReservation,
     });
 
@@ -107,11 +98,11 @@ async function main() {
     console.log(JSON.stringify(createdReservation));
   }
 
-  await callCreateComputeReservationFromProperties();
-  // [END compute_reservation_create]
+  await callCreateComputeReservationInstanceTemplate();
+  // [END compute_reservation_create_template]
 }
 
-main().catch(err => {
-  console.error(err);
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
   process.exitCode = 1;
 });

@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main() {
+async function main(storagePoolName) {
   // [START compute_hyperdisk_pool_create]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,14 +28,14 @@ async function main() {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await storagePoolClient.getProjectId();
   // Name of the zone in which you want to create the storagePool.
   const zone = 'us-central1-a';
   // Name of the storagePool you want to create.
-  const storagePoolName = 'storage-pool-name';
+  // storagePoolName = 'storage-pool-name';
   // The type of disk you want to create. This value uses the following format:
   // "projects/{projectId}/zones/{zone}/storagePoolTypes/(hyperdisk-throughput|hyperdisk-balanced)"
   const storagePoolType = `projects/${projectId}/zones/${zone}/storagePoolTypes/hyperdisk-balanced`;
@@ -79,22 +79,14 @@ async function main() {
       });
     }
 
-    const createdStoragePool = (
-      await storagePoolClient.get({
-        project: projectId,
-        zone,
-        storagePool: storagePoolName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(createdStoragePool));
+    console.log(`Storage pool: ${storagePoolName} created.`);
   }
 
   await callCreateComputeHyperdiskPool();
   // [END compute_hyperdisk_pool_create]
 }
 
-main().catch(err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

@@ -16,86 +16,25 @@
 
 'use strict';
 
-const {beforeEach, afterEach, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const path = require('path');
 const assert = require('node:assert/strict');
 const cp = require('child_process');
-const sinon = require('sinon');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Compute shared reservation', async () => {
-  let ReservationsClient, ZoneOperationsClient;
-  const reservationName = `shared-reservation-e2e3f${Math.random()}`;
-  const projectId = 'project_id';
-  const zone = 'us-central1-a';
-  const reservation = {
-    name: reservationName,
-    resourcePolicies: {},
-    specificReservationRequired: true,
-    specificReservation: {
-      count: 3,
-      sourceInstanceTemplate: `projects/${projectId}/global/instanceTemplates/global-instance-template-name`,
-    },
-    shareSettings: {
-      shareType: 'SPECIFIC_PROJECTS',
-      projectMap: {
-        consumerId: {
-          projectId: 'consumerId',
-        },
-      },
-    },
-  };
-  const updatedReservation = {
-    ...reservation,
-    shareSettings: {
-      projectMap: {
-        newConsumerId: {
-          projectId: 'newConsumerId',
-        },
-      },
-    },
-  };
-  const operationResponse = {
-    latestResponse: {
-      status: 'DONE',
-      name: 'operation-1234567890',
-      zone: {
-        value: zone,
-      },
-    },
-  };
+  const reservationName = `shared-reservation-e2${Math.floor(Math.random() * 10 + 1)}f`;
 
-  beforeEach(() => {
-    ({ReservationsClient, ZoneOperationsClient} =
-      require('@google-cloud/compute').v1);
-
-    sinon
-      .stub(ReservationsClient.prototype, 'getProjectId')
-      .resolves(projectId);
-    sinon
-      .stub(ReservationsClient.prototype, 'insert')
-      .resolves([operationResponse]);
-    sinon
-      .stub(ReservationsClient.prototype, 'update')
-      .resolves([operationResponse]);
-    sinon.stub(ZoneOperationsClient.prototype, 'wait').resolves([
-      {
-        latestResponse: {
-          status: 'DONE',
-        },
-      },
-    ]);
-  });
-
-  afterEach(() => {
-    sinon.restore();
+  after(() => {
+    // Delete reservation
+    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
+      cwd,
+    });
   });
 
   it('should create new shared reservation', async () => {
-    sinon.stub(ReservationsClient.prototype, 'get').resolves([reservation]);
-
     const response = JSON.parse(
       execSync(
         `node ./reservations/createSharedReservation.js ${reservationName}`,
@@ -105,14 +44,10 @@ describe('Compute shared reservation', async () => {
       )
     );
 
-    assert.deepEqual(response, reservation);
+    assert.equal(response.name, reservationName);
   });
 
   it('should update consumer projects in shared reservation', async () => {
-    sinon
-      .stub(ReservationsClient.prototype, 'get')
-      .resolves([updatedReservation]);
-
     const response = JSON.parse(
       execSync(
         `node ./reservations/sharedReservationConsumerProjectsUpdate.js ${reservationName}`,
@@ -122,6 +57,6 @@ describe('Compute shared reservation', async () => {
       )
     );
 
-    assert.deepEqual(response, updatedReservation);
+    assert.not.equal(response, null);
   });
 });

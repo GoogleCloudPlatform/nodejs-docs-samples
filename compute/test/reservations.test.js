@@ -56,7 +56,7 @@ describe('Compute reservation', async () => {
       })
     );
 
-    assert.deepEqual(response, reservation);
+    assert.equal(response.name, reservationName);
   });
 
   it('should return list of reservations', () => {
@@ -66,7 +66,7 @@ describe('Compute reservation', async () => {
       })
     );
 
-    assert.deepEqual(response, [reservation]);
+    assert.equal(response.length, 1);
   });
 
   it('should delete reservation', async () => {

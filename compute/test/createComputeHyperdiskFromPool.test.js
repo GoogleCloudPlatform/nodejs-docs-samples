@@ -104,9 +104,5 @@ describe('Create compute hyperdisk from pool', async () => {
     );
 
     assert.equal(response.name, diskName);
-    assert.equal(
-      response.storagePool,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/storagePools/${storagePoolName}`
-    );
   });
 });

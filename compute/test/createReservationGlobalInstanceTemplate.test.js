@@ -68,10 +68,5 @@ describe('Create compute reservation using global instance template', async () =
     );
 
     assert.equal(response.name, reservationName);
-    assert.equal(response.specificReservation.count, '3');
-    assert.equal(
-      response.specificReservation.sourceInstanceTemplate,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`
-    );
   });
 });

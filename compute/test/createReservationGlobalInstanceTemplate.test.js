@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const assert = require('node:assert/strict');
+const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
@@ -26,8 +26,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using global instance template', async () => {
-  const reservationName = `global-reservation-68ef06a${Math.floor(Math.random() * 10 + 1)}`;
-  const instanceTemplateName = `pernament-global-template-68ef06a${Math.floor(Math.random() * 10 + 1)}`;
+  const reservationName = `global-reservation-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
+  const instanceTemplateName = `pernament-global-template-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
   const location = 'global';
   const reservationsClient = new ReservationsClient();
   let projectId;
@@ -58,15 +58,13 @@ describe('Create compute reservation using global instance template', async () =
   });
 
   it('should create a new reservation', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(response.name, reservationName);
+    assert.include(response, `Reservation: ${reservationName} created.`);
   });
 });

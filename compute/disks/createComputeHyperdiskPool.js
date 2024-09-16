@@ -79,15 +79,7 @@ async function main(storagePoolName) {
       });
     }
 
-    const createdStoragePool = (
-      await storagePoolClient.get({
-        project: projectId,
-        zone,
-        storagePool: storagePoolName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(createdStoragePool));
+    console.log(`Storage pool: ${storagePoolName} created.`);
   }
 
   await callCreateComputeHyperdiskPool();

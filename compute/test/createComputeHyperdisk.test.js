@@ -26,7 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute hyperdisk', async () => {
-  const diskName = `hyperdisk-name-941ad2d${Math.floor(Math.random() * 10 + 1)}`;
+  const diskName = `hyperdisk-name-941ad2d${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'europe-central2-b';
   const disksClient = new DisksClient();
   let projectId;
@@ -44,12 +44,13 @@ describe('Create compute hyperdisk', async () => {
   });
 
   it('should create a new hyperdisk', () => {
-    const response = JSON.parse(
-      execSync(`node ./disks/createComputeHyperdisk.js ${diskName}`, {
+    const response = execSync(
+      `node ./disks/createComputeHyperdisk.js ${diskName}`,
+      {
         cwd,
-      })
+      }
     );
 
-    assert.equal(response.name, diskName);
+    assert.include(response, `Disk: ${diskName} created.`);
   });
 });

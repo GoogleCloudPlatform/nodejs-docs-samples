@@ -87,15 +87,7 @@ async function main(reservationName, location, instanceTemplateName) {
       });
     }
 
-    const createdReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(createdReservation));
+    console.log(`Reservation: ${reservationName} created.`);
   }
 
   await callCreateComputeReservationInstanceTemplate();

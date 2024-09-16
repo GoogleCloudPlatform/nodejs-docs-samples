@@ -50,6 +50,8 @@ async function main(reservationName) {
         zone: operation.zone.split('/').pop(),
       });
     }
+
+    console.log(`Reservation: ${reservationName} deleted.`);
   }
   await callDeleteReservation();
   // [END compute_reservation_delete]

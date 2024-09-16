@@ -84,15 +84,7 @@ async function main(diskName, storagePoolName) {
       });
     }
 
-    const hyperdisk = (
-      await disksClient.get({
-        project: projectId,
-        zone,
-        disk: diskName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(hyperdisk));
+    console.log(`Disk: ${diskName} created.`);
   }
 
   await callCreateComputeHyperdiskFromPool();

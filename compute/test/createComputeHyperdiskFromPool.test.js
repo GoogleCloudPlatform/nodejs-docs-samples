@@ -66,9 +66,9 @@ async function cleanupResources(projectId, zone, diskName, storagePoolName) {
 }
 
 describe('Create compute hyperdisk from pool', async () => {
-  const diskName = `disk-from-pool-name-745d98${Math.floor(Math.random() * 10 + 1)}f`;
+  const diskName = `disk-from-pool-name-745d98${Math.floor(Math.random() * 1000 + 1)}f`;
   const zone = 'us-central1-a';
-  const storagePoolName = `storage-pool-name-745d9${Math.floor(Math.random() * 10 + 1)}5f`;
+  const storagePoolName = `storage-pool-name-745d9${Math.floor(Math.random() * 1000 + 1)}5f`;
   const disksClient = new DisksClient();
   let projectId;
 
@@ -81,28 +81,24 @@ describe('Create compute hyperdisk from pool', async () => {
   });
 
   it('should create a new storage pool', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./disks/createComputeHyperdiskPool.js ${storagePoolName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(response.name, storagePoolName);
+    assert.include(response, `Storage pool: ${storagePoolName} created.`);
   });
 
   it('should create a new hyperdisk from pool', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(response.name, diskName);
+    assert.include(response, `Disk: ${diskName} created.`);
   });
 });

@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const assert = require('node:assert/strict');
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
@@ -26,27 +26,24 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Compute reservation', async () => {
-  const reservationName = `reservation-1a0bb69e-${Math.floor(Math.random() * 10 + 1)}ec`;
+  const reservationName = `reservation-1a0bb69e-${Math.floor(Math.random() * 1000 + 1)}ec`;
   const zone = 'us-central1-a';
   const reservationsClient = new ReservationsClient();
   let projectId;
-  let reservation;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
   });
 
   it('should create a new reservation', () => {
-    reservation = JSON.parse(
-      execSync(
-        `node ./reservations/createReservationFromProperties.js ${reservationName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./reservations/createReservationFromProperties.js ${reservationName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(reservation.name, reservationName);
+    assert.include(response, `Reservation: ${reservationName} created.`);
   });
 
   it('should return reservation', () => {

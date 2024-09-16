@@ -34,11 +34,11 @@ async function main(reservationName) {
   // The ID of the owner project, which is the project used to create the shared reservation.
   const projectId = await reservationsClient.getProjectId();
   // The zone where the shared reservation is located.
-  const zone = 'us-central1-a';
+  // const zone = 'us-central1-a';
   // The name of an existing shared reservation.
   // const reservationName = 'reservation-01';
   // The ID of project to share the reservation with.
-  const consumerId = 'newConsumerId';
+  // const consumerId = 'newConsumerId';
 
   async function callComputeSharedReservationConsumerProjectsUpdate() {
     // Update the reservation.
@@ -46,24 +46,25 @@ async function main(reservationName) {
       project: projectId,
       reservation: reservationName,
       /**
+       * TODO(developer): Uncomment `paths, zone, reservationResource` variables before running the sample.
        * Define `paths` field for each consumer, that you want to allow/not allow to consume a shared resevation, e.g.
        * to allow 2 projects to consume a shared reservation, you need to specify 2 paths:
        * paths: 'shareSettings.projectMap.{consumerId1}',
        * paths: 'shareSettings.projectMap.{consumerId2}'
        *  */
-      paths: `shareSettings.projectMap.${consumerId}`,
-      zone,
-      reservationResource: {
-        name: reservationName,
-        // To stop allowing one or more projects to consume a shared reservation, comment shareSettings object.
-        shareSettings: {
-          projectMap: {
-            newConsumerId: {
-              projectId: `${consumerId}`,
-            },
-          },
-        },
-      },
+      // paths: `shareSettings.projectMap.${consumerId}`,
+      // zone,
+      // reservationResource: {
+      //   name: reservationName,
+      //   // To stop allowing one or more projects to consume a shared reservation, comment shareSettings object.
+      //   shareSettings: {
+      //     projectMap: {
+      //       newConsumerId: {
+      //         projectId: `${consumerId}`,
+      //       },
+      //     },
+      //   },
+      // },
     });
 
     let operation = response.latestResponse;
@@ -77,15 +78,7 @@ async function main(reservationName) {
       });
     }
 
-    const updatedReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(updatedReservation);
+    console.log(`Reservation: ${reservationName} updated.`);
   }
 
   await callComputeSharedReservationConsumerProjectsUpdate();

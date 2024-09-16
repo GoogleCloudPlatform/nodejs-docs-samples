@@ -88,15 +88,7 @@ async function main(reservationName, instanceTemplateName) {
       });
     }
 
-    const createdReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(createdReservation);
+    console.log(`Reservation: ${reservationName} created.`);
   }
 
   await callCreateComputeSharedReservation();

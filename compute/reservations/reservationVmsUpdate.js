@@ -61,15 +61,7 @@ async function main(reservationName) {
       });
     }
 
-    const updatedReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(updatedReservation));
+    console.log(`Reservation: ${reservationName} updated.`);
   }
 
   await callComputeReservationVmsUpdate();

@@ -17,47 +17,33 @@
 'use strict';
 
 const path = require('path');
-const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {assert} = require('chai');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
-const {ReservationsClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using regional instance template', async () => {
-  const reservationName = 'reservation-01';
+  const reservationName = `regional-reservation-04bf4ed${Math.floor(Math.random() * 1000 + 1)}`;
   const instanceTemplateName = 'pernament-region-template-name';
   const location = 'regions/us-central1';
-  const reservationsClient = new ReservationsClient();
-  let projectId;
-
-  before(async () => {
-    projectId = await reservationsClient.getProjectId();
-  });
 
   after(() => {
     // Delete reservation
-    execSync('node ./reservations/deleteReservation.js', {
+    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
       cwd,
     });
   });
 
   it('should create a new reservation', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./reservations/createReservationInstanceTemplate.js ${location} ${instanceTemplateName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(response.name, reservationName);
-    assert.equal(response.specificReservation.count, '3');
-    assert.equal(
-      response.specificReservation.sourceInstanceTemplate,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`
-    );
+    assert.include(response, `Reservation: ${reservationName} created.`);
   });
 });

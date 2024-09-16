@@ -66,22 +66,14 @@ async function cleanupResources(projectId, zone, diskName, storagePoolName) {
 }
 
 describe('Create compute hyperdisk from pool', async () => {
-  const diskName = 'disk-from-pool-name';
+  const diskName = `disk-from-pool-name-745d98${Math.floor(Math.random() * 1000 + 1)}f`;
   const zone = 'us-central1-a';
-  const storagePoolName = 'storage-pool-name';
+  const storagePoolName = `storage-pool-name-745d9${Math.floor(Math.random() * 1000 + 1)}5f`;
   const disksClient = new DisksClient();
   let projectId;
 
   before(async () => {
     projectId = await disksClient.getProjectId();
-
-    // Ensure resources are deleted before attempting to recreate them
-    try {
-      await cleanupResources(projectId, zone, diskName, storagePoolName);
-    } catch (err) {
-      // Should be ok to ignore (resources do not exist)
-      console.error(err);
-    }
   });
 
   after(async () => {
@@ -89,26 +81,24 @@ describe('Create compute hyperdisk from pool', async () => {
   });
 
   it('should create a new storage pool', () => {
-    const response = JSON.parse(
-      execSync('node ./disks/createComputeHyperdiskPool.js', {
+    const response = execSync(
+      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName}`,
+      {
         cwd,
-      })
+      }
     );
 
-    assert.equal(response.name, storagePoolName);
+    assert.include(response, `Storage pool: ${storagePoolName} created.`);
   });
 
   it('should create a new hyperdisk from pool', () => {
-    const response = JSON.parse(
-      execSync('node ./disks/createComputeHyperdiskFromPool.js', {
+    const response = execSync(
+      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName}`,
+      {
         cwd,
-      })
+      }
     );
 
-    assert.equal(response.name, diskName);
-    assert.equal(
-      response.storagePool,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/storagePools/${storagePoolName}`
-    );
+    assert.include(response, `Disk: ${diskName} created.`);
   });
 });

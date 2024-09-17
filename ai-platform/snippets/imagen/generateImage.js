@@ -27,8 +27,6 @@ const main = async () => {
   const location = 'us-central1';
 
   const aiplatform = require('@google-cloud/aiplatform');
-  const {instance, params, prediction} =
-    aiplatform.protos.google.cloud.aiplatform.v1.schema.predict;
 
   // Imports the Google Cloud Prediction Service Client library
   const {PredictionServiceClient} = aiplatform.v1;

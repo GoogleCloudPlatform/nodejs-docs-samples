@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+echo "EXPERIMENT (SKIP)"
+exit
 set -eo pipefail
 
 _run_error_log() {

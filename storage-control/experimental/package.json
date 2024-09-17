@@ -3,7 +3,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"INFO: no unit tests\"",
+    "test": "node --test experimental/",
     "system-test": "NAME=Cloud c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   }
 }

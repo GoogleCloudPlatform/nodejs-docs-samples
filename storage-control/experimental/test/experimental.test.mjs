@@ -15,7 +15,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-test('experimental', () => {
+const timeout = 5 * 60000; // 5 minutes * 60000 ms/min
+
+test('experimental', {timeout}, () => {
   test('folder', () => {
     test('dummy', () => {
       assert.equal(1, 1);

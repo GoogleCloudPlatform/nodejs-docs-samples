@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Examples of how to utilize the @google-cloud/storage-control library.",
   "scripts": {
-    "test": "node --test-reporter=spec experimental/test",
+    "test": "node --test experimental/",
     "system-test": "c8 mocha -p -j 2 system-test --timeout 600000"
   },
   "repository": {

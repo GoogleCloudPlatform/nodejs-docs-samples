@@ -68,6 +68,9 @@ async function main(reservationName, location, instanceTemplateName) {
     const reservation = new compute.Reservation({
       name: reservationName,
       specificReservation,
+      // To specify that only VMs that specifically target this reservation can consume it,
+      // set specificReservationRequired field to true.
+      specificReservationRequired: true,
     });
 
     const [response] = await reservationsClient.insert({

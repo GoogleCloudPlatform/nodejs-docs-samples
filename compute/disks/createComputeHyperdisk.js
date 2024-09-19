@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(diskName) {
+async function main() {
   // [START compute_hyperdisk_create]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,14 +28,14 @@ async function main(diskName) {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await disksClient.getProjectId();
   // The zone where your VM and new disk are located.
   const zone = 'europe-central2-b';
   // The name of the new disk
-  // const diskName = 'disk-name';
+  const diskName = 'disk-name';
   // The type of disk. This value uses the following format:
   // "zones/{zone}/diskTypes/(hyperdisk-balanced|hyperdisk-extreme|hyperdisk-ml|hyperdisk-throughput)".
   // For example: "zones/us-west3-b/diskTypes/hyperdisk-balanced"
@@ -78,14 +78,22 @@ async function main(diskName) {
       });
     }
 
-    console.log(`Disk: ${diskName} created.`);
+    const hyperdisk = (
+      await disksClient.get({
+        project: projectId,
+        zone,
+        disk: diskName,
+      })
+    )[0];
+
+    console.log(JSON.stringify(hyperdisk));
   }
 
   await callCreateComputeHyperdisk();
   // [END compute_hyperdisk_create]
 }
 
-main(...process.argv.slice(2)).catch(err => {
+main().catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

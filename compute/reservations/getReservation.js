@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(reservationName) {
+async function main() {
   // [START compute_reservation_get]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -25,14 +25,14 @@ async function main(reservationName) {
   const reservationsClient = new computeLib.ReservationsClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // The ID of the project where your reservation is located.
   const projectId = await reservationsClient.getProjectId();
   // The zone where your reservation is located.
   const zone = 'us-central1-a';
   // The name of the reservation to return.
-  // const reservationName = 'reservation-01';
+  const reservationName = 'reservation-01';
 
   async function callGetReservation() {
     const requestedReservation = (
@@ -50,7 +50,7 @@ async function main(reservationName) {
   // [END compute_reservation_get]
 }
 
-main(...process.argv.slice(2)).catch(err => {
+main().catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

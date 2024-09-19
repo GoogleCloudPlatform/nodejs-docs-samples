@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(reservationName) {
+async function main() {
   // [START compute_reservation_create]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,14 +28,14 @@ async function main(reservationName) {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // The ID of the project where you want to reserve resources.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  // const reservationName = 'reservation-01';
+  const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
   // Machine type to use for each VM.
@@ -96,14 +96,22 @@ async function main(reservationName) {
       });
     }
 
-    console.log(`Reservation: ${reservationName} created.`);
+    const createdReservation = (
+      await reservationsClient.get({
+        project: projectId,
+        zone,
+        reservation: reservationName,
+      })
+    )[0];
+
+    console.log(JSON.stringify(createdReservation));
   }
 
   await callCreateComputeReservationFromProperties();
   // [END compute_reservation_create]
 }
 
-main(...process.argv.slice(2)).catch(err => {
+main().catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

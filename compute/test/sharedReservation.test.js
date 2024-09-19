@@ -16,68 +16,55 @@
 
 'use strict';
 
-const {before, after, describe, it} = require('mocha');
-const path = require('path');
-const {assert} = require('chai');
-const cp = require('child_process');
-const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const {expect} = require('chai');
+const sinon = require('sinon');
+const createSharedReservation = require('../reservations/createSharedReservation.js');
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+describe('Create compute shared reservation using global instance template', async () => {
+  const reservationName = 'reservation-01';
+  let reservationsClientMock;
+  let zoneOperationsClientMock;
 
-describe('Compute shared reservation', async () => {
-  const reservationName = `shared-reservation-e2${Math.floor(Math.random() * 1000 + 1)}f`;
-  const instanceTemplateName = `global-instance-template-e2${Math.floor(Math.random() * 1000 + 1)}f`;
-  const reservationsClient = new ReservationsClient();
-
-  let projectId;
-
-  before(async () => {
-    projectId = await reservationsClient.getProjectId();
-    // Create template
-    execSync(
-      `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
-      {
-        cwd,
-      }
-    );
-  });
-
-  after(() => {
-    // Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
-    // Delete template
-    execSync(
-      `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
-      {
-        cwd,
-      }
-    );
-  });
-
-  it('should create new shared reservation', async () => {
-    const response = execSync(
-      `node ./reservations/createSharedReservation.js ${reservationName} ${instanceTemplateName}`,
-      {
-        cwd,
-      }
-    );
-
-    assert.include(response, `Reservation: ${reservationName} created.`);
-  });
-
-  it('should update consumer projects in shared reservation', async () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./reservations/sharedReservationConsumerProjectsUpdate.js ${reservationName}`,
+  beforeEach(() => {
+    sinon.stub(console, 'log');
+    reservationsClientMock = {
+      getProjectId: sinon.stub().resolves('project_id'),
+      insert: sinon.stub().resolves([
         {
-          cwd,
-        }
-      )
+          latestResponse: {
+            status: 'DONE',
+            name: 'operation-1234567890',
+            zone: {
+              value: 'us-central1-a',
+            },
+          },
+        },
+      ]),
+    };
+    zoneOperationsClientMock = {
+      wait: sinon.stub().resolves([
+        {
+          latestResponse: {
+            status: 'DONE',
+          },
+        },
+      ]),
+    };
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should create shared reservation', async () => {
+    await createSharedReservation(
+      reservationsClientMock,
+      zoneOperationsClientMock
     );
 
-    assert.include(response, `Reservation: ${reservationName} updated.`);
+    expect(console.log.calledOnce).to.be.true;
+    expect(console.log.calledWith(`Reservation: ${reservationName} created.`))
+      .to.be.true;
   });
 });

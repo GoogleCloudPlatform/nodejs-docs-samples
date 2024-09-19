@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main(diskName, storagePoolName) {
+async function main() {
   // [START compute_hyperdisk_create_from_pool]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,16 +28,16 @@ async function main(diskName, storagePoolName) {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project you want to use.
   const projectId = await disksClient.getProjectId();
   // The zone where your VM and new disk are located.
   const zone = 'us-central1-a';
   // The name of the new disk
-  // const diskName = 'disk-from-pool-name';
+  const diskName = 'disk-from-pool-name';
   // The name of the storage pool
-  // const storagePoolName = 'storage-pool-name';
+  const storagePoolName = 'storage-pool-name';
   // Link to the storagePool you want to use. Use format:
   // https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/storagePools/{storagePoolName}
   const storagePool = `https://www.googleapis.com/compute/v1/projects/${projectId}/zones/${zone}/storagePools/${storagePoolName}`;
@@ -84,14 +84,22 @@ async function main(diskName, storagePoolName) {
       });
     }
 
-    console.log(`Disk: ${diskName} created.`);
+    const hyperdisk = (
+      await disksClient.get({
+        project: projectId,
+        zone,
+        disk: diskName,
+      })
+    )[0];
+
+    console.log(JSON.stringify(hyperdisk));
   }
 
   await callCreateComputeHyperdiskFromPool();
   // [END compute_hyperdisk_create_from_pool]
 }
 
-main(...process.argv.slice(2)).catch(err => {
+main().catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

@@ -16,29 +16,33 @@
 
 'use strict';
 
-async function main(reservationName, instanceTemplateName) {
+async function main(reservationsClient, zoneOperationsClient) {
   // [START compute_reservation_create_shared]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
 
-  // Instantiate a reservationsClient
-  const reservationsClient = new computeLib.ReservationsClient();
-  // Instantiate a zoneOperationsClient
-  const zoneOperationsClient = new computeLib.ZoneOperationsClient();
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Uncomment reservationsClient and zoneOperationsClient before running the sample.
+   */
+  // Instantiate a reservationsClient
+  // reservationsClient = new computeLib.ReservationsClient();
+  // Instantiate a zoneOperationsClient
+  // zoneOperationsClient = new computeLib.ZoneOperationsClient();
+
+  /**
+   * TODO(developer): Update these variables before running the sample.
    */
   // The ID of the project where you want to reserve resources and where the instance template exists.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  // const reservationName = 'reservation-01';
+  const reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
   // The name of an existing instance template.
-  // const instanceTemplateName = 'global-instance-template-name';
+  const instanceTemplateName = 'global-instance-template-name';
   // The location of the instance template.
   const location = 'global';
 
@@ -56,10 +60,9 @@ async function main(reservationName, instanceTemplateName) {
         // The IDs of projects that can consume this reservation. You can include up to 100 consumer projects.
         // These projects must be in the same organization as the owner project.
         // Don't include the owner project. By default, it is already allowed to consume the reservation.
-        // TODO(developer): Uncomment and update with your consumerId before running the sample.
-        // consumerId: {
-        //   projectId: 'consumerId',
-        // },
+        consumer_project_id: {
+          projectId: 'consumer_project_id',
+        },
       },
     });
 
@@ -95,7 +98,10 @@ async function main(reservationName, instanceTemplateName) {
   // [END compute_reservation_create_shared]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

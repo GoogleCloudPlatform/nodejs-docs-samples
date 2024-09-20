@@ -55,7 +55,11 @@ jobs:
         exclude:
           - package: '.'
     steps:
-      - uses: ./.github/workflows/nodejs-lint.yaml
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: make lint dir=${{ matrix.package }}
 
   # test:
   #   if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'

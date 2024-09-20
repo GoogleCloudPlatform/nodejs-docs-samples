@@ -18,14 +18,11 @@ on:
       package:
         required: true
         type: string
-      timeout-minutes:
-        default: 5
-        type: number
 
 jobs:
   nodejs-lint:
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.timeout-minutes }}
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

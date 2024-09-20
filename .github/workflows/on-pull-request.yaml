@@ -61,6 +61,22 @@ jobs:
           node-version: 20
       - run: make lint dir=${{ matrix.package }}
 
+  nodejs-test:
+    name: Node.js test
+    needs: affected
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
+        exclude:
+          - package: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: make test dir=${{ matrix.package }}
+
   # test:
   #   if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
   #   runs-on: ubuntu-latest

@@ -33,7 +33,6 @@ func main() {
 }
 
 func affected(config utils.Config, diffs []string) []string {
-	// TODO(dcavazos): Detect affected changes more granularly with the diffs.
 	uniquePackages := make(map[string]bool)
 	for _, diff := range diffs {
 		if !config.Matches(diff) {

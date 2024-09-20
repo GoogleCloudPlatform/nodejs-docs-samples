@@ -55,7 +55,7 @@ jobs:
         exclude:
           - package: '.'
     steps:
-      - uses: nodejs-lint.yaml
+      - uses: .github/workflows/nodejs-lint.yaml
 
   # test:
   #   if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'

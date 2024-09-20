@@ -24,7 +24,7 @@ test: check-env build
 
 lint:
 	cd ${dir}
-	npm install
+	npm install --dev gts
 	npx gts fix
 	npx gts lint
 

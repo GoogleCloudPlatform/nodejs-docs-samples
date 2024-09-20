@@ -60,6 +60,7 @@ jobs:
         with:
           node-version: 20
       - run: make lint dir=${{ matrix.package }}
+      - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-test:
     name: Node.js test
@@ -76,6 +77,8 @@ jobs:
         with:
           node-version: 20
       - run: make test dir=${{ matrix.package }}
+        env:
+          GOOGLE_SAMPLES_PROJECT: long-door-651
 
   # test:
   #   if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'

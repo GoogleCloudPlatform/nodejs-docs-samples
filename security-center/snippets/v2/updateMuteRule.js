@@ -26,6 +26,24 @@ function main(organizationId, muteConfigId, location = 'global') {
   // Create a Security Center client
   const client = new SecurityCenterClient();
 
+  /**
+   *  Required. Name of the mute config to retrieve. The following list shows
+   *  some examples of the format:
+   *  `organizations/{organization}/muteConfigs/{config_id}`
+   *  `organizations/{organization}/locations/{location}/muteConfigs/{config_id}`
+   *  `folders/{folder}/muteConfigs/{config_id}`
+   *  `folders/{folder}/locations/{location}/muteConfigs/{config_id}`
+   *  `projects/{project}/muteConfigs/{config_id}`
+   *  `projects/{project}/locations/{location}/muteConfigs/{config_id}`
+   */
+
+  /**
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
+  // const muteConfigId = 'MUTE_CONFIG_ID';
+
   const name = `organizations/${organizationId}/locations/${location}/muteConfigs/${muteConfigId}`;
   /**
    *  The list of fields to be updated.
@@ -35,7 +53,7 @@ function main(organizationId, muteConfigId, location = 'global') {
     paths: ['description'],
   };
 
-  // Build the mute rule object.
+  // Modify or remove the updateMask to change fields other that description.
   const muteConfig = {
     name,
     description: 'Updated mute config description',

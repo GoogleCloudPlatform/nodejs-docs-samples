@@ -36,6 +36,13 @@ function main(organizationId, muteConfigId) {
    *  `projects/{project}/muteConfigs/{config_id}`
    *  `projects/{project}/locations/{location}/muteConfigs/{config_id}`
    */
+
+  /**
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const muteConfigId = 'MUTE_CONFIG_ID';
+
   const name = `organizations/${organizationId}/muteConfigs/${muteConfigId}`;
 
   // Build the request.

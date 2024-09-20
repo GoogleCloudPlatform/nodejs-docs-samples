@@ -33,6 +33,12 @@ function main(organizationId, location = 'global') {
    *  "folders/[folder_id]/locations/[location_id]", or
    *  "projects/[project_id]/locations/[location_id]".
    */
+
+  /**
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
   const parent = `organizations/${organizationId}/locations/${location}`;
 
   /**
@@ -41,7 +47,7 @@ function main(organizationId, location = 'global') {
    *  with a letter, must end with either a letter or a number, and must be 63
    *  characters or less.
    */
-  const muteConfigId = 'muteid-' + uuidv1().replace(/-/g, '').substring(0, 20);
+  const muteConfigId = 'muteid-' + Math.floor(Math.random() * 10000);
 
   const name = `${parent}/muteConfigs/${muteConfigId}`;
 

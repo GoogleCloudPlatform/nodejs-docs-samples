@@ -33,6 +33,13 @@ function main(organizationId, location = 'global') {
    *  "folders/[folder_id]/locations/[location_id]",
    *  "projects/[project_id]/locations/[location_id]".
    */
+
+  /**
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
+
   const parent = `organizations/${organizationId}/locations/${location}`;
 
   // Build the request.
@@ -46,7 +53,7 @@ function main(organizationId, location = 'global') {
     let count = 0;
 
     for await (const response of iterable) {
-      console.log(`${++count} ${response.name}`);
+      console.log(`${++count} ${response.name}: ${response.description}`);
     }
   }
 

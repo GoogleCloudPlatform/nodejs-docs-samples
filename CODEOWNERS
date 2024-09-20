@@ -5,13 +5,13 @@
 ## Default ownership
 * @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
-## Only primary language review team has ownership on repo infrastructure
-/* @GoogleCloudPlatform/nodejs-samples-reviewers # root files
-.github/* @GoogleCloudPlatform/nodejs-samples-reviewers # common tooling configurations
-.github/workflows/utils/* @GoogleCloudPlatform/nodejs-samples-reviewers # reusable workflows components
+## Repository Infrastructure
+/* @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra # root files
+.github/* @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra # common tooling configurations
+.github/workflows/utils/* @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-infra # reusable workflows components
 
-# Kokoro
-.kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners
+## Kokoro CI Configuration (Requires maintainer review)
+.kokoro @GoogleCloudPlatform/nodejs-docs-samples-owners @GoogleCloudPlatform/cloud-samples-infra
 
 # Infrastructure
 auth @GoogleCloudPlatform/googleapis-auth @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

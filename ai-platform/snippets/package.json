@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js test/**/*.test.js"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^3.0.0",
@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.5.0",
     "mocha": "^10.0.0",
     "uuid": "^10.0.0",
     "sinon": "^18.0.0"

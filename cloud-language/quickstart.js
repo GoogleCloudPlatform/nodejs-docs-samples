@@ -16,7 +16,7 @@
 
 // [START language_quickstart]
 async function quickstart() {
-  // Imports the Google Cloud client library
+  // Imports the Google Cloud client library.
   const language = require('@google-cloud/language');
 
   // Instantiates a client

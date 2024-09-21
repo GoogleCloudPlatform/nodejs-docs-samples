@@ -69,7 +69,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      # contents: read
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:

@@ -49,6 +49,7 @@ jobs:
     name: Node.js lint
     needs: affected
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
@@ -66,6 +67,7 @@ jobs:
     name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
@@ -76,71 +78,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          access_token_lifetime: 600s
       - run: make test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651
-
-  # test:
-  #   if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 120
-  #   permissions:
-  #     contents: read
-  #     id-token: write
-  #   steps:
-  #     - uses: actions/checkout@v4.1.7
-  #       with:
-  #         ref: ${{github.event.pull_request.head.sha}}
-  #     - uses: 'google-github-actions/auth@v2.1.5'
-  #       with:
-  #         workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-  #         service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
-  #         create_credentials_file: 'true'
-  #         access_token_lifetime: 600s
-  #     - id: secrets
-  #       uses: 'google-github-actions/get-secretmanager-secrets@95a0b09b8348ef3d02c68c6ba5662a037e78d713' # v2
-  #       with:
-  #         secrets: |-
-  #           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
-  #           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
-  #     - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-  #       with:
-  #         node-version: 16
-  #     - name: Get npm cache directory
-  #       id: npm-cache-dir
-  #       shell: bash
-  #       run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-  #     - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
-  #       id: npm-cache
-  #       with:
-  #         path: ${{ steps.npm-cache-dir.outputs.dir }}
-  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: "${{ runner.os }}-node-   \n"
-  #     - name: set env vars for scheduled run
-  #       if: github.event.action == 'schedule'
-  #       run: |
-  #         echo "MOCHA_REPORTER_SUITENAME=ai-platform-snippets" >> $GITHUB_ENV
-  #         echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
-  #         echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-  #     - name: Run Tests
-  #       run: make test dir=ai-platform/snippets
-  #       env:
-  #         GOOGLE_SAMPLES_PROJECT: 'long-door-651'
-  #         LOCATION: ${{ steps.secrets.outputs.location }}
-  #         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
-  #     - name: upload test results for FlakyBot workflow
-  #       if: github.event.action == 'schedule' && always()
-  #       uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4
-  #       env:
-  #         MOCHA_REPORTER_OUTPUT: '${{github.run_id}}_sponge_log.xml'
-  #       with:
-  #         name: test-results
-  #         path: ai-platform/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}
-  #         retention-days: 1
-  # flakybot:
-  #   permissions:
-  #     contents: 'read'
-  #     id-token: 'write'
-  #   if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
-  #   uses: ./.github/workflows/flakybot.yaml
-  #   needs: [test]

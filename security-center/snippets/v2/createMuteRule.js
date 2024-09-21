@@ -22,7 +22,6 @@ function main(organizationId, location = 'global') {
   // [START securitycenter_create_mute_config_v2]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
-  const uuidv1 = require('uuid').v1;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();

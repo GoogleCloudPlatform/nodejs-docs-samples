@@ -26,12 +26,6 @@ secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-sample
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
-# DEE Platform Ops (DEEPO)
-container @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-error-reporting @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-game-servers @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-monitoring @GoogleCloudPlatform/dee-platform-ops @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-
 # SoDa teams
 cloud-sql @GoogleCloudPlatform/infra-db-sdk @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
@@ -42,27 +36,11 @@ composer @GoogleCloudPlatform/cloud-dpes-composer @GoogleCloudPlatform/nodejs-sa
 monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Data & AI
-generative-ai @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-automl @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-cloud-language @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-contact-center-insights @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-datalabeling @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-dialogflow @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-dialogflow-cx @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-discoveryengine @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-document-ai @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers
-document-warehouse @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers
-mediatranslation @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-notebooks @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-speech @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-talent @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-texttospeech @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-translate @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-video-intelligence @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-vision @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+document-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers
+document-warehouse @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Self-service
-ai-platform @GoogleCloudPlatform/dee-data-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding @GoogleCloudPlatform/cloud-samples-reviewers
+ai-platform  g @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding @GoogleCloudPlatform/cloud-samples-reviewers
 asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

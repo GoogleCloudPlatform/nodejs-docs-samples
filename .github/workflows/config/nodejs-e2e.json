@@ -1,5 +1,5 @@
 {
-  "match": ["run/hello-broken", "run/helloworld"],
+  "match": ["run/hello-broken/", "run/helloworld/"],
   "ignore": ["README.md"],
   "package": ["package.json"]
 }

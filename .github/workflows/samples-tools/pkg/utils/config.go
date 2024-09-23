@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Config struct {
@@ -51,6 +52,9 @@ func ParseConfig(configFile []byte) (Config, error) {
 func match(patterns []string, path string) bool {
 	for _, pattern := range patterns {
 		if match, _ := filepath.Match(pattern, path); match {
+			return true
+		}
+		if strings.Contains(path, pattern) {
 			return true
 		}
 	}

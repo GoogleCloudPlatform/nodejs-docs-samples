@@ -20,8 +20,9 @@ const {expect} = require('chai');
 const {afterEach, describe, it} = require('mocha');
 const sinon = require('sinon');
 const gemma2PredictGpu = require('../gemma2PredictGpu.js');
+const gemma2PredictTpu = require('../gemma2PredictTpu.js');
 
-const text = `The sky appears blue due to a phenomenon called **Rayleigh scattering**.
+const gpuResponse = `The sky appears blue due to a phenomenon called **Rayleigh scattering**.
 **Here's how it works:**
 1. **Sunlight:** Sunlight is composed of all the colors of the rainbow.
 2. **Earth's Atmosphere:** When sunlight enters the Earth's atmosphere, it collides with tiny particles like nitrogen and oxygen molecules.
@@ -32,17 +33,12 @@ const text = `The sky appears blue due to a phenomenon called **Rayleigh scatter
 * **Longer wavelengths** like red, orange, and yellow are scattered less and travel more directly through the atmosphere. This is why we see these colors during sunrise and sunset, when sunlight has to travel through more of the atmosphere.
 `;
 
+const tpuResponse =
+  'The sky appears blue due to a phenomenon called **Rayleigh scattering**.';
+
 describe('Gemma2 predictions', async () => {
   const predictionServiceClientMock = {
-    predict: sinon.stub().resolves([
-      {
-        predictions: [
-          {
-            stringValue: text,
-          },
-        ],
-      },
-    ]),
+    predict: sinon.stub().resolves([]),
   };
 
   afterEach(() => {
@@ -50,7 +46,33 @@ describe('Gemma2 predictions', async () => {
   });
 
   it('should run interference with GPU', async () => {
+    predictionServiceClientMock.predict.resolves([
+      {
+        predictions: [
+          {
+            stringValue: gpuResponse,
+          },
+        ],
+      },
+    ]);
+
     const output = await gemma2PredictGpu(predictionServiceClientMock);
+
+    expect(output).include('Rayleigh scattering');
+  });
+
+  it('should run interference with TPU', async () => {
+    predictionServiceClientMock.predict.resolves([
+      {
+        predictions: [
+          {
+            stringValue: tpuResponse,
+          },
+        ],
+      },
+    ]);
+
+    const output = await gemma2PredictTpu(predictionServiceClientMock);
 
     expect(output).include('Rayleigh scattering');
   });

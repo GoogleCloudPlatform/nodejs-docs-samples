@@ -14,8 +14,8 @@
 
 'use strict';
 
-async function gemma2PredictGpu(predictionServiceClient) {
-  // [START generativeaionvertexai_gemma2_predict_gpu]
+async function gemma2PredictTpu(predictionServiceClient) {
+  // [START generativeaionvertexai_gemma2_predict_tpu]
   // Imports the Google Cloud Prediction Service Client library
   const {
     // TODO(developer): Uncomment PredictionServiceClient before running the sample.
@@ -29,16 +29,18 @@ async function gemma2PredictGpu(predictionServiceClient) {
   const endpointRegion = 'your-vertex-endpoint-region';
   const endpointId = 'your-vertex-endpoint-id';
 
-  // Default configuration
-  const config = {maxOutputTokens: 1024, temperature: 0.9, topP: 1.0, topK: 1};
   // Prompt used in the prediction
   const prompt = 'Why is the sky blue?';
 
-  // Encapsulate the prompt in a correct format for GPUs
-  // Example format: [{inputs: 'Why is the sky blue?', parameters: {temperature: 0.9}}]
+  // Encapsulate the prompt in a correct format for TPUs
+  // Example format: [{prompt: 'Why is the sky blue?', temperature: 0.9}]
   const input = {
-    inputs: prompt,
-    parameters: config,
+    prompt,
+    // Parameters for default configuration
+    maxOutputTokens: 1024,
+    temperature: 0.9,
+    topP: 1.0,
+    topK: 1,
   };
 
   // Convert input message to a list of GAPIC instances for model input
@@ -62,14 +64,14 @@ async function gemma2PredictGpu(predictionServiceClient) {
   const text = predictions[0].stringValue;
 
   console.log('Predictions:', text);
-  // [END generativeaionvertexai_gemma2_predict_gpu]
+  // [END generativeaionvertexai_gemma2_predict_tpu]
   return text;
 }
 
-module.exports = gemma2PredictGpu;
+module.exports = gemma2PredictTpu;
 
 // TODO(developer): Uncomment below lines before running the sample.
-// gemma2PredictGpu(...process.argv.slice(2)).catch(err => {
+// gemma2PredictTpu(...process.argv.slice(2)).catch(err => {
 //   console.error(err.message);
 //   process.exitCode = 1;
 // });

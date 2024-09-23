@@ -50,8 +50,9 @@ func ParseConfig(configFile []byte) (Config, error) {
 }
 
 func match(patterns []string, path string) bool {
+	filename := filepath.Base(path)
 	for _, pattern := range patterns {
-		if match, _ := filepath.Match(pattern, path); match {
+		if match, _ := filepath.Match(pattern, filename); match {
 			return true
 		}
 		if strings.Contains(path, pattern) {
@@ -62,8 +63,7 @@ func match(patterns []string, path string) bool {
 }
 
 func (c Config) Matches(path string) bool {
-	filename := filepath.Base(path)
-	return match(c.Match, filename) && !match(c.Ignore, filename)
+	return match(c.Match, path) && !match(c.Ignore, path)
 }
 
 func (c Config) IsPackageDir(dir string) bool {

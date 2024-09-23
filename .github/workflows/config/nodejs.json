@@ -1,3 +1,4 @@
 {
+  "ignore": ["README.md"],
   "package": ["package.json"]
 }

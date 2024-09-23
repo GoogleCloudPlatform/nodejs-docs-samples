@@ -72,14 +72,15 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
+        action: ['test']
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
         include:
           - package: run/helloworld
-            e2e-test: true
+            action: ['test', 'e2e-test']
           - package: run/hello-broken
-            e2e-test: true
+            action: ['test', 'e2e-test']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

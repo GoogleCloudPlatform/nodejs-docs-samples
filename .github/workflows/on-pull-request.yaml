@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       nodejs: ${{ steps.nodejs.outputs.packages }}
+      nodejs-e2e: ${{ steps.nodejs-e2e.outputs.packages }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,6 +43,11 @@ jobs:
       - id: nodejs
         run: |
           PACKAGES=$(affected .github/workflows/config/nodejs.json)
+          echo "packages=$PACKAGES"
+          echo "packages=$PACKAGES " >> "$GITHUB_OUTPUT"
+      - id: nodejs-e2e
+        run: |
+          PACKAGES=$(affected .github/workflows/config/nodejs-e2e.json)
           echo "packages=$PACKAGES"
           echo "packages=$PACKAGES " >> "$GITHUB_OUTPUT"
 
@@ -64,7 +70,7 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-test:
-    name: Node.js
+    name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -72,15 +78,9 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        action: ['test']
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
-        include:
-          - package: run/helloworld
-            action: ['test', 'e2e-test']
-          - package: run/hello-broken
-            action: ['test', 'e2e-test']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -91,7 +91,32 @@ jobs:
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s
-      - run: echo ${{ matrix.e2e-test }}
       - run: make test dir=${{ matrix.package }}
+        env:
+          GOOGLE_SAMPLES_PROJECT: long-door-651
+
+  nodejs-e2e-test:
+    name: Node.js e2e-test
+    needs: affected
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write # needed for google-github-actions/auth
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.affected.outputs.nodejs-e2e) }}
+        exclude:
+          - package: '.'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          access_token_lifetime: 600s
+      - run: make e2e-test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

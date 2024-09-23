@@ -64,7 +64,7 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-test:
-    name: Node.js test
+    name: Node.js
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -72,15 +72,14 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        action: ['test']
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
         include:
-          - action: e2e-test
-            package: run/helloworld
-          - action: e2e-test
-            package: run/hello-broken
+          - package: run/helloworld
+            e2e-test: true
+          - package: run/hello-broken
+            e2e-test: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -91,6 +90,7 @@ jobs:
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s
+      - run: echo ${{ matrix.e2e-test }}
       - run: make test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

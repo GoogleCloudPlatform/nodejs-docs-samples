@@ -27,7 +27,7 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 // TODO(developers): update for your own environment
 const organizationId = '1081635000895';
-const projectId = 'long-door-651';
+const projectId = 'project-a-id';
 const location = 'global';
 
 describe('Client with Notifications v2', async () => {
@@ -41,7 +41,7 @@ describe('Client with Notifications v2', async () => {
 
   before(async () => {
     const configId = 'notif-config-test-node-create-' + uuidv1();
-    topicName = 'test_topic';
+    topicName = 'notifications-sample-topic';
     parent = `projects/${projectId}/locations/${location}`;
     pubsubTopic = `projects/${projectId}/topics/${topicName}`;
 

@@ -22,6 +22,10 @@ test: check-env build
 	cd ${dir}
 	npm test
 
+e2e-test: check-env build
+	cd ${dir}
+	npm system-test
+
 lint:
 	npm install
 	cd ${dir}

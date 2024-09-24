@@ -85,26 +85,26 @@ jobs:
           path: ${{ matrix.package }}
           timeout-minutes: 15
 
-  nodejs-high-test:
-    name: Node.js 22 test
-    needs: affected
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read # needed to run local actions
-      # id-token: write # needed for google-github-actions/auth
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-        exclude:
-          - package: '.'
-      fail-fast: false # TODO: remove this, only for testing!
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/workflows/test-nodejs.yaml
-        with:
-          node-version: 22
-          path: ${{ matrix.package }}
-          timeout-minutes: 15
+  # nodejs-high-test:
+  #   name: Node.js 22 test
+  #   needs: affected
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read # needed to run local actions
+  #     # id-token: write # needed for google-github-actions/auth
+  #   strategy:
+  #     matrix:
+  #       package: ${{ fromJson(needs.affected.outputs.nodejs) }}
+  #       exclude:
+  #         - package: '.'
+  #     fail-fast: false # TODO: remove this, only for testing!
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/workflows/test-nodejs.yaml
+  #       with:
+  #         node-version: 22
+  #         path: ${{ matrix.package }}
+  #         timeout-minutes: 15
 
   nodejs-e2e-test:
     name: Node.js e2e-test

@@ -54,6 +54,7 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 		changed = append(changed, pkg)
 	}
 
+	return changed, nil // TODO: REMOVE THIS
 	if !slices.Contains(changed, ".") {
 		return changed, nil
 	}

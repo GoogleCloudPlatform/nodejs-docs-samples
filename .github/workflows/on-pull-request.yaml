@@ -54,20 +54,14 @@ jobs:
 
   nodejs-lint:
     name: Node.js lint
-    needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-        exclude:
-          - package: '.'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: make lint dir=${{ matrix.package }}
+      - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-test:

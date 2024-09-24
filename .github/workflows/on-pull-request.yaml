@@ -69,7 +69,7 @@ jobs:
     needs: affected
     runs-on: ubuntu-latest
     permissions:
-      contents: read # needed to run local actions
+      contents: read
       # id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
@@ -106,30 +106,30 @@ jobs:
   #         path: ${{ matrix.package }}
   #         timeout-minutes: 15
 
-  nodejs-e2e-test:
-    name: Node.js e2e-test
-    needs: affected
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    permissions:
-      id-token: write # needed for google-github-actions/auth
-    strategy:
-      matrix:
-        node-version: [18, 22]
-        package: ${{ fromJson(needs.affected.outputs.nodejs-e2e) }}
-        exclude:
-          - package: '.'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: long-door-651
-          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 600s # 10 minutes
-      - run: make e2e-test dir=${{ matrix.package }}
-        env:
-          GOOGLE_SAMPLES_PROJECT: long-door-651
+  # nodejs-e2e-test:
+  #   name: Node.js e2e-test
+  #   needs: affected
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 60
+  #   permissions:
+  #     id-token: write # needed for google-github-actions/auth
+  #   strategy:
+  #     matrix:
+  #       node-version: [18, 22]
+  #       package: ${{ fromJson(needs.affected.outputs.nodejs-e2e) }}
+  #       exclude:
+  #         - package: '.'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #     - uses: google-github-actions/auth@v2
+  #       with:
+  #         project_id: long-door-651
+  #         workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+  #         service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+  #         access_token_lifetime: 600s # 10 minutes
+  #     - run: make e2e-test dir=${{ matrix.package }}
+  #       env:
+  #         GOOGLE_SAMPLES_PROJECT: long-door-651

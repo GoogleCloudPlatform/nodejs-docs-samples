@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Node.js
-
 on:
   workflow_call:
     inputs:
@@ -32,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
+      contents: read
       id-token: write # needed for google-github-actions/auth
     steps:
       - uses: actions/checkout@v4

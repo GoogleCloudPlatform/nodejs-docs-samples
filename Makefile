@@ -24,7 +24,7 @@ test: check-env build
 
 e2e-test: check-env build
 	cd ${dir}
-	npm system-test
+	npm run system-test
 
 lint:
 	npm install

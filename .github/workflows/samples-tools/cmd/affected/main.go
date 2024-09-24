@@ -42,9 +42,10 @@ func affected(config utils.Config, diffs []string) []string {
 		uniquePackages[pkg] = true
 	}
 
-	packages := make([]string, 0, len(uniquePackages))
+	changed := make([]string, 0, len(uniquePackages))
 	for pkg := range uniquePackages {
-		packages = append(packages, pkg)
+		changed = append(changed, pkg)
 	}
-	return packages
+
+	return changed
 }

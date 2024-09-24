@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"slices"
 
 	"samples-tools/pkg/utils"
 )
@@ -23,7 +26,11 @@ func main() {
 		panic(err)
 	}
 
-	matrix := affected(config, diffs)
+	matrix, err := affected(config, diffs)
+	if err != nil {
+		panic(err)
+	}
+
 	matrixJson, err := json.Marshal(matrix)
 	if err != nil {
 		panic(err)
@@ -32,7 +39,7 @@ func main() {
 	fmt.Println(string(matrixJson))
 }
 
-func affected(config utils.Config, diffs []string) []string {
+func affected(config utils.Config, diffs []string) ([]string, error) {
 	uniquePackages := make(map[string]bool)
 	for _, diff := range diffs {
 		if !config.Matches(diff) {
@@ -47,5 +54,27 @@ func affected(config utils.Config, diffs []string) []string {
 		changed = append(changed, pkg)
 	}
 
-	return changed
+	if !slices.Contains(changed, ".") {
+		return changed, nil
+	}
+
+	var packages []string
+	err := filepath.WalkDir(".",
+		func(path string, d os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if path == "." {
+				return nil
+			}
+			if d.IsDir() && config.Matches(path) && config.IsPackageDir(path) {
+				packages = append(packages, path)
+				return filepath.SkipDir
+			}
+			return nil
+		})
+	if err != nil {
+		return []string{}, err
+	}
+	return packages, nil
 }

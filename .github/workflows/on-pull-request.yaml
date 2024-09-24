@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,34 +64,45 @@ jobs:
       - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  nodejs-test:
-    name: Node.js test
+  nodejs-low-test:
+    name: Node.js 18 test
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      id-token: write # needed for google-github-actions/auth
+    # permissions:
+    #   id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        node-version: [18, 22]
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
       fail-fast: false # TODO: remove this, only for testing!
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/workflows/test-nodejs.yaml
         with:
-          node-version: ${{ matrix.node-version }}
-      - uses: google-github-actions/auth@v2
+          node-version: 18
+          path: ${{ matrix.package }}
+          timeout-minutes: 15
+
+  nodejs-high-test:
+    name: Node.js 22 test
+    needs: affected
+    runs-on: ubuntu-latest
+    # permissions:
+    #   id-token: write # needed for google-github-actions/auth
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
+        exclude:
+          - package: '.'
+      fail-fast: false # TODO: remove this, only for testing!
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/test-nodejs.yaml
         with:
-          project_id: long-door-651
-          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 300s # 5 minutes
-      - run: make test dir=${{ matrix.package }}
-        env:
-          GOOGLE_SAMPLES_PROJECT: long-door-651
+          node-version: 22
+          path: ${{ matrix.package }}
+          timeout-minutes: 15
 
   nodejs-e2e-test:
     name: Node.js e2e-test

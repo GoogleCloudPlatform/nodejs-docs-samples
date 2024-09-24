@@ -76,5 +76,9 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
+
+	if len(packages) > 256 {
+		return []string{}, fmt.Errorf("GitHub Actions only supports up to 256 packages, got %d packages", len(packages))
+	}
 	return packages, nil
 }

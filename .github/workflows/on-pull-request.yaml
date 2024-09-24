@@ -68,8 +68,9 @@ jobs:
     name: Node.js 18 test
     needs: affected
     runs-on: ubuntu-latest
-    # permissions:
-    #   id-token: write # needed for google-github-actions/auth
+    permissions:
+      contents: read # needed to run local actions
+      # id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
@@ -88,8 +89,9 @@ jobs:
     name: Node.js 22 test
     needs: affected
     runs-on: ubuntu-latest
-    # permissions:
-    #   id-token: write # needed for google-github-actions/auth
+    permissions:
+      contents: read # needed to run local actions
+      # id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}

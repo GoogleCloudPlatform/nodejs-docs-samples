@@ -27,11 +27,10 @@ on:
 
 jobs:
   test:
-    name: Test Node.js ${{ inputs.node-version }}
+    name: version ${{ inputs.node-version }}
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
-      # contents: read
       id-token: write # needed for google-github-actions/auth
     steps:
       - uses: actions/checkout@v4

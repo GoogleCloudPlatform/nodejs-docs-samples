@@ -64,8 +64,8 @@ jobs:
       - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  nodejs-low-test:
-    name: Node.js low test
+  nodejs-test-old:
+    name: Node.js test
     needs: affected
     strategy:
       matrix:
@@ -79,8 +79,8 @@ jobs:
       node-version: 18
       timeout-minutes: 15
 
-  nodejs-high-test:
-    name: Node.js high test
+  nodejs-test-new:
+    name: Node.js test
     needs: affected
     strategy:
       matrix:

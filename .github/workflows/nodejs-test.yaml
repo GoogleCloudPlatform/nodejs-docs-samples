@@ -21,15 +21,12 @@ on:
       node-version:
         required: true
         type: number
-      timeout-minutes:
-        required: true
-        type: number
 
 jobs:
   test:
     name: ${{ inputs.node-version }}
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ inputs.timeout-minutes }}
+    timeout-minutes: 15
     permissions:
       id-token: write # needed for google-github-actions/auth
     steps:

@@ -60,11 +60,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
       - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  # nodejs-test-old:
+  # nodejs-test:
   #   name: Node.js test
   #   needs: affected
   #   strategy:
@@ -73,13 +73,12 @@ jobs:
   #       exclude:
   #         - package: '.'
   #     fail-fast: false # TODO: remove this, only for testing!
-  #   uses: ./.github/workflows/test-nodejs.yaml
+  #   uses: ./.github/workflows/nodejs-test.yaml
   #   with:
   #     path: ${{ matrix.package }}
   #     node-version: 18
-  #     timeout-minutes: 15
 
-  nodejs-test-new:
+  nodejs-test-latest:
     name: Node.js test
     needs: affected
     strategy:
@@ -88,11 +87,10 @@ jobs:
         exclude:
           - package: '.'
       fail-fast: false # TODO: remove this, only for testing!
-    uses: ./.github/workflows/test-nodejs.yaml
+    uses: ./.github/workflows/nodejs-test.yaml
     with:
       path: ${{ matrix.package }}
-      node-version: 22
-      timeout-minutes: 15
+      node-version: 20
 
   # nodejs-e2e-test:
   #   name: Node.js e2e-test

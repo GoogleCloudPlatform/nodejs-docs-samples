@@ -27,7 +27,7 @@ on:
 
 jobs:
   test:
-    name: version ${{ inputs.node-version }}
+    name: ${{ inputs.node-version }}
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:

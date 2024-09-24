@@ -65,11 +65,8 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-low-test:
-    name: Node.js 18 test
+    # name: Node.js 18 test
     needs: affected
-    # permissions:
-    #   contents: read
-    #   # id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
@@ -82,26 +79,20 @@ jobs:
       node-version: 18
       timeout-minutes: 15
 
-  # nodejs-high-test:
-  #   name: Node.js 22 test
-  #   needs: affected
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read # needed to run local actions
-  #     # id-token: write # needed for google-github-actions/auth
-  #   strategy:
-  #     matrix:
-  #       package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-  #       exclude:
-  #         - package: '.'
-  #     fail-fast: false # TODO: remove this, only for testing!
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: ./.github/workflows/test-nodejs.yaml
-  #       with:
-  #         path: ${{ matrix.package }}
-  #         node-version: 22
-  #         timeout-minutes: 15
+  nodejs-high-test:
+    name: Node.js 22 test
+    needs: affected
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
+        exclude:
+          - package: '.'
+      fail-fast: false # TODO: remove this, only for testing!
+    uses: ./.github/workflows/test-nodejs.yaml
+    with:
+      path: ${{ matrix.package }}
+      node-version: 22
+      timeout-minutes: 15
 
   # nodejs-e2e-test:
   #   name: Node.js e2e-test

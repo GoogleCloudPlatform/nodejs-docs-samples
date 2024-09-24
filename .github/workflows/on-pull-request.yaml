@@ -83,6 +83,7 @@ jobs:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
+      fail-fast: false # TODO: remove this, only for testing!
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

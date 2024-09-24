@@ -64,20 +64,20 @@ jobs:
       - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  nodejs-test-old:
-    name: Node.js test
-    needs: affected
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-        exclude:
-          - package: '.'
-      fail-fast: false # TODO: remove this, only for testing!
-    uses: ./.github/workflows/test-nodejs.yaml
-    with:
-      path: ${{ matrix.package }}
-      node-version: 18
-      timeout-minutes: 15
+  # nodejs-test-old:
+  #   name: Node.js test
+  #   needs: affected
+  #   strategy:
+  #     matrix:
+  #       package: ${{ fromJson(needs.affected.outputs.nodejs) }}
+  #       exclude:
+  #         - package: '.'
+  #     fail-fast: false # TODO: remove this, only for testing!
+  #   uses: ./.github/workflows/test-nodejs.yaml
+  #   with:
+  #     path: ${{ matrix.package }}
+  #     node-version: 18
+  #     timeout-minutes: 15
 
   nodejs-test-new:
     name: Node.js test

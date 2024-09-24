@@ -40,7 +40,7 @@ document-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/d
 document-warehouse @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Self-service
-ai-platform  g @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding @GoogleCloudPlatform/cloud-samples-reviewers
+ai-platform @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding @GoogleCloudPlatform/cloud-samples-reviewers
 asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

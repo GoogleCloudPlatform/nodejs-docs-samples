@@ -28,6 +28,7 @@ jobs:
   affected:
     name: Finding affected tests
     runs-on: ubuntu-latest
+    timeout-minutes: 1
     outputs:
       nodejs: ${{ steps.nodejs.outputs.packages }}
       nodejs-e2e: ${{ steps.nodejs-e2e.outputs.packages }}
@@ -55,7 +56,7 @@ jobs:
     name: Node.js lint
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
@@ -73,13 +74,13 @@ jobs:
     name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         node-version: [18, 22]
+        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
     steps:
@@ -100,13 +101,13 @@ jobs:
     name: Node.js e2e-test
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 60
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        package: ${{ fromJson(needs.affected.outputs.nodejs-e2e) }}
         node-version: [18, 22]
+        package: ${{ fromJson(needs.affected.outputs.nodejs-e2e) }}
         exclude:
           - package: '.'
     steps:

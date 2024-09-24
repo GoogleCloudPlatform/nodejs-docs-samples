@@ -65,7 +65,7 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-low-test:
-    # name: Node.js 18 test
+    name: Node.js low test
     needs: affected
     strategy:
       matrix:
@@ -80,7 +80,7 @@ jobs:
       timeout-minutes: 15
 
   nodejs-high-test:
-    name: Node.js 22 test
+    name: Node.js high test
     needs: affected
     strategy:
       matrix:

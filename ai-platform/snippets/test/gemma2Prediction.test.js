@@ -37,15 +37,47 @@ const tpuResponse =
   'The sky appears blue due to a phenomenon called **Rayleigh scattering**.';
 
 describe('Gemma2 predictions', async () => {
+  const gemma2Endpoint =
+    'projects/your-project-id/locations/your-vertex-endpoint-region/endpoints/your-vertex-endpoint-id';
+  const configValues = {
+    maxOutputTokens: {kind: 'numberValue', numberValue: 1024},
+    temperature: {kind: 'numberValue', numberValue: 0.9},
+    topP: {kind: 'numberValue', numberValue: 1},
+    topK: {kind: 'numberValue', numberValue: 1},
+  };
+  const prompt = 'Why is the sky blue?';
   const predictionServiceClientMock = {
     predict: sinon.stub().resolves([]),
   };
 
   afterEach(() => {
-    sinon.restore();
+    sinon.reset();
   });
 
   it('should run interference with GPU', async () => {
+    const expectedGpuRequest = {
+      endpoint: gemma2Endpoint,
+      instances: [
+        {
+          kind: 'structValue',
+          structValue: {
+            fields: {
+              inputs: {
+                kind: 'stringValue',
+                stringValue: prompt,
+              },
+              parameters: {
+                kind: 'structValue',
+                structValue: {
+                  fields: configValues,
+                },
+              },
+            },
+          },
+        },
+      ],
+    };
+
     predictionServiceClientMock.predict.resolves([
       {
         predictions: [
@@ -59,9 +91,30 @@ describe('Gemma2 predictions', async () => {
     const output = await gemma2PredictGpu(predictionServiceClientMock);
 
     expect(output).include('Rayleigh scattering');
+    expect(predictionServiceClientMock.predict.calledOnce).to.be.true;
+    expect(predictionServiceClientMock.predict.calledWith(expectedGpuRequest))
+      .to.be.true;
   });
 
   it('should run interference with TPU', async () => {
+    const expectedTpuRequest = {
+      endpoint: gemma2Endpoint,
+      instances: [
+        {
+          kind: 'structValue',
+          structValue: {
+            fields: {
+              ...configValues,
+              prompt: {
+                kind: 'stringValue',
+                stringValue: prompt,
+              },
+            },
+          },
+        },
+      ],
+    };
+
     predictionServiceClientMock.predict.resolves([
       {
         predictions: [
@@ -75,5 +128,8 @@ describe('Gemma2 predictions', async () => {
     const output = await gemma2PredictTpu(predictionServiceClientMock);
 
     expect(output).include('Rayleigh scattering');
+    expect(predictionServiceClientMock.predict.calledOnce).to.be.true;
+    expect(predictionServiceClientMock.predict.calledWith(expectedTpuRequest))
+      .to.be.true;
   });
 });

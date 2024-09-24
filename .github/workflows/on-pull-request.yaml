@@ -90,9 +90,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: google-github-actions/auth@v2
         with:
+          project_id: long-door-651
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 600s
+          access_token_lifetime: 300s # 5 minutes
       - run: make test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651
@@ -117,9 +117,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - uses: google-github-actions/auth@v2
         with:
+          project_id: long-door-651
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 600s
+          access_token_lifetime: 600s # 10 minutes
       - run: make e2e-test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

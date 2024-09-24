@@ -67,23 +67,20 @@ jobs:
   nodejs-low-test:
     name: Node.js 18 test
     needs: affected
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      # id-token: write # needed for google-github-actions/auth
+    # permissions:
+    #   contents: read
+    #   # id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
       fail-fast: false # TODO: remove this, only for testing!
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/workflows/test-nodejs.yaml
-        with:
-          node-version: 18
-          path: ${{ matrix.package }}
-          timeout-minutes: 15
+    uses: ./.github/workflows/test-nodejs.yaml
+    with:
+      path: ${{ matrix.package }}
+      node-version: 18
+      timeout-minutes: 15
 
   # nodejs-high-test:
   #   name: Node.js 22 test
@@ -102,8 +99,8 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/workflows/test-nodejs.yaml
   #       with:
-  #         node-version: 22
   #         path: ${{ matrix.package }}
+  #         node-version: 22
   #         timeout-minutes: 15
 
   # nodejs-e2e-test:

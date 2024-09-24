@@ -90,7 +90,7 @@ jobs:
     uses: ./.github/workflows/nodejs-test.yaml
     with:
       path: ${{ matrix.package }}
-      node-version: 16
+      node-version: 20
 
   # nodejs-e2e-test:
   #   name: Node.js e2e-test

@@ -44,13 +44,11 @@ jobs:
       - id: nodejs
         run: |
           PACKAGES=$(affected .github/workflows/config/nodejs.json)
-          echo "packages=$PACKAGES"
-          echo "packages=$PACKAGES " >> "$GITHUB_OUTPUT"
+          echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
       - id: nodejs-e2e
         run: |
           PACKAGES=$(affected .github/workflows/config/nodejs-e2e.json)
-          echo "packages=$PACKAGES"
-          echo "packages=$PACKAGES " >> "$GITHUB_OUTPUT"
+          echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint

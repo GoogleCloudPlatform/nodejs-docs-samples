@@ -17,7 +17,6 @@ assign_issues_by:
   - "api: asset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: bigtable'
   - 'api: datastore'
@@ -47,7 +46,6 @@ assign_prs_by:
   - "api: asset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: bigtable'
   - 'api: datastore'

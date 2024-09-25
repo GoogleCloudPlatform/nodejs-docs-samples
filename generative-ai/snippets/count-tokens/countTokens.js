@@ -35,8 +35,16 @@ async function countTokens(
     contents: [{role: 'user', parts: [{text: 'How are you doing today?'}]}],
   };
 
+  // Prompt tokens count
   const countTokensResp = await generativeModel.countTokens(req);
-  console.log('count tokens response: ', countTokensResp);
+  console.log('Prompt tokens count: ', countTokensResp);
+
+  // Send text to gemini
+  const result = await generativeModel.generateContent(req);
+
+  // Response tokens count
+  const usageMetadata = result.response.usageMetadata;
+  console.log('Response tokens count: ', usageMetadata);
 }
 // [END generativeaionvertexai_gemini_token_count]
 

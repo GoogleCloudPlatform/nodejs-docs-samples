@@ -59,12 +59,9 @@ describe('AI platform edit image using Imagen inpainting and outpainting', () =>
     assert.match(stdout, /Saved image output1.png/);
   });
   it('should edit an image using a mask image and outpainting', async () => {
-    const stdout = execSync(
-      'node ./imagen-edit-image-outpainting-mask.js',
-      {
-        cwd,
-      }
-    );
+    const stdout = execSync('node ./imagen-edit-image-outpainting-mask.js', {
+      cwd,
+    });
     assert.match(stdout, /Saved image output1.png/);
   });
 });

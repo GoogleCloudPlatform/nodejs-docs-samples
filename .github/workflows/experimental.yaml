@@ -62,21 +62,7 @@ jobs:
       - run: make lint
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  # nodejs-test:
-  #   name: Node.js test
-  #   needs: affected
-  #   strategy:
-  #     matrix:
-  #       package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-  #       exclude:
-  #         - package: '.'
-  #     fail-fast: false # TODO: remove this, only for testing!
-  #   uses: ./.github/workflows/nodejs-test.yaml
-  #   with:
-  #     path: ${{ matrix.package }}
-  #     node-version: 18
-
-  nodejs-test-latest:
+  nodejs-test:
     name: Node.js test
     needs: affected
     strategy:
@@ -102,10 +88,12 @@ jobs:
           - package: document-ai # [ERR_REQUIRE_ESM]: require() of ES Module
           - package: eventarc/audit-storage # Environment Variable 'SERVICE_NAME' not found
           - package: eventarc/pubsub # Environment Variable 'SERVICE_NAME' not found
+          - package: functions/billing # Error: Request failed with status code 500
           - package: functions/concepts # npm error Missing script: "test"
           - package: functions/firebase # npm error Missing script: "test"
           - package: functions/helloworld # npm error Missing script: "test"
           - package: functions/http # npm error Missing script: "test"
+          - package: functions/http/uploadFile # npm error Missing script: "test"
           - package: functions/imagemagick # Error: A bucket name is needed to use Cloud Storage
           - package: functions/log # npm error Missing script: "test"
           - package: functions/ocr/app # Error: Bucket not provided. Make sure you have a "bucket" property in your request
@@ -129,6 +117,7 @@ jobs:
           - package: video-intelligence # PERMISSION_DENIED: The caller does not have permission
           - package: vision # REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
           - package: workflows # SyntaxError: Cannot use import statement outside a module
+          - package: workflows/quickstart # [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from ...
       fail-fast: false # TODO: remove this, only for testing!
     uses: ./.github/workflows/nodejs-test.yaml
     with:

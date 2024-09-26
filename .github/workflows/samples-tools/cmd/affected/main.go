@@ -69,7 +69,7 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 			}
 			if d.IsDir() && config.Matches(path) && config.IsPackageDir(path) {
 				packages = append(packages, path)
-				return filepath.SkipDir
+				return nil
 			}
 			return nil
 		})

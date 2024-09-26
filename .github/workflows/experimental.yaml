@@ -84,6 +84,51 @@ jobs:
         package: ${{ fromJson(needs.affected.outputs.nodejs) }}
         exclude:
           - package: '.'
+          - package: ai-platform/snippets # PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
+          - package: appengine/analytics # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: appengine/metadata/flexible # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: appengine/metadata/standard # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: automl # FAILED_PRECONDITION: Google Cloud AutoML Natural Language was retired on March 15, 2024. Please migrate to Vertex AI instead
+          - package: cloud-sql/mysql/mysql # Error: expected 200 "OK", got 500 "Internal Server Error"
+          - package: cloud-sql/mysql/mysql2 # Error: Cannot find module './connect-connector-with-iam-authn.js'
+          - package: cloud-sql/postgres/knex # CloudSQLConnectorError: Malformed instance connection name provided: expected format of "PROJECT:REGION:INSTANCE", got undefined
+          - package: cloud-sql/sqlserver/mssql # TypeError: The "config.server" property is required and must be of type string.
+          - package: cloud-sql/sqlserver/tedious # TypeError: The "config.server" property is required and must be of type string.
+          - package: compute # GoogleError: The resource 'projects/long-door-651/zones/us-central1-a/disks/disk-from-pool-name' was not found
+          - package: dataproc # GoogleError: Error submitting create cluster request: Multiple validation errors
+          - package: datastore/functions # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: dialogflow-cx # NOT_FOUND: com.google.apps.framework.request.NotFoundException: Agent 'undefined' does not exist
+          - package: dlp # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: document-ai # [ERR_REQUIRE_ESM]: require() of ES Module
+          - package: eventarc/audit-storage # Environment Variable 'SERVICE_NAME' not found
+          - package: eventarc/pubsub # Environment Variable 'SERVICE_NAME' not found
+          - package: functions/concepts # npm error Missing script: "test"
+          - package: functions/firebase # npm error Missing script: "test"
+          - package: functions/helloworld # npm error Missing script: "test"
+          - package: functions/http # npm error Missing script: "test"
+          - package: functions/imagemagick # Error: A bucket name is needed to use Cloud Storage
+          - package: functions/log # npm error Missing script: "test"
+          - package: functions/ocr/app # Error: Bucket not provided. Make sure you have a "bucket" property in your request
+          - package: functions/pubsub # npm error Missing script: "test"
+          - package: functions/slack # TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
+          - package: functions/v2/imagemagick # Error: A bucket name is needed to use Cloud Storage.
+          - package: generative-ai/snippets # [VertexAI.ClientError]: got status: 403 Forbidden.
+          - package: healthcare/consent # GaxiosError: dataset not initialized
+          - package: healthcare/dicom # GaxiosError: dataset not initialized
+          - package: healthcare/fhir # Error: Cannot find module 'whatwg-url'
+          - package: healthcare/hl7v2 # Error: Cannot find module 'whatwg-url'
+          - package: iam/deny # PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
+          - package: memorystore/redis # npm error Missing script: "test"
+          - package: recaptcha_enterprise/demosite/app # Error: no test specified
+          - package: recaptcha_enterprise/snippets # Cannot use import statement outside a module
+          - package: run/idp-sql # Error: Invalid contents in the credentials file
+          - package: run/markdown-preview/editor # Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
+          - package: run/system-package # Error: ENOENT: no such file or directory, access '/usr/bin/dot'
+          - package: scheduler # SyntaxError: Cannot use import statement outside a module
+          - package: storagetransfer # CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
+          - package: video-intelligence # PERMISSION_DENIED: The caller does not have permission
+          - package: vision # REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
+          - package: workflows # SyntaxError: Cannot use import statement outside a module
       fail-fast: false # TODO: remove this, only for testing!
     uses: ./.github/workflows/nodejs-test.yaml
     with:

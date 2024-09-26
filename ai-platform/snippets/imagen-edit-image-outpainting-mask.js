@@ -16,13 +16,16 @@
 
 'use strict';
 
-const main = async (inputFile, maskFile, prompt) => {
+async function main() {
   // [START generativeaionvertexai_imagen_edit_image_outpainting_mask]
   /**
    * TODO(developer): Update these variables before running the sample.
    */
   const projectId = process.env.CAIP_PROJECT_ID;
   const location = 'us-central1';
+  const inputFile = 'resources/roller_skaters.png';
+  const maskFile = 'resources/roller_skaters_mask.png';
+  const prompt = 'city with skyscrapers';
 
   const aiplatform = require('@google-cloud/aiplatform');
 
@@ -40,10 +43,9 @@ const main = async (inputFile, maskFile, prompt) => {
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
-  const fs = require('fs');
-  const util = require('util');
-
   async function editImageOutpaintingMask() {
+    const fs = require('fs');
+    const util = require('util');
     // Configure the parent resource
     const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration@006`;
 
@@ -109,12 +111,11 @@ const main = async (inputFile, maskFile, prompt) => {
       }
     }
   }
-  await editImageOutpaintingMask().catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
+  await editImageOutpaintingMask();
   // [END generativeaionvertexai_imagen_edit_image_outpainting_mask]
-};
+}
 
-// node editImageOutpaintingMask.js <inputFile> <maskFile> <prompt>
-main(...process.argv.slice(2));
+main().catch(err => {
+  console.error(err);
+  process.exitcode = 1;
+});

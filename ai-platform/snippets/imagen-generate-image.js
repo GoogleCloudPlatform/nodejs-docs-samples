@@ -16,13 +16,14 @@
 
 'use strict';
 
-const main = async (inputFile, maskFile, prompt) => {
-  // [START generativeaionvertexai_imagen_edit_image_inpainting_insert_mask]
+async function main() {
+  // [START generativeaionvertexai_imagen_generate_image]
   /**
    * TODO(developer): Update these variables before running the sample.
    */
   const projectId = process.env.CAIP_PROJECT_ID;
   const location = 'us-central1';
+  const prompt = 'a dog reading a newspaper';
 
   const aiplatform = require('@google-cloud/aiplatform');
 
@@ -40,43 +41,26 @@ const main = async (inputFile, maskFile, prompt) => {
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
-  const fs = require('fs');
-  const util = require('util');
-
-  async function editImageInpaintingInsertMask() {
+  async function generateImage() {
+    const fs = require('fs');
+    const util = require('util');
     // Configure the parent resource
-    const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration@006`;
+    const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-001`;
 
-    const imageFile = fs.readFileSync(inputFile);
-    // Convert the image data to a Buffer and base64 encode it.
-    const encodedImage = Buffer.from(imageFile).toString('base64');
-
-    const maskImageFile = fs.readFileSync(maskFile);
-    // Convert the image mask data to a Buffer and base64 encode it.
-    const encodedMask = Buffer.from(maskImageFile).toString('base64');
-
-    const promptObj = {
-      prompt: prompt, // The text prompt describing what you want to see inserted
-      editMode: 'inpainting-insert',
-      image: {
-        bytesBase64Encoded: encodedImage,
-      },
-      mask: {
-        image: {
-          bytesBase64Encoded: encodedMask,
-        },
-      },
+    const promptText = {
+      prompt: prompt, // The text prompt describing what you want to see
     };
-    const instanceValue = helpers.toValue(promptObj);
+    const instanceValue = helpers.toValue(promptText);
     const instances = [instanceValue];
 
     const parameter = {
-      // Optional parameters
-      seed: 100,
-      // Controls the strength of the prompt
-      // 0-9 (low strength), 10-20 (medium strength), 21+ (high strength)
-      guidanceScale: 21,
       sampleCount: 1,
+      // You can't use a seed value and watermark at the same time.
+      // seed: 100,
+      // addWatermark: false,
+      aspectRatio: '1:1',
+      safetyFilterLevel: 'block_some',
+      personGeneration: 'allow_adult',
     };
     const parameters = helpers.toValue(parameter);
 
@@ -109,12 +93,11 @@ const main = async (inputFile, maskFile, prompt) => {
       }
     }
   }
-  await editImageInpaintingInsertMask().catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
-  // [END generativeaionvertexai_imagen_edit_image_inpainting_insert_mask]
-};
+  await generateImage();
+  // [END generativeaionvertexai_imagen_generate_image]
+}
 
-// node editImageInpaintingInsertMask.js <inputFile> <maskFile> <prompt>
-main(...process.argv.slice(2));
+main().catch(err => {
+  console.error(err);
+  process.exitcode = 1;
+});

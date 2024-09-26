@@ -24,40 +24,25 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-const catImageFile = 'resources/cat.png';
-const womanImageFile = 'resources/woman.png';
-const womanMaskImageFile = 'resources/woman_inpainting_insert_mask.png';
-const volleyballImageFile = 'resources/volleyball_game.png';
-const volleyballMaskImageFile =
-  'resources/volleyball_game_inpainting_remove_mask.png';
-const skatersImageFile = 'resources/roller_skaters.png';
-const skatersMaskImageFile = 'resources/roller_skaters_mask.png';
-
 describe('AI platform generate and edit an image using Imagen', () => {
   it('should generate an image', async () => {
-    const prompt = 'a dog reading a newspaper';
-    const stdout = execSync(`node ./imagen/generateImage.js ${prompt}`, {
+    const stdout = execSync('node ./imagen-generate-image.js', {
       cwd,
     });
     assert.match(stdout, /Saved image output1.png/);
   });
   it('should edit an image without using a mask', async () => {
-    const prompt = 'a dog';
-    const stdout = execSync(
-      `node ./imagen/editImageMaskFree.js ${catImageFile} ${prompt}`,
-      {
-        cwd,
-      }
-    );
+    const stdout = execSync('node ./imagen-edit-image-mask-free.js', {
+      cwd,
+    });
     assert.match(stdout, /Saved image output1.png/);
   });
 });
 
 describe('AI platform edit image using Imagen inpainting and outpainting', () => {
   it('should edit an image using a mask image and inpainting insert', async () => {
-    const prompt = 'hat';
     const stdout = execSync(
-      `node ./imagen/editImageInpaintingInsertMask.js ${womanImageFile} ${womanMaskImageFile} ${prompt}`,
+      'node ./imagen-edit-image-inpainting-insert-mask.js',
       {
         cwd,
       }
@@ -65,9 +50,8 @@ describe('AI platform edit image using Imagen inpainting and outpainting', () =>
     assert.match(stdout, /Saved image output1.png/);
   });
   it('should edit an image using a mask image and inpainting remove', async () => {
-    const prompt = 'volleyball game';
     const stdout = execSync(
-      `node ./imagen/editImageInpaintingRemoveMask.js ${volleyballImageFile} ${volleyballMaskImageFile} ${prompt}`,
+      'node ./imagen-edit-image-inpainting-remove-mask.js',
       {
         cwd,
       }
@@ -75,9 +59,8 @@ describe('AI platform edit image using Imagen inpainting and outpainting', () =>
     assert.match(stdout, /Saved image output1.png/);
   });
   it('should edit an image using a mask image and outpainting', async () => {
-    const prompt = 'city with skyscrapers';
     const stdout = execSync(
-      `node ./imagen/editImageInpaintingRemoveMask.js ${skatersImageFile} ${skatersMaskImageFile} ${prompt}`,
+      'node ./imagen-edit-image-outpainting-mask.js',
       {
         cwd,
       }

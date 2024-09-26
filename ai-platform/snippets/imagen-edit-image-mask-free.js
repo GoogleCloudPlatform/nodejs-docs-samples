@@ -16,13 +16,15 @@
 
 'use strict';
 
-const main = async (inputFile, prompt) => {
+async function main() {
   // [START generativeaionvertexai_imagen_edit_image_mask_free]
   /**
    * TODO(developer): Update these variables before running the sample.
    */
   const projectId = process.env.CAIP_PROJECT_ID;
   const location = 'us-central1';
+  const inputFile = 'resources/cat.png';
+  const prompt = 'dog';
 
   const aiplatform = require('@google-cloud/aiplatform');
 
@@ -40,10 +42,9 @@ const main = async (inputFile, prompt) => {
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
-  const fs = require('fs');
-  const util = require('util');
-
   async function editImageMaskFree() {
+    const fs = require('fs');
+    const util = require('util');
     // Configure the parent resource
     const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagegeneration@002`;
 
@@ -99,12 +100,11 @@ const main = async (inputFile, prompt) => {
       }
     }
   }
-  await editImageMaskFree().catch(err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  });
+  await editImageMaskFree();
   // [END generativeaionvertexai_imagen_edit_image_mask_free]
-};
+}
 
-// node editImageMaskFree.js <inputFile> <prompt>
-main(...process.argv.slice(2));
+main().catch(err => {
+  console.error(err);
+  process.exitcode = 1;
+});

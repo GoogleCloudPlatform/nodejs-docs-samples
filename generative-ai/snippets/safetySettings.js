@@ -40,13 +40,11 @@ async function setSafetySettings() {
         category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
         threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
       },
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+      },
     ],
-    generation_config: {
-      max_output_tokens: 256,
-      temperature: 0.4,
-      top_p: 1,
-      top_k: 16,
-    },
   });
 
   const request = {

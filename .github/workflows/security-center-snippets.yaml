@@ -18,9 +18,7 @@ on:
     branches:
     - main
     paths:
-    - 'security-center/snippets/v1/**'
-    - 'security-center/snippets/v2/**'
-    - 'security-center/snippets/package.json'
+    - 'security-center/snippets/**'
     - '.github/workflows/security-center-snippets.yaml'
   pull_request:
     types:

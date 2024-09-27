@@ -54,7 +54,7 @@ describe('Gemma2 predictions', async () => {
     sinon.reset();
   });
 
-  it('should run interference with GPU', async () => {
+  it('should run inference with GPU', async () => {
     const expectedGpuRequest = {
       endpoint: gemma2Endpoint,
       instances: [
@@ -96,7 +96,7 @@ describe('Gemma2 predictions', async () => {
       .to.be.true;
   });
 
-  it('should run interference with TPU', async () => {
+  it('should run inference with TPU', async () => {
     const expectedTpuRequest = {
       endpoint: gemma2Endpoint,
       instances: [

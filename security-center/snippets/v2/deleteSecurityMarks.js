@@ -17,7 +17,12 @@
 /**
  * Demostrates deleting security marks on a finding.
  */
-function main(organizationId, sourceId, location = 'global', findingId = 'somefinding') {
+function main(
+  organizationId,
+  sourceId,
+  location = 'global',
+  findingId = 'somefinding'
+) {
   // [START securitycenter_delete_security_marks_v2]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -31,7 +36,7 @@ function main(organizationId, sourceId, location = 'global', findingId = 'somefi
    */
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const sourceId = 'SOURCE_ID';
-  const findingName = `organizations/${organizationId}/sources/${sourceId}/locations/${location}/findings/${findingId}`
+  const findingName = `organizations/${organizationId}/sources/${sourceId}/locations/${location}/findings/${findingId}`;
   const updateSecurityMarksRequest = {
     securityMarks: {
       name: `${findingName}/securityMarks`,

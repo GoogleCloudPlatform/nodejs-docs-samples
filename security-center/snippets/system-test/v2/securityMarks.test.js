@@ -69,7 +69,7 @@ describe('Client with SourcesAndFindings', async () => {
       findingName: finding.name,
       untouchedFindingName: untouchedFinding.name,
       sourceId: sourceId,
-      findingId: findingId
+      findingId: findingId,
     };
     console.log('My data security marks %j', data);
   });
@@ -118,7 +118,9 @@ describe('Client with SourcesAndFindings', async () => {
   it('client can delete and update findings with security marks v2', done => {
     // Ensure marks are set.
     exec(`node v2/addFindingSecurityMarks.js ${data.orgId} ${data.sourceId}`);
-    const output = exec(`node v2/deleteSecurityMarks.js ${data.orgId} ${data.sourceId}`);
+    const output = exec(
+      `node v2/deleteSecurityMarks.js ${data.orgId} ${data.sourceId}`
+    );
     assert(output.includes(data.orgId));
     assert.notMatch(output, /key_a/);
     assert.notMatch(output, /value_a/);

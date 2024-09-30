@@ -39,7 +39,7 @@ function main(organizationId, sourceId) {
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const sourceId = 'SOURCE_ID';
 
-  const sourceName = `organizations/${organizationId}/sources/${sourceId}`;  
+  const sourceName = `organizations/${organizationId}/sources/${sourceId}`;
   const listFindingsRequest = {
     // List findings across all sources.
     parent: sourceName,

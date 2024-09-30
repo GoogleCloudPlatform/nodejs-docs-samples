@@ -19,10 +19,9 @@ const {assert} = require('chai');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
-const uuidv1 = require('uuid').v1;
 
 // TODO(developers): update for your own environment
-const organizationId = '1081635000895';
+const organizationId = process.env.GCLOUD_ORGANIZATION;
 const location = 'global';
 
 describe('Client with mute rule V2', async () => {
@@ -32,7 +31,7 @@ describe('Client with mute rule V2', async () => {
     const client = new SecurityCenterClient();
 
     // Build the create mute rule request.
-    const muteId = 'muteid-' + uuidv1().replace(/-/g, '').substring(0, 20);
+    const muteId = 'muteid-' + Math.floor(Math.random() * 10000);
     const createMuteRuleRequest = {
       parent: `organizations/${organizationId}/locations/${location}`,
       muteConfigId: muteId,

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,17 +12,21 @@ import (
 )
 
 func main() {
-	usage := "usage: affected path/to/config.json [head-commit] [main-commit]"
-	configPath := utils.ArgRequired(1, usage)
-	headCommit := utils.ArgWithDefault(2, "HEAD")
-	mainCommit := utils.ArgWithDefault(3, "origin/main")
+	configPath := flag.String("config", "", "path to the config file")
+	headCommit := flag.String("head", "HEAD", "commit with the changes")
+	mainCommit := flag.String("main", "origin/main", "commit of the main branch")
+	flag.Parse()
 
-	config, err := utils.LoadConfig(configPath)
+	if *configPath == "" {
+		panic("config path is required, please pass -config=path/to/config.jsonc")
+	}
+
+	config, err := utils.LoadConfig(*configPath)
 	if err != nil {
 		panic(err)
 	}
 
-	diffs, err := utils.Diffs(headCommit, mainCommit)
+	diffs, err := utils.Diffs(*headCommit, *mainCommit)
 	if err != nil {
 		panic(err)
 	}

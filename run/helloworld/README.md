@@ -42,10 +42,10 @@ test/deploy.sh
 
 The `runner.sh` script:
 
-- Deploys the service to Cloud Run based on the `deploy.sh` script.
-- Sets the `BASE_URL` and `ID_TOKEN` environment variables.
-- Runs any arguments passed to the `runner.sh` script.
-- Tears down the Cloud Run service on completion.
+* Deploys the service to Cloud Run based on the `deploy.sh` script.
+* Sets the `BASE_URL` and `ID_TOKEN` environment variables.
+* Runs any arguments passed to the `runner.sh` script.
+* Tears down the Cloud Run service on completion.
 
 ```sh
 test/runner.sh sleep 20
@@ -53,12 +53,12 @@ test/runner.sh sleep 20
 
 ## Environment Variables (Testing)
 
-- `BASE_URL`: Specifies the Cloud Run service URL for end-to-end tests.
-- `ID_TOKEN`: JWT token used to authenticate with Cloud Run's IAM-based authentication.
-- `REGION`: [`us-central1`] Optional override region for the location of the Cloud Run service.
-- `SERVICE_NAME`: The name of the deployed service, used in some API calls and test assertions.
+* `BASE_URL`: Specifies the Cloud Run service URL for end-to-end tests.
+* `ID_TOKEN`: JWT token used to authenticate with Cloud Run's IAM-based authentication.
+* `REGION`: [`us-central1`] Optional override region for the location of the Cloud Run service.
+* `SERVICE_NAME`: The name of the deployed service, used in some API calls and test assertions.
 
 ## Dependencies
 
-- **express**: Web server framework.
-- **got**: [Testing] Used to make HTTP requests of the running service in end-to-end testing.
+* **express**: Web server framework.
+* **got**: [Testing] Used to make HTTP requests of the running service in end-to-end testing.

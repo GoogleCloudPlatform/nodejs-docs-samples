@@ -22,7 +22,7 @@ const {describe, it, before} = require('mocha');
 
 const organizationId = process.env.GCLOUD_ORGANIZATION;
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
-const dataset = `projects/${projectId}/datasets/sampledataset`;
+const dataset = `projects/${projectId}/datasets/testDataset`;
 const location = 'global';
 
 describe('Client with bigquery export V2', async () => {
@@ -48,19 +48,21 @@ describe('Client with bigquery export V2', async () => {
       bigQueryExportId,
     };
 
-      try {
-        const response = await client.createBigQueryExport(createBigQueryExportRequest);
-        const bigQueryExportResponse = response[0];
-        data = {
-          orgId: organizationId,
-          bigQueryExportId: bigQueryExportId,
-          bigQueryExportName: bigQueryExportResponse.name,
-          untouchedbigQueryExportName: '',
-        };
-        console.log('my data bigQueryExport %j', data);
-      } catch (error) {
-        console.error('Error creating BigQuery export:', error);
-      }
+    try {
+      const response = await client.createBigQueryExport(
+        createBigQueryExportRequest
+      );
+      const bigQueryExportResponse = response[0];
+      data = {
+        orgId: organizationId,
+        bigQueryExportId: bigQueryExportId,
+        bigQueryExportName: bigQueryExportResponse.name,
+        untouchedbigQueryExportName: '',
+      };
+      console.log('my data bigQueryExport %j', data);
+    } catch (error) {
+      console.error('Error creating BigQuery export:', error);
+    }
   });
 
   it('client can create bigquery export V2', done => {

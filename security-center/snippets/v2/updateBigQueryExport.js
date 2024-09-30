@@ -75,8 +75,9 @@ function main(organizationId, exportId, dataset, location = 'global') {
       updateBigQueryExportRequest,
       fieldMask
     );
-    console.log(`BigQueryExport updated successfully! Name: ${response.name}, Description: ${response.description}, Dataset: ${response.dataset}`);
-
+    console.log(
+      `BigQueryExport updated successfully! Name: ${response.name}, Description: ${response.description}, Dataset: ${response.dataset}`
+    );
   }
 
   updateBigQueryExport();

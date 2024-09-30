@@ -26,17 +26,20 @@ func main() {
 		panic(err)
 	}
 
-	matrix, err := affected(config, diffs)
+	packages, err := affected(config, diffs)
+	if err != nil {
+		panic(err)
+	}
+	if len(packages) > 256 {
+		panic(fmt.Errorf("GitHub Actions only supports up to 256 packages, got %d packages", len(packages)))
+	}
+
+	matrix, err := json.Marshal(packages)
 	if err != nil {
 		panic(err)
 	}
 
-	matrixJson, err := json.Marshal(matrix)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(matrixJson))
+	fmt.Println(string(matrix))
 }
 
 func affected(config utils.Config, diffs []string) ([]string, error) {
@@ -46,6 +49,9 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 			continue
 		}
 		pkg := config.FindPackage(diff)
+		if slices.Contains(config.ExcludePackages, pkg) {
+			continue
+		}
 		uniquePackages[pkg] = true
 	}
 
@@ -54,10 +60,13 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 		changed = append(changed, pkg)
 	}
 
-	if !slices.Contains(changed, ".") {
-		return changed, nil
+	if slices.Contains(changed, ".") {
+		return findAllPackages(config)
 	}
+	return changed, nil
+}
 
+func findAllPackages(config utils.Config) ([]string, error) {
 	var packages []string
 	err := filepath.WalkDir(".",
 		func(path string, d os.DirEntry, err error) error {
@@ -65,6 +74,9 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 				return err
 			}
 			if path == "." {
+				return nil
+			}
+			if slices.Contains(config.ExcludePackages, path) {
 				return nil
 			}
 			if d.IsDir() && config.Matches(path) && config.IsPackageDir(path) {
@@ -75,10 +87,6 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 		})
 	if err != nil {
 		return []string{}, err
-	}
-
-	if len(packages) > 256 {
-		return []string{}, fmt.Errorf("GitHub Actions only supports up to 256 packages, got %d packages", len(packages))
 	}
 	return packages, nil
 }

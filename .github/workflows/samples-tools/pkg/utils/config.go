@@ -5,18 +5,22 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
 type Config struct {
-	// Filenames to ignore, can include wildcard `*` stars.
+	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
 
-	// Filenames to ignore, can include wildcard `*` stars.
+	// Pattern to ignore filenames or directories.
 	Ignore []string `json:"ignore"`
 
 	// Filename to look for the root of a package.
 	Package []string `json:"package"`
+
+	// Packages to always exclude.
+	ExcludePackages []string `json:"exclude-packages"`
 
 	// Actions to run including the given commands.
 	Actions map[string][]struct {
@@ -37,9 +41,9 @@ func LoadConfig(path string) (Config, error) {
 	return config, nil
 }
 
-func ParseConfig(configFile []byte) (Config, error) {
+func ParseConfig(source []byte) (Config, error) {
 	var config Config
-	err := json.Unmarshal(configFile, &config)
+	err := json.Unmarshal(StripComments(source), &config)
 	if err != nil {
 		return Config{}, err
 	}
@@ -47,6 +51,11 @@ func ParseConfig(configFile []byte) (Config, error) {
 		config.Match = []string{"*"}
 	}
 	return config, nil
+}
+
+func StripComments(src []byte) []byte {
+	re := regexp.MustCompile(`\s*// .*`)
+	return re.ReplaceAll(src, []byte{})
 }
 
 func match(patterns []string, path string) bool {

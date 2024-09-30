@@ -14,7 +14,7 @@
 'use strict';
 
 /** Demonstrates listing findings by filtering on security marks. */
-function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
+function main(organizationId, sourceId) {
   // [START securitycenter_list_findings_with_security_marks_v2]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -23,9 +23,7 @@ function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
   const client = new SecurityCenterClient();
   //  sourceName is the full resource path of the source to search for
   //  findings.
-  /*
-   * TODO(developer): Uncomment the following lines
-   */
+
   // const sourceName = `${parent}/sources/${sourceId}`;
   // or
   // const sourceName = `${parent}/sources/${sourceId}/locations/${location}`;
@@ -34,6 +32,14 @@ function main(sourceName = 'YOUR_NUMERIC_ORG_ID') {
   //    `organizations/${organization_id}`
   //    `projects/${project_id}`
   //    `folders/${folder_id}`
+
+  /*
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const sourceId = 'SOURCE_ID';
+
+  const sourceName = `organizations/${organizationId}/sources/${sourceId}`;  
   const listFindingsRequest = {
     // List findings across all sources.
     parent: sourceName,

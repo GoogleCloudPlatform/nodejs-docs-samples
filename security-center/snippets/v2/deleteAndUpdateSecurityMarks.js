@@ -16,7 +16,7 @@
 /**
  * Demostrates updating and deleting security marks to a finding.
  */
-function main(findingName = 'full finding path to update marks') {
+function main(organizationId, sourceId, location = 'global', findingId = 'somefinding') {
   // [START securitycenter_add_delete_security_marks_v2]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
@@ -26,9 +26,11 @@ function main(findingName = 'full finding path to update marks') {
 
   // findingName is the full resource path for the finding to update.
   /*
-   * TODO(developer): Uncomment the following lines
+   * TODO(developer): Update the following references for your own environment before running the sample.
    */
-  // const findingName = `organizations/${organizationNumber}/sources/${sourceId}/locations/${location}/findings/${findingId}`
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const sourceId = 'SOURCE_ID';
+  const findingName = `organizations/${organizationId}/sources/${sourceId}/locations/${location}/findings/${findingId}`
   const updateSecurityMarksRequest = {
     securityMarks: {
       name: `${findingName}/securityMarks`,

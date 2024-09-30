@@ -20,7 +20,7 @@ const {describe, it, before} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-const organizationId = '1081635000895';
+const organizationId = process.env.GCLOUD_ORGANIZATION;
 
 describe('Client with SourcesAndFindings', async () => {
   let data;
@@ -60,20 +60,26 @@ describe('Client with SourcesAndFindings', async () => {
     const [untouchedFinding] = await client
       .createFinding(createFindingTemplate)
       .catch(error => console.error(error));
+    const sourceId = source.name.split('/')[3];
+    const findingId = finding.name.split('/')[7];
+
     data = {
       orgId: organizationId,
       sourceName: source.name,
       findingName: finding.name,
       untouchedFindingName: untouchedFinding.name,
+      sourceId: sourceId,
+      findingId: findingId
     };
     console.log('My data security marks %j', data);
   });
 
   it('client can add security marks to finding v2', done => {
     const output = exec(
-      `node v2/addFindingSecurityMarks.js ${data.findingName}`
+      `node v2/addFindingSecurityMarks.js ${data.orgId} ${data.sourceId}`
     );
-    assert(output.includes(data.findingName));
+    assert(output.includes(data.orgId));
+    assert(output.includes(data.sourceId));
     assert.match(output, /key_a/);
     assert.match(output, /value_a/);
     assert.match(output, /key_b/);
@@ -84,9 +90,9 @@ describe('Client with SourcesAndFindings', async () => {
 
   it('client can list findings with security marks v2', done => {
     // Ensure marks are set.
-    exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
+    exec(`node v2/addFindingSecurityMarks.js ${data.orgId} ${data.sourceId}`);
     const output = exec(
-      `node v2/listFindingsWithSecurityMarks.js ${data.sourceName}`
+      `node v2/listFindingsWithSecurityMarks.js ${data.orgId} ${data.sourceId}`
     );
     assert(!output.includes(data.findingName));
     assert(output.includes(data.untouchedFindingName));
@@ -96,11 +102,11 @@ describe('Client with SourcesAndFindings', async () => {
 
   it('client can delete and update findings with security marks v2', done => {
     // Ensure marks are set.
-    exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
+    exec(`node v2/addFindingSecurityMarks.js ${data.orgId} ${data.sourceId}`);
     const output = exec(
-      `node v2/deleteAndUpdateSecurityMarks.js ${data.findingName}`
+      `node v2/deleteAndUpdateSecurityMarks.js ${data.orgId} ${data.sourceId}`
     );
-    assert(output.includes(data.findingName));
+    assert(output.includes(data.orgId));
     assert.match(output, /key_a/);
     assert.match(output, /new_value_for_a/);
     assert.notMatch(output, /key_b/);
@@ -111,9 +117,9 @@ describe('Client with SourcesAndFindings', async () => {
 
   it('client can delete and update findings with security marks v2', done => {
     // Ensure marks are set.
-    exec(`node v2/addFindingSecurityMarks.js ${data.findingName}`);
-    const output = exec(`node v2/deleteSecurityMarks.js ${data.findingName}`);
-    assert(output.includes(data.findingName));
+    exec(`node v2/addFindingSecurityMarks.js ${data.orgId} ${data.sourceId}`);
+    const output = exec(`node v2/deleteSecurityMarks.js ${data.orgId} ${data.sourceId}`);
+    assert(output.includes(data.orgId));
     assert.notMatch(output, /key_a/);
     assert.notMatch(output, /value_a/);
     assert.notMatch(output, /key_b/);

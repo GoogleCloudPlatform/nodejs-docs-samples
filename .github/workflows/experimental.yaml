@@ -43,11 +43,11 @@ jobs:
         working-directory: .github/workflows/samples-tools
       - id: nodejs
         run: |
-          PACKAGES=$(affected .github/workflows/config/nodejs.jsonc)
+          PACKAGES=$(affected -config .github/workflows/config/nodejs.jsonc)
           echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
       - id: nodejs-e2e
         run: |
-          PACKAGES=$(affected .github/workflows/config/nodejs-e2e.jsonc)
+          PACKAGES=$(affected -config .github/workflows/config/nodejs-e2e.jsonc)
           echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:

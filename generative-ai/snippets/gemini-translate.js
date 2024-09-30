@@ -86,6 +86,7 @@ async function geminiTranslation(projectId) {
   const result = await generativeModel.generateContent(request);
   const contentResponse = await result.response;
   console.log(JSON.stringify(contentResponse));
+  return contentResponse;
   // [END generativeaionvertexai_gemini_translate]
 }
 

@@ -31,22 +31,13 @@ function main(organizationId, location = 'global') {
    *  "folders/[folder_id]/locations/[location_id]", or
    *  "projects/[project_id]/locations/[location_id]".
    */
-  const parent = client.organizationLocationPath(organizationId, location);
 
   /**
-   *  The maximum number of configs to return. The service may return fewer than
-   *  this value.
-   *  If unspecified, at most 10 configs will be returned.
-   *  The maximum value is 1000; values above 1000 will be coerced to 1000.
+   * TODO(developer): Update the following references for your own environment before running the sample.
    */
-  // const pageSize = 1234
-  /**
-   *  A page token, received from a previous `ListBigQueryExports` call.
-   *  Provide this to retrieve the subsequent page.
-   *  When paginating, all other parameters provided to `ListBigQueryExports`
-   *  must match the call that provided the page token.
-   */
-  // const pageToken = 'abc123'
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
+  const parent = client.organizationLocationPath(organizationId, location);
 
   // Build the request.
   const listBigQueryExportsRequest = {

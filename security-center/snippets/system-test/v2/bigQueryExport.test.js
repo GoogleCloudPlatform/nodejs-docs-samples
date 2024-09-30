@@ -19,10 +19,9 @@ const {assert} = require('chai');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
-const uuidv1 = require('uuid').v1;
 
-const organizationId = '1081635000895';
-const projectId = 'project-a-id';
+const organizationId = process.env.GCLOUD_ORGANIZATION;
+const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const dataset = `projects/${projectId}/datasets/sampledataset`;
 const location = 'global';
 
@@ -34,7 +33,7 @@ describe('Client with bigquery export V2', async () => {
 
     // Build the create bigquery export request.
     const bigQueryExportId =
-      'bigqueryexportid-' + uuidv1().replace(/-/g, '').substring(0, 20);
+      'bigqueryexportid-' + Math.floor(Math.random() * 10000);
     const filter = 'severity="LOW" OR severity="MEDIUM"';
     const bigQueryExport = {
       name: 'bigQueryExport node',

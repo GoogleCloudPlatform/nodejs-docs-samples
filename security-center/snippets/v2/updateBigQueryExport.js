@@ -33,6 +33,13 @@ function main(organizationId, exportId, dataset, location = 'global') {
    *  + `folders/{folder}/locations/{location}/bigQueryExports/{export_id}`
    *  + `projects/{project}locations/{location}/bigQueryExports/{export_id}`
    */
+
+  /**
+   * TODO(developer): Update the following references for your own environment before running the sample.
+   */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
+  // const exportId = 'EXPORT_ID';
   const name = `organizations/${organizationId}/locations/${location}/bigQueryExports/${exportId}`;
 
   /**
@@ -68,7 +75,8 @@ function main(organizationId, exportId, dataset, location = 'global') {
       updateBigQueryExportRequest,
       fieldMask
     );
-    console.log('BigQueryExport updated successfully!: %j', response);
+    console.log(`BigQueryExport updated successfully! Name: ${response.name}, Description: ${response.description}, Dataset: ${response.dataset}`);
+
   }
 
   updateBigQueryExport();

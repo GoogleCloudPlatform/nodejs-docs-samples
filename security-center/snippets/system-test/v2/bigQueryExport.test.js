@@ -48,17 +48,19 @@ describe('Client with bigquery export V2', async () => {
       bigQueryExportId,
     };
 
-    const [bigQueryExportResponse] = await client
-      .createBigQueryExport(createBigQueryExportRequest)
-      .catch(error => console.error(error));
-
-    data = {
-      orgId: organizationId,
-      bigQueryExportId: bigQueryExportId,
-      bigQueryExportName: bigQueryExportResponse.name,
-      untouchedbigQueryExportName: '',
-    };
-    console.log('my data bigQueryExport %j', data);
+      try {
+        const response = await client.createBigQueryExport(createBigQueryExportRequest);
+        const bigQueryExportResponse = response[0];
+        data = {
+          orgId: organizationId,
+          bigQueryExportId: bigQueryExportId,
+          bigQueryExportName: bigQueryExportResponse.name,
+          untouchedbigQueryExportName: '',
+        };
+        console.log('my data bigQueryExport %j', data);
+      } catch (error) {
+        console.error('Error creating BigQuery export:', error);
+      }
   });
 
   it('client can create bigquery export V2', done => {

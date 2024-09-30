@@ -21,12 +21,6 @@ type Config struct {
 
 	// Packages to always exclude.
 	ExcludePackages []string `json:"exclude-packages"`
-
-	// Actions to run including the given commands.
-	Actions map[string][]struct {
-		Command string   `json:"command"`
-		Args    []string `json:"args"`
-	} `json:"actions"`
 }
 
 func LoadConfig(path string) (Config, error) {

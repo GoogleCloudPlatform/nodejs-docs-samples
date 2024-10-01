@@ -24,7 +24,7 @@ func main() {
 
 	config, err := utils.LoadConfig(*configPath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error loading the config file: %v\n", err)
+		fmt.Fprintf(os.Stderr, "error loading the config file, make sure it exists and it's valid: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -41,7 +41,7 @@ func main() {
 	}
 	if len(packages) > 256 {
 		fmt.Fprintf(os.Stderr,
-			"GitHub Actions only supports up to 256 packages, got %v packages\nSee %v for more details.\n",
+			"GitHub Actions only supports up to 256 packages, got %v packages, for more details see:\n%v\n",
 			len(packages),
 			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
 		)

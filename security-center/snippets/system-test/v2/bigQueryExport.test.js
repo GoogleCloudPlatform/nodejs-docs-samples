@@ -19,7 +19,7 @@ const {assert} = require('chai');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
-const { BigQuery } = require('@google-cloud/bigquery');
+const {BigQuery} = require('@google-cloud/bigquery');
 
 const organizationId = process.env.GCLOUD_ORGANIZATION;
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
@@ -37,7 +37,9 @@ async function createDataset() {
     const datasetExists = datasets.some(dataset => dataset.id === datasetId);
 
     if (datasetExists) {
-      console.log(`Dataset ${datasetId} already exists, using the existing dataset.`);
+      console.log(
+        `Dataset ${datasetId} already exists, using the existing dataset.`
+      );
       return bigquery.dataset(datasetId); // Return the existing dataset
     }
 

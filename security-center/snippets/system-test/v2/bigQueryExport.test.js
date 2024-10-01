@@ -19,15 +19,47 @@ const {assert} = require('chai');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
+const { BigQuery } = require('@google-cloud/bigquery');
 
 const organizationId = process.env.GCLOUD_ORGANIZATION;
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
-const dataset = `projects/${projectId}/datasets/testDataset`;
 const location = 'global';
+const bigquery = new BigQuery();
+
+let dataset;
+
+async function createDataset() {
+  const datasetId = 'my_new_dataset';
+
+  try {
+    // Check if the dataset already exists
+    const [datasets] = await bigquery.getDatasets();
+    const datasetExists = datasets.some(dataset => dataset.id === datasetId);
+
+    if (datasetExists) {
+      console.log(`Dataset ${datasetId} already exists, using the existing dataset.`);
+      return bigquery.dataset(datasetId); // Return the existing dataset
+    }
+
+    // Create a new dataset if it doesn't exist
+    const options = {
+      location: 'US',
+    };
+    const [createdDataset] = await bigquery.createDataset(datasetId, options);
+    console.log(`Dataset ${createdDataset.id} created.`);
+    return createdDataset;
+  } catch (error) {
+    console.error('Error in createDataset:', error);
+    throw error;
+  }
+}
 
 describe('Client with bigquery export V2', async () => {
   let data;
   before(async () => {
+    const createdDataset = await createDataset();
+    dataset = `projects/${projectId}/datasets/${createdDataset.id}`;
+
     // Creates a new client.
     const client = new SecurityCenterClient();
 

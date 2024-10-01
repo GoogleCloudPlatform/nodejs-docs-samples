@@ -18,30 +18,40 @@ func main() {
 	flag.Parse()
 
 	if *configPath == "" {
-		panic("config path is required, please pass -config=path/to/config.jsonc")
+		fmt.Fprintf(os.Stderr, "config path is required, please pass -config=path/to/config.jsonc")
+		os.Exit(1)
 	}
 
 	config, err := utils.LoadConfig(*configPath)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error loading the config file: %v\n", err)
+		os.Exit(1)
 	}
 
 	diffs, err := utils.Diffs(*headCommit, *mainCommit)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error getting the diffs: %v\n", err)
+		os.Exit(1)
 	}
 
 	packages, err := affected(config, diffs)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error finding the affected packages: %v\n", err)
+		os.Exit(1)
 	}
 	if len(packages) > 256 {
-		panic(fmt.Errorf("GitHub Actions only supports up to 256 packages, got %d packages", len(packages)))
+		fmt.Fprintf(os.Stderr,
+			"GitHub Actions only supports up to 256 packages, got %v packages\nSee %v for more details.\n",
+			len(packages),
+			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
+		)
+		os.Exit(1)
 	}
 
 	matrix, err := json.Marshal(packages)
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "error marshaling to JSON: %v\n", err)
+		os.Exit(1)
 	}
 
 	fmt.Println(string(matrix))

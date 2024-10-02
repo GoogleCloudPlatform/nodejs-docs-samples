@@ -68,7 +68,7 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        package: ${{ fromJson(true && needs.affected.outputs.nodejs || '[]') }}
+        package: ${{ fromJson(false && needs.affected.outputs.nodejs || '[]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -87,13 +87,13 @@ jobs:
           GOOGLE_SAMPLES_PROJECT: long-door-651
 
   nodejs-nightly:
-    name: Node.js 20 nightly
+    name: Node.js 20
     runs-on: ubuntu-latest
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        run: ${{ fromJson(true && '[true]' || '[]') }}
+        run: ${{ fromJson(true && '["nightly"]' || '[]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

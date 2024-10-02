@@ -47,10 +47,6 @@ jobs:
         run: |
           PACKAGES=$(affected -config .github/workflows/config/nodejs.jsonc)
           echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
-      - id: nodejs-e2e
-        run: |
-          PACKAGES=$(affected -config .github/workflows/config/nodejs-e2e.jsonc)
-          echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint

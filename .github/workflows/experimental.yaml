@@ -26,6 +26,9 @@ on:
   schedule:
     - cron: 0 0 * * 0
 
+env:
+  GO_VERSION: ^1.22.0
+
 jobs:
   affected:
     name: Finding affected tests
@@ -40,13 +43,12 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
-          go-version: ^1.22.0
+          go-version: ${{ env.GO_VERSION }}
       - run: go install ./cmd/affected
         working-directory: .github/workflows/samples-tools
+      - run: git --no-pager diff --name-only HEAD origin/main > diffs.txt
       - id: nodejs
-        run: |
-          PACKAGES=$(affected -config .github/workflows/config/nodejs.jsonc)
-          echo "packages=$PACKAGES" | tee -a $GITHUB_OUTPUT
+        run: echo "packages=$(affected -config .github/workflows/config/nodejs.jsonc -diffs=diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint
@@ -68,7 +70,8 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        package: ${{ fromJson(false && needs.affected.outputs.nodejs || '[]') }}
+        package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+        # package: ${{ fromJson('[]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -93,18 +96,24 @@ jobs:
       id-token: write # needed for google-github-actions/auth
     strategy:
       matrix:
-        run: ${{ fromJson(true && '["nightly"]' || '[]') }}
+        # run: ${{ fromJson(github.event_name == 'schedule' && '["nightly"]' || '[]') }}
+        run: ${{ fromJson('["nightly"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: long-door-651
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s # 10 minutes
-      - run: echo "Running nightlies"
+      - run: go install ./cmd/run-batch
+        working-directory: .github/workflows/samples-tools
+      - run: run-batch ./
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

@@ -7,28 +7,33 @@ import (
 	"io/fs"
 	"os"
 	"slices"
+	"strings"
 
 	"samples-tools/pkg/utils"
 )
 
 func main() {
-	configPath := flag.String("config", "", "path to the config file")
-	headCommit := flag.String("head", "HEAD", "commit with the changes")
-	mainCommit := flag.String("main", "origin/main", "commit of the main branch")
+	configFile := flag.String("config", "", "path to the config file")
+	diffsFile := flag.String("diffs", "", "path to the diffs file")
 	flag.Parse()
 
-	if *configPath == "" {
-		fmt.Fprintf(os.Stderr, "config path is required, please pass -config=path/to/config.jsonc")
+	if *configFile == "" {
+		fmt.Fprintf(os.Stderr, "config file is required, please pass -config=path/to/config.jsonc")
 		os.Exit(1)
 	}
 
-	config, err := utils.LoadConfig(*configPath)
+	if *diffsFile == "" {
+		fmt.Fprintf(os.Stderr, "diffs file is required, please pass -diffs=path/to/diffs.txt")
+		os.Exit(1)
+	}
+
+	config, err := utils.LoadConfig(*configFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error loading the config file, make sure it exists and it's valid: %v\n", err)
 		os.Exit(1)
 	}
 
-	diffs, err := utils.Diffs(*headCommit, *mainCommit)
+	diffs, err := readDiffs(*diffsFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error getting the diffs: %v\n", err)
 		os.Exit(1)
@@ -55,6 +60,14 @@ func main() {
 	}
 
 	fmt.Println(string(matrix))
+}
+
+func readDiffs(path string) ([]string, error) {
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		return []string{}, err
+	}
+	return strings.Split(string(bytes), "\n"), nil
 }
 
 func affected(config utils.Config, diffs []string) ([]string, error) {

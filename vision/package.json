@@ -14,18 +14,18 @@
   },
   "dependencies": {
     "@google-cloud/vision": "^4.0.0",
-    "natural": "^6.2.0",
+    "natural": "^8.0.0",
     "pureimage": "^0.3.17",
     "redis": "^4.6.5",
     "yargs": "^17.7.1"
   },
   "devDependencies": {
     "@google-cloud/storage": "^7.0.0",
-    "@types/uuid": "^9.0.1",
+    "@types/uuid": "^10.0.0",
     "@types/yargs": "^17.0.22",
-    "c8": "^8.0.0",
-    "chai": "^4.3.7",
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
     "mocha": "^10.2.0",
-    "uuid": "^9.0.0"
+    "uuid": "^10.0.0"
   }
 }

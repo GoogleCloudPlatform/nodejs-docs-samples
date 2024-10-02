@@ -42,13 +42,12 @@ function main(projectId, location, sessionId) {
     }
   }
 
-  listLiveAdTagDetails();
+  listLiveAdTagDetails().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_list_live_ad_tag_details]
 }
 
 // node listLiveAdTagDetails.js <projectId> <location> <sessionId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

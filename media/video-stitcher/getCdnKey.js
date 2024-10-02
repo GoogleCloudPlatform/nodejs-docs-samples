@@ -39,13 +39,12 @@ function main(projectId, location, cdnKeyId) {
     console.log(`CDN key: ${cdnKey.name}`);
   }
 
-  getCdnKey();
+  getCdnKey().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_cdn_key]
 }
 
 // node getCdnKey.js <projectId> <location> <cdnKeyId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

@@ -14,7 +14,7 @@
 'use strict';
 
 /**  Prints all findings across all sources. */
-function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
+async function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
   // [START securitycenter_list_all_findings]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -43,8 +43,11 @@ function main(organizationId = 'YOUR_NUMERIC_ORG_ID') {
       )
     );
   }
-  listAllFindings();
+  await listAllFindings();
   // [END securitycenter_list_all_findings]
 }
 
-main(...process.argv.slice(2));
+main(process.argv.slice(2)[0]).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

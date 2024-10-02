@@ -38,7 +38,7 @@ function main(projectId, zone, instanceName) {
     // List of public operating system (OS) images: https://cloud.google.com/compute/docs/images/os-details.
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-10',
+      family: 'debian-11',
     });
 
     const [response] = await instancesClient.insert({

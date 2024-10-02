@@ -16,46 +16,50 @@
 
 'use strict';
 
-// [START generativeaionvertexai_sdk_embedding]
-async function main(
-  project,
-  model = 'text-embedding-preview-0409',
-  texts = 'banana bread?;banana muffins?',
-  task = 'QUESTION_ANSWERING',
-  outputDimensionality = 256,
-  apiEndpoint = 'us-central1-aiplatform.googleapis.com'
-) {
+async function main() {
+  // [START generativeaionvertexai_sdk_embedding]
+
+  // TODO(developer): Update the following for your own use case.
+  const project = 'long-door-651';
+  const model = 'text-embedding-preview-0815';
+  const location = 'us-central1';
+  // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
+  // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.
+  const texts =
+    'def func(a, b): return a + b;def func(a, b): return a - b;def func(a, b): return (a ** 2 + b ** 2) ** 0.5';
+  const task = 'RETRIEVAL_DOCUMENT';
+  const dimensionality = 3;
+  const apiEndpoint = 'us-central1-aiplatform.googleapis.com';
+
   const aiplatform = require('@google-cloud/aiplatform');
   const {PredictionServiceClient} = aiplatform.v1;
   const {helpers} = aiplatform; // helps construct protobuf.Value objects.
   const clientOptions = {apiEndpoint: apiEndpoint};
-  const location = 'us-central1';
   const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
-  const parameters = helpers.toValue(outputDimensionality);
+  const parameters = helpers.toValue({
+    outputDimensionality: parseInt(dimensionality),
+  });
 
   async function callPredict() {
     const instances = texts
       .split(';')
-      .map(e => helpers.toValue({content: e, taskType: task}));
+      .map(e => helpers.toValue({content: e, task_type: task}));
     const request = {endpoint, instances, parameters};
     const client = new PredictionServiceClient(clientOptions);
     const [response] = await client.predict(request);
-    console.log('Got predict response');
     const predictions = response.predictions;
-    for (const prediction of predictions) {
-      const embeddings = prediction.structValue.fields.embeddings;
-      const values = embeddings.structValue.fields.values.listValue.values;
-      console.log('Got prediction: ' + JSON.stringify(values));
-    }
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
+    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
-
-  callPredict();
+  await callPredict();
+  // [END generativeaionvertexai_sdk_embedding]
 }
-// [END generativeaionvertexai_sdk_embedding]
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
+main().catch(err => {
+  console.error(err);
   process.exitCode = 1;
 });
-
-main(...process.argv.slice(2));

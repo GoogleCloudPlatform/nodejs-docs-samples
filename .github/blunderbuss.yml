@@ -17,7 +17,6 @@ assign_issues_by:
   - "api: asset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: bigtable'
   - 'api: datastore'
@@ -28,19 +27,6 @@ assign_issues_by:
   - 'api: cloudsql'
   to:
   - GoogleCloudPlatform/infra-db-sdk
-- labels:
-  - "api: appengine"
-  - "api: cloudbuild"
-  - 'api: cloudfunctions'
-  - "api: cloudscheduler"
-  - "api: cloudtasks"
-  - "api: containeranalysis"
-  - "api: eventarc"
-  - "api: functions"
-  - "api: run"
-  - "api: workflows"
-  to:
-  - GoogleCloudPlatform/torus-dpe  
 - labels:
   - 'api: dlp'
   to:
@@ -50,13 +36,16 @@ assign_issues_by:
   - 'api: documentai'
   to:
   - GoogleCloudPlatform/document-ai-samples-contributors
+- labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization
 
 assign_prs_by:
 - labels:
   - "api: asset"
   to:
   - GoogleCloudPlatform/cloud-asset-analysis-team
-  - GoogleCloudPlatform/cloud-asset-platform-team
 - labels:
   - 'api: bigtable'
   - 'api: datastore'
@@ -68,19 +57,6 @@ assign_prs_by:
   to:
   - GoogleCloudPlatform/infra-db-sdk
 - labels:
-  - "api: appengine"
-  - "api: cloudbuild"
-  - 'api: cloudfunctions'
-  - "api: cloudscheduler"
-  - "api: cloudtasks"
-  - "api: containeranalysis"
-  - "api: eventarc"
-  - "api: functions"
-  - "api: run"
-  - "api: workflows"
-  to:
-  - GoogleCloudPlatform/torus-dpe  
-- labels:
   - 'api: dlp'
   to:
   - GoogleCloudPlatform/googleapis-dlp
@@ -89,3 +65,7 @@ assign_prs_by:
     - 'api: documentai'
   to:
     - GoogleCloudPlatform/document-ai-samples-contributors
+- labels:
+  - "api: routeoptimization"
+  to:
+  - GoogleCloudPlatform/geo-routeoptimization

@@ -1,0 +1,24 @@
+{
+    "name": "nodejs-docs-samples-routeoptimization",
+    "private": true,
+    "license": "Apache-2.0",
+    "author": "Google Inc.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    },
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "scripts": {
+        "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
+    },
+    "dependencies": {
+        "@googlemaps/routeoptimization": "^0.1.0"
+    },
+    "devDependencies": {
+        "c8": "^10.0.0",
+        "chai": "^4.5.0",
+        "mocha": "^10.0.0"
+    }
+}

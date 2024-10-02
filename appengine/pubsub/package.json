@@ -6,7 +6,7 @@
   "license": "Apache Version 2.0",
   "author": "Google Inc.",
   "engines": {
-    "node": "16.x.x"
+    "node": "20.x"
   },
   "scripts": {
     "start": "node app.js",
@@ -19,13 +19,13 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.3.7",
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
     "jsonwebtoken": "^9.0.0",
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.3",
-    "sinon": "^16.0.0",
-    "supertest": "^6.0.0",
+    "sinon": "^18.0.0",
+    "supertest": "^7.0.0",
     "wait-port": "^1.0.4"
   }
 }

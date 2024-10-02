@@ -1,4 +1,0 @@
-{
-  "ignore": ["README.md", "node_modules/"],
-  "package": ["package.json"]
-}

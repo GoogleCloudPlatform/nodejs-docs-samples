@@ -58,7 +58,7 @@ func main() {
 }
 
 func affected(config utils.Config, diffs []string) ([]string, error) {
-	uniquePackages := make(map[string]bool)
+	changedUnique := make(map[string]bool)
 	for _, diff := range diffs {
 		if !config.Matches(diff) {
 			continue
@@ -67,11 +67,11 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 		if slices.Contains(config.ExcludePackages, pkg) {
 			continue
 		}
-		uniquePackages[pkg] = true
+		changedUnique[pkg] = true
 	}
 
-	changed := make([]string, 0, len(uniquePackages))
-	for pkg := range uniquePackages {
+	changed := make([]string, 0, len(changedUnique))
+	for pkg := range changedUnique {
 		changed = append(changed, pkg)
 	}
 

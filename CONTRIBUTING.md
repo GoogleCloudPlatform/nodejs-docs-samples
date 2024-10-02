@@ -48,6 +48,22 @@ All samples must have tests. We use `mocha` as testing framework. The
 executes the `mocha` tests via `npm test`
 ([example](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/batch/package.json#L13)).
 
+### Third party libraries
+
+Contributors are encouraged to use vanilla Node.js as much as pragmatically
+possible to standardize writing, reviewing, and maintaining samples and their
+tests, ideally reducing dependencies on third party libraries.
+
+For tests, using the standard
+library [assert](https://nodejs.org/docs/latest-v18.x/api/assert.html) is
+preferred.
+
+If you want to use a third party package, help us to understand if you have
+requirements not fulfilled by core libraries in the description of your pull
+request.
+
+### CI testing
+
 For new samples, a GitHub Actions workflow should be created to run your tests
 on the CI system:
 

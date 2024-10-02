@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/fs"
 	"os"
-	"path/filepath"
 	"slices"
 
 	"samples-tools/pkg/utils"
@@ -76,14 +76,14 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 	}
 
 	if slices.Contains(changed, ".") {
-		return findAllPackages(config)
+		return findAllPackages(".", config)
 	}
 	return changed, nil
 }
 
-func findAllPackages(config utils.Config) ([]string, error) {
+func findAllPackages(root string, config utils.Config) ([]string, error) {
 	var packages []string
-	err := filepath.WalkDir(".",
+	err := fs.WalkDir(os.DirFS(root), ".",
 		func(path string, d os.DirEntry, err error) error {
 			if err != nil {
 				return err

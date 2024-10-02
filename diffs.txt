@@ -2,7 +2,9 @@
 .github/workflows/experimental.yaml
 .github/workflows/samples-tools/.gitignore
 .github/workflows/samples-tools/cmd/affected/main.go
+.github/workflows/samples-tools/cmd/run-batch/main.go
 .github/workflows/samples-tools/go.mod
 .github/workflows/samples-tools/pkg/utils/config.go
 .github/workflows/samples-tools/pkg/utils/git.go
 Makefile
+diffs.txt

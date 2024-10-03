@@ -11,6 +11,7 @@ import (
 
 func main() {
 	configFile := flag.String("config", "", "path to the config file")
+	parallel := flag.Bool("parallel", false, "set to true to run tests in parallel")
 	flag.Parse()
 
 	if *configFile == "" {
@@ -37,40 +38,16 @@ func main() {
 		fmt.Fprintf(os.Stderr, "error finding packages: %v\n", err)
 	}
 
-	failed := runAll(packages, cmd, args)
+	failed := runAll(packages, cmd, args, *parallel)
 	fmt.Printf("Total tests: %v\nFailed tests: %v\n", len(packages), failed)
 	if failed > 0 {
 		os.Exit(1)
 	}
 }
 
-func runAll(packages []string, cmd string, args []string) int {
-	failures := utils.Map(packages, func(pkg string) string {
-		// TODO(dcavazos): measure time spent on each test and print it along the results
-		cmdArgs := make([]string, len(args))
-		for i, arg := range args {
-			if strings.Contains(arg, "%s") {
-				cmdArgs[i] = fmt.Sprintf(arg, pkg)
-			} else {
-				cmdArgs[i] = arg
-			}
-		}
-		output, err := exec.Command(cmd, cmdArgs...).CombinedOutput()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n❌ FAILED: %v\n%v\n> %v %v\n%v\n%v\n%v\n\n",
-				strings.Repeat("=", 80),
-				pkg,
-				strings.Repeat("-", 80),
-				cmd, cmdArgs,
-				err,
-				string(output),
-				strings.Repeat("-", 80),
-			)
-			return pkg
-		} else {
-			fmt.Printf("✅ %v\n", pkg)
-		}
-		return ""
+func runAll(packages []string, cmd string, args []string, parallel bool) int {
+	failures := utils.Map(parallel, packages, func(pkg string) string {
+		return runOne(pkg, cmd, args)
 	})
 
 	failed := 0
@@ -80,4 +57,32 @@ func runAll(packages []string, cmd string, args []string) int {
 		}
 	}
 	return failed
+}
+
+func runOne(pkg string, cmd string, args []string) string {
+	// TODO(dcavazos): measure time spent on each test and print it along the results
+	cmdArgs := make([]string, len(args))
+	for i, arg := range args {
+		if strings.Contains(arg, "%s") {
+			cmdArgs[i] = fmt.Sprintf(arg, pkg)
+		} else {
+			cmdArgs[i] = arg
+		}
+	}
+	output, err := exec.Command(cmd, cmdArgs...).CombinedOutput()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n❌ FAILED: %v\n%v\n> %v %v\n%v\n%v\n%v\n\n",
+			strings.Repeat("=", 80),
+			pkg,
+			strings.Repeat("-", 80),
+			cmd, cmdArgs,
+			err,
+			string(output),
+			strings.Repeat("-", 80),
+		)
+		return pkg
+	} else {
+		fmt.Printf("✅ %v\n", pkg)
+	}
+	return ""
 }

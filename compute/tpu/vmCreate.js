@@ -37,16 +37,16 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'us-central1-a';
+  // zone = 'us-central1-b';
 
   // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
   // For more information about supported accelerator types for each TPU version,
   // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  // tpuType = 'v2-32';
+  // tpuType = 'v2-8';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  // tpuSoftwareVersion = 'tpu-vm-base';
+  // tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
   async function callCreateTpuVM() {
     // Create a node
@@ -55,7 +55,7 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
       zone,
       apiVersion: tpu.Node.ApiVersion.V2,
       acceleratorType: tpuType,
-      // Ensure that the tpuSoftwareVersion you're using (e.g., 'tpu-vm-base') is a valid and supported TensorFlow version for the selected tpuType and zone.
+      // Ensure that the tpuSoftwareVersion you're using (e.g., 'tpu-vm-tf-2.14.1') is a valid and supported TensorFlow version for the selected tpuType and zone.
       // You can find a list of supported versions in the Cloud TPU documentation: https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions
       tensorflowVersion: tpuSoftwareVersion,
       networkConfig: tpu.NetworkConfig({enableExternalIps: true}),
@@ -66,12 +66,14 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
     const parent = `projects/${projectId}/locations/${zone}`;
     const request = {parent, node, nodeId: nodeName};
 
-    const [response] = await tpuClient.createNode(request);
+    const [operation] = await tpuClient.createNode(request);
 
-    console.log(`TPU VM: ${nodeName} created.`);
+    // Wait for the delete operation to complete.
+    const [response] = await operation.promise();
+
     console.log(JSON.stringify(response));
+    console.log(`TPU VM: ${nodeName} created.`);
   }
-
   await callCreateTpuVM();
   // [END tpu_vm_create]
 }

@@ -16,8 +16,8 @@
 
 'use strict';
 
-async function main(nodeName, zone) {
-  // [START tpu_vm_get]
+async function main(zone) {
+  // [START tpu_vm_list]
   // Import the TPU library
   const tpuLib = require('@google-cloud/tpu');
 
@@ -27,28 +27,25 @@ async function main(nodeName, zone) {
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
-  // Project ID or project number of the Google Cloud project you want to retrive a node.
+  // Project ID or project number of the Google Cloud project you want to retrive a list of TPU nodes.
   const projectId = await tpuClient.getProjectId();
 
-  // The name of TPU to retrive.
-  // nodeName = 'node-name-1';
+  // The zone from which the TPUs are retrived.
+  //   zone = 'us-central1-a';
 
-  // The zone, where the TPU is created.
-  // zone = 'us-central1-a';
-
-  async function callGetTpuVM() {
+  async function callTpuVMList() {
     const request = {
-      name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+      parent: `projects/${projectId}/locations/${zone}`,
     };
 
-    const [response] = await tpuClient.getNode(request);
+    const [response] = await tpuClient.listNodes(request);
 
-    console.log(`Node: ${nodeName} retrived.`);
+    console.log('VM list retrived.');
     console.log(JSON.stringify(response));
   }
 
-  await callGetTpuVM();
-  // [END tpu_vm_get]
+  await callTpuVMList();
+  // [END tpu_vm_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

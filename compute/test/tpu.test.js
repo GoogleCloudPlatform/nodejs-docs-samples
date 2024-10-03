@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {describe, xit} = require('mocha');
 const cp = require('child_process');
 // const {TpuClient} = require('@google-cloud/tpu').v2;
@@ -45,7 +45,7 @@ describe('Compute tpu', async () => {
       }
     );
 
-    assert.include(response, `TPU VM: ${nodeName} created.`);
+    assert(response.includes(`TPU VM: ${nodeName} created.`));
   });
 
   xit('should return tpu node', () => {
@@ -53,6 +53,14 @@ describe('Compute tpu', async () => {
       cwd,
     });
 
-    assert.include(response, `Node: ${nodeName} retrived.`);
+    assert(response.includes(`Node: ${nodeName} retrived.`));
+  });
+
+  xit('should return list of tpu nodes', () => {
+    const response = execSync(`node ./tpu/vmList.js ${zone}`, {
+      cwd,
+    });
+
+    assert(Array.isArray(response));
   });
 });

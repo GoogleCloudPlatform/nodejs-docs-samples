@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {DisksClient, StoragePoolsClient, ZoneOperationsClient} =
@@ -88,7 +88,7 @@ describe('Create compute hyperdisk from pool', async () => {
       }
     );
 
-    assert.include(response, `Storage pool: ${storagePoolName} created.`);
+    assert(response.includes(`Storage pool: ${storagePoolName} created.`));
   });
 
   it('should create a new hyperdisk from pool', () => {
@@ -99,6 +99,6 @@ describe('Create compute hyperdisk from pool', async () => {
       }
     );
 
-    assert.include(response, `Disk: ${diskName} created.`);
+    assert(response.includes(`Disk: ${diskName} created.`));
   });
 });

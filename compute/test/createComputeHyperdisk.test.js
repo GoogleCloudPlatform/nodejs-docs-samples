@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {DisksClient} = require('@google-cloud/compute').v1;
@@ -51,6 +51,6 @@ describe('Create compute hyperdisk', async () => {
       }
     );
 
-    assert.include(response, `Disk: ${diskName} created.`);
+    assert(response.includes(`Disk: ${diskName} created.`));
   });
 });

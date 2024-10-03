@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
@@ -43,7 +43,7 @@ describe('Compute reservation', async () => {
       }
     );
 
-    assert.include(response, `Reservation: ${reservationName} created.`);
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 
   it('should return reservation', () => {
@@ -53,7 +53,7 @@ describe('Compute reservation', async () => {
       })
     );
 
-    assert.equal(response.name, reservationName);
+    assert(response.name === reservationName);
   });
 
   it('should return list of reservations', () => {
@@ -63,7 +63,7 @@ describe('Compute reservation', async () => {
       })
     );
 
-    assert.isArray(response);
+    assert(Array.isArray(response));
   });
 
   it('should delete reservation', async () => {

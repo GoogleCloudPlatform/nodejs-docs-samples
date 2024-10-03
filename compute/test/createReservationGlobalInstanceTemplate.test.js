@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
@@ -65,6 +65,6 @@ describe('Create compute reservation using global instance template', async () =
       }
     );
 
-    assert.include(response, `Reservation: ${reservationName} created.`);
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 });

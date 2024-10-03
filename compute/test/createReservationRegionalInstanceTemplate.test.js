@@ -17,7 +17,7 @@
 'use strict';
 
 const path = require('path');
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 
@@ -44,6 +44,6 @@ describe('Create compute reservation using regional instance template', async ()
       }
     );
 
-    assert.include(response, `Reservation: ${reservationName} created.`);
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 });

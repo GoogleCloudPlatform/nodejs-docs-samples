@@ -70,6 +70,7 @@ jobs:
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
+      fail-fast: false
       matrix:
         package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
     steps:

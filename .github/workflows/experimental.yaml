@@ -115,6 +115,6 @@ jobs:
           access_token_lifetime: 600s # 10 minutes
       - run: go install ./cmd/run-all
         working-directory: .github/workflows/samples-tools
-      - run: run-all -config=.github/workflows/config/nodejs.jsonc make test dir=%s
+      - run: run-all -config=.github/workflows/config/nodejs.jsonc make clean-test dir=%s
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

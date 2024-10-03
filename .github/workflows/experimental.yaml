@@ -45,8 +45,10 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
       - run: go install ./cmd/affected
         working-directory: .github/workflows/samples-tools
-      - run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
-      - id: nodejs
+      - name: Get diffs
+        run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
+      - name: Find Node.js affected packages
+        id: nodejs
         run: echo "packages=$(affected -config .github/workflows/config/nodejs.jsonc -diffs=diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:
@@ -111,8 +113,8 @@ jobs:
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s # 10 minutes
-      - run: go install ./cmd/run-batch
+      - run: go install ./cmd/run-all
         working-directory: .github/workflows/samples-tools
-      - run: run-batch ./
+      - run: run-all -config=.github/workflows/config/nodejs.jsonc -cmd="make test dir=%s"
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

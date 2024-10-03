@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/fs"
 	"os"
 	"slices"
 	"strings"
@@ -18,12 +17,12 @@ func main() {
 	flag.Parse()
 
 	if *configFile == "" {
-		fmt.Fprintf(os.Stderr, "config file is required, please pass -config=path/to/config.jsonc")
+		fmt.Fprintf(os.Stderr, "config file is required, please pass -config=path/to/config.jsonc\n")
 		os.Exit(1)
 	}
 
 	if *diffsFile == "" {
-		fmt.Fprintf(os.Stderr, "diffs file is required, please pass -diffs=path/to/diffs.txt")
+		fmt.Fprintf(os.Stderr, "diffs file is required, please pass -diffs=path/to/diffs.txt\n")
 		os.Exit(1)
 	}
 
@@ -89,32 +88,7 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 	}
 
 	if slices.Contains(changed, ".") {
-		return findAllPackages(".", config)
+		return utils.FindAllPackages(".", config)
 	}
 	return changed, nil
-}
-
-func findAllPackages(root string, config utils.Config) ([]string, error) {
-	var packages []string
-	err := fs.WalkDir(os.DirFS(root), ".",
-		func(path string, d os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if path == "." {
-				return nil
-			}
-			if slices.Contains(config.ExcludePackages, path) {
-				return nil
-			}
-			if d.IsDir() && config.Matches(path) && config.IsPackageDir(path) {
-				packages = append(packages, path)
-				return nil
-			}
-			return nil
-		})
-	if err != nil {
-		return []string{}, err
-	}
-	return packages, nil
 }

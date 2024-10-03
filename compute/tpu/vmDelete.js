@@ -16,8 +16,8 @@
 
 'use strict';
 
-async function main(zone) {
-  // [START tpu_vm_list]
+async function main(nodeName, zone) {
+  // [START tpu_vm_delete]
   // Import the TPU library
   const tpuLib = require('@google-cloud/tpu');
 
@@ -27,24 +27,30 @@ async function main(zone) {
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
-  // Project ID or project number of the Google Cloud project you want to retrive a list of TPU nodes.
+  // Project ID or project number of the Google Cloud project you want to delete a node.
   const projectId = await tpuClient.getProjectId();
 
-  // The zone from which the TPUs are retrived.
-  //   zone = 'us-central1-a';
+  // The name of TPU to delete.
+  // nodeName = 'node-name-1';
 
-  async function callTpuVMList() {
+  // The zone, where the TPU is created.
+  // zone = 'us-central1-a';
+
+  async function callDeleteTpuVM() {
     const request = {
-      parent: `projects/${projectId}/locations/${zone}`,
+      name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
     };
 
-    const [response] = await tpuClient.listNodes(request);
+    const [operation] = await tpuClient.deleteNode(request);
 
-    console.log(JSON.stringify(response));
+    // Wait for the delete operation to complete.
+    await operation.promise();
+
+    console.log(`Node: ${nodeName} deleted.`);
   }
 
-  await callTpuVMList();
-  // [END tpu_vm_list]
+  await callDeleteTpuVM();
+  // [END tpu_vm_delete]
 }
 
 main(...process.argv.slice(2)).catch(err => {

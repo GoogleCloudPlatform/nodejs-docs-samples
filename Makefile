@@ -12,9 +12,6 @@ dir ?= $(shell pwd)
 
 export GOOGLE_CLOUD_PROJECT = ${GOOGLE_SAMPLES_PROJECT}
 
-clean:
-	rm -rf node_modules/
-
 install:
 	# Install root package dependencies, this incldues packages for testing.
 	npm install
@@ -29,8 +26,6 @@ build: install
 test: check-env build
 	cd ${dir}
 	npm test
-
-clean-test: clean test
 
 e2e-test: check-env build
 	cd ${dir}

@@ -48,7 +48,11 @@ func runAll(packages []string, cmd string, args []string) int {
 	failures := utils.Map(packages, func(pkg string) string {
 		cmdArgs := make([]string, len(args))
 		for i, arg := range args {
-			cmdArgs[i] = fmt.Sprintf(arg, pkg)
+			if strings.Contains(arg, "%s") {
+				cmdArgs[i] = fmt.Sprintf(arg, pkg)
+			} else {
+				cmdArgs[i] = arg
+			}
 		}
 		output, err := exec.Command(cmd, cmdArgs...).CombinedOutput()
 		if err != nil {

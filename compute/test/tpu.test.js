@@ -47,4 +47,12 @@ describe('Compute tpu', async () => {
 
     assert.include(response, `TPU VM: ${nodeName} created.`);
   });
+
+  xit('should return tpu node', () => {
+    const response = execSync(`node ./tpu/vmGet.js ${nodeName} ${zone}`, {
+      cwd,
+    });
+
+    assert.include(response, `Node: ${nodeName} retrived.`);
+  });
 });

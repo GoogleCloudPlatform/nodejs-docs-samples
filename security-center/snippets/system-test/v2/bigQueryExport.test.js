@@ -26,32 +26,44 @@ const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const location = 'global';
 const bigquery = new BigQuery();
 
+async function cleanupDatasets() {
+  const [datasets] = await bigquery.getDatasets();
+  for (const dataset of datasets) {
+    if (dataset.id.startsWith('my_new_dataset')) {
+      console.log(`Deleting dataset: ${dataset.id}`);
+      await bigquery.dataset(dataset.id).delete({force: true});
+    }
+  }
+}
+
+async function cleanupBigQueryExports(client) {
+  const [exports] = await client.listBigQueryExports({
+    parent: client.organizationLocationPath(organizationId, location),
+  });
+  for (const exportData of exports) {
+    console.log(`Deleting BigQuery export: ${exportData.name}`);
+    await client.deleteBigQueryExport({name: exportData.name});
+  }
+}
+
 let dataset;
 
 async function createDataset() {
   const datasetId = 'my_new_dataset';
+  const options = {
+    location: 'US',
+  };
 
   try {
-    // Check if the dataset already exists
-    const [datasets] = await bigquery.getDatasets();
-    const datasetExists = datasets.some(dataset => dataset.id === datasetId);
-
-    if (datasetExists) {
-      console.log(
-        `Dataset ${datasetId} already exists, using the existing dataset.`
-      );
-      return bigquery.dataset(datasetId); // Return the existing dataset
-    }
-
-    // Create a new dataset if it doesn't exist
-    const options = {
-      location: 'US',
-    };
     const [createdDataset] = await bigquery.createDataset(datasetId, options);
     console.log(`Dataset ${createdDataset.id} created.`);
-    return createdDataset;
+    return createdDataset.id;
+
   } catch (error) {
-    console.error('Error in createDataset:', error);
+    if (error.code === 409) { // Dataset already exists
+      console.log(`Dataset ${datasetId} already exists.`);
+      return datasetId;
+    }
     throw error;
   }
 }
@@ -59,11 +71,17 @@ async function createDataset() {
 describe('Client with bigquery export V2', async () => {
   let data;
   before(async () => {
-    const createdDataset = await createDataset();
-    dataset = `projects/${projectId}/datasets/${createdDataset.id}`;
 
     // Creates a new client.
     const client = new SecurityCenterClient();
+
+    // Clean up any existing datasets or BigQuery exports
+    await cleanupDatasets();
+    await cleanupBigQueryExports(client);
+
+    // Create a new dataset
+    const createdDataset = await createDataset();
+    dataset = `projects/${projectId}/datasets/${createdDataset}`;
 
     // Build the create bigquery export request.
     const bigQueryExportId =
@@ -93,7 +111,7 @@ describe('Client with bigquery export V2', async () => {
         bigQueryExportName: bigQueryExportResponse.name,
         untouchedbigQueryExportName: '',
       };
-      console.log('my data bigQueryExport %j', data);
+      console.log('Created BigQuery export %j', data);
     } catch (error) {
       console.error('Error creating BigQuery export:', error);
     }

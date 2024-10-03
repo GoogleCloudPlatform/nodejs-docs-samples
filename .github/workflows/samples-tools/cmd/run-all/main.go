@@ -46,6 +46,7 @@ func main() {
 
 func runAll(packages []string, cmd string, args []string) int {
 	failures := utils.Map(packages, func(pkg string) string {
+		// TODO(dcavazos): measure time spent on each test and print it along the results
 		cmdArgs := make([]string, len(args))
 		for i, arg := range args {
 			if strings.Contains(arg, "%s") {
@@ -56,11 +57,14 @@ func runAll(packages []string, cmd string, args []string) int {
 		}
 		output, err := exec.Command(cmd, cmdArgs...).CombinedOutput()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v TEST FAILED %v\n❌ %v\n%v\n%v\n\n",
-				strings.Repeat("=", 30), strings.Repeat("=", 30),
+			fmt.Fprintf(os.Stderr, "%v\n❌ FAILED: %v\n%v\n> %v %v\n%v\n%v\n%v\n\n",
+				strings.Repeat("=", 80),
 				pkg,
+				strings.Repeat("-", 80),
+				cmd, cmdArgs,
 				err,
 				string(output),
+				strings.Repeat("-", 80),
 			)
 			return pkg
 		} else {

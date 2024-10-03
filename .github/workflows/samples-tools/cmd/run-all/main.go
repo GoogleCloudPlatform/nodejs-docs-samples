@@ -56,14 +56,15 @@ func runAll(packages []string, cmd string, args []string) int {
 		}
 		output, err := exec.Command(cmd, cmdArgs...).CombinedOutput()
 		if err != nil {
-			delim := strings.Repeat("=", 30)
-			fmt.Fprintf(os.Stderr, "%v TEST FAILED %v\n> %v\n%v\n%v\n\n",
-				delim, delim,
+			fmt.Fprintf(os.Stderr, "❌ TEST FAILED %v\n> %v\n%v\n%v\n\n",
+				strings.Repeat("=", 60),
 				pkg,
 				err,
 				string(output),
 			)
 			return pkg
+		} else {
+			fmt.Printf("✅ %v\n", pkg)
 		}
 		return ""
 	})

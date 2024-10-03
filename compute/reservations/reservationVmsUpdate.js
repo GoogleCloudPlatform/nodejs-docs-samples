@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main() {
+async function main(reservationName) {
   // [START compute_reservation_vms_update]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -27,14 +27,14 @@ async function main() {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The ID of the project where the reservation is located.
   const projectId = await reservationsClient.getProjectId();
   // The zone where the reservation is located.
   const zone = 'us-central1-a';
   // The name of an existing reservation.
-  const reservationName = 'reservation-01';
+  // reservationName = 'reservation-01';
   // The new number of VMs to reserve(increase or decrease the number). Before modifying the number of VMs,
   // ensure that all required conditions are met. See: https://cloud.google.com/compute/docs/instances/reservations-modify#resizing_a_reservation.
   const vmsNumber = 1;
@@ -61,22 +61,14 @@ async function main() {
       });
     }
 
-    const updatedReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(updatedReservation));
+    console.log(`Reservation: ${reservationName} updated.`);
   }
 
   await callComputeReservationVmsUpdate();
   // [END compute_reservation_vms_update]
 }
 
-main().catch(err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

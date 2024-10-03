@@ -77,6 +77,7 @@
       "security-center/snippets", // Error: 3 INVALID_ARGUMENT: Fail to resolve resource 'organizations/undefined/locations/global'
       "speech", // AssertionError: expected 'Transcription:  Okay, I\'m here.\n Hi…' to match /Terrific. It's on the way./
       "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
+      "translate", // AssertionError: expected 'Languages:\n{ code: \'ab\', name: \'A…' to match /{ code: 'af', name: 'afrikáans' }/
       "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
       "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
       "workflows", // SyntaxError: Cannot use import statement outside a module

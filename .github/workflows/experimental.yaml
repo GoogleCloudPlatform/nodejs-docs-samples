@@ -24,7 +24,7 @@ on:
       - synchronize
       - labeled
   schedule:
-    - cron: 0 0 * * 0
+    - cron: 0 0 * * 0 # Run at midnight (00:00) every Sunday
 
 env:
   GO_VERSION: ^1.22.0

@@ -16,8 +16,138 @@
 
 package main
 
-import "flag"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"samples-tools/pkg/utils"
+	"strings"
+)
 
 func main() {
-	flag.Parse()
+	command := ""
+	if len(os.Args) > 1 {
+		command = os.Args[1]
+	} else {
+		fmt.Fprintf(os.Stderr, "❌ no command specified\n")
+		printUsage(os.Stderr)
+		os.Exit(1)
+	}
+
+	switch command {
+	case "affected":
+		configFile := ""
+		if len(os.Args) > 2 {
+			configFile = os.Args[2]
+		} else {
+			fmt.Fprintf(os.Stderr, "❌ no config file specified\n")
+			printUsage(os.Stderr)
+			os.Exit(1)
+		}
+
+		diffsFile := ""
+		if len(os.Args) > 3 {
+			diffsFile = os.Args[3]
+		} else {
+			fmt.Fprintf(os.Stderr, "❌ no diffs file specified\n")
+			printUsage(os.Stderr)
+			os.Exit(1)
+		}
+
+		affectedCmd(configFile, diffsFile)
+
+	case "run-all":
+		configFile := ""
+		if len(os.Args) > 2 {
+			configFile = os.Args[2]
+		} else {
+			fmt.Fprintf(os.Stderr, "❌ no config file specified\n")
+			printUsage(os.Stderr)
+			os.Exit(1)
+		}
+
+		script := ""
+		if len(os.Args) > 3 {
+			script = os.Args[3]
+		} else {
+			fmt.Fprintf(os.Stderr, "❌ no script file specified\n")
+			printUsage(os.Stderr)
+			os.Exit(1)
+		}
+
+		runAllCmd(configFile, script)
+
+	default:
+		fmt.Fprintf(os.Stderr, "❌ unknown command: %s\n", command)
+		printUsage(os.Stderr)
+		os.Exit(1)
+	}
+}
+
+func printUsage(f *os.File) {
+	fmt.Fprintf(f, "usage: tools <command> ...\n")
+	fmt.Fprintf(f, "\n")
+	fmt.Fprintf(f, "commands:\n")
+	fmt.Fprintf(f, "  affected path/to/config.jsonc path/to/diffs.txt\n")
+	fmt.Fprintf(f, "  run-all path/to/config.jsonc path/to/script.sh\n")
+}
+
+func affectedCmd(configFile string, diffsFile string) {
+	config, err := utils.LoadConfig(configFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error loading the config file\n%v\n", err)
+		os.Exit(1)
+	}
+
+	diffs, err := readDiffs(diffsFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error getting the diffs\n%v\n", err)
+		os.Exit(1)
+	}
+
+	packages, err := affected(config, diffs)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error finding the affected packages\n%v\n", err)
+		os.Exit(1)
+	}
+	if len(packages) > 256 {
+		fmt.Fprintf(os.Stderr,
+			"❌ Error: GitHub Actions only supports up to 256 packages, got %v packages, for more details see:\n%v\n",
+			len(packages),
+			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
+		)
+		os.Exit(1)
+	}
+
+	packagesJson, err := json.Marshal(packages)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error marshaling packages to JSON\n%v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(string(packagesJson))
+}
+
+func runAllCmd(configFile string, script string) {
+	config, err := utils.LoadConfig(configFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error loading the config file\n%v\n", err)
+		os.Exit(1)
+	}
+
+	packages, err := utils.FindAllPackages(".", config)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "❌ error finding packages\n%v\n", err)
+	}
+
+	parallel := false
+	failed := runAll(packages, script, parallel)
+
+	fmt.Printf(strings.Repeat("-", 80) + "\n")
+	fmt.Printf("Total tests: %v\n", len(packages))
+	fmt.Printf("Failed tests: %v\n", failed)
+
+	if failed > 0 {
+		os.Exit(1)
+	}
 }

@@ -29,13 +29,15 @@ function main(
   // Creates a new client.
   const client = new SecurityCenterClient();
 
-  // findingName is the full resource path for the finding to update.
+  // Build the full resource path for the finding to update.
   /*
    * TODO(developer): Update the following references for your own environment before running the sample.
    */
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const sourceId = 'SOURCE_ID';
   const findingName = `organizations/${organizationId}/sources/${sourceId}/locations/${location}/findings/${findingId}`;
+
+  // Construct the request to be sent by the client.
   const updateSecurityMarksRequest = {
     securityMarks: {
       name: `${findingName}/securityMarks`,

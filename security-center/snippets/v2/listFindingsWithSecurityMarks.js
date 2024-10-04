@@ -21,17 +21,15 @@ function main(organizationId, sourceId) {
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-  //  sourceName is the full resource path of the source to search for
-  //  findings.
+  //  Build the full resource path for the source to search for findings.
 
-  // const sourceName = `${parent}/sources/${sourceId}`;
-  // or
-  // const sourceName = `${parent}/sources/${sourceId}/locations/${location}`;
-  // where,
-  // parent: must be in one of the following formats:
-  //    `organizations/${organization_id}`
-  //    `projects/${project_id}`
-  //    `folders/${folder_id}`
+  // The source path supports mutliple formats:
+  // - `${parent}/sources/${sourceId}` without a location
+  // - `${parent}/sources/${sourceId}/locations/${location}` with a location
+  // where parent must be in one of the following formats:
+  // - `organizations/${organization_id}`
+  // - `folders/${folder_id}`
+  // - `projects/${project_id}`
 
   /*
    * TODO(developer): Update the following references for your own environment before running the sample.
@@ -40,6 +38,8 @@ function main(organizationId, sourceId) {
   // const sourceId = 'SOURCE_ID';
 
   const sourceName = `organizations/${organizationId}/sources/${sourceId}`;
+
+// Construct the request to be sent by the client.
   const listFindingsRequest = {
     // List findings across all sources.
     parent: sourceName,

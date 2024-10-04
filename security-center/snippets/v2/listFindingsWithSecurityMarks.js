@@ -39,7 +39,7 @@ function main(organizationId, sourceId) {
 
   const sourceName = `organizations/${organizationId}/sources/${sourceId}`;
 
-// Construct the request to be sent by the client.
+  // Construct the request to be sent by the client.
   const listFindingsRequest = {
     // List findings across all sources.
     parent: sourceName,

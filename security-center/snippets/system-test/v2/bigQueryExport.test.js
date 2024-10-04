@@ -58,9 +58,9 @@ async function createDataset() {
     const [createdDataset] = await bigquery.createDataset(datasetId, options);
     console.log(`Dataset ${createdDataset.id} created.`);
     return createdDataset.id;
-
   } catch (error) {
-    if (error.code === 409) { // Dataset already exists
+    if (error.code === 409) {
+      // Dataset already exists
       console.log(`Dataset ${datasetId} already exists.`);
       return datasetId;
     }
@@ -71,7 +71,6 @@ async function createDataset() {
 describe('Client with bigquery export V2', async () => {
   let data;
   before(async () => {
-
     // Creates a new client.
     const client = new SecurityCenterClient();
 

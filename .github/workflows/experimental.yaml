@@ -72,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+        package: ${{ fromJson(needs.affected.outputs.nodejs) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -89,31 +89,3 @@ jobs:
       - run: bash ./github/workflows/scripts/nodejs-test.sh ${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651
-
-  # nodejs-nightly:
-  #   name: Node.js 20
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     id-token: write # needed for google-github-actions/auth
-  #   strategy:
-  #     matrix:
-  #       run: ${{ fromJson(github.event_name == 'schedule' && '["nightly tests"]' || '[]') }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-  #     - uses: actions/setup-go@v5
-  #       with:
-  #         go-version: ${{ env.GO_VERSION }}
-  #     - uses: google-github-actions/auth@v2
-  #       with:
-  #         project_id: long-door-651
-  #         workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-  #         service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-  #         access_token_lifetime: 600s # 10 minutes
-  #     - run: go build -o ${{ github.workspace }}/tools ./cmd/...
-  #       working-directory: .github/workflows/samples-tools
-  #     - run: ./tools run-all .github/workflows/config/nodejs.jsonc ./github/workflows/scripts/nodejs-test.sh
-  #       env:
-  #         GOOGLE_SAMPLES_PROJECT: long-door-651

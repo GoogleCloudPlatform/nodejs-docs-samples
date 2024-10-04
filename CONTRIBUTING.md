@@ -54,18 +54,13 @@ Contributors are encouraged to use vanilla Node.js as much as pragmatically
 possible to standardize writing, reviewing, and maintaining samples and their
 tests, ideally reducing dependencies on third party libraries.
 
-For tests, using the standard
-library [assert](https://nodejs.org/docs/latest-v18.x/api/assert.html) is
-preferred. The library provides a strict and a legacy mode; please use the
+For tests, we recommend using the standard
+library [assert](https://nodejs.org/docs/latest-v18.x/api/assert.html). The library provides a strict and a legacy mode; please use the
 strict mode as shown below:
 
 ```js
 const assert = require('node:assert/strict');
 ```
-
-If you want to use a third party package, help us to understand if you have
-requirements not fulfilled by core libraries in the description of your pull
-request.
 
 ### CI testing
 

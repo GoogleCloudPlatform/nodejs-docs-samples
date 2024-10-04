@@ -22,6 +22,7 @@ import (
 	"slices"
 )
 
+// FindAllPackages finds all the packages in the given root directory.
 func FindAllPackages(root string, config Config) ([]string, error) {
 	var packages []string
 	err := fs.WalkDir(os.DirFS(root), ".",

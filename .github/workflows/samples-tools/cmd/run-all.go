@@ -17,7 +17,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -25,41 +24,41 @@ import (
 	"strings"
 )
 
-func main() {
-	configFile := flag.String("config", "", "path to the config file")
-	parallel := flag.Bool("parallel", false, "set to true to run tests in parallel")
-	flag.Parse()
+// func main() {
+// 	configFile := flag.String("config", "", "path to the config file")
+// 	parallel := flag.Bool("parallel", false, "set to true to run tests in parallel")
+// 	flag.Parse()
 
-	if *configFile == "" {
-		fmt.Fprintf(os.Stderr, "config file is required, please pass -config=path/to/config.jsonc\n")
-		os.Exit(1)
-	}
+// 	if *configFile == "" {
+// 		fmt.Fprintf(os.Stderr, "config file is required, please pass -config=path/to/config.jsonc\n")
+// 		os.Exit(1)
+// 	}
 
-	cmd := flag.Arg(0)
-	if cmd == "" {
-		fmt.Fprintf(os.Stderr, "command is required, use positional arguments with %%s for the package placeholder\n")
-		os.Exit(1)
-	}
+// 	cmd := flag.Arg(0)
+// 	if cmd == "" {
+// 		fmt.Fprintf(os.Stderr, "command is required, use positional arguments with %%s for the package placeholder\n")
+// 		os.Exit(1)
+// 	}
 
-	args := flag.Args()[1:]
+// 	args := flag.Args()[1:]
 
-	config, err := utils.LoadConfig(*configFile)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error loading the config file, make sure it exists and it's valid: %v\n", err)
-		os.Exit(1)
-	}
+// 	config, err := utils.LoadConfig(*configFile)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "error loading the config file, make sure it exists and it's valid: %v\n", err)
+// 		os.Exit(1)
+// 	}
 
-	packages, err := utils.FindAllPackages(".", config)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error finding packages: %v\n", err)
-	}
+// 	packages, err := utils.FindAllPackages(".", config)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "error finding packages: %v\n", err)
+// 	}
 
-	failed := runAll(packages, cmd, args, *parallel)
-	fmt.Printf("Total tests: %v\nFailed tests: %v\n", len(packages), failed)
-	if failed > 0 {
-		os.Exit(1)
-	}
-}
+// 	failed := runAll(packages, cmd, args, *parallel)
+// 	fmt.Printf("Total tests: %v\nFailed tests: %v\n", len(packages), failed)
+// 	if failed > 0 {
+// 		os.Exit(1)
+// 	}
+// }
 
 func runAll(packages []string, cmd string, args []string, parallel bool) int {
 	failures := utils.Map(parallel, packages, func(pkg string) string {

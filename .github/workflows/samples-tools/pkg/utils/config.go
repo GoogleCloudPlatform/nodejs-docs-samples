@@ -42,19 +42,21 @@ type Config struct {
 var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/\s*`)
 var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
 
+// LoadConfig loads the config from the given path.
 func LoadConfig(path string) (Config, error) {
 	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return Config{}, err
 	}
-	config, err := ParseConfig(bytes)
+	config, err := parseConfig(bytes)
 	if err != nil {
 		return Config{}, err
 	}
 	return config, nil
 }
 
-func ParseConfig(source []byte) (Config, error) {
+// parseConfig parses the config from the given source.
+func parseConfig(source []byte) (Config, error) {
 	var config Config
 	err := json.Unmarshal(StripComments(source), &config)
 	if err != nil {
@@ -66,11 +68,13 @@ func ParseConfig(source []byte) (Config, error) {
 	return config, nil
 }
 
+// StripComments removes comments from the given source.
 func StripComments(src []byte) []byte {
 	src = multiLineCommentsRegex.ReplaceAll(src, []byte{})
 	return singleLineCommentsRegex.ReplaceAll(src, []byte{})
 }
 
+// match returns true if the path matches any of the patterns.
 func match(patterns []string, path string) bool {
 	filename := filepath.Base(path)
 	for _, pattern := range patterns {
@@ -84,10 +88,12 @@ func match(patterns []string, path string) bool {
 	return false
 }
 
+// Matches returns true if the path matches the config.
 func (c Config) Matches(path string) bool {
 	return match(c.Match, path) && !match(c.Ignore, path)
 }
 
+// IsPackageDir returns true if the path is a package directory.
 func (c Config) IsPackageDir(dir string) bool {
 	for _, filename := range c.Package {
 		packageFile := filepath.Join(dir, filename)
@@ -98,6 +104,7 @@ func (c Config) IsPackageDir(dir string) bool {
 	return false
 }
 
+// FindPackage returns the package name for the given path.
 func (c Config) FindPackage(path string) string {
 	dir := filepath.Dir(path)
 	if dir == "." || c.IsPackageDir(dir) {
@@ -106,6 +113,7 @@ func (c Config) FindPackage(path string) string {
 	return c.FindPackage(dir)
 }
 
+// fileExists returns true if the file exists.
 func fileExists(path string) bool {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		return false

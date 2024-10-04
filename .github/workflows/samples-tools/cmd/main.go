@@ -14,27 +14,10 @@
  limitations under the License.
 */
 
-package utils
+package main
 
-import "sync"
+import "flag"
 
-// Map applies a function to each item in a slice, it can be done in parallel.
-func Map[a, b any](parallel bool, items []a, fn func(a) b) []b {
-	result := make([]b, len(items))
-	if parallel {
-		var wg sync.WaitGroup
-		for i, item := range items {
-			wg.Add(1)
-			go func(i int, item a) {
-				defer wg.Done()
-				result[i] = fn(item)
-			}(i, item)
-		}
-		wg.Wait()
-	} else {
-		for i, item := range items {
-			result[i] = fn(item)
-		}
-	}
-	return result
+func main() {
+	flag.Parse()
 }

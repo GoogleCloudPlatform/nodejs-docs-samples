@@ -12,26 +12,18 @@ dir ?= $(shell pwd)
 
 export GOOGLE_CLOUD_PROJECT = ${GOOGLE_SAMPLES_PROJECT}
 
-install:
-	# Install root package dependencies, this incldues packages for testing.
+build:
 	npm install
-
-	# Install the code sample dependencies.
 	cd ${dir}
 	npm install
-
-build: install
 	npm run build --if-present
 
 test: check-env build
 	cd ${dir}
 	npm test
 
-e2e-test: check-env build
+lint: build
 	cd ${dir}
-	npm run system-test
-
-lint: install
 	npx gts fix
 	npx gts lint
 

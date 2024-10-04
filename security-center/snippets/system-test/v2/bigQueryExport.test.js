@@ -29,7 +29,7 @@ const bigquery = new BigQuery();
 async function cleanupDatasets() {
   const [datasets] = await bigquery.getDatasets();
   for (const dataset of datasets) {
-    if (dataset.id.startsWith('my_new_dataset')) {
+    if (dataset.id.startsWith('securitycenter_')) {
       console.log(`Deleting dataset: ${dataset.id}`);
       await bigquery.dataset(dataset.id).delete({force: true});
     }
@@ -49,7 +49,8 @@ async function cleanupBigQueryExports(client) {
 let dataset;
 
 async function createDataset() {
-  const datasetId = 'my_new_dataset';
+  const randomSuffix = Math.floor(Date.now() / 1000);
+  const datasetId = `securitycenter_dataset_${randomSuffix}`;
   const options = {
     location: 'US',
   };
@@ -60,9 +61,11 @@ async function createDataset() {
     return createdDataset.id;
   } catch (error) {
     if (error.code === 409) {
-      // Dataset already exists
-      console.log(`Dataset ${datasetId} already exists.`);
-      return datasetId;
+      // Dataset already exists - Fail the test instead of moving on
+      console.log(
+        `Dataset ${datasetId} already exists. Exiting to avoid conflict.`
+      );
+      throw new Error(`Dataset ${datasetId} already exists.`);
     }
     throw error;
   }

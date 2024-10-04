@@ -25,13 +25,13 @@ function main(organizationId, exportId, location = 'global') {
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-  /**
-   *  Required. Name of the BigQuery export to retrieve. The following list shows
-   *  some examples of the format:
-   *  `organizations/{organization}/locations/{location}/bigQueryExports/{export_id}`
-   *  `folders/{folder}/locations/{location}/bigQueryExports/{export_id}`
-   *  `projects/{project}locations/{location}/bigQueryExports/{export_id}`
+
+  // Build the full resource path for the BigQuery export to retrieve.
+  /*
+   * TODO(developer): Update the following references for your own environment before running the sample.
    */
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const exportId = 'EXPORT_ID';
   const name = `organizations/${organizationId}/locations/${location}/bigQueryExports/${exportId}`;
 
   // Build the request.

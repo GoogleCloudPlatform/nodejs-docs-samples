@@ -69,7 +69,9 @@ function main(organizationId, dataset, location = 'global') {
     const [response] = await client.createBigQueryExport(
       createBigQueryExportRequest
     );
-    console.log('BigQuery export request created successfully: %j', response);
+    console.log(
+      `BigQuery export created successfully: Name: ${response.name}, Dataset: ${response.dataset}, Description: ${response.description}`
+    );
   }
 
   createBigQueryExport();

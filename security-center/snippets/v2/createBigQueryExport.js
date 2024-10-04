@@ -70,7 +70,7 @@ function main(organizationId, dataset, location = 'global') {
       createBigQueryExportRequest
     );
     console.log(
-      `BigQuery export created successfully: Name: ${response.name}, Dataset: ${response.dataset}, Description: ${response.description}`
+      `BigQuery export request created successfully: Name: ${response.name}, Dataset: ${response.dataset}, Description: ${response.description}`
     );
   }
 

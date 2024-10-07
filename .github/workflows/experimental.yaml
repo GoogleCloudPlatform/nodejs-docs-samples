@@ -73,7 +73,8 @@ jobs:
       fail-fast: false
       matrix:
         # package: ${{ fromJson(needs.affected.outputs.nodejs) }}
-        package: []
+        # package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+        package: ${{ fromJson('[]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -100,7 +101,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        run: ['nightly tests']
+        # run: ${{ fromJson(github.event_name == 'schedule' && '["nightly tests"]' || '[]') }}
+        run: ${{ fromJson('["nightly tests"]') }}
     steps:
       - uses: actions/checkout@v4
         with:

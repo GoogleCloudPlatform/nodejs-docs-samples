@@ -19,11 +19,12 @@
 async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   // [START tpu_vm_create]
   // Import the TPU library
-  const tpuLib = require('@google-cloud/tpu');
-  const tpu = tpuLib.protos.google.cloud.tpu.v2;
+  const {TpuClient} = require('@google-cloud/tpu').v2;
+  const {Node, NetworkConfig} =
+    require('@google-cloud/tpu').protos.google.cloud.tpu.v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new tpuLib.TpuClient();
+  const tpuClient = new TpuClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
@@ -31,13 +32,19 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   // Project ID or project number of the Google Cloud project you want to create a node.
   const projectId = await tpuClient.getProjectId();
 
+  // The name of the network you want the TPU node to connect to. The network should be assigned to your project.
+  const networkName = 'compute-tpu-network';
+
+  // The region of the network, that you want the TPU node to connect to.
+  const region = 'europe-west4';
+
   // The name for your TPU.
-  // nodeName = 'node-name-1';
+  // nodeName = 'node-name-2';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'us-central1-b';
+  // zone = 'europe-west4-a';
 
   // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
   // For more information about supported accelerator types for each TPU version,
@@ -50,25 +57,25 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
 
   async function callCreateTpuVM() {
     // Create a node
-    const node = new tpu.Node({
+    const node = new Node({
       name: nodeName,
       zone,
-      apiVersion: tpu.Node.ApiVersion.V2,
       acceleratorType: tpuType,
-      // Ensure that the tpuSoftwareVersion you're using (e.g., 'tpu-vm-tf-2.14.1') is a valid and supported TensorFlow version for the selected tpuType and zone.
-      // You can find a list of supported versions in the Cloud TPU documentation: https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions
-      tensorflowVersion: tpuSoftwareVersion,
-      networkConfig: tpu.NetworkConfig({enableExternalIps: true}),
-      shieldedInstanceConfig: tpu.ShieldedInstanceConfig({
-        enableSecureBoot: true,
+      runtimeVersion: tpuSoftwareVersion,
+      // Define network
+      networkConfig: new NetworkConfig({
+        enableExternalIps: true,
+        network: `projects/${projectId}/global/networks/${networkName}`,
+        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
       }),
     });
+
     const parent = `projects/${projectId}/locations/${zone}`;
     const request = {parent, node, nodeId: nodeName};
 
     const [operation] = await tpuClient.createNode(request);
 
-    // Wait for the delete operation to complete.
+    // Wait for the create operation to complete.
     const [response] = await operation.promise();
 
     console.log(JSON.stringify(response));

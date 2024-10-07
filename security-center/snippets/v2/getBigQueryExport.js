@@ -32,6 +32,7 @@ function main(organizationId, exportId, location = 'global') {
    */
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const exportId = 'EXPORT_ID';
+  // const location = 'LOCATION_ID';
   const name = `organizations/${organizationId}/locations/${location}/bigQueryExports/${exportId}`;
 
   // Build the request.

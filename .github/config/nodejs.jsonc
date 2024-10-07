@@ -15,6 +15,7 @@
 */
 
 {
+  "package-file": ["package.json"],
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",
@@ -45,7 +46,6 @@
     "owlbot.py",
     "renovate.json"
   ],
-  "package": ["package.json"],
   "exclude-packages": [
       "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
       "appengine/analytics", // [ERR_REQUIRE_ESM]: require() of ES Module

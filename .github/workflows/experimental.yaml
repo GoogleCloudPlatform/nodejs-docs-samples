@@ -49,7 +49,7 @@ jobs:
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
-        run: echo "packages=$(./tools affected .github/workflows/config/nodejs.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
+        run: echo "packages=$(./tools affected .github/config/nodejs.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint
@@ -87,6 +87,6 @@ jobs:
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s # 10 minutes
       - name: Test ${{ matrix.package }}
-        run: bash .github/workflows/scripts/nodejs-test.sh ${{ matrix.package }}
+        run: make test dir=${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

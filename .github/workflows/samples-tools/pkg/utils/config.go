@@ -26,14 +26,14 @@ import (
 )
 
 type Config struct {
+	// Filename to look for the root of a package.
+	PackageFile []string `json:"package-file"`
+
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
 
 	// Pattern to ignore filenames or directories.
 	Ignore []string `json:"ignore"`
-
-	// Filename to look for the root of a package.
-	Package []string `json:"package"`
 
 	// Packages to always exclude.
 	ExcludePackages []string `json:"exclude-packages"`
@@ -61,6 +61,9 @@ func parseConfig(source []byte) (Config, error) {
 	err := json.Unmarshal(StripComments(source), &config)
 	if err != nil {
 		return Config{}, err
+	}
+	if config.PackageFile == nil {
+		return config, errors.New("package-file is required")
 	}
 	if config.Match == nil {
 		config.Match = []string{"*"}
@@ -95,7 +98,7 @@ func (c Config) Matches(path string) bool {
 
 // IsPackageDir returns true if the path is a package directory.
 func (c Config) IsPackageDir(dir string) bool {
-	for _, filename := range c.Package {
+	for _, filename := range c.PackageFile {
 		packageFile := filepath.Join(dir, filename)
 		if fileExists(packageFile) {
 			return true

@@ -95,19 +95,19 @@ func printUsage(f *os.File) {
 func affectedCmd(configFile string, diffsFile string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error loading the config file\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error loading the config file: %v\n%v\n", configFile, err)
 		os.Exit(1)
 	}
 
 	diffs, err := readDiffs(diffsFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error getting the diffs\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error getting the diffs: %v\n%v\n", diffsFile, err)
 		os.Exit(1)
 	}
 
 	packages, err := affected(config, diffs)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error finding the affected packages\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error finding the affected packages.\n%v\n", err)
 		os.Exit(1)
 	}
 	if len(packages) > 256 {
@@ -121,7 +121,7 @@ func affectedCmd(configFile string, diffsFile string) {
 
 	packagesJson, err := json.Marshal(packages)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error marshaling packages to JSON\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error marshaling packages to JSON.\n%v\n", err)
 		os.Exit(1)
 	}
 
@@ -131,13 +131,13 @@ func affectedCmd(configFile string, diffsFile string) {
 func runAllCmd(configFile string, script string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error loading the config file\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error loading the config file: %v\n%v\n", configFile, err)
 		os.Exit(1)
 	}
 
 	packages, err := utils.FindAllPackages(".", config)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error finding packages\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "❌ error finding packages.\n%v\n", err)
 	}
 
 	parallel := false

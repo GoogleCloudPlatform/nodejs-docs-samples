@@ -21,12 +21,11 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"sync"
 )
 
 // runAll runs all the commands in parallel.
-func runAll(packages []string, script string, parallel bool) int {
-	failures := mapFn(parallel, packages, func(pkg string) string {
+func runAll(packages []string, script string, maxGoroutines int) int {
+	failures := mapParallel(maxGoroutines, packages, func(pkg string) string {
 		// TODO(dcavazos): measure time spent on each test and print it along the results
 		output, err := exec.Command("bash", script, pkg).CombinedOutput()
 		if err != nil {
@@ -53,23 +52,16 @@ func runAll(packages []string, script string, parallel bool) int {
 	return failed
 }
 
-// mapFn applies a function to each item in a slice, it can be done in parallel.
-func mapFn[a, b any](parallel bool, items []a, fn func(a) b) []b {
+// mapParallel applies a function in parallel to each item in a slice.
+func mapParallel[a, b any](maxGoroutines int, items []a, fn func(a) b) []b {
 	result := make([]b, len(items))
-	if parallel {
-		var wg sync.WaitGroup
-		for i, item := range items {
-			wg.Add(1)
-			go func(i int, item a) {
-				defer wg.Done()
-				result[i] = fn(item)
-			}(i, item)
-		}
-		wg.Wait()
-	} else {
-		for i, item := range items {
+	guard := make(chan struct{}, maxGoroutines)
+	for i, item := range items {
+		guard <- struct{}{} // block if channel is filled
+		go func(i int, item a) {
 			result[i] = fn(item)
-		}
+			<-guard
+		}(i, item)
 	}
 	return result
 }

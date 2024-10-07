@@ -27,9 +27,6 @@ if [ -z $GOOGLE_SAMPLES_PROJECT ]; then
   exit 1
 fi
 
-# Install the root dependencies used for tests.
-npm install
-
 # Install the package dependencies.
 cd $package
 npm install

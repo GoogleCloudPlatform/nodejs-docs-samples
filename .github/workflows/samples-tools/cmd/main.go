@@ -140,8 +140,8 @@ func runAllCmd(configFile string, script string) {
 		fmt.Fprintf(os.Stderr, "❌ error finding packages.\n%v\n", err)
 	}
 
-	parallel := false
-	failed := runAll(packages, script, parallel)
+	maxGoroutines := 10
+	failed := runAll(packages, script, maxGoroutines)
 
 	fmt.Printf(strings.Repeat("-", 80) + "\n")
 	fmt.Printf("Total tests: %v\n", len(packages))

@@ -22,6 +22,13 @@ const {before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
 
+const {
+  getStaleReservations,
+  deleteReservation,
+  getStaleVMInstances,
+  deleteInstance,
+} = require('./util');
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
@@ -32,6 +39,19 @@ describe('Consume reservations', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+    // Clean up
+    const instances = await getStaleVMInstances('instance-458a88aab');
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
+    const reservations = await getStaleReservations('reservation');
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
   });
 
   it('should create instance that consumes any matching reservation', () => {

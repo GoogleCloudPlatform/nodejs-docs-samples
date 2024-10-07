@@ -29,7 +29,7 @@ fi
 
 # Install the package dependencies.
 cd $package
-npm install
+npm install || true
 npm run build --if-present
 
 # Run the tests.

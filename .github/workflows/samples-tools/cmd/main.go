@@ -140,7 +140,7 @@ func runAllCmd(configFile string, script string) {
 		fmt.Fprintf(os.Stderr, "❌ error finding packages.\n%v\n", err)
 	}
 
-	maxGoroutines := 10
+	maxGoroutines := 32
 	failed := runAll(packages, script, maxGoroutines)
 
 	fmt.Printf(strings.Repeat("-", 80) + "\n")

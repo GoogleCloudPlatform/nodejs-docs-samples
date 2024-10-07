@@ -41,7 +41,7 @@ describe('Client with Notifications v2', async () => {
 
   before(async () => {
     const configId = 'notif-config-test-node-create-' + uuidv1();
-    topicName = 'test_topic';
+    topicName = 'notifications-sample-topic';
     parent = `projects/${projectId}/locations/${location}`;
     pubsubTopic = `projects/${projectId}/topics/${topicName}`;
 

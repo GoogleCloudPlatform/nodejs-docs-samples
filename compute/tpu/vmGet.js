@@ -18,11 +18,11 @@
 
 async function main(nodeName, zone) {
   // [START tpu_vm_get]
-  // Import the TPU library
-  const tpuLib = require('@google-cloud/tpu');
+  // Import TpuClient
+  const {TpuClient} = require('@google-cloud/tpu').v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new tpuLib.TpuClient();
+  const tpuClient = new TpuClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.

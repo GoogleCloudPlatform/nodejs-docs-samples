@@ -36,6 +36,7 @@ function main(
    */
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const sourceId = 'SOURCE_ID';
+  // const location = 'LOCATION_ID';
   const findingName = `organizations/${organizationId}/sources/${sourceId}/locations/${location}/findings/${findingId}`;
 
   // Construct the request to be sent by the client.

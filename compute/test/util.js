@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Copyright 2022 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +28,7 @@ function generateTestId() {
 /**
  * Get VM instances created more than one hour ago.
  */
-async function getStaleVMInstances() {
+async function getStaleVMInstances(prefix = PREFIX) {
   const projectId = await instancesClient.getProjectId();
   const result = [];
   const currentDate = new Date();
@@ -44,7 +45,7 @@ async function getStaleVMInstances() {
         .filter(
           instance =>
             new Date(instance.creationTimestamp) < currentDate &&
-            instance.name.startsWith(PREFIX)
+            instance.name.startsWith(prefix)
         )
         .map(instance => {
           return {
@@ -72,7 +73,68 @@ async function deleteInstance(zone, instanceName) {
 
   console.log(`Deleting ${instanceName}`);
 
-  // Wait for the create operation to complete.
+  // Wait for the delete operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+      zone,
+    });
+  }
+}
+
+const reservationsClient = new compute.ReservationsClient();
+
+/**
+ * Get reservations created more than one hour ago.
+ */
+async function getStaleReservations(prefix) {
+  const projectId = await reservationsClient.getProjectId();
+  const result = [];
+  const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() - 3);
+
+  const aggListRequest = reservationsClient.aggregatedListAsync({
+    project: projectId,
+  });
+  console.log(aggListRequest);
+
+  for await (const [zone, reservationsObject] of aggListRequest) {
+    const reservations = reservationsObject.reservations;
+    result.push(
+      ...reservations
+        .filter(
+          reservation =>
+            new Date(reservation.creationTimestamp) < currentDate &&
+            reservation.name.startsWith(prefix)
+        )
+        .map(reservation => {
+          return {
+            zone: zone.split('zones/')[1],
+            reservationName: reservation.name,
+            timestamp: reservation.creationTimestamp,
+          };
+        })
+    );
+  }
+
+  return result;
+}
+
+async function deleteReservation(zone, reservationName) {
+  const projectId = await reservationsClient.getProjectId();
+
+  const [response] = await reservationsClient.delete({
+    project: projectId,
+    reservation: reservationName,
+    zone,
+  });
+  let operation = response.latestResponse;
+  const operationsClient = new compute.ZoneOperationsClient();
+
+  console.log(`Deleting ${reservationName}`);
+
+  // Wait for the delete operation to complete.
   while (operation.status !== 'DONE') {
     [operation] = await operationsClient.wait({
       operation: operation.name,
@@ -86,4 +148,6 @@ module.exports = {
   generateTestId,
   getStaleVMInstances,
   deleteInstance,
+  getStaleReservations,
+  deleteReservation,
 };

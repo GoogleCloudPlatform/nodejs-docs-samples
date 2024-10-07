@@ -24,7 +24,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('AI platform generate and edit an image using Imagen', () => {
+describe('AI platform generate and edit an image using Imagen and check for a watermark', () => {
   it('should generate an image', async () => {
     const stdout = execSync('node ./imagen-generate-image.js', {
       cwd,
@@ -36,6 +36,12 @@ describe('AI platform generate and edit an image using Imagen', () => {
       cwd,
     });
     assert.match(stdout, /Saved image output1.png/);
+  });
+  it('should verify that an image contains a watermark', async () => {
+    const stdout = execSync('node ./imagen-verify-image-watermark.js', {
+      cwd,
+    });
+    assert.match(stdout, /ACCEPT/);
   });
 });
 
@@ -63,5 +69,20 @@ describe('AI platform edit image using Imagen inpainting and outpainting', () =>
       cwd,
     });
     assert.match(stdout, /Saved image output1.png/);
+  });
+});
+
+describe('AI platform get image captions and responses using Imagen', () => {
+  it('should get short form captions for an image', async () => {
+    const stdout = execSync('node ./imagen-get-short-form-image-captions.js', {
+      cwd,
+    });
+    assert.match(stdout, /cat/);
+  });
+  it('should get short form responses for an image', async () => {
+    const stdout = execSync('node ./imagen-get-short-form-image-responses.js', {
+      cwd,
+    });
+    assert.match(stdout, /tabby/);
   });
 });

@@ -21,33 +21,27 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync/atomic"
 )
 
 // runAll runs all the commands in parallel.
-func runAll(packages []string, script string, maxGoroutines int) int {
-	failures := make([]string, len(packages))
+func runAll(packages []string, script string, maxGoroutines int) int64 {
+	var failures int64
 	guard := make(chan struct{}, maxGoroutines)
-	for i, pkg := range packages {
+	for _, pkg := range packages {
 		guard <- struct{}{} // block if channel is filled
 		go func() {
 			output, err := exec.Command("bash", script, pkg).CombinedOutput()
 			if err != nil {
 				printError(os.Stderr, pkg, err, string(output))
-				failures[i] = pkg
+				atomic.AddInt64(&failures, 1)
 			} else {
 				fmt.Printf("✅ %v\n", pkg)
 			}
 			<-guard
 		}()
 	}
-
-	failed := 0
-	for _, failure := range failures {
-		if failure != "" {
-			failed++
-		}
-	}
-	return failed
+	return failures
 }
 
 func printError(f *os.File, pkg string, err error, output string) {

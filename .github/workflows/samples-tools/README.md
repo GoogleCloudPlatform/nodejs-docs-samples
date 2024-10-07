@@ -30,7 +30,7 @@ For example:
 
   // Skip these packages, these could be handled by a different config.
   // Defaults to not exclude anything.
-  "exclude-packages": ["path/to/slow-to-test", "special-config-package"]
+  "exclude-packages": ["path/to/slow-to-test", "special-config-package"],
 }
 ```
 
@@ -60,6 +60,7 @@ git --no-pager diff --name-only HEAD origin/main | tee /tmp/diffs.txt
 ```
 
 Now we can check which packages have been affected.
+We pass the config file and the diffs file as positional arguments.
 
 ```sh
 /tmp/tools affected .github/config/nodejs.jsonc /tmp/diffs.txt
@@ -68,3 +69,12 @@ Now we can check which packages have been affected.
 ## Running on all packages
 
 > This must run at the repository root directory.
+
+We pass the config file and a bash script to run as positional arguments.
+The script must receive a single positional argument in `$1` as the package name.
+For example, the script should be called like `bash path/to/my-script.sh path/to/package`.
+
+```sh
+# To run all the Node.js tests.
+/tmp/tools run-all ./github/config/nodejs.jsonc ./github/scripts/nodejs-test.sh
+```

@@ -15,6 +15,7 @@
 
 const uuid = require('uuid');
 const compute = require('@google-cloud/compute');
+const {TpuClient} = require('@google-cloud/tpu').v2;
 
 const PREFIX = 'gcloud-test-';
 
@@ -22,7 +23,7 @@ const instancesClient = new compute.InstancesClient();
 
 // Get a unique ID to use for test resources.
 function generateTestId() {
-  return `${PREFIX}-${uuid.v4()}`.substr(0, 30);
+  return `${PREFIX}-${uuid.v4()}`.slice(0, 31);
 }
 
 /**
@@ -32,7 +33,7 @@ async function getStaleVMInstances(prefix = PREFIX) {
   const projectId = await instancesClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 1);
+  currentDate.setHours(currentDate.getHours() - 3);
 
   const aggListRequest = instancesClient.aggregatedListAsync({
     project: projectId,
@@ -92,7 +93,7 @@ async function getStaleReservations(prefix) {
   const projectId = await reservationsClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 1);
+  currentDate.setHours(currentDate.getHours() - 3);
 
   const aggListRequest = reservationsClient.aggregatedListAsync({
     project: projectId,
@@ -152,7 +153,7 @@ async function getStaleStoragePools(prefix) {
   const projectId = await storagePoolsClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 1);
+  currentDate.setHours(currentDate.getHours() - 3);
 
   const aggListRequest = storagePoolsClient.aggregatedListAsync({
     project: projectId,
@@ -211,7 +212,7 @@ async function getStaleDisks(prefix) {
   const projectId = await disksClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 1);
+  currentDate.setHours(currentDate.getHours() - 3);
 
   const aggListRequest = disksClient.aggregatedListAsync({
     project: projectId,
@@ -262,6 +263,48 @@ async function deleteDisk(zone, diskName) {
   }
 }
 
+const tpuClient = new TpuClient();
+
+/**
+ * Get nodes created more than one hour ago.
+ */
+async function getStaleNodes(prefix, zone) {
+  const projectId = await tpuClient.getProjectId();
+  const result = [];
+  const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() - 3);
+
+  const listNodesAsyncRequest = tpuClient.listNodesAsync({
+    parent: `projects/${projectId}/locations/${zone}`,
+  });
+
+  for await (const tpuObject of listNodesAsyncRequest) {
+    const name = tpuObject.name.split('/').slice(-1)[0];
+    const data = new Date(tpuObject.createTime.nanos / 1000000);
+    if (data < currentDate && name.startsWith(prefix)) {
+      result.push({
+        nodeName: tpuObject.name,
+        timestamp: tpuObject.createTime,
+      });
+    }
+  }
+
+  return result;
+}
+
+async function deleteNode(zone, nodeName) {
+  const projectId = await tpuClient.getProjectId();
+
+  const request = {
+    name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+  };
+
+  const [operation] = await tpuClient.deleteNode(request);
+
+  // Wait for the delete operation to complete.
+  await operation.promise();
+}
+
 module.exports = {
   generateTestId,
   getStaleVMInstances,
@@ -272,4 +315,6 @@ module.exports = {
   deleteStoragePool,
   getStaleDisks,
   deleteDisk,
+  getStaleNodes,
+  deleteNode,
 };

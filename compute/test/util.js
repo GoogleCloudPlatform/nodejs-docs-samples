@@ -97,7 +97,6 @@ async function getStaleReservations(prefix) {
   const aggListRequest = reservationsClient.aggregatedListAsync({
     project: projectId,
   });
-  console.log(aggListRequest);
 
   for await (const [zone, reservationsObject] of aggListRequest) {
     const reservations = reservationsObject.reservations;
@@ -144,10 +143,134 @@ async function deleteReservation(zone, reservationName) {
   }
 }
 
+const storagePoolsClient = new compute.StoragePoolsClient();
+
+/**
+ * Get storage pools created more than one hour ago.
+ */
+async function getStaleStoragePools(prefix) {
+  const projectId = await storagePoolsClient.getProjectId();
+  const result = [];
+  const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() - 1);
+
+  const aggListRequest = storagePoolsClient.aggregatedListAsync({
+    project: projectId,
+  });
+  console.log(JSON.stringify(aggListRequest));
+  for await (const [zone, storagePoolsObject] of aggListRequest) {
+    const storagePools = storagePoolsObject.storagePools;
+    result.push(
+      ...storagePools
+        .filter(
+          storagePool =>
+            new Date(storagePool.creationTimestamp) < currentDate &&
+            storagePool.name.startsWith(prefix)
+        )
+        .map(storagePool => {
+          return {
+            zone: zone.split('zones/')[1],
+            storagePoolName: storagePool.name,
+            timestamp: storagePool.creationTimestamp,
+          };
+        })
+    );
+  }
+
+  return result;
+}
+
+async function deleteStoragePool(zone, storagePoolName) {
+  const projectId = await storagePoolsClient.getProjectId();
+
+  const [response] = await storagePoolsClient.delete({
+    project: projectId,
+    storagePool: storagePoolName,
+    zone,
+  });
+  let operation = response.latestResponse;
+  const operationsClient = new compute.ZoneOperationsClient();
+
+  console.log(`Deleting ${storagePoolName}`);
+
+  // Wait for the delete operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+      zone,
+    });
+  }
+}
+
+const disksClient = new compute.DisksClient();
+
+/**
+ * Get storage pools created more than one hour ago.
+ */
+async function getStaleDisks(prefix) {
+  const projectId = await disksClient.getProjectId();
+  const result = [];
+  const currentDate = new Date();
+  currentDate.setHours(currentDate.getHours() - 1);
+
+  const aggListRequest = disksClient.aggregatedListAsync({
+    project: projectId,
+  });
+  console.log(JSON.stringify(aggListRequest));
+  for await (const [zone, disksObject] of aggListRequest) {
+    const disks = disksObject.disks;
+    result.push(
+      ...disks
+        .filter(
+          disk =>
+            new Date(disk.creationTimestamp) < currentDate &&
+            disk.name.startsWith(prefix)
+        )
+        .map(disk => {
+          return {
+            zone: zone.split('zones/')[1],
+            diskName: disk.name,
+            timestamp: disk.creationTimestamp,
+          };
+        })
+    );
+  }
+
+  return result;
+}
+
+async function deleteDisk(zone, diskName) {
+  const projectId = await disksClient.getProjectId();
+
+  const [response] = await disksClient.delete({
+    project: projectId,
+    disk: diskName,
+    zone,
+  });
+  let operation = response.latestResponse;
+  const operationsClient = new compute.ZoneOperationsClient();
+
+  console.log(`Deleting ${diskName}`);
+
+  // Wait for the delete operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await operationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+      zone,
+    });
+  }
+}
+
 module.exports = {
   generateTestId,
   getStaleVMInstances,
   deleteInstance,
   getStaleReservations,
   deleteReservation,
+  getStaleStoragePools,
+  deleteStoragePool,
+  getStaleDisks,
+  deleteDisk,
 };

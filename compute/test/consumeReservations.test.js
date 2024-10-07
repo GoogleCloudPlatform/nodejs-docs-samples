@@ -39,7 +39,7 @@ describe('Consume reservations', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-    // Clean up
+    // Cleanup resources
     const instances = await getStaleVMInstances('instance-458a88aab');
     await Promise.all(
       instances.map(instance =>

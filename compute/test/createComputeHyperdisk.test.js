@@ -20,19 +20,24 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
+const {getStaleDisks, deleteDisk} = require('./util');
 const {DisksClient} = require('@google-cloud/compute').v1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute hyperdisk', async () => {
-  const diskName = `hyperdisk-name-941ad2d${Math.floor(Math.random() * 1000 + 1)}`;
+  const prefix = 'hyperdisk-name-941ad2d';
+  const diskName = `${prefix}${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'europe-central2-b';
   const disksClient = new DisksClient();
   let projectId;
 
   before(async () => {
     projectId = await disksClient.getProjectId();
+    // Cleanup resources
+    const disks = await getStaleDisks(prefix);
+    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
   });
 
   after(async () => {

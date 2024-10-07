@@ -33,7 +33,7 @@ describe('Compute reservation', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-    // Clean up
+    // Cleanup resorces
     const reservations = await getStaleReservations('reservation');
     await Promise.all(
       reservations.map(reservation =>

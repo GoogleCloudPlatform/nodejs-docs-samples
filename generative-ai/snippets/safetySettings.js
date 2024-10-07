@@ -35,7 +35,7 @@ async function setSafetySettings() {
     model: MODEL,
     // The following parameters are optional
     // They can also be passed to individual content generation requests
-    safety_settings: [
+    safetySettings: [
       {
         category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
         threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,

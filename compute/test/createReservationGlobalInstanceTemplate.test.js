@@ -21,12 +21,14 @@ const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {getStaleReservations, deleteReservation} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using global instance template', async () => {
-  const reservationName = `global-reservation-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
+  const reservationPrefix = 'global-reservation';
+  const reservationName = `${reservationPrefix}-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
   const instanceTemplateName = `pernament-global-template-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
   const location = 'global';
   const reservationsClient = new ReservationsClient();
@@ -34,6 +36,13 @@ describe('Create compute reservation using global instance template', async () =
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+    // Cleanup resources
+    const reservations = await getStaleReservations(reservationPrefix);
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
     // Create template
     execSync(
       `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,

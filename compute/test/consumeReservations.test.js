@@ -21,7 +21,6 @@ const assert = require('node:assert/strict');
 const {before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
-
 const {
   getStaleReservations,
   deleteReservation,
@@ -34,19 +33,21 @@ const cwd = path.join(__dirname, '..');
 
 describe('Consume reservations', async () => {
   const zone = 'us-central1-a';
+  const instancePrefix = 'instance-458a';
+  const reservationPrefix = 'reservation-';
   const reservationsClient = new ReservationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
     // Cleanup resources
-    const instances = await getStaleVMInstances('instance-458a88aab');
+    const instances = await getStaleVMInstances(instancePrefix);
     await Promise.all(
       instances.map(instance =>
         deleteInstance(instance.zone, instance.instanceName)
       )
     );
-    const reservations = await getStaleReservations('reservation');
+    const reservations = await getStaleReservations(reservationPrefix);
     await Promise.all(
       reservations.map(reservation =>
         deleteReservation(reservation.zone, reservation.reservationName)
@@ -55,8 +56,8 @@ describe('Consume reservations', async () => {
   });
 
   it('should create instance that consumes any matching reservation', () => {
-    const reservationName = `reservation-${Math.floor(Math.random() * 1000 + 1)}f8a31896`;
-    const instanceName = `instance-458a88aab${Math.floor(Math.random() * 1000 + 1)}f`;
+    const reservationName = `${reservationPrefix}${Math.floor(Math.random() * 1000 + 1)}f8a31896`;
+    const instanceName = `${instancePrefix}88aab${Math.floor(Math.random() * 1000 + 1)}f`;
 
     // Create reservation
     execSync(
@@ -85,8 +86,8 @@ describe('Consume reservations', async () => {
   });
 
   it('should create instance that consumes specific single project reservation', () => {
-    const reservationName = `reservation-22ab${Math.floor(Math.random() * 1000 + 1)}`;
-    const instanceName = `instance-458a${Math.floor(Math.random() * 1000 + 1)}`;
+    const reservationName = `${reservationPrefix}22ab${Math.floor(Math.random() * 1000 + 1)}`;
+    const instanceName = `${instancePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
 
     // Create reservation
     execSync(

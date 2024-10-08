@@ -20,7 +20,6 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
-
 const {
   getStaleDisks,
   deleteDisk,
@@ -36,18 +35,9 @@ describe('Create compute hyperdisk from pool', async () => {
   const poolPrefix = 'storage-pool-name-745d9';
   const diskName = `${diskPrefix}${Math.floor(Math.random() * 1000 + 1)}f`;
   const storagePoolName = `${poolPrefix}${Math.floor(Math.random() * 1000 + 1)}5f`;
+  const zone = 'us-central1-a';
 
   before(async () => {
-    // Cleanup resources
-    const disks = await getStaleDisks(diskPrefix);
-    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
-    const storagePools = await getStaleStoragePools(poolPrefix);
-    await Promise.all(
-      storagePools.map(pool => deleteStoragePool(pool.zone, pool.diskName))
-    );
-  });
-
-  after(async () => {
     // Cleanup resources
     const disks = await getStaleDisks(diskPrefix);
     await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
@@ -59,9 +49,15 @@ describe('Create compute hyperdisk from pool', async () => {
     );
   });
 
-  it('should create a new storage pool', () => {
+  after(async () => {
+    // Cleanup resources
+    await deleteDisk(zone, diskName);
+    await deleteStoragePool(zone, storagePoolName);
+  });
+
+  it('should create a new storage pool', async () => {
     const response = execSync(
-      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName}`,
+      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName} ${zone}`,
       {
         cwd,
       }
@@ -70,9 +66,9 @@ describe('Create compute hyperdisk from pool', async () => {
     assert(response.includes(`Storage pool: ${storagePoolName} created.`));
   });
 
-  it('should create a new hyperdisk from pool', () => {
+  it('should create a new hyperdisk from pool', async () => {
     const response = execSync(
-      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName}`,
+      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName} ${zone}`,
       {
         cwd,
       }

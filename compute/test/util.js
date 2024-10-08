@@ -32,7 +32,7 @@ async function getStaleVMInstances(prefix = PREFIX) {
   const projectId = await instancesClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 3);
+  currentDate.setHours(currentDate.getHours() - 1);
 
   const aggListRequest = instancesClient.aggregatedListAsync({
     project: projectId,
@@ -92,7 +92,7 @@ async function getStaleReservations(prefix) {
   const projectId = await reservationsClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 3);
+  currentDate.setHours(currentDate.getHours() - 1);
 
   const aggListRequest = reservationsClient.aggregatedListAsync({
     project: projectId,
@@ -157,7 +157,7 @@ async function getStaleStoragePools(prefix) {
   const aggListRequest = storagePoolsClient.aggregatedListAsync({
     project: projectId,
   });
-  console.log(JSON.stringify(aggListRequest));
+
   for await (const [zone, storagePoolsObject] of aggListRequest) {
     const storagePools = storagePoolsObject.storagePools;
     result.push(
@@ -176,7 +176,6 @@ async function getStaleStoragePools(prefix) {
         })
     );
   }
-
   return result;
 }
 
@@ -217,7 +216,7 @@ async function getStaleDisks(prefix) {
   const aggListRequest = disksClient.aggregatedListAsync({
     project: projectId,
   });
-  console.log(JSON.stringify(aggListRequest));
+
   for await (const [zone, disksObject] of aggListRequest) {
     const disks = disksObject.disks;
     result.push(

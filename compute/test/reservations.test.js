@@ -22,11 +22,13 @@ const {before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
 const {getStaleReservations, deleteReservation} = require('./util');
+
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Compute reservation', async () => {
-  const reservationName = `reservation-1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
+  const reservationPrefix = 'reservation';
+  const reservationName = `${reservationPrefix}-1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'us-central1-a';
   const reservationsClient = new ReservationsClient();
   let projectId;
@@ -34,7 +36,7 @@ describe('Compute reservation', async () => {
   before(async () => {
     projectId = await reservationsClient.getProjectId();
     // Cleanup resorces
-    const reservations = await getStaleReservations('reservation');
+    const reservations = await getStaleReservations(reservationPrefix);
     await Promise.all(
       reservations.map(reservation =>
         deleteReservation(reservation.zone, reservation.reservationName)

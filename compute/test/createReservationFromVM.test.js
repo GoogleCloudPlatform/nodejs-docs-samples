@@ -21,13 +21,21 @@ const assert = require('node:assert/strict');
 const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {
+  getStaleReservations,
+  deleteReservation,
+  getStaleVMInstances,
+  deleteInstance,
+} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Compute reservation from VM', async () => {
-  const reservationName = `reservation-1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
-  const vmName = `vm-1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
+  const instancePrefix = 'vm-1a0bb';
+  const reservationPrefix = 'reservation-';
+  const reservationName = `${reservationPrefix}1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
+  const vmName = `${instancePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'us-central1-a';
   const machineType = 'e2-small';
   const reservationsClient = new ReservationsClient();
@@ -35,7 +43,19 @@ describe('Compute reservation from VM', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-
+    // Cleanup resources
+    const instances = await getStaleVMInstances(instancePrefix);
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
+    const reservations = await getStaleReservations(reservationPrefix);
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
     // Create VM
     execSync(
       `node ./createInstance.js ${projectId} ${zone} ${vmName} ${machineType}`,

@@ -39,35 +39,47 @@ type Config struct {
 	ExcludePackages []string `json:"exclude-packages"`
 }
 
-var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/\s*`)
+var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
 var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
+
+// SaveConfig saves the config to the given file.
+func SaveConfig(config Config, file *os.File) error {
+	bytes, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = file.Write(bytes)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (Config, error) {
-	bytes, err := os.ReadFile(path)
-	if err != nil {
-		return Config{}, err
-	}
-	config, err := parseConfig(bytes)
-	if err != nil {
-		return Config{}, err
-	}
-	return config, nil
-}
+	config := Config{}
 
-// parseConfig parses the config from the given source.
-func parseConfig(source []byte) (Config, error) {
-	var config Config
-	err := json.Unmarshal(StripComments(source), &config)
+	// Read the JSONC file.
+	sourceJsonc, err := os.ReadFile(path)
 	if err != nil {
-		return Config{}, err
+		return config, err
 	}
+
+	// Strip the comments and load the JSON.
+	sourceJson := StripComments(sourceJsonc)
+	err = json.Unmarshal(sourceJson, &config)
+	if err != nil {
+		return config, err
+	}
+
+	// Set default values if they are not set.
 	if config.PackageFile == nil {
 		return config, errors.New("package-file is required")
 	}
 	if config.Match == nil {
 		config.Match = []string{"*"}
 	}
+
 	return config, nil
 }
 
@@ -77,8 +89,8 @@ func StripComments(src []byte) []byte {
 	return singleLineCommentsRegex.ReplaceAll(src, []byte{})
 }
 
-// match returns true if the path matches any of the patterns.
-func match(patterns []string, path string) bool {
+// Match returns true if the path matches any of the patterns.
+func Match(patterns []string, path string) bool {
 	filename := filepath.Base(path)
 	for _, pattern := range patterns {
 		if match, _ := filepath.Match(pattern, filename); match {
@@ -93,7 +105,7 @@ func match(patterns []string, path string) bool {
 
 // Matches returns true if the path matches the config.
 func (c Config) Matches(path string) bool {
-	return match(c.Match, path) && !match(c.Ignore, path)
+	return Match(c.Match, path) && !Match(c.Ignore, path)
 }
 
 // IsPackageDir returns true if the path is a package directory.

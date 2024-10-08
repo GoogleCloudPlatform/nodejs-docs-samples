@@ -14,7 +14,7 @@
  limitations under the License.
 */
 
-package main
+package utils
 
 import (
 	"fmt"
@@ -24,8 +24,8 @@ import (
 	"sync/atomic"
 )
 
-// runAll runs all the commands in parallel.
-func runAll(packages []string, script string, maxGoroutines int) int64 {
+// RunAll runs all the commands in parallel.
+func RunAll(packages []string, script string, maxGoroutines int) int64 {
 	var failures int64
 	guard := make(chan struct{}, maxGoroutines)
 	for _, pkg := range packages {

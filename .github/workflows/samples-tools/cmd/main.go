@@ -99,12 +99,13 @@ func affectedCmd(configFile string, diffsFile string) {
 		log.Fatalf("❌ error loading the config file: %v\n%v\n", configFile, err)
 	}
 
-	diffs, err := readDiffs(diffsFile)
+	diffsBytes, err := os.ReadFile(diffsFile)
 	if err != nil {
 		log.Fatalf("❌ error getting the diffs: %v\n%v\n", diffsFile, err)
 	}
+	diffs := strings.Split(string(diffsBytes), "\n")
 
-	packages, err := affected(config, diffs)
+	packages, err := utils.Affected(config, diffs)
 	if err != nil {
 		log.Fatalf("❌ error finding the affected packages.\n%v\n", err)
 	}
@@ -136,7 +137,7 @@ func runAllCmd(configFile string, script string) {
 	}
 
 	maxGoroutines := 16
-	failed := runAll(packages, script, maxGoroutines)
+	failed := utils.RunAll(packages, script, maxGoroutines)
 
 	fmt.Printf(strings.Repeat("-", 80) + "\n")
 	fmt.Printf("Total tests: %v\n", len(packages))

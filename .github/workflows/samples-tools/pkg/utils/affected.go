@@ -14,17 +14,21 @@
  limitations under the License.
 */
 
-package main
+package utils
 
 import (
-	"os"
 	"slices"
-	"strings"
-
-	"samples-tools/pkg/utils"
 )
 
-func affected(config utils.Config, diffs []string) ([]string, error) {
+func Affected(config Config, diffs []string) ([]string, error) {
+	changed := Changed(config, diffs)
+	if slices.Contains(changed, ".") {
+		return FindAllPackages(".", config)
+	}
+	return changed, nil
+}
+
+func Changed(config Config, diffs []string) []string {
 	changedUnique := make(map[string]bool)
 	for _, diff := range diffs {
 		if !config.Matches(diff) {
@@ -37,21 +41,13 @@ func affected(config utils.Config, diffs []string) ([]string, error) {
 		changedUnique[pkg] = true
 	}
 
+	if len(changedUnique) == 0 {
+		return []string{"."}
+	}
+
 	changed := make([]string, 0, len(changedUnique))
 	for pkg := range changedUnique {
 		changed = append(changed, pkg)
 	}
-
-	if slices.Contains(changed, ".") {
-		return utils.FindAllPackages(".", config)
-	}
-	return changed, nil
-}
-
-func readDiffs(path string) ([]string, error) {
-	bytes, err := os.ReadFile(path)
-	if err != nil {
-		return []string{}, err
-	}
-	return strings.Split(string(bytes), "\n"), nil
+	return changed
 }

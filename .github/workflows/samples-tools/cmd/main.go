@@ -19,6 +19,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"samples-tools/pkg/utils"
 	"strings"
@@ -95,34 +96,29 @@ func printUsage(f *os.File) {
 func affectedCmd(configFile string, diffsFile string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error loading the config file: %v\n%v\n", configFile, err)
-		os.Exit(1)
+		log.Fatalf("❌ error loading the config file: %v\n%v\n", configFile, err)
 	}
 
 	diffs, err := readDiffs(diffsFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error getting the diffs: %v\n%v\n", diffsFile, err)
-		os.Exit(1)
+		log.Fatalf("❌ error getting the diffs: %v\n%v\n", diffsFile, err)
 	}
 
 	packages, err := affected(config, diffs)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error finding the affected packages.\n%v\n", err)
-		os.Exit(1)
+		log.Fatalf("❌ error finding the affected packages.\n%v\n", err)
 	}
 	if len(packages) > 256 {
-		fmt.Fprintf(os.Stderr,
+		log.Fatalf(
 			"❌ Error: GitHub Actions only supports up to 256 packages, got %v packages, for more details see:\n%v\n",
 			len(packages),
 			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
 		)
-		os.Exit(1)
 	}
 
 	packagesJson, err := json.Marshal(packages)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error marshaling packages to JSON.\n%v\n", err)
-		os.Exit(1)
+		log.Fatalf("❌ error marshaling packages to JSON.\n%v\n", err)
 	}
 
 	fmt.Println(string(packagesJson))
@@ -131,8 +127,7 @@ func affectedCmd(configFile string, diffsFile string) {
 func runAllCmd(configFile string, script string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error loading the config file: %v\n%v\n", configFile, err)
-		os.Exit(1)
+		log.Fatalf("❌ error loading the config file: %v\n%v\n", configFile, err)
 	}
 
 	packages, err := utils.FindAllPackages(".", config)
@@ -148,6 +143,6 @@ func runAllCmd(configFile string, script string) {
 	fmt.Printf("Failed tests: %v\n", failed)
 
 	if failed > 0 {
-		os.Exit(1)
+		log.Fatalf("❌ some tests failed, exit with code 1.")
 	}
 }

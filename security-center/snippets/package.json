@@ -9,7 +9,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "c8 mocha -p -j 2 --recursive --timeout 6000000 system-test/v2/findings.test.js"
+    "test": "c8 mocha -p -j 2 --recursive --timeout 6000000 system-test/"
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -18,8 +18,9 @@
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.5.0",
     "mocha": "^10.4.0",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "@google-cloud/bigquery": "^7.0.0"
   }
 }

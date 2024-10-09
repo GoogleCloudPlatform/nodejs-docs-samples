@@ -1,9 +1,9 @@
 package test
 
 import (
+	"cloud-samples-tools/pkg/utils"
 	"os"
 	"path/filepath"
-	"samples-tools/pkg/utils"
 	"testing"
 )
 

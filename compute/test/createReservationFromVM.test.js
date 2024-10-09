@@ -18,34 +18,47 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
-const {getStaleReservations, deleteReservation} = require('./util');
+const {
+  getStaleReservations,
+  deleteReservation,
+  getStaleVMInstances,
+  deleteInstance,
+} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Create compute reservation using global instance template', async () => {
-  const reservationPrefix = 'global-reservation';
-  const reservationName = `${reservationPrefix}-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
-  const instanceTemplateName = `pernament-global-template-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
-  const location = 'global';
+describe('Compute reservation from VM', async () => {
+  const instancePrefix = 'vm-1a0bb';
+  const reservationPrefix = 'reservation-';
+  const reservationName = `${reservationPrefix}1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
+  const vmName = `${instancePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
+  const zone = 'us-central1-a';
+  const machineType = 'e2-small';
   const reservationsClient = new ReservationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
     // Cleanup resources
+    const instances = await getStaleVMInstances(instancePrefix);
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
     const reservations = await getStaleReservations(reservationPrefix);
     await Promise.all(
       reservations.map(reservation =>
         deleteReservation(reservation.zone, reservation.reservationName)
       )
     );
-    // Create template
+    // Create VM
     execSync(
-      `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
+      `node ./createInstance.js ${projectId} ${zone} ${vmName} ${machineType}`,
       {
         cwd,
       }
@@ -53,22 +66,20 @@ describe('Create compute reservation using global instance template', async () =
   });
 
   after(() => {
-    // Delete reservation
+    //  Delete reservation
     execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
       cwd,
     });
-    // Delete template
-    execSync(
-      `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
-      {
-        cwd,
-      }
-    );
+
+    //  Delete VM
+    execSync(`node ./deleteInstance.js  ${projectId} ${zone} ${vmName}`, {
+      cwd,
+    });
   });
 
-  it('should create a new reservation', () => {
+  it('should create a new reservation from vm', () => {
     const response = execSync(
-      `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
+      `node ./reservations/createReservationFromVM.js ${reservationName} ${vmName} ${zone}`,
       {
         cwd,
       }

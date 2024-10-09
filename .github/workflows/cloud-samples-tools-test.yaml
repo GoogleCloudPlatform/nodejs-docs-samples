@@ -18,10 +18,10 @@ on:
     branches:
       - main
     paths:
-      - .github/cloud-samples-tools/
+      - .github/cloud-samples-tools/**
   pull_request:
     paths:
-      - .github/cloud-samples-tools/
+      - .github/cloud-samples-tools/**
 
 env:
   GO_VERSION: ^1.22.0

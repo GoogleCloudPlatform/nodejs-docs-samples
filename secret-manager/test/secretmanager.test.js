@@ -288,9 +288,9 @@ describe('Secret Manager samples', () => {
 
   it('view a regional secret labels', async () => {
     const output = execSync(
-      `node regional_samples/viewRegionalSecretLabels.js ${projectId} ${locationId} ${secretId}
-    `);
-    
+      `node regional_samples/viewRegionalSecretLabels.js ${projectId} ${locationId} ${secretId}`
+    );
+
     assert.match(output, new RegExp(`${labelKey}`));
   });
 

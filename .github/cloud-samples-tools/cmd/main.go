@@ -17,11 +17,11 @@
 package main
 
 import (
+	"cloud-samples-tools/pkg/utils"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"samples-tools/pkg/utils"
 	"strings"
 )
 

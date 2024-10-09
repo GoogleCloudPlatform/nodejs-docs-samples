@@ -45,7 +45,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: go build -o ${{ github.workspace }}/tools ./cmd/...
-        working-directory: .github/workflows/samples-tools
+        working-directory: .github/cloud-samples-tools
       - name: Get diffs
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
@@ -121,7 +121,7 @@ jobs:
   #       with:
   #         go-version: ${{ env.GO_VERSION }}
   #     - run: go build -o ${{ github.workspace }}/tools ./cmd/...
-  #       working-directory: .github/workflows/samples-tools
+  #       working-directory: .github/cloud-samples-tools
   #     - name: Run all tests
   #       run: ./tools run-all .github/config/nodejs.jsonc .github/scripts/nodejs-test.sh
   #       env:

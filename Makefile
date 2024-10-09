@@ -22,7 +22,7 @@ test: check-env build
 	cd ${dir}
 	npm test
 
-lint:
+lint: build
 	cd ${dir}
 	npx gts fix
 	npx gts lint

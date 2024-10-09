@@ -64,7 +64,7 @@ describe('Secret Manager samples', () => {
         },
         annotations: {
           [annotationKey]: annotationValue,
-        }
+        },
       },
     });
 
@@ -75,7 +75,7 @@ describe('Secret Manager samples', () => {
         labels: {
           [labelKey]: labelValue,
         },
-      }
+      },
     });
 
     [version] = await client.addSecretVersion({
@@ -290,6 +290,7 @@ describe('Secret Manager samples', () => {
     const output = execSync(
       `node regional_samples/viewRegionalSecretLabels.js ${projectId} ${locationId} ${secretId}
     `);
+    
     assert.match(output, new RegExp(`${labelKey}`));
   });
 

@@ -27,14 +27,34 @@ env:
   GO_VERSION: ^1.22.0
 
 jobs:
-  test:
-    name: Test
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: .github/cloud-samples-tools
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-      - run: go test ./test
+      - name: Go vet
+        run: go vet ./...
+      - name: Check format
+        run: test -z $(gofmt -l .)
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
         working-directory: .github/cloud-samples-tools
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Run tests
+        run: go test ./test

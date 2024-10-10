@@ -33,6 +33,7 @@ commands:
   run-all path/to/config.jsonc path/to/script.sh
 `
 
+// Entry point to validate command line arguments.
 func main() {
 	flag.Parse()
 
@@ -55,24 +56,12 @@ func main() {
 
 		affectedCmd(configFile, diffsFile)
 
-	case "run-all":
-		configFile := flag.Arg(1)
-		if configFile == "" {
-			log.Fatalln("❌ no config file specified\n", usage)
-		}
-
-		script := flag.Arg(2)
-		if script == "" {
-			log.Fatalln("❌ no script file specified\n", usage)
-		}
-
-		runAllCmd(configFile, script)
-
 	default:
 		log.Fatalln("❌ unknown command: ", command, "\n", usage)
 	}
 }
 
+// affected command entry point to validate inputs.
 func affectedCmd(configFile string, diffsFile string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
@@ -104,27 +93,4 @@ func affectedCmd(configFile string, diffsFile string) {
 	}
 
 	fmt.Println(string(packagesJson))
-}
-
-func runAllCmd(configFile string, script string) {
-	config, err := utils.LoadConfig(configFile)
-	if err != nil {
-		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
-	}
-
-	packages, err := utils.FindAllPackages(".", config)
-	if err != nil {
-		log.Fatalln("❌ error finding packages.\n", err)
-	}
-
-	maxGoroutines := 16
-	failed := utils.RunAll(packages, script, maxGoroutines)
-
-	fmt.Printf(strings.Repeat("-", 80) + "\n")
-	fmt.Printf("Total tests: %v\n", len(packages))
-	fmt.Printf("Failed tests: %v\n", failed)
-
-	if failed > 0 {
-		log.Fatalln("❌ some tests failed, exit with code 1.")
-	}
 }

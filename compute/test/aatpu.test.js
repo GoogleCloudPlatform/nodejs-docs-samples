@@ -18,73 +18,17 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {before, after, describe, it} = require('mocha');
+const {before, describe, it} = require('mocha');
 const cp = require('child_process');
-const {NetworksClient, GlobalOperationsClient} =
-  require('@google-cloud/compute').v1;
 const {getStaleNodes, deleteNode} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-async function createNetwork(networkName, region) {
-  const networksClient = new NetworksClient();
-  const globalOperationsClient = new GlobalOperationsClient();
-  const projectId = await networksClient.getProjectId();
-
-  // Create the network
-  const network = {
-    name: networkName,
-    autoCreateSubnetworks: true,
-    routingMode: 'REGIONAL',
-  };
-
-  const [networkResponse] = await networksClient.insert({
-    project: projectId,
-    region: region,
-    networkResource: network,
-  });
-
-  let networkOperation = networkResponse.latestResponse;
-
-  // Wait for the create operation to complete.
-  while (networkOperation.status !== 'DONE') {
-    [networkOperation] = await globalOperationsClient.wait({
-      operation: networkOperation.name,
-      project: projectId,
-    });
-  }
-
-  console.log(`Network ${networkName} created in region ${region}.`);
-}
-
-async function deleteNetwork(networkName) {
-  const networksClient = new NetworksClient();
-  const globalOperationsClient = new GlobalOperationsClient();
-  const projectId = await networksClient.getProjectId();
-
-  const [networkResponse] = await networksClient.delete({
-    project: projectId,
-    network: networkName,
-  });
-
-  let networkOperation = networkResponse.latestResponse;
-
-  // Wait for the operation to complete.
-  while (networkOperation.status !== 'DONE') {
-    [networkOperation] = await globalOperationsClient.wait({
-      operation: networkOperation.name,
-      project: projectId,
-    });
-  }
-}
-
 describe('Compute tpu', async () => {
   const nodePrefix = 'node-name-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const networkName = 'compute-tpu-network';
-  const region = 'europe-west4';
-  const zone = `${region}-a`;
+  const zone = 'europe-west4-a';
   const tpuType = 'v2-8';
   const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
@@ -92,13 +36,6 @@ describe('Compute tpu', async () => {
     // Cleanup resources
     const nodes = await getStaleNodes(nodePrefix, zone);
     await Promise.all(nodes.map(node => deleteNode(zone, node.nodeName)));
-    // Create network
-    await createNetwork(networkName, region);
-  });
-
-  after(async () => {
-    // Delete network
-    await deleteNetwork(networkName);
   });
 
   it('should create a new tpu node', () => {

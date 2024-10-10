@@ -32,9 +32,6 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   // Project ID or project number of the Google Cloud project you want to create a node.
   const projectId = await tpuClient.getProjectId();
 
-  // The name of the network you want the TPU node to connect to. The network should be assigned to your project.
-  const networkName = 'compute-tpu-network';
-
   // The region of the network, that you want the TPU node to connect to.
   const region = 'europe-west4';
 
@@ -57,18 +54,34 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
 
   async function callCreateTpuVM() {
     // Create a node
-    const node = new Node({
+    // const node = new Node({
+    //   name: nodeName,
+    //   // zone,
+    //   // acceleratorType: tpuType,
+    //   // runtimeVersion: tpuSoftwareVersion,
+    //   // // Define the network you want the TPU node to connect to. The network should be assigned to your project.
+    //   // networkConfig: new NetworkConfig({
+    //   //   enableExternalIps: true,
+    //   //   network: `projects/${projectId}/global/networks/${networkName}`,
+    //   //   subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
+    //   // }),
+
+    // });
+
+    const node = {
       name: nodeName,
-      zone,
-      acceleratorType: tpuType,
-      runtimeVersion: tpuSoftwareVersion,
-      // Define network
-      networkConfig: new NetworkConfig({
+      acceleratorType: 'v2-8',
+      metadata: {
+        'startup-script': '#! /bin/bash\n      pip3 install numpy\n      EOF',
+      },
+      networkConfig: {
         enableExternalIps: true,
-        network: `projects/${projectId}/global/networks/${networkName}`,
-        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
-      }),
-    });
+        network: 'default',
+      },
+      runtimeVersion: 'tpu-vm-tf-2.14.1',
+      schedulingConfig: {preemptible: false, reserved: false, spot: false},
+      shieldedInstanceConfig: {enableSecureBoot: false},
+    };
 
     const parent = `projects/${projectId}/locations/${zone}`;
     const request = {parent, node, nodeId: nodeName};

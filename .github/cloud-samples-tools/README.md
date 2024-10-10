@@ -2,6 +2,10 @@
 
 This is a collection of tools used for Cloud Samples maintenance and infrastructure.
 
+This tool has one function:
+
+- `affected` finds the affected packages given a list of diffs.
+
 ## Config files
 
 For this tools, we refer to a **package** as an isolated directory, which contains a "package file".
@@ -73,17 +77,4 @@ We pass the config file and the diffs file as positional arguments.
 
 ```sh
 /tmp/tools affected .github/config/nodejs.jsonc /tmp/diffs.txt
-```
-
-## Running on all packages
-
-> This must run at the repository root directory.
-
-We pass the config file and a bash script to run as positional arguments.
-The script must receive a single positional argument in `$1` as the package name.
-For example, the script should be called like `bash path/to/my-script.sh path/to/package`.
-
-```sh
-# To run all the Node.js tests.
-/tmp/tools run-all ./github/config/nodejs.jsonc ./github/scripts/nodejs-test.sh
 ```

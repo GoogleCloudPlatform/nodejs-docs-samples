@@ -19,107 +19,88 @@ package main
 import (
 	"cloud-samples-tools/pkg/utils"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 )
 
+var usage = `usage: tools <command> ...
+
+commands:
+  affected path/to/config.jsonc path/to/diffs.txt
+  run-all path/to/config.jsonc path/to/script.sh
+`
+
 func main() {
-	command := ""
-	if len(os.Args) > 1 {
-		command = os.Args[1]
-	} else {
-		fmt.Fprintf(os.Stderr, "❌ no command specified\n")
-		printUsage(os.Stderr)
-		os.Exit(1)
+	flag.Parse()
+
+	command := flag.Arg(0)
+	if command == "" {
+		log.Fatalln("❌ no command specified\n", usage)
 	}
 
 	switch command {
 	case "affected":
-		configFile := ""
-		if len(os.Args) > 2 {
-			configFile = os.Args[2]
-		} else {
-			fmt.Fprintf(os.Stderr, "❌ no config file specified\n")
-			printUsage(os.Stderr)
-			os.Exit(1)
+		configFile := flag.Arg(1)
+		if configFile == "" {
+			log.Fatalln("❌ no config file specified\n", usage)
 		}
 
-		diffsFile := ""
-		if len(os.Args) > 3 {
-			diffsFile = os.Args[3]
-		} else {
-			fmt.Fprintf(os.Stderr, "❌ no diffs file specified\n")
-			printUsage(os.Stderr)
-			os.Exit(1)
+		diffsFile := flag.Arg(2)
+		if diffsFile == "" {
+			log.Fatalln("❌ no diffs file specified\n", usage)
 		}
 
 		affectedCmd(configFile, diffsFile)
 
 	case "run-all":
-		configFile := ""
-		if len(os.Args) > 2 {
-			configFile = os.Args[2]
-		} else {
-			fmt.Fprintf(os.Stderr, "❌ no config file specified\n")
-			printUsage(os.Stderr)
-			os.Exit(1)
+		configFile := flag.Arg(1)
+		if configFile == "" {
+			log.Fatalln("❌ no config file specified\n", usage)
 		}
 
-		script := ""
-		if len(os.Args) > 3 {
-			script = os.Args[3]
-		} else {
-			fmt.Fprintf(os.Stderr, "❌ no script file specified\n")
-			printUsage(os.Stderr)
-			os.Exit(1)
+		script := flag.Arg(2)
+		if script == "" {
+			log.Fatalln("❌ no script file specified\n", usage)
 		}
 
 		runAllCmd(configFile, script)
 
 	default:
-		fmt.Fprintf(os.Stderr, "❌ unknown command: %s\n", command)
-		printUsage(os.Stderr)
-		os.Exit(1)
+		log.Fatalln("❌ unknown command: ", command, "\n", usage)
 	}
-}
-
-func printUsage(f *os.File) {
-	fmt.Fprintf(f, "usage: tools <command> ...\n")
-	fmt.Fprintf(f, "\n")
-	fmt.Fprintf(f, "commands:\n")
-	fmt.Fprintf(f, "  affected path/to/config.jsonc path/to/diffs.txt\n")
-	fmt.Fprintf(f, "  run-all path/to/config.jsonc path/to/script.sh\n")
 }
 
 func affectedCmd(configFile string, diffsFile string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		log.Fatalf("❌ error loading the config file: %v\n%v\n", configFile, err)
+		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
 	}
 
 	diffsBytes, err := os.ReadFile(diffsFile)
 	if err != nil {
-		log.Fatalf("❌ error getting the diffs: %v\n%v\n", diffsFile, err)
+		log.Fatalln("❌ error getting the diffs: ", diffsFile, "\n", err)
 	}
 	diffs := strings.Split(string(diffsBytes), "\n")
 
 	packages, err := utils.Affected(config, diffs)
 	if err != nil {
-		log.Fatalf("❌ error finding the affected packages.\n%v\n", err)
+		log.Fatalln("❌ error finding the affected packages.\n", err)
 	}
 	if len(packages) > 256 {
-		log.Fatalf(
-			"❌ Error: GitHub Actions only supports up to 256 packages, got %v packages, for more details see:\n%v\n",
+		log.Fatalln(
+			"❌ Error: GitHub Actions only supports up to 256 packages, got ",
 			len(packages),
+			" packages, for more details see:\n",
 			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
 		)
 	}
 
 	packagesJson, err := json.Marshal(packages)
 	if err != nil {
-		log.Fatalf("❌ error marshaling packages to JSON.\n%v\n", err)
+		log.Fatalln("❌ error marshaling packages to JSON.\n", err)
 	}
 
 	fmt.Println(string(packagesJson))
@@ -128,12 +109,12 @@ func affectedCmd(configFile string, diffsFile string) {
 func runAllCmd(configFile string, script string) {
 	config, err := utils.LoadConfig(configFile)
 	if err != nil {
-		log.Fatalf("❌ error loading the config file: %v\n%v\n", configFile, err)
+		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
 	}
 
 	packages, err := utils.FindAllPackages(".", config)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "❌ error finding packages.\n%v\n", err)
+		log.Fatalln("❌ error finding packages.\n", err)
 	}
 
 	maxGoroutines := 16
@@ -144,6 +125,6 @@ func runAllCmd(configFile string, script string) {
 	fmt.Printf("Failed tests: %v\n", failed)
 
 	if failed > 0 {
-		log.Fatalf("❌ some tests failed, exit with code 1.")
+		log.Fatalln("❌ some tests failed, exit with code 1.")
 	}
 }

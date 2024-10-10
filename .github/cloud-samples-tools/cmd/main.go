@@ -17,7 +17,7 @@
 package main
 
 import (
-	"cloud-samples-tools/pkg/utils"
+	c "cloud-samples-tools/pkg/config"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -63,7 +63,7 @@ func main() {
 
 // affected command entry point to validate inputs.
 func affectedCmd(configFile string, diffsFile string) {
-	config, err := utils.LoadConfig(configFile)
+	config, err := c.LoadConfig(configFile)
 	if err != nil {
 		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
 	}
@@ -74,7 +74,7 @@ func affectedCmd(configFile string, diffsFile string) {
 	}
 	diffs := strings.Split(string(diffsBytes), "\n")
 
-	packages, err := utils.Affected(config, diffs)
+	packages, err := config.Affected(diffs)
 	if err != nil {
 		log.Fatalln("❌ error finding the affected packages.\n", err)
 	}

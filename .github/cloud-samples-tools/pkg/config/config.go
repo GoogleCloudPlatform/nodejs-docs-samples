@@ -14,14 +14,16 @@
  limitations under the License.
 */
 
-package utils
+package config
 
 import (
 	"encoding/json"
 	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -42,9 +44,9 @@ type Config struct {
 var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
 var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
 
-// SaveConfig saves the config to the given file.
-func SaveConfig(config Config, file *os.File) error {
-	bytes, err := json.MarshalIndent(config, "", "  ")
+// Saves the config to the given file.
+func (c *Config) Save(file *os.File) error {
+	bytes, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -66,7 +68,8 @@ func LoadConfig(path string) (Config, error) {
 	}
 
 	// Strip the comments and load the JSON.
-	sourceJson := StripComments(sourceJsonc)
+	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
+	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
 	err = json.Unmarshal(sourceJson, &config)
 	if err != nil {
 		return config, err
@@ -81,12 +84,6 @@ func LoadConfig(path string) (Config, error) {
 	}
 
 	return config, nil
-}
-
-// StripComments removes comments from the given source.
-func StripComments(src []byte) []byte {
-	src = multiLineCommentsRegex.ReplaceAll(src, []byte{})
-	return singleLineCommentsRegex.ReplaceAll(src, []byte{})
 }
 
 // Match returns true if the path matches any of the patterns.
@@ -104,12 +101,12 @@ func Match(patterns []string, path string) bool {
 }
 
 // Matches returns true if the path matches the config.
-func (c Config) Matches(path string) bool {
+func (c *Config) Matches(path string) bool {
 	return Match(c.Match, path) && !Match(c.Ignore, path)
 }
 
 // IsPackageDir returns true if the path is a package directory.
-func (c Config) IsPackageDir(dir string) bool {
+func (c *Config) IsPackageDir(dir string) bool {
 	for _, filename := range c.PackageFile {
 		packageFile := filepath.Join(dir, filename)
 		if fileExists(packageFile) {
@@ -120,7 +117,7 @@ func (c Config) IsPackageDir(dir string) bool {
 }
 
 // FindPackage returns the package name for the given path.
-func (c Config) FindPackage(path string) string {
+func (c *Config) FindPackage(path string) string {
 	dir := filepath.Dir(path)
 	if dir == "." || c.IsPackageDir(dir) {
 		return dir
@@ -128,10 +125,62 @@ func (c Config) FindPackage(path string) string {
 	return c.FindPackage(dir)
 }
 
-// fileExists returns true if the file exists.
-func fileExists(path string) bool {
-	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
-		return false
+// FindAllPackages finds all the packages in the given root directory.
+func (c *Config) FindAllPackages(root string) ([]string, error) {
+	var packages []string
+	err := fs.WalkDir(os.DirFS(root), ".",
+		func(path string, d os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if path == "." {
+				return nil
+			}
+			if slices.Contains(c.ExcludePackages, path) {
+				return nil
+			}
+			if d.IsDir() && c.Matches(path) && c.IsPackageDir(path) {
+				packages = append(packages, path)
+				return nil
+			}
+			return nil
+		})
+	if err != nil {
+		return []string{}, err
 	}
-	return true
+	return packages, nil
+}
+
+// Affected returns the packages that have been affected from diffs.
+func (c *Config) Affected(diffs []string) ([]string, error) {
+	changed := c.Changed(diffs)
+	if slices.Contains(changed, ".") {
+		return c.FindAllPackages(".")
+	}
+	return changed, nil
+}
+
+// Changed returns the packages that have changed.
+func (c *Config) Changed(diffs []string) []string {
+	changedUnique := make(map[string]bool)
+	for _, diff := range diffs {
+		if !c.Matches(diff) {
+			continue
+		}
+		pkg := c.FindPackage(diff)
+		if slices.Contains(c.ExcludePackages, pkg) {
+			continue
+		}
+		changedUnique[pkg] = true
+	}
+
+	if len(changedUnique) == 0 {
+		return []string{"."}
+	}
+
+	changed := make([]string, 0, len(changedUnique))
+	for pkg := range changedUnique {
+		changed = append(changed, pkg)
+	}
+	return changed
 }

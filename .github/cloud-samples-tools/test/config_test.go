@@ -7,32 +7,42 @@ import (
 	"testing"
 )
 
-func TestLoadConfigEmpty(t *testing.T) {
-	path := filepath.Join("testdata", "config", "empty.json")
-	_, err := c.LoadConfig(path)
-	expectError(t, err)
-}
-
-func TestLoadConfigDefaultValues(t *testing.T) {
-	path := filepath.Join("testdata", "config", "default-values.json")
-	config, err := c.LoadConfig(path)
-	ok(t, err)
-	expected := c.Config{
-		PackageFile: []string{"package.json"},
-		Match:       []string{"*"},
+func TestLoadConfig(t *testing.T) {
+	tests := []struct {
+		filename string
+		config   *c.Config
+		fails    bool
+	}{
+		{
+			filename: "empty.json",
+			fails:    true,
+		},
+		{
+			filename: "default-values.json",
+			config: &c.Config{
+				PackageFile: []string{"package.json"},
+				Match:       []string{"*"},
+			},
+		},
+		{
+			filename: "comments.jsonc",
+			config: &c.Config{
+				PackageFile: []string{"package.json"},
+				Match:       []string{"*"},
+			},
+		},
 	}
-	equals(t, expected, config)
-}
 
-func TestLoadConfigComments(t *testing.T) {
-	path := filepath.Join("testdata", "config", "comments.jsonc")
-	config, err := c.LoadConfig(path)
-	ok(t, err)
-	expected := c.Config{
-		PackageFile: []string{"package.json"},
-		Match:       []string{"*"},
+	for _, test := range tests {
+		path := filepath.Join("testdata", "config", test.filename)
+		got, err := c.LoadConfig(path)
+		if test.fails {
+			expectError(t, err)
+			continue
+		}
+		ok(t, err)
+		equals(t, test.config, got)
 	}
-	equals(t, expected, config)
 }
 
 func TestSaveLoadConfig(t *testing.T) {
@@ -52,83 +62,112 @@ func TestSaveLoadConfig(t *testing.T) {
 	loadedConfig, err := c.LoadConfig(file.Name())
 	ok(t, err)
 
-	equals(t, config, loadedConfig)
+	equals(t, &config, loadedConfig)
 }
 
-func TestMatchNoPatterns(t *testing.T) {
-	patterns := []string{}
-	path := "path/to/file.js"
-	assert(t, !c.Match(patterns, path), "match(%v, %v) = false")
-}
-
-func TestMatchFilePattern(t *testing.T) {
-	patterns := []string{"*.js"}
-	path := "path/to/file.js"
-	assert(t, c.Match(patterns, path), "match(%v, %v) = true")
-}
-
-func TestMatchFilePath(t *testing.T) {
-	patterns := []string{"path/to/"}
-	path := "path/to/file.js"
-	assert(t, c.Match(patterns, path), "match(%v, %v) = true")
-}
-
-func TestIsPackageDirNotExists(t *testing.T) {
-	config := c.Config{PackageFile: []string{"package.json"}}
-	dir := "path-does-not-exist"
-	assert(t, !config.IsPackageDir(dir), "config.IsPackageDir(%v) = false")
-}
-
-func TestIsPackageDirExists(t *testing.T) {
-	config := c.Config{PackageFile: []string{"package.json"}}
-	dir := filepath.Join("testdata", "my-package")
-	assert(t, config.IsPackageDir(dir), "config.IsPackageDir(%v) = true")
-}
-
-func TestFindPackageRoot(t *testing.T) {
-	config := c.Config{PackageFile: []string{"package.json"}}
-	path := filepath.Join("testdata", "my-file.txt")
-	equals(t, ".", config.FindPackage(path))
-}
-
-func TestFindPackageSubpackage(t *testing.T) {
-	config := c.Config{PackageFile: []string{"package.json"}}
-	path := filepath.Join("testdata", "my-package", "subpackage", "my-file.txt")
-	equals(t, "testdata/my-package/subpackage", config.FindPackage(path))
-}
-
-func TestChangedRoot(t *testing.T) {
-	config := c.Config{PackageFile: []string{"package.json"}}
-	diffs := []string{
-		filepath.Join("testdata", "file.txt"),
+func TestMatch(t *testing.T) {
+	tests := []struct {
+		patterns []string
+		path     string
+		expected bool
+	}{
+		{
+			patterns: []string{},
+			path:     "path/to/file.js",
+			expected: false,
+		},
+		{
+			patterns: []string{"*.js"},
+			path:     "path/to/file.js",
+			expected: true,
+		},
+		{
+			patterns: []string{"path/to/"},
+			path:     "path/to/file.js",
+			expected: true,
+		},
 	}
-	got := config.Changed(diffs)
-	expected := []string{"."}
-	equals(t, expected, got)
+
+	for _, test := range tests {
+		got := c.Match(test.patterns, test.path)
+		equals(t, test.expected, got)
+	}
 }
 
-func TestChangedPackage(t *testing.T) {
+func TestIsPackage(t *testing.T) {
+	config := c.Config{PackageFile: []string{"package.json"}}
+	tests := []struct {
+		path     string
+		expected bool
+	}{
+		{
+			path:     filepath.Join("testdata", "path-does-not-exist"),
+			expected: false,
+		},
+		{
+			path:     filepath.Join("testdata", "my-package"),
+			expected: true,
+		},
+	}
+
+	for _, test := range tests {
+		got := config.IsPackageDir(test.path)
+		equals(t, test.expected, got)
+	}
+}
+
+func TestFindPackage(t *testing.T) {
+	config := c.Config{PackageFile: []string{"package.json"}}
+	tests := []struct {
+		path     string
+		expected string
+	}{
+		{
+			path:     filepath.Join("testdata", "my-file.txt"),
+			expected: ".",
+		},
+		{
+			path:     filepath.Join("testdata", "my-package", "my-file.txt"),
+			expected: filepath.Join("testdata", "my-package"),
+		},
+		{
+			path:     filepath.Join("testdata", "my-package", "subpackage", "my-file.txt"),
+			expected: filepath.Join("testdata", "my-package", "subpackage"),
+		},
+	}
+
+	for _, test := range tests {
+		got := config.FindPackage(test.path)
+		equals(t, test.expected, got)
+	}
+}
+
+func TestChanged(t *testing.T) {
 	config := c.Config{
 		PackageFile: []string{"package.json"},
 		Match:       []string{"*"},
 	}
-	diffs := []string{
-		filepath.Join("testdata", "my-package", "file.txt"),
-	}
-	got := config.Changed(diffs)
-	expected := []string{"testdata/my-package"}
-	equals(t, expected, got)
-}
 
-func TestChangedSubpackage(t *testing.T) {
-	config := c.Config{
-		PackageFile: []string{"package.json"},
-		Match:       []string{"*"},
+	tests := []struct {
+		diffs    []string
+		expected []string
+	}{
+		{
+			diffs:    []string{filepath.Join("testdata", "file.txt")},
+			expected: []string{"."},
+		},
+		{
+			diffs:    []string{filepath.Join("testdata", "my-package", "file.txt")},
+			expected: []string{filepath.Join("testdata", "my-package")},
+		},
+		{
+			diffs:    []string{filepath.Join("testdata", "my-package", "subpackage", "file.txt")},
+			expected: []string{filepath.Join("testdata", "my-package", "subpackage")},
+		},
 	}
-	diffs := []string{
-		filepath.Join("testdata", "my-package", "subpackage", "file.txt"),
+
+	for _, test := range tests {
+		got := config.Changed(test.diffs)
+		equals(t, test.expected, got)
 	}
-	got := config.Changed(diffs)
-	expected := []string{"testdata/my-package/subpackage"}
-	equals(t, expected, got)
 }

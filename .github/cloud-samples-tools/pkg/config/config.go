@@ -58,32 +58,32 @@ func (c *Config) Save(file *os.File) error {
 }
 
 // LoadConfig loads the config from the given path.
-func LoadConfig(path string) (Config, error) {
-	config := Config{}
-
+func LoadConfig(path string) (*Config, error) {
 	// Read the JSONC file.
 	sourceJsonc, err := os.ReadFile(path)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
 	// Strip the comments and load the JSON.
 	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
 	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
+
+	var config Config
 	err = json.Unmarshal(sourceJson, &config)
 	if err != nil {
-		return config, err
+		return &config, err
 	}
 
 	// Set default values if they are not set.
 	if config.PackageFile == nil {
-		return config, errors.New("package-file is required")
+		return &config, errors.New("package-file is required")
 	}
 	if config.Match == nil {
 		config.Match = []string{"*"}
 	}
 
-	return config, nil
+	return &config, nil
 }
 
 // Match returns true if the path matches any of the patterns.
@@ -152,6 +152,8 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 }
 
 // Affected returns the packages that have been affected from diffs.
+// If there are diffs on at leat one global file affecting all packages,
+// then this returns all packages matched by the config.
 func (c *Config) Affected(diffs []string) ([]string, error) {
 	changed := c.Changed(diffs)
 	if slices.Contains(changed, ".") {
@@ -161,6 +163,8 @@ func (c *Config) Affected(diffs []string) ([]string, error) {
 }
 
 // Changed returns the packages that have changed.
+// It only returns packages that are matched by the config,
+// and are not excluded by the config.
 func (c *Config) Changed(diffs []string) []string {
 	changedUnique := make(map[string]bool)
 	for _, diff := range diffs {

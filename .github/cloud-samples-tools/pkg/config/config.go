@@ -72,12 +72,12 @@ func LoadConfig(path string) (*Config, error) {
 	var config Config
 	err = json.Unmarshal(sourceJson, &config)
 	if err != nil {
-		return &config, err
+		return nil, err
 	}
 
 	// Set default values if they are not set.
 	if config.PackageFile == nil {
-		return &config, errors.New("package-file is required")
+		return nil, errors.New("package-file is required")
 	}
 	if config.Match == nil {
 		config.Match = []string{"*"}

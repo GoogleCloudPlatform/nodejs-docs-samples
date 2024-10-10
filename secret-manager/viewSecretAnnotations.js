@@ -27,7 +27,7 @@ async function main(name) {
   // Instantiates a client
   const client = new SecretManagerServiceClient();
 
-  async function getSecretAnnotations() {
+  async function viewSecretAnnotations() {
     const [secret] = await client.getSecret({
       name: name,
     });
@@ -37,7 +37,7 @@ async function main(name) {
     }
   }
 
-  getSecretAnnotations();
+  viewSecretAnnotations();
   // [END secretmanager_view_secret_annotations]
 }
 

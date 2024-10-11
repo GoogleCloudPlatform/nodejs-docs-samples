@@ -31,7 +31,7 @@ async function main(zone) {
   const projectId = await tpuClient.getProjectId();
 
   // The zone from which the TPUs are retrived.
-  //   zone = 'us-central1-a';
+  //   zone = 'europe-west4-a';
 
   async function callTpuVMList() {
     const request = {

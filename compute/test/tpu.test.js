@@ -66,6 +66,22 @@ describe('Compute tpu', async () => {
     assert(Array.isArray(response));
   });
 
+  it('should stop tpu node', () => {
+    const response = execSync(`node ./tpu/vmStop.js ${nodeName} ${zone}`, {
+      cwd,
+    });
+
+    assert(response.includes(`Node: ${nodeName} stopped.`));
+  });
+
+  it('should start tpu node', () => {
+    const response = execSync(`node ./tpu/vmStart.js ${nodeName} ${zone}`, {
+      cwd,
+    });
+
+    assert(response.includes(`Node: ${nodeName} started.`));
+  });
+
   it('should delete tpu node', () => {
     const response = execSync(`node ./tpu/vmDelete.js ${nodeName} ${zone}`, {
       cwd,

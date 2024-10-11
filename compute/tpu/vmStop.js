@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(nodeName, zone) {
-  // [START tpu_vm_get]
+  // [START tpu_vm_stop]
   // Import TpuClient
   const {TpuClient} = require('@google-cloud/tpu').v2;
 
@@ -27,28 +27,29 @@ async function main(nodeName, zone) {
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
-  // Project ID or project number of the Google Cloud project you want to retrive a node.
+  // Project ID or project number of the Google Cloud project you want to stop a node.
   const projectId = await tpuClient.getProjectId();
 
-  // The name of TPU to retrive.
-  // nodeName = 'node-name-1';
+  // The name of TPU to stop.
+  //   nodeName = 'node-name-1';
 
   // The zone, where the TPU is created.
-  // zone = 'europe-west4-a';
+  //   zone = 'europe-west4-a';
 
-  async function callGetTpuVM() {
+  async function callStopTpuVM() {
     const request = {
       name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
     };
 
-    const [response] = await tpuClient.getNode(request);
+    const [operation] = await tpuClient.stopNode(request);
+    // Wait for the operation to complete.
+    await operation.promise();
 
-    console.log(`Node: ${nodeName} retrived.`);
-    console.log(JSON.stringify(response));
+    console.log(`Node: ${nodeName} stopped.`);
   }
 
-  await callGetTpuVM();
-  // [END tpu_vm_get]
+  await callStopTpuVM();
+  // [END tpu_vm_stop]
 }
 
 main(...process.argv.slice(2)).catch(err => {

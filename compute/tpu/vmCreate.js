@@ -39,7 +39,7 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   const region = 'europe-west4';
 
   // The name for your TPU.
-  // nodeName = 'node-name-2';
+  // nodeName = 'node-name-1';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,

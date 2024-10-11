@@ -34,7 +34,7 @@ async function main(nodeName, zone) {
   // nodeName = 'node-name-1';
 
   // The zone, where the TPU is created.
-  // zone = 'us-central1-a';
+  // zone = 'europe-west4-a';
 
   async function callDeleteTpuVM() {
     const request = {

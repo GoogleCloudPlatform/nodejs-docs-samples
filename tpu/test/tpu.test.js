@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {getStaleNodes, deleteNode} = require('./util');
 
@@ -28,19 +28,19 @@ const cwd = path.join(__dirname, '..');
 describe('Compute tpu', async () => {
   const nodePrefix = 'node-name-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'europe-west4-a';
-  const tpuType = 'v2-8';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const zone = 'us-west4-a';
+  const tpuType = 'v5litepod-1';
+  const tpuSoftwareVersion = 'tpu-vm-tf-2.11.1';
 
-  before(async () => {
+  after(async () => {
     // Cleanup resources
-    const nodes = await getStaleNodes(nodePrefix, zone);
-    await Promise.all(nodes.map(node => deleteNode(zone, node.nodeName)));
+    const nodes = await getStaleNodes(nodePrefix);
+    await Promise.all(nodes.map(node => deleteNode(node.zone, node.nodeName)));
   });
 
   it('should create a new tpu node', () => {
     const response = execSync(
-      `node ./tpu/vmCreate.js ${nodeName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+      `node ./createVM.js ${nodeName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
       {
         cwd,
       }
@@ -49,7 +49,7 @@ describe('Compute tpu', async () => {
   });
 
   it('should return tpu node', () => {
-    const response = execSync(`node ./tpu/vmGet.js ${nodeName} ${zone}`, {
+    const response = execSync(`node ./getVM.js ${nodeName} ${zone}`, {
       cwd,
     });
 
@@ -58,7 +58,7 @@ describe('Compute tpu', async () => {
 
   it('should return list of tpu nodes', () => {
     const response = JSON.parse(
-      execSync(`node ./tpu/vmList.js ${zone}`, {
+      execSync(`node ./getVMList.js ${zone}`, {
         cwd,
       })
     );
@@ -67,7 +67,7 @@ describe('Compute tpu', async () => {
   });
 
   it('should stop tpu node', () => {
-    const response = execSync(`node ./tpu/vmStop.js ${nodeName} ${zone}`, {
+    const response = execSync(`node ./stopVM.js ${nodeName} ${zone}`, {
       cwd,
     });
 
@@ -75,7 +75,7 @@ describe('Compute tpu', async () => {
   });
 
   it('should start tpu node', () => {
-    const response = execSync(`node ./tpu/vmStart.js ${nodeName} ${zone}`, {
+    const response = execSync(`node ./startVM.js ${nodeName} ${zone}`, {
       cwd,
     });
 
@@ -83,7 +83,7 @@ describe('Compute tpu', async () => {
   });
 
   it('should delete tpu node', () => {
-    const response = execSync(`node ./tpu/vmDelete.js ${nodeName} ${zone}`, {
+    const response = execSync(`node ./deleteVM.js ${nodeName} ${zone}`, {
       cwd,
     });
 

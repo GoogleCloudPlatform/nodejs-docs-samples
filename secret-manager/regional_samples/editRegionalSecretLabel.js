@@ -15,7 +15,7 @@
 'use strict';
 
 async function main(projectId, locationId, secretId, labelKey, labelValue) {
-  // [START secretmanager_create_regional_update_secret_label]
+  // [START secretmanager_edit_regional_secret_label]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -61,7 +61,7 @@ async function main(projectId, locationId, secretId, labelKey, labelValue) {
   }
 
   createUpdateRegionalSecretLabel();
-  // [END secretmanager_create_regional_update_secret_label]
+  // [END secretmanager_edit_regional_secret_label]
 }
 
 const args = process.argv.slice(2);

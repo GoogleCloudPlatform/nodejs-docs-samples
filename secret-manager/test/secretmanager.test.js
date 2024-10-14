@@ -332,7 +332,7 @@ describe('Secret Manager samples', () => {
 
   it('create or updates a regional secret labels', async () => {
     const output = execSync(
-      `node regional_samples/createUpdateRegionalSecretLabel.js ${projectId} ${locationId} ${secretId} ${labelKeyUpdated} ${labelValueUpdated}`
+      `node regional_samples/editRegionalSecretLabel.js ${projectId} ${locationId} ${secretId} ${labelKeyUpdated} ${labelValueUpdated}`
     );
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });

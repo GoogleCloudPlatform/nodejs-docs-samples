@@ -18,33 +18,29 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {before, after, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {getStaleNodes, deleteNode} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Compute tpu with topology', async () => {
-  const nodePrefix = 'topology-node-name-2a2b3c';
+describe('Compute tpu', async () => {
+  const nodePrefix = 'node-name-startup-script-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'europe-west4-a';
+  const zone = 'us-central1-a';
+  const tpuType = 'v3-8';
   const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
 
-  before(async () => {
-    // Cleanup resources
+  after(async () => {
+    // Clean-up resources
     const nodes = await getStaleNodes(nodePrefix, zone);
     await Promise.all(nodes.map(node => deleteNode(zone, node.nodeName)));
   });
 
-  after(async () => {
-    // Delete node
-    await deleteNode(zone, nodeName);
-  });
-
-  it('should create a new tpu', () => {
+  it('should create a new tpu using startup script', () => {
     const response = execSync(
-      `node ./vmCreateTopology.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
+      `node ./createStartupScriptVM.js ${nodeName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
       {
         cwd,
       }

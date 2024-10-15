@@ -4,6 +4,7 @@ import (
 	c "cloud-samples-tools/pkg/config"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -36,18 +37,23 @@ func TestLoadConfig(t *testing.T) {
 	for _, test := range tests {
 		path := filepath.Join("testdata", "config", test.filename)
 		got, err := c.LoadConfig(path)
-		if test.fails {
-			expectError(t, err)
-			continue
+		if test.fails && err == nil {
+			t.Fatal("expected failure\n", got)
 		}
-		ok(t, err)
-		equals(t, test.config, got)
+		if !test.fails && err != nil {
+			t.Fatal("error loading config\n", err)
+		}
+		if !reflect.DeepEqual(test.config, got) {
+			t.Fatal("expected equal\n", test.config, got)
+		}
 	}
 }
 
 func TestSaveLoadConfig(t *testing.T) {
 	file, err := os.CreateTemp("", "config-*.json")
-	ok(t, err)
+	if err != nil {
+		t.Fatal("error creating temp file\n", err)
+	}
 	defer os.Remove(file.Name())
 
 	config := c.Config{
@@ -57,12 +63,23 @@ func TestSaveLoadConfig(t *testing.T) {
 		ExcludePackages: []string{"excluded"},
 	}
 	err = config.Save(file)
-	ok(t, err)
+	if err != nil {
+		t.Fatal("error saving config\n", err)
+	}
+
+	err = file.Close()
+	if err != nil {
+		t.Fatal("error closing file\n", err)
+	}
 
 	loadedConfig, err := c.LoadConfig(file.Name())
-	ok(t, err)
+	if err != nil {
+		t.Fatal("error loading config\n", err)
+	}
 
-	equals(t, &config, loadedConfig)
+	if !reflect.DeepEqual(&config, loadedConfig) {
+		t.Fatal("expected equal\n", &config, loadedConfig)
+	}
 }
 
 func TestMatch(t *testing.T) {
@@ -90,7 +107,9 @@ func TestMatch(t *testing.T) {
 
 	for _, test := range tests {
 		got := c.Match(test.patterns, test.path)
-		equals(t, test.expected, got)
+		if got != test.expected {
+			t.Fatal("expected equal\n", test.expected, got)
+		}
 	}
 }
 
@@ -112,7 +131,9 @@ func TestIsPackage(t *testing.T) {
 
 	for _, test := range tests {
 		got := config.IsPackageDir(test.path)
-		equals(t, test.expected, got)
+		if test.expected != got {
+			t.Fatal("expected equal\n", test.expected, got)
+		}
 	}
 }
 
@@ -138,7 +159,9 @@ func TestFindPackage(t *testing.T) {
 
 	for _, test := range tests {
 		got := config.FindPackage(test.path)
-		equals(t, test.expected, got)
+		if test.expected != got {
+			t.Fatal("expected equal\n", test.expected, got)
+		}
 	}
 }
 
@@ -168,6 +191,8 @@ func TestChanged(t *testing.T) {
 
 	for _, test := range tests {
 		got := config.Changed(test.diffs)
-		equals(t, test.expected, got)
+		if !reflect.DeepEqual(test.expected, got) {
+			t.Fatal("expected equal\n", test.expected, got)
+		}
 	}
 }

@@ -30,6 +30,10 @@ const labelKey = 'secretmanager';
 const labelValue = 'rocks';
 const labelKeyUpdated = 'gcp';
 const labelValueUpdated = 'rock';
+const annotationKey = 'annotationkey';
+const annotationValue = 'annotationvalue';
+const annotationKeyUpdated = 'updatedannotationekey';
+const annotationValueUpdated = 'updatedannotationvalue';
 
 let secret;
 let regionalSecret;
@@ -64,6 +68,11 @@ describe('Secret Manager samples', () => {
     [regionalSecret] = await regionalClient.createSecret({
       parent: `projects/${projectId}/locations/${locationId}`,
       secretId: secretId,
+      secret: {
+        annotations: {
+          [annotationKey]: annotationValue,
+        },
+      }
     });
 
     [version] = await client.addSecretVersion({
@@ -170,6 +179,16 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-4`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -218,6 +237,13 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp('Created secret'));
   });
 
+  it('creates a regional secret with annotations', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithAnnotations.js ${projectId} ${locationId} ${secretId}-5 ${annotationKey} ${annotationValue}`
+    );
+    assert.match(output, new RegExp('Created secret'));
+  });
+
   it('lists secrets', async () => {
     const output = execSync(`node listSecrets.js projects/${projectId}`);
     assert.match(output, new RegExp(`${secret.name}`));
@@ -238,6 +264,14 @@ describe('Secret Manager samples', () => {
   it('view a secret labels', async () => {
     const output = execSync(`node viewSecretLabels.js ${secret.name}`);
     assert.match(output, new RegExp(`${labelKey}`));
+  });
+
+  it('view a regional secret annotations', async () => {
+    const output = execSync(
+      `node regional_samples/viewRegionalSecretAnnotations.js ${projectId} ${locationId} ${secretId}`
+    );
+
+    assert.match(output, new RegExp(`${annotationKey}`));
   });
 
   it('gets a regional secret', async () => {
@@ -274,6 +308,13 @@ describe('Secret Manager samples', () => {
   it('updates a regional secret with an alias', async () => {
     const output = execSync(
       `node regional_samples/updateRegionalSecretWithAlias.js ${projectId} ${locationId} ${secretId}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
+  });
+
+  it('edits a regional secret annotations', async () => {
+    const output = execSync(
+      `node regional_samples/editRegionalSecretAnnotations.js ${projectId} ${locationId} ${secretId} ${annotationKeyUpdated} ${annotationValueUpdated}`
     );
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });

@@ -87,7 +87,7 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
     const [response] = await operation.promise();
 
     console.log(JSON.stringify(response));
-    console.log(`TPU VM: ${nodeName} created.`);
+    console.log(`TPU VM: ${nodeName} with topology created.`);
   }
   await callCreateTpuVMTopology();
   // [END tpu_vm_create_topology]

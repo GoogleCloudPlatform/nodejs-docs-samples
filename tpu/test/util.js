@@ -52,7 +52,7 @@ async function deleteNode(zone, nodeName) {
     name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
   };
 
-  console.log('Deleting node: ', nodeName);
+  console.log('Deleting node:', nodeName);
 
   const [operation] = await tpuClient.deleteNode(request);
 

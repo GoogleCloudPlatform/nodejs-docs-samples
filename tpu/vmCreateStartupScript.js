@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
-  // [START tpu_vm_create_spot]
+  // [START tpu_vm_create_startup_script]
   // Import the TPU library
   const {TpuClient} = require('@google-cloud/tpu').v2;
   const {Node, NetworkConfig} =
@@ -39,23 +39,23 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   const region = 'europe-west4';
 
   // The name for your TPU.
-  nodeName = 'node-name-1';
+  // nodeName = 'node-name-1';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  zone = 'europe-west4-a';
+  // zone = 'europe-west4-a';
 
   // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
   // For more information about supported accelerator types for each TPU version,
   // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  tpuType = 'v2-8';
+  // tpuType = 'v2-8';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
+  // tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
 
-  async function callCreateTpuVMTopology() {
+  async function callCreateTpuVMStartupScript() {
     // Create a node
     const node = new Node({
       name: nodeName,
@@ -65,14 +65,12 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
       // Define network
       networkConfig: new NetworkConfig({
         enableExternalIps: true,
-        network: 'default',
-        // network: `projects/${projectId}/global/networks/${networkName}`,
-        // subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
+        network: `projects/${projectId}/global/networks/${networkName}`,
+        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
       }),
-      schedulingConfig: {
-        preemptible: false,
-        reserved: false,
-        spot: true,
+      metadata: {
+        // Specify your startup script
+        'startup-script': '#! /bin/bash\n      pip3 install numpy\n      EOF',
       },
     });
 
@@ -87,8 +85,8 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
     console.log(JSON.stringify(response));
     console.log(`TPU VM: ${nodeName} created.`);
   }
-  await callCreateTpuVMTopology();
-  // [END tpu_vm_create_spot]
+  await callCreateTpuVMStartupScript();
+  // [END tpu_vm_create_startup_script]
 }
 
 main(...process.argv.slice(2)).catch(err => {

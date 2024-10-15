@@ -25,8 +25,8 @@ const {getStaleNodes, deleteNode} = require('./util');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('Compute tpu with topology', async () => {
-  const nodePrefix = 'topology-node-name-2a2b3c';
+describe('Compute tpu', async () => {
+  const nodePrefix = 'node-name-startup-script-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'europe-west4-a';
   const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
@@ -42,9 +42,9 @@ describe('Compute tpu with topology', async () => {
     await deleteNode(zone, nodeName);
   });
 
-  it('should create a new tpu', () => {
+  it('should create a new tpu using startup script', () => {
     const response = execSync(
-      `node ./vmCreateTopology.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
+      `node ./vmCreateStartupScript.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
       {
         cwd,
       }

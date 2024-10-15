@@ -16,11 +16,11 @@
 
 'use strict';
 
-async function main(nodeName, zone, tpuSoftwareVersion) {
-  // [START tpu_vm_create_topology]
+async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
+  // [START tpu_vm_create_spot]
   // Import the TPU library
   const {TpuClient} = require('@google-cloud/tpu').v2;
-  const {Node, NetworkConfig, AcceleratorConfig} =
+  const {Node, NetworkConfig} =
     require('@google-cloud/tpu').protos.google.cloud.tpu.v2;
 
   // Instantiate a tpuClient
@@ -39,43 +39,41 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
   const region = 'europe-west4';
 
   // The name for your TPU.
-  // nodeName = 'node-name-1';
+  nodeName = 'node-name-1';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'europe-west4-a';
+  zone = 'europe-west4-a';
+
+  // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
+  // For more information about supported accelerator types for each TPU version,
+  // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
+  tpuType = 'v2-8';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  // tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
-
-  // The version of the Cloud TPU you want to create.
-  // Available options: TYPE_UNSPECIFIED = 0, V2 = 2, V3 = 4, V4 = 7
-  const tpuVersion = AcceleratorConfig.Type.V2;
-
-  // The physical topology of your TPU slice.
-  // For more information about topology for each TPU version,
-  // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  const topology = '2x2';
+  tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
 
   async function callCreateTpuVMTopology() {
     // Create a node
     const node = new Node({
       name: nodeName,
       zone,
-      // acceleratorType: tpuType,
+      acceleratorType: tpuType,
       runtimeVersion: tpuSoftwareVersion,
       // Define network
       networkConfig: new NetworkConfig({
         enableExternalIps: true,
-        network: `projects/${projectId}/global/networks/${networkName}`,
-        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
+        network: 'default',
+        // network: `projects/${projectId}/global/networks/${networkName}`,
+        // subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
       }),
-      acceleratorConfig: new AcceleratorConfig({
-        type: tpuVersion,
-        topology: topology,
-      }),
+      schedulingConfig: {
+        preemptible: false,
+        reserved: false,
+        spot: true,
+      },
     });
 
     const parent = `projects/${projectId}/locations/${zone}`;
@@ -90,7 +88,7 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
     console.log(`TPU VM: ${nodeName} created.`);
   }
   await callCreateTpuVMTopology();
-  // [END tpu_vm_create_topology]
+  // [END tpu_vm_create_spot]
 }
 
 main(...process.argv.slice(2)).catch(err => {

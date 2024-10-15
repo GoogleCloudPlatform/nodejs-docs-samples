@@ -93,10 +93,17 @@ function main(projectId, location, channelId, inputId, outputUri) {
           {
             fileName: 'manifest.m3u8',
             type: 'HLS',
+            key: 'manifest_hls',
             muxStreams: ['mux_video', 'mux_audio'],
             maxSegmentCount: 5,
           },
         ],
+        // Optional, but required for VOD clips
+        retentionConfig: {
+          retentionWindowDuration: {
+            seconds: 86400,
+          },
+        },
       },
     };
 

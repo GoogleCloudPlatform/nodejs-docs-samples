@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {before, after, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {getStaleNodes, deleteNode} = require('./util');
 
@@ -28,27 +28,27 @@ const cwd = path.join(__dirname, '..');
 describe('Compute tpu with topology', async () => {
   const nodePrefix = 'topology-node-name-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'europe-west4-a';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
-
-  before(async () => {
-    // Cleanup resources
-    const nodes = await getStaleNodes(nodePrefix, zone);
-    await Promise.all(nodes.map(node => deleteNode(zone, node.nodeName)));
-  });
+  const zone = 'asia-east1-c';
+  const tpuSoftwareVersion = 'tpu-vm-tf-2.12.1';
 
   after(async () => {
-    // Delete node
-    await deleteNode(zone, nodeName);
+    // Clean-up resources
+    const nodes = await getStaleNodes(nodePrefix);
+    await Promise.all(nodes.map(node => deleteNode(node.zone, node.nodeName)));
   });
 
-  it('should create a new tpu', () => {
-    const response = execSync(
-      `node ./vmCreateTopology.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
-      {
-        cwd,
-      }
+  it('should create a new tpu with topology', () => {
+    const acceleratorConfig = {type: 'V2', topology: '2x2'};
+
+    const response = JSON.parse(
+      execSync(
+        `node ./createTopologyVM.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
+        {
+          cwd,
+        }
+      )
     );
-    assert(response.includes(`TPU VM: ${nodeName} created.`));
+
+    assert.deepEqual(response.acceleratorConfig, acceleratorConfig);
   });
 });

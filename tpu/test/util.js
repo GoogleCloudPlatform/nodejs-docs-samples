@@ -18,30 +18,49 @@ const {TpuClient} = require('@google-cloud/tpu').v2;
 
 const tpuClient = new TpuClient();
 
+async function getTpuZones() {
+  const projectId = await tpuClient.getProjectId();
+  const parent = `projects/${projectId}/locations/-`; // List zones for the project
+
+  const [operations] = await tpuClient.listAcceleratorTypes({parent});
+  const zones = new Set();
+  operations.forEach(operation => {
+    zones.add(operation.name.split('/')[3]);
+  });
+
+  return Array.from(zones);
+}
+
 /**
  * Get nodes created more than one hour ago.
  */
-async function getStaleNodes(prefix, zone) {
+async function getStaleNodes(prefix) {
   const projectId = await tpuClient.getProjectId();
   const result = [];
   const currentDate = new Date();
-  currentDate.setHours(currentDate.getHours() - 3);
+  currentDate.setHours(currentDate.getHours() - 1);
 
-  const listNodesAsyncRequest = tpuClient.listNodesAsync({
-    parent: `projects/${projectId}/locations/${zone}`,
-  });
+  const zones = await getTpuZones();
 
-  for await (const tpuObject of listNodesAsyncRequest) {
-    const name = tpuObject.name.split('/').slice(-1)[0];
-    const data = new Date(tpuObject.createTime.nanos / 1000000);
-    if (data < currentDate && name.startsWith(prefix)) {
-      result.push({
-        nodeName: name,
-        timestamp: tpuObject.createTime,
-      });
+  for (const zone of zones) {
+    const [list] = await tpuClient.listNodes({
+      parent: `projects/${projectId}/locations/${zone}`,
+    });
+
+    for (const tpuObject of list) {
+      const name = tpuObject.name.split('/').slice(-1)[0];
+      const data = new Date(tpuObject.createTime.nanos / 1000000);
+      if (data < currentDate) {
+        if (data < currentDate && name.startsWith(prefix)) {
+          result.push({
+            zone,
+            nodeName: name,
+            timestamp: tpuObject.createTime,
+          });
+        }
+      }
     }
   }
-
   return result;
 }
 
@@ -52,7 +71,7 @@ async function deleteNode(zone, nodeName) {
     name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
   };
 
-  console.log('Deleting node: ', nodeName);
+  console.log('Deleting node:', nodeName);
 
   const [operation] = await tpuClient.deleteNode(request);
 

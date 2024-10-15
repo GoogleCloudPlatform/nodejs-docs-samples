@@ -14,8 +14,8 @@
 
 'use strict';
 
+// [START generativeaionvertexai_gemma2_predict_gpu]
 async function gemma2PredictGpu(predictionServiceClient) {
-  // [START generativeaionvertexai_gemma2_predict_gpu]
   // Imports the Google Cloud Prediction Service Client library
   const {
     // TODO(developer): Uncomment PredictionServiceClient before running the sample.
@@ -62,7 +62,6 @@ async function gemma2PredictGpu(predictionServiceClient) {
   const text = predictions[0].stringValue;
 
   console.log('Predictions:', text);
-  // [END generativeaionvertexai_gemma2_predict_gpu]
   return text;
 }
 
@@ -73,3 +72,4 @@ module.exports = gemma2PredictGpu;
 //   console.error(err.message);
 //   process.exitCode = 1;
 // });
+// [END generativeaionvertexai_gemma2_predict_gpu]

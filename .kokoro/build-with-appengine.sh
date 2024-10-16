@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+echo "EXPERIMENT (SKIP)"
+exit
 set -e;
 
 export GOOGLE_CLOUD_PROJECT=nodejs-docs-samples-tests

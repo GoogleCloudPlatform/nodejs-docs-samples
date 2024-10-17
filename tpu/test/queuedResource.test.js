@@ -39,7 +39,21 @@ describe('TPU queued resource', async () => {
         cwd,
       }
     );
+
     assert(response.includes(`Queued resource ${queuedResourceName} created.`));
+  });
+
+  it('should return requested queued resource', () => {
+    const response = execSync(
+      `node ./queuedResource/getQueuedResource.js ${queuedResourceName} ${zone}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(
+      response.includes(`Queued resource ${queuedResourceName} retrived.`)
+    );
   });
 
   it('should force queued resource deletion', () => {

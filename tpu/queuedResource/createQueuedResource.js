@@ -108,10 +108,27 @@ async function main(
     const [operation] = await tpuClient.createQueuedResource(request);
 
     // Wait for the create operation to complete.
-    const [response] = await operation.promise();
+    await operation.promise();
 
-    console.log(JSON.stringify(response));
     console.log(`Queued resource ${queuedResourceName} created.`);
+
+    const getNodeRequest = {
+      name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+    };
+
+    console.log(`Waiting for TPU node ${nodeName} to become ready...`);
+
+    // Poll for TPU node state every 30 seconds
+    const intervalId = setInterval(async () => {
+      const [node] = await tpuClient.getNode(getNodeRequest);
+
+      if (node.state === 'READY') {
+        clearInterval(intervalId);
+        console.log(`TPU node ${nodeName} is ready.`);
+      } else {
+        console.log(`TPU node ${nodeName} is in state: ${node.state}`);
+      }
+    }, 30000);
   }
   await callCreateQueuedResource();
   // [END tpu_queued_resources_create]

@@ -36,17 +36,36 @@ async function main(queuedResourceName, zone) {
   // The zone of your queued resource.
   // zone = 'europe-west4-a';
 
+  async function callDeleteTpuVM(nodeName) {
+    const request = {
+      name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+    };
+
+    const [operation] = await tpuClient.deleteNode(request);
+
+    // Wait for the delete operation to complete.
+    await operation.promise();
+
+    console.log(`Node: ${nodeName} deleted.`);
+  }
+
   async function callDeleteQueuedResource() {
     const request = {
       name: `projects/${projectId}/locations/${zone}/queuedResources/${queuedResourceName}`,
     };
 
+    // Retrive node name
+    const [response] = await tpuClient.getQueuedResource(request);
+    const nodeName = response.tpu.nodeSpec[0].nodeId;
+
+    // Before deleting the queued resource it is required to delete the TPU VM.
+    await callDeleteTpuVM(nodeName);
+
     const [operation] = await tpuClient.deleteQueuedResource(request);
 
     // Wait for the delete operation to complete.
-    const [response] = await operation.promise();
+    await operation.promise();
 
-    console.log(JSON.stringify(response));
     console.log(`Queued resource ${queuedResourceName} deleted.`);
   }
   await callDeleteQueuedResource();

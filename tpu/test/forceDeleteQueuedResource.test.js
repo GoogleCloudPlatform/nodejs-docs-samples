@@ -24,46 +24,34 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('TPU queued resource', async () => {
-  const queuedResourceName = `queued-resource-name-1a2sdf${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodePrefix = 'node-name-2a2b3c';
+describe('TPU queued resource force deletion', async () => {
+  const queuedResourceName = `queued-resource-force-delete-${Math.floor(Math.random() * 1000 + 1)}`;
+  const nodePrefix = 'node-force-delete-2a2b3c';
   const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'europe-west4-a';
+  const zone = 'us-central1-c';
   const tpuType = 'v2-8';
   const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
-  it('should create a new queued resource', () => {
-    const response = execSync(
+  it('should force queued resource deletion', () => {
+    // Create queued resource
+    execSync(
       `node ./queuedResource/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
       {
         cwd,
       }
     );
 
-    assert(response.includes(`Queued resource ${queuedResourceName} created.`));
-  });
-
-  it('should return requested queued resource', () => {
     const response = execSync(
-      `node ./queuedResource/getQueuedResource.js ${queuedResourceName} ${zone}`,
+      `node ./queuedResource/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
       {
         cwd,
       }
     );
 
     assert(
-      response.includes(`Queued resource ${queuedResourceName} retrived.`)
+      response.includes(
+        `Queued resource ${queuedResourceName} deletion forced.`
+      )
     );
-  });
-
-  it('should delete queued resource', () => {
-    const response = execSync(
-      `node ./queuedResource/deleteQueuedResource.js ${queuedResourceName} ${zone}`,
-      {
-        cwd,
-      }
-    );
-
-    assert(response.includes(`Queued resource ${queuedResourceName} deleted.`));
   });
 });

@@ -45,9 +45,8 @@ async function main(queuedResourceName, zone) {
     const [operation] = await tpuClient.deleteQueuedResource(request);
 
     // Wait for the delete operation to complete.
-    const [response] = await operation.promise();
+    await operation.promise();
 
-    console.log(JSON.stringify(response));
     console.log(`Queued resource ${queuedResourceName} deletion forced.`);
   }
   await callForceDeleteQueuedResource();

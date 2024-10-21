@@ -70,20 +70,20 @@ describe('Batch predict with Gemini', async () => {
       `node ./batch-prediction/batch-predict-gcs.js ${projectId} ${outputGCSUri}`
     );
 
-    assert.match(response, new RegExp('Batch predict with Gemini - GCS'));
+    assert.match(response, new RegExp('/batchPredictionJobs/'));
     batchPredictionGcsJobId = response
       .split('/locations/us-central1/batchPredictionJobs/')[1]
       .split('\n')[0];
-  });
+  }).timeout(10000);
 
   it('should create Batch prediction Gemini job with BigQuery', async () => {
     const response = execSync(
       `node ./batch-prediction/batch-predict-bq.js ${projectId} ${outputBqUri}`
     );
 
-    assert.match(response, new RegExp('Batch predict with Gemini - BigQuery'));
+    assert.match(response, new RegExp('/batchPredictionJobs/'));
     batchPredictionBqJobId = response
       .split('/locations/us-central1/batchPredictionJobs/')[1]
       .split('\n')[0];
-  });
+  }).timeout(10000);
 });

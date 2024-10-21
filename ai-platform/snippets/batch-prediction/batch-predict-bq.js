@@ -49,28 +49,28 @@ async function main(projectId, outputUri) {
   // Create a Gemini batch prediction job using BigQuery input and output datasets.
   async function create_batch_prediction_gemini_bq() {
     const bqSource = new aiplatform.BigQuerySource({
-      uris: [inputUri],
+      inputUri: inputUri,
     });
 
     const inputConfig = new aiplatform.BatchPredictionJob.InputConfig({
-      bqSource,
+      bigquerySource: bqSource,
       instancesFormat: 'bigquery',
     });
 
     const bqDestination = new aiplatform.BigQueryDestination({
-      outputUriPrefix: outputUri,
+      outputUri: outputUri,
     });
 
     const outputConfig = new aiplatform.BatchPredictionJob.OutputConfig({
-      bqDestination,
+      bigqueryDestination: bqDestination,
       predictionsFormat: 'bigquery',
     });
 
     const batchPredictionJob = new aiplatform.BatchPredictionJob({
       displayName: 'Batch predict with Gemini - BigQuery',
       model: modelName, // Add model parameters per request in the input BigQuery table.
-      inputConfig,
-      outputConfig,
+      inputConfig: inputConfig,
+      outputConfig: outputConfig,
     });
 
     const request = {
@@ -83,7 +83,6 @@ async function main(projectId, outputUri) {
     console.log('Response name: ', JSON.stringify(response.name, null, 2));
     // Example response:
     // Response name: projects/<project>/locations/us-central1/batchPredictionJobs/<job-id>
-    return response.name;
   }
 
   await create_batch_prediction_gemini_bq();

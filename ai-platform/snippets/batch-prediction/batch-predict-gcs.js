@@ -56,7 +56,7 @@ async function main(projectId, outputUri) {
     });
 
     const inputConfig = new aiplatform.BatchPredictionJob.InputConfig({
-      gcsSource,
+      gcsSource: gcsSource,
       instancesFormat: 'jsonl',
     });
 
@@ -65,15 +65,15 @@ async function main(projectId, outputUri) {
     });
 
     const outputConfig = new aiplatform.BatchPredictionJob.OutputConfig({
-      gcsDestination,
+      gcsDestination: gcsDestination,
       predictionsFormat: 'jsonl',
     });
 
     const batchPredictionJob = new aiplatform.BatchPredictionJob({
       displayName: 'Batch predict with Gemini - GCS',
       model: modelName,
-      inputConfig,
-      outputConfig,
+      inputConfig: inputConfig,
+      outputConfig: outputConfig,
     });
 
     const request = {
@@ -86,7 +86,6 @@ async function main(projectId, outputUri) {
     console.log('Response name: ', JSON.stringify(response.name, null, 2));
     // Example response:
     // Response name: projects/<project>/locations/us-central1/batchPredictionJobs/<job-id>
-    return response.name;
   }
 
   await create_batch_prediction_gemini_gcs();

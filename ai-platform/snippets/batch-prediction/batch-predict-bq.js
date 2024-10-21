@@ -80,7 +80,7 @@ async function main(projectId, outputUri) {
 
     // Create batch prediction job request
     const [response] = await jobServiceClient.createBatchPredictionJob(request);
-    console.log('Response name: ', JSON.stringify(response.name, null, 2));
+    console.log('Response name: ', response.name);
     // Example response:
     // Response name: projects/<project>/locations/us-central1/batchPredictionJobs/<job-id>
   }

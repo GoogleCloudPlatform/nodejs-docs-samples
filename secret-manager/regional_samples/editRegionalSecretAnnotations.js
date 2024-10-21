@@ -14,7 +14,13 @@
 
 'use strict';
 
-async function main(projectId, locationId, secretId, annotationKey, annotationValue) {
+async function main(
+  projectId,
+  locationId,
+  secretId,
+  annotationKey,
+  annotationValue
+) {
   // [START secretmanager_edit_regional_secret_annotations]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

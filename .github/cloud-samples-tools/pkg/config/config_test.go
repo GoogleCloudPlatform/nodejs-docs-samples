@@ -1,4 +1,4 @@
-package test
+package config_test
 
 import (
 	c "cloud-samples-tools/pkg/config"

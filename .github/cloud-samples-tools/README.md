@@ -55,7 +55,7 @@ To the tools tests, we must change to the directory where the tools package is d
 We can run it in a subshell using parentheses to keep our working directory from changing.
 
 ```sh
-(cd .github/workflows/samples-tools && go test ./test)
+(cd .github/workflows/samples-tools && go test ./...)
 ```
 
 ## Finding affected packages

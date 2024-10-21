@@ -57,4 +57,4 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Run tests
-        run: go test ./test
+        run: go test ./...

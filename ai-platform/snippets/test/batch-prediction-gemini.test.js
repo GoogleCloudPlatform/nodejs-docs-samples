@@ -26,7 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 describe('Batch predict with Gemini', async () => {
   const projectId = process.env.CAIP_PROJECT_ID;
   const outputGCSUri = 'gs://ucaip-samples-test-output/';
-  const outputBqUri = 'bq://ucaip-sample-tests';
+  const outputBqUri = `bq://${process.env.CAIP_PROJECT_ID}.gen_ai_batch_prediction.predictions_${Date.now()}`;
   const location = 'us-central1';
 
   const jobServiceClient = new JobServiceClient({

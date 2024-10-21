@@ -96,7 +96,7 @@ async function main(
         ],
       },
       // TODO(developer): Uncomment next line if you want to specify reservation.
-      // reservationName: 'reservation-name'
+      // reservationName: 'reservation-name/ Before deleting the queued resource it is required to delete the TPU VM.'
     });
 
     const request = {
@@ -110,25 +110,10 @@ async function main(
     // Wait for the create operation to complete.
     await operation.promise();
 
+    // If you also want to wait for create operation of TPU Node,
+    // you can use `tpu_vm_get` sample to check current status of the node
+    // and wait until it is READY.
     console.log(`Queued resource ${queuedResourceName} created.`);
-
-    const getNodeRequest = {
-      name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
-    };
-
-    console.log(`Waiting for TPU node ${nodeName} to become ready...`);
-
-    // Poll for TPU node state every 30 seconds
-    const intervalId = setInterval(async () => {
-      const [node] = await tpuClient.getNode(getNodeRequest);
-
-      if (node.state === 'READY') {
-        clearInterval(intervalId);
-        console.log(`TPU node ${nodeName} is ready.`);
-      } else {
-        console.log(`TPU node ${nodeName} is in state: ${node.state}`);
-      }
-    }, 30000);
   }
   await callCreateQueuedResource();
   // [END tpu_queued_resources_create]

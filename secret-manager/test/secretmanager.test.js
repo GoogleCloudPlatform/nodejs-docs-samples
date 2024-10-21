@@ -73,6 +73,7 @@ describe('Secret Manager samples', () => {
           [annotationKey]: annotationValue,
         },
       }
+      
     });
 
     [version] = await client.addSecretVersion({

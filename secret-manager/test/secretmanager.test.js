@@ -188,7 +188,18 @@ describe('Secret Manager samples', () => {
 
     try {
       await client.deleteSecret({
-        name: `${secret.name}-5`,
+        name: `${secret.name}-6`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+   
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-4`,
       });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
@@ -197,18 +208,18 @@ describe('Secret Manager samples', () => {
     }
 
     try {
-      await client.deleteSecret({
-        name: `${secret.name}-6`,
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-5`,
       });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
         throw err;
       }
     }
-   
+
     try {
       await regionalClient.deleteSecret({
-        name: `${regionalSecret.name}-4`,
+        name: `${regionalSecret.name}-6`,
       });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
@@ -279,7 +290,7 @@ describe('Secret Manager samples', () => {
   
   it('creates a regional secret with annotations', async () => {
     const output = execSync(
-      `node regional_samples/createRegionalSecretWithAnnotations.js ${projectId} ${locationId} ${secretId}-5 ${annotationKey} ${annotationValue}`
+      `node regional_samples/createRegionalSecretWithAnnotations.js ${projectId} ${locationId} ${secretId}-6 ${annotationKey} ${annotationValue}`
     );
     assert.match(output, new RegExp('Created secret'));
   });

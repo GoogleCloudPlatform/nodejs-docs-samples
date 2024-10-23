@@ -20,69 +20,44 @@ const path = require('path');
 const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
-const {DisksClient, StoragePoolsClient, ZoneOperationsClient} =
-  require('@google-cloud/compute').v1;
+const {
+  getStaleDisks,
+  deleteDisk,
+  getStaleStoragePools,
+  deleteStoragePool,
+} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-async function cleanupResources(projectId, zone, diskName, storagePoolName) {
-  const disksClient = new DisksClient();
-  const storagePoolsClient = new StoragePoolsClient();
-  const zoneOperationsClient = new ZoneOperationsClient();
-  // Delete disk attached to storagePool
-  const [diskResponse] = await disksClient.delete({
-    project: projectId,
-    disk: diskName,
-    zone,
-  });
-
-  let diskOperation = diskResponse.latestResponse;
-
-  // Wait for the delete disk operation to complete.
-  while (diskOperation.status !== 'DONE') {
-    [diskOperation] = await zoneOperationsClient.wait({
-      operation: diskOperation.name,
-      project: projectId,
-      zone: diskOperation.zone.split('/').pop(),
-    });
-  }
-
-  const [poolResponse] = await storagePoolsClient.delete({
-    project: projectId,
-    storagePool: storagePoolName,
-    zone,
-  });
-  let poolOperation = poolResponse.latestResponse;
-
-  // Wait for the delete pool operation to complete.
-  while (poolOperation.status !== 'DONE') {
-    [poolOperation] = await zoneOperationsClient.wait({
-      operation: poolOperation.name,
-      project: projectId,
-      zone: poolOperation.zone.split('/').pop(),
-    });
-  }
-}
-
 describe('Create compute hyperdisk from pool', async () => {
-  const diskName = `disk-from-pool-name-745d98${Math.floor(Math.random() * 1000 + 1)}f`;
+  const diskPrefix = 'disk-from-pool-name-745d98';
+  const poolPrefix = 'storage-pool-name-745d9';
+  const diskName = `${diskPrefix}${Math.floor(Math.random() * 1000 + 1)}f`;
+  const storagePoolName = `${poolPrefix}${Math.floor(Math.random() * 1000 + 1)}5f`;
   const zone = 'us-central1-a';
-  const storagePoolName = `storage-pool-name-745d9${Math.floor(Math.random() * 1000 + 1)}5f`;
-  const disksClient = new DisksClient();
-  let projectId;
 
   before(async () => {
-    projectId = await disksClient.getProjectId();
+    // Cleanup resources
+    const disks = await getStaleDisks(diskPrefix);
+    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
+    const storagePools = await getStaleStoragePools(poolPrefix);
+    await Promise.all(
+      storagePools.map(pool =>
+        deleteStoragePool(pool.zone, pool.storagePoolName)
+      )
+    );
   });
 
   after(async () => {
-    await cleanupResources(projectId, zone, diskName, storagePoolName);
+    // Cleanup resources
+    await deleteDisk(zone, diskName);
+    await deleteStoragePool(zone, storagePoolName);
   });
 
-  it('should create a new storage pool', () => {
+  it('should create a new storage pool', async () => {
     const response = execSync(
-      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName}`,
+      `node ./disks/createComputeHyperdiskPool.js ${storagePoolName} ${zone}`,
       {
         cwd,
       }
@@ -91,9 +66,9 @@ describe('Create compute hyperdisk from pool', async () => {
     assert(response.includes(`Storage pool: ${storagePoolName} created.`));
   });
 
-  it('should create a new hyperdisk from pool', () => {
+  it('should create a new hyperdisk from pool', async () => {
     const response = execSync(
-      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName}`,
+      `node ./disks/createComputeHyperdiskFromPool.js ${diskName} ${storagePoolName} ${zone}`,
       {
         cwd,
       }

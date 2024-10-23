@@ -196,7 +196,6 @@ describe('Secret Manager samples', () => {
       }
     }
 
-   
     try {
       await regionalClient.deleteSecret({
         name: `${regionalSecret.name}-4`,
@@ -284,10 +283,10 @@ describe('Secret Manager samples', () => {
   it('creates a secret with annotations', async () => {
     const output = execSync(
       `node createSecretWithAnnotations.js projects/${projectId} ${secretId}-6 ${annotationKey} ${annotationValue}`
-      );
+    );
     assert.match(output, new RegExp('Created secret'));
   });
-  
+
   it('creates a regional secret with annotations', async () => {
     const output = execSync(
       `node regional_samples/createRegionalSecretWithAnnotations.js ${projectId} ${locationId} ${secretId}-6 ${annotationKey} ${annotationValue}`

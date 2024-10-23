@@ -63,7 +63,7 @@ describe('TPU queued resource', () => {
 
   it('should create a new queued resource', async () => {
     const response = execSync(
-      `node ./queuedResource/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+      `node ./queuedResources/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
       {
         cwd,
       }
@@ -73,21 +73,32 @@ describe('TPU queued resource', () => {
 
   it('should return requested queued resource', () => {
     const response = execSync(
-      `node ./queuedResource/getQueuedResource.js ${queuedResourceName} ${zone}`,
+      `node ./queuedResources/getQueuedResource.js ${queuedResourceName} ${zone}`,
       {
         cwd,
       }
     );
+
     assert(
       response.includes(`Queued resource ${queuedResourceName} retrived.`)
     );
+  });
+
+  it('should return list of queued resources', () => {
+    const response = JSON.parse(
+      execSync(`node ./queuedResources/getQueuedResourcesList.js ${zone}`, {
+        cwd,
+      })
+    );
+
+    assert(Array.isArray(response));
   });
 
   it('should delete queued resource', async () => {
     // Wait until queued resource is ready to delete.
     await waitForTPUCreation(nodeName, zone);
     const response = execSync(
-      `node ./queuedResource/deleteQueuedResource.js ${queuedResourceName} ${zone}`,
+      `node ./queuedResources/deleteQueuedResource.js ${queuedResourceName} ${zone}`,
       {
         cwd,
       }

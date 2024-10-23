@@ -35,14 +35,14 @@ describe('TPU queued resource force deletion', async () => {
   it('should force queued resource deletion', () => {
     // Create queued resource
     execSync(
-      `node ./queuedResource/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+      `node ./queuedResources/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
       {
         cwd,
       }
     );
 
     const response = execSync(
-      `node ./queuedResource/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
+      `node ./queuedResources/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
       {
         cwd,
       }

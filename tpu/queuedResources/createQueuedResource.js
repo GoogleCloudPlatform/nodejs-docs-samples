@@ -110,9 +110,8 @@ async function main(
     // Wait for the create operation to complete.
     await operation.promise();
 
-    // If you also want to wait for create operation of TPU Node,
-    // you can use `tpu_vm_get` sample to check current status of the node
-    // and wait until it is READY.
+    // You can wait until TPU Node is READY,
+    // and check its status using getTpuVm() from `tpu_vm_get` sample.
     console.log(`Queued resource ${queuedResourceName} created.`);
   }
   await callCreateQueuedResource();

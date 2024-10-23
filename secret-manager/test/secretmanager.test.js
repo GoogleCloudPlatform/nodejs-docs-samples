@@ -74,6 +74,7 @@ describe('Secret Manager samples', () => {
       secret: {
         labels: {
           [labelKey]: labelValue,
+        },
         annotations: {
           [annotationKey]: annotationValue,
         },

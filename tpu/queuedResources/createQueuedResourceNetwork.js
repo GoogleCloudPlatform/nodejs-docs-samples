@@ -23,7 +23,7 @@ async function main(
   tpuType,
   tpuSoftwareVersion
 ) {
-  // [START tpu_queued_resources_startup_script]
+  // [START tpu_queued_resources_create_network]
   // Import the TPU library
   const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
   const {Node, NetworkConfig, QueuedResource} =
@@ -64,26 +64,22 @@ async function main(
   // see https://cloud.google.com/tpu/docs/runtimes
   // tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
-  async function callCreateQueuedResourceStartupScript() {
+  async function callCreateQueuedResourceNetwork() {
+    // Specify the network and subnetwork that you want to connect your TPU to.
+    const networkConfig = new NetworkConfig({
+      enableExternalIps: true,
+      network: `projects/${projectId}/global/networks/${networkName}`,
+      subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
+    });
+
     // Create a node
     const node = new Node({
       name: nodeName,
       zone,
       acceleratorType: tpuType,
       runtimeVersion: tpuSoftwareVersion,
-      // Define network
-      networkConfig: new NetworkConfig({
-        enableExternalIps: true,
-        network: `projects/${projectId}/global/networks/${networkName}`,
-        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
-      }),
+      networkConfig,
       queuedResource: `projects/${projectId}/locations/${zone}/queuedResources/${queuedResourceName}`,
-      metadata: {
-        // The script updates numpy to the latest version and logs the output to a file.
-        'startup-script': `#!/bin/bash
-          echo "Hello World" > /var/log/hello.log
-          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1`,
-      },
     });
 
     // Define parent for requests
@@ -117,12 +113,12 @@ async function main(
     // You can wait until TPU Node is READY,
     // and check its status using getTpuVm() from `tpu_vm_get` sample.
     console.log(
-      `Queued resource ${queuedResourceName} with start-up script created.`
+      `Queued resource ${queuedResourceName} with specified network created.`
     );
     console.log(JSON.stringify(response));
   }
-  await callCreateQueuedResourceStartupScript();
-  // [END tpu_queued_resources_startup_script]
+  await callCreateQueuedResourceNetwork();
+  // [END tpu_queued_resources_create_network]
 }
 
 main(...process.argv.slice(2)).catch(err => {

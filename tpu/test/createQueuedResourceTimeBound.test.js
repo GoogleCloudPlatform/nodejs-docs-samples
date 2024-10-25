@@ -18,25 +18,18 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
-const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('TPU queued resource with specified network', async () => {
-  const queuedResourceName = `queued-resource-with-network-${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodeName = `node-with-network-2a2b3c${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-south1-a';
+describe('TPU time bound queued resource', async () => {
+  const queuedResourceName = `queued-resource-time-bound-${Math.floor(Math.random() * 1000 + 1)}`;
+  const nodeName = `node-time-bound-2a2b3c${Math.floor(Math.random() * 1000 + 1)}`;
+  const zone = 'us-west4-a';
   const tpuType = 'v5litepod-1';
   const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
-  let projectId;
-
-  before(async () => {
-    const tpuClient = new TpuClient();
-    projectId = await tpuClient.getProjectId();
-  });
 
   after(() => {
     // Delete queued resource
@@ -49,24 +42,18 @@ describe('TPU queued resource with specified network', async () => {
   });
 
   it('should create queued resource', () => {
-    const networkConfig = {
-      network: `projects/${projectId}/global/networks/compute-tpu-network`,
-      subnetwork: `projects/${projectId}/regions/europe-west4/subnetworks/compute-tpu-network`,
-      enableExternalIps: true,
-    };
-
     const response = JSON.parse(
       execSync(
-        `node ./queuedResources/createQueuedResourceNetwork.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+        `node ./queuedResources/createQueuedResourceTimeBound.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
         {
           cwd,
         }
       )
     );
 
-    assert.deepEqual(
-      response.tpu.nodeSpec[0].node.networkConfig,
-      networkConfig
-    );
+    assert.ok(response.queueingPolicy);
+    assert.ok(response.queueingPolicy.validAfterTime);
+    assert(typeof response.queueingPolicy.validAfterTime.seconds, 'string');
+    assert(typeof response.queueingPolicy.validAfterTime.nano, 'number');
   });
 });

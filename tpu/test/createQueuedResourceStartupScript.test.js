@@ -41,24 +41,21 @@ describe('TPU queued resource with start-up script', async () => {
     );
   });
 
-  it('should create queued resource with start-up script', () => {
+  it('should create queued resource', () => {
     const metadata = {
       'startup-script':
         '#!/bin/bash\n          echo "Hello World" > /var/log/hello.log\n          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1',
     };
 
-    const response = execSync(
-      `node ./queuedResources/createQueuedResourceStartupScript.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
-      {
-        cwd,
-      }
-    );
-
-    assert(
-      response.includes(
-        `Queued resource ${queuedResourceName} with start-up script created.`
+    const response = JSON.parse(
+      execSync(
+        `node ./queuedResources/createQueuedResourceStartupScript.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+        {
+          cwd,
+        }
       )
     );
-    assert(response.includes(JSON.stringify(metadata)));
+
+    assert.deepEqual(response.tpu.nodeSpec[0].node.metadata, metadata);
   });
 });

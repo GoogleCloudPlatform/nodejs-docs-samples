@@ -23,7 +23,7 @@ async function main(
   tpuType,
   tpuSoftwareVersion
 ) {
-  // [START tpu_queued_resources_create_network]
+  // [START tpu_queued_resources_time_bound]
   // Import the TPU library
   const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
   const {Node, NetworkConfig, QueuedResource} =
@@ -64,21 +64,19 @@ async function main(
   // see https://cloud.google.com/tpu/docs/runtimes
   // tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
-  async function callCreateQueuedResourceNetwork() {
-    // Specify the network and subnetwork that you want to connect your TPU to.
-    const networkConfig = new NetworkConfig({
-      enableExternalIps: true,
-      network: `projects/${projectId}/global/networks/${networkName}`,
-      subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
-    });
-
+  async function callCreateQueuedResourceTimeBound() {
     // Create a node
     const node = new Node({
       name: nodeName,
       zone,
       acceleratorType: tpuType,
       runtimeVersion: tpuSoftwareVersion,
-      networkConfig,
+      // Define network
+      networkConfig: new NetworkConfig({
+        enableExternalIps: true,
+        network: `projects/${projectId}/global/networks/${networkName}`,
+        subnetwork: `projects/${projectId}/regions/${region}/subnetworks/${networkName}`,
+      }),
       queuedResource: `projects/${projectId}/locations/${zone}/queuedResources/${queuedResourceName}`,
     });
 
@@ -97,6 +95,39 @@ async function main(
           },
         ],
       },
+      queueingPolicy: new QueuedResource.QueueingPolicy({
+        // You can specify a duration after which a resource should be allocated.
+        validAfterDuration: {
+          // format: hour * 3600s
+          seconds: 6 * 3600,
+        },
+        // You can specify how long a queued resource request remains valid.
+        // validUntilDuration: {
+        //   // format: hour * 3600s
+        //   seconds: 6 * 3600,
+        // },
+        // You can specify a time after which a resource should be allocated.
+        // validAfterTime: {
+        //   // format: new Date('YOUR_TIMESTAMP').getTime() / 1000
+        //   seconds: new Date('2024-10-25T11:45:00Z').getTime() / 1000,
+        // },
+        // You can specify a time before which the resource should be allocated.
+        // validUntilTime: {
+        //   // format: new Date('YOUR_TIMESTAMP').getTime() / 1000
+        //   seconds: new Date('2024-10-25T11:45:00Z').getTime() / 1000,
+        // },
+        // You can specify an allocation interval. `startTime` specifies the beginning of the allocation interval
+        // and `endTime` specifies the end of the allocation interval.
+        // validInterval: {
+        //   // format: new Date('YOUR_TIMESTAMP').getTime() / 1000
+        //   startTime: {
+        //     seconds: new Date('2024-10-25T15:45:00Z').getTime() / 1000,
+        //   },
+        //   endTime: {
+        //     seconds: new Date('2024-10-26T11:45:00Z').getTime() / 1000,
+        //   },
+        // },
+      }),
     });
 
     const request = {
@@ -114,8 +145,8 @@ async function main(
     // and check its status using getTpuVm() from `tpu_vm_get` sample.
     console.log(JSON.stringify(response));
   }
-  await callCreateQueuedResourceNetwork();
-  // [END tpu_queued_resources_create_network]
+  await callCreateQueuedResourceTimeBound();
+  // [END tpu_queued_resources_time_bound]
 }
 
 main(...process.argv.slice(2)).catch(err => {

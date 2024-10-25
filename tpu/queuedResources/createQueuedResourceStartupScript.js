@@ -116,9 +116,6 @@ async function main(
 
     // You can wait until TPU Node is READY,
     // and check its status using getTpuVm() from `tpu_vm_get` sample.
-    console.log(
-      `Queued resource ${queuedResourceName} with start-up script created.`
-    );
     console.log(JSON.stringify(response));
   }
   await callCreateQueuedResourceStartupScript();

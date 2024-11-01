@@ -70,7 +70,7 @@ async function functionCallingStreamContent(
     contents: [
       {role: 'user', parts: [{text: 'What is the weather in Boston?'}]},
       {
-        role: 'model',
+        role: 'ASSISTANT',
         parts: [
           {
             functionCall: {
@@ -80,7 +80,7 @@ async function functionCallingStreamContent(
           },
         ],
       },
-      {role: 'user', parts: functionResponseParts},
+      {role: 'USER', parts: functionResponseParts},
     ],
     tools: functionDeclarations,
   };

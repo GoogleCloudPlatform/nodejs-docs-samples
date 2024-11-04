@@ -66,7 +66,9 @@ describe('client with security marks for assets', async () => {
     // Ensure marks are set.
     exec(`node v2/addSecurityMarks.js ${data.assetName}`);
 
-    const output = exec(`node v2/deleteAssetsSecurityMarks.js ${data.assetName}`);
+    const output = exec(
+      `node v2/deleteAssetsSecurityMarks.js ${data.assetName}`
+    );
     assert.notMatch(output, /key_a/);
     assert.notMatch(output, /value_a/);
     assert.notMatch(output, /key_b/);
@@ -75,5 +77,4 @@ describe('client with security marks for assets', async () => {
     assert.include(output, data.assetName);
     assert.notMatch(output, /undefined/);
   });
-
 });

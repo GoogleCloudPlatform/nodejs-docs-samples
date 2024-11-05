@@ -21,7 +21,7 @@ async function main() {
 
   // TODO(developer): Update the following for your own use case.
   const project = 'long-door-651';
-  const model = 'text-embedding-preview-0815';
+  const model = 'text-embedding-005';
   const location = 'us-central1';
   // Calculate the embedding for code blocks. Using 'RETRIEVAL_DOCUMENT' for corpus.
   // Specify the task type as 'CODE_RETRIEVAL_QUERY' for query, e.g. 'Retrieve a function that adds two numbers'.

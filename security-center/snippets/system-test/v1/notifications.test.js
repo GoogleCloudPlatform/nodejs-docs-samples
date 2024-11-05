@@ -36,17 +36,17 @@ describe('Client with Notifications', async () => {
   before(async () => {
     const client = new SecurityCenterClient();
     async function createNotificationConfig(configId) {
-      try {      
-         /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
-          const [_response] = await client.createNotificationConfig({
-            parent: orgName,
-            configId: configId,
-            notificationConfig: {
-              description: 'Sample config for node.js',
-              pubsubTopic: pubsubTopic,
-              streamingConfig: {filter: 'state = "ACTIVE"'},
-            },
-          });
+      try {
+        /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
+        const [_response] = await client.createNotificationConfig({
+          parent: orgName,
+          configId: configId,
+          notificationConfig: {
+            description: 'Sample config for node.js',
+            pubsubTopic: pubsubTopic,
+            streamingConfig: {filter: 'state = "ACTIVE"'},
+          },
+        });
       } catch (err) {
         console.error(`Error creating config ${configId}:`, err.message);
       }
@@ -69,7 +69,7 @@ describe('Client with Notifications', async () => {
           organizationId,
           configId
         );
-        await client.deleteNotificationConfig({name: name});  
+        await client.deleteNotificationConfig({name: name});
       } catch (err) {
         console.error(`Error deleting config ${configId}:`, err.message);
       }

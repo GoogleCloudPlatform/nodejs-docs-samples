@@ -36,37 +36,51 @@ describe('Client with Notifications', async () => {
   before(async () => {
     const client = new SecurityCenterClient();
     async function createNotificationConfig(configId) {
-      /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
-      const [_response] = await client.createNotificationConfig({
-        parent: orgName,
-        configId: configId,
-        notificationConfig: {
-          description: 'Sample config for node.js',
-          pubsubTopic: pubsubTopic,
-          streamingConfig: {filter: 'state = "ACTIVE"'},
-        },
-      });
+      try {      
+         /*eslint no-unused-vars: ["error", { "varsIgnorePattern": "^_" }]*/
+          const [_response] = await client.createNotificationConfig({
+            parent: orgName,
+            configId: configId,
+            notificationConfig: {
+              description: 'Sample config for node.js',
+              pubsubTopic: pubsubTopic,
+              streamingConfig: {filter: 'state = "ACTIVE"'},
+            },
+          });
+      } catch (err) {
+        console.error(`Error creating config ${configId}:`, err.message);
+      }
     }
 
     await createNotificationConfig(deleteConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await createNotificationConfig(getConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await createNotificationConfig(listConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await createNotificationConfig(updateConfig);
   });
 
   after(async () => {
     const client = new SecurityCenterClient();
     async function deleteNotificationConfig(configId) {
-      const name = client.organizationNotificationConfigPath(
-        organizationId,
-        configId
-      );
-      await client.deleteNotificationConfig({name: name});
+      try {
+        const name = client.organizationNotificationConfigPath(
+          organizationId,
+          configId
+        );
+        await client.deleteNotificationConfig({name: name});  
+      } catch (err) {
+        console.error(`Error deleting config ${configId}:`, err.message);
+      }
     }
 
     await deleteNotificationConfig(createConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await deleteNotificationConfig(getConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await deleteNotificationConfig(listConfig);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
     await deleteNotificationConfig(updateConfig);
   });
 

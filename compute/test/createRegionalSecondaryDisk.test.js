@@ -22,24 +22,24 @@ const uuid = require('uuid');
 const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
-const {getStaleDisks, deleteDisk} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-async function createDisk(diskName, zone) {
-  const disksClient = new computeLib.DisksClient();
-  const zoneOperationsClient = new computeLib.ZoneOperationsClient();
-  const projectId = await disksClient.getProjectId();
+const disksClient = new computeLib.RegionDisksClient();
+const regionOperationsClient = new computeLib.RegionOperationsClient();
 
+async function createDisk(diskName, region) {
+  const projectId = await disksClient.getProjectId();
   const [response] = await disksClient.insert({
     project: projectId,
-    zone,
+    region,
     diskResource: {
       sizeGb: 10,
       name: diskName,
-      zone,
-      type: `zones/${zone}/diskTypes/pd-balanced`,
+      region,
+      type: `regions/${region}/diskTypes/pd-balanced`,
+      replicaZones: [`zones/${region}-a`, `zones/${region}-b`],
     },
   });
 
@@ -47,36 +47,68 @@ async function createDisk(diskName, zone) {
 
   // Wait for the create disk operation to complete.
   while (operation.status !== 'DONE') {
-    [operation] = await zoneOperationsClient.wait({
+    [operation] = await regionOperationsClient.wait({
       operation: operation.name,
       project: projectId,
-      zone: operation.zone.split('/').pop(),
+      region,
     });
   }
 
   console.log(`Disk: ${diskName} created.`);
 }
 
-describe('Create compute secondary disk', async () => {
-  const prefix = 'compute-disk';
+async function deleteDisk(region, diskName) {
+  const projectId = await disksClient.getProjectId();
+  const [response] = await disksClient.delete({
+    project: projectId,
+    disk: diskName,
+    region,
+  });
+  let operation = response.latestResponse;
+
+  console.log(`Deleting ${diskName}`);
+
+  // Wait for the delete operation to complete.
+  while (operation.status !== 'DONE') {
+    [operation] = await regionOperationsClient.wait({
+      operation: operation.name,
+      project: projectId,
+      region,
+    });
+  }
+}
+
+describe('Create compute regional secondary disk', async () => {
+  const prefix = 'regional-disk';
   const secondaryDiskName = `${prefix}-secondary-${uuid.v4()}`;
   const primaryDiskName = `${prefix}-primary-${uuid.v4()}`;
-  const secondaryZone = 'europe-west4-a';
-  const primaryZone = 'europe-central2-b';
+  const secondaryRegion = 'europe-west4';
+  const primaryRegion = 'europe-central2';
+  const disks = [
+    {
+      diskName: secondaryDiskName,
+      region: secondaryRegion,
+    },
+    {
+      diskName: primaryDiskName,
+      region: primaryRegion,
+    },
+  ];
 
   before(async () => {
-    await createDisk(primaryDiskName, primaryZone);
+    await createDisk(primaryDiskName, primaryRegion);
   });
 
   after(async () => {
     // Cleanup resources
-    const disks = await getStaleDisks(prefix);
-    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
+    await Promise.all(
+      disks.map(disk => deleteDisk(disk.region, disk.diskName))
+    );
   });
 
-  it('should create a zonal secondary disk', () => {
+  it('should create a regional secondary disk', () => {
     const response = execSync(
-      `node ./disks/createSecondaryDisk.js ${secondaryDiskName} ${secondaryZone} ${primaryDiskName} ${primaryZone}`,
+      `node ./disks/createRegionalSecondaryDisk.js ${secondaryDiskName} ${secondaryRegion} ${primaryDiskName} ${primaryRegion}`,
       {
         cwd,
       }

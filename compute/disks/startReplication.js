@@ -22,7 +22,7 @@ async function main(
   primaryDiskName,
   primaryLocation
 ) {
-  // [START compute_disk_create_secondary]
+  // [START compute_disk_start_replication]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
@@ -35,54 +35,39 @@ async function main(
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
-  // The project for the secondary disk.
+  // The project of the secondary disk.
   const secondaryProjectId = await disksClient.getProjectId();
 
-  // The zone for the secondary disk. The primary and secondary disks must be in different regions.
+  // The zone of the secondary disk.
   // secondaryLocation = 'us-central1-a';
 
   // The name of the secondary disk.
   // secondaryDiskName = 'secondary-disk-name';
 
-  // The project that contains the primary disk.
+  // The project of the primary disk.
   const primaryProjectId = await disksClient.getProjectId();
 
-  // The zone for the primary disk.
-  // primaryLocation = 'us-central1-b';
+  // The zone of the primary disk.
+  // primaryLocation = 'us-central1-a';
 
-  // The name of the primary disk that the secondary disk receives data from.
+  // The name of the primary disk.
   // primaryDiskName = 'primary-disk-name';
 
-  // The disk type. Must be one of `pd-ssd` or `pd-balanced`.
-  const diskType = `zones/${secondaryLocation}/diskTypes/pd-balanced`;
-
-  // The size of the secondary disk in gigabytes.
-  const diskSizeGb = 10;
-
-  // Create a secondary disk identical to the primary disk.
-  async function callCreateComputeSecondaryDisk() {
-    // Create a secondary disk
-    const disk = new compute.Disk({
-      sizeGb: diskSizeGb,
-      name: secondaryDiskName,
-      zone: secondaryLocation,
-      type: diskType,
-      asyncPrimaryDisk: new compute.DiskAsyncReplication({
-        // Make sure that the primary disk supports asynchronous replication.
-        // Only certain persistent disk types, like `pd-balanced` and `pd-ssd`, are eligible.
-        disk: `projects/${primaryProjectId}/zones/${primaryLocation}/disks/${primaryDiskName}`,
-      }),
-    });
-
-    const [response] = await disksClient.insert({
+  // Start replication
+  async function callStartReplication() {
+    const [response] = await disksClient.startAsyncReplication({
       project: secondaryProjectId,
-      zone: secondaryLocation,
-      diskResource: disk,
+      zone: primaryLocation,
+      disk: primaryDiskName,
+      disksStartAsyncReplicationRequestResource:
+        new compute.DisksStartAsyncReplicationRequest({
+          asyncSecondaryDisk: `projects/${primaryProjectId}/zones/${secondaryLocation}/disks/${secondaryDiskName}`,
+        }),
     });
 
     let operation = response.latestResponse;
 
-    // Wait for the create secondary disk operation to complete.
+    // Wait for the operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({
         operation: operation.name,
@@ -91,11 +76,13 @@ async function main(
       });
     }
 
-    console.log(`Secondary disk: ${secondaryDiskName} created.`);
+    console.log(
+      `Data replication from primary disk: ${primaryDiskName} to secondary disk: ${secondaryDiskName} started.`
+    );
   }
 
-  await callCreateComputeSecondaryDisk();
-  // [END compute_disk_create_secondary]
+  await callStartReplication();
+  // [END compute_disk_start_replication]
 }
 
 main(...process.argv.slice(2)).catch(err => {

@@ -27,6 +27,7 @@ async function main(
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
 
+  // If you want to create regional disk, you should use: RegionDisksClient and RegionOperationsClient.
   // Instantiate a diskClient
   const disksClient = new computeLib.DisksClient();
   // Instantiate a zoneOperationsClient
@@ -38,8 +39,9 @@ async function main(
   // The project for the secondary disk.
   const secondaryProjectId = await disksClient.getProjectId();
 
-  // The zone for the secondary disk. The primary and secondary disks must be in different regions.
-  // secondaryLocation = 'europe-west4-a';
+  // The zone or region for the secondary disk. The primary and secondary disks must be in different regions.
+  // If you use RegionDisksClient- define region, if DisksClient- define zone.
+  // secondaryLocation = 'us-central1-a';
 
   // The name of the secondary disk.
   // secondaryDiskName = 'secondary-disk-name';
@@ -47,8 +49,9 @@ async function main(
   // The project that contains the primary disk.
   const primaryProjectId = await disksClient.getProjectId();
 
-  // The zone for the primary disk.
-  // primaryLocation = 'europe-central2-b';
+  // The zone or region for the primary disk.
+  // If you use RegionDisksClient- define region, if DisksClient- define zone.
+  // primaryLocation = 'us-central1-b';
 
   // The name of the primary disk that the secondary disk receives data from.
   // primaryDiskName = 'primary-disk-name';
@@ -65,6 +68,7 @@ async function main(
     const disk = new compute.Disk({
       sizeGb: diskSizeGb,
       name: secondaryDiskName,
+      // If you use RegionDisksClient, pass region as an argument instead of zone
       zone: secondaryLocation,
       type: diskType,
       asyncPrimaryDisk: new compute.DiskAsyncReplication({
@@ -73,6 +77,7 @@ async function main(
         disk: `projects/${primaryProjectId}/zones/${primaryLocation}/disks/${primaryDiskName}`,
       }),
       // Specify additional guest OS features.
+      // To learn more about OS features, open: `https://cloud.google.com/compute/docs/disks/async-pd/configure?authuser=0#secondary2`.
       // You don't need to include the guest OS features of the primary disk.
       // The secondary disk automatically inherits the guest OS features of the primary disk.
       guestOsFeatures: [
@@ -90,6 +95,7 @@ async function main(
 
     const [response] = await disksClient.insert({
       project: secondaryProjectId,
+      // If you use RegionDisksClient, pass region as an argument instead of zone
       zone: secondaryLocation,
       diskResource: disk,
     });
@@ -101,6 +107,7 @@ async function main(
       [operation] = await zoneOperationsClient.wait({
         operation: operation.name,
         project: secondaryProjectId,
+        // If you use RegionOperationsClient, pass region as an argument instead of zone
         zone: operation.zone.split('/').pop(),
       });
     }

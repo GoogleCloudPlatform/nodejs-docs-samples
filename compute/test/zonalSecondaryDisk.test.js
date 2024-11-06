@@ -57,7 +57,7 @@ async function createDisk(diskName, zone) {
   console.log(`Disk: ${diskName} created.`);
 }
 
-describe('Create compute zonal secondary disk', async () => {
+describe('Compute zonal secondary disk', async () => {
   const prefix = 'zonal-disk';
   const secondaryDiskName = `${prefix}-secondary-${uuid.v4()}`;
   const primaryDiskName = `${prefix}-primary-${uuid.v4()}`;
@@ -85,5 +85,35 @@ describe('Create compute zonal secondary disk', async () => {
     );
 
     assert(response.includes(`Secondary disk: ${secondaryDiskName} created.`));
+  });
+
+  it('should start replication', () => {
+    const response = execSync(
+      `node ./disks/startReplication.js ${secondaryDiskName} ${secondaryZone} ${primaryDiskName} ${primaryZone}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(
+      response.includes(
+        `Data replication from primary disk: ${primaryDiskName} to secondary disk: ${secondaryDiskName} started.`
+      )
+    );
+  });
+
+  it('should stop replication', () => {
+    const response = execSync(
+      `node ./disks/stopReplication.js ${primaryDiskName} ${primaryZone}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(
+      response.includes(
+        `Replication for primary disk: ${primaryDiskName} stopped.`
+      )
+    );
   });
 });

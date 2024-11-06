@@ -39,7 +39,7 @@ async function main(
   const secondaryProjectId = await regionDisksClient.getProjectId();
 
   // The region for the secondary disk.
-  // secondaryLocation = 'europe-west4';
+  // secondaryLocation = 'us-central1';
 
   // The name of the secondary disk.
   // secondaryDiskName = 'secondary-disk-name';
@@ -48,7 +48,7 @@ async function main(
   const primaryProjectId = await regionDisksClient.getProjectId();
 
   // The region for the primary disk.
-  // primaryLocation = 'europe-central2';
+  // primaryLocation = 'us-central2';
 
   // The name of the primary disk that the secondary disk receives data from.
   // primaryDiskName = 'primary-disk-name';

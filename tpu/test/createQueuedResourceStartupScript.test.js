@@ -16,46 +16,62 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createQueuedResourceStartupScript = require('../queuedResources/createQueuedResourceStartupScript.js');
 
 describe('TPU queued resource with start-up script', async () => {
-  const queuedResourceName = `queued-resource-startup-script-${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodeName = `node-startup-script-2a2b3c${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-east1-d';
-  const tpuType = 'v3-32';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const queuedResourceName = 'queued-resource-1';
+  const nodeName = 'node-name-1';
+  const zone = 'us-central1-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  after(() => {
-    // Delete queued resource
-    execSync(
-      `node ./queuedResources/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
-      {
-        cwd,
-      }
-    );
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
   });
 
-  it('should create queued resource', () => {
-    const metadata = {
-      'startup-script':
-        '#!/bin/bash\n          echo "Hello World" > /var/log/hello.log\n          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1',
-    };
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    const response = JSON.parse(
-      execSync(
-        `node ./queuedResources/createQueuedResourceStartupScript.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
-        {
-          cwd,
-        }
-      )
-    );
+  it('should create queued resource', async () => {
+    tpuClientMock.createQueuedResource = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            name: queuedResourceName,
+          },
+        ]),
+      },
+    ]);
 
-    assert.deepEqual(response.tpu.nodeSpec[0].node.metadata, metadata);
+    const response = await createQueuedResourceStartupScript(tpuClientMock);
+
+    sinon.match({
+      parent: `projects/${projectId}/locations/${zone}`,
+      queuedResource: {
+        name: queuedResourceName,
+        tpu: {
+          nodeSpec: [
+            {
+              parent: `projects/${projectId}/locations/${zone}`,
+              node: {
+                metadata: {
+                  'startup-script':
+                    '#!/bin/bash\n          echo "Hello World" > /var/log/hello.log\n          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1',
+                },
+              },
+              nodeId: nodeName,
+            },
+          ],
+        },
+      },
+      queuedResourceId: queuedResourceName,
+    });
+    assert(response.name.includes(queuedResourceName));
   });
 });

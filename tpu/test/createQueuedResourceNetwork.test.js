@@ -16,57 +16,66 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
-const cp = require('child_process');
-const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createQueuedResourceNetwork = require('../queuedResources/createQueuedResourceNetwork.js');
 
 describe('TPU queued resource with specified network', async () => {
-  const queuedResourceName = `queued-resource-with-network-${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodeName = `node-with-network-2a2b3c${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-south1-a';
-  const tpuType = 'v5litepod-1';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
-  let projectId;
+  const queuedResourceName = 'queued-resource-1';
+  const nodeName = 'node-name-1';
+  const zone = 'us-central1-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  before(async () => {
-    const tpuClient = new TpuClient();
-    projectId = await tpuClient.getProjectId();
-  });
-
-  after(() => {
-    // Delete queued resource
-    execSync(
-      `node ./queuedResources/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
-      {
-        cwd,
-      }
-    );
-  });
-
-  it('should create queued resource', () => {
-    const networkConfig = {
-      network: `projects/${projectId}/global/networks/compute-tpu-network`,
-      subnetwork: `projects/${projectId}/regions/europe-west4/subnetworks/compute-tpu-network`,
-      enableExternalIps: true,
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
     };
+  });
 
-    const response = JSON.parse(
-      execSync(
-        `node ./queuedResources/createQueuedResourceNetwork.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
-        {
-          cwd,
-        }
-      )
-    );
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    assert.deepEqual(
-      response.tpu.nodeSpec[0].node.networkConfig,
-      networkConfig
+  it('should create queued resource', async () => {
+    tpuClientMock.createQueuedResource = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            name: queuedResourceName,
+          },
+        ]),
+      },
+    ]);
+
+    const response = await createQueuedResourceNetwork(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.createQueuedResource,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+        queuedResource: {
+          name: queuedResourceName,
+          tpu: {
+            nodeSpec: [
+              sinon.match({
+                parent: `projects/${projectId}/locations/${zone}`,
+                node: {
+                  networkConfig: {
+                    network: `projects/${projectId}/global/networks/compute-tpu-network`,
+                    subnetwork: `projects/${projectId}/regions/europe-west4/subnetworks/compute-tpu-network`,
+                    enableExternalIps: true,
+                  },
+                },
+                nodeId: nodeName,
+              }),
+            ],
+          },
+        },
+        queuedResourceId: queuedResourceName,
+      })
     );
+    assert(response.name.includes(queuedResourceName));
   });
 });

@@ -16,44 +16,54 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createQueuedResourceTimeBound = require('../queuedResources/createQueuedResourceTimeBound.js');
 
 describe('TPU time bound queued resource', async () => {
-  const queuedResourceName = `queued-resource-time-bound-${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodeName = `node-time-bound-2a2b3c${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-west4-a';
-  const tpuType = 'v5litepod-1';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const queuedResourceName = 'queued-resource-1';
+  const zone = 'us-central1-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  after(() => {
-    // Delete queued resource
-    execSync(
-      `node ./queuedResources/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
-      {
-        cwd,
-      }
-    );
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
   });
 
-  it('should create queued resource', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./queuedResources/createQueuedResourceTimeBound.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
-        {
-          cwd,
-        }
-      )
-    );
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    assert.ok(response.queueingPolicy);
-    assert.ok(response.queueingPolicy.validAfterTime);
-    assert(typeof response.queueingPolicy.validAfterTime.seconds, 'string');
-    assert(typeof response.queueingPolicy.validAfterTime.nano, 'number');
+  it('should create queued resource', async () => {
+    tpuClientMock.createQueuedResource = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            name: queuedResourceName,
+          },
+        ]),
+      },
+    ]);
+
+    const response = await createQueuedResourceTimeBound(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.createQueuedResource,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+        queuedResource: {
+          queueingPolicy: {
+            validAfterDuration: {
+              seconds: 6 * 3600,
+            },
+          },
+        },
+        queuedResourceId: 'queued-resource-1',
+      })
+    );
+    assert(response.name.includes(queuedResourceName));
   });
 });

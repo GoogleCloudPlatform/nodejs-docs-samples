@@ -16,21 +16,17 @@
 
 'use strict';
 
-async function main(
-  nodeName,
-  queuedResourceName,
-  zone,
-  tpuType,
-  tpuSoftwareVersion
-) {
-  // [START tpu_queued_resources_create_network]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
+async function main(tpuClient) {
+  // [START tpu_queued_resources_network]
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
   const {Node, NetworkConfig, QueuedResource} =
     require('@google-cloud/tpu').protos.google.cloud.tpu.v2alpha1;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
@@ -42,27 +38,27 @@ async function main(
   const networkName = 'compute-tpu-network';
 
   // The region of the network, that you want the node to connect to.
-  const region = 'europe-west4';
+  const region = 'us-central1';
 
   // The name for your queued resource.
-  // queuedResourceName = 'queued-resource-1';
+  const queuedResourceName = 'queued-resource-1';
 
   // The name for your node.
-  // nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone in which to create the node.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'europe-west4-a';
+  const zone = `${zone}-a`;
 
   // The accelerator type that specifies the version and size of the node you want to create.
   // For more information about supported accelerator types for each TPU version,
   // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  // tpuType = 'v2-8';
+  const tpuType = 'v2-8';
 
   // Software version that specifies the version of the node runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  // tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
   async function callCreateQueuedResourceNetwork() {
     // Specify the network and subnetwork that you want to connect your TPU to.
@@ -112,13 +108,16 @@ async function main(
 
     // You can wait until TPU Node is READY,
     // and check its status using getTpuVm() from `tpu_vm_get` sample.
-    console.log(JSON.stringify(response));
+    return response;
   }
-  await callCreateQueuedResourceNetwork();
-  // [END tpu_queued_resources_create_network]
+  return await callCreateQueuedResourceNetwork();
+  // [END tpu_queued_resources_network]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

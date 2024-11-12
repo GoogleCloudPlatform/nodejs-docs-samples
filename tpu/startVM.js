@@ -16,25 +16,25 @@
 
 'use strict';
 
-async function main(nodeName, zone) {
+async function main(tpuClient) {
   // [START tpu_vm_start]
-  // Import TpuClient
-  const {TpuClient} = require('@google-cloud/tpu').v2;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
-  /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
-   */
+  // TODO(developer): Update these variables before running the sample.
   // Project ID or project number of the Google Cloud project you want to start a node.
   const projectId = await tpuClient.getProjectId();
 
   // The name of TPU to start.
-  //   nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone, where the TPU is created.
-  //   zone = 'europe-west4-a';
+  const zone = 'europe-west4-a';
 
   async function callStartTpuVM() {
     const request = {
@@ -42,17 +42,22 @@ async function main(nodeName, zone) {
     };
 
     const [operation] = await tpuClient.startNode(request);
+
     // Wait for the operation to complete.
-    await operation.promise();
+    const [response] = await operation.promise();
 
     console.log(`Node: ${nodeName} started.`);
+    return response;
   }
 
-  await callStartTpuVM();
+  return await callStartTpuVM();
   // [END tpu_vm_start]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

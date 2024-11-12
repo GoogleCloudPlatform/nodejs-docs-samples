@@ -16,25 +16,25 @@
 
 'use strict';
 
-async function main(nodeName, zone) {
+async function main(tpuClient) {
   // [START tpu_vm_stop]
-  // Import TpuClient
-  const {TpuClient} = require('@google-cloud/tpu').v2;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
-  /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
-   */
+  // TODO(developer): Update these variables before running the sample.
   // Project ID or project number of the Google Cloud project you want to stop a node.
   const projectId = await tpuClient.getProjectId();
 
   // The name of TPU to stop.
-  //   nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone, where the TPU is created.
-  //   zone = 'europe-west4-a';
+  const zone = 'europe-west4-a';
 
   async function callStopTpuVM() {
     const request = {
@@ -43,16 +43,20 @@ async function main(nodeName, zone) {
 
     const [operation] = await tpuClient.stopNode(request);
     // Wait for the operation to complete.
-    await operation.promise();
+    const [response] = await operation.promise();
 
     console.log(`Node: ${nodeName} stopped.`);
+    return response;
   }
 
-  await callStopTpuVM();
+  return await callStopTpuVM();
   // [END tpu_vm_stop]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

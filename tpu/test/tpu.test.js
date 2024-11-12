@@ -16,77 +16,162 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-const {getStaleNodes, deleteNode} = require('./util');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createVM = require('../createVM.js');
+const deleteVM = require('../deleteVM.js');
+const getVM = require('../getVM.js');
+const getVMList = require('../getVMList.js');
+const startVM = require('../startVM.js');
+const stopVM = require('../stopVM.js');
 
 describe('Compute tpu', async () => {
-  const nodePrefix = 'node-name-2a2b3c';
-  const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-west4-a';
-  const tpuType = 'v5litepod-1';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.11.1';
+  const nodeName = 'node-name-1';
+  const zone = 'europe-west4-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  after(async () => {
-    // Cleanup resources
-    const nodes = await getStaleNodes(nodePrefix);
-    await Promise.all(nodes.map(node => deleteNode(node.zone, node.nodeName)));
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
   });
 
-  it('should create a new tpu node', () => {
-    const response = execSync(
-      `node ./createVM.js ${nodeName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should create a new tpu node', async () => {
+    tpuClientMock.createNode = sinon.stub().resolves([
       {
-        cwd,
-      }
-    );
-    assert(response.includes(`TPU VM: ${nodeName} created.`));
-  });
+        promise: sinon.stub().resolves([
+          {
+            name: nodeName,
+          },
+        ]),
+      },
+    ]);
 
-  it('should return tpu node', () => {
-    const response = execSync(`node ./getVM.js ${nodeName} ${zone}`, {
-      cwd,
-    });
+    const response = await createVM(tpuClientMock);
 
-    assert(response.includes(`Node: ${nodeName} retrived.`));
-  });
-
-  it('should return list of tpu nodes', () => {
-    const response = JSON.parse(
-      execSync(`node ./getVMList.js ${zone}`, {
-        cwd,
+    sinon.assert.calledWith(
+      tpuClientMock.createNode,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+        node: {
+          name: nodeName,
+          zone,
+        },
+        nodeId: nodeName,
       })
     );
-
-    assert(Array.isArray(response));
+    assert(response.name.includes(nodeName));
   });
 
-  it('should stop tpu node', () => {
-    const response = execSync(`node ./stopVM.js ${nodeName} ${zone}`, {
-      cwd,
-    });
+  it('should return tpu node', async () => {
+    tpuClientMock.getNode = sinon.stub().resolves([
+      {
+        name: nodeName,
+      },
+    ]);
 
-    assert(response.includes(`Node: ${nodeName} stopped.`));
+    const response = await getVM(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.getNode,
+      sinon.match({
+        name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+      })
+    );
+    assert(response.name.includes(nodeName));
   });
 
-  it('should start tpu node', () => {
-    const response = execSync(`node ./startVM.js ${nodeName} ${zone}`, {
-      cwd,
-    });
+  it('should return list of tpu nodes', async () => {
+    const nodes = [
+      {
+        name: nodeName,
+      },
+      {
+        name: 'node-name-2',
+      },
+    ];
 
-    assert(response.includes(`Node: ${nodeName} started.`));
+    tpuClientMock.listNodes = sinon.stub().resolves([nodes]);
+    const response = await getVMList(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.listNodes,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+      })
+    );
+    assert.deepEqual(response, nodes);
   });
 
-  it('should delete tpu node', () => {
-    const response = execSync(`node ./deleteVM.js ${nodeName} ${zone}`, {
-      cwd,
-    });
+  it('should stop tpu node', async () => {
+    const message = `Node: ${nodeName} stopped.`;
+    tpuClientMock.stopNode = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            message,
+          },
+        ]),
+      },
+    ]);
+    const response = await stopVM(tpuClientMock);
 
-    assert(response.includes(`Node: ${nodeName} deleted.`));
+    sinon.assert.calledWith(
+      tpuClientMock.stopNode,
+      sinon.match({
+        name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+      })
+    );
+    assert(response.message.includes(message));
+  });
+
+  it('should start tpu node', async () => {
+    const message = `Node: ${nodeName} started.`;
+    tpuClientMock.startNode = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            message,
+          },
+        ]),
+      },
+    ]);
+    const response = await startVM(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.startNode,
+      sinon.match({
+        name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+      })
+    );
+    assert(response.message.includes(message));
+  });
+
+  it('should delete tpu node', async () => {
+    const message = `Node: ${nodeName} deleted.`;
+    tpuClientMock.deleteNode = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            message,
+          },
+        ]),
+      },
+    ]);
+    const response = await deleteVM(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.deleteNode,
+      sinon.match({
+        name: `projects/${projectId}/locations/${zone}/nodes/${nodeName}`,
+      })
+    );
+    assert(response.message.includes(message));
   });
 });

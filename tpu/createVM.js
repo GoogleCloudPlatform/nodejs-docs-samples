@@ -16,19 +16,19 @@
 
 'use strict';
 
-async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
+async function main(tpuClient) {
   // [START tpu_vm_create]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2;
   const {Node, NetworkConfig} =
     require('@google-cloud/tpu').protos.google.cloud.tpu.v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
-  /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
-   */
+  // TODO(developer): Update below line before running the sample.
   // Project ID or project number of the Google Cloud project you want to create a node.
   const projectId = await tpuClient.getProjectId();
 
@@ -39,21 +39,21 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
   const region = 'europe-west4';
 
   // The name for your TPU.
-  // nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'europe-west4-a';
+  const zone = 'europe-west4-a';
 
   // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
   // For more information about supported accelerator types for each TPU version,
   // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  // tpuType = 'v2-8';
+  const tpuType = 'v2-8';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  // tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
 
   async function callCreateTpuVM() {
     // Create a node
@@ -78,14 +78,17 @@ async function main(nodeName, zone, tpuType, tpuSoftwareVersion) {
     // Wait for the create operation to complete.
     const [response] = await operation.promise();
 
-    console.log(JSON.stringify(response));
     console.log(`TPU VM: ${nodeName} created.`);
+    return response;
   }
-  await callCreateTpuVM();
+  return await callCreateTpuVM();
   // [END tpu_vm_create]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

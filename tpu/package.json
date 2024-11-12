@@ -14,7 +14,8 @@
     "test": "c8 mocha -p -j 2 test --timeout 1200000"
   },
   "dependencies": {
-    "@google-cloud/tpu": "^3.5.0"
+    "@google-cloud/tpu": "^3.5.0",
+    "sinon": "^19.0.2"
   },
   "devDependencies": {
     "c8": "^10.0.0",

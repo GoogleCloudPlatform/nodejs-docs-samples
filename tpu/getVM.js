@@ -16,25 +16,25 @@
 
 'use strict';
 
-async function main(nodeName, zone) {
+async function main(tpuClient) {
   // [START tpu_vm_get]
-  // Import TpuClient
-  const {TpuClient} = require('@google-cloud/tpu').v2;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
-  /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
-   */
+  // TODO(developer): Update these variables before running the sample.
   // Project ID or project number of the Google Cloud project you want to retrive a node.
   const projectId = await tpuClient.getProjectId();
 
   // The name of TPU to retrive.
-  // nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone, where the TPU is created.
-  // zone = 'europe-west4-a';
+  const zone = 'europe-west4-a';
 
   async function callGetTpuVM() {
     const request = {
@@ -44,14 +44,17 @@ async function main(nodeName, zone) {
     const [response] = await tpuClient.getNode(request);
 
     console.log(`Node: ${nodeName} retrived.`);
-    console.log(JSON.stringify(response));
+    return response;
   }
 
-  await callGetTpuVM();
+  return await callGetTpuVM();
   // [END tpu_vm_get]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

@@ -16,25 +16,27 @@
 
 'use strict';
 
-async function main(queuedResourceName, zone) {
+async function main(tpuClient) {
   // [START tpu_queued_resources_delete_force]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project, where you want to delete node.
   const projectId = await tpuClient.getProjectId();
 
   // The name of queued resource.
-  // queuedResourceName = 'queued-resource-1';
+  const queuedResourceName = 'queued-resource-1';
 
   // The zone of your queued resource.
-  // zone = 'europe-west4-a';
+  const zone = 'us-central1-f';
 
   async function callForceDeleteQueuedResource() {
     const request = {
@@ -45,15 +47,19 @@ async function main(queuedResourceName, zone) {
     const [operation] = await tpuClient.deleteQueuedResource(request);
 
     // Wait for the delete operation to complete.
-    await operation.promise();
+    const [response] = await operation.promise();
 
     console.log(`Queued resource ${queuedResourceName} deletion forced.`);
+    return response;
   }
-  await callForceDeleteQueuedResource();
+  return await callForceDeleteQueuedResource();
   // [END tpu_queued_resources_delete_force]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

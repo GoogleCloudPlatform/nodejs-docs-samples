@@ -16,13 +16,15 @@
 
 'use strict';
 
-async function main(zone) {
+async function main(tpuClient) {
   // [START tpu_queued_resources_list]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
@@ -31,7 +33,7 @@ async function main(zone) {
   const projectId = await tpuClient.getProjectId();
 
   // The zone from which the Queued Resources are retrived.
-  // zone = 'europe-west4-a';
+  const zone = 'us-central1-f';
 
   async function callGetQueuedResourcesList() {
     const request = {
@@ -40,13 +42,16 @@ async function main(zone) {
 
     const [response] = await tpuClient.listQueuedResources(request);
 
-    console.log(JSON.stringify(response));
+    return response;
   }
-  await callGetQueuedResourcesList();
+  return await callGetQueuedResourcesList();
   // [END tpu_queued_resources_list]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

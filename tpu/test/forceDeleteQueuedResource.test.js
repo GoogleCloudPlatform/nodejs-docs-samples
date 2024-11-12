@@ -16,42 +16,48 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {describe, it} = require('mocha');
-const cp = require('child_process');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const forceDeleteQueuedResource = require('../queuedResources/forceDeleteQueuedResource.js');
 
 describe('TPU queued resource force deletion', async () => {
-  const queuedResourceName = `queued-resource-force-delete-${Math.floor(Math.random() * 1000 + 1)}`;
-  const nodePrefix = 'node-force-delete-2a2b3c';
-  const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-central1-c';
-  const tpuType = 'v2-8';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.14.1';
+  const queuedResourceName = 'queued-resource-1';
+  const zone = 'us-central1-f';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  it('should force queued resource deletion', () => {
-    // Create queued resource
-    execSync(
-      `node ./queuedResources/createQueuedResource.js ${nodeName} ${queuedResourceName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should force queued resource deletion', async () => {
+    const message = `Queued resource ${queuedResourceName} deletion forced.`;
+    tpuClientMock.deleteQueuedResource = sinon.stub().resolves([
       {
-        cwd,
-      }
-    );
+        promise: sinon.stub().resolves([
+          {
+            message,
+          },
+        ]),
+      },
+    ]);
 
-    const response = execSync(
-      `node ./queuedResources/forceDeleteQueuedResource.js ${queuedResourceName} ${zone}`,
-      {
-        cwd,
-      }
-    );
+    const response = await forceDeleteQueuedResource(tpuClientMock);
 
-    assert(
-      response.includes(
-        `Queued resource ${queuedResourceName} deletion forced.`
-      )
+    sinon.assert.calledWith(
+      tpuClientMock.deleteQueuedResource,
+      sinon.match({
+        name: `projects/${projectId}/locations/${zone}/queuedResources/${queuedResourceName}`,
+        force: true,
+      })
     );
+    assert(response.message.includes(message));
   });
 });

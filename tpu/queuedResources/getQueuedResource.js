@@ -16,25 +16,27 @@
 
 'use strict';
 
-async function main(queuedResourceName, zone) {
+async function main(tpuClient) {
   // [START tpu_queued_resources_get]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2alpha1;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project, where you want to retrive node.
   const projectId = await tpuClient.getProjectId();
 
   // The name of queued resource.
-  // queuedResourceName = 'queued-resource-1';
+  const queuedResourceName = 'queued-resource-1';
 
   // The zone of your queued resource.
-  // zone = 'europe-west4-a';
+  const zone = 'us-central1-f';
 
   async function callGetQueuedResource() {
     const request = {
@@ -43,14 +45,17 @@ async function main(queuedResourceName, zone) {
 
     const [response] = await tpuClient.getQueuedResource(request);
 
-    console.log(JSON.stringify(response));
     console.log(`Queued resource ${queuedResourceName} retrived.`);
+    return response;
   }
-  await callGetQueuedResource();
+  return await callGetQueuedResource();
   // [END tpu_queued_resources_get]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

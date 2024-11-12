@@ -16,43 +16,54 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-const {getStaleNodes, deleteNode} = require('./util');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createStartupScriptVM = require('../createStartupScriptVM.js');
 
 describe('Compute tpu', async () => {
-  const nodePrefix = 'node-name-startup-script-2a2b3c';
-  const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'us-east1-d';
-  const tpuType = 'v3-32';
-  const tpuSoftwareVersion = 'tpu-vm-base';
+  const nodeName = 'node-name-1';
+  const zone = 'europe-west4-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  after(async () => {
-    // Clean-up resources
-    const nodes = await getStaleNodes(nodePrefix);
-    await Promise.all(nodes.map(node => deleteNode(node.zone, node.nodeName)));
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
   });
 
-  it('should create a new tpu with startup script', () => {
-    const metadata = {
-      'startup-script':
-        '#!/bin/bash\n          echo "Hello World" > /var/log/hello.log\n          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1',
-    };
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    const response = JSON.parse(
-      execSync(
-        `node ./createStartupScriptVM.js ${nodeName} ${zone} ${tpuType} ${tpuSoftwareVersion}`,
-        {
-          cwd,
-        }
-      )
+  it('should create a new tpu with startup script', async () => {
+    tpuClientMock.createNode = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            name: nodeName,
+          },
+        ]),
+      },
+    ]);
+
+    const response = await createStartupScriptVM(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.createNode,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+        node: {
+          name: nodeName,
+          metadata: {
+            'startup-script':
+              '#!/bin/bash\n          echo "Hello World" > /var/log/hello.log\n          sudo pip3 install --upgrade numpy >> /var/log/hello.log 2>&1',
+          },
+        },
+        nodeId: nodeName,
+      })
     );
-
-    assert.deepEqual(response.metadata, metadata);
+    assert(response.name.includes(nodeName));
   });
 });

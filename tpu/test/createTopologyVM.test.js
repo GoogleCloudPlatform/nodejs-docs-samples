@@ -16,39 +16,51 @@
 
 'use strict';
 
-const path = require('path');
 const assert = require('node:assert/strict');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-const {getStaleNodes, deleteNode} = require('./util');
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-const cwd = path.join(__dirname, '..');
+const {beforeEach, afterEach, describe, it} = require('mocha');
+const sinon = require('sinon');
+const createTopologyVM = require('../createTopologyVM.js');
 
 describe('Compute tpu with topology', async () => {
-  const nodePrefix = 'topology-node-name-2a2b3c';
-  const nodeName = `${nodePrefix}${Math.floor(Math.random() * 1000 + 1)}`;
-  const zone = 'asia-east1-c';
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.12.1';
+  const nodeName = 'node-name-1';
+  const zone = 'europe-west4-a';
+  const projectId = 'project_id';
+  let tpuClientMock;
 
-  after(async () => {
-    // Clean-up resources
-    const nodes = await getStaleNodes(nodePrefix);
-    await Promise.all(nodes.map(node => deleteNode(node.zone, node.nodeName)));
+  beforeEach(() => {
+    tpuClientMock = {
+      getProjectId: sinon.stub().resolves(projectId),
+    };
   });
 
-  it('should create a new tpu with topology', () => {
-    const acceleratorConfig = {type: 'V2', topology: '2x2'};
+  afterEach(() => {
+    sinon.restore();
+  });
 
-    const response = JSON.parse(
-      execSync(
-        `node ./createTopologyVM.js ${nodeName} ${zone} ${tpuSoftwareVersion}`,
-        {
-          cwd,
-        }
-      )
+  it('should create a new tpu with topology', async () => {
+    tpuClientMock.createNode = sinon.stub().resolves([
+      {
+        promise: sinon.stub().resolves([
+          {
+            name: nodeName,
+          },
+        ]),
+      },
+    ]);
+
+    const response = await createTopologyVM(tpuClientMock);
+
+    sinon.assert.calledWith(
+      tpuClientMock.createNode,
+      sinon.match({
+        parent: `projects/${projectId}/locations/${zone}`,
+        node: {
+          name: nodeName,
+          acceleratorConfig: {type: 2, topology: '2x2'},
+        },
+        nodeId: nodeName,
+      })
     );
-
-    assert.deepEqual(response.acceleratorConfig, acceleratorConfig);
+    assert(response.name.includes(nodeName));
   });
 });

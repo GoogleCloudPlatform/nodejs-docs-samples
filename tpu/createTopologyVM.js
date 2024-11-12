@@ -16,18 +16,21 @@
 
 'use strict';
 
-async function main(nodeName, zone, tpuSoftwareVersion) {
+async function main(tpuClient) {
   // [START tpu_vm_create_topology]
-  // Import the TPU library
-  const {TpuClient} = require('@google-cloud/tpu').v2;
+  // Import the TPUClient
+  // TODO(developer): Uncomment below line before running the sample.
+  // const {TpuClient} = require('@google-cloud/tpu').v2;
+
   const {Node, NetworkConfig, AcceleratorConfig} =
     require('@google-cloud/tpu').protos.google.cloud.tpu.v2;
 
   // Instantiate a tpuClient
-  const tpuClient = new TpuClient();
+  // TODO(developer): Uncomment below line before running the sample.
+  // tpuClient = new TpuClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Update these variables before running the sample.
    */
   // Project ID or project number of the Google Cloud project you want to create a node.
   const projectId = await tpuClient.getProjectId();
@@ -39,16 +42,16 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
   const region = 'europe-west4';
 
   // The name for your TPU.
-  // nodeName = 'node-name-1';
+  const nodeName = 'node-name-1';
 
   // The zone in which to create the TPU.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  // zone = 'europe-west4-a';
+  const zone = 'europe-west4-a';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  // tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
+  const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
 
   // The version of the Cloud TPU you want to create.
   // Available options: TYPE_UNSPECIFIED = 0, V2 = 2, V3 = 4, V4 = 7
@@ -74,7 +77,7 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
       }),
       acceleratorConfig: new AcceleratorConfig({
         type: tpuVersion,
-        topology: topology,
+        topology,
       }),
     });
 
@@ -87,12 +90,16 @@ async function main(nodeName, zone, tpuSoftwareVersion) {
     const [response] = await operation.promise();
 
     console.log(JSON.stringify(response));
+    return response;
   }
-  await callCreateTpuVMTopology();
+  return await callCreateTpuVMTopology();
   // [END tpu_vm_create_topology]
 }
 
-main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
-});
+module.exports = main;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// main(...process.argv.slice(2)).catch(err => {
+//   console.error(err);
+//   process.exitCode = 1;
+// });

@@ -25,16 +25,18 @@ async function main(consistencyGroupName, region) {
   const resourcePoliciesClient = new computeLib.ResourcePoliciesClient();
   // Instantiate a regionOperationsClient
   const regionOperationsClient = new computeLib.RegionOperationsClient();
+
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The project that contains the consistency group.
-  const projectId = await resourcePoliciesClient.getProjectId();
+  // const projectId = await resourcePoliciesClient.getProjectId();
+  const projectId = 'jgrycz-softserve-project';
 
-  // The region of the consistency group
+  // The region of the consistency group.
   // region = 'europe-central2';
 
-  // The name of the consistency group
+  // The name of the consistency group.
   // consistencyGroupName = 'consistency-group-name';
 
   async function callCreateConsistencyGroup() {

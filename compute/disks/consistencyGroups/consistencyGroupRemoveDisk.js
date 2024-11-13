@@ -22,12 +22,12 @@ async function main(
   diskName,
   diskLocation
 ) {
-  // [START compute_consistency_group_add_disk]
+  // [START compute_consistency_group_remove_disk]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
 
-  // If you want to add regional disk,
+  // If you want to remove regional disk,
   // you should use: RegionDisksClient and RegionOperationsClient.
   // Instantiate a disksClient
   const disksClient = new computeLib.DisksClient();
@@ -53,14 +53,14 @@ async function main(
   // The region of the consistency group.
   // consistencyGroupLocation = 'europe-central2';
 
-  async function callAddDiskToConsistencyGroup() {
-    const [response] = await disksClient.addResourcePolicies({
+  async function callDeleteDiskFromConsistencyGroup() {
+    const [response] = await disksClient.removeResourcePolicies({
       disk: diskName,
       project: projectId,
       // If you use RegionDisksClient, pass region as an argument instead of zone.
       zone: diskLocation,
-      disksAddResourcePoliciesRequestResource:
-        new compute.DisksAddResourcePoliciesRequest({
+      disksRemoveResourcePoliciesRequestResource:
+        new compute.DisksRemoveResourcePoliciesRequest({
           resourcePolicies: [
             `https://www.googleapis.com/compute/v1/projects/${projectId}/regions/${consistencyGroupLocation}/resourcePolicies/${consistencyGroupName}`,
           ],
@@ -69,7 +69,7 @@ async function main(
 
     let operation = response.latestResponse;
 
-    // Wait for the add disk operation to complete.
+    // Wait for the delete disk operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({
         operation: operation.name,
@@ -80,12 +80,12 @@ async function main(
     }
 
     console.log(
-      `Disk: ${diskName} added to consistency group: ${consistencyGroupName}.`
+      `Disk: ${diskName} deleted from consistency group: ${consistencyGroupName}.`
     );
   }
 
-  await callAddDiskToConsistencyGroup();
-  // [END compute_consistency_group_add_disk]
+  await callDeleteDiskFromConsistencyGroup();
+  // [END compute_consistency_group_remove_disk]
 }
 
 main(...process.argv.slice(2)).catch(err => {

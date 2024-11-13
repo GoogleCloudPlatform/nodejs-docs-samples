@@ -57,21 +57,21 @@ async function createDisk(diskName, zone, projectId) {
 }
 describe('Consistency group', async () => {
   const consistencyGroupName = `consistency-group-name-${uuid.v4()}`;
-  const diskName = `disk-name-${uuid.v4()}`;
+  const prefix = 'disk-name';
+  const diskName = `${prefix}-${uuid.v4()}`;
   const diskLocation = 'europe-central2-a';
   const region = 'europe-central2';
   let projectId;
 
   before(async () => {
-    projectId = 'jgrycz-softserve-project';
-    // projectId = await disksClient.getProjectId();
+    projectId = await disksClient.getProjectId();
     await createDisk(diskName, diskLocation, projectId);
   });
 
   after(async () => {
     // Cleanup resources
-    // const disks = await getStaleDisks(prefix);
-    // await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
+    const disks = await getStaleDisks(prefix);
+    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
   });
 
   it('should create a new consistency group', () => {
@@ -102,16 +102,31 @@ describe('Consistency group', async () => {
     );
   });
 
-  // it('should delete consistency group', () => {
-  //   const response = execSync(
-  //     `node ./disks/consistencyGroups/deleteConsistencyGroup.js ${consistencyGroupName} ${region}`,
-  //     {
-  //       cwd,
-  //     }
-  //   );
+  it('should delete disk from consistency group', () => {
+    const response = execSync(
+      `node ./disks/consistencyGroups/consistencyGroupRemoveDisk.js ${consistencyGroupName} ${region} ${diskName} ${diskLocation}`,
+      {
+        cwd,
+      }
+    );
 
-  //   assert(
-  //     response.includes(`Consistency group: ${consistencyGroupName} deleted.`)
-  //   );
-  // });
+    assert(
+      response.includes(
+        `Disk: ${diskName} deleted from consistency group: ${consistencyGroupName}.`
+      )
+    );
+  });
+
+  it('should delete consistency group', () => {
+    const response = execSync(
+      `node ./disks/consistencyGroups/deleteConsistencyGroup.js ${consistencyGroupName} ${region}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(
+      response.includes(`Consistency group: ${consistencyGroupName} deleted.`)
+    );
+  });
 });

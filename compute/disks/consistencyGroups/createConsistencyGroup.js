@@ -26,13 +26,12 @@ async function main(consistencyGroupName, region) {
   const resourcePoliciesClient = new computeLib.ResourcePoliciesClient();
   // Instantiate a regionOperationsClient
   const regionOperationsClient = new computeLib.RegionOperationsClient();
-  const projectId = 'jgrycz-softserve-project';
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The project that contains the consistency group.
-  // const projectId = await resourcePoliciesClient.getProjectId();
+  const projectId = await resourcePoliciesClient.getProjectId();
 
   // The region for the consistency group.
   // If you want to add primary disks to consistency group, use the same region as the primary disks.

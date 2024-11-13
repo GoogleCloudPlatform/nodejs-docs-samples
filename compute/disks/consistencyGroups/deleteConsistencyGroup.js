@@ -30,8 +30,7 @@ async function main(consistencyGroupName, region) {
    * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The project that contains the consistency group.
-  // const projectId = await resourcePoliciesClient.getProjectId();
-  const projectId = 'jgrycz-softserve-project';
+  const projectId = await resourcePoliciesClient.getProjectId();
 
   // The region of the consistency group.
   // region = 'europe-central2';

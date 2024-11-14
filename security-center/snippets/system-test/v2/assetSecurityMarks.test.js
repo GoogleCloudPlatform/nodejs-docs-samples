@@ -42,7 +42,7 @@ describe('client with security marks for assets', async () => {
     console.log('data %j', data);
   });
   it('client can add security marks to asset.', () => {
-    const output = exec(`node v2/addSecurityMarks.js ${data.assetName}`);
+    const output = execSync(`node v2/addSecurityMarks.js ${data.assetName}`).toString();
     assert.include(output, data.assetName);
     assert.match(output, /key_a/);
     assert.match(output, /value_a/);
@@ -53,9 +53,9 @@ describe('client with security marks for assets', async () => {
 
   it('client can add and delete security marks', () => {
     // Ensure marks are set.
-    exec(`node v2/addSecurityMarks.js ${data.assetName}`);
+    execSync(`node v2/addSecurityMarks.js ${data.assetName}`).toString();
 
-    const output = exec(`node v2/addDeleteSecurityMarks.js ${data.assetName}`);
+    const output = execSync(`node v2/addDeleteSecurityMarks.js ${data.assetName}`).toString();
     assert.match(output, /key_a/);
     assert.match(output, /new_value_a/);
     assert.notMatch(output, /key_b/);
@@ -64,11 +64,11 @@ describe('client with security marks for assets', async () => {
 
   it('client can delete security marks', () => {
     // Ensure marks are set.
-    exec(`node v2/addSecurityMarks.js ${data.assetName}`);
+    execSync(`node v2/addSecurityMarks.js ${data.assetName}`).toString();
 
-    const output = exec(
+    const output = execSync(
       `node v2/deleteAssetsSecurityMarks.js ${data.assetName}`
-    );
+    ).toString();
     assert.notMatch(output, /key_a/);
     assert.notMatch(output, /value_a/);
     assert.notMatch(output, /key_b/);

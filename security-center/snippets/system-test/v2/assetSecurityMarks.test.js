@@ -31,8 +31,7 @@ describe('client with security marks for assets', async () => {
     const [assetResults] = await client.listAssets({
       parent: client.organizationPath(organizationId),
     });
-    const randomAsset =
-      assetResults[Math.floor(Math.random() * assetResults.length)].asset;
+    const randomAsset = assetResults[0].asset;
     console.log('random %j', randomAsset);
     data = {
       orgId: organizationId,

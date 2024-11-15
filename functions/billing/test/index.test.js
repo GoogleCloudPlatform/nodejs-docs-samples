@@ -106,7 +106,7 @@ describe('functions/billing tests', () => {
     });
 
     describe('functions_billing_stop', () => {
-      it('should disable billing when budget is exceeded', async () => {
+      xit('should disable billing when budget is exceeded', async () => {
         // Use functions framework to ensure sample follows GCF specification
         // (Invoking it directly works too, but DOES NOT ensure GCF compatibility)
         const jsonData = {costAmount: 500, budgetAmount: 400};

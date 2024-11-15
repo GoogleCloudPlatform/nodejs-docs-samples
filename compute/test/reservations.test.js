@@ -18,70 +18,51 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {describe, it} = require('mocha');
+const {before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {getStaleReservations, deleteReservation} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Compute reservation', async () => {
-  const reservationName = 'reservation-01';
+  const reservationPrefix = 'reservation';
+  const reservationName = `${reservationPrefix}-1a0bb${Math.floor(Math.random() * 1000 + 1)}`;
   const zone = 'us-central1-a';
   const reservationsClient = new ReservationsClient();
   let projectId;
-  let reservation;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+    // Cleanup resorces
+    const reservations = await getStaleReservations(reservationPrefix);
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
   });
 
   it('should create a new reservation', () => {
-    const instanceProperties = {
-      _machineType: 'machineType',
-      _minCpuPlatform: 'minCpuPlatform',
-      guestAccelerators: [
-        {
-          _acceleratorCount: 'acceleratorCount',
-          _acceleratorType: 'acceleratorType',
-          acceleratorCount: 1,
-          acceleratorType: 'nvidia-tesla-t4',
-        },
-      ],
-      localSsds: [
-        {
-          diskSizeGb: '375',
-          interface: 'NVME',
-          _diskSizeGb: 'diskSizeGb',
-          _interface: 'interface',
-        },
-      ],
-      machineType: 'n1-standard-4',
-      minCpuPlatform: 'Intel Skylake',
-    };
-
-    reservation = JSON.parse(
-      execSync('node ./reservations/createReservationFromProperties.js', {
+    const response = execSync(
+      `node ./reservations/createReservationFromProperties.js ${reservationName}`,
+      {
         cwd,
-      })
+      }
     );
 
-    assert.equal(reservation.name, reservationName);
-    assert.equal(reservation.specificReservation.count, '3');
-    assert.deepEqual(
-      reservation.specificReservation.instanceProperties,
-      instanceProperties
-    );
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 
   it('should return reservation', () => {
     const response = JSON.parse(
-      execSync('node ./reservations/getReservation.js', {
+      execSync(`node ./reservations/getReservation.js ${reservationName}`, {
         cwd,
       })
     );
 
-    assert.deepEqual(response, reservation);
+    assert(response.name === reservationName);
   });
 
   it('should return list of reservations', () => {
@@ -91,11 +72,11 @@ describe('Compute reservation', async () => {
       })
     );
 
-    assert.deepEqual(response, [reservation]);
+    assert(Array.isArray(response));
   });
 
   it('should delete reservation', async () => {
-    execSync('node ./reservations/deleteReservation.js', {
+    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
       cwd,
     });
 

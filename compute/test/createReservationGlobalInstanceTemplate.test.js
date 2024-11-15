@@ -21,19 +21,28 @@ const assert = require('node:assert/strict');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
+const {getStaleReservations, deleteReservation} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Create compute reservation using global instance template', async () => {
-  const reservationName = 'reservation-01';
-  const instanceTemplateName = 'pernament-global-template-name';
+  const reservationPrefix = 'global-reservation';
+  const reservationName = `${reservationPrefix}-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
+  const instanceTemplateName = `pernament-global-template-68ef06a${Math.floor(Math.random() * 1000 + 1)}`;
   const location = 'global';
   const reservationsClient = new ReservationsClient();
   let projectId;
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+    // Cleanup resources
+    const reservations = await getStaleReservations(reservationPrefix);
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
     // Create template
     execSync(
       `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
@@ -45,7 +54,7 @@ describe('Create compute reservation using global instance template', async () =
 
   after(() => {
     // Delete reservation
-    execSync('node ./reservations/deleteReservation.js', {
+    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
       cwd,
     });
     // Delete template
@@ -58,20 +67,13 @@ describe('Create compute reservation using global instance template', async () =
   });
 
   it('should create a new reservation', () => {
-    const response = JSON.parse(
-      execSync(
-        `node ./reservations/createReservationInstanceTemplate.js ${location} ${instanceTemplateName}`,
-        {
-          cwd,
-        }
-      )
+    const response = execSync(
+      `node ./reservations/createReservationInstanceTemplate.js ${reservationName} ${location} ${instanceTemplateName}`,
+      {
+        cwd,
+      }
     );
 
-    assert.equal(response.name, reservationName);
-    assert.equal(response.specificReservation.count, '3');
-    assert.equal(
-      response.specificReservation.sourceInstanceTemplate,
-      `https://www.googleapis.com/compute/v1/projects/${projectId}/${location}/instanceTemplates/${instanceTemplateName}`
-    );
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 });

@@ -16,7 +16,7 @@
 
 'use strict';
 
-async function main() {
+async function main(reservationName) {
   // [START compute_reservation_create]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -28,14 +28,14 @@ async function main() {
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update these variables before running the sample.
+   * TODO(developer): Update/uncomment these variables before running the sample.
    */
   // The ID of the project where you want to reserve resources.
   const projectId = await reservationsClient.getProjectId();
   // The zone in which to reserve resources.
   const zone = 'us-central1-a';
   // The name of the reservation to create.
-  const reservationName = 'reservation-01';
+  // reservationName = 'reservation-01';
   // The number of VMs to reserve.
   const vmsNumber = 3;
   // Machine type to use for each VM.
@@ -50,25 +50,25 @@ async function main() {
         // To have the reserved VMs use a specific minimum CPU platform instead of the zone's default CPU platform.
         minCpuPlatform: 'Intel Skylake',
         // If you want to attach GPUs to your reserved N1 VMs, update and uncomment guestAccelerators if needed.
-        guestAccelerators: [
-          {
-            // The number of GPUs to add per reserved VM.
-            acceleratorCount: 1,
-            // Supported GPU model for N1 VMs. Ensure that your chosen GPU model is available in the zone,
-            // where you want to reserve resources.
-            acceleratorType: 'nvidia-tesla-t4',
-          },
-        ],
+        // guestAccelerators: [
+        //   {
+        //     // The number of GPUs to add per reserved VM.
+        //     acceleratorCount: 1,
+        //     // Supported GPU model for N1 VMs. Ensure that your chosen GPU model is available in the zone,
+        //     // where you want to reserve resources.
+        //     acceleratorType: 'nvidia-tesla-t4',
+        //   },
+        // ],
         // If you want to add local SSD disks to each reserved VM, update and uncomment localSsds if needed.
         // You can specify up to 24 Local SSD disks. Each Local SSD disk is 375 GB.
-        localSsds: [
-          {
-            diskSizeGb: 375,
-            // The type of interface you want each Local SSD disk to use. Specify one of the following values: NVME or SCSI.
-            // Make sure that the machine type you specify for the reserved VMs supports the chosen disk interfaces.
-            interface: 'NVME',
-          },
-        ],
+        // localSsds: [
+        //   {
+        //     diskSizeGb: 375,
+        //     // The type of interface you want each Local SSD disk to use. Specify one of the following values: NVME or SCSI.
+        //     // Make sure that the machine type you specify for the reserved VMs supports the chosen disk interfaces.
+        //     interface: 'NVME',
+        //   },
+        // ],
       },
     });
 
@@ -77,6 +77,9 @@ async function main() {
       name: reservationName,
       zone,
       specificReservation,
+      // To specify that only VMs that specifically target this reservation can consume it,
+      // set specificReservationRequired field to true.
+      specificReservationRequired: true,
     });
 
     const [response] = await reservationsClient.insert({
@@ -96,22 +99,14 @@ async function main() {
       });
     }
 
-    const createdReservation = (
-      await reservationsClient.get({
-        project: projectId,
-        zone,
-        reservation: reservationName,
-      })
-    )[0];
-
-    console.log(JSON.stringify(createdReservation));
+    console.log(`Reservation: ${reservationName} created.`);
   }
 
   await callCreateComputeReservationFromProperties();
   // [END compute_reservation_create]
 }
 
-main().catch(err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err);
   process.exitCode = 1;
 });

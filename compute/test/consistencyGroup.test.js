@@ -102,6 +102,19 @@ describe('Consistency group', async () => {
     );
   });
 
+  it('should return disks from consistency group', () => {
+    const response = JSON.parse(
+      execSync(
+        `node ./disks/consistencyGroups/consistencyGroupDisksList.js ${consistencyGroupName} ${region} ${diskLocation}`,
+        {
+          cwd,
+        }
+      )
+    );
+
+    assert(Array.isArray(response));
+  });
+
   it('should delete disk from consistency group', () => {
     const response = execSync(
       `node ./disks/consistencyGroups/consistencyGroupRemoveDisk.js ${consistencyGroupName} ${region} ${diskName} ${diskLocation}`,

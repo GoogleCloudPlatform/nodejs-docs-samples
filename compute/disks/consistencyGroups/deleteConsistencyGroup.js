@@ -60,7 +60,7 @@ async function callDeleteConsistencyGroup() {
   }
 
   await callCreateConsistencyGroup();
-  // [END compute_consistency_group_create]
+// [END compute_consistency_group_delete]
 }
 
 main(...process.argv.slice(2)).catch(err => {

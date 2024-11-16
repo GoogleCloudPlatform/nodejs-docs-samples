@@ -17,7 +17,7 @@
 'use strict';
 
 async function main(consistencyGroupName, region) {
-  // [START compute_consistency_group_create]
+// [START compute_consistency_group_delete]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
 

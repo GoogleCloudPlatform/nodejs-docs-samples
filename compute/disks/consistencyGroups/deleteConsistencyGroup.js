@@ -38,7 +38,7 @@ async function main(consistencyGroupName, region) {
   // The name of the consistency group.
   // consistencyGroupName = 'consistency-group-name';
 
-  async function callCreateConsistencyGroup() {
+async function callDeleteConsistencyGroup() {
     const [response] = await resourcePoliciesClient.delete({
       project: projectId,
       region,

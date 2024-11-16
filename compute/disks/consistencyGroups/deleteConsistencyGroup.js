@@ -17,7 +17,8 @@
 'use strict';
 
 async function main(consistencyGroupName, region) {
-// [START compute_consistency_group_delete]
+  // [START compute_consistency_group_delete]
+
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
 
@@ -38,7 +39,8 @@ async function main(consistencyGroupName, region) {
   // The name of the consistency group.
   // consistencyGroupName = 'consistency-group-name';
 
-async function callDeleteConsistencyGroup() {
+  async function callDeleteConsistencyGroup() {
+    // Delete a resourcePolicyResource
     const [response] = await resourcePoliciesClient.delete({
       project: projectId,
       region,
@@ -59,8 +61,9 @@ async function callDeleteConsistencyGroup() {
     console.log(`Consistency group: ${consistencyGroupName} deleted.`);
   }
 
-  await callCreateConsistencyGroup();
-// [END compute_consistency_group_delete]
+  await callDeleteConsistencyGroup();
+
+  // [END compute_consistency_group_delete]
 }
 
 main(...process.argv.slice(2)).catch(err => {

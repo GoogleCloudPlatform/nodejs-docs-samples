@@ -14,7 +14,7 @@
 
 # This file is only used for packaging and deployment purposes.
 
-FROM node:20-slim
+FROM node:22-slim
 
 ARG GOOGLE_CLOUD_PROJECT
 ENV GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}

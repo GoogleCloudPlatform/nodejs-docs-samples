@@ -20,7 +20,7 @@
 // [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
-  model = 'text-embedding-004',
+  model = 'text-embedding-005',
   texts = 'banana bread?;banana muffins?',
   task = 'QUESTION_ANSWERING',
   dimensionality = 0,

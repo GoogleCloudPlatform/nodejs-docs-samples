@@ -26,8 +26,8 @@ const {PubSub} = require('@google-cloud/pubsub');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
 // TODO(developers): update for your own environment
-const organizationId = '1081635000895';
-const projectId = 'long-door-651';
+const organizationId = process.env.GCLOUD_ORGANIZATION;
+const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const location = 'global';
 
 describe('Client with Notifications v2', async () => {
@@ -41,7 +41,7 @@ describe('Client with Notifications v2', async () => {
 
   before(async () => {
     const configId = 'notif-config-test-node-create-' + uuidv1();
-    topicName = 'test_topic';
+    topicName = 'notifications-sample-topic';
     parent = `projects/${projectId}/locations/${location}`;
     pubsubTopic = `projects/${projectId}/topics/${topicName}`;
 

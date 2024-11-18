@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});

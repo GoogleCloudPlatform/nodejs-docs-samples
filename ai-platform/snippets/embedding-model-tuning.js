@@ -23,7 +23,7 @@ async function main(
   project,
   outputDir,
   pipelineJobDisplayName = 'embedding-customization-pipeline-sample',
-  baseModelVersionId = 'text-embedding-004',
+  baseModelVersionId = 'text-embedding-005',
   taskType = 'DEFAULT',
   corpusPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/corpus.jsonl',
   queriesPath = 'gs://cloud-samples-data/ai-platform/embedding/goog-10k-2024/r11/queries.jsonl',
@@ -62,7 +62,7 @@ async function main(
   };
   const pipelineJob = {
     templateUri:
-      'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.3',
+      'https://us-kfp.pkg.dev/ml-pipeline/llm-text-embedding/tune-text-embedding-model/v1.1.4',
     displayName: pipelineJobDisplayName,
     runtimeConfig,
   };

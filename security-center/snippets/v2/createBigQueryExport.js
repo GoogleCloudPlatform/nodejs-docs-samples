@@ -22,22 +22,16 @@ function main(organizationId, dataset, location = 'global') {
   // [START securitycenter_create_bigquery_export_v2]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center').v2;
-  const uuidv1 = require('uuid').v1;
 
   // Create a Security Center client
   const client = new SecurityCenterClient();
 
-  /**
-   *  Required. The name of the parent resource of the new BigQuery export. Its
-   *  format is "organizations/[organization_id]/locations/[location_id]",
-   *  "folders/[folder_id]/locations/[location_id]", or
-   *  "projects/[project_id]/locations/[location_id]".
-   */
+  // format is "organizations/[organization_id]/locations/[location_id]",
+  // "folders/[folder_id]/locations/[location_id]", or
+  // "projects/[project_id]/locations/[location_id]".
   const parent = client.organizationLocationPath(organizationId, location);
 
-  /**
-   *  Required. The BigQuery export being created.
-   */
+  // Required. The BigQuery export being created.
   // filter: Expression that defines the filter to apply across create/update events of findings.
   const filter = 'severity="LOW" OR severity="MEDIUM"';
 
@@ -45,18 +39,16 @@ function main(organizationId, dataset, location = 'global') {
     name: 'bigQueryExport node',
     description:
       'Export low and medium findings if the compute resource has an IAM anomalous grant',
-    filter: filter,
-    dataset: dataset,
+    filter,
+    dataset,
   };
 
-  /**
-   *  Required. Unique identifier provided by the client within the parent scope.
-   *  It must consist of only lowercase letters, numbers, and hyphens, must start
-   *  with a letter, must end with either a letter or a number, and must be 63
-   *  characters or less.
-   */
+  // Required. Unique identifier provided by the client within the parent scope.
+  // It must consist of only lowercase letters, numbers, and hyphens, must start
+  // with a letter, must end with either a letter or a number, and must be 63
+  // characters or less.
   const bigQueryExportId =
-    'bigqueryexportid-' + uuidv1().replace(/-/g, '').substring(0, 20);
+    'bigqueryexportid-' + Math.floor(Math.random() * 10000);
 
   // Build the request.
   const createBigQueryExportRequest = {
@@ -70,7 +62,9 @@ function main(organizationId, dataset, location = 'global') {
     const [response] = await client.createBigQueryExport(
       createBigQueryExportRequest
     );
-    console.log('BigQuery export request created successfully: %j', response);
+    console.log(
+      `BigQuery export request created successfully: Name: ${response.name}, Dataset: ${response.dataset}, Description: ${response.description}`
+    );
   }
 
   createBigQueryExport();

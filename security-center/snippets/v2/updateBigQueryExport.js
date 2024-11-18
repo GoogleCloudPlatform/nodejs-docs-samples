@@ -25,19 +25,15 @@ function main(organizationId, exportId, dataset, location = 'global') {
 
   // Creates a new client.
   const client = new SecurityCenterClient();
-  /**
-   *  Required. Name of the BigQuery export to retrieve. The following list shows
-   *  some examples of the format:
-   *  +
-   *  `organizations/{organization}/locations/{location}/bigQueryExports/{export_id}`
-   *  + `folders/{folder}/locations/{location}/bigQueryExports/{export_id}`
-   *  + `projects/{project}locations/{location}/bigQueryExports/{export_id}`
-   */
+
+  // Required. Name of the BigQuery export to retrieve.
+  // TODO(developer): Update the following references for your own environment before running the sample.
+  // const organizationId = 'YOUR_ORGANIZATION_ID';
+  // const location = 'LOCATION_ID';
+  // const exportId = 'EXPORT_ID';
   const name = `organizations/${organizationId}/locations/${location}/bigQueryExports/${exportId}`;
 
-  /**
-   *  Required. The BigQuery export being updated.
-   */
+  // Required. The BigQuery export being updated.
   const filter =
     'severity="LOW" OR severity="MEDIUM" AND category="Persistence: IAM Anomalous Grant" AND -resource.type:"compute"';
 
@@ -48,10 +44,8 @@ function main(organizationId, exportId, dataset, location = 'global') {
     filter: filter,
   };
 
-  /**
-   *  The list of fields to be updated.
-   *  If empty all mutable fields will be updated.
-   */
+  // The list of fields to be updated.
+  // If empty all mutable fields will be updated.
   const fieldMask = {
     paths: ['description', 'filter'],
   };
@@ -68,7 +62,9 @@ function main(organizationId, exportId, dataset, location = 'global') {
       updateBigQueryExportRequest,
       fieldMask
     );
-    console.log('BigQueryExport updated successfully!: %j', response);
+    console.log(
+      `BigQueryExport updated successfully! Name: ${response.name}, Description: ${response.description}, Dataset: ${response.dataset}`
+    );
   }
 
   updateBigQueryExport();

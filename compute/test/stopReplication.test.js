@@ -19,9 +19,9 @@
 const {beforeEach, afterEach, describe, it} = require('mocha');
 const assert = require('node:assert/strict');
 const sinon = require('sinon');
-const consistencyGroupClone = require('../disks/consistencyGroups/consistencyGroupClone.js');
+const stopReplication = require('../disks/consistencyGroups/stopReplication.js');
 
-describe('Compute disks consistency group clone', async () => {
+describe('Consistency group', async () => {
   const consistencyGroupName = 'consistency-group-1';
   let disksClientMock;
   let zoneOperationsClientMock;
@@ -29,7 +29,7 @@ describe('Compute disks consistency group clone', async () => {
   beforeEach(() => {
     disksClientMock = {
       getProjectId: sinon.stub().resolves('project_id'),
-      bulkInsert: sinon.stub().resolves([
+      stopGroupAsyncReplication: sinon.stub().resolves([
         {
           name: consistencyGroupName,
           latestResponse: {
@@ -57,15 +57,15 @@ describe('Compute disks consistency group clone', async () => {
     sinon.restore();
   });
 
-  it('should create clones from disks in consitency group', async () => {
-    const response = await consistencyGroupClone(
+  it('should stop replication for disks', async () => {
+    const response = await stopReplication(
       disksClientMock,
       zoneOperationsClientMock
     );
 
     assert.equal(
       response,
-      `Disks cloned from consistency group: ${consistencyGroupName}.`
+      `Replication stopped for consistency group: ${consistencyGroupName}.`
     );
   });
 });

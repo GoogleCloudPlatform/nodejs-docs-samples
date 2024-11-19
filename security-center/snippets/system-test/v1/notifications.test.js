@@ -26,6 +26,27 @@ const organizationId = '1081635000895';
 const orgName = 'organizations/' + organizationId;
 const pubsubTopic = 'projects/project-a-id/topics/notifications-sample-topic';
 
+async function waitForConfig(client, configId) {
+  const maxRetries = 10;
+  const retryDelay = 1000; // 1 second
+  let retries = 0;
+
+  while (retries < maxRetries) {
+    try {
+      const name = client.organizationNotificationConfigPath(organizationId, configId);
+      const [config] = await client.getNotificationConfig({name});
+      if (config) return;
+    } catch (err) {
+      // Ignore "not found" errors
+      if (err.code !== 404) throw err;
+    }
+    retries++;
+    await new Promise(resolve => setTimeout(resolve, retryDelay));
+  }
+
+  throw new Error(`Timeout waiting for config ${configId} to be available`);
+}
+
 describe('Client with Notifications', async () => {
   const createConfig = 'notif-config-test-node-create' + uuidv1();
   const deleteConfig = 'notif-config-test-node-delete' + uuidv1();
@@ -48,17 +69,24 @@ describe('Client with Notifications', async () => {
           },
         });
       } catch (err) {
-        console.error(`Error creating config ${configId}:`, err.message);
+        if (err.code === 400) {
+          console.error(`Invalid input for config ${configId}:`, err.message);
+        } else if (err.code === 503) {
+          console.error(`Service unavailable when creating config ${configId}:`, err.message);
+        } else {
+          console.error(`Unexpected error creating config ${configId}:`, err.message);
+        }
       }
     }
 
     await createNotificationConfig(deleteConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, deleteConfig);
     await createNotificationConfig(getConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, getConfig);
     await createNotificationConfig(listConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, listConfig);
     await createNotificationConfig(updateConfig);
+    await waitForConfig(client, updateConfig);
   });
 
   after(async () => {
@@ -71,16 +99,22 @@ describe('Client with Notifications', async () => {
         );
         await client.deleteNotificationConfig({name: name});
       } catch (err) {
-        console.error(`Error deleting config ${configId}:`, err.message);
+        if (err.code === 404) {
+          console.warn(`Config ${configId} not found during deletion:`, err.message);
+        } else if (err.code === 503) {
+          console.error(`Service unavailable when deleting config ${configId}:`, err.message);
+        } else {
+          console.error(`Unexpected error deleting config ${configId}:`, err.message);
+        }
       }
     }
 
     await deleteNotificationConfig(createConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, createConfig);
     await deleteNotificationConfig(getConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, getConfig);
     await deleteNotificationConfig(listConfig);
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second delay
+    await waitForConfig(client, listConfig);
     await deleteNotificationConfig(updateConfig);
   });
 

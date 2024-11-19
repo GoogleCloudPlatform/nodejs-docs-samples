@@ -27,9 +27,6 @@ function main(assetName = 'full asset path to add marks to') {
 
   async function deleteSecurityMarks() {
     // assetName is the full resource path for the asset to update.
-    /*
-     * TODO(developer): Uncomment the following lines
-     */
     // Specify the value of 'assetName' in one of the following formats:
     //    `organizations/${org-id}/assets/${asset-id}`;
     //    `projects/${project-id}/assets/${asset-id}`;

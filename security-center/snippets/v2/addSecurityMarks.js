@@ -27,9 +27,6 @@ function main(assetName = 'full asset path to add marks to') {
 
   async function addSecurityMarks() {
     // assetName is the full resource path for the asset to update.
-    /*
-     * TODO(developer): Uncomment the following lines
-     */
     // Specify the value of 'assetName' in one of the following formats:
     //    `organizations/${org-id}/assets/${asset-id}`;
     //    `projects/${project-id}/assets/${asset-id}`;
@@ -44,7 +41,7 @@ function main(assetName = 'full asset path to add marks to') {
       updateMask: {paths: ['marks.key_a', 'marks.key_b']},
     });
 
-    console.log('New marks: %', newMarks);
+    console.log('New marks: %j', newMarks);
   }
   addSecurityMarks();
   // [END securitycenter_add_security_marks_v2]

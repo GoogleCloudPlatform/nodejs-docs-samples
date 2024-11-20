@@ -33,7 +33,10 @@ async function waitForConfig(client, configId) {
 
   while (retries < maxRetries) {
     try {
-      const name = client.organizationNotificationConfigPath(organizationId, configId);
+      const name = client.organizationNotificationConfigPath(
+        organizationId,
+        configId
+      );
       const [config] = await client.getNotificationConfig({name});
       if (config) return;
     } catch (err) {
@@ -72,9 +75,15 @@ describe('Client with Notifications', async () => {
         if (err.code === 400) {
           console.error(`Invalid input for config ${configId}:`, err.message);
         } else if (err.code === 503) {
-          console.error(`Service unavailable when creating config ${configId}:`, err.message);
+          console.error(
+            `Service unavailable when creating config ${configId}:`,
+            err.message
+          );
         } else {
-          console.error(`Unexpected error creating config ${configId}:`, err.message);
+          console.error(
+            `Unexpected error creating config ${configId}:`,
+            err.message
+          );
         }
       }
     }
@@ -91,31 +100,40 @@ describe('Client with Notifications', async () => {
 
   after(async () => {
     const client = new SecurityCenterClient();
-    async function deleteNotificationConfig(configId) {
+    async function deleteNotificationConfigIfExists(configId) {
+      const name = client.organizationNotificationConfigPath(
+        organizationId,
+        configId
+      );
       try {
-        const name = client.organizationNotificationConfigPath(
-          organizationId,
-          configId
-        );
-        await client.deleteNotificationConfig({name: name});
+        // Check if the config exists
+        const [config] = await client.getNotificationConfig({name});
+        if (config) {
+          // Proceed with deletion if the config exists
+          await client.deleteNotificationConfig({name: name});
+          console.log(`Config ${configId} deleted successfully.`);
+        }
       } catch (err) {
         if (err.code === 404) {
-          console.warn(`Config ${configId} not found during deletion:`, err.message);
+          console.warn(`Config ${configId} not found during deletion.`);
         } else if (err.code === 503) {
-          console.error(`Service unavailable when deleting config ${configId}:`, err.message);
+          console.error(
+            `Service unavailable when deleting config ${configId}:`,
+            err.message
+          );
         } else {
-          console.error(`Unexpected error deleting config ${configId}:`, err.message);
+          console.error(
+            `Unexpected error deleting config ${configId}:`,
+            err.message
+          );
         }
       }
     }
 
-    await deleteNotificationConfig(createConfig);
-    await waitForConfig(client, createConfig);
-    await deleteNotificationConfig(getConfig);
-    await waitForConfig(client, getConfig);
-    await deleteNotificationConfig(listConfig);
-    await waitForConfig(client, listConfig);
-    await deleteNotificationConfig(updateConfig);
+    await deleteNotificationConfigIfExists(createConfig);
+    await deleteNotificationConfigIfExists(getConfig);
+    await deleteNotificationConfigIfExists(listConfig);
+    await deleteNotificationConfigIfExists(updateConfig);
   });
 
   it('client can create config', () => {

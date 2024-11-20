@@ -42,12 +42,11 @@ async function main(diskName, region, zone1, zone2) {
   // zone2 = 'europe-central2-b';
 
   // The name of the new disk.
-  // diskName = 'primary-disk-name';
+  // diskName = 'disk-name';
 
   // The type of replicated disk.
   // The default value is `pd-standard`. For Hyperdisk, specify the value `hyperdisk-balanced-high-availability`.
   const diskType = `regions/${region}/diskTypes/pd-standard`;
-  // const diskType = 'pd-standard';
 
   // The size of the new disk in gigabytes.
   const diskSizeGb = 200;

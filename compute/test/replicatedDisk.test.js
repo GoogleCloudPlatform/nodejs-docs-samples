@@ -19,17 +19,16 @@
 const path = require('path');
 const assert = require('node:assert/strict');
 const uuid = require('uuid');
-const {after, describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-async function deleteDisk(region, diskName) {
+async function deleteDisk(projectId, region, diskName) {
   const disksClient = new computeLib.RegionDisksClient();
   const regionOperationsClient = new computeLib.RegionOperationsClient();
-  const projectId = await disksClient.getProjectId();
 
   const [response] = await disksClient.delete({
     project: projectId,
@@ -52,13 +51,23 @@ async function deleteDisk(region, diskName) {
 
 describe('Create compute regional replicated disk', async () => {
   const diskName = `replicated-disk-${uuid.v4()}`;
+  const vmName = `vm-with-replicated-disk-${uuid.v4()}`;
   const region = 'europe-central2';
   const zone1 = 'europe-central2-a';
   const zone2 = 'europe-central2-b';
+  let projectId;
+
+  before(async () => {
+    const instancesClient = new computeLib.InstancesClient();
+    projectId = await instancesClient.getProjectId();
+  });
 
   after(async () => {
     // Cleanup resources
-    await deleteDisk(region, diskName);
+    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
+      cwd,
+    });
+    await deleteDisk(projectId, region, diskName);
   });
 
   it('should create a regional replicated disk', () => {
@@ -70,5 +79,28 @@ describe('Create compute regional replicated disk', async () => {
     );
 
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
+  });
+
+  it('should attach replicated disk to vm', () => {
+    // Create VM, where replicated disk will be attached.
+    execSync(
+      `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
+      {
+        cwd,
+      }
+    );
+
+    const response = execSync(
+      `node ./disks/attachRegionalDisk.js ${diskName} ${region} ${vmName} ${zone1}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(
+      response.includes(
+        `Replicated disk: ${diskName} attached to VM: ${vmName}.`
+      )
+    );
   });
 });

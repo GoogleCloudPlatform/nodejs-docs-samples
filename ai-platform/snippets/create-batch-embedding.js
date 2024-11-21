@@ -36,7 +36,7 @@ async function main(projectId, inputUri, outputUri, jobName) {
   // Optional: URI where the output will be stored.
   // Could be a BigQuery table or a Google Cloud Storage file.
   // E.g. "gs://[BUCKET]/[OUTPUT].jsonl" OR "bq://[PROJECT].[DATASET].[TABLE]"
-  // outputUri = 'gs://your_backet/embedding_batch_output';
+  // outputUri = 'gs://your_bucket/embedding_batch_output';
 
   // The name of the job
   // jobName = `Batch embedding job: ${new Date().getMilliseconds()}`;

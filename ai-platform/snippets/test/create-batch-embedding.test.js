@@ -43,7 +43,7 @@ describe('Batch embedding', async () => {
 
   before(async () => {
     const bucketName = `test-bucket-${uuid()}`;
-    // Create a Google Cloud Storage bucket for UsageReports
+    // Create a Google Cloud Storage bucket for embedding output
     [bucket] = await storage.createBucket(bucketName);
     outputUri = `gs://${bucketName}/embedding_batch_output`;
   });
@@ -67,7 +67,7 @@ describe('Batch embedding', async () => {
 
       return jobServiceClient.deleteBatchPredictionJob(deleteRequest);
     });
-    // Delete the Google Cloud Storage bucket created for usage reports.
+    // Delete the Google Cloud Storage bucket created for embedding output.
     await bucket.delete();
   });
 

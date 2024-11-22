@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START gae_flex_quickstart_v1] # rgeion tag test
+// [START gae_flex_quickstart_v1]
 const express = require('express');
 
 const app = express();

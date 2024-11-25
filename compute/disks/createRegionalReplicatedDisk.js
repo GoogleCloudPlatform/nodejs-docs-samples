@@ -35,11 +35,11 @@ async function main(diskName, region, zone1, zone2) {
 
   // The region for the replicated disk to reside in.
   // The disk must be in the same region as the VM that you plan to attach it to.
-  // region = 'europe-central2';
+  // region = 'us-central1';
 
   // The zones within the region where the two disk replicas are located
-  // zone1 = 'europe-central2-a';
-  // zone2 = 'europe-central2-b';
+  // zone1 = 'us-central1-a';
+  // zone2 = 'us-central1-b';
 
   // The name of the new disk.
   // diskName = 'disk-name';

@@ -51,11 +51,10 @@ async function deleteDisk(projectId, region, diskName) {
 
 describe('Create compute regional replicated disk', async () => {
   const diskName = `replicated-disk-${uuid.v4()}`;
-  const vmName1 = `vm1-with-replicated-disk-${uuid.v4()}`;
-  const vmName2 = `vm2-with-replicated-disk-${uuid.v4()}`;
-  const region = 'europe-central2';
-  const zone1 = 'europe-central2-a';
-  const zone2 = 'europe-central2-b';
+  const vmName = `vm1-with-replicated-disk-${uuid.v4()}`;
+  const region = 'us-central1';
+  const zone1 = `${region}-a`;
+  const zone2 = `${region}-b`;
   let projectId;
 
   before(async () => {
@@ -65,10 +64,8 @@ describe('Create compute regional replicated disk', async () => {
 
   after(async () => {
     // Cleanup resources
-    [vmName1, vmName2].forEach(vm => {
-      execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vm}`, {
-        cwd,
-      });
+    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
+      cwd,
     });
     await deleteDisk(projectId, region, diskName);
   });
@@ -87,14 +84,14 @@ describe('Create compute regional replicated disk', async () => {
   it('should attach replicated disk to vm', () => {
     // Create VM, where replicated disk will be attached.
     execSync(
-      `node ./createInstance.js ${projectId} ${zone1} ${vmName1} e2-small`,
+      `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
       {
         cwd,
       }
     );
 
     const response = execSync(
-      `node ./disks/attachRegionalDisk.js ${diskName} ${region} ${vmName1} ${zone1}`,
+      `node ./disks/attachRegionalDisk.js ${diskName} ${region} ${vmName} ${zone1}`,
       {
         cwd,
       }
@@ -102,30 +99,7 @@ describe('Create compute regional replicated disk', async () => {
 
     assert(
       response.includes(
-        `Replicated disk: ${diskName} attached to VM: ${vmName1}.`
-      )
-    );
-  });
-
-  it('should force replicated disk to be attached to vm', () => {
-    // Create VM, where replicated disk will be attached.
-    execSync(
-      `node ./createInstance.js ${projectId} ${zone1} ${vmName2} e2-small`,
-      {
-        cwd,
-      }
-    );
-
-    const response = execSync(
-      `node ./disks/attachRegionalDiskForce.js ${diskName} ${region} ${vmName2} ${zone1}`,
-      {
-        cwd,
-      }
-    );
-
-    assert(
-      response.includes(
-        `Replicated disk: ${diskName} was forced to be attached to VM: ${vmName2}.`
+        `Replicated disk: ${diskName} attached to VM: ${vmName}.`
       )
     );
   });

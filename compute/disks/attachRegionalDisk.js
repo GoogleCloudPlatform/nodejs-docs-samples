@@ -34,7 +34,7 @@ async function main(diskName, region, vmName, zone) {
   const projectId = await instancesClient.getProjectId();
 
   // The zone of your VM.
-  // zone = 'europe-central2-a';
+  // zone = 'us-central1-a';
 
   // The name of the VM to which you're adding the new replicated disk.
   // vmName = 'vm-name';
@@ -43,7 +43,7 @@ async function main(diskName, region, vmName, zone) {
   // diskName = 'disk-name';
 
   // The region where the replicated disk is located.
-  // region = 'europe-central2';
+  // region = 'us-central1';
 
   async function callAttachRegionalDisk() {
     const [response] = await instancesClient.attachDisk({
@@ -51,6 +51,8 @@ async function main(diskName, region, vmName, zone) {
       project: projectId,
       attachedDiskResource: new compute.AttachedDisk({
         source: `projects/${projectId}/regions/${region}/disks/${diskName}`,
+        // If you want to force the disk to be attached, uncomment next line.
+        // forceAttach: true,
       }),
       zone,
     });

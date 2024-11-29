@@ -51,6 +51,34 @@ describe('Snapshot schedule', async () => {
     );
   });
 
+  it('should return snapshot schedule', () => {
+    const snapshotScheduleName = `snapshot-schedule-name-${uuid.v4()}`;
+    // Create snapshot
+    execSync(
+      `node ./snapshotSchedule/createSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+
+    const response = execSync(
+      `node ./snapshotSchedule/getSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+
+    assert(response.includes(snapshotScheduleName));
+
+    // Delete resource
+    execSync(
+      `node ./snapshotSchedule/deleteSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+  });
+
   it('should delete snapshot schedule', () => {
     const snapshotScheduleName = `snapshot-schedule-name-${uuid.v4()}`;
     // Create snapshot

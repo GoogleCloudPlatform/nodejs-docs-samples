@@ -26,7 +26,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
 describe('Snapshot schedule', async () => {
-  const region = 'europe-central2';
+  const region = 'us-central1';
 
   it('should create snapshot schedule', () => {
     const snapshotScheduleName = `snapshot-schedule-name-${uuid.v4()}`;
@@ -69,6 +69,52 @@ describe('Snapshot schedule', async () => {
     );
 
     assert(response.includes(snapshotScheduleName));
+
+    // Delete resource
+    execSync(
+      `node ./snapshotSchedule/deleteSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+  });
+
+  it('should edit snapshot schedule', () => {
+    const snapshotScheduleName = `snapshot-schedule-name-${uuid.v4()}`;
+    // Create snapshot
+    execSync(
+      `node ./snapshotSchedule/createSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+    const currentSchedule = JSON.parse(
+      execSync(
+        `node ./snapshotSchedule/getSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+        {
+          cwd,
+        }
+      )
+    ).snapshotSchedulePolicy.schedule;
+
+    // Edit snapshot schedule
+    execSync(
+      `node ./snapshotSchedule/editSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+      {
+        cwd,
+      }
+    );
+
+    const updatedSchedule = JSON.parse(
+      execSync(
+        `node ./snapshotSchedule/getSnapshotSchedule.js ${snapshotScheduleName} ${region}`,
+        {
+          cwd,
+        }
+      )
+    ).snapshotSchedulePolicy.schedule;
+
+    assert.notStrictEqual(currentSchedule, updatedSchedule);
 
     // Delete resource
     execSync(

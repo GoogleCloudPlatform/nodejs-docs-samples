@@ -17,12 +17,15 @@
 'use strict';
 
 async function main(snapshotScheduleName, region) {
-  // [START compute_snapshot_schedule_get]
+  // [START compute_snapshot_schedule_edit]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
+  const compute = computeLib.protos.google.cloud.compute.v1;
 
   // Instantiate a resourcePoliciesClient
   const resourcePoliciesClient = new computeLib.ResourcePoliciesClient();
+  // Instantiate a regionOperationsClient
+  const regionOperationsClient = new computeLib.RegionOperationsClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
@@ -36,18 +39,44 @@ async function main(snapshotScheduleName, region) {
   // The name of the snapshot schedule.
   // snapshotScheduleName = 'snapshot-schedule-name';
 
-  async function callGetSnapshotSchedule() {
-    const [response] = await resourcePoliciesClient.get({
+  async function callEditSnapshotSchedule() {
+    const [response] = await resourcePoliciesClient.patch({
       project: projectId,
       region,
       resourcePolicy: snapshotScheduleName,
+      resourcePolicyResource: compute.ResourcePolicy({
+        snapshotSchedulePolicy:
+          compute.ResourcePolicyInstanceSchedulePolicySchedule({
+            schedule: compute.ResourcePolicySnapshotSchedulePolicySchedule({
+              weeklySchedule: compute.ResourcePolicyWeeklyCycle({
+                dayOfWeeks: [
+                  compute.ResourcePolicyWeeklyCycleDayOfWeek({
+                    day: 'Tuesday',
+                    startTime: '9:00',
+                  }),
+                ],
+              }),
+            }),
+          }),
+      }),
     });
 
-    console.log(JSON.stringify(response));
+    let operation = response.latestResponse;
+
+    // Wait for the edit operation to complete.
+    while (operation.status !== 'DONE') {
+      [operation] = await regionOperationsClient.wait({
+        operation: operation.name,
+        project: projectId,
+        region,
+      });
+    }
+
+    console.log(`Snapshot schedule: ${snapshotScheduleName} edited.`);
   }
 
-  await callGetSnapshotSchedule();
-  // [END compute_snapshot_schedule_get]
+  await callEditSnapshotSchedule();
+  // [END compute_snapshot_schedule_edit]
 }
 
 main(...process.argv.slice(2)).catch(err => {

@@ -34,7 +34,7 @@ async function main(snapshotScheduleName, region) {
   const projectId = await resourcePoliciesClient.getProjectId();
 
   // The location of the snapshot schedule resource policy.
-  // region = 'europe-central2';
+  // region = 'us-central1';
 
   // The name of the snapshot schedule.
   // snapshotScheduleName = 'snapshot-schedule-name';
@@ -58,6 +58,7 @@ async function main(snapshotScheduleName, region) {
             schedule: new compute.ResourcePolicySnapshotSchedulePolicySchedule({
               // Similarly, you can create a weekly or monthly schedule.
               // Review the resourcePolicies.insert method for details specific to setting a weekly or monthly schedule.
+              // To see more details, open: `https://cloud.google.com/compute/docs/disks/scheduled-snapshots?authuser=0#create_snapshot_schedule`
               dailySchedule: new compute.ResourcePolicyDailyCycle({
                 startTime: '12:00',
                 daysInCycle: 1,

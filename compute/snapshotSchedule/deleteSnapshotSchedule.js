@@ -33,7 +33,7 @@ async function main(snapshotScheduleName, region) {
   const projectId = await resourcePoliciesClient.getProjectId();
 
   // The location of the snapshot schedule resource policy.
-  // region = 'europe-central2';
+  // region = 'us-central1';
 
   // The name of the snapshot schedule.
   // snapshotScheduleName = 'snapshot-schedule-name'

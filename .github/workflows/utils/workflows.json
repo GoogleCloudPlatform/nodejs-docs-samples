@@ -88,6 +88,7 @@
   "speech",
   "talent",
   "texttospeech",
+  "tpu",
   "translate",
   "video-intelligence",
   "vision/productSearch",

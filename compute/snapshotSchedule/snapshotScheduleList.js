@@ -16,15 +16,13 @@
 
 'use strict';
 
-async function main(snapshotScheduleName, region) {
-  // [START compute_snapshot_schedule_delete]
+async function main(region) {
+  // [START compute_snapshot_schedule_list]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
 
   // Instantiate a resourcePoliciesClient
   const resourcePoliciesClient = new computeLib.ResourcePoliciesClient();
-  // Instantiate a regionOperationsClient
-  const regionOperationsClient = new computeLib.RegionOperationsClient();
 
   /**
    * TODO(developer): Update/uncomment these variables before running the sample.
@@ -32,36 +30,28 @@ async function main(snapshotScheduleName, region) {
   // The project name.
   const projectId = await resourcePoliciesClient.getProjectId();
 
-  // The location of the snapshot schedule resource policy.
+  // The region of the snapshot schedules.
   // region = 'us-central1';
 
-  // The name of the snapshot schedule.
-  // snapshotScheduleName = 'snapshot-schedule-name'
-
-  async function callDeleteSnapshotSchedule() {
-    // If the snapshot schedule is already attached to a disk, you will receive an error.
-    const [response] = await resourcePoliciesClient.delete({
+  async function callSnapshotScheduleList() {
+    const aggListRequest = resourcePoliciesClient.aggregatedListAsync({
       project: projectId,
-      region,
-      resourcePolicy: snapshotScheduleName,
+      filter: `region = "https://www.googleapis.com/compute/v1/projects/${projectId}/regions/${region}"`,
     });
+    const result = [];
 
-    let operation = response.latestResponse;
-
-    // Wait for the delete operation to complete.
-    while (operation.status !== 'DONE') {
-      [operation] = await regionOperationsClient.wait({
-        operation: operation.name,
-        project: projectId,
-        region,
-      });
+    for await (const [, listObject] of aggListRequest) {
+      const {resourcePolicies} = listObject;
+      if (resourcePolicies.length > 0) {
+        result.push(...resourcePolicies);
+      }
     }
 
-    console.log(`Snapshot schedule: ${snapshotScheduleName} deleted.`);
+    console.log(JSON.stringify(result));
   }
 
-  await callDeleteSnapshotSchedule();
-  // [END compute_snapshot_schedule_delete]
+  await callSnapshotScheduleList();
+  // [END compute_snapshot_schedule_list]
 }
 
 main(...process.argv.slice(2)).catch(err => {

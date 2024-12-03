@@ -71,8 +71,8 @@ async function deleteDisk(projectId, zone, diskName) {
 describe('Attach snapshot schedule', async () => {
   const snapshotScheduleName = `snapshot-schedule-name-${uuid.v4().split('-')[0]}`;
   const diskName = `disk-name-with-schedule-attached-${uuid.v4().split('-')[0]}`;
-  const region = 'europe-central2';
-  const zone = 'europe-central2-a';
+  const region = 'us-central1';
+  const zone = `${region}-f`;
   let projectId;
 
   before(async () => {

@@ -33,11 +33,11 @@ async function main(snapshotScheduleName, diskName, region, zone) {
   // The project name.
   const projectId = await disksClient.getProjectId();
 
-  // The zone where the disk is located.
-  // zone = 'europe-central2-a';
-
   // The region where the snapshot schedule was created.
-  // region = 'europe-central2';
+  // region = 'us-central1';
+
+  // The zone where the disk is located.
+  // zone = `${region}-f`;
 
   // The name of the disk.
   // diskName = 'disk-name';

@@ -26,9 +26,9 @@ async function analyze_pdf(projectId = 'PROJECT_ID') {
   });
 
   const filePart = {
-    file_data: {
-      file_uri: 'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf',
-      mime_type: 'application/pdf',
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf',
+      mimeType: 'application/pdf',
     },
   };
   const textPart = {

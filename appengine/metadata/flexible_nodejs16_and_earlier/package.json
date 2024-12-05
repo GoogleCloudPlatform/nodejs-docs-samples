@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "c8": "^8.0.0",

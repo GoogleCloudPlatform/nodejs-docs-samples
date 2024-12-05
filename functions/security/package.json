@@ -15,7 +15,7 @@
     "test": "c8 mocha -p -j 2 test/*.test.js"
   },
   "dependencies": {
-    "node-fetch": "^3.0.0"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",

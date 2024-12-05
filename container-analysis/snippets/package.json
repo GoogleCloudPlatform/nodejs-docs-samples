@@ -8,7 +8,7 @@
     "*.js"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 --timeout 100000 test/**.test.js"

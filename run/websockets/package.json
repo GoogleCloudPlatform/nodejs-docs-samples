@@ -12,7 +12,7 @@
     "system-test": "echo \"INFO: system-test temporarily disabled\""
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@socket.io/redis-adapter": "^8.1.0",

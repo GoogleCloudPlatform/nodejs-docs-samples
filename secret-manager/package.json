@@ -8,7 +8,7 @@
   "author": "Google LLC",
   "repository": "googleapis/nodejs-secret-manager",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 --recursive test/ --timeout=800000"

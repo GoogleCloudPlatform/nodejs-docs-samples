@@ -5,7 +5,7 @@
   "description": "Examples of integrating Cloud Functions with billing",
   "main": "index.js",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "compute-test": "c8 mocha -p -j 2 test/periodic.test.js --timeout=600000",

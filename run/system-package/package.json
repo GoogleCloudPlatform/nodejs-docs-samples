@@ -11,7 +11,7 @@
     "FIXME-system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "dependencies": {
     "express": "^4.17.1"

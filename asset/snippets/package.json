@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=12.0.0"
+    "node": "22.x"
   },
   "files": [
     "*.js"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "c8": "^10.0.0",
     "chai": "^4.5.0",
-    "gts": "^5.0.0",
+    "gts": "^6.0.0",
     "mocha": "^10.0.0",
     "sinon": "^18.0.0",
     "uuid": "^10.0.0"

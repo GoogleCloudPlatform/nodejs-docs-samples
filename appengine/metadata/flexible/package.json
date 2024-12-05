@@ -10,7 +10,7 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">= 18.x.x"
+    "node": "22.x"
   },
   "scripts": {
     "system-test": "c8 mocha -p -j 2 --exit test/*.test.js",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "node-fetch": "^3.0.0"
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",

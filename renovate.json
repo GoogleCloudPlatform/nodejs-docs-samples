@@ -21,7 +21,7 @@
   ],
   "force": {
     "constraints": {
-      "node": ">=18.0.0"
+      "node": "22.x"
     }
   },
   "dependencyDashboardAutoclose": true,

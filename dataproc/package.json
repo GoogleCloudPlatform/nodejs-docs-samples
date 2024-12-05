@@ -6,7 +6,7 @@
     "*.js"
   ],
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "repository": "googleapis/nodejs-dataproc",
   "private": true,

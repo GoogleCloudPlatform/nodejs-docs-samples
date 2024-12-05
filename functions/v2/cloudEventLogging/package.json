@@ -6,7 +6,7 @@
   "author": "Google LLC",
   "main": "index.js",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 test/*.test.js"

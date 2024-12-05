@@ -8,7 +8,7 @@
   "author": "Google LLC",
   "repository": "googleapis/nodejs-kms",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "test": "c8 mocha -p -j 2 --recursive test/ --timeout=800000"

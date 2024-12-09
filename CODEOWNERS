@@ -34,7 +34,6 @@ storagetransfer @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/nod
 
 # One-offs
 composer @GoogleCloudPlatform/cloud-dpes-composer @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-monitoring/opencensus @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
 # Data & AI
 document-ai @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/document-ai-samples-contributors @GoogleCloudPlatform/cloud-samples-reviewers

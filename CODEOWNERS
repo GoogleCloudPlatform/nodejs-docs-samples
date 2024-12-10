@@ -28,7 +28,7 @@ tpu @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
 # SoDa teams
-cloud-sql @GoogleCloudPlatform/infra-db-sdk @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+cloud-sql @GoogleCloudPlatform/cloud-sql-connectors @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 storagetransfer @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 

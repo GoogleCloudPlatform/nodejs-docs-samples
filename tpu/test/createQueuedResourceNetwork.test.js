@@ -64,7 +64,7 @@ describe('TPU queued resource with specified network', async () => {
                 node: {
                   networkConfig: {
                     network: `projects/${projectId}/global/networks/compute-tpu-network`,
-                    subnetwork: `projects/${projectId}/regions/europe-west4/subnetworks/compute-tpu-network`,
+                    subnetwork: `projects/${projectId}/regions/us-central1/subnetworks/compute-tpu-network`,
                     enableExternalIps: true,
                   },
                 },

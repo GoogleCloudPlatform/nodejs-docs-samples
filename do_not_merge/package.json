@@ -1,0 +1,11 @@
+{
+  "name": "do_not_merge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.test.js"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "description": ""
+}

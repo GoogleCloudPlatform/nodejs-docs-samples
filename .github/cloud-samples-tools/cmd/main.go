@@ -72,9 +72,10 @@ func affectedCmd(configFile string, diffsFile string) {
 	if err != nil {
 		log.Fatalln("❌ error getting the diffs: ", diffsFile, "\n", err)
 	}
-	diffs := strings.Split(string(diffsBytes), "\n")
+	diffs := strings.Split(strings.TrimSpace(string(diffsBytes)), "\n")
 
-	packages, err := config.Affected(diffs)
+	// We log messages to stderr since GitHub Actions expects the output of the command in stdout.
+	packages, err := config.Affected(os.Stderr, diffs)
 	if err != nil {
 		log.Fatalln("❌ error finding the affected packages.\n", err)
 	}

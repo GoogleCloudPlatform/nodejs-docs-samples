@@ -19,6 +19,8 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -154,9 +156,12 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 // Affected returns the packages that have been affected from diffs.
 // If there are diffs on at leat one global file affecting all packages,
 // then this returns all packages matched by the config.
-func (c *Config) Affected(diffs []string) ([]string, error) {
+func (c *Config) Affected(out io.Writer, diffs []string) ([]string, error) {
+	fmt.Fprintf(out, "diffs=%q\n", diffs)
 	changed := c.Changed(diffs)
+	fmt.Fprintf(out, "changed=%q\n", changed)
 	if slices.Contains(changed, ".") {
+		fmt.Fprintln(out, "Root directory change, all packages are affected")
 		return c.FindAllPackages(".")
 	}
 	return changed, nil

@@ -72,7 +72,7 @@ func affectedCmd(configFile string, diffsFile string) {
 	if err != nil {
 		log.Fatalln("❌ error getting the diffs: ", diffsFile, "\n", err)
 	}
-	diffs := strings.Split(string(diffsBytes), "\n")
+	diffs := strings.Split(strings.TrimSpace(string(diffsBytes)), "\n") // Trim whitespace to remove extra newline from diff output.
 
 	packages, err := config.Affected(diffs)
 	if err != nil {

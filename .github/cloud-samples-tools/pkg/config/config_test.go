@@ -167,30 +167,35 @@ func TestFindPackage(t *testing.T) {
 
 func TestChanged(t *testing.T) {
 	config := c.Config{
-		PackageFile: []string{"package.json"},
-		Match:       []string{"*"},
+		PackageFile:     []string{"package.json"},
+		Match:           []string{"*"},
+		ExcludePackages: []string{filepath.Join("testdata", "excluded")},
 	}
 
 	tests := []struct {
 		diffs    []string
 		expected []string
 	}{
-		{
+		{ // Global change, everything is affected.
 			diffs:    []string{filepath.Join("testdata", "file.txt")},
 			expected: []string{"."},
 		},
-		{
+		{ // Single affected package.
 			diffs:    []string{filepath.Join("testdata", "my-package", "file.txt")},
 			expected: []string{filepath.Join("testdata", "my-package")},
 		},
-		{
+		{ // Single affected nested package.
 			diffs:    []string{filepath.Join("testdata", "my-package", "subpackage", "file.txt")},
 			expected: []string{filepath.Join("testdata", "my-package", "subpackage")},
+		},
+		{ // Excluded package.
+			diffs:    []string{filepath.Join("testdata", "excluded", "file.txt")},
+			expected: []string{},
 		},
 	}
 
 	for _, test := range tests {
-		got := config.Changed(test.diffs)
+		got := config.Changed(os.Stderr, test.diffs)
 		if !reflect.DeepEqual(test.expected, got) {
 			t.Fatal("expected equal\n", test.expected, got)
 		}

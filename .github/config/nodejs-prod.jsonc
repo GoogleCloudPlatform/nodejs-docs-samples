@@ -15,11 +15,7 @@
 */
 
 {
-<<<<<<< HEAD
   "package-file": [ "package.json" ],
-=======
-  "package-file": [ "package.json" ],
->>>>>>> cf9428b9f5766b38ca806ee21b479702f7c6be0c
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",

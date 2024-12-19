@@ -38,7 +38,7 @@ async function main(instanceName) {
 
   async function callCreateInstanceToConsumeAnyReservation() {
     // Describe the size and source image of the boot disk to attach to the instance.
-    // Uses a persistent disk so that data is preserved even if the VM is 
+    // Uses a persistent disk so that data is preserved even if the VM is
     // stopped or restarted.
     const disk = new compute.Disk({
       boot: true,
@@ -49,7 +49,7 @@ async function main(instanceName) {
         sourceImage: 'projects/debian-cloud/global/images/family/debian-12',
       },
     });
-    
+
     // Use the default network for simplicity. In production environments,
     // you may want to specify a custom network with specific firewall rules
     // and security configurations.
@@ -57,10 +57,10 @@ async function main(instanceName) {
       name: 'global/networks/default',
     });
 
-    // Configure the instance to consume any available reservation that matches 
+    // Configure the instance to consume any available reservation that matches
     // its requirements (CPU, memory, etc.). This is a reasonable default for cost
     // optimization for long-running workloads. Consider changing depending on your
-    // specific needs or workloads. 
+    // specific needs or workloads.
     const reservationAffinity = new compute.ReservationAffinity({
       consumeReservationType: 'ANY_RESERVATION',
     });

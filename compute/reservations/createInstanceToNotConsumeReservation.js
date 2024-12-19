@@ -22,7 +22,7 @@ async function main(instanceName) {
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
 
-  // Instantiate a reservationsClient
+  // Instantiate an instancesClient
   const instancesClient = new computeLib.InstancesClient();
   // Instantiate a zoneOperationsClient
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();

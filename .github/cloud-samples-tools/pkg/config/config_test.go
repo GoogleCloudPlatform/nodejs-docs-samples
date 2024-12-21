@@ -169,6 +169,7 @@ func TestChanged(t *testing.T) {
 	config := c.Config{
 		PackageFile:     []string{"package.json"},
 		Match:           []string{"*"},
+		Ignore:          []string{"ignored.txt"},
 		ExcludePackages: []string{filepath.Join("testdata", "excluded")},
 	}
 
@@ -179,6 +180,10 @@ func TestChanged(t *testing.T) {
 		{ // Global change, everything is affected.
 			diffs:    []string{filepath.Join("testdata", "file.txt")},
 			expected: []string{"."},
+		},
+		{ // Ignored files should not trigger tests.
+			diffs:    []string{filepath.Join("testdata", "ignored.txt")},
+			expected: []string{},
 		},
 		{ // Single affected package.
 			diffs:    []string{filepath.Join("testdata", "my-package", "file.txt")},

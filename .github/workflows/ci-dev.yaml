@@ -48,7 +48,7 @@ jobs:
         run: echo "packages=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js 20 test
+    name: Node.js 18 test
     needs: affected
     runs-on: ubuntu-latest
     permissions:
@@ -63,7 +63,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
       - uses: google-github-actions/auth@v2
         with:
           project_id: long-door-651

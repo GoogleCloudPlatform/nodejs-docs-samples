@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 'use strict';
 
-function main(projectId, location, inputId) {
-  // [START livestream_create_input]
+function main(projectId, location, channelId) {
+  // [START livestream_list_channel_clips]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // inputId = 'my-input';
+  // channelId = 'my-channel';
 
   // Imports the Livestream library
   const {LivestreamServiceClient} = require('@google-cloud/livestream').v1;
@@ -31,29 +31,25 @@ function main(projectId, location, inputId) {
   // Instantiates a client
   const livestreamServiceClient = new LivestreamServiceClient();
 
-  async function createInput() {
-    // Construct request
-    const request = {
-      parent: livestreamServiceClient.locationPath(projectId, location),
-      inputId: inputId,
-      input: {
-        type: 'RTMP_PUSH',
-      },
-    };
-
-    // Run request
-    const [operation] = await livestreamServiceClient.createInput(request);
-    const response = await operation.promise();
-    const [input] = response;
-    console.log(`Input: ${input.name}`);
-    console.log(`Uri: ${input.uri}`);
+  async function listChannelClips() {
+    const iterable = await livestreamServiceClient.listClipsAsync({
+      parent: livestreamServiceClient.channelPath(
+        projectId,
+        location,
+        channelId
+      ),
+    });
+    console.info('Channel clips:');
+    for await (const response of iterable) {
+      console.log(response.name);
+    }
   }
 
-  createInput();
-  // [END livestream_create_input]
+  listChannelClips();
+  // [END livestream_list_channel_clips]
 }
 
-// node createInput.js <projectId> <location> <inputId>
+// node listChannelClips.js <projectId> <location> <channelId>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

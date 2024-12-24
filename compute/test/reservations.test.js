@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {before, describe, it} = require('mocha');
+const {before, after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {ReservationsClient} = require('@google-cloud/compute').v1;
 const {getStaleReservations, deleteReservation} = require('./util');
@@ -35,6 +35,9 @@ describe('Compute reservation', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+  });
+
+  after(async () => {
     // Cleanup resorces
     const reservations = await getStaleReservations(reservationPrefix);
     await Promise.all(

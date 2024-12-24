@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: ⚗️ experimental
+name: CI (experimental)
 on:
   push:
     branches:
@@ -45,22 +45,10 @@ jobs:
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
-        run: echo "packages=$(./tools affected .github/config/nodejs.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
-
-  nodejs-lint:
-    name: Node.js lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: make lint
-      - run: ./.github/workflows/utils/region-tags-tests.sh
+        run: echo "packages=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js 20 test
+    name: Node.js 16 test
     needs: affected
     runs-on: ubuntu-latest
     permissions:
@@ -75,7 +63,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 16
       - uses: google-github-actions/auth@v2
         with:
           project_id: long-door-651

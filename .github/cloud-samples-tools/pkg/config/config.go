@@ -177,10 +177,6 @@ func (c *Config) Changed(log io.Writer, diffs []string) []string {
 		changedUnique[pkg] = true
 	}
 
-	if len(changedUnique) == 0 {
-		return []string{"."}
-	}
-
 	changed := make([]string, 0, len(changedUnique))
 	for pkg := range changedUnique {
 		if slices.Contains(c.ExcludePackages, pkg) {

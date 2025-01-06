@@ -19,15 +19,22 @@
 function main(organizationId, customModuleDisplayName, locationId = 'global') {
   // [START securitycenter_create_security_health_analytics_custom_module]
   // npm install '@google-cloud/securitycentermanagement'
-  const { SecurityCenterManagementClient, protos } = require('@google-cloud/securitycentermanagement');
+  const {
+    SecurityCenterManagementClient,
+    protos,
+  } = require('@google-cloud/securitycentermanagement');
 
   const client = new SecurityCenterManagementClient();
 
-  const EnablementState = protos.google.cloud.securitycentermanagement.v1.SecurityHealthAnalyticsCustomModule.EnablementState;
-  const Severity = protos.google.cloud.securitycentermanagement.v1.CustomConfig.Severity;
+  const EnablementState =
+    protos.google.cloud.securitycentermanagement.v1
+      .SecurityHealthAnalyticsCustomModule.EnablementState;
+
+  const Severity =
+    protos.google.cloud.securitycentermanagement.v1.CustomConfig.Severity;
 
   /*
-   * Required. The name of the parent resource of security health analytics module. 
+   * Required. The name of the parent resource of security health analytics module
    *     Its format is
    *    `organizations/[organization_id]/locations/[location_id]`
    *    `folders/[folder_id]/locations/[location_id]`
@@ -47,14 +54,12 @@ function main(organizationId, customModuleDisplayName, locationId = 'global') {
   // define the CEL expression here and this will scans for keys that have not been rotated in
   // the last 30 days, change it according to the your requirements
   const expr = {
-    expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`
+    expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`,
   };
 
   // define the resource selector
   const resourceSelector = {
-    resourceTypes: [
-      'cloudkms.googleapis.com/CryptoKey'
-    ]
+    resourceTypes: ['cloudkms.googleapis.com/CryptoKey'],
   };
 
   // define the custom module configuration, update the severity, description,
@@ -64,7 +69,7 @@ function main(organizationId, customModuleDisplayName, locationId = 'global') {
     resourceSelector: resourceSelector,
     severity: Severity.MEDIUM,
     description: 'add your description here',
-    recommendation: 'add your recommendation here'
+    recommendation: 'add your recommendation here',
   };
 
   // define the security health analytics custom module configuration, update the
@@ -73,15 +78,18 @@ function main(organizationId, customModuleDisplayName, locationId = 'global') {
     name: name,
     displayName: customModuleDisplayName,
     enablementState: EnablementState.ENABLED,
-    customConfig: customConfig
+    customConfig: customConfig,
   };
 
   async function createSecurityHealthAnalyticsCustomModule() {
     const [response] = await client.createSecurityHealthAnalyticsCustomModule({
       parent: parent,
-      securityHealthAnalyticsCustomModule: securityHealthAnalyticsCustomModule
+      securityHealthAnalyticsCustomModule: securityHealthAnalyticsCustomModule,
     });
-    console.log('Security Health Analytics Custom Module creation succeeded: ', response);
+    console.log(
+      'Security Health Analytics Custom Module creation succeeded: ',
+      response
+    );
   }
 
   createSecurityHealthAnalyticsCustomModule();

@@ -19,7 +19,9 @@
 function main(organizationId, customModuleId, locationId = 'global') {
   // [START securitycenter_get_security_health_analytics_custom_module]
   // npm install '@google-cloud/securitycentermanagement'
-  const { SecurityCenterManagementClient } = require('@google-cloud/securitycentermanagement');
+  const {
+    SecurityCenterManagementClient,
+  } = require('@google-cloud/securitycentermanagement');
 
   const client = new SecurityCenterManagementClient();
 
@@ -34,9 +36,12 @@ function main(organizationId, customModuleId, locationId = 'global') {
 
   async function getSecurityHealthAnalyticsCustomModule() {
     const [response] = await client.getSecurityHealthAnalyticsCustomModule({
-      name: name
+      name: name,
     });
-    console.log('Security Health Analytics Custom Module get succeeded: ', response);
+    console.log(
+      'Security Health Analytics Custom Module get succeeded: ',
+      response
+    );
   }
 
   getSecurityHealthAnalyticsCustomModule();

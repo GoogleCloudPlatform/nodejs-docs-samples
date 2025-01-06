@@ -17,30 +17,36 @@
  *  Retrieve an existing effective security health analytics custom module
  */
 function main(organizationId, customModuleId, locationId = 'global') {
-    // [START securitycenter_get_effective_security_health_analytics_custom_module]
-    // npm install '@google-cloud/securitycentermanagement'
-    const { SecurityCenterManagementClient } = require('@google-cloud/securitycentermanagement');
+  // [START securitycenter_get_effective_security_health_analytics_custom_module]
+  // npm install '@google-cloud/securitycentermanagement'
+  const {
+    SecurityCenterManagementClient,
+  } = require('@google-cloud/securitycentermanagement');
 
-    const client = new SecurityCenterManagementClient();
+  const client = new SecurityCenterManagementClient();
 
-    /*
-     * Required. Resource name of security health analytics module.
-     *     Its format is
-     *    `organizations/[organization_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
-     *    `folders/[folder_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
-     *    `projects/[project_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
-     */
-    const name = `organizations/${organizationId}/locations/${locationId}/effectiveSecurityHealthAnalyticsCustomModules/${customModuleId}`;
+  /*
+   * Required. Resource name of security health analytics module.
+   *     Its format is
+   *    `organizations/[organization_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
+   *    `folders/[folder_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
+   *    `projects/[project_id]/locations/[location_id]/effectiveSecurityHealthAnalyticsCustomModules/[custom_module]`
+   */
+  const name = `organizations/${organizationId}/locations/${locationId}/effectiveSecurityHealthAnalyticsCustomModules/${customModuleId}`;
 
-    async function getEffectiveSecurityHealthAnalyticsCustomModule() {
-        const [response] = await client.getEffectiveSecurityHealthAnalyticsCustomModule({
-            name: name
-        });
-        console.log('Security Health Analytics Custom Module get effective succeeded: ', response);
-    }
+  async function getEffectiveSecurityHealthAnalyticsCustomModule() {
+    const [response] =
+      await client.getEffectiveSecurityHealthAnalyticsCustomModule({
+        name: name,
+      });
+    console.log(
+      'Security Health Analytics Custom Module get effective succeeded: ',
+      response
+    );
+  }
 
-    getEffectiveSecurityHealthAnalyticsCustomModule();
-    // [END securitycenter_get_effective_security_health_analytics_custom_module]
+  getEffectiveSecurityHealthAnalyticsCustomModule();
+  // [END securitycenter_get_effective_security_health_analytics_custom_module]
 }
 
 main(...process.argv.slice(2));

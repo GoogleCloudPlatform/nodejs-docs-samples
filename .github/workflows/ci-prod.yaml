@@ -69,6 +69,8 @@ jobs:
       fail-fast: false
       matrix:
         package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+    env:
+      MOCHA_REPORTER_OUTPUT: ${{github.run_id}}_spong_log.xml
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,3 +90,10 @@ jobs:
           bash .github/scripts/nodejs-test.sh ${{ matrix.package }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651
+      # - name: Upload test results for FlakyBot workflow
+      #   if: github.event.action == 'schedule' && always() # always() submits logs even if tests fail
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: test-results
+      #     path: ${{ matrix.package }}/${{ env.MOCHA_REPORTER_OUTPUT }}
+      #     retention-days: 1

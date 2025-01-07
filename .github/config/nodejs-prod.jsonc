@@ -48,6 +48,17 @@
     "renovate.json"
   ],
   "exclude-packages": [
+    "functions/concepts", // parent directory
+    "functions/firebase", // parent directory
+    "functions/helloworld", // parent directory
+    "functions/http", // parent directory
+    "functions/http/uploadFile", // parent directory
+    "functions/log", // parent directory
+    "functions/pubsub", // parent directory
+    "memorystore/redis", // parent directory
+    "recaptcha_enterprise/demosite/app", // no tests exist
+
+    // TODO: fix these
     "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
     "appengine/analytics", // [ERR_REQUIRE_ESM]: require() of ES Module
     "appengine/metadata/flexible", // [ERR_REQUIRE_ESM]: require() of ES Module
@@ -67,15 +78,8 @@
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
     "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found
     "functions/billing", // Error: Request failed with status code 500
-    "functions/concepts", // npm error Missing script: "test"
-    "functions/firebase", // npm error Missing script: "test"
-    "functions/helloworld", // npm error Missing script: "test"
-    "functions/http", // npm error Missing script: "test"
-    "functions/http/uploadFile", // npm error Missing script: "test"
     "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage
-    "functions/log", // npm error Missing script: "test"
     "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
-    "functions/pubsub", // npm error Missing script: "test"
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
     "generative-ai/snippets", // [VertexAI.ClientError]: got status: 403 Forbidden.
@@ -84,8 +88,6 @@
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "healthcare/hl7v2", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
-    "memorystore/redis", // npm error Missing script: "test"
-    "recaptcha_enterprise/demosite/app", // Error: no test specified
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
     "run/idp-sql", // Error: Invalid contents in the credentials file
     "run/markdown-preview/editor", // Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file

@@ -50,6 +50,17 @@
   // These are all working well in prod, so we can exclude them from dev.
   // Once all packages are in prod, we can remove this dev config.
   "exclude-packages": [
+    "functions/concepts", // parent directory
+    "functions/firebase", // parent directory
+    "functions/helloworld", // parent directory
+    "functions/http", // parent directory
+    "functions/http/uploadFile", // parent directory
+    "functions/log", // parent directory
+    "functions/pubsub", // parent directory
+    "memorystore/redis", // parent directory
+    "recaptcha_enterprise/demosite/app", // no tests exist
+
+    // These tests are already passing in prod, so skip them in dev.
     "appengine/building-an-app/build",
     "appengine/building-an-app/update",
     "appengine/datastore",

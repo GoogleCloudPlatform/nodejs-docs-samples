@@ -83,10 +83,7 @@
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
     "generative-ai/snippets", // [VertexAI.ClientError]: got status: 403 Forbidden.
-    "healthcare/consent", // GaxiosError: dataset not initialized
-    "healthcare/dicom", // GaxiosError: dataset not initialized
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
-    "healthcare/hl7v2", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
     "run/idp-sql", // Error: Invalid contents in the credentials file

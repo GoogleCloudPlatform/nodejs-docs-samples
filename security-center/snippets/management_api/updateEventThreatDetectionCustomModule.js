@@ -27,7 +27,13 @@ function main(organizationId, customModuleId, location = 'global') {
   // Create a Security Center Management client
   const client = new SecurityCenterManagementClient();
 
-  // Build the full resource path for the event threat detection custom module to update.
+  /*
+   * Required. Resource name of event threat detection module.
+   *     Its format is
+   *    `organizations/[organization_id]/locations/[location_id]/eventThreatDetectionCustomModules/[custom_module]`
+   *    `folders/[folder_id]/locations/[location_id]/eventThreatDetectionCustomModules/[custom_module]`
+   *    `projects/[project_id]/locations/[location_id]/eventThreatDetectionCustomModules/[custom_module]`
+   */
   // TODO(developer): Update the following references for your own environment before running the sample.
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const location = 'LOCATION_ID';

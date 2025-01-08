@@ -34,7 +34,7 @@ function main(organizationId, location = 'global') {
   //TODO(developer): Update the following references for your own environment before running the sample.
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const location = 'LOCATION_ID';
-  const parent = client.organizationLocationPath(organizationId, location);
+  const parent = `organizations/${organizationId}/locations/${location}`;
 
   // Build the request.
   const listEventThreatDetectionCustomModulesRequest = {

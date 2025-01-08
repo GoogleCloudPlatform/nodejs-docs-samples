@@ -36,28 +36,7 @@ function main(organizationId, customModuleDisplayName, location = 'global') {
   //TODO(developer): Update the following references for your own environment before running the sample.
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const location = 'LOCATION_ID';
-  const parent = client.organizationLocationPath(organizationId, location);
-
-  // define the metadata and other config parameters severity, description,
-  // recommendation and ips below
-  const config = {
-    fields: {
-      metadata: {
-        structValue: {
-          fields: {
-            severity: {stringValue: 'MEDIUM'},
-            description: {stringValue: 'add your description here'},
-            recommendation: {stringValue: 'add your recommendation here'},
-          },
-        },
-      },
-      ips: {
-        listValue: {
-          values: [{stringValue: '0.0.0.0'}],
-        },
-      },
-    },
-  };
+  const parent = `organizations/${organizationId}/locations/${location}`;
 
   // define the event threat detection custom module configuration, update the EnablementState
   // below
@@ -65,7 +44,7 @@ function main(organizationId, customModuleDisplayName, location = 'global') {
     displayName: customModuleDisplayName,
     enablementState: 'ENABLED',
     type: 'CONFIGURABLE_BAD_IP',
-    config: config,
+    config: prepareConfigDetails(),
   };
 
   // Build the request.
@@ -80,6 +59,32 @@ function main(organizationId, customModuleDisplayName, location = 'global') {
       createEventThreatDetectionCustomModuleRequest
     );
     console.log('EventThreatDetectionCustomModule created : %j', response);
+  }
+
+  function prepareConfigDetails() {
+    // define the metadata and other config parameters severity, description,
+    // recommendation and ips below
+    const config = {
+      fields: {
+        metadata: {
+          structValue: {
+            fields: {
+              severity: {stringValue: 'LOW'},
+              description: {stringValue: 'Flagged by Cymbal as malicious'},
+              recommendation: {
+                stringValue: 'Contact the owner of the relevant project.',
+              },
+            },
+          },
+        },
+        ips: {
+          listValue: {
+            values: [{stringValue: '192.0.2.1'}, {stringValue: '192.0.2.0/24'}],
+          },
+        },
+      },
+    };
+    return config;
   }
 
   createEventThreatDetectionCustomModule();

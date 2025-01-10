@@ -20,6 +20,8 @@ const assert = require('assert');
 const {v4: uuidv4} = require('uuid');
 const {execSync} = require('child_process');
 const {describe, it, before, after} = require('mocha');
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
 
 const uniqueID = uuidv4().split('-')[0];
 const bucketName = `nodejs-samples-livestream-test-${uniqueID}`;
@@ -32,15 +34,20 @@ const backupInputId = `nodejs-test-livestream-backup-input-${uniqueID}`;
 const backupInputName = `projects/${projectId}/locations/${location}/inputs/${backupInputId}`;
 const channelId = `nodejs-test-livestream-channel-${uniqueID}`;
 const channelName = `projects/${projectId}/locations/${location}/channels/${channelId}`;
+const clipId = `nodejs-test-livestream-clip-${uniqueID}`;
+const clipName = `projects/${projectId}/locations/${location}/channels/${channelId}/clips/${clipId}`;
 const eventId = `nodejs-test-livestream-event-${uniqueID}`;
 const eventName = `projects/${projectId}/locations/${location}/channels/${channelId}/events/${eventId}`;
 const assetId = `nodejs-test-livestream-asset-${uniqueID}`;
 const assetName = `projects/${projectId}/locations/${location}/assets/${assetId}`;
 const assetUri = 'gs://cloud-samples-data/media/ForBiggerEscapes.mp4';
 const outputUri = `gs://${bucketName}/test-output-channel/`;
+const clipOutputUri = `${outputUri}clips`;
 const poolId = 'default';
 const poolName = `projects/${projectId}/locations/${location}/pools/${poolId}`;
 const cwd = path.join(__dirname, '..');
+
+let rtmpUri = '';
 
 before(async () => {
   // Delete outstanding channels, inputs, and assets created more than 3 hours ago
@@ -77,6 +84,17 @@ before(async () => {
           name: event.name,
         });
       }
+
+      const [clips] = await livestreamServiceClient.listClips({
+        parent: channel.name,
+      });
+
+      for (const clip of clips) {
+        await livestreamServiceClient.deleteClip({
+          name: clip.name,
+        });
+      }
+
       await livestreamServiceClient.deleteChannel(request);
     }
   }
@@ -102,6 +120,23 @@ before(async () => {
       };
       await livestreamServiceClient.deleteAsset(request);
     }
+  }
+  // Create bucket for test files
+  await storage.createBucket(bucketName);
+});
+
+after(async () => {
+  async function deleteFiles() {
+    const [files] = await storage.bucket(bucketName).getFiles();
+    for (const file of files) {
+      await storage.bucket(bucketName).file(file.name).delete();
+    }
+  }
+  try {
+    await deleteFiles();
+    await storage.bucket(bucketName).delete();
+  } catch (err) {
+    console.log('Cannot delete bucket');
   }
 });
 
@@ -318,6 +353,91 @@ describe('Channel event functions', () => {
       {cwd}
     );
     assert.ok(output.includes('Deleted channel event'));
+  });
+});
+
+describe('Channel clip functions', () => {
+  before(() => {
+    let output = execSync(
+      `node createInput.js ${projectId} ${location} ${inputId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(inputName));
+    assert.ok(output.includes('Uri:'));
+
+    const match = new RegExp('rtmp.*', 'g').exec(output);
+    rtmpUri = match[0].trim();
+
+    output = execSync(
+      `node createChannel.js ${projectId} ${location} ${channelId} ${inputId} ${outputUri}`,
+      {cwd}
+    );
+    assert.ok(output.includes(channelName));
+
+    output = execSync(
+      `node startChannel.js ${projectId} ${location} ${channelId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Started channel'));
+  });
+
+  after(() => {
+    let output = execSync(
+      `node stopChannel.js ${projectId} ${location} ${channelId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Stopped channel'));
+
+    output = execSync(
+      `node deleteChannel.js ${projectId} ${location} ${channelId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted channel'));
+
+    output = execSync(
+      `node deleteInput.js ${projectId} ${location} ${inputId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted input'));
+  });
+
+  it('should create a channel clip', async () => {
+    // Run the test stream for 45 seconds
+    await execSync(
+      `ffmpeg -re -f lavfi -t 45 -i "testsrc=size=1280x720 [out0]; sine=frequency=500 [out1]" \
+        -acodec aac -vcodec h264 -f flv ${rtmpUri}`,
+      {cwd}
+    );
+
+    const output = execSync(
+      `node createChannelClip.js ${projectId} ${location} ${channelId} ${clipId} ${clipOutputUri}`,
+      {cwd}
+    );
+    assert.ok(output.includes(clipName));
+  });
+
+  it('should show a list of channel clips', () => {
+    const output = execSync(
+      `node listChannelClips.js ${projectId} ${location} ${channelId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(clipName));
+  });
+
+  it('should get a channel clip', () => {
+    const output = execSync(
+      `node getChannelClip.js ${projectId} ${location} ${channelId} ${clipId}`,
+      {cwd}
+    );
+    assert.ok(output.includes(clipName));
+  });
+
+  it('should delete a channel clip', () => {
+    const output = execSync(
+      `node deleteChannelClip.js ${projectId} ${location} ${channelId} ${clipId}`,
+      {cwd}
+    );
+    assert.ok(output.includes('Deleted channel clip'));
   });
 });
 

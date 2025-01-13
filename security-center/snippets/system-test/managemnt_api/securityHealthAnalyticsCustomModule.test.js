@@ -24,8 +24,9 @@ const {describe, it, before, after} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-// TODO(developers): update for your own environment
-const organizationId = '1081635000895';
+// TODO(developer): Replace with your organization ID
+const organizationId =
+  process.env.SCC_ORGANIZATION_ID || 'YOUR_ORGANIZATION_ID';
 const locationId = 'global';
 const customModuleDisplayName =
   'security_health_analytics_test' + uuidv1().replace(/-/g, '_');
@@ -107,7 +108,7 @@ describe('security health analytics custom module', async () => {
               name: `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/${customModuleId}`,
             });
             console.log(
-              `Custome Module ${customModuleDisplayName} deleted successfully.`
+              `Custom Module ${customModuleDisplayName} deleted successfully.`
             );
           }
         }
@@ -137,7 +138,6 @@ describe('security health analytics custom module', async () => {
     const output = exec(
       `node management_api/updateSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${data.customModuleId} ${locationId}`
     );
-    // assert.include(output, data.customModuleName);
     assert.include(output, 'DISABLED');
     assert.match(
       output,

@@ -25,11 +25,12 @@ const main = async (
   projectId = process.env.GOOGLE_CLOUD_PROJECT,
   entryGroupId
 ) => {
+  // [START data_catalog_create_entry_group_tag]
   // [START datacatalog_create_entry_group_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
+  const { DataCatalogClient } = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
 
   // Currently, Data Catalog stores metadata in the
@@ -59,6 +60,7 @@ const main = async (
 
   console.log(response);
   // [END datacatalog_create_entry_group_tag]
+  // [END data_catalog_create_entry_group_tag]
 };
 
 // node createEntryGroup.js <projectId> <entryGroupId>

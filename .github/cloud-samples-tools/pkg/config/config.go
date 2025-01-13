@@ -19,6 +19,8 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -154,8 +156,8 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 // Affected returns the packages that have been affected from diffs.
 // If there are diffs on at leat one global file affecting all packages,
 // then this returns all packages matched by the config.
-func (c *Config) Affected(diffs []string) ([]string, error) {
-	changed := c.Changed(diffs)
+func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
+	changed := c.Changed(log, diffs)
 	if slices.Contains(changed, ".") {
 		return c.FindAllPackages(".")
 	}
@@ -165,25 +167,22 @@ func (c *Config) Affected(diffs []string) ([]string, error) {
 // Changed returns the packages that have changed.
 // It only returns packages that are matched by the config,
 // and are not excluded by the config.
-func (c *Config) Changed(diffs []string) []string {
+func (c *Config) Changed(log io.Writer, diffs []string) []string {
 	changedUnique := make(map[string]bool)
 	for _, diff := range diffs {
 		if !c.Matches(diff) {
 			continue
 		}
 		pkg := c.FindPackage(diff)
-		if slices.Contains(c.ExcludePackages, pkg) {
-			continue
-		}
 		changedUnique[pkg] = true
-	}
-
-	if len(changedUnique) == 0 {
-		return []string{"."}
 	}
 
 	changed := make([]string, 0, len(changedUnique))
 	for pkg := range changedUnique {
+		if slices.Contains(c.ExcludePackages, pkg) {
+			fmt.Fprintf(log, "ℹ️ Excluded package %q, skipping.\n", pkg)
+			continue
+		}
 		changed = append(changed, pkg)
 	}
 	return changed

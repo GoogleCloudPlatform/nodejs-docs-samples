@@ -28,7 +28,7 @@ async function main(
   // const ttl = '900s' // Optional: Specify TTL in seconds (e.g., '900s' for 15 minutes).
 
   // Imports the Secret Manager library
-  const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+  const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
   // Instantiates a client
   const client = new SecretManagerServiceClient();

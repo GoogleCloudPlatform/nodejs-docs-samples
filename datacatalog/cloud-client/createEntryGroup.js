@@ -25,7 +25,7 @@ const main = async (
   projectId = process.env.GOOGLE_CLOUD_PROJECT,
   entryGroupId
 ) => {
-  // [START data_catalog_create_entry_group_tag]
+  // [START data_catalog_create_entry_group]
   // [START datacatalog_create_entry_group_tag]
   // -------------------------------
   // Import required modules.
@@ -60,7 +60,7 @@ const main = async (
 
   console.log(response);
   // [END datacatalog_create_entry_group_tag]
-  // [END data_catalog_create_entry_group_tag]
+  // [END data_catalog_create_entry_group]
 };
 
 // node createEntryGroup.js <projectId> <entryGroupId>

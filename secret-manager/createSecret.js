@@ -42,7 +42,9 @@ async function main(
 
     // Add TTL to the secret configuration if provided
     if (ttl) {
-      secretConfig.ttl = ttl;
+      secretConfig.ttl = {
+        seconds: parseInt(ttl.replace('s', ''), 10),
+      };
     }
 
     const [secret] = await client.createSecret({

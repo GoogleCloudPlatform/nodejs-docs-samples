@@ -48,7 +48,7 @@ jobs:
         run: echo "packages=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js 20 test
+    name: Node.js ${{ matrix.package.setup.nodejs_version }} test
     needs: affected
     runs-on: ubuntu-latest
     permissions:
@@ -63,14 +63,14 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.package.setup.nodejs_version }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: long-door-651
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s # 10 minutes
-      - if: matrix.package.secrets
+      - if: matrix.package.secrets != '[]'
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: ${{ join(matrix.package.secrets) }}

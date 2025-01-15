@@ -17,7 +17,7 @@
 async function main(
   parent = 'projects/my-project',
   secretId = 'my-secret',
-  ttl = '900s'
+  ttl = undefined
 ) {
   // [START secretmanager_create_secret]
   /**
@@ -25,7 +25,7 @@ async function main(
    */
   // const parent = 'projects/my-project';
   // const secretId = 'my-secret';
-  // const ttl = '900s' // Optional: Specify TTL in seconds (e.g., '900s' for 15 minutes).
+  // const ttl = undefined // Optional: Specify TTL in seconds (e.g., '900s' for 15 minutes).
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');

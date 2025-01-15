@@ -16,7 +16,13 @@
 
 {
   "package-file": [ "package.json" ],
-  "setup-file": "setup.json",
+  "setup": {
+    "filename": "setup.json",
+    "defaults": {
+      "nodejs_version": 20,
+      "secrets": null
+    }
+  },
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",

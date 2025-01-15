@@ -26,7 +26,7 @@ import (
 var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
 var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
 
-func ReadJsonc[a any](path string) (*a, error) {
+func ReadJsonc[a any](path string, defaults *a) (*a, error) {
 	// Read the JSONC file.
 	sourceJsonc, err := os.ReadFile(path)
 	if err != nil {
@@ -38,6 +38,9 @@ func ReadJsonc[a any](path string) (*a, error) {
 	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
 
 	var value a
+	if defaults != nil {
+		value = *defaults
+	}
 	err = json.Unmarshal(sourceJson, &value)
 	if err != nil {
 		return nil, err

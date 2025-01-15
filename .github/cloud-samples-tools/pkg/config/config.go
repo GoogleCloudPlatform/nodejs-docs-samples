@@ -32,8 +32,11 @@ type Config struct {
 	// Filename to look for the root of a package.
 	PackageFile []string `json:"package-file"`
 
-	// Setup filename, must be located in the same directory as the package file.
-	SetupFile string `json:"setup-file"`
+	// Setup file, must be located in the same directory as the package file.
+	Setup struct {
+		FileName string         `json:"filename"`
+		Defaults map[string]any `json:"defaults"`
+	} `json:"setup"`
 
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
@@ -69,7 +72,7 @@ func (c *Config) Save(file *os.File) error {
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (*Config, error) {
 	// Read the config file.
-	config, err := ReadJsonc[Config](path)
+	config, err := ReadJsonc[Config](path, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -166,10 +169,9 @@ func (c *Config) Affected(log io.Writer, diffs []string) ([]Package, error) {
 	packages := make([]Package, 0, len(changed))
 	for _, path := range changed {
 		pkg := Package{Path: path}
-		if c.SetupFile != "" {
-			setup_file := filepath.Join(path, c.SetupFile)
-			println(setup_file)
-			setup, err := ReadJsonc[map[string]any](setup_file)
+		if c.Setup.FileName != "" {
+			setup_file := filepath.Join(path, c.Setup.FileName)
+			setup, err := ReadJsonc(setup_file, &c.Setup.Defaults)
 			if err != nil {
 				return nil, err
 			}

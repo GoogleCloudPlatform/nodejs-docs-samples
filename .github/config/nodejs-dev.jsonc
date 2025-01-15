@@ -54,7 +54,6 @@
     "functions/firebase", // parent directory
     "functions/helloworld", // parent directory
     "functions/http", // parent directory
-    "functions/http/uploadFile", // parent directory
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory

@@ -52,7 +52,6 @@
     "functions/firebase", // parent directory
     "functions/helloworld", // parent directory
     "functions/http", // parent directory
-    "functions/http/uploadFile", // parent directory
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
@@ -78,6 +77,7 @@
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
     "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found
     "functions/billing", // Error: Request failed with status code 500
+    "functions/http/uploadFile", // npm error Missing script: "test"
     "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage
     "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined

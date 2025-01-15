@@ -24,7 +24,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 )
@@ -32,6 +31,9 @@ import (
 type Config struct {
 	// Filename to look for the root of a package.
 	PackageFile []string `json:"package-file"`
+
+	// Setup filename, must be located in the same directory as the package file.
+	SetupFile string `json:"setup-file"`
 
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
@@ -43,8 +45,13 @@ type Config struct {
 	ExcludePackages []string `json:"exclude-packages"`
 }
 
-var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
-var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
+type Package struct {
+	// Package directory path.
+	Path string `json:"path"`
+
+	// Package setup configurations.
+	Setup *map[string]any `json:"setup"`
+}
 
 // Saves the config to the given file.
 func (c *Config) Save(file *os.File) error {
@@ -61,18 +68,8 @@ func (c *Config) Save(file *os.File) error {
 
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (*Config, error) {
-	// Read the JSONC file.
-	sourceJsonc, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	// Strip the comments and load the JSON.
-	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
-	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
-
-	var config Config
-	err = json.Unmarshal(sourceJson, &config)
+	// Read the config file.
+	config, err := ReadJsonc[Config](path)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +82,7 @@ func LoadConfig(path string) (*Config, error) {
 		config.Match = []string{"*"}
 	}
 
-	return &config, nil
+	return config, nil
 }
 
 // Match returns true if the path matches any of the patterns.
@@ -156,12 +153,31 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 // Affected returns the packages that have been affected from diffs.
 // If there are diffs on at leat one global file affecting all packages,
 // then this returns all packages matched by the config.
-func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
+func (c *Config) Affected(log io.Writer, diffs []string) ([]Package, error) {
 	changed := c.Changed(log, diffs)
 	if slices.Contains(changed, ".") {
-		return c.FindAllPackages(".")
+		allPackages, err := c.FindAllPackages(".")
+		if err != nil {
+			return nil, err
+		}
+		changed = allPackages
 	}
-	return changed, nil
+
+	packages := make([]Package, 0, len(changed))
+	for _, path := range changed {
+		pkg := Package{Path: path}
+		if c.SetupFile != "" {
+			setup_file := filepath.Join(path, c.SetupFile)
+			println(setup_file)
+			setup, err := ReadJsonc[map[string]any](setup_file)
+			if err != nil {
+				return nil, err
+			}
+			pkg.Setup = setup
+		}
+		packages = append(packages, pkg)
+	}
+	return packages, nil
 }
 
 // Changed returns the packages that have changed.

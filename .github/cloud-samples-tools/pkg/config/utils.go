@@ -17,9 +17,33 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
+	"regexp"
 )
+
+var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
+var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
+
+func ReadJsonc[a any](path string) (*a, error) {
+	// Read the JSONC file.
+	sourceJsonc, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	// Strip the comments and load the JSON.
+	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
+	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
+
+	var value a
+	err = json.Unmarshal(sourceJson, &value)
+	if err != nil {
+		return nil, err
+	}
+	return &value, nil
+}
 
 // fileExists returns true if the file exists.
 func fileExists(path string) bool {

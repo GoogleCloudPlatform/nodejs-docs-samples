@@ -72,7 +72,8 @@ func (c *Config) Save(file *os.File) error {
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (*Config, error) {
 	// Read the config file.
-	config, err := ReadJsonc[Config](path, nil)
+	var config Config
+	err := ReadJsonc(path, &config)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +86,7 @@ func LoadConfig(path string) (*Config, error) {
 		config.Match = []string{"*"}
 	}
 
-	return config, nil
+	return &config, nil
 }
 
 // Match returns true if the path matches any of the patterns.
@@ -168,14 +169,15 @@ func (c *Config) Affected(log io.Writer, diffs []string) ([]Package, error) {
 
 	packages := make([]Package, 0, len(changed))
 	for _, path := range changed {
-		pkg := Package{Path: path}
+		pkg := Package{Path: path, Setup: &c.Setup.Defaults}
 		if c.Setup.FileName != "" {
 			setup_file := filepath.Join(path, c.Setup.FileName)
-			setup, err := ReadJsonc(setup_file, &c.Setup.Defaults)
-			if err != nil {
-				return nil, err
+			if fileExists(setup_file) {
+				err := ReadJsonc(setup_file, pkg.Setup)
+				if err != nil {
+					return nil, err
+				}
 			}
-			pkg.Setup = setup
 		}
 		packages = append(packages, pkg)
 	}

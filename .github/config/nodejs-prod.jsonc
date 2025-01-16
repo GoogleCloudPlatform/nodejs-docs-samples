@@ -31,6 +31,7 @@
     ".github/header-checker-lint.yaml",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
+    ".github/workflows/",
     ".gitignore",
     ".kokoro/",
     ".prettierignore",

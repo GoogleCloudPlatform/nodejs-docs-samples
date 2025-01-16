@@ -26,7 +26,7 @@ const main = async (
   entryGroupId,
   entryId
 ) => {
-  // [START data_catalog_delete_fileset_quickstart_tag]
+  // [START data_catalog_delete_fileset_quickstart]
   // [START datacatalog_delete_fileset_quickstart_tag]
   // -------------------------------
   // Import required modules.
@@ -73,7 +73,7 @@ const main = async (
   }
 };
 // [END datacatalog_delete_fileset_quickstart_tag]
-// [END data_catalog_delete_fileset_quickstart_tag]
+// [END data_catalog_delete_fileset_quickstart]
 
 // node deleteFilesetEntry.js <projectId> <entryGroupId> <entryId>
 main(...process.argv.slice(2));

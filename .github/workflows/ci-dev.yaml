@@ -65,6 +65,10 @@ jobs:
     env:
       GOOGLE_SAMPLES_PROJECT: ${{ needs.affected.outputs.nodejs-setups[matrix.path].project-id }}
     steps:
+      - run: |
+          echo path: ${{ matrix.path }}
+          echo setups: ${{ toJson(needs.affected.outputs.nodejs-setups) }}
+          echo setups[path]: ${{ needs.affected.outputs.nodejs-setups[matrix.path] }}
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}

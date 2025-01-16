@@ -30,7 +30,7 @@ var usage = `usage: tools <command> ...
 
 commands:
   affected path/to/config.jsonc path/to/diffs.txt
-  run-all path/to/config.jsonc path/to/script.sh
+  setups path/to/config.jsonc path/to/affected-paths.txt
 `
 
 // Entry point to validate command line arguments.
@@ -54,7 +54,9 @@ func main() {
 			log.Fatalln("❌ no diffs file specified\n", usage)
 		}
 
-		affectedCmd(configFile, diffsFile)
+		outputFile := flag.Arg(3)
+
+		affectedCmd(configFile, diffsFile, outputFile)
 
 	default:
 		log.Fatalln("❌ unknown command: ", command, "\n", usage)
@@ -62,7 +64,7 @@ func main() {
 }
 
 // affected command entry point to validate inputs.
-func affectedCmd(configFile string, diffsFile string) {
+func affectedCmd(configFile string, diffsFile string, outputFile string) {
 	config, err := c.LoadConfig(configFile)
 	if err != nil {
 		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
@@ -76,23 +78,32 @@ func affectedCmd(configFile string, diffsFile string) {
 	diffs := strings.Split(strings.TrimSpace(string(diffsBytes)), "\n")
 
 	// Log to stderr since GitHub Actions expects the output on stdout.
-	packages, err := config.Affected(os.Stderr, diffs)
+	paths, err := config.Affected(os.Stderr, diffs)
 	if err != nil {
 		log.Fatalln("❌ error finding the affected packages.\n", err)
 	}
-	if len(packages) > 256 {
+	if len(paths) > 256 {
 		log.Fatalln(
 			"❌ Error: GitHub Actions only supports up to 256 packages, got ",
-			len(packages),
+			len(paths),
 			" packages, for more details see:\n",
 			"https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow",
 		)
 	}
 
-	packagesJson, err := json.Marshal(packages)
+	if outputFile != "" {
+		file, err := os.Create(outputFile)
+		if err != nil {
+			log.Fatalln("❌ eror creating output file.\n", err)
+		}
+		for _, path := range paths {
+			fmt.Fprintf(file, "%v\n", path)
+		}
+	}
+
+	output, err := json.Marshal(paths)
 	if err != nil {
 		log.Fatalln("❌ error marshaling packages to JSON.\n", err)
 	}
-
-	fmt.Println(string(packagesJson))
+	fmt.Println(string(output))
 }

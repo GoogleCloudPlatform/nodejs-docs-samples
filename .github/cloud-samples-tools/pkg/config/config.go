@@ -32,11 +32,9 @@ type Config struct {
 	// Filename to look for the root of a package.
 	PackageFile []string `json:"package-file"`
 
-	// Setup file, must be located in the same directory as the package file.
-	Setup struct {
-		FileName string         `json:"filename"`
-		Defaults map[string]any `json:"defaults"`
-	} `json:"setup"`
+	// CI setup file, must be located in the same directory as the package file.
+	CISetupFileName string   `json:"ci-setup-filename"`
+	CISetupDefaults *CISetup `json:"ci-setup-defaults"`
 
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
@@ -48,13 +46,7 @@ type Config struct {
 	ExcludePackages []string `json:"exclude-packages"`
 }
 
-type Package struct {
-	// Package directory path.
-	Path string `json:"path"`
-
-	// Package setup configurations.
-	Setup *map[string]any `json:"setup"`
-}
+type CISetup = map[string]any
 
 // Saves the config to the given file.
 func (c *Config) Save(file *os.File) error {
@@ -73,7 +65,7 @@ func (c *Config) Save(file *os.File) error {
 func LoadConfig(path string) (*Config, error) {
 	// Read the config file.
 	var config Config
-	err := ReadJsonc(path, &config)
+	err := readJsonc(path, &config)
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +76,9 @@ func LoadConfig(path string) (*Config, error) {
 	}
 	if config.Match == nil {
 		config.Match = []string{"*"}
+	}
+	if config.CISetupFileName == "" {
+		config.CISetupFileName = "ci-setup.json"
 	}
 
 	return &config, nil
@@ -111,15 +106,14 @@ func (c *Config) Matches(path string) bool {
 // IsPackageDir returns true if the path is a package directory.
 func (c *Config) IsPackageDir(dir string) bool {
 	for _, filename := range c.PackageFile {
-		packageFile := filepath.Join(dir, filename)
-		if fileExists(packageFile) {
+		if fileExists(filepath.Join(dir, filename)) {
 			return true
 		}
 	}
 	return false
 }
 
-// FindPackage returns the package name for the given path.
+// FindPackage returns the most specific package path for the given filename.
 func (c *Config) FindPackage(path string) string {
 	dir := filepath.Dir(path)
 	if dir == "." || c.IsPackageDir(dir) {
@@ -128,9 +122,9 @@ func (c *Config) FindPackage(path string) string {
 	return c.FindPackage(dir)
 }
 
-// FindAllPackages finds all the packages in the given root directory.
+// FindAllPackages finds all the package paths in the given root directory.
 func (c *Config) FindAllPackages(root string) ([]string, error) {
-	var packages []string
+	var paths []string
 	err := fs.WalkDir(os.DirFS(root), ".",
 		func(path string, d os.DirEntry, err error) error {
 			if err != nil {
@@ -143,7 +137,7 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 				return nil
 			}
 			if d.IsDir() && c.Matches(path) && c.IsPackageDir(path) {
-				packages = append(packages, path)
+				paths = append(paths, path)
 				return nil
 			}
 			return nil
@@ -151,37 +145,7 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	return packages, nil
-}
-
-// Affected returns the packages that have been affected from diffs.
-// If there are diffs on at leat one global file affecting all packages,
-// then this returns all packages matched by the config.
-func (c *Config) Affected(log io.Writer, diffs []string) ([]Package, error) {
-	changed := c.Changed(log, diffs)
-	if slices.Contains(changed, ".") {
-		allPackages, err := c.FindAllPackages(".")
-		if err != nil {
-			return nil, err
-		}
-		changed = allPackages
-	}
-
-	packages := make([]Package, 0, len(changed))
-	for _, path := range changed {
-		pkg := Package{Path: path, Setup: &c.Setup.Defaults}
-		if c.Setup.FileName != "" {
-			setup_file := filepath.Join(path, c.Setup.FileName)
-			if fileExists(setup_file) {
-				err := ReadJsonc(setup_file, pkg.Setup)
-				if err != nil {
-					return nil, err
-				}
-			}
-		}
-		packages = append(packages, pkg)
-	}
-	return packages, nil
+	return paths, nil
 }
 
 // Changed returns the packages that have changed.
@@ -193,17 +157,54 @@ func (c *Config) Changed(log io.Writer, diffs []string) []string {
 		if !c.Matches(diff) {
 			continue
 		}
-		pkg := c.FindPackage(diff)
-		changedUnique[pkg] = true
+		path := c.FindPackage(diff)
+		if path == "." {
+			fmt.Fprintf(log, "ℹ️ Global file changed: %q\n", diff)
+		}
+		changedUnique[path] = true
 	}
 
 	changed := make([]string, 0, len(changedUnique))
-	for pkg := range changedUnique {
-		if slices.Contains(c.ExcludePackages, pkg) {
-			fmt.Fprintf(log, "ℹ️ Excluded package %q, skipping.\n", pkg)
+	for path := range changedUnique {
+		if slices.Contains(c.ExcludePackages, path) {
+			fmt.Fprintf(log, "ℹ️ Excluded package %q, skipping.\n", path)
 			continue
 		}
-		changed = append(changed, pkg)
+		changed = append(changed, path)
 	}
 	return changed
+}
+
+// Affected returns the packages that have been affected from diffs.
+// If there are diffs on at leat one global file affecting all packages,
+// then this returns all packages matched by the config.
+func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
+	paths := c.Changed(log, diffs)
+	if slices.Contains(paths, ".") {
+		fmt.Fprintf(log, "One or more global files were affected, all packages marked as affected.")
+		allPackages, err := c.FindAllPackages(".")
+		if err != nil {
+			return nil, err
+		}
+		paths = allPackages
+	}
+	return paths, nil
+}
+
+func (c *Config) FindSetupFiles(paths []string) (*map[string]CISetup, error) {
+	setups := make(map[string]CISetup, len(paths))
+	for _, path := range paths {
+		setup := *c.CISetupDefaults
+		setupFile := filepath.Join(path, c.CISetupFileName)
+		if fileExists(setupFile) {
+			// This mutates `setup` so there's no need to reassign it.
+			// It keeps the default values if they're not in the JSON file.
+			err := readJsonc(setupFile, &setup)
+			if err != nil {
+				return nil, err
+			}
+		}
+		setups[path] = setup
+	}
+	return &setups, nil
 }

@@ -16,12 +16,9 @@
 
 {
   "package-file": [ "package.json" ],
-  "setup": {
-    "filename": "setup.json",
-    "defaults": {
-      "nodejs_version": 20,
-      "secrets": null
-    }
+  "ci-setup-defaults": {
+    "node-version": 20,
+    "secrets": null
   },
   "ignore": [
     ".eslintignore",

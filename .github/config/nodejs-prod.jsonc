@@ -16,7 +16,6 @@
 
 {
   "package-file": [ "package.json" ],
-  "setup-file": "setup.json",
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",

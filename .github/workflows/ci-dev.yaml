@@ -31,7 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      nodejs: ${{ steps.nodejs.outputs.packages }}
+      nodejs-paths: ${{ steps.nodejs.outputs.paths }}
+      nodejs-setups: ${{ steps.nodejs.outputs.setups }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,10 +46,13 @@ jobs:
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
-        run: echo "packages=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
+        run: |
+          echo "paths=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          cat paths.txt
+          echo "setups=$(./tools setups .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js ${{ matrix.package.setup.nodejs_version }} test
+    name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
     permissions:
@@ -56,26 +60,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+        path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.package.setup.nodejs_version }}
+          node-version: ${{ needs.affected.outputs.nodejs-setups[matrix.path].node-version }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: long-door-651
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
           access_token_lifetime: 600s # 10 minutes
-      - if: matrix.package.secrets != '[]'
+      - if: needs.affected.outputs.nodejs-setups[matrix.path].secrets != null
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
-          secrets: ${{ join(matrix.package.secrets) }}
+          secrets: ${{ join(needs.affected.outputs.nodejs-setups[matrix.path].secrets) }}
           export_to_environment: true
-      - name: Test ${{ matrix.package.path }}
-        run: make test dir=${{ matrix.package.path }}
+      - name: 🛠️ Test ${{ matrix.path }}
+        run: make test dir=${{ matrix.path }}
         env:
           GOOGLE_SAMPLES_PROJECT: long-door-651

@@ -180,7 +180,7 @@ func (c *Config) Changed(log io.Writer, diffs []string) []string {
 func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
 	paths := c.Changed(log, diffs)
 	if slices.Contains(paths, ".") {
-		fmt.Fprintf(log, "One or more global files were affected, all packages marked as affected.")
+		fmt.Fprintf(log, "One or more global files were affected, all packages marked as affected.\n")
 		allPackages, err := c.FindAllPackages(".")
 		if err != nil {
 			return nil, err

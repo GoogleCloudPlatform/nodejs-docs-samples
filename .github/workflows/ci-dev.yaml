@@ -55,7 +55,7 @@ jobs:
     name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: ${{ needs.affected.outputs.nodejs-setups[matrix.path].timeout-minutes }}
+    timeout-minutes: 120
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
@@ -83,4 +83,6 @@ jobs:
           secrets: ${{ join(needs.affected.outputs.nodejs-setups[matrix.path].secrets) }}
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
-        run: make test dir=${{ matrix.path }}
+        run: |
+          timeout ${{ needs.affected.outputs.nodejs-setups[matrix.path].timeout }} \
+            make test dir=${{ matrix.path }}

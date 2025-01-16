@@ -27,7 +27,7 @@ on:
     - synchronize
     - labeled
     paths:
-    - 'generative-ai/snippets/**'
+    # - 'generative-ai/snippets/**'
     - '.github/workflows/generative-ai-snippets.yaml'
   schedule:
   - cron: '0 0 * * 0'

@@ -63,20 +63,19 @@ jobs:
       matrix:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     env:
-      GOOGLE_SAMPLES_PROJECT: ${{ needs.affected.outputs.nodejs-setups[matrix.path].project-id }}
+      CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
+      GOOGLE_SAMPLES_PROJECT: ${{ fromJson(needs.affected.outputs.nodejs-setups)[matrix.path].project-id }}
     steps:
       - run: |
-          echo path: ${{ matrix.path }}
-          echo setups: ${{ toJson(needs.affected.outputs.nodejs-setups) }}
-          echo setups[path]: ${{ needs.affected.outputs.nodejs-setups[matrix.path] }}
-          echo setups[path]: ${{ fromJson(needs.affected.outputs.nodejs-setups)[matrix.path] }}
-          echo setups[path]: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path]) }}
+          echo node-version: ${{ fromJson(needs.affected.outputs.nodejs-setups)[matrix.path].node-version }}
+          echo node-version: ${{ fromJson(env.CI_SETUP).node-version }}
+          exit 1
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ needs.affected.outputs.nodejs-setups[matrix.path].node-version }}
+          node-version: ${{ fromJson(needs.affected.outputs.nodejs-setups)[matrix.path].node-version }}
       - uses: google-github-actions/auth@v2
         with:
           project_id: ${{ needs.affected.outputs.nodejs-setups[matrix.path].project-id }}

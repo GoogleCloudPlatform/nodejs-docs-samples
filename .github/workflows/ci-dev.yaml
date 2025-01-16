@@ -83,7 +83,7 @@ jobs:
       - if: fromJson(env.CI_SETUP).secrets != null
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
-          secrets: ${{ join(fromJson(env.CI_SETUP).secrets, '\n') }}
+          secrets: ${{ join(fromJson(env.CI_SETUP).secrets) }}
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
         run: |

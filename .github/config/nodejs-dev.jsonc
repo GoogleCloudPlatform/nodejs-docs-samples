@@ -33,6 +33,7 @@
     ".github/auto-label.yaml",
     ".github/blunderbuss.yaml",
     ".github/cloud-samples-tools/",
+    ".github/config/",
     ".github/flakybot.yaml",
     ".github/header-checker-lint.yaml",
     ".github/snippet-bot.yml",

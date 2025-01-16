@@ -55,7 +55,7 @@ jobs:
     name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 120 # 2 hours
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
@@ -83,7 +83,7 @@ jobs:
       - if: fromJson(env.CI_SETUP).secrets != null
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
-          secrets: ${{ join(fromJson(env.CI_SETUP).secrets) }}
+          secrets: ${{ join(fromJson(env.CI_SETUP).secrets, '\n') }}
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
         run: |

@@ -55,12 +55,15 @@ jobs:
     name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
+    timeout-minutes: ${{ needs.affected.outputs.nodejs-setups[matrix.path].timeout-minutes }}
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
       fail-fast: false
       matrix:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
+    env:
+      GOOGLE_SAMPLES_PROJECT: ${{ needs.affected.outputs.nodejs-setups[matrix.path].project-id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -70,10 +73,10 @@ jobs:
           node-version: ${{ needs.affected.outputs.nodejs-setups[matrix.path].node-version }}
       - uses: google-github-actions/auth@v2
         with:
-          project_id: long-door-651
-          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 600s # 10 minutes
+          project_id: ${{ needs.affected.outputs.nodejs-setups[matrix.path].project-id }}
+          workload_identity_provider: ${{ needs.affected.outputs.nodejs-setups[matrix.path].workload-identity-provider }}
+          service_account: ${{ needs.affected.outputs.nodejs-setups[matrix.path].service-account }}
+          access_token_lifetime: ${{ needs.affected.outputs.nodejs-setups[matrix.path].access-token-lifetime }}
       - if: needs.affected.outputs.nodejs-setups[matrix.path].secrets != null
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
@@ -81,5 +84,3 @@ jobs:
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
         run: make test dir=${{ matrix.path }}
-        env:
-          GOOGLE_SAMPLES_PROJECT: long-door-651

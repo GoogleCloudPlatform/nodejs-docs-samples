@@ -63,24 +63,23 @@ func (c *Config) Save(file *os.File) error {
 
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (*Config, error) {
-	// Read the config file.
-	var config Config
+	// Set the config default values.
+	config := Config{
+		Match:           []string{"*"},
+		CISetupFileName: "ci-setup.json",
+	}
+
+	// This mutates `config` so there's no need to reassign it.
+	// It keeps the default values if they're not in the JSON file.
 	err := readJsonc(path, &config)
 	if err != nil {
 		return nil, err
 	}
 
-	// Set default values if they are not set.
+	// Validate for required values.
 	if config.PackageFile == nil {
 		return nil, errors.New("package-file is required")
 	}
-	if config.Match == nil {
-		config.Match = []string{"*"}
-	}
-	if config.CISetupFileName == "" {
-		config.CISetupFileName = "ci-setup.json"
-	}
-
 	return &config, nil
 }
 

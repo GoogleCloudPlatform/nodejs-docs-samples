@@ -29,8 +29,8 @@ import (
 var usage = `usage: tools <command> ...
 
 commands:
-  affected path/to/config.jsonc path/to/diffs.txt
-  setups path/to/config.jsonc path/to/affected-paths.txt
+  affected path/to/config.jsonc diffs.txt paths.txt
+  setups path/to/config.jsonc paths.txt
 `
 
 // Entry point to validate command line arguments.
@@ -48,15 +48,23 @@ func main() {
 		if configFile == "" {
 			log.Fatalln("❌ no config file specified\n", usage)
 		}
-
 		diffsFile := flag.Arg(2)
 		if diffsFile == "" {
 			log.Fatalln("❌ no diffs file specified\n", usage)
 		}
+		pathsFile := flag.Arg(3)
+		affectedCmd(configFile, diffsFile, pathsFile)
 
-		outputFile := flag.Arg(3)
-
-		affectedCmd(configFile, diffsFile, outputFile)
+	case "setups":
+		configFile := flag.Arg(1)
+		if configFile == "" {
+			log.Fatalln("❌ no config file specified\n", usage)
+		}
+		pathsFile := flag.Arg(2)
+		if pathsFile == "" {
+			log.Fatalln("❌ no paths file specified\n", usage)
+		}
+		setupsCmd(configFile, pathsFile)
 
 	default:
 		log.Fatalln("❌ unknown command: ", command, "\n", usage)
@@ -64,7 +72,7 @@ func main() {
 }
 
 // affected command entry point to validate inputs.
-func affectedCmd(configFile string, diffsFile string, outputFile string) {
+func affectedCmd(configFile string, diffsFile string, pathsFile string) {
 	config, err := c.LoadConfig(configFile)
 	if err != nil {
 		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
@@ -91,8 +99,8 @@ func affectedCmd(configFile string, diffsFile string, outputFile string) {
 		)
 	}
 
-	if outputFile != "" {
-		file, err := os.Create(outputFile)
+	if pathsFile != "" {
+		file, err := os.Create(pathsFile)
 		if err != nil {
 			log.Fatalln("❌ eror creating output file.\n", err)
 		}
@@ -103,7 +111,33 @@ func affectedCmd(configFile string, diffsFile string, outputFile string) {
 
 	output, err := json.Marshal(paths)
 	if err != nil {
-		log.Fatalln("❌ error marshaling packages to JSON.\n", err)
+		log.Fatalln("❌ error marshaling paths to JSON.\n", err)
+	}
+	fmt.Println(string(output))
+}
+
+// setups command entry point to validate inputs.
+func setupsCmd(configFile string, pathsFile string) {
+	config, err := c.LoadConfig(configFile)
+	if err != nil {
+		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)
+	}
+
+	pathsBytes, err := os.ReadFile(pathsFile)
+	if err != nil {
+		log.Fatalln("❌ error getting the diffs: ", pathsFile, "\n", err)
+	}
+	// Trim whitespace to remove extra newline from diff output.
+	paths := strings.Split(strings.TrimSpace(string(pathsBytes)), "\n")
+
+	setups, err := config.FindSetupFiles(paths)
+	if err != nil {
+		log.Fatalln("❌ error finding setup files.\n", err)
+	}
+
+	output, err := json.Marshal(setups)
+	if err != nil {
+		log.Fatalln("❌ error marshaling setups to JSON.\n", err)
 	}
 	fmt.Println(string(output))
 }

@@ -26,7 +26,6 @@ const main = async (
   entryGroupId
 ) => {
   // [START data_catalog_create_entry_group]
-  // [START datacatalog_create_entry_group_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -59,7 +58,6 @@ const main = async (
   const [response] = await datacatalog.createEntryGroup(entryGroupRequest);
 
   console.log(response);
-  // [END datacatalog_create_entry_group_tag]
   // [END data_catalog_create_entry_group]
 };
 

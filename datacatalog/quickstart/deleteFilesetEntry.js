@@ -27,7 +27,6 @@ const main = async (
   entryId
 ) => {
   // [START data_catalog_delete_fileset_quickstart]
-  // [START datacatalog_delete_fileset_quickstart_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -72,7 +71,6 @@ const main = async (
     console.log('Entry Group does not exist or is not empty.');
   }
 };
-// [END datacatalog_delete_fileset_quickstart_tag]
 // [END data_catalog_delete_fileset_quickstart]
 
 // node deleteFilesetEntry.js <projectId> <entryGroupId> <entryId>

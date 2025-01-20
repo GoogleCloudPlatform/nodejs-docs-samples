@@ -51,8 +51,8 @@ function main(organizationId, customModuleDisplayName, locationId = 'global') {
    */
   const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/custom_module`;
 
-// define the CEL expression here and this will scans for keys that have not been rotated in
-// the last 30 days, change it according to your requirements
+  // define the CEL expression here and this will scans for keys that have not been rotated in
+  // the last 30 days, change it according to your requirements
   const expr = {
     expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`,
   };

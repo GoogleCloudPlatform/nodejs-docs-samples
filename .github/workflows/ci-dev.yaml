@@ -89,7 +89,7 @@ jobs:
             const setup = JSON.parse(process.env.CI_SETUP)
             const env = {
               'GOOGLE_SAMPLES_PROJECT': setup['project-id'],
-              ...(setup.env || {})
+              ...setup.env
             }
             for (const key in env) {
               console.log(`${key}: ${env[key]}`)
@@ -97,7 +97,7 @@ jobs:
             }
             return {
               "env": env,
-              "secrets": Object.keys(setup.secrets || {})
+              "secrets": Object.keys(setup.secrets)
                   .map(key => `${key}:${setup.secrets[key]}`)
                   .join('\n'),
             }

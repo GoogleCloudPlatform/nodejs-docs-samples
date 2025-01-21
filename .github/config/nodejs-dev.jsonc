@@ -23,8 +23,8 @@
     "workload-identity-provider": "projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider",
     "service-account": "kokoro-system-test@long-door-651.iam.gserviceaccount.com",
     "access-token-lifetime": "600s", // 10 minutes
-    "env": null,
-    "secrets": null
+    "env": { },
+    "secrets": { }
   },
   "ignore": [
     ".eslintignore",

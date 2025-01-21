@@ -83,6 +83,7 @@ jobs:
           access_token_lifetime: ${{ fromJson(env.CI_SETUP).access-token-lifetime }}
       - name: Export environment variables
         uses: actions/github-script@v7
+        id: vars
         with:
           script: |
             const setup = JSON.parse(process.env.CI_SETUP)
@@ -94,11 +95,17 @@ jobs:
               console.log(`${key}: ${env[key]}`)
               core.exportVariable(key, env[key])
             }
+            return {
+              "env": env,
+              "secrets": Object.keys(setup.secrets || {})
+                  .map(key => `${key}:${setup.secrets[key]}`)
+                  .join('\n'),
+            }
       - name: Get Secret Manager secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
-        if: fromJson(env.CI_SETUP).secrets != null
+        if: steps.vars.outputs.result.secrets != null
         with:
-          secrets: ${{ join(fromJson(env.CI_SETUP).secrets) }}
+          secrets: ${{ steps.vars.outputs.result.secrets }}
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
         run: |

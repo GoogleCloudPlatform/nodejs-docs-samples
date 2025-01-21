@@ -1,8 +1,5 @@
 {
   "node-version": 18,
-  "env": {
-    "MY_ENV_VAR": 42
-  },
   "secrets": {
     "CAIP_PROJECT_ID": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id",
     "LOCATION": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location",

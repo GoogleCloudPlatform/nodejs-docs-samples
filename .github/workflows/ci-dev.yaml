@@ -103,9 +103,9 @@ jobs:
             }
       - name: Get Secret Manager secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
-        if: steps.vars.outputs.result.secrets != null
+        if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:
-          secrets: ${{ steps.vars.outputs.result.secrets }}
+          secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
           export_to_environment: true
       - name: 🛠️ Test ${{ matrix.path }}
         run: |

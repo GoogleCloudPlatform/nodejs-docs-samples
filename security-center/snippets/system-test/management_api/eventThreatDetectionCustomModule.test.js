@@ -32,7 +32,7 @@ const client = new SecurityCenterManagementClient();
 // cleanupExistingCustomModules clean up all the existing custom module
 async function cleanupExistingCustomModules() {
   const [modules] = await client.listEventThreatDetectionCustomModules({
-    parent: client.organizationLocationPath(organizationId, location),
+    parent: `organizations/${organizationId}/locations/${location}`,
   });
   // Iterate over the modules response and delete custom module one by one which start with
   // node_sample_etd_custom_module
@@ -64,7 +64,7 @@ async function deleteCustomModule(customModuleId) {
 describe('Event Threat Detection Custom module', async () => {
   let data;
   before(async () => {
-    const parent = client.organizationLocationPath(organizationId, location);
+    const parent = `organizations/${organizationId}/locations/${location}`;
 
     // define the metadata and other config parameters severity, description,
     // recommendation and ips below

@@ -27,11 +27,10 @@ const main = async (
   entryId
 ) => {
   // [START data_catalog_create_fileset_quickstart]
-  // [START datacatalog_create_fileset_quickstart_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
+  const { DataCatalogClient } = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
 
   // -------------------------------
@@ -73,7 +72,7 @@ const main = async (
   const entry = {
     displayName: 'My Fileset',
     description: 'This fileset consists of ...',
-    gcsFilesetSpec: {filePatterns: ['gs://my_bucket/*']},
+    gcsFilesetSpec: { filePatterns: ['gs://my_bucket/*'] },
     schema: {
       columns: [
         {
@@ -125,7 +124,6 @@ const main = async (
 
   console.log(response);
 };
-// [END datacatalog_create_fileset_quickstart_tag]
 // [END data_catalog_create_fileset_quickstart]
 
 // node createFilesetEntry.js <projectId> <entryGroupId> <entryId>

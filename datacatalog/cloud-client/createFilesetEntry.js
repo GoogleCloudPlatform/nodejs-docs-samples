@@ -27,11 +27,10 @@ const main = async (
   entryId
 ) => {
   // [START data_catalog_create_fileset]
-  // [START datacatalog_create_fileset_tag]
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
+  const { DataCatalogClient } = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
 
   // Currently, Data Catalog stores metadata in the
@@ -50,7 +49,7 @@ const main = async (
   const entry = {
     displayName: 'My Fileset',
     description: 'This fileset consists of ....',
-    gcsFilesetSpec: {filePatterns: ['gs://my_bucket/*']},
+    gcsFilesetSpec: { filePatterns: ['gs://my_bucket/*'] },
     schema: {
       columns: [
         {
@@ -101,7 +100,6 @@ const main = async (
   const [response] = await datacatalog.createEntry(request);
 
   console.log(response);
-  // [END datacatalog_create_fileset_tag]
   // [END data_catalog_create_fileset]
 };
 

@@ -124,17 +124,6 @@ describe('Event Threat Detection Custom module', async () => {
     await cleanupExistingCustomModules();
   });
 
-  it('should create the event threat detection custom module', done => {
-    const output = exec(
-      `node management_api/createEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleName}`
-    );
-    assert(output.includes(data.orgId));
-    assert(output.includes(data.customModuleName));
-    assert.match(output, /EventThreatDetectionCustomModule created/);
-    assert.notMatch(output, /undefined/);
-    done();
-  });
-
   it('should get the event threat detection custom module', done => {
     const output = exec(
       `node management_api/getEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleId}`
@@ -163,6 +152,17 @@ describe('Event Threat Detection Custom module', async () => {
     assert(output.includes(data.customModuleId));
     assert(output.includes(data.customModuleName));
     assert.match(output, /Updated EventThreatDetectionCustomModule/);
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('should create the event threat detection custom module', done => {
+    const output = exec(
+      `node management_api/createEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleName}`
+    );
+    assert(output.includes(data.orgId));
+    assert(output.includes(data.customModuleName));
+    assert.match(output, /EventThreatDetectionCustomModule created/);
     assert.notMatch(output, /undefined/);
     done();
   });

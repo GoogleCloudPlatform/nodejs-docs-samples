@@ -23,7 +23,7 @@ const {describe, it, before, after} = require('mocha');
 const uuid = require('uuid').v4;
 
 // TODO(developer): update for your own environment
-const organizationId = process.env.GCLOUD_ORGANIZATION;
+const organizationId = '1081635000895';
 const location = 'global';
 const customModuleDisplayName = `node_sample_etd_custom_module_test_${uuid()}`;
 // Creates a new client.

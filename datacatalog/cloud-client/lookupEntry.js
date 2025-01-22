@@ -23,7 +23,6 @@
  */
 const main = async (projectId, datasetId) => {
   // [START data_catalog_lookup_dataset]
-  // [START datacatalog_lookup_dataset]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -42,7 +41,6 @@ const main = async (projectId, datasetId) => {
 
   const response = await lookup();
   console.log(response);
-  // [END datacatalog_lookup_dataset]
   // [END data_catalog_lookup_dataset]
 };
 

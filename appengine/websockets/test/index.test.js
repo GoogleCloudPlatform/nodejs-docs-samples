@@ -37,7 +37,7 @@ after(async () => {
   await app.close();
 });
 
-describe('appengine_websockets_app', () => {
+describe('gae_websockets_app', () => {
   it('should process chat message', async () => {
     await browserPage.goto('http://localhost:8080');
 

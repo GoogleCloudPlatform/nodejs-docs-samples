@@ -21,7 +21,7 @@ const supertest = require('supertest');
 
 const cwd = path.join(__dirname, '../');
 
-const requestObj = supertest(proxyquire(path.join(cwd, 'server'), {process}));
+const requestObj = supertest(proxyquire(path.join(cwd, 'server'), { process }));
 
 const stubConsole = function () {
   sinon.stub(console, 'error');
@@ -37,6 +37,17 @@ beforeEach(stubConsole);
 afterEach(restoreConsole);
 
 describe('gae_update_app', () => {
+  it('should send greetings', async () => {
+    await requestObj
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, 'Hello from App Engine!');
+      });
+  });
+});
+
+describe('gae_update_web_server_app', () => {
   it('should send greetings', async () => {
     await requestObj
       .get('/')

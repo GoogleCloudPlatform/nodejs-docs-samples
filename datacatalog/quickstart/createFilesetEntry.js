@@ -30,7 +30,7 @@ const main = async (
   // -------------------------------
   // Import required modules.
   // -------------------------------
-  const { DataCatalogClient } = require('@google-cloud/datacatalog').v1;
+  const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
 
   // -------------------------------
@@ -72,7 +72,7 @@ const main = async (
   const entry = {
     displayName: 'My Fileset',
     description: 'This fileset consists of ...',
-    gcsFilesetSpec: { filePatterns: ['gs://my_bucket/*'] },
+    gcsFilesetSpec: {filePatterns: ['gs://my_bucket/*']},
     schema: {
       columns: [
         {

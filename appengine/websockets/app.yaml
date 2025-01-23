@@ -1,4 +1,4 @@
-# [START appengine_websockets_yaml]
+# [START gae_websockets_yaml]
 runtime: nodejs
 env: flex
 
@@ -10,5 +10,5 @@ manual_scaling:
 
 network:
   session_affinity: true
-# [END appengine_websockets_yaml]
+# [END gae_websockets_yaml]
 

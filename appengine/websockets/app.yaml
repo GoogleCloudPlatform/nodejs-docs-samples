@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_websockets_yaml]
+# [START gae_websockets_nodejs_yaml]
 runtime: nodejs
 env: flex
 
@@ -24,5 +24,5 @@ manual_scaling:
 
 network:
   session_affinity: true
-# [END gae_websockets_yaml]
+# [END gae_websockets_nodejs_yaml]
 

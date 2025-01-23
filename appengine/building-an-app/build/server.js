@@ -31,6 +31,6 @@ app.listen(PORT, () => {
 });
 // [END gae_app]
 // [END app]
-// [START gae_build_web_server_app]
+// [END gae_build_web_server_app]
 
 module.exports = app;

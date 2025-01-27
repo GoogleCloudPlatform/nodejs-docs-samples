@@ -33,7 +33,7 @@ describe('Client with SourcesAndFindings', async () => {
           displayName: 'Customized Display Name',
           description: 'A new custom source that does X',
         },
-        parent: client.organizationPath(organizationId),
+        parent: `organizations/${organizationId}`,
       })
       .catch(error => console.error(error));
     const eventTime = new Date();

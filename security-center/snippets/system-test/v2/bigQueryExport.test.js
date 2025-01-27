@@ -38,7 +38,7 @@ async function cleanupDatasets() {
 
 async function cleanupBigQueryExports(client) {
   const [exports] = await client.listBigQueryExports({
-    parent: client.organizationLocationPath(organizationId, location),
+    parent: `organizations/${organizationId}/locations/${location}`,
   });
   for (const exportData of exports) {
     console.log(`Deleting BigQuery export: ${exportData.name}`);

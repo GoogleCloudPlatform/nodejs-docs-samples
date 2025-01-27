@@ -47,9 +47,9 @@ jobs:
       - name: Find Node.js affected packages
         id: nodejs
         run: |
-          echo "paths=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          echo "paths=$(./tools affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./tools setups .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
+          echo "setups=$(./tools setups .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint

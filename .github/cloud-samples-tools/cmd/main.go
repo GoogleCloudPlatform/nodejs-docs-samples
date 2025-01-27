@@ -53,6 +53,9 @@ func main() {
 			log.Fatalln("❌ no diffs file specified\n", usage)
 		}
 		pathsFile := flag.Arg(3)
+		if pathsFile == "" {
+			log.Fatalln("❌ no paths file specified\n", usage)
+		}
 		affectedCmd(configFile, diffsFile, pathsFile)
 
 	case "setups":

@@ -23,8 +23,8 @@ import (
 	"regexp"
 )
 
-var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
-var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
+var multiLine = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
+var singleLine = regexp.MustCompile(`\s*//.*\s*`)
 
 func readJsonc[a any](path string, ref *a) error {
 	// Read the JSONC file.
@@ -34,8 +34,8 @@ func readJsonc[a any](path string, ref *a) error {
 	}
 
 	// Strip the comments and load the JSON.
-	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
-	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
+	sourceJson := multiLine.ReplaceAll(sourceJsonc, []byte{})
+	sourceJson = singleLine.ReplaceAll(sourceJson, []byte{})
 	return json.Unmarshal(sourceJson, ref)
 }
 

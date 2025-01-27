@@ -74,7 +74,7 @@ func main() {
 	}
 }
 
-// affected command entry point to validate inputs.
+// affectedCmd command entry point to validate inputs.
 func affectedCmd(configFile string, diffsFile string, pathsFile string) {
 	config, err := c.LoadConfig(configFile)
 	if err != nil {
@@ -119,7 +119,7 @@ func affectedCmd(configFile string, diffsFile string, pathsFile string) {
 	fmt.Println(string(output))
 }
 
-// setups command entry point to validate inputs.
+// setupsCmd command entry point to validate inputs.
 func setupsCmd(configFile string, pathsFile string) {
 	config, err := c.LoadConfig(configFile)
 	if err != nil {

@@ -16,6 +16,17 @@
 
 {
   "package-file": [ "package.json" ],
+  "ci-setup-filename": "ci-setup.json",
+  "ci-setup-defaults": {
+    "node-version": 20,
+    "timeout-minutes": 10,
+    "project-id": "long-door-651",
+    "workload-identity-provider": "projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider",
+    "service-account": "kokoro-system-test@long-door-651.iam.gserviceaccount.com",
+    "access-token-lifetime": "600s", // 10 minutes
+    "env": { },
+    "secrets": { }
+  },
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",
@@ -84,7 +95,6 @@
     "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
-    "generative-ai/snippets", // [VertexAI.ClientError]: got status: 403 Forbidden.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module

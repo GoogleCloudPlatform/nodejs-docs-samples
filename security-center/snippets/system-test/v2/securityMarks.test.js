@@ -19,8 +19,8 @@ const {assert} = require('chai');
 const {describe, it, before} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
-
-const organizationId = '1081635000895';
+// TODO(developers): update for your own environment
+const organizationId = '1081635000895'; 
 
 describe('Client with SourcesAndFindings', async () => {
   let data;
@@ -33,7 +33,7 @@ describe('Client with SourcesAndFindings', async () => {
           displayName: 'Customized Display Name',
           description: 'A new custom source that does X',
         },
-        parent: `organizations/${organizationId}`,
+        parent: client.organizationPath(organizationId),
       })
       .catch(error => console.error(error));
     const eventTime = new Date();

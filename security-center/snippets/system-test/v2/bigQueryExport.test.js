@@ -20,7 +20,7 @@ const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
 const {BigQuery} = require('@google-cloud/bigquery');
-
+// TODO(developers): update for your own environment
 const organizationId = '1081635000895';
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const location = 'global';
@@ -38,7 +38,7 @@ async function cleanupDatasets() {
 
 async function cleanupBigQueryExports(client) {
   const [exports] = await client.listBigQueryExports({
-    parent: `organizations/${organizationId}/locations/${location}`,
+    parent: client.organizationLocationPath(organizationId, location),
   });
   for (const exportData of exports) {
     console.log(`Deleting BigQuery export: ${exportData.name}`);

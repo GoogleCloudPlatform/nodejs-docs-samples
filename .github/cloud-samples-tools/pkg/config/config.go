@@ -33,7 +33,9 @@ type Config struct {
 	PackageFile []string `json:"package-file"`
 
 	// CI setup file, must be located in the same directory as the package file.
-	CISetupFileName string  `json:"ci-setup-filename"`
+	CISetupFileName string `json:"ci-setup-filename"`
+
+	// CI setup defaults, used when no setup file or field is not sepcified in file.
 	CISetupDefaults CISetup `json:"ci-setup-defaults"`
 
 	// Pattern to match filenames or directories.

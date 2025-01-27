@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START gae_update_web_server_app]
 // [START app]
 // [START gae_update_app]
 const express = require('express');
@@ -59,5 +60,6 @@ app.listen(PORT, () => {
 });
 // [END gae_update_app]
 // [END app]
+// [END gae_update_web_server_app]
 
 module.exports = app;

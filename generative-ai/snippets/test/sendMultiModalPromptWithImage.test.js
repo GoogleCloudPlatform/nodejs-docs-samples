@@ -33,7 +33,6 @@ describe('Generative AI Stream MultiModal with Image', () => {
   // const model = 'gemini-1.5-flash-001';
 
   it('should create stream multimodal content', async () => {
-    this.retries(3);
     const output = execSync(
       `node ./sendMultiModalPromptWithImage.js ${projectId} ${location} ${model}`
     );

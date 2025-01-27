@@ -32,7 +32,7 @@ function main(organizationId, service, location = 'global') {
    *    `folders/[folderId]/locations/[location]/securityCenterServices/[service]`
    *    `projects/[projectId]/locations/[location]/securityCenterServices/[service]`
    */
-  // TODO(developer): Update the following references for your own environment before running the sample.
+  // TODO(developer): Update the organization ID, location, and service name to match your environment.
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const location = 'LOCATION_ID';
   // const service = 'SERVICE';

@@ -19,16 +19,15 @@ const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it} = require('mocha');
 
-// TODO(developer): update for your own environment
+// TODO(developer): Update the organization ID and service name to match your testing environment
 const organizationId = '1081635000895';
-const location = 'global';
 // Replace service with one of the valid values:
 // container-threat-detection, event-threat-detection, security-health-analytics,
 // vm-threat-detection, web-security-scanner
 const service = 'event_threat_detection';
 
 describe('Security Center Service', async () => {
-  let data = {
+  const data = {
     orgId: organizationId,
     service: service,
   };

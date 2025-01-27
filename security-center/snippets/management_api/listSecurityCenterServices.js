@@ -31,7 +31,7 @@ function main(organizationId, location = 'global') {
    *  "folders/[folderId]/locations/[location]", or
    *  "projects/[projectId]/locations/[location]".
    */
-  //TODO(developer): Update the following references for your own environment before running the sample.
+  //TODO(developer): Update the organization ID and location to match your environment.
   // const organizationId = 'YOUR_ORGANIZATION_ID';
   // const location = 'LOCATION_ID';
   const parent = `organizations/${organizationId}/locations/${location}`;

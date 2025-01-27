@@ -16,6 +16,7 @@
 
 {
   "package-file": [ "package.json" ],
+  "ci-setup-filename": "ci-setup.json",
   "ci-setup-defaults": {
     "node-version": 20,
     "timeout-minutes": 10,

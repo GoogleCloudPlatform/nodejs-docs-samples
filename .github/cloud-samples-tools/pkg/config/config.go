@@ -33,8 +33,8 @@ type Config struct {
 	PackageFile []string `json:"package-file"`
 
 	// CI setup file, must be located in the same directory as the package file.
-	CISetupFileName string   `json:"ci-setup-filename"`
-	CISetupDefaults *CISetup `json:"ci-setup-defaults"`
+	CISetupFileName string  `json:"ci-setup-filename"`
+	CISetupDefaults CISetup `json:"ci-setup-defaults"`
 
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
@@ -65,8 +65,7 @@ func (c *Config) Save(file *os.File) error {
 func LoadConfig(path string) (*Config, error) {
 	// Set the config default values.
 	config := Config{
-		Match:           []string{"*"},
-		CISetupFileName: "ci-setup.json",
+		Match: []string{"*"},
 	}
 
 	// This mutates `config` so there's no need to reassign it.
@@ -193,9 +192,12 @@ func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
 func (c *Config) FindSetupFiles(paths []string) (*map[string]CISetup, error) {
 	setups := make(map[string]CISetup, len(paths))
 	for _, path := range paths {
-		setup := *c.CISetupDefaults
+		setup := make(CISetup, len(c.CISetupDefaults))
+		for k, v := range c.CISetupDefaults {
+			setup[k] = v
+		}
 		setupFile := filepath.Join(path, c.CISetupFileName)
-		if fileExists(setupFile) {
+		if c.CISetupFileName != "" && fileExists(setupFile) {
 			// This mutates `setup` so there's no need to reassign it.
 			// It keeps the default values if they're not in the JSON file.
 			err := readJsonc(setupFile, &setup)

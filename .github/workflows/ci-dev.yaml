@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "paths=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./tools setups .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
+          echo "setups=$(./tools setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
     name: Node.js test

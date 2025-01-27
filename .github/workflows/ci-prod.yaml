@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "paths=$(./tools affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./tools setups .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
+          echo "setups=$(./tools setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint

@@ -30,7 +30,7 @@ var usage = `usage: tools <command> ...
 
 commands:
   affected path/to/config.jsonc diffs.txt paths.txt
-  setups path/to/config.jsonc paths.txt
+  setup-files path/to/config.jsonc paths.txt
 `
 
 // Entry point to validate command line arguments.
@@ -58,7 +58,7 @@ func main() {
 		}
 		affectedCmd(configFile, diffsFile, pathsFile)
 
-	case "setups":
+	case "setup-files":
 		configFile := flag.Arg(1)
 		if configFile == "" {
 			log.Fatalln("❌ no config file specified\n", usage)
@@ -67,7 +67,7 @@ func main() {
 		if pathsFile == "" {
 			log.Fatalln("❌ no paths file specified\n", usage)
 		}
-		setupsCmd(configFile, pathsFile)
+		setupFilesCmd(configFile, pathsFile)
 
 	default:
 		log.Fatalln("❌ unknown command: ", command, "\n", usage)
@@ -119,8 +119,8 @@ func affectedCmd(configFile string, diffsFile string, pathsFile string) {
 	fmt.Println(string(output))
 }
 
-// setupsCmd command entry point to validate inputs.
-func setupsCmd(configFile string, pathsFile string) {
+// setupFilesCmd command entry point to validate inputs.
+func setupFilesCmd(configFile string, pathsFile string) {
 	config, err := c.LoadConfig(configFile)
 	if err != nil {
 		log.Fatalln("❌ error loading the config file: ", configFile, "\n", err)

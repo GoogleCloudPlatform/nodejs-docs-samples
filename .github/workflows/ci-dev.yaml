@@ -31,7 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      nodejs: ${{ steps.nodejs.outputs.packages }}
+      nodejs-paths: ${{ steps.nodejs.outputs.paths }}
+      nodejs-setups: ${{ steps.nodejs.outputs.setups }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,34 +46,65 @@ jobs:
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
-        run: echo "packages=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt)" | tee -a $GITHUB_OUTPUT
+        run: |
+          echo "paths=$(./tools affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          cat paths.txt
+          echo "setups=$(./tools setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js 20 test
+    name: Node.js test
     needs: affected
     runs-on: ubuntu-latest
+    timeout-minutes: 120 # 2 hours hard limit
     permissions:
       id-token: write # needed for google-github-actions/auth
     strategy:
       fail-fast: false
       matrix:
-        package: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs || '[]') }}
+        path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
+    env:
+      CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
+      - name: CI Setup
+        run: echo "${{ env.CI_SETUP }}"
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@v2
         with:
-          project_id: long-door-651
-          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
-          access_token_lifetime: 600s # 10 minutes
-      - name: Test ${{ matrix.package }}
+          project_id: ${{ fromJson(env.CI_SETUP).project-id }}
+          workload_identity_provider: ${{ fromJson(env.CI_SETUP).workload-identity-provider }}
+          service_account: ${{ fromJson(env.CI_SETUP).service-account }}
+          access_token_lifetime: ${{ fromJson(env.CI_SETUP).access-token-lifetime }}
+      - name: Export environment variables
+        uses: actions/github-script@v7
+        id: vars
+        with:
+          script: |
+            const setup = JSON.parse(process.env.CI_SETUP)
+            const env = {
+              'GOOGLE_SAMPLES_PROJECT': setup['project-id'],
+              ...setup.env
+            }
+            for (const key in env) {
+              console.log(`${key}: ${env[key]}`)
+              core.exportVariable(key, env[key])
+            }
+            return {
+              "env": env,
+              "secrets": Object.keys(setup.secrets)
+                  .map(key => `${key}:${setup.secrets[key]}`)
+                  .join('\n'),
+            }
+      - uses: google-github-actions/get-secretmanager-secrets@v2
+        if: ${{ fromJson(steps.vars.outputs.result).secrets }}
+        with:
+          secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
+          export_to_environment: true
+      - name: 🛠️ Test ${{ matrix.path }}
         run: |
-          npm install
-          bash .github/scripts/nodejs-test.sh ${{ matrix.package }}
-        env:
-          GOOGLE_SAMPLES_PROJECT: long-door-651
+          timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
+            make test dir=${{ matrix.path }}

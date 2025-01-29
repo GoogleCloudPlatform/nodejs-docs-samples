@@ -16,6 +16,17 @@
 
 {
   "package-file": [ "package.json" ],
+  "ci-setup-filename": "ci-setup.json",
+  "ci-setup-defaults": {
+    "node-version": 20,
+    "timeout-minutes": 10,
+    "project-id": "long-door-651",
+    "workload-identity-provider": "projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider",
+    "service-account": "kokoro-system-test@long-door-651.iam.gserviceaccount.com",
+    "access-token-lifetime": "600s", // 10 minutes
+    "env": { },
+    "secrets": { }
+  },
   "ignore": [
     ".eslintignore",
     ".eslintrc.json",
@@ -26,10 +37,12 @@
     ".github/auto-label.yaml",
     ".github/blunderbuss.yaml",
     ".github/cloud-samples-tools/",
+    ".github/config/",
     ".github/flakybot.yaml",
     ".github/header-checker-lint.yaml",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
+    ".github/workflows/",
     ".gitignore",
     ".kokoro/",
     ".prettierignore",
@@ -52,7 +65,6 @@
     "functions/firebase", // parent directory
     "functions/helloworld", // parent directory
     "functions/http", // parent directory
-    "functions/http/uploadFile", // parent directory
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
@@ -78,11 +90,11 @@
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
     "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found
     "functions/billing", // Error: Request failed with status code 500
+    "functions/http/uploadFile", // npm error Missing script: "test"
     "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage
     "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
-    "generative-ai/snippets", // [VertexAI.ClientError]: got status: 403 Forbidden.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module

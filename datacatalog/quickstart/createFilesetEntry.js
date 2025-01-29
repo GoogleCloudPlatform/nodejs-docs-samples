@@ -26,7 +26,7 @@ const main = async (
   entryGroupId,
   entryId
 ) => {
-  // [START datacatalog_create_fileset_quickstart_tag]
+  // [START data_catalog_create_fileset_quickstart]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -124,7 +124,7 @@ const main = async (
 
   console.log(response);
 };
-// [END datacatalog_create_fileset_quickstart_tag]
+// [END data_catalog_create_fileset_quickstart]
 
 // node createFilesetEntry.js <projectId> <entryGroupId> <entryId>
 main(...process.argv.slice(2));

@@ -24,7 +24,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 )
@@ -32,6 +31,12 @@ import (
 type Config struct {
 	// Filename to look for the root of a package.
 	PackageFile []string `json:"package-file"`
+
+	// CI setup file, must be located in the same directory as the package file.
+	CISetupFileName string `json:"ci-setup-filename"`
+
+	// CI setup defaults, used when no setup file or field is not sepcified in file.
+	CISetupDefaults CISetup `json:"ci-setup-defaults"`
 
 	// Pattern to match filenames or directories.
 	Match []string `json:"match"`
@@ -43,8 +48,7 @@ type Config struct {
 	ExcludePackages []string `json:"exclude-packages"`
 }
 
-var multiLineCommentsRegex = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
-var singleLineCommentsRegex = regexp.MustCompile(`\s*//.*\s*`)
+type CISetup = map[string]any
 
 // Saves the config to the given file.
 func (c *Config) Save(file *os.File) error {
@@ -61,30 +65,22 @@ func (c *Config) Save(file *os.File) error {
 
 // LoadConfig loads the config from the given path.
 func LoadConfig(path string) (*Config, error) {
-	// Read the JSONC file.
-	sourceJsonc, err := os.ReadFile(path)
+	// Set the config default values.
+	config := Config{
+		Match: []string{"*"},
+	}
+
+	// This mutates `config` so there's no need to reassign it.
+	// It keeps the default values if they're not in the JSON file.
+	err := readJsonc(path, &config)
 	if err != nil {
 		return nil, err
 	}
 
-	// Strip the comments and load the JSON.
-	sourceJson := multiLineCommentsRegex.ReplaceAll(sourceJsonc, []byte{})
-	sourceJson = singleLineCommentsRegex.ReplaceAll(sourceJson, []byte{})
-
-	var config Config
-	err = json.Unmarshal(sourceJson, &config)
-	if err != nil {
-		return nil, err
-	}
-
-	// Set default values if they are not set.
+	// Validate for required values.
 	if config.PackageFile == nil {
 		return nil, errors.New("package-file is required")
 	}
-	if config.Match == nil {
-		config.Match = []string{"*"}
-	}
-
 	return &config, nil
 }
 
@@ -110,15 +106,14 @@ func (c *Config) Matches(path string) bool {
 // IsPackageDir returns true if the path is a package directory.
 func (c *Config) IsPackageDir(dir string) bool {
 	for _, filename := range c.PackageFile {
-		packageFile := filepath.Join(dir, filename)
-		if fileExists(packageFile) {
+		if fileExists(filepath.Join(dir, filename)) {
 			return true
 		}
 	}
 	return false
 }
 
-// FindPackage returns the package name for the given path.
+// FindPackage returns the most specific package path for the given filename.
 func (c *Config) FindPackage(path string) string {
 	dir := filepath.Dir(path)
 	if dir == "." || c.IsPackageDir(dir) {
@@ -127,9 +122,9 @@ func (c *Config) FindPackage(path string) string {
 	return c.FindPackage(dir)
 }
 
-// FindAllPackages finds all the packages in the given root directory.
+// FindAllPackages finds all the package paths in the given root directory.
 func (c *Config) FindAllPackages(root string) ([]string, error) {
-	var packages []string
+	var paths []string
 	err := fs.WalkDir(os.DirFS(root), ".",
 		func(path string, d os.DirEntry, err error) error {
 			if err != nil {
@@ -142,7 +137,7 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 				return nil
 			}
 			if d.IsDir() && c.Matches(path) && c.IsPackageDir(path) {
-				packages = append(packages, path)
+				paths = append(paths, path)
 				return nil
 			}
 			return nil
@@ -150,18 +145,7 @@ func (c *Config) FindAllPackages(root string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	return packages, nil
-}
-
-// Affected returns the packages that have been affected from diffs.
-// If there are diffs on at leat one global file affecting all packages,
-// then this returns all packages matched by the config.
-func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
-	changed := c.Changed(log, diffs)
-	if slices.Contains(changed, ".") {
-		return c.FindAllPackages(".")
-	}
-	return changed, nil
+	return paths, nil
 }
 
 // Changed returns the packages that have changed.
@@ -173,17 +157,57 @@ func (c *Config) Changed(log io.Writer, diffs []string) []string {
 		if !c.Matches(diff) {
 			continue
 		}
-		pkg := c.FindPackage(diff)
-		changedUnique[pkg] = true
+		path := c.FindPackage(diff)
+		if path == "." {
+			fmt.Fprintf(log, "ℹ️ Global file changed: %q\n", diff)
+		}
+		changedUnique[path] = true
 	}
 
 	changed := make([]string, 0, len(changedUnique))
-	for pkg := range changedUnique {
-		if slices.Contains(c.ExcludePackages, pkg) {
-			fmt.Fprintf(log, "ℹ️ Excluded package %q, skipping.\n", pkg)
+	for path := range changedUnique {
+		if slices.Contains(c.ExcludePackages, path) {
+			fmt.Fprintf(log, "ℹ️ Excluded package %q, skipping.\n", path)
 			continue
 		}
-		changed = append(changed, pkg)
+		changed = append(changed, path)
 	}
 	return changed
+}
+
+// Affected returns the packages that have been affected from diffs.
+// If there are diffs on at leat one global file affecting all packages,
+// then this returns all packages matched by the config.
+func (c *Config) Affected(log io.Writer, diffs []string) ([]string, error) {
+	paths := c.Changed(log, diffs)
+	if slices.Contains(paths, ".") {
+		fmt.Fprintf(log, "One or more global files were affected, all packages marked as affected.\n")
+		allPackages, err := c.FindAllPackages(".")
+		if err != nil {
+			return nil, err
+		}
+		paths = allPackages
+	}
+	return paths, nil
+}
+
+func (c *Config) FindSetupFiles(paths []string) (*map[string]CISetup, error) {
+	setups := make(map[string]CISetup, len(paths))
+	for _, path := range paths {
+		setup := make(CISetup, len(c.CISetupDefaults))
+		for k, v := range c.CISetupDefaults {
+			setup[k] = v
+		}
+		setupFile := filepath.Join(path, c.CISetupFileName)
+		if c.CISetupFileName != "" && fileExists(setupFile) {
+			// This mutates `setup` so there's no need to reassign it.
+			// It keeps the default values if they're not in the JSON file.
+			err := readJsonc(setupFile, &setup)
+			if err != nil {
+				return nil, err
+			}
+		}
+		setups[path] = setup
+	}
+	return &setups, nil
 }

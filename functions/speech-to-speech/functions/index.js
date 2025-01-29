@@ -170,6 +170,7 @@ const uploadToCloudStorage = (path, contents) => {
   return storageClient.bucket(outputBucket).file(path).save(contents);
 };
 
+// [START validate_request]
 const validateRequest = request => {
   return new Promise((resolve, reject) => {
     if (!request.body.encoding) {
@@ -188,3 +189,4 @@ const validateRequest = request => {
     resolve();
   });
 };
+// [END validate_request]

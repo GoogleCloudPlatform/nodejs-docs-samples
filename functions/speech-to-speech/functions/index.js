@@ -128,7 +128,6 @@ exports.speechTranslate = functions.https.onRequest(
   }
 );
 
-// [START call_speech_to_text]
 const callSpeechToText = (
   audioContent,
   encoding,
@@ -148,7 +147,6 @@ const callSpeechToText = (
 
   return speechToTextClient.recognize(request);
 };
-// [END call_speech_to_text]
 
 // [START call_text_translation]
 const callTextTranslation = (targetLangCode, data) => {

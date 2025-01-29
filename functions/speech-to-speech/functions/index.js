@@ -59,7 +59,6 @@ exports.speechTranslate = functions.https.onRequest(
       console.log(`Input sample rate hertz: ${inputSampleRateHertz}`);
       console.log(`Input language code: ${inputLanguageCode}`);
 
-      // [START chain_cloud_calls]
       const [sttResponse] = await callSpeechToText(
         inputAudioContent,
         inputEncoding,
@@ -120,7 +119,6 @@ exports.speechTranslate = functions.https.onRequest(
           }
         }
       });
-      // [END chain_cloud_calls]
     } catch (error) {
       console.error(error);
       response.status(400).send(error.message);
@@ -166,15 +164,12 @@ const callTextToSpeech = (targetLocale, data) => {
   return textToSpeechClient.synthesizeSpeech(request);
 };
 
-// [START upload_to_cloud_storage]
 const uploadToCloudStorage = (path, contents) => {
   console.log(`Uploading audio file to ${path}`);
 
   return storageClient.bucket(outputBucket).file(path).save(contents);
 };
-// [END upload_to_cloud_storage]
 
-// [START validate_request]
 const validateRequest = request => {
   return new Promise((resolve, reject) => {
     if (!request.body.encoding) {
@@ -193,4 +188,3 @@ const validateRequest = request => {
     resolve();
   });
 };
-// [END validate_request]

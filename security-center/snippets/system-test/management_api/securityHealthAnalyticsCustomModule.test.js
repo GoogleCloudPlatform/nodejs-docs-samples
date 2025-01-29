@@ -24,8 +24,8 @@ const {describe, it, before, after} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-// TODO(developer): Replace with your organization ID
-const organizationId = process.env.GCLOUD_ORGANIZATION;
+// TODO(developer): update for your own environment
+const organizationId = '1081635000895';
 const locationId = 'global';
 const customModuleDisplayName =
   'security_health_analytics_test' + uuidv1().replace(/-/g, '_');

@@ -156,7 +156,6 @@ const callTextTranslation = (targetLangCode, data) => {
 };
 // [END call_text_translation]
 
-// [START call_text_to_speech]
 const callTextToSpeech = (targetLocale, data) => {
   console.log(`Converting to speech in ${targetLocale}: ${data}`);
 
@@ -168,7 +167,6 @@ const callTextToSpeech = (targetLocale, data) => {
 
   return textToSpeechClient.synthesizeSpeech(request);
 };
-// [END call_text_to_speech]
 
 // [START upload_to_cloud_storage]
 const uploadToCloudStorage = (path, contents) => {

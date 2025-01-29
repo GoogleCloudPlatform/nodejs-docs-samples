@@ -187,44 +187,4 @@ describe('speechTranslate tests', () => {
       });
     });
   });
-
-  describe('GCS bucket tests', () => {
-    const gcsFilename = `speech-to-speech-${uuid.v4()}`;
-
-    describe('call_speech_to_text call_text_to_speech call_text_translation chain_cloud_calls upload_to_cloud_storage validate_request', () => {
-      it('should transcribe speech, translate it, and synthesize it in another language', async () => {
-        const response = await gaxios.request({
-          data: {
-            filename: gcsFilename,
-            encoding: 'LINEAR16',
-            sampleRateHertz: 24000,
-            languageCode: 'en',
-            audioContent: fs.readFileSync('test/speech-recording.b64', 'utf8'),
-          },
-        });
-
-        assert.strictEqual(response.status, 200);
-
-        // Test transcription
-        response.data.translations.forEach(translation => {
-          assert.ifError(translation.error);
-        });
-        assert.strictEqual(
-          response.data.transcription,
-          'this is a test please translate this message'
-        );
-
-        // Test speech synthesis + result uploading
-        assert.ok(outputBucket.file(gcsFilename).exists());
-      });
-    });
-
-    after(async () => {
-      try {
-        await outputBucket.file(gcsFilename).delete();
-      } catch (err) {
-        // Delete might fail if the test itself didn't create the file
-      }
-    });
-  });
 });

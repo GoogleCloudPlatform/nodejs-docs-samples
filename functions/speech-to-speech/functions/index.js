@@ -148,13 +148,11 @@ const callSpeechToText = (
   return speechToTextClient.recognize(request);
 };
 
-// [START call_text_translation]
 const callTextTranslation = (targetLangCode, data) => {
   console.log(`Translating text to ${targetLangCode}: ${data}`);
 
   return textTranslationClient.translate(data, targetLangCode);
 };
-// [END call_text_translation]
 
 const callTextToSpeech = (targetLocale, data) => {
   console.log(`Converting to speech in ${targetLocale}: ${data}`);

@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const uuid = require('uuid');
 const assert = require('assert');
-const fs = require('fs');
 const execPromise = require('child-process-promise').exec;
 const gaxios = require('gaxios');
 const waitPort = require('wait-port');
@@ -22,15 +20,11 @@ const waitPort = require('wait-port');
 const path = require('path');
 const cwd = path.join(__dirname, '..');
 
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-
 process.env.OUTPUT_BUCKET = 'long-door-651';
 process.env.SUPPORTED_LANGUAGE_CODES = 'en,es';
 process.env.GOOGLE_CLOUD_PROJECT = 'long-door-651';
 
 const BASE_URL = 'http://localhost:8080';
-const outputBucket = storage.bucket(process.env.OUTPUT_BUCKET);
 
 gaxios.instance.defaults = {
   method: 'POST',

@@ -167,6 +167,46 @@ describe('Event Threat Detection Custom module', async () => {
     done();
   });
 
+  it('should get the effective event threat detection custom module', done => {
+    const output = exec(
+      `node management_api/getEffectiveEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleId}`
+    );
+    assert(output.includes(data.orgId));
+    assert(output.includes(data.customModuleId));
+    assert.match(output, /Retrieved EffectiveEventThreatDetectionCustomModule/);
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('should list all the effective event threat detection custom module', done => {
+    const output = exec(
+      `node management_api/listEffectiveEventThreatDetectionCustomModules.js ${data.orgId}`
+    );
+    assert(output.includes(data.orgId));
+    assert(output.includes(data.customModuleId));
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('should list all the descendant event threat detection custom module', done => {
+    const output = exec(
+      `node management_api/listDescendantEventThreatDetectionCustomModules.js ${data.orgId}`
+    );
+    assert(output.includes(data.orgId));
+    assert(output.includes(data.customModuleId));
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('should validate the event threat detection custom module', done => {
+    const output = exec(
+      `node management_api/validateEventThreatDetectionCustomModule.js ${data.orgId}`
+    );
+    assert.match(output, /Validation successful: No errors found./);
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
   it('should delete the event threat detection custom module', done => {
     const output = exec(
       `node management_api/deleteEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleId}`

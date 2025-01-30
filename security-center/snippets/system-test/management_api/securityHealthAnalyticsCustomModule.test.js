@@ -32,6 +32,7 @@ const customModuleDisplayName =
 
 describe('security health analytics custom module', async () => {
   let data;
+  const sharedModuleIds = [];
 
   before(async () => {
     const client = new SecurityCenterManagementClient();
@@ -76,6 +77,7 @@ describe('security health analytics custom module', async () => {
         customModuleId: customModuleId,
         customModuleName: createResponse.displayName,
       };
+      sharedModuleIds.push(customModuleId);
       console.log(
         'SecurityHealthAnalyticsCustomModule created : %j',
         createResponse
@@ -91,31 +93,29 @@ describe('security health analytics custom module', async () => {
   after(async () => {
     const client = new SecurityCenterManagementClient();
 
-    // List security health analytics custom modules
-    const [listResponse] =
-      await client.listSecurityHealthAnalyticsCustomModules({
-        parent: `organizations/${organizationId}/locations/${locationId}`,
-      });
+    if (sharedModuleIds.length > 0) {
+      for (const moduleId of sharedModuleIds) {
+        const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/${moduleId}`;
 
-    for (const module of listResponse) {
-      try {
-        if (module.displayName === customModuleDisplayName) {
-          const customModuleId = module.name.split('/').pop();
-          // Proceed with deletion if module exist
-          if (customModuleId) {
-            await client.deleteSecurityHealthAnalyticsCustomModule({
-              name: `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/${customModuleId}`,
+        try {
+          //get Security Health Analytics Custom Module
+          const [response] =
+            await client.getSecurityHealthAnalyticsCustomModule({
+              name: name,
             });
-            console.log(
-              `Custom Module ${customModuleDisplayName} deleted successfully.`
-            );
+
+          if (response.displayName === customModuleDisplayName) {
+            await client.deleteSecurityHealthAnalyticsCustomModule({
+              name: name,
+            });
+            console.log(`Custom Module ${moduleId} deleted successfully.`);
           }
+        } catch (error) {
+          console.error(
+            'Error deleting SecurityHealthAnalyticsCustomModule:',
+            error
+          );
         }
-      } catch (error) {
-        console.error(
-          'Error deleting SecurityHealthAnalyticsCustomModule:',
-          error
-        );
       }
     }
   });
@@ -124,6 +124,10 @@ describe('security health analytics custom module', async () => {
     const output = exec(
       `node management_api/createSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${data.customModuleName} ${locationId}`
     );
+
+    const name = output.match(/name:\s*['"]([^'"]+)['"]/)[1];
+    sharedModuleIds.push(name.split('/').pop());
+
     assert.include(output, data.customModuleName);
     assert.match(
       output,

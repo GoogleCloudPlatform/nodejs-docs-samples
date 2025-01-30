@@ -28,27 +28,7 @@ const location = 'global';
 const customModuleDisplayName = `node_sample_etd_custom_module_test_${uuid()}`;
 // Creates a new client.
 const client = new SecurityCenterManagementClient();
-
-// cleanupExistingCustomModules clean up all the existing custom module
-async function cleanupExistingCustomModules() {
-  const [modules] = await client.listEventThreatDetectionCustomModules({
-    parent: `organizations/${organizationId}/locations/${location}`,
-  });
-  // Iterate over the modules response and delete custom module one by one which start with
-  // node_sample_etd_custom_module
-  for (const module of modules) {
-    try {
-      if (module.displayName.startsWith('node_sample_etd_custom_module')) {
-        console.log('Deleting custom module: ', module.name);
-        // extracts the custom module ID from the full name
-        const customModuleId = module.name.split('/')[5];
-        await deleteCustomModule(customModuleId);
-      }
-    } catch (error) {
-      console.error('Error deleting EventThreatDetectionCustomModule:', error);
-    }
-  }
-}
+const createdCustomModuleIds = [];
 
 // deleteCustomModule method is for deleting the custom module
 async function deleteCustomModule(customModuleId) {
@@ -120,8 +100,21 @@ describe('Event Threat Detection Custom module', async () => {
   });
 
   after(async () => {
-    // Perform cleanup after running tests
-    await cleanupExistingCustomModules();
+    // Perform cleanup of all the custom modules created by the current execution of the test, after
+    // running tests
+    if (createdCustomModuleIds.length > 0) {
+      for (const customModuleId of createdCustomModuleIds) {
+        try {
+          console.log('Deleting custom module: ', customModuleId);
+          await deleteCustomModule(customModuleId);
+        } catch (error) {
+          console.error(
+            'Error deleting EventThreatDetectionCustomModule:',
+            error
+          );
+        }
+      }
+    }
   });
 
   it('should get the event threat detection custom module', done => {
@@ -160,6 +153,10 @@ describe('Event Threat Detection Custom module', async () => {
     const output = exec(
       `node management_api/createEventThreatDetectionCustomModule.js ${data.orgId} ${data.customModuleName}`
     );
+    // pushing the created custom module Id to an array for cleanup after running test
+    const jsonPart = output.substring(output.indexOf('{')).trim();
+    const parsedOutput = JSON.parse(jsonPart);
+    createdCustomModuleIds.push(parsedOutput.name.split('/')[5]);
     assert(output.includes(data.orgId));
     assert(output.includes(data.customModuleName));
     assert.match(output, /EventThreatDetectionCustomModule created/);

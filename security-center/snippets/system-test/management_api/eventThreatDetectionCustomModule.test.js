@@ -28,7 +28,6 @@ const location = 'global';
 const customModuleDisplayName = `node_sample_etd_custom_module_test_${uuid()}`;
 // Creates a new client.
 const client = new SecurityCenterManagementClient();
-const createdCustomModuleIds = [];
 
 // deleteCustomModule method is for deleting the custom module
 async function deleteCustomModule(customModuleId) {
@@ -43,6 +42,7 @@ async function deleteCustomModule(customModuleId) {
 
 describe('Event Threat Detection Custom module', async () => {
   let data;
+  const createdCustomModuleIds = [];
   before(async () => {
     const parent = `organizations/${organizationId}/locations/${location}`;
 
@@ -100,7 +100,7 @@ describe('Event Threat Detection Custom module', async () => {
   });
 
   after(async () => {
-    // Perform cleanup of all the custom modules created by the current execution of the test, after
+    // Perform cleanup of the custom modules created by the current execution of the test, after
     // running tests
     if (createdCustomModuleIds.length > 0) {
       for (const customModuleId of createdCustomModuleIds) {

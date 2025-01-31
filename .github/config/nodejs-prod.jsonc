@@ -103,7 +103,6 @@
     "talent", // AssertionError: expected '' to match /Job summary/
     "translate", // AssertionError: expected 'Languages:\n{ code: \'ab\', name: \'A…' to match /{ code: 'af', name: 'afrikáans' }/
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
-    "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
     "workflows", // SyntaxError: Cannot use import statement outside a module
     "workflows/quickstart" // [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from ...
   ]

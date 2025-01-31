@@ -17,9 +17,27 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 	"os"
+	"regexp"
 )
+
+var multiLine = regexp.MustCompile(`(?s)\s*/\*.*?\*/`)
+var singleLine = regexp.MustCompile(`\s*//.*\s*`)
+
+func readJsonc[a any](path string, ref *a) error {
+	// Read the JSONC file.
+	sourceJsonc, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	// Strip the comments and load the JSON.
+	sourceJson := multiLine.ReplaceAll(sourceJsonc, []byte{})
+	sourceJson = singleLine.ReplaceAll(sourceJson, []byte{})
+	return json.Unmarshal(sourceJson, ref)
+}
 
 // fileExists returns true if the file exists.
 func fileExists(path string) bool {

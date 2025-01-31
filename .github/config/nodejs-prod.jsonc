@@ -102,7 +102,6 @@
     "run/markdown-preview/editor", // Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "run/system-package", // Error: ENOENT: no such file or directory, access '/usr/bin/dot'
     "scheduler", // SyntaxError: Cannot use import statement outside a module
-    "security-center/snippets", // Error: 3 INVALID_ARGUMENT: Fail to resolve resource 'organizations/undefined/locations/global'
     "speech", // AssertionError: expected 'Transcription:  Okay, I\'m here.\n Hi…' to match /Terrific. It's on the way./
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
     "talent", // AssertionError: expected '' to match /Job summary/

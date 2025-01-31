@@ -28,7 +28,7 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organizationId = '1081635000895';
 const locationId = 'global';
 const customModuleDisplayName =
-  'security_health_analytics_test' + uuidv1().replace(/-/g, '_');
+  'node_security_health_analytics_test' + uuidv1().replace(/-/g, '_');
 
 describe('security health analytics custom module', async () => {
   let data;
@@ -64,6 +64,7 @@ describe('security health analytics custom module', async () => {
     };
 
     try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const [createResponse] =
         await client.createSecurityHealthAnalyticsCustomModule({
           parent: parent,
@@ -98,18 +99,10 @@ describe('security health analytics custom module', async () => {
         const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/${moduleId}`;
 
         try {
-          //get Security Health Analytics Custom Module
-          const [response] =
-            await client.getSecurityHealthAnalyticsCustomModule({
-              name: name,
-            });
-
-          if (response.displayName === customModuleDisplayName) {
-            await client.deleteSecurityHealthAnalyticsCustomModule({
-              name: name,
-            });
-            console.log(`Custom Module ${moduleId} deleted successfully.`);
-          }
+          await client.deleteSecurityHealthAnalyticsCustomModule({
+            name: name,
+          });
+          console.log(`SecurityHealthAnalyticsCustomModule ${moduleId} deleted successfully.`);
         } catch (error) {
           console.error(
             'Error deleting SecurityHealthAnalyticsCustomModule:',

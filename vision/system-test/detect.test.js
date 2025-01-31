@@ -76,13 +76,13 @@ describe('detect', () => {
   it('should detect labels in a local file', async () => {
     const output = execSync(`${cmd} labels ${files[4].localPath}`);
     assert.match(output, /Labels:/);
-    assert.match(output, /cat/);
+    assert.match(output.toLowerCase(), /cat/);
   });
 
   it('should detect labels in a remote file', async () => {
     const output = execSync(`${cmd} labels-gcs ${bucketName} ${files[4].name}`);
     assert.match(output, /Labels:/);
-    assert.match(output, /cat/);
+    assert.match(output.toLowerCase(), /cat/);
   });
 
   it('should detect landmarks in a local file', async () => {

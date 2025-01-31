@@ -102,7 +102,9 @@ describe('security health analytics custom module', async () => {
           await client.deleteSecurityHealthAnalyticsCustomModule({
             name: name,
           });
-          console.log(`SecurityHealthAnalyticsCustomModule ${moduleId} deleted successfully.`);
+          console.log(
+            `SecurityHealthAnalyticsCustomModule ${moduleId} deleted successfully.`
+          );
         } catch (error) {
           console.error(
             'Error deleting SecurityHealthAnalyticsCustomModule:',

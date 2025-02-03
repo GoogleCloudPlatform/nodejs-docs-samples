@@ -1,3 +1,5 @@
 {
-  "SERVICE_NAME" : "eventarc-audit-storage"
+  "env" : {
+    "SERVICE_NAME" : "eventarc-audit-storage"
+  }
 }

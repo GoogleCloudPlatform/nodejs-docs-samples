@@ -1,1 +1,3 @@
-{}
+{
+  "SERVICE_NAME" : "eventarc-audit-storage"
+}

@@ -106,6 +106,7 @@
     "endpoints/getting-started",
     "endpoints/getting-started-grpc",
     "error-reporting",
+    "eventarc/audit-storage",
     "eventarc/generic",
     "functions/concepts/afterResponse",
     "functions/concepts/afterTimeout",

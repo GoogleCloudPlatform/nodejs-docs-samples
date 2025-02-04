@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # [START cloudrun_pubsub_dockerfile_nodejs]
+# [START cloudrun_pubsub_dockerfile]
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
@@ -41,4 +42,5 @@ COPY . .
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
 
+# [END cloudrun_pubsub_dockerfile]
 # [END cloudrun_pubsub_dockerfile_nodejs]

@@ -34,10 +34,10 @@ jobs:
       nodejs-paths: ${{ steps.nodejs.outputs.paths }}
       nodejs-setups: ${{ steps.nodejs.outputs.setups }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: go build -o ${{ github.workspace }}/tools ./cmd/...
@@ -56,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: 20
       - run: make lint
@@ -79,20 +79,20 @@ jobs:
     steps:
       - name: CI Setup
         run: echo "${{ env.CI_SETUP }}"
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
-      - uses: google-github-actions/auth@v2
+      - uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
         with:
           project_id: ${{ fromJson(env.CI_SETUP).project-id }}
           workload_identity_provider: ${{ fromJson(env.CI_SETUP).workload-identity-provider }}
           service_account: ${{ fromJson(env.CI_SETUP).service-account }}
           access_token_lifetime: ${{ fromJson(env.CI_SETUP).access-token-lifetime }}
       - name: Export environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars
         with:
           script: |
@@ -111,7 +111,7 @@ jobs:
                   .map(key => `${key}:${setup.secrets[key]}`)
                   .join('\n'),
             }
-      - uses: google-github-actions/get-secretmanager-secrets@v2
+      - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}

@@ -43,6 +43,7 @@ app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
 if (module === require.main) {
+  // [START endpoints_server_listen]
   // [START listen]
   const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {
@@ -50,6 +51,7 @@ if (module === require.main) {
     console.log('Press Ctrl+C to quit.');
   });
   // [END listen]
+  // [END endpoints_server_listen]
 }
 // [END app]
 

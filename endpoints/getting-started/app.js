@@ -15,6 +15,7 @@
 // [START app]
 'use strict';
 
+// [START endpoints_server_setup]
 // [START setup]
 const express = require('express');
 
@@ -25,6 +26,7 @@ app.set('case sensitive routing', true);
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.json());
 // [END setup]
+// [END endpoints_server_setup]
 
 app.post('/echo', (req, res) => {
   res.status(200).json({message: req.body.message}).end();

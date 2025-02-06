@@ -22,12 +22,10 @@ const path = require('path');
 
 const app = express();
 
-// [START enable_parser]
 // [START gae_enable_parser]
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.urlencoded({extended: true}));
 // [END gae_enable_parser]
-// [END enable_parser]
 
 app.get('/', (req, res) => {
   res.send('Hello from App Engine!');

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START cloudrun_pubsub_dockerfile_nodejs]
 # [START cloudrun_pubsub_dockerfile]
 
 # Use the official lightweight Node.js image.
@@ -42,3 +43,4 @@ COPY . .
 CMD [ "npm", "start" ]
 
 # [END cloudrun_pubsub_dockerfile]
+# [END cloudrun_pubsub_dockerfile_nodejs]

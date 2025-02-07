@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START app]
+// [START endpoints_express_auth]
 'use strict';
 
 // [START endpoints_server_setup]
@@ -55,6 +55,6 @@ if (module === require.main) {
   // [END listen]
   // [END endpoints_server_listen]
 }
-// [END app]
+// [END endpoints_express_auth]
 
 module.exports = app;

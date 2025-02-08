@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START gae_websockets_app]
 // [START appengine_websockets_app]
 const app = require('express')();
 app.set('view engine', 'pug');
@@ -39,5 +40,6 @@ if (module === require.main) {
   });
 }
 // [END appengine_websockets_app]
+// [END gae_websockets_app]
 
 module.exports = server;

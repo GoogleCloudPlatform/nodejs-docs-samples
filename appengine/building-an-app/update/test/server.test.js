@@ -74,7 +74,7 @@ describe('gae_add_display_form add_display_form', () => {
   });
 });
 
-describe('gae_add_post_handler add_post_handler gae_enable_parser enable_parser', () => {
+describe('gae_add_post_handler add_post_handler gae_enable_parser', () => {
   it('should record message', async () => {
     await requestObj
       .post('/submit', {

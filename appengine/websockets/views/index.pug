@@ -12,6 +12,7 @@
 //- See the License for the specific language governing permissions and
 //- limitations under the License.
 
+//- [START gae_websockets_index]
 //- [START appengine_websockets_index]
 doctype html
 html(lang="en")
@@ -27,6 +28,7 @@ html(lang="en")
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+  //- [START gae_websockets_form]
   //- [START appengine_websockets_form]
   body
     ul(id="messages")
@@ -34,10 +36,12 @@ html(lang="en")
       input(id="m" autocomplete="off")
       button Send
     //- [END appengine_websockets_form]
+    //- [END gae_websockets_form]
 
     script(src="/socket.io/socket.io.js")
     script(src="https://code.jquery.com/jquery-1.11.1.js")
     script.
+      // [START gae_websockets_js]
       // [START appengine_websockets_js]
       $(function () {
         var socket = io();
@@ -54,5 +58,7 @@ html(lang="en")
         });
       });
       // [END appengine_websockets_js]
+      // [END gae_websockets_js]
 //- [END appengine_websockets_index]
+//- [END gae_websockets_index]
 

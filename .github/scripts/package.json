@@ -1,0 +1,15 @@
+{
+  "name": "aritest",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "vars": "node setup-vars.js",
+    "test": ""
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

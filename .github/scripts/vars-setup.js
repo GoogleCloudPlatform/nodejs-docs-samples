@@ -14,8 +14,6 @@
  limitations under the License.
  */
 
-import fs from 'node:fs';
-
 const PROJECT_ID = 'long-door-651';
 
 export default function setupVars({core, setup}) {
@@ -35,15 +33,3 @@ export default function setupVars({core, setup}) {
       .join('\n'),
   };
 }
-
-const core = {
-  exportVariable: (key, value) => null,
-};
-const setupFile = process.argv[2];
-if (!setupFile) {
-  console.error('Please provide the path to a setup file.');
-  exit(1);
-}
-const data = fs.readFileSync(setupFile, 'utf8');
-const setup = JSON.parse(data);
-setupVars({core, setup});

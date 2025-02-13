@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "vars": "node setup-vars.js",
+    "vars": "node vars-show.js",
     "test": ""
   },
   "dependencies": {

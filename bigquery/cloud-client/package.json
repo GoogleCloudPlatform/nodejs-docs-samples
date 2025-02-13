@@ -1,0 +1,27 @@
+{
+    "name": "bigquery-cloud-client",
+    "description": "Big Query Cloud Client Node.js for Google App",
+    "version": "0.0.1",
+    "private": true,
+    "license": "Apache Version 2.0",
+    "author": "Google Inc.",
+    "engines": {
+        "node": "20.x"
+    },
+    "scripts": {
+        "deploy": "gcloud app deploy",
+        "start": "node app.js",
+        "unit-test": "c8 mocha -p -j 2 test/ --timeout=10000 --exit",
+        "test": "npm run unit-test"
+    },
+    "dependencies": {
+        "@google-cloud/bigquery": "7.9.2"
+    },
+    "devDependencies": {
+        "c8": "^10.0.0",
+        "chai": "^4.5.0",
+        "mocha": "^10.0.0",
+        "proxysquire": "^2.1.0",
+        "sinon": "^18.0.0"
+    }
+}

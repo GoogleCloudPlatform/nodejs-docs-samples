@@ -96,21 +96,8 @@ jobs:
         id: vars
         with:
           script: |
-            const setup = JSON.parse(process.env.CI_SETUP)
-            const env = {
-              'GOOGLE_SAMPLES_PROJECT': setup['project-id'],
-              ...setup.env
-            }
-            for (const key in env) {
-              console.log(`${key}: ${env[key]}`)
-              core.exportVariable(key, env[key])
-            }
-            return {
-              "env": env,
-              "secrets": Object.keys(setup.secrets)
-                  .map(key => `${key}:${setup.secrets[key]}`)
-                  .join('\n'),
-            }
+            const setupVars = require('.github/scripts/setup-vars.js')
+            return setupVars({core, process})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

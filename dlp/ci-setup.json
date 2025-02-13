@@ -1,1 +1,5 @@
-{ }
+{
+  "env": {
+    "resource": "projects/$PROJECT_ID/resources/my-name-${RUN_ID}"
+  }
+}

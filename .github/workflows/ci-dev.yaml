@@ -84,7 +84,7 @@ jobs:
         id: vars
         with:
           script: |
-            const setupVars = await import('${{ github.workspace }}/.github/scripts/vars-setup.js')
+            const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/vars-setup.js')
 
             const setup = JSON.parse(process.env.CI_SETUP);
             return await setupVars({core, setup})

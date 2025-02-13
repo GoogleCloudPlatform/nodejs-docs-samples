@@ -2,6 +2,7 @@ module.exports = ({core, process}) => {
   const setup = JSON.parse(process.env.CI_SETUP);
   const env = {
     GOOGLE_SAMPLES_PROJECT: setup['project-id'],
+    PROJECT_ID: setup['project-id'],
     ...setup.env,
   };
   for (const key in env) {

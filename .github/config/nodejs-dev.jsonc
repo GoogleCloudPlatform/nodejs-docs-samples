@@ -25,8 +25,8 @@
     "workload-identity-provider": "projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider",
     "service-account": "kokoro-system-test@long-door-651.iam.gserviceaccount.com",
     "access-token-lifetime": "600s", // 10 minutes
-    "env": {},
-    "secrets": {}
+    "env": { },
+    "secrets": { }
   },
   "ignore": [
     ".eslintignore",
@@ -41,6 +41,7 @@
     ".github/config/",
     ".github/flakybot.yaml",
     ".github/header-checker-lint.yaml",
+    ".github/scripts/",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
     ".github/workflows/",

@@ -15,11 +15,20 @@
 "use strict";
 
 const { viewDatasetAccessPolicy } = require("./src/viewDatasetAccessPolicy")
+const { viewTableOrViewAccessPolicy } = require("./src/viewTableOrViewAccessPolicy")
 
 async function main() {
     try {
         // Example usage of dataset access policy viewer
         await viewDatasetAccessPolicy();
+
+        // Example usage of table/view access policy viewer
+        const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+        await viewTableOrViewAccessPolicy({
+            projectId,
+            datasetId: "my_new_dataset",
+            resourceName: "my_table",
+        });
     } catch (error) {
         console.error("Error:", error);
         processors.exitCode = 1;
@@ -31,4 +40,4 @@ if (require.main === module) {
     main();
 }
 
-module.export = { viewDatasetAccessPolicy }
+module.export = { viewDatasetAccessPolicy, viewTableOrViewAccessPolicy }

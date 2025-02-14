@@ -16,7 +16,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import setupVars from './vars-setup.js';
+import setupVars from '../setup-vars.js';
 
 const core = {
   exportVariable: (_key, _value) => null,

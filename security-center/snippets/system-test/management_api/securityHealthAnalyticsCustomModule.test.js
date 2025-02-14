@@ -78,7 +78,7 @@ describe('security health analytics custom module', async () => {
         customModuleId: customModuleId,
         customModuleName: createResponse.displayName,
       };
-      sharedModuleIds.push(customModuleId);
+      // sharedModuleIds.push(customModuleId);
       console.log(
         'SecurityHealthAnalyticsCustomModule created : %j',
         createResponse
@@ -166,6 +166,69 @@ describe('security health analytics custom module', async () => {
     assert.match(
       output,
       /Security Health Analytics Custom Module get effective succeeded/
+    );
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('list security health analytics custom module', done => {
+    const output = exec(
+      `node management_api/listSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${locationId}`
+    );
+    assert.include(output, data.customModuleName);
+    assert.match(
+      output,
+      /Security Health Analytics Custom Module list succeeded/
+    );
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('list descendant security health analytics custom module', done => {
+    const output = exec(
+      `node management_api/listDescendantSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${locationId}`
+    );
+    assert.include(output, data.customModuleName);
+    assert.match(
+      output,
+      /Security Health Analytics Custom Module list descendant succeeded/
+    );
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('list effective security health analytics custom module', done => {
+    const output = exec(
+      `node management_api/listEffectiveSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${locationId}`
+    );
+    assert.include(output, data.customModuleName);
+    assert.match(
+      output,
+      /Security Health Analytics Custom Module list effective succeeded/
+    );
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('delete security health analytics custom module', done => {
+    const output = exec(
+      `node management_api/deleteSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${data.customModuleId} ${locationId}`
+    );
+    assert.match(
+      output,
+      /Security Health Analytics Custom Module delete succeeded/
+    );
+    assert.notMatch(output, /undefined/);
+    done();
+  });
+
+  it('simulate security health analytics custom module', done => {
+    const output = exec(
+      `node management_api/simulateSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${locationId}`
+    );
+    assert.match(
+      output,
+      /Security Health Analytics Custom Module simulate succeeded/
     );
     assert.notMatch(output, /undefined/);
     done();

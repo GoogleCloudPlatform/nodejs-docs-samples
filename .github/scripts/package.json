@@ -6,10 +6,9 @@
   "private": true,
   "scripts": {
     "vars": "node cli/vars.js",
-    "test": ""
-  },
-  "dependencies": {
+    "test": "mocha -p -j 2 **/*.test.js"
   },
   "devDependencies": {
+    "mocha": "^11.1.0"
   }
 }

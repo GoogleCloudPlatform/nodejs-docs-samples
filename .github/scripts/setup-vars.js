@@ -14,16 +14,16 @@
  limitations under the License.
  */
 
-const PROJECT_ID = 'long-door-651';
-
-export default function setupVars({core, setup}) {
-  const env = {
-    GOOGLE_SAMPLES_PROJECT: PROJECT_ID,
-    PROJECT_ID: PROJECT_ID,
+export default function setupVars({project_id, core, setup}) {
+  const vars = {
+    PROJECT_ID: project_id,
     ...(setup.env || {}),
   };
+  const env = Object.fromEntries(
+    Object.keys(vars).map(key => [key, substituteVars(vars[key], vars)])
+  );
   for (const key in env) {
-    const value = applyVars(env[key], env);
+    const value = env[key];
     console.log(`${key}: ${value}`);
     core.exportVariable(key, value);
   }
@@ -35,7 +35,7 @@ export default function setupVars({core, setup}) {
   };
 }
 
-function applyVars(value, env) {
+function substituteVars(value, env) {
   for (const key in env) {
     let re = new RegExp(`\\$(${key}\\b|\\{\\s*${key}\\s*\\})`, 'g');
     value = value.replaceAll(re, env[key]);

@@ -18,9 +18,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import setupVars from '../setup-vars.js';
 
+const project_id =
+  process.env.GOOGLE_SAMPLES_PROJECT ||
+  process.env.PROJECT_ID ||
+  'long-door-651';
+console.log(`> project_id: ${project_id}`);
+
 const core = {
   exportVariable: (_key, _value) => null,
 };
+
 const setupFile = process.argv[2];
 if (!setupFile) {
   console.error('Please provide the path to a setup file.');
@@ -28,4 +35,5 @@ if (!setupFile) {
 }
 const data = fs.readFileSync(path.join('..', '..', setupFile), 'utf8');
 const setup = JSON.parse(data);
-setupVars({core, setup});
+
+setupVars({project_id, core, setup});

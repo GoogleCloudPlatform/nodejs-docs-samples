@@ -1,0 +1,134 @@
+/*
+ Copyright 2025 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+import {deepStrictEqual} from 'assert';
+import setupVars from './setup-vars.js';
+
+const project_id = 'my-test-project';
+const core = {
+  exportVariable: (_key, _value) => null,
+};
+
+const autovars = {PROJECT_ID: project_id};
+
+describe('setup-vars', () => {
+  describe('env', () => {
+    it('empty', () => {
+      const setup = {};
+      const vars = setupVars({project_id, core, setup});
+      const expected = autovars;
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('zero vars', () => {
+      const setup = {env: {}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = autovars;
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('one var', () => {
+      const setup = {env: {A: 'x'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, A: 'x'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('three vars', () => {
+      const setup = {env: {A: 'x', B: 'y', C: 'z'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, A: 'x', B: 'y', C: 'z'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('should override automatic variables', () => {
+      const setup = {env: {PROJECT_ID: 'custom-value'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {PROJECT_ID: 'custom-value'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('should interpolate variables like $VAR', () => {
+      const setup = {env: {A: 'x', B: 'y', C: '$A/$B'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, A: 'x', B: 'y', C: 'x/y'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('should interpolate variables like ${VAR}', () => {
+      const setup = {env: {A: 'x', B: 'y', C: '${A}/${B}'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, A: 'x', B: 'y', C: 'x/y'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('should interpolate variables like ${ VAR }', () => {
+      const setup = {env: {A: 'x', B: 'y', C: '${ A }/${ \tB\t }'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, A: 'x', B: 'y', C: 'x/y'};
+      deepStrictEqual(vars.env, expected);
+    });
+
+    it('should not interpolate secrets', () => {
+      const setup = {
+        env: {C: '$x/$y'},
+        secrets: {A: 'x', B: 'y'},
+      };
+      const vars = setupVars({project_id, core, setup});
+      const expected = {...autovars, C: '$x/$y'};
+      deepStrictEqual(vars.env, expected);
+    });
+  });
+
+  describe('secrets', () => {
+    it('zero secrets', () => {
+      const setup = {secrets: {}};
+      const vars = setupVars({project_id, core, setup});
+      deepStrictEqual(vars.secrets, '');
+    });
+
+    it('one secret', () => {
+      const setup = {secrets: {A: 'x'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = 'A:x';
+      deepStrictEqual(vars.secrets, expected);
+    });
+
+    it('three secrets', () => {
+      const setup = {secrets: {A: 'x', B: 'y', C: 'z'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = 'A:x\nB:y\nC:z';
+      deepStrictEqual(vars.secrets, expected);
+    });
+
+    it('should not interpolate variables', () => {
+      const setup = {
+        env: {A: 'x', B: 'y'},
+        secrets: {C: '$A/$B'},
+      };
+      const vars = setupVars({project_id, core, setup});
+      const expected = 'C:$A/$B';
+      deepStrictEqual(vars.secrets, expected);
+    });
+
+    it('should not interpolate secrets', () => {
+      const setup = {secrets: {A: 'x', B: 'y', C: '$A/$B'}};
+      const vars = setupVars({project_id, core, setup});
+      const expected = 'A:x\nB:y\nC:$A/$B';
+      deepStrictEqual(vars.secrets, expected);
+    });
+  });
+});

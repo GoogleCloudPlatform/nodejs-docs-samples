@@ -75,6 +75,7 @@ jobs:
       matrix:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     env:
+      PROJECT_ID: long-door-651
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup
@@ -97,8 +98,9 @@ jobs:
         with:
           script: |
             const setupVars = require('.github/scripts/setup-vars.js');
+            const project_id = ${{ env.PROJECT_ID }}
             const setup = JSON.parse(process.env.CI_SETUP);
-            return setupVars({core, setup});
+            return setupVars({project_id, core, setup});
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

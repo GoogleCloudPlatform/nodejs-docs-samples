@@ -15,7 +15,8 @@
  */
 
 import fs from 'node:fs';
-import setupVars from './vars-setup';
+import path from 'node:path';
+import setupVars from './vars-setup.js';
 
 const core = {
   exportVariable: (_key, _value) => null,
@@ -23,8 +24,8 @@ const core = {
 const setupFile = process.argv[2];
 if (!setupFile) {
   console.error('Please provide the path to a setup file.');
-  exit(1);
+  process.exit(1);
 }
-const data = fs.readFileSync(setupFile, 'utf8');
+const data = fs.readFileSync(path.join('..', '..', setupFile), 'utf8');
 const setup = JSON.parse(data);
 setupVars({core, setup});

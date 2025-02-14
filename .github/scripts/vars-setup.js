@@ -23,8 +23,9 @@ export default function setupVars({core, setup}) {
     ...(setup.env || {}),
   };
   for (const key in env) {
-    console.log(`${key}: ${env[key]}`);
-    core.exportVariable(key, env[key]);
+    const value = applyVars(env[key], env);
+    console.log(`${key}: ${value}`);
+    core.exportVariable(key, value);
   }
   return {
     env: env,
@@ -32,4 +33,12 @@ export default function setupVars({core, setup}) {
       .map(key => `${key}:${setup.secrets[key]}`)
       .join('\n'),
   };
+}
+
+function applyVars(value, env) {
+  for (const key in env) {
+    let re = new RegExp(`\\$(${key}\\b|\\{\\s*${key}\\s*\\})`, 'g');
+    value = value.replaceAll(re, env[key]);
+  }
+  return value;
 }

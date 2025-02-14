@@ -98,7 +98,7 @@ jobs:
         with:
           script: |
             const setupVars = require('.github/scripts/setup-vars.js');
-            const project_id = ${{ env.PROJECT_ID }}
+            const project_id = '${{ env.PROJECT_ID }}';
             const setup = JSON.parse(process.env.CI_SETUP);
             return setupVars({project_id, core, setup});
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2

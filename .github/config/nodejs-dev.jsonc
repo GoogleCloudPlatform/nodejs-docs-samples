@@ -13,18 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+
 {
-  "package-file": [
-    "package.json"
-  ],
+  "package-file": [ "package.json" ],
   "ci-setup-filename": "ci-setup.json",
   "ci-setup-defaults": {
     "node-version": 20,
     "timeout-minutes": 10,
-    "project-id": "long-door-651",
-    "workload-identity-provider": "projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider",
-    "service-account": "kokoro-system-test@long-door-651.iam.gserviceaccount.com",
-    "access-token-lifetime": "600s", // 10 minutes
     "env": { },
     "secrets": { }
   },

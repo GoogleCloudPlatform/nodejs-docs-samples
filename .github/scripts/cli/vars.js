@@ -18,11 +18,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import setupVars from '../setup-vars.js';
 
-const project_id =
-  process.env.GOOGLE_SAMPLES_PROJECT ||
-  process.env.PROJECT_ID ||
-  'long-door-651';
-console.log(`> project_id: ${project_id}`);
+const project_id = process.env.PROJECT_ID;
+if (!project_id) {
+  console.error(
+    'Please set the PROJECT_ID environment variable to your Google Cloud project.'
+  );
+  process.exit(1);
+}
 
 const core = {
   exportVariable: (_key, _value) => null,

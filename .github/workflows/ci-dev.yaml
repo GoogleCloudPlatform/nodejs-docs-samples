@@ -76,10 +76,10 @@ jobs:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
         with:
-          project_id: ${{ fromJson(env.CI_SETUP).project-id }}
-          workload_identity_provider: ${{ fromJson(env.CI_SETUP).workload-identity-provider }}
-          service_account: ${{ fromJson(env.CI_SETUP).service-account }}
-          access_token_lifetime: ${{ fromJson(env.CI_SETUP).access-token-lifetime }}
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          access_token_lifetime: 600s # 10 minutes
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars

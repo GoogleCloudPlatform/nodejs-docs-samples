@@ -14,9 +14,10 @@
  limitations under the License.
  */
 
-export default function setupVars({project_id, core, setup}) {
+export default function setupVars({project_id, core, setup}, runId = null) {
   const vars = {
     PROJECT_ID: project_id,
+    RUN_ID: runId || uniqueId(),
     ...(setup.env || {}),
   };
   const env = Object.fromEntries(
@@ -45,10 +46,18 @@ export default function setupVars({project_id, core, setup}) {
   };
 }
 
-function substituteVars(value, env) {
+export function substituteVars(value, env) {
   for (const key in env) {
     let re = new RegExp(`\\$(${key}\\b|\\{\\s*${key}\\s*\\})`, 'g');
     value = value.replaceAll(re, env[key]);
   }
   return value;
+}
+
+export function uniqueId(length = 6) {
+  const min = 2 ** 32;
+  const max = 2 ** 64;
+  return Math.floor(Math.random() * max + min)
+    .toString(36)
+    .slice(0, length);
 }

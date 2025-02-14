@@ -23,17 +23,13 @@ export default function setupVars({project_id, core, setup}, runId = null) {
   const env = Object.fromEntries(
     Object.keys(vars).map(key => [key, substituteVars(vars[key], vars)])
   );
-  if (env) {
-    console.log('env:');
-  }
+  console.log('env:');
   for (const key in env) {
     const value = env[key];
     console.log(`  ${key}: ${value}`);
     core.exportVariable(key, value);
   }
-  if (setup.secrets) {
-    console.log('secrets:');
-  }
+  console.log('secrets:');
   for (const key in setup.secrets || {}) {
     // This is the Google Cloud Secret Manager secret ID, so it's ok to show.
     console.log(`  ${key}: ${setup.secrets[key]}`);

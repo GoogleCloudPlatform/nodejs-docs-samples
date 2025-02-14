@@ -1,5 +1,0 @@
-{
-  "env": {
-    "resource": "projects/$PROJECT_ID/resources/my-name-${PROJECT_ID}"
-  }
-}

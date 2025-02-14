@@ -14,31 +14,41 @@
  limitations under the License.
  */
 
-export default function setupVars(
-  {project_id: projectId, core, setup},
-  runId = null
-) {
+export default function setupVars({projectId, core, setup}, runId = null) {
+  // Define automatic variables plus custom variables.
   const vars = {
     PROJECT_ID: projectId,
     RUN_ID: runId || uniqueId(),
     ...(setup.env || {}),
   };
+
+  // Apply variable interpolation.
   const env = Object.fromEntries(
     Object.keys(vars).map(key => [key, substituteVars(vars[key], vars)])
   );
+
+  // Export environment variables.
   console.log('env:');
   for (const key in env) {
     const value = env[key];
     console.log(`  ${key}: ${value}`);
     core.exportVariable(key, value);
   }
+
+  // Show exported secrets, for logging purposes.
+  // TODO: We might want to fetch the secrets here and export them directly.
+  //       https://cloud.google.com/secret-manager/docs/create-secret-quickstart#secretmanager-quickstart-nodejs
   console.log('secrets:');
   for (const key in setup.secrets || {}) {
-    // This is the Google Cloud Secret Manager secret ID, so it's ok to show.
+    // This is the Google Cloud Secret Manager secret ID.
+    // NOT the secret value, so it's ok to show.
     console.log(`  ${key}: ${setup.secrets[key]}`);
   }
+
+  // Return env and secrets to use for further steps.
   return {
     env: env,
+    // Transform secrets into the format needed for the GHA secret manager step.
     secrets: Object.keys(setup.secrets || {})
       .map(key => `${key}:${setup.secrets[key]}`)
       .join('\n'),

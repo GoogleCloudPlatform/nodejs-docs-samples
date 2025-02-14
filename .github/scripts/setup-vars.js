@@ -14,9 +14,12 @@
  limitations under the License.
  */
 
-export default function setupVars({project_id, core, setup}, runId = null) {
+export default function setupVars(
+  {project_id: projectId, core, setup},
+  runId = null
+) {
   const vars = {
-    PROJECT_ID: project_id,
+    PROJECT_ID: projectId,
     RUN_ID: runId || uniqueId(),
     ...(setup.env || {}),
   };

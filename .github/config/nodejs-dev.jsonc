@@ -36,7 +36,6 @@
     ".github/config/",
     ".github/flakybot.yaml",
     ".github/header-checker-lint.yaml",
-    ".github/scripts/",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
     ".github/workflows/",

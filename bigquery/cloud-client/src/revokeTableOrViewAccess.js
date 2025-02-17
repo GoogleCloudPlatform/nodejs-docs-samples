@@ -14,6 +14,7 @@
 
 const {BigQuery} = require('@google-cloud/bigquery');
 
+// [START bigquery_revoke_access_to_table_or_view]
 /**
  * Revokes access to a BigQuery table or view
  * @param {Object} params - The parameters object
@@ -89,5 +90,7 @@ async function revokeTableOrViewAccess({
     throw error;
   }
 }
+
+// [END bigquery_revoke_access_to_table_or_view]
 
 module.exports = {revokeTableOrViewAccess};

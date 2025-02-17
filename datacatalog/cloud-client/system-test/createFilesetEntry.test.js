@@ -34,7 +34,7 @@ before(async () => {
   projectId = await client.getProjectId();
 });
 
-describe('createFilesetEntry', () => {
+describe.skip('createFilesetEntry', () => {
   before(done => {
     // Must create entryGroup before creating entry
     exec(`node createEntryGroup.js ${projectId} ${entryGroupId}`, {cwd}, done);

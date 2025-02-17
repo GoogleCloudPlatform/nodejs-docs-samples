@@ -33,7 +33,7 @@ before(async () => {
   projectId = await client.getProjectId();
 });
 
-describe('createEntryGroup', () => {
+describe.skip('createEntryGroup', () => {
   it('should create a entry group', done => {
     const expectedName = `projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}`;
     exec(

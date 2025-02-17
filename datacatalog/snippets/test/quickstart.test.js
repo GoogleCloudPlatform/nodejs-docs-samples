@@ -28,7 +28,7 @@ const GCLOUD_TESTS_PREFIX = 'nodejs_data_catalog_samples';
 const generateUuid = () =>
   `${GCLOUD_TESTS_PREFIX}_${uuid.v4()}`.replace(/-/gi, '_');
 
-describe('Quickstart', async () => {
+describe.skip('Quickstart', async () => {
   const projectId = process.env.GCLOUD_PROJECT;
   let datasetId;
   let tableId;

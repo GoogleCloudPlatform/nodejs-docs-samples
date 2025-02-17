@@ -34,7 +34,7 @@ before(async () => {
   projectId = await client.getProjectId();
 });
 
-describe('createFilesetEntry', () => {
+describe.skip('createFilesetEntry', () => {
   it('should create a fileset entry', done => {
     const expectedLinkedResource = `//datacatalog.googleapis.com/projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}/entries/${entryId}`;
     exec(

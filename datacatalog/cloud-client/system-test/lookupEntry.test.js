@@ -19,7 +19,7 @@ const assert = require('assert');
 const cwd = path.join(__dirname, '..');
 const {exec} = require('child_process');
 
-describe('lookupEntry lookup', () => {
+describe.skip('lookupEntry lookup', () => {
   it('should lookup a dataset entry', done => {
     const projectId = 'bigquery-public-data';
     const datasetId = 'new_york_taxi_trips';

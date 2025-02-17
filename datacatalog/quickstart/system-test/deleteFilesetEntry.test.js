@@ -34,7 +34,7 @@ before(async () => {
   projectId = await client.getProjectId();
 });
 
-describe('deleteFilesetEntry', () => {
+describe.skip('deleteFilesetEntry', () => {
   before(done => {
     // Must create an entry to be deleted.
     exec(

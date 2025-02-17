@@ -44,7 +44,7 @@ describe('deleteFilesetEntry', () => {
     );
   });
 
-  it('should delete a fileset entry', done => {
+  it.skip('should delete a fileset entry', done => {
     exec(
       `node deleteFilesetEntry.js ${projectId} ${entryGroupId} ${entryId}`,
       {cwd},

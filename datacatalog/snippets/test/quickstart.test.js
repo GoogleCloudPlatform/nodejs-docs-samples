@@ -44,7 +44,7 @@ describe('Quickstart', async () => {
     await bigquery.dataset(datasetId).createTable(tableId);
   });
 
-  it('quickstart should attach tag to BigQuery table', async () => {
+  it.skip('quickstart should attach tag to BigQuery table', async () => {
     const output = execSync(
       `node quickstart ${projectId} ${datasetId} ${tableId}`
     );

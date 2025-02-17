@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const { BigQuery } = require("@google-cloud/bigquery");
+const {BigQuery} = require('@google-cloud/bigquery');
 
 /**
  * Revokes access to a BigQuery table or view
@@ -25,69 +25,69 @@ const { BigQuery } = require("@google-cloud/bigquery");
  * @returns {Promise<void>}
  */
 async function revokeTableOrViewAccess({
-    projectId,
-    datasetId,
-    resourceId,
-    memberToRevoke,
-    roleToRevoke = "roles/bigquery.dataViewer",
+  projectId,
+  datasetId,
+  resourceId,
+  memberToRevoke,
+  roleToRevoke = 'roles/bigquery.dataViewer',
 }) {
-    try {
-        // Create BigQuery client
-        const bigquery = new BigQuery({
-            projectId: projectId,
-        });
+  try {
+    // Create BigQuery client
+    const bigquery = new BigQuery({
+      projectId: projectId,
+    });
 
-        // Get reference to the table or view
-        const dataset = bigquery.dataset(datasetId);
-        const table = dataset.table(resourceId);
+    // Get reference to the table or view
+    const dataset = bigquery.dataset(datasetId);
+    const table = dataset.table(resourceId);
 
-        // Get current IAM policy
-        const [policy] = await table.iam.getPolicy();
-        console.log(
-            "Current IAM Policy:",
-            JSON.stringify(policy.bindings, null, 2)
-        );
+    // Get current IAM policy
+    const [policy] = await table.iam.getPolicy();
+    console.log(
+      'Current IAM Policy:',
+      JSON.stringify(policy.bindings, null, 2)
+    );
 
-        // Filter bindings based on parameters
-        let newBindings = policy.bindings;
+    // Filter bindings based on parameters
+    let newBindings = policy.bindings;
 
-        if (memberToRevoke) {
-            // Remove specific member from specific role
-            newBindings = policy.bindings
-                .map((binding) => ({
-                    ...binding,
-                    members:
-                        binding.role === roleToRevoke
-                            ? binding.members.filter((member) => member !== memberToRevoke)
-                            : binding.members,
-                }))
-                .filter((binding) => binding.members.length > 0);
-        } else {
-            // Remove all bindings for the specified role
-            newBindings = policy.bindings.filter(
-                (binding) => binding.role !== roleToRevoke
-            );
-        }
-
-        // Create new policy with updated bindings
-        const newPolicy = {
-            bindings: newBindings,
-        };
-
-        // Set the new IAM policy
-        await table.iam.setPolicy(newPolicy);
-        console.log(`Access revoked successfully for ${resourceId}`);
-
-        // Verify the changes
-        const [updatedPolicy] = await table.iam.getPolicy();
-        console.log(
-            "Updated IAM Policy:",
-            JSON.stringify(updatedPolicy.bindings, null, 2)
-        );
-    } catch (error) {
-        console.error("Error revoking access:", error);
-        throw error;
+    if (memberToRevoke) {
+      // Remove specific member from specific role
+      newBindings = policy.bindings
+        .map(binding => ({
+          ...binding,
+          members:
+            binding.role === roleToRevoke
+              ? binding.members.filter(member => member !== memberToRevoke)
+              : binding.members,
+        }))
+        .filter(binding => binding.members.length > 0);
+    } else {
+      // Remove all bindings for the specified role
+      newBindings = policy.bindings.filter(
+        binding => binding.role !== roleToRevoke
+      );
     }
+
+    // Create new policy with updated bindings
+    const newPolicy = {
+      bindings: newBindings,
+    };
+
+    // Set the new IAM policy
+    await table.iam.setPolicy(newPolicy);
+    console.log(`Access revoked successfully for ${resourceId}`);
+
+    // Verify the changes
+    const [updatedPolicy] = await table.iam.getPolicy();
+    console.log(
+      'Updated IAM Policy:',
+      JSON.stringify(updatedPolicy.bindings, null, 2)
+    );
+  } catch (error) {
+    console.error('Error revoking access:', error);
+    throw error;
+  }
 }
 
-module.exports = { revokeTableOrViewAccess };
+module.exports = {revokeTableOrViewAccess};

@@ -18,18 +18,28 @@ const {viewDatasetAccessPolicy} = require('./src/viewDatasetAccessPolicy');
 const {
   viewTableOrViewAccessPolicy,
 } = require('./src/viewTableOrViewAccessPolicy');
+const {revokeTableOrViewAccess} = require('./src/revokeTableOrViewAccess');
 
 async function main() {
   try {
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+
     // Example usage of dataset access policy viewer
     await viewDatasetAccessPolicy();
 
     // Example usage of table/view access policy viewer
-    const projectId = process.env.GOOGLE_CLOUD_PROJECT;
     await viewTableOrViewAccessPolicy({
       projectId,
       datasetId: 'my_new_dataset',
       resourceName: 'my_table',
+    });
+
+    await revokeTableOrViewAccess({
+      projectId,
+      datasetId: 'my_new_dataset',
+      resourceName: 'my_table',
+      memberToRevoke: 'group:example-analyst-group@google.com',
+      roleToRevoke: 'roles/bigquery.dataViewer',
     });
   } catch (error) {
     console.error('Error:', error);

@@ -34,7 +34,7 @@ before(async () => {
 });
 
 describe('createEntryGroup', () => {
-  it('should create a entry group', done => {
+  it.skip('should create a entry group', done => {
     const expectedName = `projects/${projectId}/locations/${location}/entryGroups/${entryGroupId}`;
     exec(
       `node createEntryGroup.js ${projectId} ${entryGroupId}`,

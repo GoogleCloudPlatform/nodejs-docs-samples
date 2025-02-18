@@ -246,8 +246,9 @@ describe('Secret Manager samples', () => {
   });
 
   it('creates a secret', async () => {
+    const ttl = '900s';
     const output = execSync(
-      `node createSecret.js projects/${projectId} ${secretId}-2`
+      `node createSecret.js projects/${projectId} ${secretId}-2 ${ttl}`
     );
     assert.match(output, new RegExp('Created secret'));
   });

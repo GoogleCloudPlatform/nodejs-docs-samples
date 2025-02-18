@@ -39,10 +39,12 @@ function main(sourceName = 'FULL RESOURCE PATH TO PARENT SOURCE') {
     const [response] = await client.listFindings({
       // List findings across all sources.
       parent: sourceName,
-      readTime: {
-        seconds: Math.floor(fiveDaysAgo.getTime() / 1000),
-        nanos: (fiveDaysAgo.getTime() % 1000) * 1e6,
-      },
+      //commented readTime as it is not supported, refer below link
+      //https://cloud.google.com/security-command-center/docs/release-notes#April_15_2024
+      // readTime: {
+      //   seconds: Math.floor(fiveDaysAgo.getTime() / 1000),
+      //   nanos: (fiveDaysAgo.getTime() % 1000) * 1e6,
+      // },
     });
     let count = 0;
     Array.from(response).forEach(result =>

@@ -32,6 +32,12 @@ async function revokeTableOrViewAccess({
   memberToRevoke,
   roleToRevoke = 'roles/bigquery.dataViewer',
 }) {
+  // Validate required parameters
+  if (!projectId || !datasetId || !resourceId) {
+    throw new Error(
+      'projectId, datasetId and resourceID are required parameters'
+    );
+  }
   try {
     // Create BigQuery client
     const bigquery = new BigQuery({
@@ -52,7 +58,7 @@ async function revokeTableOrViewAccess({
     // Filter bindings based on parameters
     let newBindings = policy.bindings;
 
-    if (memberToRevoke) {
+    if (memberToRevoke && roleToRevoke) {
       // Remove specific member from specific role
       newBindings = policy.bindings
         .map(binding => ({
@@ -63,11 +69,14 @@ async function revokeTableOrViewAccess({
               : binding.members,
         }))
         .filter(binding => binding.members.length > 0);
-    } else {
+    } else if (!memberToRevoke && roleToRevoke) {
       // Remove all bindings for the specified role
       newBindings = policy.bindings.filter(
         binding => binding.role !== roleToRevoke
       );
+    } else {
+      // Keep the current binding as is
+      newBindings = policy.bindings;
     }
 
     // Create new policy with updated bindings

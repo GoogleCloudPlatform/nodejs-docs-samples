@@ -32,7 +32,6 @@
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/auto-label.yaml",
     ".github/blunderbuss.yaml",
-    ".github/cloud-samples-tools/",
     ".github/flakybot.yaml",
     ".github/header-checker-lint.yaml",
     ".github/scripts/",
@@ -42,6 +41,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",

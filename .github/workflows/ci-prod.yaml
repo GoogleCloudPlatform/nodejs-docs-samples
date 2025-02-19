@@ -37,19 +37,28 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: GoogleCloudPlatform/cloud-samples-tools
+          ref: v0.1.0
+          path: cloud-samples-tools
+      - name: Create `bin` directory for cloud-samples-tools binaries
+        run: mkdir bin
+        working-directory: cloud-samples-tools
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: ${{ env.GO_VERSION }}
-      - run: go build -o ${{ github.workspace }}/tools ./cmd/...
-        working-directory: .github/cloud-samples-tools
+      - name: Build Ariwete (from cloud-samples-tools)
+        run: go build -o ../bin -v ./...
+        working-directory: cloud-samples-tools/ariwete
       - name: Get diffs
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
         run: |
-          echo "paths=$(./tools affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          echo "paths=$(./cloud-samples-tools/bin/ariwete affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./tools setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
+          echo "setups=$(./cloud-samples-tools/bin/ariwete setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-lint:
     name: Node.js lint

@@ -41,6 +41,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",

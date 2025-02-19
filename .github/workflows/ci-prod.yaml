@@ -75,6 +75,7 @@ jobs:
       matrix:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     env:
+      GOOGLE_SAMPLES_PROJECT: long-door-651
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup
@@ -87,30 +88,19 @@ jobs:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
         with:
-          project_id: ${{ fromJson(env.CI_SETUP).project-id }}
-          workload_identity_provider: ${{ fromJson(env.CI_SETUP).workload-identity-provider }}
-          service_account: ${{ fromJson(env.CI_SETUP).service-account }}
-          access_token_lifetime: ${{ fromJson(env.CI_SETUP).access-token-lifetime }}
+          project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
+          workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          access_token_lifetime: 600s # 10 minutes
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars
         with:
           script: |
-            const setup = JSON.parse(process.env.CI_SETUP)
-            const env = {
-              'GOOGLE_SAMPLES_PROJECT': setup['project-id'],
-              ...setup.env
-            }
-            for (const key in env) {
-              console.log(`${key}: ${env[key]}`)
-              core.exportVariable(key, env[key])
-            }
-            return {
-              "env": env,
-              "secrets": Object.keys(setup.secrets)
-                  .map(key => `${key}:${setup.secrets[key]}`)
-                  .join('\n'),
-            }
+            const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js')
+            const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
+            const setup = JSON.parse(process.env.CI_SETUP);
+            return await setupVars({projectId, core, setup})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

@@ -1,5 +1,6 @@
 {
   "env" : {
     "SERVICE_NAME" : "eventarc-audit-storage"
+    "CONTAINER_IMAGE" : "gcr.io/${GOOGLE_SAMPLES_PROJECT}/run-eventarc-audit-storage-${RUN_ID}"
   }
 }

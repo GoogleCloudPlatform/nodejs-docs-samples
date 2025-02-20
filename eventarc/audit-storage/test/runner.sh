@@ -40,11 +40,11 @@ function cleanup {
 trap cleanup EXIT
 
 # temp debugging
-echo '#### CI DEBUG ####
+echo '#### CI DEBUG ####' 
 echo 'GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}'
 gcloud auth list
 gcloud auth print-identity-token
-echo '#### end CI DEBUG ####
+echo '#### end CI DEBUG ####' 
 
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)

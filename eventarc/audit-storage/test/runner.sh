@@ -42,13 +42,9 @@ trap cleanup EXIT
 # temp debugging
 echo '#### CI DEBUG ####' 
 echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
-echo 'env:'
-printenv
-echo 'set:'
-set
 echo 'gcloud auth list'
-gcloud auth list
-gcloud auth print-identity-token
+gcloud auth list --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS}
+gcloud auth print-identity-token --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS}
 echo '#### end CI DEBUG ####' 
 
 # TODO: Perform authentication inside the test.

@@ -43,8 +43,12 @@ trap cleanup EXIT
 echo '#### CI DEBUG ####' 
 echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
 echo 'gcloud auth list'
-gcloud auth list --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS}
-gcloud auth print-identity-token --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS}
+gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth list
+echo 'gcloud auth login'
+gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth login kokoro-system-test@long-door-651.iam.gserviceaccount.com
+echo 'gcloud auth list'
+gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth list
+gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth print-identity-token
 echo '#### end CI DEBUG ####' 
 
 # TODO: Perform authentication inside the test.

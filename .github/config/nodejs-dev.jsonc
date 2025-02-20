@@ -24,6 +24,7 @@
     "secrets": { }
   },
   "ignore": [
+    ".github/config/", // prevent changes to exclusions from running all tests
     ".eslintignore",
     ".eslintrc.json",
     ".github/.OwlBot.lock.yaml",

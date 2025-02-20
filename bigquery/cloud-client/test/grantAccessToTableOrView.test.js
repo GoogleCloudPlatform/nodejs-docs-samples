@@ -17,7 +17,7 @@
 const {assert} = require('chai');
 const sinon = require('sinon');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {grantAccessToTableOrView} = require('../src/grantAccessToTableOrView');
+const {grantAccessToTableOrView} = require('../grantAccessToTableOrView');
 
 describe('grantAccessToTableOrView', () => {
   const PROJECT_ID = 'test-project';

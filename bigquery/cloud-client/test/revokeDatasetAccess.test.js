@@ -17,7 +17,7 @@
 const {assert} = require('chai');
 const sinon = require('sinon');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {revokeDatasetAccess} = require('../src/revokeDatasetAccess');
+const {revokeDatasetAccess} = require('../revokeDatasetAccess');
 
 describe('revokeDatasetAccess', () => {
   const datasetId = 'test_dataset';

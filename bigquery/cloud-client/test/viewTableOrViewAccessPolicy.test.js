@@ -55,7 +55,7 @@ describe('viewTableOrViewAccessPolicy', () => {
 
     // Reset module for each test
     viewTableOrViewAccessPolicy =
-      require('../src/viewTableOrViewAccessPolicy').viewTableOrViewAccessPolicy;
+      require('../viewTableOrViewAccessPolicy').viewTableOrViewAccessPolicy;
   });
 
   afterEach(() => {

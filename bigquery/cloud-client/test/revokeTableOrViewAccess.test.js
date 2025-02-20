@@ -17,7 +17,7 @@
 const {expect} = require('chai');
 const sinon = require('sinon');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {revokeTableOrViewAccess} = require('../src/revokeTableOrViewAccess');
+const {revokeTableOrViewAccess} = require('../revokeTableOrViewAccess');
 
 describe('revokeTableOrViewAccess', () => {
   let bigQueryStub;

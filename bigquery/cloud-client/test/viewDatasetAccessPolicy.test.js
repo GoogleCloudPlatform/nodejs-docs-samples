@@ -17,7 +17,7 @@
 const {assert} = require('chai');
 const sinon = require('sinon');
 const {BigQuery} = require('@google-cloud/bigquery');
-const {viewDatasetAccessPolicy} = require('../src/viewDatasetAccessPolicy');
+const {viewDatasetAccessPolicy} = require('../viewDatasetAccessPolicy');
 
 describe('viewDatasetAccessPolicy', () => {
   let bigQueryStub;

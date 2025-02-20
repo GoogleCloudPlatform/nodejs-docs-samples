@@ -41,7 +41,12 @@ trap cleanup EXIT
 
 # temp debugging
 echo '#### CI DEBUG ####' 
-echo 'GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}'
+echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
+echo 'env:'
+printenv
+echo 'set:'
+set
+echo 'gcloud auth list'
 gcloud auth list
 gcloud auth print-identity-token
 echo '#### end CI DEBUG ####' 

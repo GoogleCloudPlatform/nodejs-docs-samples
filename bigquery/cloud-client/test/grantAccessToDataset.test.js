@@ -24,7 +24,6 @@ describe('grantAccessToDataset', () => {
   const entityId = 'test-group@example.com';
   const role = 'READER';
 
-  let bigqueryStub;
   let datasetStub;
   let getMetadataStub;
   let setMetadataStub;
@@ -53,11 +52,6 @@ describe('grantAccessToDataset', () => {
     datasetStub = {
       getMetadata: getMetadataStub,
       setMetadata: setMetadataStub,
-    };
-
-    // Create BigQuery stub
-    bigqueryStub = {
-      dataset: sinon.stub().returns(datasetStub),
     };
 
     // Replace BigQuery constructor

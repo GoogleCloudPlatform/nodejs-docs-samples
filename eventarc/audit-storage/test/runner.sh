@@ -45,10 +45,8 @@ echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
 echo 'gcloud auth list'
 gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth list
 echo 'gcloud auth login'
-gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth login kokoro-system-test@long-door-651.iam.gserviceaccount.com
-echo 'gcloud auth list'
-gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth list
-gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth print-identity-token
+echo 'gcloud auth print-identity-token'
+gcloud --access-token-file=${GOOGLE_APPLICATION_CREDENTIALS} auth print-identity-token kokoro-system-test@long-door-651.iam.gserviceaccount.com | head -c 42
 echo '#### end CI DEBUG ####' 
 
 # TODO: Perform authentication inside the test.

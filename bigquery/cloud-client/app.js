@@ -19,6 +19,8 @@ const {
   viewTableOrViewAccessPolicy,
 } = require('./src/viewTableOrViewAccessPolicy');
 const {revokeTableOrViewAccess} = require('./src/revokeTableOrViewAccess');
+const {grantAccessToDataset} = require('./src/grantAccessToDataset');
+const {grantAccessToTableOrView} = require('./src/grantAccessToTableOrView');
 
 async function main() {
   try {
@@ -34,12 +36,29 @@ async function main() {
       resourceName: 'my_table',
     });
 
+    // Example usage of revoking table/view access
     await revokeTableOrViewAccess({
       projectId,
       datasetId: 'my_new_dataset',
       resourceName: 'my_table',
       memberToRevoke: 'group:example-analyst-group@google.com',
       roleToRevoke: 'roles/bigquery.dataViewer',
+    });
+
+    // Example usage of granting access to a dataset
+    await grantAccessToDataset({
+      datasetId: 'my_dataset',
+      entityId: 'group-to-add@example.com',
+      role: 'READER',
+    });
+
+    // Example usage of granting table/view access
+    await grantAccessToTableOrView({
+      projectId,
+      datasetId: 'my_dataset',
+      resourceName: 'my_table',
+      principalId: 'user:example@google.com',
+      role: 'roles/bigquery.dataViewer',
     });
   } catch (error) {
     console.error('Error:', error);
@@ -52,4 +71,10 @@ if (require.main === module) {
   main();
 }
 
-module.export = {viewDatasetAccessPolicy, viewTableOrViewAccessPolicy};
+module.export = {
+  viewDatasetAccessPolicy,
+  viewTableOrViewAccessPolicy,
+  revokeTableOrViewAccess,
+  grantAccessToDataset,
+  grantAccessToTableOrView,
+};

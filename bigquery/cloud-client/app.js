@@ -21,6 +21,7 @@ const {
 const {revokeTableOrViewAccess} = require('./src/revokeTableOrViewAccess');
 const {grantAccessToDataset} = require('./src/grantAccessToDataset');
 const {grantAccessToTableOrView} = require('./src/grantAccessToTableOrView');
+const {revokeDatasetAccess} = require('./src/revokeDatasetAccess');
 
 async function main() {
   try {
@@ -60,6 +61,12 @@ async function main() {
       principalId: 'user:example@google.com',
       role: 'roles/bigquery.dataViewer',
     });
+
+    // Example usage of revoking dataset access
+    await revokeDatasetAccess({
+      datasetId: 'my_dataset',
+      entityId: 'user-to-remove@example.com',
+    });
   } catch (error) {
     console.error('Error:', error);
     process.exitCode = 1;
@@ -77,4 +84,5 @@ module.export = {
   revokeTableOrViewAccess,
   grantAccessToDataset,
   grantAccessToTableOrView,
+  revokeDatasetAccess,
 };

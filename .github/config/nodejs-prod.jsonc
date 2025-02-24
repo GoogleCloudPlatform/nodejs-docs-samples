@@ -81,7 +81,6 @@
     "dataproc", // GoogleError: Error submitting create cluster request: Multiple validation errors
     "datastore/functions", // [ERR_REQUIRE_ESM]: require() of ES Module
     "dialogflow-cx", // NOT_FOUND: com.google.apps.framework.request.NotFoundException: Agent 'undefined' does not exist
-    "dlp", // [ERR_REQUIRE_ESM]: require() of ES Module
     "document-ai", // [ERR_REQUIRE_ESM]: require() of ES Module
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
     "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found

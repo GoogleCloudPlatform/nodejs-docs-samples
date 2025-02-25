@@ -199,4 +199,4 @@ function transformCLI(infoTypes, customInfoTypes) {
   return [infoTypes, customInfoTypes];
 }
 
-module.exports = main;
+export default main;

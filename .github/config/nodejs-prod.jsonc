@@ -42,7 +42,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
-    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
@@ -94,7 +94,6 @@
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
-    "run/idp-sql", // Error: Invalid contents in the credentials file
     "run/markdown-preview/editor", // Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "run/system-package", // Error: ENOENT: no such file or directory, access '/usr/bin/dot'
     "scheduler", // SyntaxError: Cannot use import statement outside a module

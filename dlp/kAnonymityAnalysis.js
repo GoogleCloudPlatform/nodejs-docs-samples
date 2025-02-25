@@ -167,4 +167,4 @@ function transformCLI(quasiIds) {
   return quasiIds;
 }
 
-export default main;
+module.exports = main;

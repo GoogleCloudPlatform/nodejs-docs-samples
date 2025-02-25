@@ -88,4 +88,4 @@ process.on('unhandledRejection', err => {
 // TODO(developer): Please uncomment below line before running sample
 // main(...process.argv.slice(2));
 
-export default main;
+module.exports = main;

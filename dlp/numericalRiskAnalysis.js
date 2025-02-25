@@ -163,4 +163,4 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-export default main;
+module.exports = main;

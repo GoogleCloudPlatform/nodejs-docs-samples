@@ -16,7 +16,7 @@
     "start": "node index.js",
     "unit-test": "c8 mocha -p -j 2 test/app.test.js --timeout=120000 --exit",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=1800000 --exit",
-    "all-test": "npm run unit-test && npm run system-test",
+    "all-test": "npm run system-test && npm run unit-test",
     "test": "npm -- run all-test"
   },
   "dependencies": {

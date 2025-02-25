@@ -30,7 +30,7 @@ async function main(
 ) {
   // [START dlp_deidentify_cloud_storage]
   // Imports the Google Cloud client library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 

@@ -29,7 +29,7 @@ async function main(
   infoTypes = transformCLI(infoTypes);
   // [START dlp_deidentify_deterministic]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

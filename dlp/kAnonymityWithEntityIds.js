@@ -21,7 +21,7 @@
 async function main(projectId, datasetId, sourceTableId, outputTableId) {
   // [START dlp_k_anonymity_with_entity_id]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

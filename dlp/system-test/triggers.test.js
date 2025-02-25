@@ -14,11 +14,11 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const cp = require('child_process');
-const uuid = require('uuid');
-const DLP = require('@google-cloud/dlp');
+import {assert} from 'chai';
+import {describe, it, before} from 'mocha';
+import cp from 'child_process';
+import uuid from 'uuid';
+import DLP from '@google-cloud/dlp';
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

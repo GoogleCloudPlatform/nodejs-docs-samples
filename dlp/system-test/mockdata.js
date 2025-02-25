@@ -14,8 +14,8 @@
 
 'use strict';
 
-const DLP = require('@google-cloud/dlp');
-const sinon = require('sinon');
+import DLP from '@google-cloud/dlp';
+import sinon from 'sinon';
 
 /**
   Mock data for unit test cases.

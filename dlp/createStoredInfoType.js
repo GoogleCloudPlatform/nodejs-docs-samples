@@ -29,7 +29,7 @@ async function main(
 ) {
   // [START dlp_create_stored_infotype]
   // Import the required libraries
-  const dlp = require('@google-cloud/dlp');
+  import dlp from '@google-cloud/dlp';
 
   // Create a DLP client
   const dlpClient = new dlp.DlpServiceClient();

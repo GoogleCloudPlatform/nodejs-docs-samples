@@ -21,7 +21,7 @@
 async function main(projectId, infoTypeId, outputPath, fileSetUrl) {
   // [START dlp_update_stored_infotype]
   // Import the required libraries
-  const dlp = require('@google-cloud/dlp');
+  import dlp from '@google-cloud/dlp';
 
   // Create a DLP client
   const dlpClient = new dlp.DlpServiceClient();

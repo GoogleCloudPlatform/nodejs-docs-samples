@@ -30,11 +30,11 @@ function main(
 
   // [START dlp_inspect_file]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
 
   // Import other required libraries
-  const fs = require('fs');
-  const mime = require('mime');
+  import fs from 'fs';
+  import mime from 'mime';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

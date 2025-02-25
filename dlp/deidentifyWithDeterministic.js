@@ -125,4 +125,4 @@ function transformCLI(infoTypes) {
     : undefined;
 }
 
-export default main;
+module.exports = main;

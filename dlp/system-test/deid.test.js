@@ -14,15 +14,15 @@
 
 'use strict';
 
-import path from 'path';
-import {assert} from 'chai';
-import {describe, it, before} from 'mocha';
-import fs from 'fs';
-import cp from 'child_process';
-import DLP from '@google-cloud/dlp';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import {MOCK_DATA} from './mockdata';
+const path = require('path');
+const {assert} = require('chai');
+const {describe, it, before} = require('mocha');
+const fs = require('fs');
+const cp = require('child_process');
+const DLP = require('@google-cloud/dlp');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
+const {MOCK_DATA} = require('./mockdata');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

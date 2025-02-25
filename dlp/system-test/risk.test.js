@@ -14,15 +14,15 @@
 
 'use strict';
 
-import {assert} from 'chai';
-import {describe, it, before, after, afterEach} from 'mocha';
-import uuid from 'uuid';
-import {PubSub} from '@google-cloud/pubsub';
-import DLP from '@google-cloud/dlp';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+const {assert} = require('chai');
+const {describe, it, before, after, afterEach} = require('mocha');
+const uuid = require('uuid');
+const {PubSub} = require('@google-cloud/pubsub');
+const DLP = require('@google-cloud/dlp');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
-import {MOCK_DATA} from './mockdata';
+const {MOCK_DATA} = require('./mockdata');
 
 const pubsub = new PubSub();
 const client = new DLP.DlpServiceClient();

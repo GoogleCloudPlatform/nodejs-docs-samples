@@ -35,8 +35,8 @@ async function main(
 
   // [START dlp_inspect_datastore]
   // Import the Google Cloud client libraries
-  import DLP from '@google-cloud/dlp';
-  import {PubSub} from '@google-cloud/pubsub';
+  const DLP = require('@google-cloud/dlp');
+  const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();

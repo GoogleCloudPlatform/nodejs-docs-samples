@@ -8,7 +8,6 @@
   "files": [
     "*.js"
   ],
-  "type": "module",
   "engines": {
     "node": ">=16.0.0"
   },

@@ -42,7 +42,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
-    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
@@ -70,7 +70,6 @@
     "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
     "appengine/analytics", // [ERR_REQUIRE_ESM]: require() of ES Module
     "appengine/metadata/flexible", // [ERR_REQUIRE_ESM]: require() of ES Module
-    "appengine/metadata/standard", // [ERR_REQUIRE_ESM]: require() of ES Module
     "automl", // (untested) FAILED_PRECONDITION: Google Cloud AutoML Natural Language was retired on March 15, 2024. Please migrate to Vertex AI instead
     "cloud-sql/mysql/mysql", // (untested) Error: expected 200 "OK", got 500 "Internal Server Error"
     "cloud-sql/mysql/mysql2", // (untested) Error: Cannot find module './connect-connector-with-iam-authn.js'

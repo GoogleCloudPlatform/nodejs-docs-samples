@@ -30,8 +30,8 @@ async function main(
 ) {
   // [START dlp_numerical_stats]
   // Import the Google Cloud client libraries
-  const DLP = require('@google-cloud/dlp');
-  const {PubSub} = require('@google-cloud/pubsub');
+  import DLP from '@google-cloud/dlp';
+  import {PubSub} from '@google-cloud/pubsub';
 
   // Instantiates clients
   const dlp = new DLP.DlpServiceClient();

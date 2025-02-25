@@ -14,17 +14,17 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before, after, afterEach} = require('mocha');
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const cp = require('child_process');
-const {PubSub} = require('@google-cloud/pubsub');
+import {assert} from 'chai';
+import {describe, it, before, after, afterEach} from 'mocha';
+import proxyquire from 'proxyquire';
+import sinon from 'sinon';
+import cp from 'child_process';
+import {PubSub} from '@google-cloud/pubsub';
 const pubsub = new PubSub();
-const uuid = require('uuid');
-const DLP = require('@google-cloud/dlp');
+import uuid from 'uuid';
+import DLP from '@google-cloud/dlp';
 
-const {MOCK_DATA} = require('./mockdata');
+import {MOCK_DATA} from './mockdata';
 const bucket = 'nodejs-dlp-test-bucket';
 const dataProject = 'bigquery-public-data';
 const datasetId = 'samples';

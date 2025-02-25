@@ -33,13 +33,13 @@ function main(
   dateFields = transformCLI(dateFields);
   // [START dlp_deidentify_date_shift]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 
   // Import other required libraries
-  const fs = require('fs');
+  import fs from 'fs';
 
   // The project ID to run the API call under
   // const projectId = 'my-project';

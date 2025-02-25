@@ -19,11 +19,11 @@
 function main(projectId, filepath, outputPath) {
   // [START dlp_redact_image_colored_infotypes]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import DLP from '@google-cloud/dlp';
 
   // Imports required Node.js libraries
-  const mime = require('mime');
-  const fs = require('fs');
+  import mime from 'mime';
+  import fs from 'fs';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

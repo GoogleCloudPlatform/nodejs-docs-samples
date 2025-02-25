@@ -22,7 +22,7 @@ function main(projectId, string, excludedWords) {
   excludedWords = excludedWords ? excludedWords.split(',') : [];
   // [START dlp_inspect_string_custom_excluding_substring]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

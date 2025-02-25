@@ -21,7 +21,7 @@
 function main(projectId, transientKeyName) {
   // [START dlp_deidentify_table_with_crypto_hash]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

@@ -21,7 +21,7 @@
 function main(projectId, jobTriggerName) {
   // [START dlp_update_trigger]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlpClient = new DLP.DlpServiceClient();

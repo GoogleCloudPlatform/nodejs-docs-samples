@@ -21,7 +21,7 @@
 async function main(projectId, gcsPath) {
   // [START dlp_inspect_gcs_send_to_scc]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlpClient = new DLP.DlpServiceClient();

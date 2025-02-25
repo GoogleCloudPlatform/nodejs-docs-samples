@@ -14,13 +14,13 @@
 
 'use strict';
 
-import {assert} from 'chai';
-import {describe, it, before} from 'mocha';
-import fs from 'fs';
-import cp from 'child_process';
-import {PNG} from 'pngjs';
-import pixelmatch from 'pixelmatch';
-import DLP from '@google-cloud/dlp';
+const {assert} = require('chai');
+const {describe, it, before} = require('mocha');
+const fs = require('fs');
+const cp = require('child_process');
+const {PNG} = require('pngjs');
+const pixelmatch = require('pixelmatch');
+const DLP = require('@google-cloud/dlp');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 

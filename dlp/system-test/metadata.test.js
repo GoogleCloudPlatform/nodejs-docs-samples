@@ -14,16 +14,16 @@
 
 'use strict';
 
-import {assert} from 'chai';
-import {describe, it, before} from 'mocha';
-import cp from 'child_process';
-import uuid from 'uuid';
-import DLP from '@google-cloud/dlp';
-import {Storage} from '@google-cloud/storage';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+const {assert} = require('chai');
+const {describe, it, before} = require('mocha');
+const cp = require('child_process');
+const uuid = require('uuid');
+const DLP = require('@google-cloud/dlp');
+const {Storage} = require('@google-cloud/storage');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
-import {MOCK_DATA} from './mockdata';
+const {MOCK_DATA} = require('./mockdata');
 
 const dataProject = 'bigquery-public-data';
 const dataSetId = 'samples';

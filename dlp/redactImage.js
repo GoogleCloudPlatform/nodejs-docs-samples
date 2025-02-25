@@ -21,11 +21,11 @@ function main(projectId, filepath, minLikelihood, infoTypes, outputPath) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_redact_image]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Imports required Node.js libraries
-  import mime from 'mime';
-  import fs from 'fs';
+  const mime = require('mime');
+  const fs = require('fs');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

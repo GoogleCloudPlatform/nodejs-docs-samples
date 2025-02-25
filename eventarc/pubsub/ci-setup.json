@@ -1,0 +1,5 @@
+{
+    "env": {
+        "SERVICE_NAME": "eventarc-pubsub"
+    }
+}

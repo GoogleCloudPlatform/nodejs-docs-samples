@@ -20,6 +20,12 @@ requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
 requireEnv SERVICE_NAME
+requireEnv CONTAINER_IMAGE
+
+# TODO: update if random suffix is supported in ci-setup.json
+RANDOM_SUFFIX=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13)
+export SERVICE_NAME="${SERVICE_NAME}-${RANDOM_SUFFIX}"
+export CONTAINER_IMAGE="${CONTAINER_IMAGE}:${RANDOM_SUFFIX}"
 
 echo '---'
 test/deploy.sh

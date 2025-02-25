@@ -1,5 +1,6 @@
 {
     "env": {
-        "SERVICE_NAME": "eventarc-pubsub"
+        "SERVICE_NAME": "eventarc-pubsub",
+        "CONTAINER_IMAGE": "gcr.io/long-door-651/eventarc-pubsub"
     }
 }

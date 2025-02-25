@@ -1,0 +1,5 @@
+{
+    "secrets": {
+      "IDP_KEY": "nodejs-docs-samples-tests/nodejs-docs-samples-idp-key"
+    }
+  }

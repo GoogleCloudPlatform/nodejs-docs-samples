@@ -1,5 +1,12 @@
 {
-    "secrets": {
-      "IDP_KEY": "nodejs-docs-samples-tests/nodejs-docs-samples-idp-key"
-    }
+  "env": {
+    "SERVICE_NAME": "idp-sql-ci",
+    "CLOUD_SQL_CONNECTION_NAME": "nodejs-docs-samples-tests:us-central1:postgres-ci",
+    "DB_NAME": "kokoro_ci",
+    "DB_USER": "kokoro_ci"
+  },
+  "secrets": {
+    "IDP_KEY": "nodejs-docs-samples-tests/nodejs-docs-samples-idp-key",
+    "DB_PASSWORD": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"
   }
+}

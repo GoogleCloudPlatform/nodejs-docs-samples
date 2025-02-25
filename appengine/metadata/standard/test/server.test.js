@@ -1,6 +1,5 @@
-const path = require('path');
-const supertest = require('supertest');
-const app = require(path.join(__dirname, '../', 'server.js'));
+import supertest from 'supertest';
+import app from '../server.js';
 
 it('should be listening', async () => {
   await supertest(app).get('/').expect(200);

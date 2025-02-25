@@ -60,4 +60,4 @@ substitutions:
   _SERVICE_ACCOUNT: ${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com
 
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
-
+logging: CLOUD_LOGGING_ONLY

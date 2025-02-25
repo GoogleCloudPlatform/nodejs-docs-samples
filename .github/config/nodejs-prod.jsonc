@@ -42,7 +42,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
-    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
@@ -87,10 +87,8 @@
     "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found
     "functions/billing", // Error: Request failed with status code 500
     "functions/http/uploadFile", // npm error Missing script: "test"
-    "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage
     "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
-    "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module

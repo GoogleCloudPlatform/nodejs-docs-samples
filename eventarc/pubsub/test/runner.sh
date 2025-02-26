@@ -20,6 +20,7 @@ requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
 requireEnv SERVICE_NAME
+requireEnv CONTAINER_IMAGE
 
 echo '---'
 test/deploy.sh
@@ -40,6 +41,7 @@ function cleanup {
 trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
+gcloud auth list
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 

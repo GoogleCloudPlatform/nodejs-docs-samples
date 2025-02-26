@@ -15,6 +15,7 @@
 'use strict';
 
 const assert = require('assert');
+const {exec} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
 const supertest = require('supertest');

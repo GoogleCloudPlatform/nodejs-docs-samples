@@ -62,3 +62,4 @@ substitutions:
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
 options:
     logging: CLOUD_LOGGING_ONLY
+    dynamicSubstitutions: true

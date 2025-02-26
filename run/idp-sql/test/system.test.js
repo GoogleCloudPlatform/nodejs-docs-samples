@@ -32,6 +32,8 @@ describe('System Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
     SERVICE_NAME = 'idp-sql';
   }
+
+  const {GOOGLE_SERVICE_ACCOUNT} = process.env;
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -60,6 +62,7 @@ describe('System Tests', () => {
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
+    if (GOOGLE_SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${GOOGLE_SERVICE_ACCOUNT}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');

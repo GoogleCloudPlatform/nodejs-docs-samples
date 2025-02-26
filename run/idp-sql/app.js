@@ -22,7 +22,7 @@ const {authenticateJWT, requestLogger} = require('./middleware');
 const app = express();
 app.use(express.static(__dirname + '/static'));
 
-// Automatically parse request body as form data.
+// Automatically parse request body as form data
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 

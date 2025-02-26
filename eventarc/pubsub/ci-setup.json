@@ -1,0 +1,6 @@
+{
+    "env": {
+        "SERVICE_NAME": "eventarc-pubsub-$RUN_ID",
+        "CONTAINER_IMAGE": "gcr.io/long-door-651/eventarc-pubsub:${RUN_ID}"
+    }
+}

@@ -22,11 +22,6 @@ requireEnv() {
 requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
 
-# TODO: update if random suffix is supported in ci-setup.json
-RANDOM_SUFFIX=$RANDOM
-export SERVICE_NAME="${SERVICE_NAME}-${RANDOM_SUFFIX}"
-export CONTAINER_IMAGE="${CONTAINER_IMAGE}:${RANDOM_SUFFIX}"
-
 echo '---'
 test/deploy.sh
 

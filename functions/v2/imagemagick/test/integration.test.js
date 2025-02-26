@@ -37,7 +37,7 @@ require('../index');
 // ImageMagick is available by default in Cloud Run Functions environments
 // https://cloud.google.com/functions/1stgendocs/tutorials/imagemagick-1st-gen.md#importing_dependencies
 // Manually install it for testing only.
-exec("apt update && apt install imagemagick -y")
+exec('sudo apt-get install imagemagick -y');
 
 describe('functions/imagemagick tests', () => {
   before(async () => {

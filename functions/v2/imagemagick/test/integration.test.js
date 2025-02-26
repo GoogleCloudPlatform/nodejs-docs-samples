@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {exec} = require('child_process');
+const {execSync} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
 const supertest = require('supertest');
@@ -37,7 +37,7 @@ require('../index');
 // ImageMagick is available by default in Cloud Run Functions environments
 // https://cloud.google.com/functions/1stgendocs/tutorials/imagemagick-1st-gen.md#importing_dependencies
 // Manually install it for testing only.
-exec('sudo apt-get install imagemagick -y');
+execSync('sudo apt-get install imagemagick -y');
 
 describe('functions/imagemagick tests', () => {
   before(async () => {

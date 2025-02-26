@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {exec, spawn} = require('child_process');
+const {execSync, spawn} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
 const {request} = require('gaxios');
@@ -57,7 +57,7 @@ async function startFF(port) {
 // ImageMagick is available by default in Cloud Run Functions environments
 // https://cloud.google.com/functions/1stgendocs/tutorials/imagemagick-1st-gen.md#importing_dependencies
 // Manually install it for testing only.
-exec('sudo apt-get install imagemagick -y');
+execSync('sudo apt-get install imagemagick -y');
 
 describe('functions/imagemagick tests', () => {
   before(async () => {

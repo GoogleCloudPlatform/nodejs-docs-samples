@@ -14,7 +14,6 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync} = require('child_process');
 const {GoogleAuth} = require('google-auth-library');
 const auth = new GoogleAuth();
 
@@ -27,9 +26,6 @@ const request = (method, route, base_url, id_token) => {
     throwHttpErrors: false,
   });
 };
-
-// Manually install system package in testing environment
-execSync('sudo apt install graphviz -y && which dot');
 
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;

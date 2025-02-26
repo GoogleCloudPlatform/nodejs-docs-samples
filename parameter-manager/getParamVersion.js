@@ -60,7 +60,9 @@ async function main(
       `Found parameter version ${parameterVersion.name} with state ${parameterVersion.disabled ? 'disabled' : 'enabled'}`
     );
     if (!parameterVersion.disabled) {
-      console.log(`Payload: ${parameterVersion.payload?.data.toString('utf-8')}`);
+      console.log(
+        `Payload: ${parameterVersion.payload.data.toString('utf-8')}`
+      );
     }
   }
 

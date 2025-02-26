@@ -305,7 +305,6 @@ describe('Parameter Manager samples', () => {
 
   it('should list parameters', async () => {
     const output = execSync(`node listParams.js ${projectId}`);
-    assert.include(output, 'Parameters:');
     assert.include(
       output,
       `Found parameter ${parameter.name} with format ${parameter.format}`
@@ -324,7 +323,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node regional_samples/listRegionalParams.js ${projectId} ${locationId}`
     );
-    assert.include(output, `Parameters in ${locationId}:`);
     assert.include(
       output,
       `Found regional parameter ${regionalParameter.name} with format ${regionalParameter.format}`
@@ -381,7 +379,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node listParamVersions.js ${projectId} ${parameterId}`
     );
-    assert.include(output, `Parameter versions for ${parameterId}:`);
     assert.include(
       output,
       `Found parameter version ${parameterVersion.name} with state disabled`
@@ -395,10 +392,6 @@ describe('Parameter Manager samples', () => {
   it('should list regional parameter versions', async () => {
     const output = execSync(
       `node regional_samples/listRegionalParamVersions.js ${projectId} ${locationId} ${regionalParameterId}`
-    );
-    assert.include(
-      output,
-      `Parameter versions for ${regionalParameterId} in ${locationId}:`
     );
     assert.include(
       output,
@@ -428,7 +421,7 @@ describe('Parameter Manager samples', () => {
     );
     assert.include(
       output,
-      'Payload: {"db_user":"test_user","db_password":"__REF__(//secretmanager.googleapis.com/projects/385768059301/secrets/test-secret-91cd9792-5f13-47c5-85ba-6622682f0035/versions/1)"}'
+      `Payload: {"db_user":"test_user","db_password":"__REF__(//secretmanager.googleapis.com/${secretVersion.name})"}`
     );
   });
 
@@ -450,7 +443,7 @@ describe('Parameter Manager samples', () => {
     );
     assert.include(
       output,
-      'Payload: {"db_user":"test_user","db_password":"__REF__("//secretmanager.googleapis.com/projects/385768059301/locations/us-central1/secrets/test-secret-91cd9792-5f13-47c5-85ba-6622682f0035/versions/1")"}'
+      `Payload: {"db_user":"test_user","db_password":"__REF__(\\"//secretmanager.googleapis.com/${regionalSecretVersion.name}\\")"}`
     );
   });
 

@@ -44,7 +44,6 @@ async function main(projectId = 'my-project') {
     // Use listParametersAsync to handle pagination automatically
     const iterable = await client.listParametersAsync(request);
 
-    console.log('Parameters:');
     for await (const parameter of iterable) {
       console.log(
         `Found parameter ${parameter.name} with format ${parameter.format}`

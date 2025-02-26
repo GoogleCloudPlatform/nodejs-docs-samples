@@ -51,7 +51,6 @@ async function main(projectId = 'my-project', locationId = 'us-central1') {
     // Use listParametersAsync to handle pagination automatically
     const iterable = await client.listParametersAsync(request);
 
-    console.log(`Parameters in ${locationId}:`);
     for await (const parameter of iterable) {
       console.log(
         `Found regional parameter ${parameter.name} with format ${parameter.format}`

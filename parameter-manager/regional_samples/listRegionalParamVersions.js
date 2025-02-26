@@ -57,7 +57,6 @@ async function main(
     // Use listParameterVersionsAsync to handle pagination automatically
     const iterable = await client.listParameterVersionsAsync(request);
 
-    console.log(`Parameter versions for ${parameterId} in ${locationId}:`);
     for await (const version of iterable) {
       console.log(
         `Found regional parameter version ${version.name} with state ${version.disabled ? 'disabled' : 'enabled'} `

@@ -47,7 +47,7 @@ async function startFF(port) {
     let stderr = '';
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
-    ffProc.on('error', reject);
+    ffProc.on('error', c => (c === 0 ? resolve(stdout) : reject(stderr)));
     ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
   });
   await waitPort({host: 'localhost', port});

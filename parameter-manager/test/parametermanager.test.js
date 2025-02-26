@@ -24,7 +24,7 @@ const client = new ParameterManagerClient();
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 const secretClient = new SecretManagerServiceClient();
 
-const projectId = process.env.GCLOUD_PROJECT;
+let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
 const options = {};
 options.apiEndpoint = `parametermanager.${locationId}.rep.googleapis.com`;
@@ -57,6 +57,8 @@ describe('Parameter Manager samples', () => {
   const regionalParametersToDelete = [];
 
   before(async () => {
+    projectId = await client.getProjectId();
+
     // Create a secret
     [secret] = await secretClient.createSecret({
       parent: `projects/${projectId}`,

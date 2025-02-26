@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-export default function setupVars({projectId, core, setup}, runId = null) {
+export default function setupVars({projectId, core, setup, accessToken}, runId = null) {
   // Define automatic variables plus custom variables.
   const vars = {
     PROJECT_ID: projectId,
@@ -35,6 +35,12 @@ export default function setupVars({projectId, core, setup}, runId = null) {
     console.log(`  ${key}: ${value}`);
     core.exportVariable(key, value);
   }
+
+  // Set global secret for the Service Account access token
+  // Use in place of 'gcloud auth print-identity-token'
+  // usage: curl -H 'Bearer: $ACCESS_TOKEN' https://
+  core.setSecret("ACCESS_TOKEN")
+  core.exportVariable('ACCESS_TOKEN', accessToken)
 
   // Show exported secrets, for logging purposes.
   // TODO: We might want to fetch the secrets here and export them directly.

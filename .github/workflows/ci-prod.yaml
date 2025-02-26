@@ -97,6 +97,7 @@ jobs:
         with:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
+        id: auth
         with:
           project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
@@ -111,7 +112,8 @@ jobs:
             const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js')
             const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
             const setup = JSON.parse(process.env.CI_SETUP);
-            return await setupVars({projectId, core, setup})
+            const accessToken = '${{ steps.auth.outputs.access_token }}'
+            return await setupVars({projectId, core, setup, accessToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

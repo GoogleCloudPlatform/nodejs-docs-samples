@@ -193,6 +193,7 @@
     "storage-control",
     "texttospeech",
     "tpu",
+    "vision",
     "workflows/invoke-private-endpoint"
   ]
 }

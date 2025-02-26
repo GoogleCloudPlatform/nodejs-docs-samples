@@ -46,6 +46,7 @@ function cleanup {
 trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
+gcloud auth list
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 

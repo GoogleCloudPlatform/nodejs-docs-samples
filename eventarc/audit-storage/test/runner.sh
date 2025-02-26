@@ -39,6 +39,17 @@ function cleanup {
 }
 trap cleanup EXIT
 
+# temp debugging
+echo '#### CI DEBUG ####' 
+echo "GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}"
+echo 'gcloud auth print-access-token'
+gcloud auth print-access-token | head -c 42
+echo 'gcloud auth print-access-token w/account'
+gcloud auth print-access-token kokoro-system-test@long-door-651.iam.gserviceaccount.com | head -c 42
+echo 'gcloud auth print-identity-token w/account'
+gcloud auth print-identity-token kokoro-system-test@long-door-651.iam.gserviceaccount.com | head -c 42
+echo '#### end CI DEBUG ####' 
+
 # TODO: Perform authentication inside the test.
 export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)

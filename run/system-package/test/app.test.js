@@ -14,8 +14,12 @@
 
 'use strict';
 
+const {execSync} = require('child_process');
 const path = require('path');
 const supertest = require('supertest');
+
+// Manually install system package in testing environment
+execSync('sudo apt install graphviz -y');
 
 describe('Unit Tests', () => {
   const app = require(path.join(__dirname, '..', 'app'));

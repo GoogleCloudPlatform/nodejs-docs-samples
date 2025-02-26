@@ -6,9 +6,10 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
-    "system-test": "echo 'SKIPPING E2E TEST: SEE b/358734748'",
-    "FIXME-system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
+    "test": "npm -- run all-test",
+    "all-test": "npm run unit-test && npm run system-test",
+    "unit-test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
+    "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
     "node": ">=18.0.0"

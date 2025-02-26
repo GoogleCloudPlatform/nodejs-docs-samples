@@ -19,6 +19,7 @@ export default function setupVars({projectId, core, setup}, runId = null) {
   const vars = {
     PROJECT_ID: projectId,
     RUN_ID: runId || uniqueId(),
+    SERVICE_ACCOUNT: process.env.GOOGLE_SERVICE_ACCOUNT,
     ...(setup.env || {}),
   };
 

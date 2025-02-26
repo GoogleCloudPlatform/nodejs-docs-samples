@@ -85,6 +85,7 @@ jobs:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     env:
       GOOGLE_SAMPLES_PROJECT: long-door-651
+      GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup
@@ -99,8 +100,9 @@ jobs:
         with:
           project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          service_account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s # 10 minutes
+          token_format: 'access_token'
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars

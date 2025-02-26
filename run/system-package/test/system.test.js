@@ -29,7 +29,7 @@ const request = (method, route, base_url, id_token) => {
 };
 
 // Manually install system package in testing environment
-execSync('apt update && apt install graphviz -y && which dot')
+execSync('sudo apt install graphviz -y && which dot')
 
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;

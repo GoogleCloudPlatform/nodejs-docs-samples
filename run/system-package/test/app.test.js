@@ -19,7 +19,7 @@ const path = require('path');
 const supertest = require('supertest');
 
 // Manually install system package in testing environment
-execSync('apt update && apt install graphviz -y')
+execSync('sudo apt install graphviz -y')
 
 describe('Unit Tests', () => {
   const app = require(path.join(__dirname, '..', 'app'));

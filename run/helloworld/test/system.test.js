@@ -41,7 +41,7 @@ const getTokenAud = token => {
 }
 
 const getServiceAud = () => {
-  let aud = execSync(`gcloud run services describe --region ${REGION}${SERVICE_NAME} ` +
+  let aud = execSync(`gcloud run services describe --region us-central1 ${SERVICE_NAME} ` +
       `--format "value(metadata.annotations.'run.googleapis.com/custom-audiences')"`);
   aud.replace(']', '').replace('[', '');
   return aud;

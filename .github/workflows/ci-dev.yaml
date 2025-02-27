@@ -104,7 +104,7 @@ jobs:
             const setup = JSON.parse(process.env.CI_SETUP);
             const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
             const idToken = '${{ steps.auth.outputs.id_token }}';
-            return await setupVars({projectId, core, setup, serviceAccount, accessToken})
+            return await setupVars({projectId, core, setup, serviceAccount, idToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

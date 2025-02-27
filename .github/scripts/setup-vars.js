@@ -55,7 +55,6 @@ export default function setupVars({projectId, core, setup, serviceAccount, idTok
   core.setSecret(idToken)
   // For logging, show the source of the ID_TOKEN
   console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
-  console.log(`DEBUG: ID_TOKEN looks like ${idToken.substr(0,10)}... length ${idToken.length}`);
 
   // Return env and secrets to use for further steps.
   return {

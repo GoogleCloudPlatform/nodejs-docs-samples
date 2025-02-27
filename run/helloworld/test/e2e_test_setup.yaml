@@ -39,3 +39,9 @@ substitutions:
   _REGION: us-central1
   _PLATFORM: managed
   _NAME: Cloud
+  _SERVICE_ACCOUNT: ${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com
+
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
+options:
+    logging: CLOUD_LOGGING_ONLY
+    dynamicSubstitutions: true

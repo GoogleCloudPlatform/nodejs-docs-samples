@@ -14,43 +14,44 @@
 
 'use strict';
 
-const {BigQuery} = require('@google-cloud/bigquery');
-
-// [START bigquery_view_dataset_access_policy]
 /**
  * View access policies for a BigQuery dataset
- *
- * @param {object} [overrideValues] Optional parameters to override defaults
- * @param {string} [overrideValues.datasetId] Dataset ID to view access policies
+ * @param {string} datasetId - Dataset ID to view access policies for
+ * @returns {Array} List of access entries
  */
-async function viewDatasetAccessPolicy(overrideValues = {}) {
-  // Instantiate BigQuery client
+function viewDatasetAccessPolicy(datasetId) {
+  // [START bigquery_view_dataset_access_policy]
+  // Import the Google Cloud client library.
+  const {BigQuery} = require('@google-cloud/bigquery');
+
+  // Instantiate a client.
   const bigquery = new BigQuery();
 
+  // TODO (developer): Update and un-comment below lines
   // Dataset from which to get the access policy
-  const datasetId = overrideValues.datasetId || 'my_new_dataset';
+  // datasetId = "my_dataset";
 
-  try {
-    // Prepares a reference to the dataset
-    const dataset = bigquery.dataset(datasetId);
-    const [metadata] = await dataset.getMetadata();
+  // Get a reference to the dataset.
+  const dataset = bigquery.dataset(datasetId);
 
-    // Shows the Access policy as a list of access entries
-    console.log('Access entries:', metadata.access);
+  return dataset.getMetadata().then(([metadata]) => {
+    const accessEntries = metadata.access || [];
 
-    // Get properties for an AccessEntry
-    if (metadata.access && metadata.access.length > 0) {
-      console.log(`Details for Access entry 0 in dataset '${datasetId}':`);
-      console.log(`Role: ${metadata.access[0].role || 'N/A'}`);
-      console.log(`SpecialGroup: ${metadata.access[0].specialGroup || 'N/A'}`);
-      console.log(`UserByEmail: ${metadata.access[0].userByEmail || 'N/A'}`);
+    // Show the list of AccessEntry objects.
+    // More details about the AccessEntry object in the BigQuery documentation.
+    console.log(
+      `${accessEntries.length} Access entries in dataset '${datasetId}':`
+    );
+    for (const accessEntry of accessEntries) {
+      console.log(`Role: ${accessEntry.role || 'null'}`);
+      console.log(`Special group: ${accessEntry.specialGroup || 'null'}`);
+      console.log(`User by Email: ${accessEntry.userByEmail || 'null'}`);
     }
-  } catch (error) {
-    console.error(`Error viewing dataset access policy: ${error.message}`);
-    throw error;
-  }
+
+    return accessEntries;
+  });
+  // [END bigquery_view_dataset_access_policy]
 }
-// [END bigquery_view_dataset_access_policy]
 
 module.exports = {
   viewDatasetAccessPolicy,

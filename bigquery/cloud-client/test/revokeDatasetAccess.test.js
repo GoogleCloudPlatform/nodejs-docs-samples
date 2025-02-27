@@ -1,10 +1,10 @@
-// Copyright 2024 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,123 +12,80 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-const {assert} = require('chai');
-const sinon = require('sinon');
-const {BigQuery} = require('@google-cloud/bigquery');
+const {describe, it, before, after} = require('mocha');
+const assert = require('assert');
+const {grantAccessToDataset} = require('../grantAccessToDataset');
 const {revokeDatasetAccess} = require('../revokeDatasetAccess');
+const {
+  getDataset,
+  getEntityId,
+  setupBeforeAll,
+  teardownAfterAll,
+} = require('./config');
 
 describe('revokeDatasetAccess', () => {
-  const datasetId = 'test_dataset';
-  const entityId = 'user@example.com';
-  let sandbox;
-  let mockBigQuery;
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-
-    // Mock the BigQuery constructor
-    mockBigQuery = sandbox.stub(BigQuery.prototype);
+  // Setup resources before all tests
+  before(async () => {
+    await setupBeforeAll();
   });
 
-  afterEach(() => {
-    sandbox.restore();
+  // Clean up resources after all tests
+  after(async () => {
+    await teardownAfterAll();
   });
 
-  it('should successfully revoke access from a dataset', async () => {
-    const initialAccess = [
-      {
-        role: 'READER',
-        userByEmail: entityId,
-      },
-    ];
+  it('should revoke access to a dataset', async () => {
+    // Get test resources
+    const dataset = await getDataset();
+    const entityId = getEntityId();
 
-    const dataset = {
-      id: datasetId,
-      metadata: {
-        access: initialAccess,
-      },
-      setMetadata: sandbox.stub().resolves([
-        {
-          metadata: {
-            access: [],
-          },
-        },
-      ]),
-    };
+    // Directly use the dataset ID
+    const datasetId = dataset.id;
+    console.log(`Testing with dataset: ${datasetId} and entity: ${entityId}`);
 
-    // Mock the dataset method to return our mock dataset
-    mockBigQuery.dataset = sandbox.stub().returns({
-      get: sandbox.stub().resolves([dataset]),
-    });
-
-    // Execute revoke access
-    const updatedAccess = await revokeDatasetAccess({
+    // First grant access to the dataset
+    const datasetAccessEntries = await grantAccessToDataset(
       datasetId,
       entityId,
+      'READER'
+    );
+
+    // Create a set of all entity IDs and email addresses to check
+    const datasetEntityIds = new Set();
+    datasetAccessEntries.forEach(entry => {
+      if (entry.entity_id) datasetEntityIds.add(entry.entity_id);
+      if (entry.userByEmail) datasetEntityIds.add(entry.userByEmail);
+      if (entry.groupByEmail) datasetEntityIds.add(entry.groupByEmail);
     });
 
-    // Verify the access was revoked
-    assert.isArray(updatedAccess);
-    assert.isEmpty(updatedAccess);
-  });
+    // Check if our entity ID is in the set
+    const hasAccess = datasetEntityIds.has(entityId);
+    console.log(`Entity ${entityId} has access after granting: ${hasAccess}`);
+    assert.strictEqual(
+      hasAccess,
+      true,
+      'Entity should have access after granting'
+    );
 
-  it('should handle precondition failed error', async () => {
-    const preconditionError = new Error('Precondition Failed');
-    preconditionError.code = 412;
+    // Now revoke access
+    const newAccessEntries = await revokeDatasetAccess(datasetId, entityId);
 
-    const dataset = {
-      id: datasetId,
-      metadata: {
-        access: [],
-      },
-      setMetadata: sandbox.stub().rejects(preconditionError),
-    };
-
-    // Mock the dataset method to return our mock dataset
-    mockBigQuery.dataset = sandbox.stub().returns({
-      get: sandbox.stub().resolves([dataset]),
+    // Check that the entity no longer has access
+    const updatedEntityIds = new Set();
+    newAccessEntries.forEach(entry => {
+      if (entry.entity_id) updatedEntityIds.add(entry.entity_id);
+      if (entry.userByEmail) updatedEntityIds.add(entry.userByEmail);
+      if (entry.groupByEmail) updatedEntityIds.add(entry.groupByEmail);
     });
 
-    try {
-      await revokeDatasetAccess({
-        datasetId,
-        entityId,
-      });
-      assert.fail('Should have thrown an error');
-    } catch (error) {
-      assert.equal(error.code, 412);
-      assert.equal(error.message, 'Precondition Failed');
-    }
-  });
-
-  it('should handle missing entity gracefully', async () => {
-    const dataset = {
-      id: datasetId,
-      metadata: {
-        access: [],
-      },
-      setMetadata: sandbox.stub().resolves([
-        {
-          metadata: {
-            access: [],
-          },
-        },
-      ]),
-    };
-
-    // Mock the dataset method to return our mock dataset
-    mockBigQuery.dataset = sandbox.stub().returns({
-      get: sandbox.stub().resolves([dataset]),
-    });
-
-    const updatedAccess = await revokeDatasetAccess({
-      datasetId,
-      entityId,
-    });
-
-    assert.isArray(updatedAccess);
-    assert.isEmpty(updatedAccess);
+    const stillHasAccess = updatedEntityIds.has(entityId);
+    console.log(
+      `Entity ${entityId} has access after revoking: ${stillHasAccess}`
+    );
+    assert.strictEqual(
+      stillHasAccess,
+      false,
+      'Entity should not have access after revoking'
+    );
   });
 });

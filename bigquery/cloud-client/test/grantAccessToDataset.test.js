@@ -14,125 +14,57 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const sinon = require('sinon');
-const {BigQuery} = require('@google-cloud/bigquery');
+const {expect} = require('chai');
+const {
+  getDataset,
+  getEntityId,
+  setupBeforeAll,
+  teardownAfterAll,
+} = require('./config');
 const {grantAccessToDataset} = require('../grantAccessToDataset');
 
 describe('grantAccessToDataset', () => {
-  const datasetId = 'test_dataset';
-  const entityId = 'test-group@example.com';
-  const role = 'READER';
-
-  let datasetStub;
-  let getMetadataStub;
-  let setMetadataStub;
-
-  beforeEach(() => {
-    // Initial empty metadata
-    const initialMetadata = {
-      access: [],
-    };
-
-    // Updated metadata with new access
-    const updatedMetadata = {
-      access: [
-        {
-          role: role,
-          groupByEmail: entityId,
-        },
-      ],
-    };
-
-    // Create stubs for dataset methods
-    getMetadataStub = sinon.stub().resolves([initialMetadata]);
-    setMetadataStub = sinon.stub().resolves([updatedMetadata]);
-
-    // Create dataset stub
-    datasetStub = {
-      getMetadata: getMetadataStub,
-      setMetadata: setMetadataStub,
-    };
-
-    // Replace BigQuery constructor
-    sinon.stub(BigQuery.prototype, 'dataset').callsFake(() => datasetStub);
+  // Set up fixtures before all tests (similar to pytest's module scope)
+  before(async () => {
+    await setupBeforeAll();
   });
 
-  afterEach(() => {
-    sinon.restore();
+  // Clean up after all tests
+  after(async () => {
+    await teardownAfterAll();
   });
 
-  it('should grant access to a dataset', async () => {
-    const result = await grantAccessToDataset({
-      datasetId,
+  it('should add entity to access entries', async () => {
+    const dataset = await getDataset();
+    const entityId = getEntityId();
+
+    console.log({dataset});
+    console.log({entityId});
+
+    // Act: Grant access to the dataset
+    const accessEntries = await grantAccessToDataset(
+      dataset.id,
       entityId,
-      role,
-    });
-
-    // Verify getMetadata was called
-    assert.strictEqual(
-      getMetadataStub.callCount,
-      1,
-      'getMetadata should be called once'
+      'READER'
     );
 
-    // Verify setMetadata was called with correct parameters
-    const setMetadataCall = setMetadataStub.getCall(0);
-    assert.deepStrictEqual(
-      setMetadataCall.args[0].access,
-      [
-        {
-          role: role,
-          groupByEmail: entityId,
-        },
-      ],
-      'setMetadata should be called with correct access entries'
-    );
+    // Assert: Check if entity was added to access entries
+    const updatedEntityIds = accessEntries
+      .filter(entry => entry !== null)
+      .map(entry => {
+        // Handle different entity types
+        if (entry.groupByEmail) {
+          return entry.groupByEmail;
+        } else if (entry.userByEmail) {
+          return entry.userByEmail;
+        } else if (entry.specialGroup) {
+          return entry.specialGroup;
+        }
+        return null;
+      })
+      .filter(id => id !== null);
 
-    // Verify the result contains the expected access entry
-    assert.isArray(result, 'Result should be an array');
-    assert.deepStrictEqual(
-      result[0],
-      {
-        role: role,
-        groupByEmail: entityId,
-      },
-      'Result should contain the new access entry'
-    );
-  });
-
-  it('should handle concurrent modification errors', async () => {
-    // Simulate a 412 Precondition Failed error
-    const error = new Error('Precondition Failed');
-    error.code = 412;
-    setMetadataStub.rejects(error);
-
-    try {
-      await grantAccessToDataset({
-        datasetId,
-        entityId,
-        role,
-      });
-      assert.fail('Should have thrown an error');
-    } catch (err) {
-      assert.strictEqual(err.code, 412, 'Should throw 412 error');
-    }
-  });
-
-  it('should propagate other errors', async () => {
-    const errorMessage = 'Unknown error';
-    const error = new Error(errorMessage);
-    setMetadataStub.rejects(error);
-
-    try {
-      await grantAccessToDataset({
-        datasetId,
-        entityId,
-        role,
-      });
-      assert.fail('Should have thrown an error');
-    } catch (err) {
-      assert.strictEqual(err.message, errorMessage);
-    }
+    // Check if our entity ID is in the updated access entries (similar to Python assertion)
+    expect(updatedEntityIds).to.include(entityId);
   });
 });

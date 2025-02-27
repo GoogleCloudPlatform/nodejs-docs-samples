@@ -14,61 +14,99 @@
 
 'use strict';
 
-const {BigQuery} = require('@google-cloud/bigquery');
-
 /**
  * Grants access to a BigQuery dataset for a specified entity
  *
- * @param {object} options The configuration object
- * @param {string} options.datasetId ID of the dataset to grant access to (e.g. "my_project_id.my_dataset")
- * @param {string} options.entityId ID of the user or group to grant access to (e.g. "user-or-group-to-add@example.com")
- * @param {string} options.role One of the basic roles for datasets (e.g. "READER")
+ * @param {string} datasetId ID of the dataset to grant access to
+ * @param {string} entityId ID of the entity to grant access to
+ * @param {string} role Role to grant
  * @returns {Promise<Array>} Array of access entries
  */
-// [START bigquery_grant_access_to_dataset]
-async function grantAccessToDataset(options) {
-  // Create a BigQuery client
-  const bigquery = new BigQuery();
+async function grantAccessToDataset(datasetId, entityId, role) {
+  // [START bigquery_grant_access_to_dataset]
+  const {BigQuery} = require('@google-cloud/bigquery');
 
-  const {datasetId, entityId, role} = options;
+  // TODO(developer): Update and un-comment below lines
+
+  // ID of the dataset to revoke access to.
+  // datasetId = "my_project_id.my_dataset";
+
+  // ID of the user or group from whom you are adding access.
+  // Alternatively, the JSON REST API representation of the entity,
+  // such as a view's table reference.
+  // entityId = "user-or-group-to-add@example.com";
+
+  // One of the "Basic roles for datasets" described here:
+  // https://cloud.google.com/bigquery/docs/access-control-basic-roles#dataset-basic-roles
+  // role = "READER";
+
+  // Type of entity you are granting access to.
+  // Find allowed allowed entity type names here:
+  // https://cloud.google.com/python/docs/reference/bigquery/latest/enums#class-googlecloudbigqueryenumsentitytypesvalue
+  // In this case, we're using the equivalent of GROUP_BY_EMAIL
+  const entityType = 'groupByEmail';
+
+  // Instantiate a client.
+  const client = new BigQuery();
 
   try {
-    // Get a reference to the dataset
-    const dataset = bigquery.dataset(datasetId);
-    const [metadata] = await dataset.getMetadata();
+    // Get a reference to the dataset.
+    const [dataset] = await client.dataset(datasetId).get();
 
-    // The access entries list is immutable. Create a copy for modifications
-    const entries = [...(metadata.access || [])];
+    // The 'access entries' list is immutable. Create a copy for modifications.
+    const entries = Array.isArray(dataset.metadata.access)
+      ? [...dataset.metadata.access]
+      : [];
 
-    // Add the new access entry
+    // Append an AccessEntry to grant the role to a dataset.
+    // Find more details about the AccessEntry object in the BigQuery documentation
     entries.push({
       role: role,
-      groupByEmail: entityId, // For group access. Use userByEmail for user access
+      [entityType]: entityId,
     });
 
-    // Update the dataset's access entries
-    const [updatedMetadata] = await dataset.setMetadata({
-      ...metadata,
+    // Assign the list of AccessEntries back to the dataset.
+    const metadata = {
       access: entries,
-    });
+    };
+
+    // Update will only succeed if the dataset
+    // has not been modified externally since retrieval.
+    //
+    // See the BigQuery client library documentation for more details on metadata updates
+
+    // Update just the 'access entries' property of the dataset.
+    const [updatedDataset] = await client
+      .dataset(datasetId)
+      .setMetadata(metadata);
+
+    // Show a success message.
+    const fullDatasetId =
+      updatedDataset &&
+      updatedDataset.metadata &&
+      updatedDataset.metadata.datasetReference
+        ? `${updatedDataset.metadata.datasetReference.projectId}.${updatedDataset.metadata.datasetReference.datasetId}`
+        : datasetId;
 
     console.log(
-      `Role '${role}' granted for entity '${entityId}' in dataset '${datasetId}'.`
+      `Role '${role}' granted for entity '${entityId}'` +
+        ` in dataset '${fullDatasetId}'.`
     );
 
-    return updatedMetadata.access;
+    return updatedDataset.access;
   } catch (error) {
     if (error.code === 412) {
-      // 412 Precondition Failed - Dataset was modified between get and update
+      // A read-modify-write error (PreconditionFailed equivalent)
       console.error(
         `Dataset '${datasetId}' was modified remotely before this update. ` +
           'Fetch the latest version and retry.'
       );
+    } else {
+      throw error;
     }
-    throw error;
   }
+  // [END bigquery_grant_access_to_dataset]
 }
-// [END bigquery_grant_access_to_dataset]
 
 module.exports = {
   grantAccessToDataset,

@@ -36,12 +36,6 @@ export default function setupVars({projectId, core, setup, serviceAccount, acces
     core.exportVariable(key, value);
   }
 
-  // Set global secret for the Service Account access token
-  // Use in place of 'gcloud auth print-identity-token'
-  // usage: curl -H 'Bearer: $ACCESS_TOKEN' https://
-  core.setSecret("ACCESS_TOKEN")
-  core.exportVariable('ACCESS_TOKEN', accessToken)
-
   // Show exported secrets, for logging purposes.
   // TODO: We might want to fetch the secrets here and export them directly.
   //       https://cloud.google.com/secret-manager/docs/create-secret-quickstart#secretmanager-quickstart-nodejs
@@ -51,6 +45,14 @@ export default function setupVars({projectId, core, setup, serviceAccount, acces
     // NOT the secret value, so it's ok to show.
     console.log(`  ${key}: ${setup.secrets[key]}`);
   }
+
+  // Set global secret for the Service Account access token
+  // Use in place of 'gcloud auth print-identity-token'
+  // usage: curl -H 'Bearer: $ACCESS_TOKEN' https://
+  core.setSecret("ACCESS_TOKEN")
+  core.exportVariable('ACCESS_TOKEN', accessToken)
+  // For logging, show the source of the ACCESS_TOKEN
+  console.log(`  ACCESS_TOKEN: steps.auth.outputs.access_token (from GitHub Action)`)
 
   // Return env and secrets to use for further steps.
   return {

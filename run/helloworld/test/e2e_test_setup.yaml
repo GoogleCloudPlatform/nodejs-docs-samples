@@ -29,7 +29,7 @@ steps:
       --platform ${_PLATFORM} \
       --set-env-vars NAME=${_NAME}"
 
-    ./test/retry.sh "gcloud run update  ${_SERVICE} \
+    ./test/retry.sh "gcloud run services update ${_SERVICE} \
       --region ${_REGION} \
       --add-custom-audiences=https://action.test/"
 

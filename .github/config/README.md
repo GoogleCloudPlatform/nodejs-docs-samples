@@ -60,6 +60,9 @@ Secrets do not support this to avoid accidentally exposing secrets.
 
 This can be useful for fully qualified resource names like `projects/$PROJECT_ID/resources/my-resource-id`, or to create unique resource names like `my-resource-$RUN_ID`.
 
+> **Tip**: Use `$RUN_ID` to have unique resource names to allow for concurrent test runs.
+> See [Concurrent runs](https://github.com/GoogleCloudPlatform/cloud-samples-tools/blob/main/docs/testing-guidelines.md#concurrent-runs).
+
 ### Secrets
 
 Secrets can be defined as a dictionary where the key is the environment variable to which it’s exported to, and the value is the

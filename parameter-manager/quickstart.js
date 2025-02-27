@@ -38,9 +38,9 @@ async function main(
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const projectId = 'YOUR_PROJECT_ID';
-  // const parameterId = 'YOUR_PARAMETER_ID';
-  // const parameterVersionId = 'YOUR_PARAMETER_VERSION_ID';
+  // const projectId = 'my-project';
+  // const parameterId = 'my-parameter';
+  // const parameterVersionId = 'v1';
 
   // Imports the Google Cloud Parameter Manager library
   const {

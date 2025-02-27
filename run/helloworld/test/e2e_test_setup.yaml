@@ -27,7 +27,8 @@ steps:
       --no-allow-unauthenticated \
       --region ${_REGION} \
       --platform ${_PLATFORM} \
-      --set-env-vars NAME=${_NAME}"
+      --set-env-vars NAME=${_NAME} \
+      --service-account=${_SERVICE_ACCOUNT}"
 
     ./test/retry.sh "gcloud run services update ${_SERVICE} \
       --region ${_REGION} \

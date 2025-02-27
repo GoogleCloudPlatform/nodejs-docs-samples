@@ -92,7 +92,7 @@ jobs:
           service_account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s # 10 minutes
           token_format: 'id_token'
-          id_token_audience: 'https://testing.run.app' # service must have this custom audience
+          id_token_audience: 'https://testing.run.app/' # service must have this custom audience
           id_token_include_email: true
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7

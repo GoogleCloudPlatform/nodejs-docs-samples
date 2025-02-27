@@ -14,12 +14,12 @@
  limitations under the License.
  */
 
-export default function setupVars({projectId, core, setup, accessToken}, runId = null) {
+export default function setupVars({projectId, core, setup, serviceAccount, accessToken}, runId = null) {
   // Define automatic variables plus custom variables.
   const vars = {
     PROJECT_ID: projectId,
     RUN_ID: runId || uniqueId(),
-    SERVICE_ACCOUNT: process.env.GOOGLE_SERVICE_ACCOUNT,
+    SERVICE_ACCOUNT: serviceAccount,
     ...(setup.env || {}),
   };
 

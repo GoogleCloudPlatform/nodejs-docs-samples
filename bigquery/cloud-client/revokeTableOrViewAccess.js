@@ -75,7 +75,7 @@ async function revokeTableOrViewAccess({
         binding => binding.role !== roleToRevoke
       );
     } else {
-      // Keep the current binding as is
+      // Keep the current binding as it is
       newBindings = policy.bindings;
     }
 

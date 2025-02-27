@@ -49,8 +49,6 @@ export default function setupVars({projectId, core, setup, serviceAccount, idTok
   // Set global secret for the Service Account identity token
   // Use in place of 'gcloud auth print-identity-token' or auth.getIdTokenClient
   // usage: curl -H 'Bearer: $ID_TOKEN' https://
-
-  idToken = (idToken || '').toString() // debug
   core.exportVariable('ID_TOKEN', idToken)
   core.setSecret(idToken)
   // For logging, show the source of the ID_TOKEN

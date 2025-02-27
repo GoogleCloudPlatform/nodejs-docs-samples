@@ -1,6 +1,0 @@
-{
-    "env": {
-        "SERVICE_NAME": "eventarc-pubsub-$RUN_ID",
-        "CONTAINER_IMAGE": "gcr.io/$PROJECT_ID/eventarc-pubsub:${RUN_ID}"
-    }
-}

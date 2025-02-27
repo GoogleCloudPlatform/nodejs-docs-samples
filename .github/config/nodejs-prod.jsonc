@@ -83,6 +83,7 @@
     "dlp", // [ERR_REQUIRE_ESM]: require() of ES Module
     "document-ai", // [ERR_REQUIRE_ESM]: require() of ES Module
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
+    "eventarc/pubsub", // (untested) Environment Variable 'SERVICE_NAME' not found
     "functions/billing", // Error: Request failed with status code 500
     "functions/http/uploadFile", // npm error Missing script: "test"
     "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage

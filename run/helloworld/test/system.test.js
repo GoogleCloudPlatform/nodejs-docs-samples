@@ -23,7 +23,7 @@ const get = (route, base_url) => {
 
   return request(new URL(route, base_url.trim()), {
     headers: {
-      Authorization: `${ID_TOKEN.trim()}`,
+      Authorization: `Bearer ${ID_TOKEN}`,
     },
     throwHttpErrors: false,
   });

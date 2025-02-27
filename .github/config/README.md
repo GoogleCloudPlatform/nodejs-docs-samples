@@ -161,4 +161,6 @@ in our testing guidelines.
 
 If you have a valid reason to use a different timeout, please provide a justification as a `_comment`.
 
+There is a hard limit of 120 minutes that cannot be overriden.
+
 > **Note**: In the future, we might implement automatic checks to validate that tests run fast to safely reduce the default timeout.

@@ -49,8 +49,8 @@ export default function setupVars({projectId, core, setup, serviceAccount, acces
   // Set global secret for the Service Account access token
   // Use in place of 'gcloud auth print-access-token' or auth.getIdTokenClient
   // usage: curl -H 'Bearer: $ACCESS_TOKEN' https://
-  core.setSecret("ACCESS_TOKEN")
   core.exportVariable('ACCESS_TOKEN', accessToken)
+  core.setSecret('ACCESS_TOKEN')
   // For logging, show the source of the ACCESS_TOKEN
   console.log(`  ACCESS_TOKEN: steps.auth.outputs.access_token (from GitHub Action)`)
 

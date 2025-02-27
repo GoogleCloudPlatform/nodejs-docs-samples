@@ -29,7 +29,7 @@ const get = (route, base_url) => {
   });
 };
 
-let BASE_URL;
+let BASE_URL, ID_TOKEN;
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {
@@ -49,7 +49,7 @@ describe('End-to-End Tests', () => {
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
-  const {ID_TOKEN} = process.env;
+  ID_TOKEN = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }

@@ -15,6 +15,8 @@
 import assert from 'assert';
 import {execSync} from 'child_process';
 import request from 'got';
+import {GoogleAuth} from 'google-auth-library';
+const auth = new GoogleAuth();
 
 const get = (route, base_url) => {
   if (!ID_TOKEN) {
@@ -79,8 +81,11 @@ describe('End-to-End Tests', () => {
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
     // Retrieve ID token for testing
-    //const client = await auth.getIdTokenClient(BASE_URL);
-    //const clientHeaders = await client.getRequestHeaders();
+
+    const client = await auth.getIdTokenClient(BASE_URL);
+    const clientHeaders = await client.getRequestHeaders();
+    ID_TOKEN = clientHeaders['Authorization'].trim();
+
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 

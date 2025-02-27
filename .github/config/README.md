@@ -156,7 +156,7 @@ Tests should run fast, and the default timeout should be more than enough for mo
 If your tests are taking longer, consider splitting them into subpackages.
 
 For more information, see
-[Keep tests fast](TODO)
+[Keep tests fast](https://github.com/GoogleCloudPlatform/cloud-samples-tools/blob/main/docs/testing-guidelines.md#keep-tests-fast)
 in our testing guidelines.
 
 If you have a valid reason to use a different timeout, please provide a justification as a `_comment`.

@@ -18,10 +18,10 @@
   "package-file": [ "package.json" ],
   "ci-setup-filename": "ci-setup.json",
   "ci-setup-defaults": {
-    "node-version": 20,
-    "timeout-minutes": 10,
     "env": { },
-    "secrets": { }
+    "secrets": { },
+    "node-version": 20,
+    "timeout-minutes": 10
   },
   "ignore": [
     ".github/config/", // prevent changes to exclusions from running all tests
@@ -42,7 +42,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
-    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",

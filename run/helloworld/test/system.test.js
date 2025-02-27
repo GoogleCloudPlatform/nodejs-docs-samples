@@ -16,38 +16,14 @@ import assert from 'assert';
 import {execSync} from 'child_process';
 import request from 'got';
 
-let BASE_URL, SERVICE_NAME, ID_TOKEN;
-
-const get = (route, base_url) => {
-  if (!ID_TOKEN) {
-    throw Error('"ID_TOKEN" environment variable is required.');
-  }
-
+const get = (route, base_url, id_token) => {
   return request(new URL(route, base_url.trim()), {
     headers: {
-      Authorization: `Bearer ${ID_TOKEN}`,
+      Authorization: `Bearer ${id_token}`,
     },
     throwHttpErrors: false,
   });
 };
-
-//Debugging: verify parts of token
-const getTokenAud = token => {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    //Only return AUD
-    return JSON.parse(jsonPayload).aud;
-}
-
-const getServiceAud = () => {
-  let aud = execSync(`gcloud run services describe --region us-central1 ${SERVICE_NAME} ` +
-      `--format "value(metadata.annotations.'run.googleapis.com/custom-audiences')"`);
-  aud.replaceAll(']', '').replaceAll('[', '');
-  return aud;
-}
 
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
@@ -71,7 +47,7 @@ describe('End-to-End Tests', () => {
 
   // ID Token is made available via the test runner.
   // Otherwise, use auth.getIdTokenClient(BASE_URL);
-  let {ID_TOKEN} = process.env;
+  const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }
@@ -91,15 +67,6 @@ describe('End-to-End Tests', () => {
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
     console.log('Cloud Build completed.');
-
-    // Retrieve URL of Cloud Run service
-    const url = execSync(
-      `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
-    );
-
-    BASE_URL = url.toString('utf-8').trim();
-    if (!BASE_URL) throw Error('Cloud Run service URL not found');
   });
 
   after(() => {
@@ -113,16 +80,17 @@ describe('End-to-End Tests', () => {
     execSync(cleanUpCmd);
   });
 
-  //DEBUGGING
-  // Verify audiences match
-  it('Audiences match between token and service', async () => {
-    const tokenAud = getTokenAud(ID_TOKEN);
-    const serviceAud = getServiceAud();
-    assert.strictEqual(tokenAud, serviceAud, 'Audiences do not match');
-  })
-
   it('Service uses the NAME override', async () => {
-    const response = await get('/', BASE_URL);
+    // Retrieve URL of Cloud Run service
+    const url = execSync(
+      `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
+        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+    );
+
+    const BASE_URL = url.toString('utf-8').trim();
+    if (!BASE_URL) throw Error('Cloud Run service URL not found');
+
+    const response = await get('/', BASE_URL, ID_TOKEN);
     assert.strictEqual(
       response.statusCode,
       200,

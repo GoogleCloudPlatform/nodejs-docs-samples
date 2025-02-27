@@ -70,7 +70,7 @@ describe('End-to-End Tests', () => {
 
   // ID Token is made available via the test runner.
   // Otherwise, use auth.getIdTokenClient(BASE_URL);
-  ID_TOKEN = process.env.ID_TOKEN;
+  const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }

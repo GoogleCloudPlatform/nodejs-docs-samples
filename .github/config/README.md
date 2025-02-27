@@ -60,8 +60,24 @@ Secrets do not support this to avoid accidentally exposing secrets.
 
 This can be useful for fully qualified resource names like `projects/$PROJECT_ID/resources/my-resource-id`, or to create unique resource names like `my-resource-$RUN_ID`.
 
-> **Tip**: Use `$RUN_ID` to have unique resource names to allow for concurrent test runs.
-> See [Concurrent runs](https://github.com/GoogleCloudPlatform/cloud-samples-tools/blob/main/docs/testing-guidelines.md#concurrent-runs).
+## Unique resources
+
+If a test creates and destroys their own resources, make sure the resource names are different for each run.
+This can be done by appending a unique identifier to each resource ID. We can use the `$RUN_ID` environment variable.
+
+For example:
+
+```js
+{
+  "env": {
+    "DATABASE": "projects/$PROJECT_ID/databases/my-db-$RUN_ID"
+  }
+}
+```
+
+For more information, see
+[Concurrent runs](https://github.com/GoogleCloudPlatform/cloud-samples-tools/blob/main/docs/testing-guidelines.md#concurrent-runs)
+in our testing guidelines.
 
 ### Secrets
 

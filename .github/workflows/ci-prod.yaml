@@ -112,7 +112,7 @@ jobs:
             const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js')
             const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
             const setup = JSON.parse(process.env.CI_SETUP);
-            const serviceAccount = process.env.GOOGLE_SERVICE_ACCOUNT;
+            const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
             const accessToken = '${{ steps.auth.outputs.access_token }}'
             return await setupVars({projectId, core, setup, serviceAccount, accessToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2

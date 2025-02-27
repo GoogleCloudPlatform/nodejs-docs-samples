@@ -1,0 +1,5 @@
+{
+    "env": {
+        "SERVICE_NAME": "run-helloworld-$RUN_ID"
+    }
+}

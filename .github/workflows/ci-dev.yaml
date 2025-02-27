@@ -73,6 +73,7 @@ jobs:
         path: ${{ fromJson(github.event_name == 'pull_request' && needs.affected.outputs.nodejs-paths || '[]') }}
     env:
       GOOGLE_SAMPLES_PROJECT: long-door-651
+      GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup
@@ -84,20 +85,26 @@ jobs:
         with:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@6fc4af4b145ae7821d527454aa9bd537d1f2dc5f # v2
+        id: auth
         with:
           project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          service_account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s # 10 minutes
+          token_format: 'id_token'
+          id_token_audience: 'https://action.test/' # service must have this custom audience
+          id_token_include_email: true
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars
         with:
           script: |
-            const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js')
+            const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js');
             const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
             const setup = JSON.parse(process.env.CI_SETUP);
-            return await setupVars({projectId, core, setup})
+            const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
+            const idToken = '${{ steps.auth.outputs.id_token }}';
+            return await setupVars({projectId, core, setup, serviceAccount, idToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:

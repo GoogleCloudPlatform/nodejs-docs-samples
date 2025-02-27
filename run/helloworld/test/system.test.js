@@ -44,6 +44,7 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
+  let {SERVICE_ACCOUNT} = process.env;
   let {NAME} = process.env;
   if (!NAME) {
     NAME = 'Cloud';

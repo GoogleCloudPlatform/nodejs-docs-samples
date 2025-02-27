@@ -9,9 +9,8 @@ steps:
       ./test/retry.sh "gcloud container images describe gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}" \
         "gcloud container images delete gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} --quiet"
 
-      echo "skip cleanup for debugging"
-      #./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM}" \
-      #  "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM} --quiet"
+      ./test/retry.sh "gcloud run services describe ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM}" \
+        "gcloud run services delete ${_SERVICE} --region ${_REGION} --platform ${_PLATFORM} --quiet"
 
 substitutions:
   _SERVICE: logging-manual

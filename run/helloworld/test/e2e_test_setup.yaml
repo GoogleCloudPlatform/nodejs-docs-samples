@@ -28,11 +28,7 @@ steps:
       --region ${_REGION} \
       --platform ${_PLATFORM} \
       --set-env-vars NAME=${_NAME} \
-      --service-account=${_SERVICE_ACCOUNT}"
-
-    ./test/retry.sh "gcloud run services update ${_SERVICE} \
-      --region ${_REGION} \
-      --add-custom-audiences=https://action.test/"
+      --add-custom-audiences 'https://action.test/'"
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

@@ -155,6 +155,32 @@ For example:
 Tests should run fast, and the default timeout should be more than enough for most tests to run.
 If your tests are taking longer, consider splitting them into subpackages.
 
+For example:
+
+```sh
+my-product/
+├─ snippets/
+│  ├─ package.json
+│  ├─ fast-samples.js
+│  ├─ test/
+│  │  └─ fast-samples.test.js
+│  └─ slow-snippet/
+│     ├─ package.json
+│     ├─ slow-snippet.js
+│     └─ test/
+│        └─ slow-snippet.test.js
+├─ new-feature/
+│  ├─ package.json
+│  ├─ new-feature.js
+│  └─ test/
+│     └─ new-feature.test.js
+└─ e2e-sample/
+   ├─ package.json
+   ├─ slow-sample.js
+   └─ test/
+      └─ slow-sample.test.js
+```
+
 For more information, see
 [Keep tests fast](https://github.com/GoogleCloudPlatform/cloud-samples-tools/blob/main/docs/testing-guidelines.md#keep-tests-fast)
 in our testing guidelines.

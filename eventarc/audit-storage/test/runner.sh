@@ -20,6 +20,7 @@ requireEnv() {
   test "${!1}" || (echo "Environment Variable '$1' not found" && exit 1)
 }
 requireEnv SERVICE_NAME
+requireEnv ACCESS_TOKEN
 
 echo '---'
 test/deploy.sh
@@ -40,7 +41,8 @@ function cleanup {
 trap cleanup EXIT
 
 # TODO: Perform authentication inside the test.
-export ID_TOKEN=$(gcloud auth print-identity-token)
+export ID_TOKEN=$ACCESS_TOKEN # from default secrets
+echo $SERVICE_ACCOUNT # for validation TODO(glasnt) remove debugging
 export BASE_URL=$(test/url.sh)
 
 test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1

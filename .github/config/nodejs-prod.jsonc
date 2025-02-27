@@ -17,12 +17,15 @@
 {
   "package-file": [ "package.json" ],
   "ci-setup-filename": "ci-setup.json",
+
+  // If these change, please update the .github/config/README.md too!
   "ci-setup-defaults": {
     "env": { },
     "secrets": { },
     "node-version": 20,
     "timeout-minutes": 10
   },
+
   "ignore": [
     ".github/config/", // prevent changes to exclusions from running all tests
     ".eslintignore",

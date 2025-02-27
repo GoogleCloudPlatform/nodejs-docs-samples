@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: GoogleCloudPlatform/cloud-samples-tools
-          ref: v0.1.0
+          ref: v0.2.1
           path: cloud-samples-tools
       - name: Create `bin` directory for cloud-samples-tools binaries
         run: mkdir bin
@@ -48,17 +48,17 @@ jobs:
       - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: ${{ env.GO_VERSION }}
-      - name: Build Ariwete (from cloud-samples-tools)
+      - name: Build Custard (from cloud-samples-tools)
         run: go build -o ../bin -v ./...
-        working-directory: cloud-samples-tools/ariwete
+        working-directory: cloud-samples-tools/custard
       - name: Get diffs
         run: git --no-pager diff --name-only HEAD origin/main | tee diffs.txt
       - name: Find Node.js affected packages
         id: nodejs
         run: |
-          echo "paths=$(./cloud-samples-tools/bin/ariwete affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          echo "paths=$(./cloud-samples-tools/bin/custard affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./cloud-samples-tools/bin/ariwete setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
+          echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
     name: Node.js test

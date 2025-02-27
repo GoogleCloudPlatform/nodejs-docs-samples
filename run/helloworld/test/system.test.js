@@ -50,6 +50,10 @@ describe('End-to-End Tests', () => {
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
+  let {ACCESS_TOKEN} = process.env;
+  if (!ACCESS_TOKEN) {
+    throw Error('"ACCESS_TOKEN" env var not found.');
+  }
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
   before(async () => {
@@ -75,9 +79,9 @@ describe('End-to-End Tests', () => {
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
     // Retrieve ID token for testing
-    const client = await auth.getIdTokenClient(BASE_URL);
-    const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'].trim();
+    //const client = await auth.getIdTokenClient(BASE_URL);
+    //const clientHeaders = await client.getRequestHeaders();
+    ID_TOKEN = ACCESS_TOKEN
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 

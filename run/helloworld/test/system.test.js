@@ -43,7 +43,7 @@ const getTokenAud = token => {
 const getServiceAud = () => {
   let aud = execSync(`gcloud run services describe --region us-central1 ${SERVICE_NAME} ` +
       `--format "value(metadata.annotations.'run.googleapis.com/custom-audiences')"`);
-  aud.replace(']', '').replace('[', '');
+  aud.replaceAll(']', '').replaceAll('[', '');
   return aud;
 }
 
@@ -70,7 +70,7 @@ describe('End-to-End Tests', () => {
 
   // ID Token is made available via the test runner.
   // Otherwise, use auth.getIdTokenClient(BASE_URL);
-  const {ID_TOKEN} = process.env;
+  let {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }

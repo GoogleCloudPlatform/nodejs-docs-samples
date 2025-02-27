@@ -29,7 +29,7 @@ const get = (route, base_url) => {
   });
 };
 
-let BASE_URL, ID_TOKEN;
+let BASE_URL;
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {

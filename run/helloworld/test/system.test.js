@@ -31,6 +31,9 @@ const get = (route, base_url) => {
 
 //Debugging: verify parts of token
 const getTokenAud = token => {
+    if (typeof(token) != "string") {
+      throw Error (`Token is of type ${typeof(token)}`)
+    }
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
@@ -43,7 +46,7 @@ const getTokenAud = token => {
 const getServiceAud = () => {
   let aud = execSync(`gcloud run services describe --region ${REGION}${SERVICE_NAME} ` +
       `--format "value(metadata.annotations.'run.googleapis.com/custom-audiences')"`);
-  aud.replace(']','').replace('[','');
+  aud.replace(']', '').replace('[', '');
   return aud;
 }
 
@@ -114,7 +117,7 @@ describe('End-to-End Tests', () => {
 
   //DEBUGGING
   // Verify audiences match
-  it('Audiences match between token and service', async() => {
+  it('Audiences match between token and service', async () => {
     const tokenAud = getTokenAud(ID_TOKEN);
     const serviceAud = getServiceAud();
     assert.strictEqual(tokenAud, serviceAud, 'Audiences do not match');

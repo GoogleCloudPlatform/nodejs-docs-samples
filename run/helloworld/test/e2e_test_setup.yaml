@@ -27,8 +27,11 @@ steps:
       --no-allow-unauthenticated \
       --region ${_REGION} \
       --platform ${_PLATFORM} \
-      --set-env-vars NAME=${_NAME} \
-      --add-custom-audiences=https://testing.run.app/"
+      --set-env-vars NAME=${_NAME}"
+
+    ./test/retry.sh "gcloud run update  ${_SERVICE} \
+      --region ${_REGION} \
+      --add-custom-audiences=https://action.test/"
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

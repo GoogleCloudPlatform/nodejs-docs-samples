@@ -50,10 +50,12 @@ export default function setupVars({projectId, core, setup, serviceAccount, idTok
   // Use in place of 'gcloud auth print-identity-token' or auth.getIdTokenClient
   // usage: curl -H 'Bearer: $ID_TOKEN' https://
 
-  core.exportVariable('ID_TOKEN', (idToken || '').toString())
+  idToken = (idToken || '').toString() // debug
+  core.exportVariable('ID_TOKEN', idToken)
   core.setSecret(idToken)
   // For logging, show the source of the ID_TOKEN
-  console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`)
+  console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
+  console.log(`DEBUG: ID_TOKEN looks like ${idToken.substr(0,10)}... length ${idToken.length}`);
 
   // Return env and secrets to use for further steps.
   return {

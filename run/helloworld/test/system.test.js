@@ -51,9 +51,9 @@ describe('End-to-End Tests', () => {
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
-  let {ACCESS_TOKEN} = process.env;
-  if (!ACCESS_TOKEN) {
-    throw Error('"ACCESS_TOKEN" env var not found.');
+  let {ID_TOKEN} = process.env;
+  if (!ID_TOKEN) {
+    throw Error('"ID_TOKEN" env var not found.');
   }
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -83,7 +83,6 @@ describe('End-to-End Tests', () => {
     // Retrieve ID token for testing
     //const client = await auth.getIdTokenClient(BASE_URL);
     //const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = ACCESS_TOKEN
     if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 
@@ -93,7 +92,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
-    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd);
   });

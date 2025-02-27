@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-export default function setupVars({projectId, core, setup, serviceAccount, accessToken}, runId = null) {
+export default function setupVars({projectId, core, setup, serviceAccount, idToken}, runId = null) {
   // Define automatic variables plus custom variables.
   const vars = {
     PROJECT_ID: projectId,
@@ -49,10 +49,10 @@ export default function setupVars({projectId, core, setup, serviceAccount, acces
   // Set global secret for the Service Account access token
   // Use in place of 'gcloud auth print-access-token' or auth.getIdTokenClient
   // usage: curl -H 'Bearer: $ACCESS_TOKEN' https://
-  core.exportVariable('ACCESS_TOKEN', accessToken)
-  core.setSecret('ACCESS_TOKEN')
+  core.exportVariable('ID_TOKEN', idToken)
+  core.setSecret('ID_TOKEN')
   // For logging, show the source of the ACCESS_TOKEN
-  console.log(`  ACCESS_TOKEN: steps.auth.outputs.access_token (from GitHub Action)`)
+  console.log(`  ID_TOKEN: steps.auth.outputs.access_token (from GitHub Action)`)
 
   // Return env and secrets to use for further steps.
   return {

@@ -103,7 +103,9 @@ jobs:
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s # 10 minutes
-          token_format: 'access_token'
+          token_format: 'id_token'
+          id_token_audience: 'https://run.googleapis.com'
+          id_token_include_email: true
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars
@@ -113,7 +115,7 @@ jobs:
             const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
             const setup = JSON.parse(process.env.CI_SETUP);
             const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
-            const accessToken = '${{ steps.auth.outputs.access_token }}';
+            const idToken = '${{ steps.auth.outputs.id_token }}';
             return await setupVars({projectId, core, setup, serviceAccount, accessToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}

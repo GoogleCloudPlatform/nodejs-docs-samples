@@ -15,8 +15,6 @@
 import assert from 'assert';
 import {execSync} from 'child_process';
 import request from 'got';
-import {GoogleAuth} from 'google-auth-library';
-const auth = new GoogleAuth();
 
 const get = (route, base_url) => {
   if (!ID_TOKEN) {
@@ -30,6 +28,24 @@ const get = (route, base_url) => {
     throwHttpErrors: false,
   });
 };
+
+//Debugging: verify parts of token
+const getTokenAud = token => {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    //Only return AUD
+    return JSON.parse(jsonPayload).aud;
+}
+
+const getServiceAud = () => {
+  let aud = execSync(`gcloud run services describe --region ${REGION}${SERVICE_NAME} ` +
+      `--format "value(metadata.annotations.'run.googleapis.com/custom-audiences')"`);
+  aud.replace(']','').replace('[','');
+  return aud;
+}
 
 let BASE_URL, ID_TOKEN;
 describe('End-to-End Tests', () => {
@@ -51,10 +67,14 @@ describe('End-to-End Tests', () => {
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
+
+  // ID Token is made available via the test runner.
+  // Otherwise, use auth.getIdTokenClient(BASE_URL);
   ID_TOKEN = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }
+
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
   before(async () => {
@@ -79,14 +99,6 @@ describe('End-to-End Tests', () => {
 
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
-
-    // Retrieve ID token for testing
-
-    const client = await auth.getIdTokenClient(BASE_URL);
-    const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'].trim();
-
-    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 
   after(() => {
@@ -99,6 +111,14 @@ describe('End-to-End Tests', () => {
 
     execSync(cleanUpCmd);
   });
+
+  //DEBUGGING
+  // Verify audiences match
+  it('Audiences match between token and service', async() => {
+    const tokenAud = getTokenAud(ID_TOKEN);
+    const serviceAud = getServiceAud();
+    assert.strictEqual(tokenAud, serviceAud, 'Audiences do not match');
+  })
 
   it('Service uses the NAME override', async () => {
     const response = await get('/', BASE_URL);

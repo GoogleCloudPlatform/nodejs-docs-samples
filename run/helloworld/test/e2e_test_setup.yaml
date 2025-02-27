@@ -29,7 +29,7 @@ steps:
       --platform ${_PLATFORM} \
       --set-env-vars NAME=${_NAME} \
       --add-custom-audiences 'https://action.test/'"
-
+  # Audience matches ID Token audience
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
 

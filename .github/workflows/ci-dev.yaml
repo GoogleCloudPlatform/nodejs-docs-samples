@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: GoogleCloudPlatform/cloud-samples-tools
-          ref: v0.2.0
+          ref: v0.2.1
           path: cloud-samples-tools
       - name: Create `bin` directory for cloud-samples-tools binaries
         run: mkdir bin

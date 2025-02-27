@@ -32,7 +32,7 @@ const get = (route, base_url) => {
 //Debugging: verify parts of token
 const getTokenAud = token => {
     if (typeof(token) != "string") {
-      throw Error (`Token is of type ${typeof(token)}`)
+      throw Error (`Token is of type ${typeof(token)}. Token: ${JSON.stringify(token)}`)
     }
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');

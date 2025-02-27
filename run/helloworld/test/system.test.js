@@ -16,6 +16,8 @@ import assert from 'assert';
 import {execSync} from 'child_process';
 import request from 'got';
 
+let BASE_URL, SERVICE_NAME, ID_TOKEN;
+
 const get = (route, base_url) => {
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" environment variable is required.');
@@ -47,7 +49,6 @@ const getServiceAud = () => {
   return aud;
 }
 
-let BASE_URL;
 describe('End-to-End Tests', () => {
   const {GOOGLE_CLOUD_PROJECT} = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {

@@ -15,8 +15,6 @@
 import assert from 'assert';
 import {execSync} from 'child_process';
 import request from 'got';
-import {GoogleAuth} from 'google-auth-library';
-const auth = new GoogleAuth();
 
 const get = (route, base_url) => {
   if (!ID_TOKEN) {
@@ -44,14 +42,14 @@ describe('End-to-End Tests', () => {
       `"SERVICE_NAME" env var not found. Defaulting to "${SERVICE_NAME}"`
     );
   }
-  let {SERVICE_ACCOUNT} = process.env;
+  const {SERVICE_ACCOUNT} = process.env;
   let {NAME} = process.env;
   if (!NAME) {
     NAME = 'Cloud';
     console.log(`"NAME" env var not found. Defaulting to "${NAME}"`);
   }
   const {SAMPLE_VERSION} = process.env;
-  let {ID_TOKEN} = process.env;
+  const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) {
     throw Error('"ID_TOKEN" env var not found.');
   }

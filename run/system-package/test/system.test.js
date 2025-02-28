@@ -19,7 +19,7 @@ const {execSync} = require('child_process');
 const request = (method, route, base_url, id_token) => {
   return got(new URL(route, base_url.trim()), {
     headers: {
-      Authorization: id_token.trim(),
+      Authorization: `Bearer ${id_token.trim()}`,
     },
     method: method || 'get',
     throwHttpErrors: false,

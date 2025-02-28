@@ -202,6 +202,7 @@
     "talent",
     "texttospeech",
     "tpu",
+    "vision",
     "workflows/invoke-private-endpoint"
   ]
 }

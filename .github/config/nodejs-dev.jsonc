@@ -13,18 +13,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
+
 {
-  "package-file": [
-    "package.json"
-  ],
+  "package-file": [ "package.json" ],
   "ci-setup-filename": "ci-setup.json",
+
   // If these change, please update the .github/config/README.md too!
   "ci-setup-defaults": {
-    "env": {},
-    "secrets": {},
+    "env": { },
+    "secrets": { },
     "node-version": 20,
     "timeout-minutes": 10
   },
+
   "ignore": [
     ".github/config/", // prevent changes to exclusions from running all tests
     ".eslintignore",

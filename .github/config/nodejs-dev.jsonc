@@ -191,6 +191,7 @@
     "run/logging-manual",
     "run/markdown-preview/renderer",
     "run/pubsub",
+    "run/system-package",
     "run/websockets",
     "secret-manager",
     "security-center/snippets",

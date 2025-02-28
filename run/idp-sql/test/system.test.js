@@ -33,7 +33,6 @@ describe('System Tests', () => {
     SERVICE_NAME = 'idp-sql';
   }
   const {SAMPLE_VERSION} = process.env;
-  const {SERVICE_ACCOUNT} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
 

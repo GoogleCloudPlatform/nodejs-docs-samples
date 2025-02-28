@@ -32,7 +32,7 @@ steps:
 
       ./test/retry.sh "gcloud secrets add-iam-policy-binding ${_SERVICE}-secrets \
         --member=${_SERVICE_ACCOUNT} \
-        --role="roles/secretmanager.secretAccessor"
+        --role=roles/secretmanager.secretAccessor"
 
 - id: 'Build Container Image'
   name: 'gcr.io/cloud-builders/docker'

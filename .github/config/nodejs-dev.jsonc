@@ -82,6 +82,7 @@
     "appengine/hello-world/standard",
     "appengine/memcached",
     "appengine/metadata/flexible_nodejs16_and_earlier",
+    "appengine/metadata/standard",
     "appengine/pubsub",
     "appengine/static-files",
     "appengine/storage/flexible",
@@ -198,6 +199,7 @@
     "security-center/snippets",
     "service-directory/snippets",
     "storage-control",
+    "talent",
     "texttospeech",
     "tpu",
     "workflows/invoke-private-endpoint"

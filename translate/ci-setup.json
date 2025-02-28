@@ -1,0 +1,4 @@
+{
+  "_justification": "TODO: split into subpackages to reduce test time",
+  "timeout-minutes": 20
+}

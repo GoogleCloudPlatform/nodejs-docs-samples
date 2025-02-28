@@ -33,7 +33,7 @@ describe('System Tests', () => {
     SERVICE_NAME = 'idp-sql';
   }
 
-  const {GOOGLE_SERVICE_ACCOUNT} = process.env;
+  const {SERVICE_ACCOUNT} = process.env;
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -62,7 +62,8 @@ describe('System Tests', () => {
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
-    if (GOOGLE_SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${GOOGLE_SERVICE_ACCOUNT}`;
+
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
@@ -113,6 +114,7 @@ describe('System Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd, {shell: true});
   });

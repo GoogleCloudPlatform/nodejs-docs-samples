@@ -111,6 +111,7 @@
     "endpoints/getting-started-grpc",
     "error-reporting",
     "eventarc/generic",
+    "eventarc/pubsub",
     "functions/concepts/afterResponse",
     "functions/concepts/afterTimeout",
     "functions/concepts/backgroundTermination",

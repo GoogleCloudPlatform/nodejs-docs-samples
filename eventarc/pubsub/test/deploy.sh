@@ -22,6 +22,7 @@ requireEnv() {
 
 requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
+requireEnv SERVICE_ACCOUNT
 
 # Build the service
 set -x
@@ -35,6 +36,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --region="${REGION:-us-central1}" \
   ${FLAGS} \
   --platform=managed \
+  --service-account="${SERVICE_ACCOUNT}" \
   --quiet
 set +x
 

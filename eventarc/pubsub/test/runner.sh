@@ -21,6 +21,8 @@ requireEnv() {
 }
 requireEnv SERVICE_NAME
 requireEnv CONTAINER_IMAGE
+requireEnv SERVICE_ACCOUNT
+requireEnv ID_TOKEN
 
 echo '---'
 test/deploy.sh
@@ -36,13 +38,11 @@ function cleanup {
   gcloud run services delete ${SERVICE_NAME} \
     --platform=managed \
     --region="${REGION:-us-central1}" \
+    --service-account="${SERVICE_ACCOUNT}" \
     --quiet
 }
 trap cleanup EXIT
 
-# TODO: Perform authentication inside the test.
-gcloud auth list
-export ID_TOKEN=$(gcloud auth print-identity-token)
 export BASE_URL=$(test/url.sh)
 
 test -z "$BASE_URL" && echo "BASE_URL value is empty" && exit 1

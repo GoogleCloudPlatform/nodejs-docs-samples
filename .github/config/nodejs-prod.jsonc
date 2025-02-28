@@ -64,6 +64,7 @@
     "functions/firebase", // parent directory
     "functions/helloworld", // parent directory
     "functions/http", // parent directory
+    "functions/http/uploadFile", // no tests exist
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
@@ -86,21 +87,19 @@
     "dlp", // [ERR_REQUIRE_ESM]: require() of ES Module
     "document-ai", // [ERR_REQUIRE_ESM]: require() of ES Module
     "eventarc/audit-storage", // (untested) Environment Variable 'SERVICE_NAME' not found
-    "functions/billing", // Error: Request failed with status code 500
-    "functions/http/uploadFile", // npm error Missing script: "test"
-    "functions/imagemagick", // Error: A bucket name is needed to use Cloud Storage
-    "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
+    "functions/billing", // (untested) Error: Request failed with status code 500
+    "functions/imagemagick", // (untested) Error: A bucket name is needed to use Cloud Storage
+    "functions/ocr/app", // (untested) Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
-    "functions/v2/imagemagick", // Error: A bucket name is needed to use Cloud Storage.
+    "functions/v2/imagemagick", // (untested) Error: A bucket name is needed to use Cloud Storage.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
-    "run/idp-sql", // Error: Invalid contents in the credentials file
-    "run/markdown-preview/editor", // Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
+    "run/idp-sql", // (untested) Error: Invalid contents in the credentials file
+    "run/markdown-preview/editor", // (untested) Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "scheduler", // SyntaxError: Cannot use import statement outside a module
     "speech", // AssertionError: expected 'Transcription:  Okay, I\'m here.\n Hi…' to match /Terrific. It's on the way./
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
-    "talent", // AssertionError: expected '' to match /Job summary/
     "translate", // AssertionError: expected 'Languages:\n{ code: \'ab\', name: \'A…' to match /{ code: 'af', name: 'afrikáans' }/
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
     "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379

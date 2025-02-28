@@ -61,7 +61,7 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-lint:
-    name: Node.js lint
+    name: lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -70,10 +70,20 @@ jobs:
         with:
           node-version: 20
       - run: make lint
+
+  region-tags:
+    name: region tags
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+        with:
+          node-version: 20
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   nodejs-test:
-    name: Node.js test
+    name: test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit
@@ -122,7 +132,7 @@ jobs:
         with:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
           export_to_environment: true
-      - name: 🛠️ Test ${{ matrix.path }}
+      - name: Run tests for ${{ matrix.path }}
         run: |
           timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
             make test dir=${{ matrix.path }}

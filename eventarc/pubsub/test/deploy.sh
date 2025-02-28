@@ -37,7 +37,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   ${FLAGS} \
   --platform=managed \
   --service-account="${SERVICE_ACCOUNT}" \
-  --add-custom-audiences="https://actions.test/" \
+  --add-custom-audiences="https://action.test/" \
   --quiet
 set +x
 

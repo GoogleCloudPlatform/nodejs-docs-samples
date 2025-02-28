@@ -42,6 +42,7 @@ steps:
       --no-allow-unauthenticated \
       --add-custom-audiences 'https://action.test/' \
       --region ${_REGION} \
+      --service-account ${_SERVICE_ACCOUNT} \
       --platform ${_PLATFORM}"
 
 

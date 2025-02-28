@@ -27,6 +27,7 @@
   },
 
   "ignore": [
+    // TODO: do not ignore .github/config once everything is in prod
     ".github/config/", // prevent changes to exclusions from running all tests
     ".eslintignore",
     ".eslintrc.json",
@@ -41,6 +42,8 @@
     ".github/scripts/",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
+    // TODO: do not ignore .github/workflows once everything is in prod
+    ".github/workflows/", // prevent removing old tests to trigger everything
     ".gitignore",
     ".kokoro/",
     ".prettierignore",
@@ -59,6 +62,7 @@
     "owlbot.py",
     "renovate.json"
   ],
+
   // These are all working well in prod, so we can exclude them from dev.
   // Once all packages are in prod, we can remove this dev config.
   "exclude-packages": [
@@ -199,9 +203,11 @@
     "security-center/snippets",
     "service-directory/snippets",
     "storage-control",
+    "speech",
     "talent",
     "texttospeech",
     "tpu",
+    "translate",
     "workflows/invoke-private-endpoint"
   ]
 }

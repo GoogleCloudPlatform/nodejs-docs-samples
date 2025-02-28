@@ -27,11 +27,11 @@ steps:
       sed -i "s/\"DB_USER\": \"postgres\"/\"DB_USER\": \"${_DB_USER}\"/" postgres-secrets.json
 
       ./test/retry.sh "gcloud secrets create ${_SERVICE}-secrets \
-        --replication-policy="automatic" \
+        --replication-policy=automatic \
         --data-file=postgres-secrets.json"
 
       ./test/retry.sh "gcloud secrets add-iam-policy-binding ${_SERVICE}-secrets \
-        --member="${_SERVICE_ACCOUNT}" \
+        --member=${_SERVICE_ACCOUNT} \
         --role="roles/secretmanager.secretAccessor"
 
 - id: 'Build Container Image'

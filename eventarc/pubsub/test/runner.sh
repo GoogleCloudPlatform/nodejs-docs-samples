@@ -36,9 +36,7 @@ echo
 function cleanup {
   set -x
   gcloud run services delete ${SERVICE_NAME} \
-    --platform=managed \
     --region="${REGION:-us-central1}" \
-    --service-account="${SERVICE_ACCOUNT}" \
     --quiet
 }
 trap cleanup EXIT

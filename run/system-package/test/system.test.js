@@ -15,8 +15,6 @@
 const assert = require('assert');
 const got = require('got');
 const {execSync} = require('child_process');
-const {GoogleAuth} = require('google-auth-library');
-const auth = new GoogleAuth();
 
 const request = (method, route, base_url, id_token) => {
   return got(new URL(route, base_url.trim()), {
@@ -33,6 +31,10 @@ describe('End-to-End Tests', () => {
   if (!GOOGLE_CLOUD_PROJECT) {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
+  const {ID_TOKEN} = process.env;
+  if (!ID_TOKEN) {
+    throw Error('"ID_TOKEN" env var not found.');
+  }
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
     SERVICE_NAME = 'system-package';
@@ -45,7 +47,7 @@ describe('End-to-End Tests', () => {
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
 
-  let BASE_URL, ID_TOKEN;
+  let BASE_URL;
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
@@ -67,12 +69,6 @@ describe('End-to-End Tests', () => {
 
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
-
-    // Retrieve ID token for testing
-    const client = await auth.getIdTokenClient(BASE_URL);
-    const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'].trim();
-    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
   });
 
   after(() => {

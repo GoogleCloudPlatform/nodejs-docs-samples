@@ -124,12 +124,12 @@ apply that as an additional audience to all Cloud Run services.
 
 To use this method, some changes are required:
 
-1. As part of testing setup, add a step to customize the Cloud Run service to have the custom audience "https://actions.test/"
+1. As part of testing setup, add a step to customize the Cloud Run service to have the custom audience `https://action.test/`
 
     ```shell
     gcloud run services deploy ${_SERVICE} \
       ... \
-      --add-custom-audiences="https://actions.test/"
+      --add-custom-audiences="https://action.test/" 
     ```
 
 1. Use the environment variable ID_TOKEN in any Authorization: Bearer calls.

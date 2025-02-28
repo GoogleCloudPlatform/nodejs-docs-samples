@@ -116,7 +116,8 @@ describe('System Tests', () => {
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
     if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
-    execSync(cleanUpCmd, {shell: true});
+    //TODO(glasnt): re-enable cleanup
+    //execSync(cleanUpCmd, {shell: true});
   });
 
   it('Can successfully make a request', async () => {

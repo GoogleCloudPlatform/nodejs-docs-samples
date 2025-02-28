@@ -66,10 +66,12 @@
     "functions/firebase", // parent directory
     "functions/helloworld", // parent directory
     "functions/http", // parent directory
+    "functions/http/uploadFile", // no tests exist
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
     "recaptcha_enterprise/demosite/app", // no tests exist
+
     // These tests are already passing in prod, so skip them in dev.
     "appengine/building-an-app/build",
     "appengine/building-an-app/update",

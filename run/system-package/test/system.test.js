@@ -41,6 +41,7 @@ describe('End-to-End Tests', () => {
     );
   }
   const {SAMPLE_VERSION} = process.env;
+  const {SERVICE_ACCOUNT} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
 
@@ -52,6 +53,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
@@ -79,6 +81,7 @@ describe('End-to-End Tests', () => {
       '--config ./test/e2e_test_cleanup.yaml ' +
       `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd);
   });

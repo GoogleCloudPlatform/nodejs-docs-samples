@@ -128,8 +128,8 @@ To use this method, some changes are required:
 
     ```shell
     gcloud run services deploy ${_SERVICE} \
-    ... \
-    --add-custom-audiences=https://actions.test
+      ... \
+      --add-custom-audiences=https://actions.test
     ```
 
 1. Use the environment variable ID_TOKEN in any Authorization: Bearer calls.

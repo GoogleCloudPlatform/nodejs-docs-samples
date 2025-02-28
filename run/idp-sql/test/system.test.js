@@ -54,7 +54,7 @@ describe('System Tests', () => {
     throw Error('"IDP_KEY" env var not found.');
   }
 
-  let BASE_URL, ID_TOKEN;
+  let BASE_URL, CUSTOM_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
@@ -103,8 +103,8 @@ describe('System Tests', () => {
     );
 
     const tokens = JSON.parse(response.body);
-    ID_TOKEN = tokens.idToken;
-    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    CUSTOM_TOKEN = tokens.idToken;
+    if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');
   });
 
   after(() => {
@@ -131,14 +131,14 @@ describe('System Tests', () => {
   });
 
   it('Can make a POST request with token', async () => {
-    assert(ID_TOKEN && ID_TOKEN.length > 0);
+    assert(CUSTOM_TOKEN && CUSTOM_TOKEN.length > 0);
 
     const options = {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`,
       },
       retry: {
         limit: 5,

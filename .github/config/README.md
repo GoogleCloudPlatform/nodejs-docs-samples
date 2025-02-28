@@ -50,6 +50,7 @@ Additionally to the environment variables you define in the `ci-setup.json` file
 
 - `PROJECT_ID`: The project used by the testing infrastructure.
 - `RUN_ID`: A random unique identifier, different on every test run.
+- `SERVICE_ACCOUNT`: The email of the testing service account.
 
 > **Note**: An environment variable explicitly defined under `env` with the same name as an automatic variable overrides the automatic variable.
 
@@ -97,6 +98,67 @@ For example:
 ```
 
 The test infrastructure then fetches the actual secret data and exports them as environment variables.
+
+### Automatic secret values
+
+Additional to any secret values you define in the `ci-setup.json` file, the test infrastructure always exports the following secret value:
+
+- `ID_TOKEN`: an ID token for interacting with private Cloud Run services.
+
+
+<details>
+<summary>
+Adapting <b>`ID_TOKEN`</b> use in system testing
+</summary>
+
+Due to organization policies, Cloud Run services cannot be deployed with public
+access. This means authentication is required in order to perform integration
+testing. We do this by using ID Tokens (JWT) provided by [Google GitHub Actions
+Auth](https://github.com/google-github-actions/auth/blob/main/docs/EXAMPLES.md#generating-an-id-token-jwt).
+
+By default, the audience of a Cloud Run service is [the full URL of the service
+itself](https://cloud.google.com/run/docs/configuring/custom-audiences#:~:text=By%20convention%2C%20the%20audience%20is).
+Since we cannot know all the URLs for all samples ahead of time (since unique
+IDs are in use), we instead define a custom audience in the GitHub Action, then
+apply that as an additional audience to all Cloud Run services.
+
+To use this method, some changes are required:
+
+1. As part of testing setup, add a step to customize the Cloud Run service to have the custom audience `https://action.test/`
+
+    ```shell
+    gcloud run services deploy ${_SERVICE} \
+      ... \
+      --add-custom-audiences="https://action.test/" 
+    ```
+
+1. Use the environment variable ID_TOKEN in any Authorization: Bearer calls.
+
+	 For example, a curl command:
+
+    ```shell
+    # ❌ Previous version: calls gcloud
+    curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" https://my-service-hash.a.run.app
+
+    # ✅ New version: uses environment variable
+    curl -H "Authorization: Bearer ${ID_TOKEN}" https://my-service-hash.a.run.app
+    ```
+
+    For example, a Node.JS script:
+
+    ```javascript
+    // ❌ Previous version: auth.getIdTokenClient()
+    const client = await auth.getIdTokenClient(BASE_URL);
+    const clientHeaders = await client.getRequestHeaders();
+    ID_TOKEN = clientHeaders['Authorization'].trim();
+    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+
+    // ✅ New version: uses environment variable
+    {ID_TOKEN} = process.env;
+    if (!ID_TOKEN) throw Error('"ID_TOKEN" not found in environment variables.');
+    ```
+
+</details>
 
 ### Secrets vs environment variables
 

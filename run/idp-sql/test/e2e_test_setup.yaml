@@ -31,7 +31,7 @@ steps:
         --data-file=postgres-secrets.json"
 
       ./test/retry.sh "gcloud secrets add-iam-policy-binding ${_SERVICE}-secrets \
-        --member=${_SERVICE_ACCOUNT} \
+        --member=serviceAccount:${_SERVICE_ACCOUNT} \
         --role=roles/secretmanager.secretAccessor"
 
 - id: 'Build Container Image'

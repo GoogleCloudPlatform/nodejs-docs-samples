@@ -1,0 +1,6 @@
+{
+    "env": {
+        "FUNCTIONS_BUCKET": "nodejs-docs-samples-tests",
+        "BLURRED_BUCKET_NAME": "nodejs-docs-samples-tests-imagick"
+    }
+}

@@ -132,7 +132,7 @@ jobs:
         with:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
           export_to_environment: true
-      - name: 🛠️ Test ${{ matrix.path }}
+      - name: Run tests for ${{ matrix.path }}
         run: |
           timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
             make test dir=${{ matrix.path }}

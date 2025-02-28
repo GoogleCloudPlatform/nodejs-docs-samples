@@ -1,0 +1,6 @@
+{
+    "env": {
+        "SERVICE_NAME": "run-idp-sql-$RUN_ID",
+        "SAMPLE_VERSION": "${RUN_ID}"
+    }
+}

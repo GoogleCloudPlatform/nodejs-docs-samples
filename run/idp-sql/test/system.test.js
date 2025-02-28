@@ -32,6 +32,8 @@ describe('System Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
     SERVICE_NAME = 'idp-sql';
   }
+
+  const {SERVICE_ACCOUNT} = process.env;
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -52,14 +54,16 @@ describe('System Tests', () => {
     throw Error('"IDP_KEY" env var not found.');
   }
 
-  let BASE_URL, ID_TOKEN;
+  let BASE_URL, CUSTOM_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
+
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build...');
@@ -100,18 +104,20 @@ describe('System Tests', () => {
     );
 
     const tokens = JSON.parse(response.body);
-    ID_TOKEN = tokens.idToken;
-    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    CUSTOM_TOKEN = tokens.idToken;
+    if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');
   });
 
   after(() => {
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
-    execSync(cleanUpCmd, {shell: true});
+    //TODO(glasnt): re-enable cleanup
+    //execSync(cleanUpCmd, {shell: true});
   });
 
   it('Can successfully make a request', async () => {
@@ -128,14 +134,14 @@ describe('System Tests', () => {
   });
 
   it('Can make a POST request with token', async () => {
-    assert(ID_TOKEN && ID_TOKEN.length > 0);
+    assert(CUSTOM_TOKEN && CUSTOM_TOKEN.length > 0);
 
     const options = {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`,
       },
       retry: {
         limit: 5,

@@ -15,6 +15,11 @@ steps:
         --replication-policy="automatic" \
         --data-file=postgres-secrets.json"
 
+      ./test/retry.sh "gcloud secrets add-iam-policy-binding ${_SERVICE}-secrets \
+        --member="${_SERVICE_ACCOUNT}" \
+        --role="roles/secretmanager.secretAccessor"
+
+
 - id: 'Build Container Image'
   name: 'gcr.io/cloud-builders/docker'
   entrypoint: '/bin/bash'
@@ -37,11 +42,11 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
+    ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM} \
+      --service-account ${_SERVICE_ACCOUNT} \
       --add-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \
       --update-secrets CLOUD_SQL_CREDENTIALS_SECRET=${_SERVICE}-secrets:latest"
 

@@ -27,6 +27,7 @@
   },
 
   "ignore": [
+    // TODO: do not ignore .github/config once everything is in prod
     ".github/config/", // prevent changes to exclusions from running all tests
     ".eslintignore",
     ".eslintrc.json",
@@ -41,6 +42,8 @@
     ".github/scripts/",
     ".github/snippet-bot.yml",
     ".github/trusted-contribution.yml",
+    // TODO: do not ignore .github/workflows once everything is in prod
+    ".github/workflows/", // prevent removing old tests to trigger everything
     ".gitignore",
     ".kokoro/",
     ".prettierignore",
@@ -59,6 +62,7 @@
     "owlbot.py",
     "renovate.json"
   ],
+
   "exclude-packages": [
     "functions/concepts", // parent directory
     "functions/firebase", // parent directory
@@ -97,9 +101,7 @@
     "run/idp-sql", // (untested) Error: Invalid contents in the credentials file
     "run/markdown-preview/editor", // (untested) Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "scheduler", // SyntaxError: Cannot use import statement outside a module
-    "speech", // AssertionError: expected 'Transcription:  Okay, I\'m here.\n Hi…' to match /Terrific. It's on the way./
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
-    "translate", // AssertionError: expected 'Languages:\n{ code: \'ab\', name: \'A…' to match /{ code: 'af', name: 'afrikáans' }/
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
     "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
     "workflows", // SyntaxError: Cannot use import statement outside a module

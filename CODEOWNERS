@@ -23,6 +23,7 @@ orgpolicy @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-rev
 recaptcha_enterprise @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 recaptcha_enterprise/demosite @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/recaptcha-customer-obsession-reviewers @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 secret-manager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-secrets-team
+parametermanager @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-secrets-team @GoogleCloudPlatform/cloud-parameters-team
 service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 tpu @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

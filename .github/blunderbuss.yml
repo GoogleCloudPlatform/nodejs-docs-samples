@@ -40,6 +40,10 @@ assign_issues_by:
   - "api: routeoptimization"
   to:
   - GoogleCloudPlatform/geo-routeoptimization
+- labels:
+  - "api: parametermanager"
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team
 
 assign_prs_by:
 - labels:
@@ -69,3 +73,7 @@ assign_prs_by:
   - "api: routeoptimization"
   to:
   - GoogleCloudPlatform/geo-routeoptimization
+- labels:
+  - "api: parametermanager"
+  to:
+  - GoogleCloudPlatform/cloud-parameters-team

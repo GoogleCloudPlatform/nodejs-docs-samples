@@ -117,6 +117,7 @@
     "endpoints/getting-started",
     "endpoints/getting-started-grpc",
     "error-reporting",
+    "eventarc/audit-storage",
     "eventarc/generic",
     "eventarc/pubsub",
     "functions/concepts/afterResponse",

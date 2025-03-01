@@ -16,7 +16,6 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const {Translate} = require('@google-cloud/translate').v2;
 const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'}).trim();

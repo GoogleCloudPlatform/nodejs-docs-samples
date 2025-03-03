@@ -42,7 +42,7 @@
     ".kokoro/",
     ".prettierignore",
     ".prettierrc.js",
-    "cloud-samples-tools", // checked out by GH action in ci-*.yml 
+    "cloud-samples-tools", // checked out by GH action in ci-*.yml
     "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
@@ -103,6 +103,7 @@
     "datalabeling",
     "dialogflow",
     "discoveryengine",
+    "dlp",
     "document-warehouse",
     "endpoints/getting-started",
     "endpoints/getting-started-grpc",

@@ -13,9 +13,8 @@
 // limitations under the License.
 
 
-const path = require('path');
-const app = require(path.join(__dirname, '../', 'server.js'));
-const supertest = require('supertest');
+import supertest from 'supertest';
+import app from '../server.js';
 
 describe('gae_flex_metadata', () => {
   it('should be listening', async () => {

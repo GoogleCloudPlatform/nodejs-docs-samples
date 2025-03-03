@@ -38,7 +38,8 @@ steps:
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --no-allow-unauthenticated \
       --region ${_REGION} \
-      --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$(cat _service_url)"
+      --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$(cat _service_url) \
+      --service-account ${_SERVICE_ACCOUNT}"
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}

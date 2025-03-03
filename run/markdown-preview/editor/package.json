@@ -16,7 +16,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "npm -- run all-test",
-    "all-test": "npm run unit-test && npm run system-test",
+    "all-test": "npm run system-test && npm run unit-test",
     "unit-test": "c8 mocha -p -j 2 test/app.test.js --timeout=10000 --exit",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=480000 --exit"
   },

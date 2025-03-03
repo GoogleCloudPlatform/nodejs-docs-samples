@@ -73,7 +73,7 @@ describe('End-to-End Tests', () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
       headers: {
-        Authorization: ID_TOKEN.trim(),
+        Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
       method: 'POST',
       retry: 3,

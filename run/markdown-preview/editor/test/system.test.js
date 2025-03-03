@@ -41,6 +41,7 @@ describe('End-to-End Tests', () => {
       '--config ../renderer/test/e2e_test_setup.yaml ' +
       `--substitutions _SERVICE=renderer-${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildRendererCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) buildRendererCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     console.log('Starting Cloud Build for Renderer service...');
     execSync(buildRendererCmd, {cwd: '../renderer'});

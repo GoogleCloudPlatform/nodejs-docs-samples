@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,144 +12,118 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+const {assert} = require('chai');
+const {describe, before, after, it} = require('mocha');
 
-const {expect} = require('chai');
-const sinon = require('sinon');
-const {BigQuery} = require('@google-cloud/bigquery');
-const {revokeTableOrViewAccess} = require('../revokeTableOrViewAccess');
+const {revokeAccessToTableOrView} = require('../revokeTableOrViewAccess');
+const {grantAccessToTableOrView} = require('../grantAccessToTableOrView');
+const {
+  getProjectId,
+  getEntityId,
+  getDataset,
+  getTable,
+  setupBeforeAll,
+  teardownAfterAll,
+} = require('./config');
 
 describe('revokeTableOrViewAccess', () => {
-  let bigQueryStub;
-  let tableStub;
-  let constructorStub;
-
-  beforeEach(() => {
-    // Create stubs for BigQuery client and its methods
-    tableStub = {
-      iam: {
-        getPolicy: sinon.stub(),
-        setPolicy: sinon.stub(),
-      },
-    };
-
-    const datasetStub = {
-      table: sinon.stub().returns(tableStub),
-    };
-
-    bigQueryStub = {
-      dataset: sinon.stub().returns(datasetStub),
-    };
-
-    // Stub the BigQuery constructor correctly
-    constructorStub = sinon.stub(BigQuery.prototype, 'constructor');
-    constructorStub.returns(bigQueryStub);
-
-    // Stub the BigQuery class itself
-    sinon.stub(BigQuery.prototype, 'dataset').returns(datasetStub);
+  before(async () => {
+    await setupBeforeAll();
   });
 
-  afterEach(() => {
-    sinon.restore();
+  after(async () => {
+    await teardownAfterAll();
   });
 
-  it('should revoke access for a specific member and role', async () => {
-    // Setup test data
-    const testPolicy = {
-      bindings: [
-        {
-          role: 'roles/bigquery.dataViewer',
-          members: ['group:test@google.com', 'group:other@google.com'],
-        },
-      ],
-    };
+  it('should revoke access to a table for a specific role', async () => {
+    const dataset = await getDataset();
+    const projectId = await getProjectId();
+    const table = await getTable();
+    const entityId = getEntityId();
 
-    const expectedNewPolicy = {
-      bindings: [
-        {
-          role: 'roles/bigquery.dataViewer',
-          members: ['group:other@google.com'],
-        },
-      ],
-    };
+    const ROLE = 'roles/bigquery.dataViewer';
+    const PRINCIPAL_ID = `group:${entityId}`;
 
-    // Configure stubs
-    tableStub.iam.getPolicy.resolves([testPolicy]);
-    tableStub.iam.setPolicy.resolves([]);
+    // Get the initial empty policy
+    const [emptyPolicy] = await table.getIamPolicy();
 
-    // Test the function
-    await revokeTableOrViewAccess({
-      projectId: 'test-project',
-      datasetId: 'test-dataset',
-      resourceId: 'test-table',
-      memberToRevoke: 'group:test@google.com',
-      roleToRevoke: 'roles/bigquery.dataViewer',
-    });
-
-    // Verify the new policy was set correctly
-    sinon.assert.calledWith(
-      tableStub.iam.setPolicy,
-      sinon.match(expectedNewPolicy)
-    );
-  });
-
-  it('should revoke all access for a specific role', async () => {
-    // Setup test data
-    const testPolicy = {
-      bindings: [
-        {
-          role: 'roles/bigquery.dataViewer',
-          members: ['group:test@google.com'],
-        },
-        {
-          role: 'roles/bigquery.dataEditor',
-          members: ['group:editor@google.com'],
-        },
-      ],
-    };
-
-    const expectedNewPolicy = {
-      bindings: [
-        {
-          role: 'roles/bigquery.dataEditor',
-          members: ['group:editor@google.com'],
-        },
-      ],
-    };
-
-    // Configure stubs
-    tableStub.iam.getPolicy.resolves([testPolicy]);
-    tableStub.iam.setPolicy.resolves([]);
-
-    // Test the function
-    await revokeTableOrViewAccess({
-      projectId: 'test-project',
-      datasetId: 'test-dataset',
-      resourceId: 'test-table',
-      roleToRevoke: 'roles/bigquery.dataViewer',
-    });
-
-    // Verify the new policy was set correctly
-    sinon.assert.calledWith(
-      tableStub.iam.setPolicy,
-      sinon.match(expectedNewPolicy)
-    );
-  });
-
-  it('should handle errors appropriately', async () => {
-    // Configure stub to throw an error
-    tableStub.iam.getPolicy.rejects(new Error('Test error'));
-
-    // Test the function
-    try {
-      await revokeTableOrViewAccess({
-        projectId: 'test-project',
-        datasetId: 'test-dataset',
-        resourceId: 'test-table',
-      });
-      expect.fail('Should have thrown an error');
-    } catch (error) {
-      expect(error.message).to.equal('Test error');
+    // Initialize bindings if they do not exist
+    if (!emptyPolicy.bindings) {
+      emptyPolicy.bindings = [];
     }
+
+    // Grant access
+    const policyWithRole = await grantAccessToTableOrView(
+      projectId,
+      dataset.id,
+      table.id,
+      PRINCIPAL_ID,
+      ROLE
+    );
+
+    // Check that there is a binding with that role
+    const hasRole = policyWithRole.some(b => b.role === ROLE);
+    assert.isTrue(hasRole);
+
+    // Revoke access for the role
+    const policyWithRevokedRole = await revokeAccessToTableOrView(
+      projectId,
+      dataset.id,
+      table.id,
+      ROLE,
+      null
+    );
+
+    // Check that this role is not present in the policy anymore
+    const roleExists = policyWithRevokedRole.some(b => b.role === ROLE);
+    assert.isFalse(roleExists);
+  });
+
+  it('should revoke access to a table for a specific principal', async () => {
+    const dataset = await getDataset();
+    const projectId = await getProjectId();
+    const table = await getTable();
+    const entityId = getEntityId();
+
+    const ROLE = 'roles/bigquery.dataViewer';
+    const PRINCIPAL_ID = `group:${entityId}`;
+
+    // Get the initial empty policy
+    const [emptyPolicy] = await table.getIamPolicy();
+
+    // Initialize bindings if they do not exist
+    if (!emptyPolicy.bindings) {
+      emptyPolicy.bindings = [];
+    }
+
+    // Grant access
+    const updatedPolicy = await grantAccessToTableOrView(
+      projectId,
+      dataset.id,
+      table.id,
+      PRINCIPAL_ID,
+      ROLE
+    );
+
+    // There is a binding for that principal
+    const hasPrincipal = updatedPolicy.some(
+      b => b.members && b.members.includes(PRINCIPAL_ID)
+    );
+    assert.isTrue(hasPrincipal);
+
+    // Revoke access for the principal
+    const policyWithRemovedPrincipal = await revokeAccessToTableOrView(
+      projectId,
+      dataset.id,
+      table.id,
+      null,
+      PRINCIPAL_ID
+    );
+
+    // This principal is not present in the policy anymore
+    const hasPrincipalAfterRevoke = policyWithRemovedPrincipal.some(
+      b => b.members && b.members.includes(PRINCIPAL_ID)
+    );
+    assert.isFalse(hasPrincipalAfterRevoke);
   });
 });

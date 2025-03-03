@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,114 +12,79 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-const {assert} = require('chai');
-const sinon = require('sinon');
-const {BigQuery} = require('@google-cloud/bigquery');
+const assert = require('assert');
+const {
+  getProjectId,
+  getDataset,
+  getTable,
+  getView,
+  setupBeforeAll,
+  teardownAfterAll,
+} = require('./config.js');
+const viewTableOrViewAccessPolicy = require('../viewTableOrViewAccessPolicy.js');
 
 describe('viewTableOrViewAccessPolicy', () => {
-  let bigQueryStub;
-  let consoleLogSpy;
-  let viewTableOrViewAccessPolicy;
-
-  const samplePolicy = {
-    bindings: [
-      {
-        role: 'roles/bigquery.dataViewer',
-        members: ['user:test@example.com'],
-      },
-    ],
-    etag: 'CAE=',
-    version: 1,
-  };
-
-  beforeEach(() => {
-    // Set required environment variable
-    process.env.GOOGLE_CLOUD_PROJECT = 'test-project';
-
-    // Stub BigQuery client
-    bigQueryStub = {
-      dataset: sinon.stub().returns({
-        table: sinon.stub().returns({
-          getIamPolicy: sinon.stub().resolves([samplePolicy]),
-        }),
-      }),
-    };
-
-    // Stub BigQuery constructor
-    sinon.stub(BigQuery.prototype, 'dataset').callsFake(bigQueryStub.dataset);
-
-    // Spy on console log methods
-    consoleLogSpy = sinon.spy(console, 'log');
-
-    // Reset module for each test
-    viewTableOrViewAccessPolicy =
-      require('../viewTableOrViewAccessPolicy').viewTableOrViewAccessPolicy;
+  before(async () => {
+    await setupBeforeAll();
   });
 
-  afterEach(() => {
-    delete process.env.GOOGLE_CLOUD_PROJECT;
-    sinon.restore();
+  after(async () => {
+    await teardownAfterAll();
   });
 
-  it('should display access policy details for a table', async () => {
-    const params = {
-      projectId: 'test-project',
-      datasetId: 'test_dataset',
-      resourceName: 'test_table',
-    };
+  it('should view table access policies', async () => {
+    const projectId = await getProjectId();
+    const dataset = await getDataset();
+    const table = await getTable();
 
-    const policy = await viewTableOrViewAccessPolicy(params);
-
-    assert.ok(bigQueryStub.dataset.calledWith(params.datasetId));
-    assert.ok(bigQueryStub.dataset().table.calledWith(params.resourceName));
-
-    assert.ok(
-      consoleLogSpy.calledWith(
-        `Access Policy details for table or view '${params.resourceName}':`
-      )
+    const policy = await viewTableOrViewAccessPolicy(
+      projectId,
+      dataset.id,
+      table.id
     );
-    assert.ok(
-      consoleLogSpy.calledWith(
-        `Bindings: ${JSON.stringify(samplePolicy.bindings, null, 2)}`
-      )
+
+    // Verificar que la política existe
+    assert.ok(policy, 'Policy should be defined');
+
+    // Verificar que bindings existe y es un array
+    assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
+
+    // En una política nueva, bindings debería estar vacío
+    assert.strictEqual(
+      policy.bindings.length,
+      0,
+      'Bindings list should be empty'
     );
-    assert.ok(consoleLogSpy.calledWith(`etag: ${samplePolicy.etag}`));
-    assert.ok(consoleLogSpy.calledWith(`version: ${samplePolicy.version}`));
 
-    assert.deepEqual(policy, samplePolicy);
+    // Verificar que etag existe, pero no validar su valor exacto
+    assert.ok(policy.etag, 'Etag should be defined');
   });
 
-  it('should throw error when project ID is missing', async () => {
-    delete process.env.GOOGLE_CLOUD_PROJECT;
+  it('should view view access policies', async () => {
+    const projectId = await getProjectId();
+    const dataset = await getDataset();
+    const view = await getView();
 
-    try {
-      await viewTableOrViewAccessPolicy({});
-      assert.fail('Should have thrown an error');
-    } catch (error) {
-      assert.include(error.message, 'Project ID is required');
-    }
-  });
+    const policy = await viewTableOrViewAccessPolicy(
+      projectId,
+      dataset.id,
+      view.id
+    );
 
-  it('should handle errors gracefully', async () => {
-    const errorMessage = 'Table not found';
+    // Verificar que la política existe
+    assert.ok(policy, 'Policy should be defined');
 
-    bigQueryStub.dataset.returns({
-      table: sinon.stub().returns({
-        getIamPolicy: sinon.stub().rejects(new Error(errorMessage)),
-      }),
-    });
+    // Verificar que bindings existe y es un array
+    assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
 
-    try {
-      await viewTableOrViewAccessPolicy({
-        projectId: 'test-project',
-        datasetId: 'test_dataset',
-        resourceName: 'non_existent_table',
-      });
-      assert.fail('Should have thrown an error');
-    } catch (error) {
-      assert.include(error.message, errorMessage);
-    }
+    // En una política nueva, bindings debería estar vacío
+    assert.strictEqual(
+      policy.bindings.length,
+      0,
+      'Bindings list should be empty'
+    );
+
+    // Verificar que etag existe, pero no validar su valor exacto
+    assert.ok(policy.etag, 'Etag should be defined');
   });
 });

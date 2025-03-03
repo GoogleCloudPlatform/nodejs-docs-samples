@@ -14,60 +14,52 @@
 
 'use strict';
 
+// Imports the Google Cloud client library
 const {BigQuery} = require('@google-cloud/bigquery');
 
 // [START bigquery_view_table_or_view_access_policy]
 /**
- * View access policies for a BigQuery table or view
+ * View access policy for a BigQuery table or view
  *
- * @param {object} [overrideValues] Optional parameters to override defaults
- * @param {string} [overrideValues.projectId] Google Cloud project ID
- * @param {string} [overrideValues.datasetId] Dataset ID where the table or view is located
- * @param {string} [overrideValues.resourceName] Table or view name to get the access policy
- * @throws {Error} If required parameters are missing or if there's an API error
+ * @param {string} projectId - Google Cloud Platform project.
+ * @param {string} datasetId - Dataset where the table or view is.
+ * @param {string} resourceName - Table or view name to get the access policy.
+ * @returns {Promise<object>} - The IAM policy object
  */
-async function viewTableOrViewAccessPolicy(overrideValues = {}) {
-  // Initialize default values
-  const projectId =
-    overrideValues.projectId || process.env.GOOGLE_CLOUD_PROJECT;
-  const datasetId = overrideValues.datasetId || 'my_new_dataset';
-  const resourceName = overrideValues.resourceName || 'my_table';
+async function viewTableOrViewAccessPolicy(projectId, datasetId, resourceName) {
+  // TODO(developer): Update and un-comment below lines
+  // Google Cloud Platform project.
+  // projectId = "my_project_id";
+  // Dataset where the table or view is.
+  // datasetId = "my_dataset_id";
+  // Table or view name to get the access policy.
+  // resourceName = "my_table_name";
 
-  if (!projectId) {
-    throw new Error(
-      'Project ID is required. Set it in overrideValues or GOOGLE_CLOUD_PROJECT environment variable.'
-    );
+  // Instantiate a client.
+  const client = new BigQuery();
+
+  // Get the table reference.
+  const dataset = client.dataset(datasetId);
+  const table = dataset.table(resourceName);
+
+  // Get the IAM access policy for the table or view.
+  const [policy] = await table.getIamPolicy();
+
+  // Initialize bindings if they don't exist
+  if (!policy.bindings) {
+    policy.bindings = [];
   }
 
-  try {
-    // Instantiate BigQuery client
-    const bigquery = new BigQuery({projectId});
+  // Show policy details.
+  // Find more details for the Policy object here:
+  // https://cloud.google.com/bigquery/docs/reference/rest/v2/Policy
+  console.log(`Access Policy details for table or view '${resourceName}'.`);
+  console.log(`Bindings: ${JSON.stringify(policy.bindings, null, 2)}`);
+  console.log(`etag: ${policy.etag}`);
+  console.log(`Version: ${policy.version}`);
 
-    // Get the IAM access policy for the table or view
-    const [policy] = await bigquery
-      .dataset(datasetId)
-      .table(resourceName)
-      .getIamPolicy();
-
-    // Show policy details
-    console.log(`Access Policy details for table or view '${resourceName}':`);
-    console.log(`Bindings: ${JSON.stringify(policy.bindings, null, 2)}`);
-    console.log(`etag: ${policy.etag}`);
-    console.log(`version: ${policy.version}`);
-
-    return policy;
-  } catch (error) {
-    console.error(`Error viewing table/view access policy: ${error.message}`);
-    throw error;
-  }
+  return policy;
 }
 // [END bigquery_view_table_or_view_access_policy]
 
-// If this file is run directly, execute the function with default values
-if (require.main === module) {
-  viewTableOrViewAccessPolicy().catch(console.error);
-}
-
-module.exports = {
-  viewTableOrViewAccessPolicy,
-};
+module.exports = viewTableOrViewAccessPolicy;

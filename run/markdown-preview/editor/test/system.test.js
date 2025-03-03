@@ -30,6 +30,7 @@ describe('End-to-End Tests', () => {
   const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) throw Error('ID token not in envvar');
   const {SAMPLE_VERSION} = process.env;
+  const {SERVICE_ACCOUNT} = process.env;
   const REGION = 'us-central1';
 
   let BASE_URL;

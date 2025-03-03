@@ -39,6 +39,7 @@ steps:
       --no-allow-unauthenticated \
       --region ${_REGION} \
       --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$(cat _service_url) \
+      --add-custom-audiences "https://action.test/" \
       --service-account ${_SERVICE_ACCOUNT}"
 
 images:

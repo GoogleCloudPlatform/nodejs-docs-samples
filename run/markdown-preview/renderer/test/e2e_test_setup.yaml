@@ -26,7 +26,7 @@ steps:
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --no-allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM}"
+      --add-custom-audiences="https://action.test/" "
 
 images:
 - gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION}
@@ -35,4 +35,10 @@ substitutions:
   _SERVICE: renderer
   _VERSION: manual
   _REGION: us-central1
-  _PLATFORM: managed
+  _SERVICE_ACCOUNT: ${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com
+
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
+options:
+    logging: CLOUD_LOGGING_ONLY
+    dynamicSubstitutions: true
+

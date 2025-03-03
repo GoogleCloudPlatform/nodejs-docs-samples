@@ -17,14 +17,12 @@ steps:
   - |
     echo $(gcloud run services describe renderer-${_SERVICE} \
       --region ${_REGION} \
-      --format='value(status.url)' \
-      --platform ${_PLATFORM}) > _service_url
+      --format='value(status.url)') > _service_url
 
     ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --no-allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM} \
       --set-env-vars EDITOR_UPSTREAM_RENDER_URL=$(cat _service_url)"
 
 images:
@@ -35,3 +33,9 @@ substitutions:
   _VERSION: manual
   _REGION: us-central1
   _PLATFORM: managed
+  _SERVICE_ACCOUNT: ${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com
+
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
+options:
+    logging: CLOUD_LOGGING_ONLY
+    dynamicSubstitutions: true

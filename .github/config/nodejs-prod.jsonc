@@ -99,7 +99,6 @@
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
     "run/idp-sql", // (untested) Error: Invalid contents in the credentials file
-    "run/markdown-preview/editor", // (untested) Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "scheduler", // SyntaxError: Cannot use import statement outside a module
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission

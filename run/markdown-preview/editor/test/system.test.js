@@ -29,11 +29,13 @@ describe('End-to-End Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "editor"');
     SERVICE_NAME = 'editor';
   }
+  const {ID_TOKEN} = process.env;
+  if (!ID_TOKEN) throw Error('ID token not in envvar');
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
 
-  let BASE_URL, ID_TOKEN;
+  let BASE_URL;
   before(async () => {
     // Deploy Renderer service
     let buildRendererCmd =
@@ -60,15 +62,10 @@ describe('End-to-End Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--region=${REGION} --format='value(status.url)'`
     );
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
-
-    const client = await auth.getIdTokenClient(BASE_URL);
-    const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'];
-    if (!ID_TOKEN) throw Error('ID token could not be created');
   });
 
   after(() => {

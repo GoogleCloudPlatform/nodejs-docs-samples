@@ -1,0 +1,6 @@
+{
+    "env": {
+        "SERVICE_NAME": "markdown-renderer-$RUN_ID",
+        "SAMPLE_VERSION": "$RUN_ID"
+    }
+}

@@ -14,11 +14,11 @@
 
 /**
  * Revokes access to a BigQuery table or view
- * @param {string} projectId - The ID of the Google Cloud project
- * @param {string} datasetId - The ID of the dataset containing the table/view
- * @param {string} resourceName - The ID of the table or view
- * @param {string} [roleToRemove=null] - Optional. Specific role to revoke
- * @param {string} [principalToRemove=null] - Optional. Specific principal to revoke access from
+ * @param {string} projectId The ID of the Google Cloud project
+ * @param {string} datasetId The ID of the dataset containing the table/view
+ * @param {string} resourceName The ID of the table or view
+ * @param {string} [roleToRemove=null] Optional. Specific role to revoke
+ * @param {string} [principalToRemove=null] Optional. Specific principal to revoke access from
  * @returns {Promise<Object>} The updated IAM policy
  */
 async function revokeAccessToTableOrView(
@@ -36,29 +36,29 @@ async function revokeAccessToTableOrView(
   // Google Cloud Platform project.
   // projectId = "my_project_id"
 
-  // Dataset where the table or view is.
+  // Dataset where the table or view is
   // datasetId = "my_dataset"
 
-  // Table or view name to get the access policy.
+  // Table or view name to get the access policy
   // resourceName = "my_table"
 
-  // (Optional) Role to remove from the table or view.
+  // (Optional) Role to remove from the table or view
   // roleToRemove = "roles/bigquery.dataViewer"
 
-  // (Optional) Principal to remove from the table or view.
+  // (Optional) Principal to remove from the table or view
   // principalToRemove = "user:alice@example.com"
 
   // Find more information about roles and principals (refered as members) here:
   // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Binding
 
-  // Instantiate a client.
+  // Instantiate a client
   const client = new BigQuery();
 
-  // Get the table reference.
+  // Get the table reference
   const dataset = client.dataset(datasetId);
   const table = dataset.table(resourceName);
 
-  // Get the IAM access policy for the table or view.
+  // Get the IAM access policy for the table or view
   const [policy] = await table.getIamPolicy();
 
   // Initialize bindings of they do not exist
@@ -67,22 +67,22 @@ async function revokeAccessToTableOrView(
   }
 
   // To revoke access to a table or view,
-  // remove bindings from the Table or View policy.
+  // remove bindings from the Table or View policy
   //
   // Find more details about Policy objects here:
   // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
 
   if (roleToRemove) {
     // Filter out all bindings with the `roleToRemove`
-    // and assign a new list back to the policy bindings.
+    // and assign a new list back to the policy bindings
     policy.bindings = policy.bindings.filter(b => b.role !== roleToRemove);
   }
 
   if (principalToRemove) {
-    // Create a copy to match original code structure.
+    // Create a copy to match original code structure
     const bindings = [...policy.bindings];
 
-    // Filter out the principal from each binding.
+    // Filter out the principal from each binding
     for (const binding of bindings) {
       if (binding.members) {
         binding.members = binding.members.filter(m => m !== principalToRemove);

@@ -53,9 +53,15 @@ describe('revokeDatasetAccess', () => {
     // Create a set of all entity IDs and email addresses to check
     const datasetEntityIds = new Set();
     datasetAccessEntries.forEach(entry => {
-      if (entry.entity_id) datasetEntityIds.add(entry.entity_id);
-      if (entry.userByEmail) datasetEntityIds.add(entry.userByEmail);
-      if (entry.groupByEmail) datasetEntityIds.add(entry.groupByEmail);
+      if (entry.entity_id) {
+        datasetEntityIds.add(entry.entity_id);
+      }
+      if (entry.userByEmail) {
+        datasetEntityIds.add(entry.userByEmail);
+      }
+      if (entry.groupByEmail) {
+        datasetEntityIds.add(entry.groupByEmail);
+      }
     });
 
     // Check if our entity ID is in the set
@@ -73,9 +79,15 @@ describe('revokeDatasetAccess', () => {
     // Check that the entity no longer has access
     const updatedEntityIds = new Set();
     newAccessEntries.forEach(entry => {
-      if (entry.entity_id) updatedEntityIds.add(entry.entity_id);
-      if (entry.userByEmail) updatedEntityIds.add(entry.userByEmail);
-      if (entry.groupByEmail) updatedEntityIds.add(entry.groupByEmail);
+      if (entry.entity_id) {
+        updatedEntityIds.add(entry.entity_id);
+      }
+      if (entry.userByEmail) {
+        updatedEntityIds.add(entry.userByEmail);
+      }
+      if (entry.groupByEmail) {
+        updatedEntityIds.add(entry.groupByEmail);
+      }
     });
 
     const stillHasAccess = updatedEntityIds.has(entityId);

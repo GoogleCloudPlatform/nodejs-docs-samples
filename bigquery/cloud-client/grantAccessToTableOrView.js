@@ -15,13 +15,13 @@
 const {BigQuery} = require('@google-cloud/bigquery');
 
 /**
- * Grants access to a BigQuery table or view for a specified principal.
+ * Grants access to a BigQuery table or view for a specified principal
  *
- * @param {string} projectId - Google Cloud Platform project ID
- * @param {string} datasetId - Dataset where the table or view is
- * @param {string} resourceName - Table or view name to get the access policy
- * @param {string} principalId - The principal requesting access to the table or view
- * @param {string} role - Role to assign to the member
+ * @param {string} projectId Google Cloud Platform project ID
+ * @param {string} datasetId Dataset where the table or view is
+ * @param {string} resourceName Table or view name to get the access policy
+ * @param {string} principalId The principal requesting access to the table or view
+ * @param {string} role Role to assign to the member
  * @returns {Promise<object[]>} The updated policy bindings
  */
 async function grantAccessToTableOrView(
@@ -34,31 +34,31 @@ async function grantAccessToTableOrView(
   // [START bigquery_grant_access_to_table_or_view]
   // TODO(developer): Update and un-comment below lines
 
-  // Google Cloud Platform project.
+  // Google Cloud Platform project
   // projectId = "my_project_id"
 
-  // Dataset where the table or view is.
+  // Dataset where the table or view is
   // datasetId = "my_dataset"
 
-  // Table or view name to get the access policy.
+  // Table or view name to get the access policy
   // resourceName = "my_table"
 
-  // The principal requesting access to the table or view.
+  // The principal requesting access to the table or view
   // Find more details about principal identifiers here:
   // https://cloud.google.com/iam/docs/principal-identifiers
   // principalId = "user:bob@example.com"
 
-  // Role to assign to the member.
+  // Role to assign to the member
   // role = "roles/bigquery.dataViewer"
 
-  // Instantiate a client.
+  // Instantiate a client
   const client = new BigQuery();
 
-  // Get the table reference.
+  // Get the table reference
   const dataset = client.dataset(datasetId);
   const table = dataset.table(resourceName);
 
-  // Get the IAM access policy for the table or view.
+  // Get the IAM access policy for the table or view
   const [policy] = await table.getIamPolicy();
 
   // Initialize bindings if they do not exist
@@ -66,8 +66,8 @@ async function grantAccessToTableOrView(
     policy.bindings = [];
   }
 
-  // To grant access to a table or view.
-  // add bindings to the Table or View policy.
+  // To grant access to a table or view
+  // add bindings to the Table or View policy
   //
   // Find more details about Policy and Binding objects here:
   // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
@@ -81,7 +81,7 @@ async function grantAccessToTableOrView(
   // Set the IAM access policy with updated bindings
   const [updatedPolicy] = await table.setIamPolicy(policy);
 
-  // Show a success message.
+  // Show a success message
   console.log(
     `Role '${role}' granted for principal '${principalId}' on resource '${datasetId}.${resourceName}'.`
   );

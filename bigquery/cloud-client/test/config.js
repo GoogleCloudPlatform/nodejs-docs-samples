@@ -15,6 +15,11 @@
 const {BigQuery} = require('@google-cloud/bigquery');
 const crypto = require('crypto');
 
+// Define enum for HTTP codes
+const HTTP_STATUS = {
+  NOT_FOUND: 404,
+};
+
 // Generate a unique prefix using a random UUID to ensure uniqueness across test runs
 function createRandomPrefix() {
   return `nodejs_test_${crypto.randomUUID().replace(/-/g, '').substring(0, 8)}`;
@@ -23,7 +28,7 @@ function createRandomPrefix() {
 const PREFIX = createRandomPrefix();
 console.log(`Generated test prefix: ${PREFIX}`);
 
-const ENTITY_ID = 'example-analyst-group@google.com'; // Group account
+const ENTITY_ID = 'cloud-developer-relations@google.com'; // Group account
 const DATASET_ID = `${PREFIX}_cloud_client`;
 const TABLE_NAME = `${PREFIX}_table`;
 const VIEW_NAME = `${PREFIX}_view`;
@@ -65,9 +70,9 @@ const getDataset = async () => {
         [sharedDataset] = await client.dataset(DATASET_ID).get();
         console.log(`Using existing dataset: ${DATASET_ID}`);
       } catch (err) {
-        if (err.code === 404) {
+        if (err.code === HTTP_STATUS.NOT_FOUND) {
           // If dataset doesn't exist, create it
-          console.log(`Creating dataset: ${DATASET_ID}`);
+          console.log(`Creating dataset: ${DATASET_ID}...`);
           [sharedDataset] = await client.createDataset(DATASET_ID);
           resourcesCreated = true;
           console.log(`Created dataset: ${DATASET_ID}`);
@@ -103,9 +108,9 @@ const getTable = async () => {
           .get();
         console.log(`Using existing table: ${TABLE_NAME}`);
       } catch (err) {
-        if (err.code === 404) {
+        if (err.code === HTTP_STATUS.NOT_FOUND) {
           // If table doesn't exist, create it
-          console.log(`Creating table: ${TABLE_NAME}`);
+          console.log(`Creating table: ${TABLE_NAME}...`);
           [sharedTable] = await client
             .dataset(DATASET_ID)
             .createTable(TABLE_NAME, tableOptions);
@@ -142,9 +147,9 @@ const getView = async () => {
         [sharedView] = await client.dataset(DATASET_ID).table(VIEW_NAME).get();
         console.log(`Using existing view: ${VIEW_NAME}`);
       } catch (err) {
-        if (err.code === 404) {
+        if (err.code === HTTP_STATUS.NOT_FOUND) {
           // If view doesn't exist, create it
-          console.log(`Creating view: ${VIEW_NAME}`);
+          console.log(`Creating view: ${VIEW_NAME}...`);
           [sharedView] = await client
             .dataset(DATASET_ID)
             .createTable(VIEW_NAME, viewOptions);
@@ -194,7 +199,7 @@ const cleanupResources = async () => {
           await sharedClient.dataset(DATASET_ID).delete({force: true});
           console.log(`Successfully deleted dataset: ${DATASET_ID}`);
         } catch (err) {
-          if (err.code !== 404) {
+          if (err.code !== HTTP_STATUS.NOT_FOUND) {
             console.error(`Error deleting dataset: ${err.message}`);
           } else {
             console.log(`Dataset ${DATASET_ID} already deleted or not found`);

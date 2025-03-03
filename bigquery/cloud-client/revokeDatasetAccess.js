@@ -14,41 +14,47 @@
 
 'use strict';
 
+// [START bigquery_revoke_dataset_access]
+
 const {BigQuery} = require('@google-cloud/bigquery');
 
-// [START bigquery_revoke_dataset_access]
+// Define enum for HTTP codes
+const HTTP_STATUS = {
+  PRECONDITION_FAILED: 412,
+};
+
 /**
- * Revokes access to a dataset for a specified entity.
+ * Revokes access to a dataset for a specified entity
  *
- * @param {string} datasetId - ID of the dataset to revoke access to.
- * @param {string} entityId - ID of the user or group from whom you are revoking access.
+ * @param {string} datasetId ID of the dataset to revoke access to
+ * @param {string} entityId  ID of the user or group from whom you are revoking access
  *                            Alternatively, the JSON REST API representation of the entity,
- *                            such as a view's table reference.
+ *                            such as a view's table reference
  * @returns {Promise<Array>} A promise that resolves to the updated access entries
  */
 async function revokeDatasetAccess(datasetId, entityId) {
-  // Import the Google Cloud client library.
+  // Create a client
   const bigquery = new BigQuery();
 
   // TODO (developer): Update and un-comment below lines
 
-  // ID of the dataset to revoke access to.
+  // ID of the dataset to revoke access to
   // datasetId = "your-project.your_dataset"
 
-  // ID of the user or group from whom you are revoking access.
+  // ID of the user or group from whom you are revoking access
   // Alternatively, the JSON REST API representation of the entity,
-  // such as a view's table reference.
+  // such as a view's table reference
   // entityId = "user-or-group-to-remove@example.com"
 
   // Get a reference to the dataset.
   const [dataset] = await bigquery.dataset(datasetId).get();
 
-  // To revoke access to a dataset, remove elements from the access list.
+  // To revoke access to a dataset, remove elements from the access list
   //
   // See the BigQuery client library documentation for more details on access entries
 
   // Filter access entries to exclude entries matching the specified entity_id
-  // and assign a new list back to the access list.
+  // and assign a new list back to the access list
   dataset.metadata.access = dataset.metadata.access.filter(entry => {
     // Check for entity_id (specific match)
     if (entry.entity_id === entityId) {
@@ -79,21 +85,16 @@ async function revokeDatasetAccess(datasetId, entityId) {
   });
 
   // Update will only succeed if the dataset
-  // has not been modified externally since retrieval.
+  // has not been modified externally since retrieval
 
   try {
-    // Update just the access entries property of the dataset.
+    // Update just the access entries property of the dataset
     const [updatedDataset] = await dataset.setMetadata(dataset.metadata);
-
-    const fullDatasetId = `${dataset.parent.projectId}.${dataset.id}`;
-    console.log(
-      `Revoked dataset access for '${entityId}' to dataset '${fullDatasetId}'.`
-    );
 
     return updatedDataset.access;
   } catch (error) {
     // Check if it's a precondition failed error (a read-modify-write error)
-    if (error.code === 412) {
+    if (error.code === HTTP_STATUS.PRECONDITION_FAILED) {
       console.log(
         `Dataset '${dataset.id}' was modified remotely before this update. ` +
           'Fetch the latest version and retry.'

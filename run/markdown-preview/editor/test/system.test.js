@@ -32,7 +32,6 @@ describe('End-to-End Tests', () => {
   const {ID_TOKEN} = process.env;
   if (!ID_TOKEN) throw Error('ID token not in envvar');
   const {SAMPLE_VERSION} = process.env;
-  const PLATFORM = 'managed';
   const REGION = 'us-central1';
 
   let BASE_URL;
@@ -41,7 +40,7 @@ describe('End-to-End Tests', () => {
     let buildRendererCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ../renderer/test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=renderer-${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=renderer-${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildRendererCmd += `,_VERSION=${SAMPLE_VERSION}`;
 
     console.log('Starting Cloud Build for Renderer service...');
@@ -52,8 +51,9 @@ describe('End-to-End Tests', () => {
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     console.log('Starting Cloud Build for Editor service...');
     execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
@@ -72,8 +72,9 @@ describe('End-to-End Tests', () => {
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd);
   });

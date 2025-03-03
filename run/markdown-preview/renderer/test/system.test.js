@@ -66,7 +66,7 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
     if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
-    //execSync(cleanUpCmd); //FIX(glasnt): debugging
+    execSync(cleanUpCmd);
   });
 
   it('post(/) without body is a bad request', async () => {

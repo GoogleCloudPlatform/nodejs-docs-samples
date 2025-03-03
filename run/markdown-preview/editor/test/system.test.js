@@ -76,7 +76,7 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
     if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
-    //execSync(cleanUpCmd); #TODO(glasnt): debugging
+    execSync(cleanUpCmd);
   });
 
   it('Can successfully make a request', async () => {

@@ -196,6 +196,7 @@
     "run/image-processing",
     "run/jobs",
     "run/logging-manual",
+    "run/idp-sql",
     "run/markdown-preview/renderer",
     "run/pubsub",
     "run/system-package",

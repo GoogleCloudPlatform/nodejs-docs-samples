@@ -64,7 +64,7 @@ describe('security health analytics custom module', async () => {
     };
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       const [createResponse] =
         await client.createSecurityHealthAnalyticsCustomModule({
           parent: parent,

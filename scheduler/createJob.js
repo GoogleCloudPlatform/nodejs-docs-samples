@@ -11,6 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+// This is a generated sample, using the typeless sample bot. Please
+// look for the source TypeScript sample (.ts) for modifications.
+
 // sample-metadata:
 //   title: Create Job
 //   description: Create a job that posts to /log_payload on an App Engine service.

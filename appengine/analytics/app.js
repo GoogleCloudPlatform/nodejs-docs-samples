@@ -15,8 +15,8 @@
 'use strict';
 
 // [START gae_flex_analytics_track_event]
-const express = require('express');
-const fetch = require('node-fetch');
+import express from 'express';
+import fetch from 'node-fetch';
 
 const app = express();
 app.enable('trust proxy');
@@ -77,4 +77,4 @@ app.listen(PORT, () => {
 
 // [END gae_flex_analytics_track_event]
 
-module.exports = app;
+export default app;

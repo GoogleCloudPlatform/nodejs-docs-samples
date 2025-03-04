@@ -207,6 +207,7 @@
     "secret-manager",
     "security-center/snippets",
     "service-directory/snippets",
+    "scheduler",
     "storage-control",
     "speech",
     "talent",

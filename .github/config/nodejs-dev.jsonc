@@ -191,6 +191,7 @@
     "mediatranslation",
     "monitoring/prometheus",
     "monitoring/snippets",
+    "recaptcha_enterprise/snippets",
     "retail",
     "routeoptimization/snippets",
     "run/hello-broken",

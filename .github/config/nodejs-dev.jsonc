@@ -184,6 +184,7 @@
     "healthcare/datasets",
     "healthcare/dicom",
     "healthcare/hl7v2",
+    "iam/deny",
     "kms",
     "media/livestream",
     "media/transcoder",

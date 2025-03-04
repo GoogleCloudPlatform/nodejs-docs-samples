@@ -24,13 +24,9 @@ const iamClient = new PoliciesClient();
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('IAM deny samples', () => {
-  let projectId;
+  const {projectId} = process.env;
   const policyId = `gcloud-test-policy-${uuid.v4().split('-')[0]}`;
   const policyName = `policies/cloudresourcemanager.googleapis.com%2Fprojects%2F949737848314/denypolicies/${policyId}`;
-
-  before(async () => {
-    projectId = await iamClient.getProjectId();
-  });
 
   it('should create IAM policy', async () => {
     const output = execSync(`node createDenyPolicy ${projectId} ${policyId}`);

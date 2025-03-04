@@ -18,8 +18,7 @@
     "system-test": "npm -- run start-proxy && c8 mocha -p -j 2 test/system.test.js --timeout=1800000 --exit",
     "all-test": "npm run unit-test && npm run system-test",
     "test": "npm -- run all-test",
-    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
-
+    "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &"
   },
   "dependencies": {
     "express": "^4.16.2",

@@ -35,6 +35,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --region="${REGION:-us-central1}" \
   ${FLAGS} \
   --platform=managed \
+  --add-custom-audiences="https://action.test/" \
   --quiet
 set +x
 

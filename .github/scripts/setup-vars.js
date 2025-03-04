@@ -14,11 +14,12 @@
  limitations under the License.
  */
 
-export default function setupVars({projectId, core, setup}, runId = null) {
+export default function setupVars({projectId, core, setup, serviceAccount, idToken}, runId = null) {
   // Define automatic variables plus custom variables.
   const vars = {
     PROJECT_ID: projectId,
     RUN_ID: runId || uniqueId(),
+    SERVICE_ACCOUNT: serviceAccount,
     ...(setup.env || {}),
   };
 
@@ -44,6 +45,14 @@ export default function setupVars({projectId, core, setup}, runId = null) {
     // NOT the secret value, so it's ok to show.
     console.log(`  ${key}: ${setup.secrets[key]}`);
   }
+
+  // Set global secret for the Service Account identity token
+  // Use in place of 'gcloud auth print-identity-token' or auth.getIdTokenClient
+  // usage: curl -H 'Bearer: $ID_TOKEN' https://
+  core.exportVariable('ID_TOKEN', idToken)
+  core.setSecret(idToken)
+  // For logging, show the source of the ID_TOKEN
+  console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
 
   // Return env and secrets to use for further steps.
   return {

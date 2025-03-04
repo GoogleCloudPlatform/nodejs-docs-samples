@@ -15,8 +15,8 @@
 'use strict';
 
 // [START gae_flex_metadata]
-const express = require('express');
-const fetch = require('node-fetch');
+import express from 'express';
+import fetch from 'node-fetch';
 
 const app = express();
 app.enable('trust proxy');
@@ -58,4 +58,4 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 // [END gae_flex_metadata]
-module.exports = app;
+export default app;

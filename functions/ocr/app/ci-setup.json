@@ -1,7 +1,7 @@
 {
     "env": {
         "FUNCTIONS_BUCKET": "$PROJECT_ID",
-        "RESULTS_BUCKET": "$PROJECT_ID",
+        "RESULT_BUCKET": "$PROJECT_ID",
         "TRANSLATE_TOPIC": "integration-tests-instance",
         "RESULT_TOPIC": "integration-tests-instance",
         "TO_LANG": "en,es"

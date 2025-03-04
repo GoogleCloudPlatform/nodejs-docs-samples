@@ -4,6 +4,7 @@
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "module": "ESNext"
   }
 }

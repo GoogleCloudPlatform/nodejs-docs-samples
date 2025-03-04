@@ -4,6 +4,7 @@
   "main": "quickstart.js",
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "type": "module",
   "engines": {
     "node": ">=16.0.0"
   },

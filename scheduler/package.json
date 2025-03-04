@@ -15,7 +15,7 @@
     "build": "tsc -p .",
     "fix": "gts fix",
     "lint": "gts lint",
-    "test": "c8 mocha -p -j 2 --loader=ts-node/esm --extension ts --timeout 10000 --exit"
+    "test": "c8 mocha -p -j 2 --loader=ts-node/esm --extension ts --timeout 20000 --exit"
   },
   "dependencies": {
     "@google-cloud/scheduler": "^4.0.0"

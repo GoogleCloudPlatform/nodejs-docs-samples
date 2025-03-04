@@ -90,7 +90,6 @@
     "document-ai", // [ERR_REQUIRE_ESM]: require() of ES Module
     "functions/billing", // (untested) Error: Request failed with status code 500
     "functions/imagemagick", // (untested) Error: A bucket name is needed to use Cloud Storage
-    "functions/ocr/app", // (untested) Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "functions/v2/imagemagick", // (untested) Error: A bucket name is needed to use Cloud Storage.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'

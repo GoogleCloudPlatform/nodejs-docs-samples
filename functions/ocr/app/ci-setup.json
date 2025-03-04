@@ -1,0 +1,6 @@
+{
+    "env": {
+        "FUNCTIONS_BUCKET": "$PROJECT_ID",
+        "RESULTS_BUCKET": "$PROJECT_ID"
+    }
+}

@@ -2,6 +2,7 @@
   "name": "nodejs-scheduler-samples",
   "private": true,
   "main": "quickstart.js",
+  "type": "module",
   "engines": {
     "node": ">=16.0.0"
   },

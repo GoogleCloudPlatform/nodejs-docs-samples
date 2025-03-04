@@ -198,6 +198,7 @@
     "run/image-processing",
     "run/jobs",
     "run/logging-manual",
+    "run/markdown-preview/editor",
     "run/markdown-preview/renderer",
     "run/pubsub",
     "run/system-package",

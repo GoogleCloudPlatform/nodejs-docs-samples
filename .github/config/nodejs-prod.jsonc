@@ -76,8 +76,6 @@
 
     // TODO: fix these
     "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
-    "appengine/analytics", // [ERR_REQUIRE_ESM]: require() of ES Module
-    "appengine/metadata/flexible", // [ERR_REQUIRE_ESM]: require() of ES Module
     "automl", // (untested) FAILED_PRECONDITION: Google Cloud AutoML Natural Language was retired on March 15, 2024. Please migrate to Vertex AI instead
     "cloud-sql/mysql/mysql", // (untested) Error: expected 200 "OK", got 500 "Internal Server Error"
     "cloud-sql/mysql/mysql2", // (untested) Error: Cannot find module './connect-connector-with-iam-authn.js'
@@ -98,7 +96,6 @@
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
     "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
-    "run/markdown-preview/editor", // (untested) Error: could not create an identity token: Cannot fetch ID token in this environment, use GCE or set the GOOGLE_APPLICATION_CREDENTIALS environment variable to a service account credentials JSON file
     "scheduler", // SyntaxError: Cannot use import statement outside a module
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission

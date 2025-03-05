@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@google-cloud/pubsub": "^4.0.0",
-    "mocha": "^10.0.0"
+    "mocha": "^11.0.0"
   },
   "devDependencies": {
     "node-fetch": "^3.0.0",
-    "sinon": "^18.0.0"
+    "sinon": "^19.0.0"
   }
 }

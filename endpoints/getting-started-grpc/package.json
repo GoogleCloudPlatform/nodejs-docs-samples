@@ -21,8 +21,8 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0",
     "wait-port": "^1.0.4"
   }
 }

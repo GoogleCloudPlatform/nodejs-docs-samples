@@ -11,7 +11,7 @@
   },
   "type": "module",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node app.js",
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^11.0.0",
     "supertest": "^7.0.0"
   }
 }

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: CI (experimental)
+name: custard CI (dev)
 on:
   push:
     branches:
@@ -61,7 +61,7 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
-    name: Node.js test
+    name: test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit
@@ -110,7 +110,7 @@ jobs:
         with:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
           export_to_environment: true
-      - name: 🛠️ Test ${{ matrix.path }}
+      - name: Run tests for ${{ matrix.path }}
         run: |
           timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
             make test dir=${{ matrix.path }}

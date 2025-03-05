@@ -37,13 +37,23 @@ const renderRequest = async markdown => {
   };
 
   try {
-    // Create a Google Auth client with the Renderer service url as the target audience.
-    if (!client) client = await auth.getIdTokenClient(serviceUrl);
-    // Fetch the client request headers and add them to the service request headers.
-    // The client request headers include an ID token that authenticates the request.
-    const clientHeaders = await client.getRequestHeaders();
-    serviceRequestOptions.headers['Authorization'] =
-      clientHeaders['Authorization'];
+    // [END cloudrun_secure_request]
+    // If we're in the test environment, use the envvar instead
+    if (process.env.ID_TOKEN) {
+      serviceRequestOptions.headers['Authorization'] =
+        'Bearer ' + process.env.ID_TOKEN;
+    } else {
+      // [START cloudrun_secure_request]
+      // Create a Google Auth client with the Renderer service url as the target audience.
+      if (!client) client = await auth.getIdTokenClient(serviceUrl);
+      // Fetch the client request headers and add them to the service request headers.
+      // The client request headers include an ID token that authenticates the request.
+      const clientHeaders = await client.getRequestHeaders();
+      serviceRequestOptions.headers['Authorization'] =
+        clientHeaders['Authorization'];
+      // [END cloudrun_secure_request]
+    }
+    // [START cloudrun_secure_request]
   } catch (err) {
     throw Error('could not create an identity token: ' + err.message);
   }

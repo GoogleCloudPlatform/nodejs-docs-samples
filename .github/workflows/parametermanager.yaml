@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: parameter-manager
+name: parametermanager
 on:
   push:
     branches:
     - main
     paths:
-    - 'parameter-manager/**'
-    - '.github/workflows/parameter-manager.yaml'
+    - 'parametermanager/**'
+    - '.github/workflows/parametermanager.yaml'
   pull_request:
     types:
     - opened
@@ -27,8 +27,8 @@ on:
     - synchronize
     - labeled
     paths:
-    - 'parameter-manager/**'
-    - '.github/workflows/parameter-manager.yaml'
+    - 'parametermanager/**'
+    - '.github/workflows/parametermanager.yaml'
   schedule:
   - cron:  '0 0 * * 0'
 jobs:
@@ -40,8 +40,8 @@ jobs:
     if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
     uses: ./.github/workflows/test.yaml
     with:
-      name: 'parameter-manager'
-      path: 'parameter-manager'
+      name: 'parametermanager'
+      path: 'parametermanager'
   flakybot:
     # Ref: https://github.com/google-github-actions/auth#usage
     permissions:

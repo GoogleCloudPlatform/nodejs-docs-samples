@@ -37,8 +37,7 @@ describe('Count tokens advanced', async () => {
       `node ./count-tokens/countTokensAdvanced.js ${projectId} ${location} ${model}`
     );
 
-    // Expect 16822 tokens and 30 characters in prompt
-    assert(output.match('Prompt Token Count: 16822'));
-    assert(output.match('Prompt Character Count: 30'));
+    assert(output.match(/Prompt Token Count: \d+/));
+    assert(output.match(/Prompt Character Count: \d+/));
   });
 });

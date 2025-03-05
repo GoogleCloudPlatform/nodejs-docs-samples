@@ -1,0 +1,7 @@
+{
+  "secrets": {
+    "CAIP_PROJECT_ID": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id",
+    "LOCATION": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location",
+    "DATASTORE_ID": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-datastore-id"
+  }
+}

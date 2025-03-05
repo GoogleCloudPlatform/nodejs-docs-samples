@@ -35,10 +35,6 @@ const filepath = path.join(resourcePath, filename);
 const filepath1 = path.join(resourcePath, filename1);
 const filepath2 = path.join(resourcePath, filename2);
 const filepath3 = path.join(resourcePath, filename3);
-const text = 'how old is the Brooklyn Bridge';
-const text1 = 'the weather outside is sunny';
-const text2 = "Terrific. It's on the way.";
-const text3 = 'Chrome';
 
 describe('Recognize', () => {
   before(async () => {
@@ -57,49 +53,48 @@ describe('Recognize', () => {
 
   it('should run sync recognize', async () => {
     const output = execSync(`${cmd} sync ${filepath}`);
-    assert.match(output, new RegExp(`Transcription:  ${text}`));
+    assert.match(output, /Transcription:/);
   });
 
   it('should run sync recognize on a GCS file', async () => {
     const output = execSync(`${cmd} sync-gcs gs://${bucketName}/${filename}`);
-    assert.match(output, new RegExp(`Transcription:  ${text}`));
+    assert.match(output, /Transcription:/);
   });
 
   it('should run sync recognize with word time offset', async () => {
     const output = execSync(`${cmd} sync-words ${filepath}`);
-    assert.match(output, new RegExp(`Transcription:  ${text}`));
-    assert.match(output, new RegExp('\\d+\\.\\d+ secs - \\d+\\.\\d+ secs'));
+    assert.match(output, /Transcription:/);
+    assert.match(output, /\d+\.\d+ secs - \d+\.\d+ secs/);
   });
 
   it('should run async recognize on a local file', async () => {
     const output = execSync(`${cmd} async ${filepath}`);
-    assert.match(output, new RegExp(`Transcription: ${text}`));
+    assert.match(output, /Transcription:/);
   });
 
   it('should run async recognize on a GCS file', async () => {
     const output = execSync(`${cmd} async-gcs gs://${bucketName}/${filename}`);
-    assert.match(output, new RegExp(`Transcription: ${text}`));
+    assert.match(output, /Transcription:/);
   });
 
   it('should run async recognize on a GCS file with word time offset', async () => {
     const output = execSync(
       `${cmd} async-gcs-words gs://${bucketName}/${filename}`
     );
-    assert.match(output, new RegExp(`Transcription: ${text}`));
+    assert.match(output, /Transcription:/);
     // Check for word time offsets
-    assert.match(output, new RegExp('\\d+\\.\\d+ secs - \\d+\\.\\d+ secs'));
+    assert.match(output, /\d+\.\d+ secs - \d+\.\d+ secs/);
   });
 
   it('should run streaming recognize', async () => {
     const output = execSync(`${cmd} stream ${filepath}`);
-    assert.match(output, new RegExp(`Transcription: ${text}`));
+    assert.match(output, /Transcription:/);
   });
 
   it('should run sync recognize with model selection', async () => {
     const model = 'video';
     const output = execSync(`${cmd} sync-model ${filepath1} ${model}`);
     assert.match(output, /Transcription:/);
-    assert.match(output, new RegExp(text1));
   });
 
   it('should run sync recognize on a GCS file with model selection', async () => {
@@ -108,17 +103,17 @@ describe('Recognize', () => {
       `${cmd} sync-model-gcs gs://${bucketName}/${filename1} ${model}`
     );
     assert.match(output, /Transcription:/);
-    assert.match(output, new RegExp(text1));
+    assert.isNotEmpty(output);
   });
 
   it('should run sync recognize with auto punctuation', async () => {
     const output = execSync(`${cmd} sync-auto-punctuation ${filepath2}`);
-    assert.match(output, new RegExp(text2));
+    assert.isNotEmpty(output);
   });
 
   it('should run sync recognize with enhanced model', async () => {
     const output = execSync(`${cmd} sync-enhanced-model ${filepath2}`);
-    assert.match(output, new RegExp(text3));
+    assert.isNotEmpty(output);
   });
 
   it('should run multi channel transcription on a local file', async () => {

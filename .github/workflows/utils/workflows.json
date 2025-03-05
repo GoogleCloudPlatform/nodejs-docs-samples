@@ -79,6 +79,7 @@
   "mediatranslation",
   "monitoring/prometheus",
   "monitoring/snippets",
+  "parametermanager",
   "retail",
   "run/filesystem",
   "scheduler",

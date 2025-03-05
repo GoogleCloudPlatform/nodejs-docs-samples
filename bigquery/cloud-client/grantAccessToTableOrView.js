@@ -15,14 +15,14 @@
 'use strict';
 
 /**
- * Grants access to a BigQuery table or view for a specified principal
+ * Grants access to a BigQuery table or view for a specified principal.
  *
- * @param {string} projectId Google Cloud Platform project ID
- * @param {string} datasetId Dataset where the table or view is
- * @param {string} resourceName Table or view name to get the access policy
- * @param {string} principalId The principal requesting access to the table or view
- * @param {string} role Role to assign to the member
- * @returns {Promise<object[]>} The updated policy bindings
+ * @param {string} projectId Google Cloud Platform project ID.
+ * @param {string} datasetId Dataset where the table or view is.
+ * @param {string} resourceName Table or view name to get the access policy.
+ * @param {string} principalId The principal requesting access to the table or view.
+ * @param {string} role Role to assign to the member.
+ * @returns {Promise<object[]>} The updated policy bindings.
  */
 async function grantAccessToTableOrView(
   projectId,
@@ -34,7 +34,7 @@ async function grantAccessToTableOrView(
   // [START bigquery_grant_access_to_table_or_view]
   const {BigQuery} = require('@google-cloud/bigquery');
 
-  // TODO(developer): Update and un-comment below lines
+  // TODO(developer): Update and un-comment below lines.
 
   // Google Cloud Platform project.
   // projectId = "my_project_id"

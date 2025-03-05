@@ -15,18 +15,18 @@
 'use strict';
 
 /**
- * Grants access to a BigQuery dataset for a specified entity
+ * Grants access to a BigQuery dataset for a specified entity.
  *
- * @param {string} datasetId ID of the dataset to grant access to
- * @param {string} entityId ID of the entity to grant access to
- * @param {string} role Role to grant
- * @returns {Promise<Array>} Array of access entries
+ * @param {string} datasetId ID of the dataset to grant access to.
+ * @param {string} entityId ID of the entity to grant access to.
+ * @param {string} role Role to grant.
+ * @returns {Promise<Array>} Array of access entries.
  */
 async function grantAccessToDataset(datasetId, entityId, role) {
   // [START bigquery_grant_access_to_dataset]
   const {BigQuery} = require('@google-cloud/bigquery');
 
-  // Define enum for HTTP codes
+  // Define enum for HTTP codes.
   const HTTP_STATUS = {
     PRECONDITION_FAILED: 412,
   };
@@ -79,7 +79,7 @@ async function grantAccessToDataset(datasetId, entityId, role) {
     // Update will only succeed if the dataset
     // has not been modified externally since retrieval.
     //
-    // See the BigQuery client library documentation for more details on metadata updates
+    // See the BigQuery client library documentation for more details on metadata updates:
     // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
 
     // Update just the 'access entries' property of the dataset.
@@ -89,8 +89,7 @@ async function grantAccessToDataset(datasetId, entityId, role) {
 
     // Show a success message.
     console.log(
-      `Role '${role}' granted for entity '${entityId}'` +
-        ` in dataset '${datasetId}'.`
+      `Role '${role}' granted for entity '${entityId}' in dataset '${datasetId}'.`
     );
 
     return updatedDataset.access;

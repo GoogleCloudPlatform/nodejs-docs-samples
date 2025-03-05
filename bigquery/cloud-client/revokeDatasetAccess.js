@@ -14,23 +14,22 @@
 
 'use strict';
 
-// Define enum for HTTP codes
+// Define enum for HTTP codes.
 const HTTP_STATUS = {
   PRECONDITION_FAILED: 412,
 };
 
 /**
- * Revokes access to a dataset for a specified entity
+ * Revokes access to a dataset for a specified entity.
  *
- * @param {string} datasetId ID of the dataset to revoke access to
- * @param {string} entityId  ID of the user or group from whom you are revoking access
+ * @param {string} datasetId ID of the dataset to revoke access to.
+ * @param {string} entityId  ID of the user or group from whom you are revoking access.
  *                            Alternatively, the JSON REST API representation of the entity,
- *                            such as a view's table reference
- * @returns {Promise<Array>} A promise that resolves to the updated access entries
+ *                            such as a view's table reference.
+ * @returns {Promise<Array>} A promise that resolves to the updated access entries.
  */
 async function revokeDatasetAccess(datasetId, entityId) {
   // [START bigquery_revoke_dataset_access]
-  // Imports the Google Cloud client library.
   const {BigQuery} = require('@google-cloud/bigquery');
 
   // TODO (developer): Update and un-comment below lines.
@@ -49,15 +48,15 @@ async function revokeDatasetAccess(datasetId, entityId) {
   // Get a reference to the dataset.
   const [dataset] = await bigquery.dataset(datasetId).get();
 
-  // To revoke access to a dataset, remove elements from the access list
+  // To revoke access to a dataset, remove elements from the access list.
   //
-  // See the BigQuery client library documentation for more details on access entries
+  // See the BigQuery client library documentation for more details on access entries:
   // https://cloud.google.com/nodejs/docs/reference/secret-manager/4.1.4
 
   // Filter access entries to exclude entries matching the specified entity_id
   // and assign a new list back to the access list.
   dataset.metadata.access = dataset.metadata.access.filter(entry => {
-    // Return false (remove entry) if any of these fields match entityId
+    // Return false (remove entry) if any of these fields match entityId.
     return !(
       entry.entity_id === entityId ||
       entry.userByEmail === entityId ||

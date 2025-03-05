@@ -15,13 +15,13 @@
 'use strict';
 
 /**
- * Revokes access to a BigQuery table or view
- * @param {string} projectId The ID of the Google Cloud project
- * @param {string} datasetId The ID of the dataset containing the table/view
- * @param {string} resourceName The ID of the table or view
- * @param {string} [roleToRemove=null] Optional. Specific role to revoke
- * @param {string} [principalToRemove=null] Optional. Specific principal to revoke access from
- * @returns {Promise<Object>} The updated IAM policy
+ * Revokes access to a BigQuery table or view.
+ * @param {string} projectId The ID of the Google Cloud project.
+ * @param {string} datasetId The ID of the dataset containing the table/view.
+ * @param {string} resourceName The ID of the table or view.
+ * @param {string} [roleToRemove=null] Optional. Specific role to revoke.
+ * @param {string} [principalToRemove=null] Optional. Specific principal to revoke access from.
+ * @returns {Promise<Object>} The updated IAM policy.
  */
 async function revokeAccessToTableOrView(
   projectId,
@@ -31,10 +31,10 @@ async function revokeAccessToTableOrView(
   principalToRemove = null
 ) {
   // [START bigquery_revoke_access_to_table_or_view]
-  // Imports the Google Cloud client library.
   const {BigQuery} = require('@google-cloud/bigquery');
 
-  // TODO (developer): Update and un-comment below lines
+  // TODO (developer): Update and un-comment below lines.
+
   // Google Cloud Platform project.
   // projectId = "my_project_id"
 

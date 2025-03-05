@@ -15,23 +15,25 @@
 'use strict';
 
 /**
- * View access policy for a BigQuery table or view
+ * View access policy for a BigQuery table or view.
  *
- * @param {string} projectId Google Cloud Platform project
- * @param {string} datasetId Dataset where the table or view is
- * @param {string} resourceName Table or view name to get the access policy
- * @returns {Promise<object>} The IAM policy object
+ * @param {string} projectId Google Cloud Platform project.
+ * @param {string} datasetId Dataset where the table or view is.
+ * @param {string} resourceName Table or view name to get the access policy.
+ * @returns {Promise<object>} The IAM policy object.
  */
 async function viewTableOrViewAccessPolicy(projectId, datasetId, resourceName) {
   // [START bigquery_view_table_or_view_access_policy]
-  // Imports the Google Cloud client library
   const {BigQuery} = require('@google-cloud/bigquery');
 
-  // TODO(developer): Update and un-comment below lines
+  // TODO(developer): Update and un-comment below lines.
+
   // Google Cloud Platform project.
   // projectId = "my_project_id";
+
   // Dataset where the table or view is.
   // datasetId = "my_dataset_id";
+
   // Table or view name to get the access policy.
   // resourceName = "my_table_name_id";
 

@@ -15,19 +15,19 @@
 'use strict';
 
 /**
- * View access policies for a BigQuery dataset
- * @param {string} datasetId Dataset ID to view access policies for
- * @returns {Array} List of access entries
+ * View access policies for a BigQuery dataset.
+ * @param {string} datasetId Dataset ID to view access policies for.
+ * @returns {Array} List of access entries.
  */
 function viewDatasetAccessPolicy(datasetId) {
   // [START bigquery_view_dataset_access_policy]
-  // Import the Google Cloud client library.
   const {BigQuery} = require('@google-cloud/bigquery');
 
   // Instantiate a client.
   const bigquery = new BigQuery();
 
   // TODO (developer): Update and un-comment below lines.
+
   // Dataset from which to get the access policy
   // datasetId = "my_dataset_id";
 
@@ -38,7 +38,7 @@ function viewDatasetAccessPolicy(datasetId) {
     const accessEntries = metadata.access || [];
 
     // Show the list of AccessEntry objects.
-    // More details about the AccessEntry object in the BigQuery documentation
+    // More details about the AccessEntry object in the BigQuery documentation:
     // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
     console.log(
       `${accessEntries.length} Access entries in dataset '${datasetId}':`

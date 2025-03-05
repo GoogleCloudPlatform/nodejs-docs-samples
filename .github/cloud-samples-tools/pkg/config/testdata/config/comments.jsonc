@@ -1,8 +1,0 @@
-/*
- * Multi-line
- * comment
- */
-{
-  // Single line comment.
-  "package-file": /* inline comment */ ["package.json"] // trailing comment
-}

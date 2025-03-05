@@ -24,10 +24,10 @@ function viewDatasetAccessPolicy(datasetId) {
   // Import the Google Cloud client library.
   const {BigQuery} = require('@google-cloud/bigquery');
 
-  // Create a client
+  // Instantiate a client.
   const bigquery = new BigQuery();
 
-  // TODO (developer): Update and un-comment below lines
+  // TODO (developer): Update and un-comment below lines.
   // Dataset from which to get the access policy
   // datasetId = "my_dataset";
 
@@ -39,6 +39,7 @@ function viewDatasetAccessPolicy(datasetId) {
 
     // Show the list of AccessEntry objects.
     // More details about the AccessEntry object in the BigQuery documentation
+    // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
     console.log(
       `${accessEntries.length} Access entries in dataset '${datasetId}':`
     );

@@ -14,10 +14,6 @@
 
 'use strict';
 
-// Imports the Google Cloud client library
-const {BigQuery} = require('@google-cloud/bigquery');
-
-// [START bigquery_view_table_or_view_access_policy]
 /**
  * View access policy for a BigQuery table or view
  *
@@ -27,25 +23,29 @@ const {BigQuery} = require('@google-cloud/bigquery');
  * @returns {Promise<object>} The IAM policy object
  */
 async function viewTableOrViewAccessPolicy(projectId, datasetId, resourceName) {
+  // [START bigquery_view_table_or_view_access_policy]
+  // Imports the Google Cloud client library
+  const {BigQuery} = require('@google-cloud/bigquery');
+
   // TODO(developer): Update and un-comment below lines
-  // Google Cloud Platform project
+  // Google Cloud Platform project.
   // projectId = "my_project_id";
-  // Dataset where the table or view is
+  // Dataset where the table or view is.
   // datasetId = "my_dataset_id";
-  // Table or view name to get the access policy
+  // Table or view name to get the access policy.
   // resourceName = "my_table_name";
 
-  // Instantiate a client
+  // Instantiate a client.
   const client = new BigQuery();
 
-  // Get the table reference
+  // Get the table reference.
   const dataset = client.dataset(datasetId);
   const table = dataset.table(resourceName);
 
-  // Get the IAM access policy for the table or view
+  // Get the IAM access policy for the table or view.
   const [policy] = await table.getIamPolicy();
 
-  // Initialize bindings if they don't exist
+  // Initialize bindings if they don't exist.
   if (!policy.bindings) {
     policy.bindings = [];
   }

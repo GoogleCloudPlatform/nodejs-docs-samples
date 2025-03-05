@@ -31,39 +31,39 @@ async function grantAccessToDataset(datasetId, entityId, role) {
     PRECONDITION_FAILED: 412,
   };
 
-  // TODO(developer): Update and un-comment below lines
+  // TODO(developer): Update and un-comment below lines.
 
-  // ID of the dataset to revoke access to
+  // ID of the dataset to revoke access to.
   // datasetId = "my_project_id.my_dataset_name";
 
-  // ID of the user or group from whom you are adding access
+  // ID of the user or group from whom you are adding access.
   // Alternatively, the JSON REST API representation of the entity,
-  // such as a view's table reference
+  // such as a view's table reference.
   // entityId = "user-or-group-to-add@example.com";
 
   // One of the "Basic roles for datasets" described here:
   // https://cloud.google.com/bigquery/docs/access-control-basic-roles#dataset-basic-roles
   // role = "READER";
 
-  // Type of entity you are granting access to
+  // Type of entity you are granting access to.
   // Find allowed allowed entity type names here:
   // https://cloud.google.com/bigquery/docs/reference/rest/v2/datasets#resource:-dataset
   // In this case, we're using groupByEmail
   const entityType = 'groupByEmail';
 
-  // Instantiate a client
+  // Instantiate a client.
   const client = new BigQuery();
 
   try {
-    // Get a reference to the dataset
+    // Get a reference to the dataset.
     const [dataset] = await client.dataset(datasetId).get();
 
-    // The 'access entries' list is immutable. Create a copy for modifications
+    // The 'access entries' list is immutable. Create a copy for modifications.
     const entries = Array.isArray(dataset.metadata.access)
       ? [...dataset.metadata.access]
       : [];
 
-    // Append an AccessEntry to grant the role to a dataset
+    // Append an AccessEntry to grant the role to a dataset.
     // Find more details about the AccessEntry object in the BigQuery documentation:
     // https://cloud.google.com/python/docs/reference/bigquery/latest/google.cloud.bigquery.dataset.AccessEntry
     entries.push({
@@ -71,23 +71,23 @@ async function grantAccessToDataset(datasetId, entityId, role) {
       [entityType]: entityId,
     });
 
-    // Assign the list of AccessEntries back to the dataset
+    // Assign the list of AccessEntries back to the dataset.
     const metadata = {
       access: entries,
     };
 
     // Update will only succeed if the dataset
-    // has not been modified externally since retrieval
+    // has not been modified externally since retrieval.
     //
     // See the BigQuery client library documentation for more details on metadata updates
-    // https://cloud.google.com/bigquery/docs/updating-model-metadata
+    // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
 
-    // Update just the 'access entries' property of the dataset
+    // Update just the 'access entries' property of the dataset.
     const [updatedDataset] = await client
       .dataset(datasetId)
       .setMetadata(metadata);
 
-    // Show a success message
+    // Show a success message.
     console.log(
       `Role '${role}' granted for entity '${entityId}'` +
         ` in dataset '${datasetId}'.`
@@ -96,7 +96,6 @@ async function grantAccessToDataset(datasetId, entityId, role) {
     return updatedDataset.access;
   } catch (error) {
     if (error.code === HTTP_STATUS.PRECONDITION_FAILED) {
-      // A read-modify-write error (PreconditionFailed equivalent)
       console.error(
         `Dataset '${datasetId}' was modified remotely before this update. ` +
           'Fetch the latest version and retry.'

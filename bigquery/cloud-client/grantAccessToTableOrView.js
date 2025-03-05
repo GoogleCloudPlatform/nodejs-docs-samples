@@ -40,10 +40,10 @@ async function grantAccessToTableOrView(
   // projectId = "my_project_id"
 
   // Dataset where the table or view is.
-  // datasetId = "my_dataset"
+  // datasetId = "my_dataset_id"
 
   // Table or view name to get the access policy.
-  // resourceName = "my_table"
+  // resourceName = "my_table_id"
 
   // The principal requesting access to the table or view.
   // Find more details about principal identifiers here:
@@ -88,7 +88,6 @@ async function grantAccessToTableOrView(
     `Role '${role}' granted for principal '${principalId}' on resource '${datasetId}.${resourceName}'.`
   );
   // [END bigquery_grant_access_to_table_or_view]
-
   return updatedPolicy.bindings;
 }
 

@@ -188,26 +188,19 @@ const setupBeforeAll = async () => {
 const cleanupResources = async () => {
   console.log('=== Cleaning up test resources ===');
 
-  if (sharedClient) {
+  if (sharedClient && sharedDataset) {
     try {
-      // Check if resources exist before attempting to delete
-      if (sharedDataset) {
-        try {
-          console.log(
-            `Deleting dataset: ${DATASET_ID} and all contained tables/views`
-          );
-          await sharedClient.dataset(DATASET_ID).delete({force: true});
-          console.log(`Successfully deleted dataset: ${DATASET_ID}`);
-        } catch (err) {
-          if (err.code !== HTTP_STATUS.NOT_FOUND) {
-            console.error(`Error deleting dataset: ${err.message}`);
-          } else {
-            console.log(`Dataset ${DATASET_ID} already deleted or not found`);
-          }
-        }
-      }
+      console.log(
+        `Deleting dataset: ${DATASET_ID} and all contained tables/views`
+      );
+      await sharedClient.dataset(DATASET_ID).delete({force: true});
+      console.log(`Successfully deleted dataset: ${DATASET_ID}`);
     } catch (err) {
-      console.error(`Cleanup error: ${err.message}`);
+      if (err.code !== HTTP_STATUS.NOT_FOUND) {
+        console.error(`Error deleting dataset: ${err.message}`);
+      } else {
+        console.log(`Dataset ${DATASET_ID} already deleted or not found`);
+      }
     }
   }
 

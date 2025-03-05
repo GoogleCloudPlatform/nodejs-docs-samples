@@ -33,7 +33,7 @@ async function viewTableOrViewAccessPolicy(projectId, datasetId, resourceName) {
   // Dataset where the table or view is.
   // datasetId = "my_dataset_id";
   // Table or view name to get the access policy.
-  // resourceName = "my_table_name";
+  // resourceName = "my_table_name_id";
 
   // Instantiate a client.
   const client = new BigQuery();

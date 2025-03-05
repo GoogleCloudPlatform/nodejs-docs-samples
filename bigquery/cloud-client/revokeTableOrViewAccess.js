@@ -39,10 +39,10 @@ async function revokeAccessToTableOrView(
   // projectId = "my_project_id"
 
   // Dataset where the table or view is.
-  // datasetId = "my_dataset"
+  // datasetId = "my_dataset_id"
 
   // Table or view name to get the access policy.
-  // resourceName = "my_table"
+  // resourceName = "my_table_id"
 
   // (Optional) Role to remove from the table or view.
   // roleToRemove = "roles/bigquery.dataViewer"

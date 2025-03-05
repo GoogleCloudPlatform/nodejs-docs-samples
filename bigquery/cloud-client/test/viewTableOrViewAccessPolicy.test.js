@@ -43,20 +43,20 @@ describe('viewTableOrViewAccessPolicy', () => {
       table.id
     );
 
-    // Verificar que la política existe
+    // Verify that the policy exists
     assert.ok(policy, 'Policy should be defined');
 
-    // Verificar que bindings existe y es un array
+    // Verify that bindings exists and is an array
     assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
 
-    // En una política nueva, bindings debería estar vacío
+    // In a new policy, bindings should be empty
     assert.strictEqual(
       policy.bindings.length,
       0,
       'Bindings list should be empty'
     );
 
-    // Verificar que etag existe, pero no validar su valor exacto
+    // Verify that etag exists, but do not validate its exact value
     assert.ok(policy.etag, 'Etag should be defined');
   });
 
@@ -71,20 +71,20 @@ describe('viewTableOrViewAccessPolicy', () => {
       view.id
     );
 
-    // Verificar que la política existe
+    // Verify that the policy exists
     assert.ok(policy, 'Policy should be defined');
 
-    // Verificar que bindings existe y es un array
+    // Verify that bindings exists and is an array
     assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
 
-    // En una política nueva, bindings debería estar vacío
+    // In a new policy, bindings should be empty
     assert.strictEqual(
       policy.bindings.length,
       0,
       'Bindings list should be empty'
     );
 
-    // Verificar que etag existe, pero no validar su valor exacto
+    // Verify that etag exists, but do not validate its exact value
     assert.ok(policy.etag, 'Etag should be defined');
   });
 });

@@ -29,7 +29,7 @@ function viewDatasetAccessPolicy(datasetId) {
 
   // TODO (developer): Update and un-comment below lines.
   // Dataset from which to get the access policy
-  // datasetId = "my_dataset";
+  // datasetId = "my_dataset_id";
 
   // Get a reference to the dataset.
   const dataset = bigquery.dataset(datasetId);

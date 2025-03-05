@@ -36,7 +36,7 @@ async function revokeDatasetAccess(datasetId, entityId) {
   // TODO (developer): Update and un-comment below lines.
 
   // ID of the dataset to revoke access to.
-  // datasetId = "your-project.your_dataset"
+  // datasetId = "my_project.my_dataset"
 
   // ID of the user or group from whom you are revoking access.
   // Alternatively, the JSON REST API representation of the entity,
@@ -57,32 +57,12 @@ async function revokeDatasetAccess(datasetId, entityId) {
   // Filter access entries to exclude entries matching the specified entity_id
   // and assign a new list back to the access list.
   dataset.metadata.access = dataset.metadata.access.filter(entry => {
-    // Check for entity_id (specific match).
-    if (entry.entity_id === entityId) {
-      console.log(
-        `Found matching entity_id: ${entry.entity_id}, removing entry`
-      );
-      return false;
-    }
-
-    // Check for userByEmail field.
-    if (entry.userByEmail === entityId) {
-      console.log(
-        `Found matching userByEmail: ${entry.userByEmail}, removing entry`
-      );
-      return false;
-    }
-
-    // Check for groupByEmail field.
-    if (entry.groupByEmail === entityId) {
-      console.log(
-        `Found matching groupByEmail: ${entry.groupByEmail}, removing entry`
-      );
-      return false;
-    }
-
-    // Keep all other entries.
-    return true;
+    // Return false (remove entry) if any of these fields match entityId
+    return !(
+      entry.entity_id === entityId ||
+      entry.userByEmail === entityId ||
+      entry.groupByEmail === entityId
+    );
   });
 
   // Update will only succeed if the dataset

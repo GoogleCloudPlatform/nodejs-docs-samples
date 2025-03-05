@@ -21,7 +21,7 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const {describe, it, before} = require('mocha');
 
 // TODO(developers): update for your own environment
-const organizationId = process.env.GCLOUD_ORGANIZATION;
+const organizationId = '1081635000895';
 const location = 'global';
 
 describe('Client with mute rule V2', async () => {

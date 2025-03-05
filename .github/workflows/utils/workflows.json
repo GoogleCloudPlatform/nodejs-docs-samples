@@ -50,7 +50,6 @@
   "functions/scheduleinstance",
   "functions/security",
   "functions/spanner",
-  "functions/speech-to-speech/functions",
   "functions/v2/autoLabelInstance",
   "functions/v2/cloudEventLogging",
   "functions/v2/firebase/firestore/helloFirestore",

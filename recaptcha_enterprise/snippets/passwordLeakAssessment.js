@@ -29,10 +29,8 @@ const [projectId, username, password] = args;
 
 // [START recaptcha_enterprise_password_leak_verification]
 
-const {
-  RecaptchaEnterpriseServiceClient,
-} = require('@google-cloud/recaptcha-enterprise');
-const {PasswordCheckVerification} = require('recaptcha-password-check-helpers');
+import {RecaptchaEnterpriseServiceClient} from '@google-cloud/recaptcha-enterprise';
+import {PasswordCheckVerification} from 'recaptcha-password-check-helpers';
 
 // TODO(developer): Uncomment and set the following variables
 // Google Cloud Project ID.
@@ -168,3 +166,4 @@ checkPasswordLeak(projectId, username, password).catch(err => {
   process.exitCode = 1;
 });
 // [END recaptcha_enterprise_password_leak_verification]
+module.exports = checkPasswordLeak

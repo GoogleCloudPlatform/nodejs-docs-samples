@@ -14,8 +14,8 @@
 
 'use strict';
 
-const express = require('express');
-const fetch = require('node-fetch');
+import express from 'express';
+import fetch from 'node-fetch';
 
 const app = express();
 app.enable('trust proxy');
@@ -57,4 +57,5 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
-module.exports = app;
+
+export default app;

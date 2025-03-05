@@ -60,7 +60,7 @@ jobs:
          id: npm-cache-dir
          shell: bash
          run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-       - uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8 # v4
+       - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
          id: npm-cache
          with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
@@ -81,7 +81,7 @@ jobs:
        - run: npm test
        - name: upload test results for FlakyBot workflow
          if: github.event.action == 'schedule' && always()
-         uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4
+         uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
          env:
           MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
          with:

@@ -21,7 +21,7 @@ const supertest = require('supertest');
 
 const cwd = path.join(__dirname, '../');
 
-const requestObj = supertest(proxyquire(path.join(cwd, 'server'), { process }));
+const requestObj = supertest(proxyquire(path.join(cwd, 'server'), {process}));
 
 const stubConsole = function () {
   sinon.stub(console, 'error');
@@ -47,7 +47,7 @@ describe('gae_update_web_server_app', () => {
   });
 });
 
-describe('gae_add_display_form add_display_form', () => {
+describe('gae_add_display_form', () => {
   it('should display form', async () => {
     await requestObj
       .get('/submit')
@@ -63,7 +63,7 @@ describe('gae_add_display_form add_display_form', () => {
   });
 });
 
-describe('gae_add_post_handler add_post_handler gae_enable_parser', () => {
+describe('gae_add_post_handler gae_enable_parser', () => {
   it('should record message', async () => {
     await requestObj
       .post('/submit', {

@@ -24,7 +24,7 @@ function main(projectId, textToInspect, words, infoTypes) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_deidentify_exception_list]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
 
   // Initialize client that will be used to send requests. This client only needs to be created
   // once, and can be reused for multiple requests. After completing all of your requests, call

@@ -22,7 +22,7 @@ function main(projectId, string, infoTypes, words) {
   [infoTypes, words] = transformCLI(infoTypes, words);
   // [START dlp_deidentify_dictionary_replacement]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

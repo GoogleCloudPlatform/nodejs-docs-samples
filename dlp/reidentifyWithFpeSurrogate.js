@@ -21,7 +21,7 @@
 function main(projectId, string, alphabet, surrogateType, unwrappedKey) {
   // [START dlp_reidentify_free_text_with_fpe_using_surrogate]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

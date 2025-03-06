@@ -21,7 +21,7 @@
 function main(projectId) {
   // [START dlp_inspect_column_values_w_custom_hotwords]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

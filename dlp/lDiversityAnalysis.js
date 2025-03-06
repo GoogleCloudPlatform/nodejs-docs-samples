@@ -30,7 +30,7 @@ async function main(
   quasiIds = transformCLI(quasiIds);
   // [START dlp_l_diversity]
   // Import the Google Cloud client libraries
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
   const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients

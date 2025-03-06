@@ -21,7 +21,7 @@
 async function main(projectId, string, keyName, wrappedKey, surrogateType) {
   // [START dlp_reidentify_deterministic]
   // Imports the Google Cloud Data Loss Prevention library
-  const DLP = require('@google-cloud/dlp');
+  import {DLP} from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

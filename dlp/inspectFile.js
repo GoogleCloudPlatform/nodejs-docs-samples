@@ -33,8 +33,8 @@ function main(
   import {DLP} from '@google-cloud/dlp';
 
   // Import other required libraries
-  import {fs} from 'fs';
-  import {mine} from 'mime';
+  const fs = require('fs');
+  const mime = require('mime');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

@@ -94,9 +94,7 @@
     "functions/v2/imagemagick", // (untested) Error: A bucket name is needed to use Cloud Storage.
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651
-    "recaptcha_enterprise/snippets", // Cannot use import statement outside a module
     "run/idp-sql", // (untested) Error: Invalid contents in the credentials file
-    "scheduler", // SyntaxError: Cannot use import statement outside a module
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
     "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379

@@ -21,7 +21,7 @@
 function main(projectId, transientKey1, transientKey2) {
   // [START dlp_deidentify_table_with_multiple_crypto_hash]
   // Imports the Google Cloud client library
-  import DLP from '@google-cloud/dlp';
+  import {DLP} from '@google-cloud/dlp';
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 

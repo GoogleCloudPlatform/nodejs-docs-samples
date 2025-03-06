@@ -30,7 +30,7 @@ function main(
 
   // [START dlp_inspect_file]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  import {DLP} from '@google-cloud/dlp';
 
   // Import other required libraries
   import {fs} from 'fs';

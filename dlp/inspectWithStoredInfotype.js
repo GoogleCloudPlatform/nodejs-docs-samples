@@ -21,7 +21,7 @@
 async function main(projectId, infoTypeId, string) {
   // [START dlp_inspect_with_stored_infotype]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  import {DLP} from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

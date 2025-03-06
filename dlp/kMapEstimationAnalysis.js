@@ -32,7 +32,7 @@ async function main(
 
   // [START dlp_k_map]
   // Import the Google Cloud client libraries
-  import DLP from '@google-cloud/dlp';
+  import {DLP} from '@google-cloud/dlp';
   import {PubSub} from '@google-cloud/pubsub';
 
   // Instantiates clients

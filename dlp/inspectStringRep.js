@@ -33,7 +33,7 @@ async function main(
 
   // [START dlp_inspect_string_rep]
   // Imports the Google Cloud Data Loss Prevention library
-  import DLP from '@google-cloud/dlp';
+  import {DLP} from '@google-cloud/dlp';
 
   // Assemble the regional endpoint url using provided rep location
   const opts = {

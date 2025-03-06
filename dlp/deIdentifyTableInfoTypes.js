@@ -22,7 +22,7 @@
 function main(projectId) {
   // [START dlp_deidentify_table_infotypes]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
 
   // Initialize google DLP Client
   const dlp = new DLP.DlpServiceClient();

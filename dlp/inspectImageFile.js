@@ -21,7 +21,7 @@
 function main(projectId, imagePath) {
   // [START dlp_inspect_image_file]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
   import {mine} from 'mime';
   import {fs} from 'fs';
 

@@ -21,7 +21,7 @@
 async function main(projectId, alphabet, keyName, wrappedKey) {
   // [START dlp_deidentify_table_fpe]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

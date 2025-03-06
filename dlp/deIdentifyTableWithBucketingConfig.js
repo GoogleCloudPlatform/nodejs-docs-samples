@@ -21,7 +21,7 @@
 function main(projectId) {
   // [START dlp_deidentify_table_primitive_bucketing]
   // Imports the Google Cloud client library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 

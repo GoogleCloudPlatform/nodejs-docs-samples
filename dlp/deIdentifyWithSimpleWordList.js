@@ -24,7 +24,7 @@ function main(projectId, textToInspect, words, customInfoTypeName) {
   words = words.split(',');
   // [START dlp_deidentify_simple_word_list]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
 
   // TODO(developer): Replace these variables before running the sample.
   // const projectId = "your-project-id";

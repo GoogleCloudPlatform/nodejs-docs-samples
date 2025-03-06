@@ -20,7 +20,7 @@ function main(projectId, filepath, infoTypes, outputPath) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_redact_image_listed_infotypes]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
 
   // Imports required Node.js libraries
   import {mine} from 'mime';

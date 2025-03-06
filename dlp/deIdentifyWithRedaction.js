@@ -24,7 +24,7 @@ function main(projectId, string, infoTypes) {
   infoTypes = transformCLI(infoTypes);
   // [START dlp_deidentify_redact]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  import DLP from '@google-cloud/dlp';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

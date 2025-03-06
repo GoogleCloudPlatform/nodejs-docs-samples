@@ -1,7 +1,7 @@
 {
     "env": {
-        "FUNCTIONS_BUCKET": "$PROJECT_ID",
-        "RESULT_BUCKET": "$PROJECT_ID",
+        "FUNCTIONS_BUCKET": "nodejs-docs-samples-tests",
+        "RESULT_BUCKET": "nodejs-docs-samples-tests",
         "TRANSLATE_TOPIC": "integration-tests-instance",
         "RESULT_TOPIC": "integration-tests-instance",
         "TO_LANG": "en,es"

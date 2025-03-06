@@ -14,25 +14,25 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before, after, afterEach} = require('mocha');
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const cp = require('child_process');
-const {PubSub} = require('@google-cloud/pubsub');
+import { assert } from 'chai';
+import { describe, it, before, after, afterEach } from 'mocha';
+import proxyquire from 'proxyquire';
+import { restore, stub, replace, fake, assert as _assert } from 'sinon';
+import { execSync as _execSync } from 'child_process';
+import { PubSub } from '@google-cloud/pubsub';
 const pubsub = new PubSub();
-const uuid = require('uuid');
-const DLP = require('@google-cloud/dlp');
+import { v4 } from 'uuid';
+import DLP, { DlpServiceClient, protos } from '@google-cloud/dlp';
 
-const {MOCK_DATA} = require('./mockdata');
+import { MOCK_DATA } from './mockdata';
 const bucket = 'nodejs-dlp-test-bucket';
 const dataProject = 'bigquery-public-data';
 const datasetId = 'samples';
 const tableId = 'github_nested';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 describe('inspect', () => {
   let projectId;
 
@@ -40,8 +40,8 @@ describe('inspect', () => {
     projectId = await client.getProjectId();
   });
   let topic, subscription, jobName;
-  const topicName = `dlp-inspect-topic-${uuid.v4()}`;
-  const subscriptionName = `dlp-inspect-subscription-${uuid.v4()}`;
+  const topicName = `dlp-inspect-topic-${v4()}`;
+  const subscriptionName = `dlp-inspect-subscription-${v4()}`;
   before(async () => {
     [topic] = await pubsub.createTopic(topicName);
     [subscription] = await topic.createSubscription(subscriptionName);
@@ -55,7 +55,7 @@ describe('inspect', () => {
 
   // Delete DLP job created in the snippets.
   afterEach(async () => {
-    sinon.restore();
+    restore();
     if (!jobName) return;
     const request = {
       name: jobName,
@@ -465,19 +465,18 @@ describe('inspect', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -486,13 +485,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
     const inspectBigqueryWithSampling = proxyquire(
       '../inspectBigQueryTableWithSampling',
       {
@@ -512,11 +511,11 @@ describe('inspect', () => {
       topicName,
       subscriptionName
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle errors while creating inspection job', async () => {
@@ -529,22 +528,20 @@ describe('inspect', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon
-      .stub()
+    const mockCreateDlpJob = stub()
       .rejects(new Error('Error while creating job'));
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -553,15 +550,15 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockErrorHandler = sinon.stub();
-    sinon.replace(process, 'on', mockErrorHandler);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockErrorHandler = stub();
+    replace(process, 'on', mockErrorHandler);
+    replace(console, 'log', () => stub());
     const inspectBigqueryWithSampling = proxyquire(
       '../inspectBigQueryTableWithSampling',
       {
@@ -585,8 +582,8 @@ describe('inspect', () => {
     } catch (error) {
       console.log(error);
     }
-    sinon.assert.calledOnce(mockErrorHandler);
-    sinon.assert.notCalled(mockGetDlpJob);
+    _assert.calledOnce(mockErrorHandler);
+    _assert.notCalled(mockGetDlpJob);
   });
 
   // dlp_inspect_string_multiple_rules
@@ -643,19 +640,18 @@ describe('inspect', () => {
       infoTypes,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -664,13 +660,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -684,11 +680,11 @@ describe('inspect', () => {
       subscriptionName,
       'PERSON_NAME'
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error while inspecting GCS file', async () => {
@@ -702,19 +698,18 @@ describe('inspect', () => {
       infoTypes,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -723,13 +718,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectGcsWithSampling = proxyquire('../inspectGcsFileWithSampling', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -884,30 +879,30 @@ describe('inspect', () => {
       gcsUri,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectGcsSendToScc = proxyquire('../inspectGcsSendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectGcsSendToScc(projectId, gcsUri);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if inspect job results into failure', async () => {
@@ -918,27 +913,27 @@ describe('inspect', () => {
       gcsUri,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectGcsSendToScc = proxyquire('../inspectGcsSendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectGcsSendToScc(projectId, gcsUri);
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );
@@ -954,30 +949,30 @@ describe('inspect', () => {
       tableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectBigquerySendToScc = proxyquire('../inspectBigquerySendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectBigquerySendToScc(projectId, dataProject, datasetId, tableId);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if inspect job results into failure', async () => {
@@ -989,27 +984,27 @@ describe('inspect', () => {
       tableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectBigQuerySendToScc = proxyquire('../inspectBigquerySendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectBigQuerySendToScc(projectId, dataProject, datasetId, tableId);
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );
@@ -1026,19 +1021,19 @@ describe('inspect', () => {
       datastoreKind,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectDatastoreSendToScc = proxyquire(
       '../inspectDatastoreSendToScc',
@@ -1052,11 +1047,11 @@ describe('inspect', () => {
       datastoreNamespace,
       datastoreKind
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if inspect job results into failure', async () => {
@@ -1069,19 +1064,19 @@ describe('inspect', () => {
       datastoreKind,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectDatastoreSendToScc = proxyquire(
       '../inspectDatastoreSendToScc',
@@ -1095,8 +1090,8 @@ describe('inspect', () => {
       datastoreNamespace,
       datastoreKind
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );
@@ -1169,16 +1164,15 @@ describe('inspect', () => {
       string,
       infoTypeId
     );
-    const mockInspectContent = sinon
-      .stub()
+    const mockInspectContent = stub()
       .resolves(DATA_CONSTANTS.RESPONSE_INSPECT_CONTENT);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'inspectContent',
       mockInspectContent
     );
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectWithStoredInfotype = proxyquire(
       '../inspectWithStoredInfotype',
@@ -1188,7 +1182,7 @@ describe('inspect', () => {
     );
 
     await inspectWithStoredInfotype(projectId, infoTypeId, string);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockInspectContent,
       DATA_CONSTANTS.REQUEST_INSPECT_CONTENT
     );
@@ -1198,14 +1192,14 @@ describe('inspect', () => {
     const string =
       'My phone number is (223) 456-7890 and my email address is gary@example.com.';
     const infoTypeId = 'MOCK_INFOTYPE';
-    const mockInspectContent = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockInspectContent = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'inspectContent',
       mockInspectContent
     );
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectWithStoredInfotype = proxyquire(
       '../inspectWithStoredInfotype',
@@ -1233,33 +1227,32 @@ describe('inspect', () => {
       jobName
     );
 
-    const mockHybridInspectJobTrigger = sinon
-      .stub()
+    const mockHybridInspectJobTrigger = stub()
       .resolves([{name: jobName}]);
-    const mockActivateJobTrigger = sinon.stub().resolves([{name: jobName}]);
-    const mockFinishDlpJob = sinon.stub().resolves();
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockActivateJobTrigger = stub().resolves([{name: jobName}]);
+    const mockFinishDlpJob = stub().resolves();
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    const mockConsoleLog = sinon.stub();
+    const mockConsoleLog = stub();
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'hybridInspectJobTrigger',
       mockHybridInspectJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'activateJobTrigger',
       mockActivateJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'finishDlpJob',
       mockFinishDlpJob
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', mockConsoleLog);
 
     const inspectDataToHybridJobTrigger = proxyquire(
       '../inspectDataToHybridJobTrigger.js',
@@ -1268,11 +1261,11 @@ describe('inspect', () => {
       }
     );
     await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockHybridInspectJobTrigger,
       DATA_CONSTANTS.REQUEST_HYBRID_INSPECT_JOB_TRIGGER
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should inspect data using hybrid job trigger that is active', async () => {
@@ -1286,38 +1279,37 @@ describe('inspect', () => {
       jobName
     );
 
-    const mockHybridInspectJobTrigger = sinon
-      .stub()
+    const mockHybridInspectJobTrigger = stub()
       .resolves([{name: jobName}]);
-    const mockActivateJobTrigger = sinon.stub().rejects({code: 3});
-    const mockFinishDlpJob = sinon.stub().resolves();
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockActivateJobTrigger = stub().rejects({code: 3});
+    const mockFinishDlpJob = stub().resolves();
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    const mockConsoleLog = sinon.stub();
-    const mockListDlpJobs = sinon.stub().resolves([[{name: jobName}]]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockConsoleLog = stub();
+    const mockListDlpJobs = stub().resolves([[{name: jobName}]]);
+    replace(
+      DlpServiceClient.prototype,
       'hybridInspectJobTrigger',
       mockHybridInspectJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'activateJobTrigger',
       mockActivateJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'finishDlpJob',
       mockFinishDlpJob
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'listDlpJobs',
       mockListDlpJobs
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', mockConsoleLog);
 
     const inspectDataToHybridJobTrigger = proxyquire(
       '../inspectDataToHybridJobTrigger.js',
@@ -1326,11 +1318,11 @@ describe('inspect', () => {
       }
     );
     await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockHybridInspectJobTrigger,
       DATA_CONSTANTS.REQUEST_HYBRID_INSPECT_JOB_TRIGGER
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockListDlpJobs,
       DATA_CONSTANTS.REQUEST_LIST_DLP_JOBS
     );
@@ -1347,34 +1339,32 @@ describe('inspect', () => {
       jobName
     );
 
-    const mockHybridInspectJobTrigger = sinon
-      .stub()
+    const mockHybridInspectJobTrigger = stub()
       .resolves([{name: jobName}]);
-    const mockActivateJobTrigger = sinon
-      .stub()
+    const mockActivateJobTrigger = stub()
       .resolves([{name: jobTriggerId}]);
-    const mockFinishDlpJob = sinon.stub().resolves();
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockFinishDlpJob = stub().resolves();
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockConsoleLog = stub();
+    replace(
+      DlpServiceClient.prototype,
       'hybridInspectJobTrigger',
       mockHybridInspectJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'activateJobTrigger',
       mockActivateJobTrigger
     );
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'finishDlpJob',
       mockFinishDlpJob
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', mockConsoleLog);
 
     const inspectDataToHybridJobTrigger = proxyquire(
       '../inspectDataToHybridJobTrigger.js',
@@ -1383,8 +1373,8 @@ describe('inspect', () => {
       }
     );
     await inspectDataToHybridJobTrigger(projectId, string, jobTriggerId);
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );
@@ -1399,25 +1389,24 @@ describe('inspect', () => {
       bucket,
       fileName,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1426,13 +1415,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectGCSFile = proxyquire('../inspectGCSFile', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1445,17 +1434,17 @@ describe('inspect', () => {
       fileName,
       topicName,
       subscriptionName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       'PERSON_NAME',
       undefined,
       jobName
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error while inspecting GCS file', async () => {
@@ -1467,25 +1456,24 @@ describe('inspect', () => {
       bucket,
       fileName,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1494,13 +1482,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectGCSFile = proxyquire('../inspectGCSFile', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1514,7 +1502,7 @@ describe('inspect', () => {
         fileName,
         topicName,
         subscriptionName,
-        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
         0,
         'PERSON_NAME',
         undefined,
@@ -1535,25 +1523,24 @@ describe('inspect', () => {
       datasetId,
       tableId,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1562,13 +1549,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectBigQuery = proxyquire('../inspectBigQuery', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1582,16 +1569,16 @@ describe('inspect', () => {
       tableId,
       topicName,
       subscriptionName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       'PERSON_NAME',
       undefined
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error while inspecting big query table', async () => {
@@ -1603,25 +1590,24 @@ describe('inspect', () => {
       datasetId,
       tableId,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1630,13 +1616,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectBigQuery = proxyquire('../inspectBigQuery', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1651,7 +1637,7 @@ describe('inspect', () => {
         tableId,
         topicName,
         subscriptionName,
-        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
         0,
         'PERSON_NAME',
         undefined
@@ -1673,25 +1659,24 @@ describe('inspect', () => {
       nameSpaceId,
       kind,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1700,13 +1685,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectDatastore = proxyquire('../inspectDatastore', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1720,16 +1705,16 @@ describe('inspect', () => {
       kind,
       topicName,
       subscriptionName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       'PERSON_NAME',
       undefined
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error while inspecting datastore instance', async () => {
@@ -1743,25 +1728,24 @@ describe('inspect', () => {
       nameSpaceId,
       kind,
       topicName,
-      DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+      protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
       0,
       infoTypes,
       undefined,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -1770,13 +1754,13 @@ describe('inspect', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    replace(console, 'log', () => stub());
 
     const inspectDatastore = proxyquire('../inspectDatastore', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1791,7 +1775,7 @@ describe('inspect', () => {
         kind,
         topicName,
         subscriptionName,
-        DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+        protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
         0,
         'PERSON_NAME',
         undefined
@@ -1811,30 +1795,30 @@ describe('inspect', () => {
       tableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectBigquerySendToScc = proxyquire('../inspectBigquerySendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectBigquerySendToScc(projectId, dataProject, datasetId, tableId);
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if inspect job results into failure', async () => {
@@ -1846,27 +1830,27 @@ describe('inspect', () => {
       tableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const inspectBigQuerySendToScc = proxyquire('../inspectBigquerySendToScc', {
       '@google-cloud/dlp': {DLP: DLP},
     });
 
     await inspectBigQuerySendToScc(projectId, dataProject, datasetId, tableId);
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );

@@ -14,8 +14,8 @@
 
 'use strict';
 
-const DLP = require('@google-cloud/dlp');
-const sinon = require('sinon');
+import { protos } from '@google-cloud/dlp';
+import { stub } from 'sinon';
 
 /**
   Mock data for unit test cases.
@@ -46,7 +46,7 @@ const MOCK_DATA = {
             },
             rowsLimit: 1000,
             sampleMethod:
-              DLP.protos.google.privacy.dlp.v2.BigQueryOptions.SampleMethod
+              protos.google.privacy.dlp.v2.BigQueryOptions.SampleMethod
                 .RANDOM_START,
             includedFields: [{name: 'name'}],
           },
@@ -81,8 +81,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   DEIDENTIFY_TABLE_WITH_FPE: (projectId, alphabet, keyName, wrappedKey) => ({
@@ -155,7 +155,7 @@ const MOCK_DATA = {
       inspectJob: {
         inspectConfig: {
           infoTypes: infoTypes,
-          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
+          minLikelihood: protos.google.privacy.dlp.v2.Likelihood.POSSIBLE,
           includeQuote: true,
           excludeInfoTypes: true,
         },
@@ -164,9 +164,9 @@ const MOCK_DATA = {
             fileSet: {url: gcsUri},
             bytesLimitPerFile: 200,
             filesLimitPercent: 90,
-            fileTypes: [DLP.protos.google.privacy.dlp.v2.FileType.TEXT_FILE],
+            fileTypes: [protos.google.privacy.dlp.v2.FileType.TEXT_FILE],
             sampleMethod:
-              DLP.protos.google.privacy.dlp.v2.CloudStorageOptions.SampleMethod
+              protos.google.privacy.dlp.v2.CloudStorageOptions.SampleMethod
                 .RANDOM_START,
           },
         },
@@ -200,8 +200,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   DEIDENTIFY_WITH_DETEMINISTIC: (
@@ -375,7 +375,7 @@ const MOCK_DATA = {
             {name: 'LOCATION'},
             {name: 'PHONE_NUMBER'},
           ],
-          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          minLikelihood: protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
           limits: {
             maxFindingsPerItem: 100,
           },
@@ -435,7 +435,7 @@ const MOCK_DATA = {
             {name: 'LOCATION'},
             {name: 'PHONE_NUMBER'},
           ],
-          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          minLikelihood: protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
           limits: {
             maxFindingsPerItem: 100,
           },
@@ -499,7 +499,7 @@ const MOCK_DATA = {
             {name: 'LOCATION'},
             {name: 'PHONE_NUMBER'},
           ],
-          minLikelihood: DLP.protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
+          minLikelihood: protos.google.privacy.dlp.v2.Likelihood.UNLIKELY,
           limits: {
             maxFindingsPerItem: 100,
           },
@@ -868,8 +868,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   NUMERICAL_STATS: (
@@ -941,8 +941,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   K_MAP_ESTIMATION_ANALYSIS: (
@@ -1028,8 +1028,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   L_DIVERSITY_ANALYSIS: (
@@ -1110,8 +1110,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   CATEGORICAL_STATS: (
@@ -1193,8 +1193,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   CREATE_STORED_INFOTYPE: (
@@ -1305,8 +1305,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   INSPECT_BIG_QUERY: (
@@ -1371,8 +1371,8 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
   INSPECT_DATASTORE: (
@@ -1439,10 +1439,10 @@ const MOCK_DATA = {
       attributes: {
         DlpJobName: jobName,
       },
-      ack: sinon.stub(),
-      nack: sinon.stub(),
+      ack: stub(),
+      nack: stub(),
     },
   }),
 };
 
-module.exports = {MOCK_DATA};
+export default {MOCK_DATA};

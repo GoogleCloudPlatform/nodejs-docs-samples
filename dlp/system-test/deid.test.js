@@ -14,23 +14,23 @@
 
 'use strict';
 
-const path = require('path');
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const fs = require('fs');
-const cp = require('child_process');
-const DLP = require('@google-cloud/dlp');
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
-const {MOCK_DATA} = require('./mockdata');
+import { join } from 'path';
+import { assert } from 'chai';
+import { describe, it, before } from 'mocha';
+import { readFileSync } from 'fs';
+import { execSync as _execSync } from 'child_process';
+import DLP, { DlpServiceClient } from '@google-cloud/dlp';
+import proxyquire from 'proxyquire';
+import { restore, stub, replace, assert as _assert, fake } from 'sinon';
+import { MOCK_DATA } from './mockdata';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 const harmfulString = 'My SSN is 372819127';
 const harmlessString = 'My favorite color is blue';
 const surrogateType = 'SSN_TOKEN';
 const csvFile = 'resources/dates.csv';
-const tempOutputFile = path.join(__dirname, 'temp.result.csv');
+const tempOutputFile = join(__dirname, 'temp.result.csv');
 const dateShiftAmount = 30;
 const dateFields = 'birth_date,register_date';
 const keyName = 'KEY_NAME';
@@ -46,7 +46,7 @@ const deidentifyTemplateId = 'MOCK_DEIDENTIFY_TEMPLATE';
 const structuredDeidentifyTemplateId = 'MOCK_STRUCTURED_ DEIDENTIFY_TEMPLATE';
 const imageRedactTemplateId = 'MOCK_IMAGE_REDACT_TEMPLATE';
 
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 describe('deid', () => {
   let projectId;
 
@@ -55,7 +55,7 @@ describe('deid', () => {
   });
 
   afterEach(async () => {
-    sinon.restore();
+    restore();
   });
 
   // deidentify_masking
@@ -110,8 +110,8 @@ describe('deid', () => {
       `Successfully saved date-shift output to ${outputCsvFile}`
     );
     assert.notInclude(
-      fs.readFileSync(outputCsvFile).toString(),
-      fs.readFileSync(csvFile).toString()
+      readFileSync(outputCsvFile).toString(),
+      readFileSync(csvFile).toString()
     );
   });
 
@@ -387,16 +387,15 @@ describe('deid', () => {
       wrappedKey
     );
 
-    const mockDeidentifyContent = sinon
-      .stub()
+    const mockDeidentifyContent = stub()
       .resolves(CONSTANT_DATA.RESPONSE_DEIDENTIFY_CONTENT);
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'deidentifyContent',
       mockDeidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const deIdentifyTableWithFpe = proxyquire('../deIdentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -404,20 +403,20 @@ describe('deid', () => {
 
     await deIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
 
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockDeidentifyContent,
       CONSTANT_DATA.REQUEST_DEIDENTIFY_CONTENT
     );
   });
 
   it('should handle de-identification errors', async () => {
-    const mockDeidentifyContent = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockDeidentifyContent = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'deidentifyContent',
       mockDeidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const deIdentifyTableWithFpe = proxyquire('../deIdentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -494,16 +493,15 @@ describe('deid', () => {
       'EMAIL_ADDRESS_TOKEN'
     );
 
-    const mockDeidentifyContent = sinon
-      .stub()
+    const mockDeidentifyContent = stub()
       .resolves(CONSTANT_DATA.RESPONSE_DEIDENTIFY_CONTENT);
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'deidentifyContent',
       mockDeidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const deIdentifyWithDeterministic = proxyquire(
       '../deidentifyWithDeterministic.js',
@@ -521,7 +519,7 @@ describe('deid', () => {
       'EMAIL_ADDRESS_TOKEN'
     );
 
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockDeidentifyContent,
       CONSTANT_DATA.REQUEST_DEIDENTIFY_CONTENT
     );
@@ -531,14 +529,14 @@ describe('deid', () => {
     const string =
       'My name is Alicia Abernathy, and my email address is aabernathy@example.com.';
 
-    const mockDeidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    const mockDeidentifyContent = stub().rejects(new Error('Failed'));
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'deidentifyContent',
       mockDeidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const deIdentifyWithDeterministic = proxyquire(
       '../deidentifyWithDeterministic.js',
@@ -573,16 +571,15 @@ describe('deid', () => {
       'EMAIL_ADDRESS_TOKEN'
     );
 
-    const mockReidentifyContent = sinon
-      .stub()
+    const mockReidentifyContent = stub()
       .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyWithDeterministic = proxyquire(
       '../reidentifyWithDeterministic.js',
@@ -599,7 +596,7 @@ describe('deid', () => {
       'EMAIL_ADDRESS_TOKEN'
     );
 
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockReidentifyContent,
       CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
     );
@@ -609,14 +606,14 @@ describe('deid', () => {
     const string =
       'My name is Alicia Abernathy, and my email address is EMAIL_ADDRESS_TOKEN';
 
-    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    const mockReidentifyContent = stub().rejects(new Error('Failed'));
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyWithDeterministic = proxyquire(
       '../reidentifyWithDeterministic.js',
@@ -701,16 +698,15 @@ describe('deid', () => {
       wrappedKey
     );
 
-    const mockReidentifyContent = sinon
-      .stub()
+    const mockReidentifyContent = stub()
       .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyTableWithFpe = proxyquire('../reidentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -718,20 +714,20 @@ describe('deid', () => {
 
     await reIdentifyTableWithFpe(projectId, 'NUMERIC', keyName, wrappedKey);
 
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockReidentifyContent,
       CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
     );
   });
 
   it('should handle re-identification errors', async () => {
-    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockReidentifyContent = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyTableWithFpe = proxyquire('../reidentifyTableWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -756,16 +752,15 @@ describe('deid', () => {
       'PHONE_TOKEN'
     );
 
-    const mockReidentifyContent = sinon
-      .stub()
+    const mockReidentifyContent = stub()
       .resolves(CONSTANT_DATA.RESPONSE_REIDENTIFY_CONTENT);
 
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyTextWithFpe = proxyquire('../reidentifyTextWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -780,21 +775,21 @@ describe('deid', () => {
       'PHONE_TOKEN'
     );
 
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockReidentifyContent,
       CONSTANT_DATA.REQUEST_REIDENTIFY_CONTENT
     );
   });
 
   it('should handle re-identification errors', async () => {
-    const mockReidentifyContent = sinon.stub().rejects(new Error('Failed'));
+    const mockReidentifyContent = stub().rejects(new Error('Failed'));
     const text = 'My phone number is PHONE_TOKEN(10):9617256398';
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    replace(
+      DlpServiceClient.prototype,
       'reidentifyContent',
       mockReidentifyContent
     );
-    sinon.replace(console, 'log', () => sinon.stub());
+    replace(console, 'log', () => stub());
 
     const reIdentifyTextWithFpe = proxyquire('../reidentifyTextWithFpe', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -927,19 +922,19 @@ describe('deid', () => {
       imageRedactTemplateId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const deIdentifyCloudStorage = proxyquire('../deIdentifyCloudStorage', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -955,11 +950,11 @@ describe('deid', () => {
       structuredDeidentifyTemplateId,
       imageRedactTemplateId
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if inspect cloud storage job fails', async () => {
@@ -975,19 +970,19 @@ describe('deid', () => {
       imageRedactTemplateId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const deIdentifyCloudStorage = proxyquire('../deIdentifyCloudStorage', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -1003,8 +998,8 @@ describe('deid', () => {
       structuredDeidentifyTemplateId,
       imageRedactTemplateId
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );

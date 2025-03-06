@@ -14,18 +14,18 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before, after, afterEach} = require('mocha');
-const uuid = require('uuid');
-const {PubSub} = require('@google-cloud/pubsub');
-const DLP = require('@google-cloud/dlp');
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
+import { assert } from 'chai';
+import { describe, it, before, after, afterEach } from 'mocha';
+import { v4 } from 'uuid';
+import { PubSub } from '@google-cloud/pubsub';
+import DLP, { DlpServiceClient } from '@google-cloud/dlp';
+import proxyquire from 'proxyquire';
+import { restore, stub, replace, fake, assert as _assert } from 'sinon';
 
-const {MOCK_DATA} = require('./mockdata');
+import { MOCK_DATA } from './mockdata';
 
 const pubsub = new PubSub();
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 
 // Dummy resource names used in test cases mocking API Calls.
 const datasetId = 'MOCK_DATASET_ID';
@@ -47,8 +47,8 @@ describe('risk', () => {
   let topic, subscription, topicName, subscriptionName, jobName;
 
   before(async () => {
-    topicName = `dlp-risk-topic-${uuid.v4()}-${Date.now()}`;
-    subscriptionName = `dlp-risk-subscription-${uuid.v4()}-${Date.now()}`;
+    topicName = `dlp-risk-topic-${v4()}-${Date.now()}`;
+    subscriptionName = `dlp-risk-subscription-${v4()}-${Date.now()}`;
     projectId = await client.getProjectId();
     [topic] = await pubsub.createTopic(topicName);
     [subscription] = await topic.createSubscription(subscriptionName);
@@ -84,7 +84,7 @@ describe('risk', () => {
 
   // Delete risk analysis job created in the snippets.
   afterEach(async () => {
-    sinon.restore();
+    restore();
     const request = {
       name: jobName,
     };
@@ -115,20 +115,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -137,14 +136,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kAnonymityAnalysis = proxyquire('../kAnonymityAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -159,11 +158,11 @@ describe('risk', () => {
       subscriptionName,
       'AGE,MYSTERY'
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle k-anonymity analysis errors', async () => {
@@ -181,20 +180,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -203,14 +201,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kAnonymityAnalysis = proxyquire('../kAnonymityAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -244,20 +242,19 @@ describe('risk', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -266,14 +263,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const numericalRiskAnalysis = proxyquire('../numericalRiskAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -288,11 +285,11 @@ describe('risk', () => {
       topicName,
       subscriptionName
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle numerical risk analysis errors', async () => {
@@ -307,20 +304,19 @@ describe('risk', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -329,14 +325,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const numericalRiskAnalysis = proxyquire('../numericalRiskAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -372,20 +368,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -394,14 +389,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kMapEstimationAnalysis = proxyquire('../kMapEstimationAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -418,11 +413,11 @@ describe('risk', () => {
       quasiIds[0].field.name,
       quasiIds[0].infoType.name
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle k-map analysis errors', async () => {
@@ -439,20 +434,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -461,14 +455,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kMapEstimationAnalysis = proxyquire('../kMapEstimationAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -509,20 +503,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -531,14 +524,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const lDiversityAnalysis = proxyquire('../lDiversityAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -554,11 +547,11 @@ describe('risk', () => {
       sensitiveAttribute,
       'AGE,MYSTERY'
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle l-diversity analysis errors', async () => {
@@ -578,20 +571,19 @@ describe('risk', () => {
       quasiIds,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -600,14 +592,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const lDiversityAnalysis = proxyquire('../lDiversityAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -642,20 +634,19 @@ describe('risk', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -664,14 +655,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const categoricalRiskAnalysis = proxyquire(
       '../categoricalRiskAnalysis.js',
@@ -689,11 +680,11 @@ describe('risk', () => {
       topicName,
       subscriptionName
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if categorical risk analysis job fails', async () => {
@@ -708,20 +699,19 @@ describe('risk', () => {
       topicName,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().rejects(new Error('Failed'));
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().rejects(new Error('Failed'));
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const topicHandlerStub = sinon.stub().returns({
-      get: sinon.stub().resolves([
+    const topicHandlerStub = stub().returns({
+      get: stub().resolves([
         {
-          subscription: sinon.stub().resolves({
-            removeListener: sinon.stub(),
-            on: sinon
-              .stub()
+          subscription: stub().resolves({
+            removeListener: stub(),
+            on: stub()
               .withArgs('message')
               .callsFake((eventName, handler) => {
                 handler(DATA_CONSTANTS.MOCK_MESSAGE);
@@ -730,14 +720,14 @@ describe('risk', () => {
         },
       ]),
     });
-    sinon.replace(PubSub.prototype, 'topic', topicHandlerStub);
+    replace(PubSub.prototype, 'topic', topicHandlerStub);
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const categoricalRiskAnalysis = proxyquire('../categoricalRiskAnalysis', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -768,19 +758,19 @@ describe('risk', () => {
       outputTableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_SUCCESS
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kAnonymityWithEntityIds = proxyquire('../kAnonymityWithEntityIds', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -791,11 +781,11 @@ describe('risk', () => {
       sourceTableId,
       outputTableId
     );
-    sinon.assert.calledOnceWithExactly(
+    _assert.calledOnceWithExactly(
       mockCreateDlpJob,
       DATA_CONSTANTS.REQUEST_CREATE_DLP_JOB
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
+    _assert.calledOnce(mockGetDlpJob);
   });
 
   it('should handle error if risk job fails', async () => {
@@ -807,19 +797,19 @@ describe('risk', () => {
       outputTableId,
       jobName
     );
-    const mockCreateDlpJob = sinon.stub().resolves([{name: jobName}]);
-    sinon.replace(
-      DLP.DlpServiceClient.prototype,
+    const mockCreateDlpJob = stub().resolves([{name: jobName}]);
+    replace(
+      DlpServiceClient.prototype,
       'createDlpJob',
       mockCreateDlpJob
     );
 
-    const mockGetDlpJob = sinon.fake.resolves(
+    const mockGetDlpJob = fake.resolves(
       DATA_CONSTANTS.RESPONSE_GET_DLP_JOB_FAILED
     );
-    sinon.replace(DLP.DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
-    const mockConsoleLog = sinon.stub();
-    sinon.replace(console, 'log', mockConsoleLog);
+    replace(DlpServiceClient.prototype, 'getDlpJob', mockGetDlpJob);
+    const mockConsoleLog = stub();
+    replace(console, 'log', mockConsoleLog);
 
     const kAnonymityWithEntityIds = proxyquire('../kAnonymityWithEntityIds', {
       '@google-cloud/dlp': {DLP: DLP},
@@ -830,8 +820,8 @@ describe('risk', () => {
       sourceTableId,
       outputTableId
     );
-    sinon.assert.calledOnce(mockGetDlpJob);
-    sinon.assert.calledWithMatch(
+    _assert.calledOnce(mockGetDlpJob);
+    _assert.calledWithMatch(
       mockConsoleLog,
       'Job Failed, Please check the configuration.'
     );

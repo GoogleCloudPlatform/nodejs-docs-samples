@@ -14,12 +14,12 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const cp = require('child_process');
-const DLP = require('@google-cloud/dlp');
+import { assert } from 'chai';
+import { describe, it, before } from 'mocha';
+import { execSync as _execSync } from 'child_process';
+import { DlpServiceClient } from '@google-cloud/dlp';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 const badJobName = 'projects/not-a-project/dlpJobs/i-123456789';
 
@@ -29,7 +29,7 @@ const testTableId = 'bikeshare_trips';
 const testColumnName = 'zip_code';
 const bucketName = 'nodejs-dlp-test-bucket';
 
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 
 // createTestJob needs time to finish creating a DLP job, before listing
 // tests will succeed.
@@ -88,7 +88,7 @@ describe('test', () => {
   });
 
   async function deleteStaleJobs() {
-    const dlp = new DLP.DlpServiceClient();
+    const dlp = new DlpServiceClient();
     const request = {
       parent: `projects/${projectId}/locations/global`,
       filter: 'state=DONE',

@@ -14,22 +14,22 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const cp = require('child_process');
-const uuid = require('uuid');
-const DLP = require('@google-cloud/dlp');
+import { assert } from 'chai';
+import { describe, it, before } from 'mocha';
+import { execSync as _execSync } from 'child_process';
+import { v4 } from 'uuid';
+import { DlpServiceClient } from '@google-cloud/dlp';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 
 describe('triggers', () => {
   let projectId;
   let fullTriggerName;
-  const triggerName = `my-trigger-${uuid.v4()}`;
-  const triggerDisplayName = `My Trigger Display Name: ${uuid.v4()}`;
-  const triggerDescription = `My Trigger Description: ${uuid.v4()}`;
+  const triggerName = `my-trigger-${v4()}`;
+  const triggerDisplayName = `My Trigger Display Name: ${v4()}`;
+  const triggerDescription = `My Trigger Description: ${v4()}`;
   const infoType = 'PERSON_NAME';
   const minLikelihood = 'VERY_LIKELY';
   const maxFindings = 5;
@@ -37,7 +37,7 @@ describe('triggers', () => {
   let tempTriggerName = '';
 
   async function createTempTrigger() {
-    const triggerId = `trigger-test-${uuid.v4()}`;
+    const triggerId = `trigger-test-${v4()}`;
     await client.createJobTrigger({
       parent: `projects/${projectId}/locations/global`,
       jobTrigger: {

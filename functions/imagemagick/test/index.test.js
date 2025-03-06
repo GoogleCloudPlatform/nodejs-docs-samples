@@ -47,8 +47,16 @@ async function startFF(port) {
     let stderr = '';
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
-    ffProc.on('error', c => (c === 0 ? resolve(stdout) : reject(stderr)));
-    ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
+    ffProc.on('exit', code => {
+      if (code === 0 || code === null) {
+        // code === null corresponds to a signal-kill
+        // (which doesn't necessarily indicate a test failure)
+        resolve(stdout);
+      } else {
+        stderr = `Error code: ${code}\n${stderr}`;
+        reject(new Error(stderr));
+      }
+    });
   });
   await waitPort({host: 'localhost', port});
   return {ffProc, ffProcHandler};

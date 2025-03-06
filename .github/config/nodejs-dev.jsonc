@@ -115,6 +115,7 @@
     "datalabeling",
     "dialogflow",
     "discoveryengine",
+    "dlp",
     "document-warehouse",
     "endpoints/getting-started",
     "endpoints/getting-started-grpc",

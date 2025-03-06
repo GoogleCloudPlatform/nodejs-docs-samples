@@ -22,7 +22,7 @@
 async function main(projectId, string, jobTriggerId) {
   // [START dlp_inspect_send_data_to_hybrid_job_trigger]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlpClient = new DLP.DlpServiceClient();

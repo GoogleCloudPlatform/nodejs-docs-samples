@@ -32,7 +32,7 @@ function main(
   [infoTypes, customInfoTypes] = transformCLI(infoTypes, customInfoTypes);
   // [START dlp_inspect_hotword_rule]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

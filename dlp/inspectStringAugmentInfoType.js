@@ -22,7 +22,7 @@ function main(projectId, string, words) {
   words = words ? words.split(',') : [];
   // [START dlp_inspect_augment_infotypes]
   // Imports the Google Cloud client library
-  import {DLP} from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();
 

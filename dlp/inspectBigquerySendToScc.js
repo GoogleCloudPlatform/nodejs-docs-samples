@@ -21,7 +21,7 @@
 async function main(projectId, dataProjectId, datasetId, tableId) {
   // [START dlp_inspect_bigquery_send_to_scc]
   // Imports the Google Cloud Data Loss Prevention library
-  import {DLP} from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

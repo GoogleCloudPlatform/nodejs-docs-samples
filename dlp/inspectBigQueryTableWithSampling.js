@@ -26,7 +26,7 @@ async function main(
 ) {
   // [START dlp_inspect_bigquery_with_sampling]
   // Import the Google Cloud client libraries
-  import {DLP} from '@google-cloud/dlp';
+  const DLP = require('@google-cloud/dlp');
   const {PubSub} = require('@google-cloud/pubsub');
 
   // Instantiates clients

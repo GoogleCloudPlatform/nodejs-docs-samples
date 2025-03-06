@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START gae_app_yaml]
 # [START app_yaml]
 runtime: nodejs20
 # [END app_yaml]
+# [END gae_app_yaml]

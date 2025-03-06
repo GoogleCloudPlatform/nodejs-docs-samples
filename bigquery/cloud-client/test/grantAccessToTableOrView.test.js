@@ -25,18 +25,18 @@ const {
 } = require('./config');
 
 describe('grantAccessToTableOrView', () => {
-  // Setup shared resources before all tests
+  // Setup shared resources before all tests.
   before(async () => {
     await setupBeforeAll();
   });
 
-  // Clean up resources after all tests
+  // Clean up resources after all tests.
   after(async () => {
     await teardownAfterAll();
   });
 
   it('should grant access to a table', async () => {
-    // Get required test resources
+    // Get required test resources.
     const projectId = await getProjectId();
     const dataset = await getDataset();
     const table = await getTable();
@@ -45,15 +45,15 @@ describe('grantAccessToTableOrView', () => {
     const ROLE = 'roles/bigquery.dataViewer';
     const PRINCIPAL_ID = `group:${entityId}`;
 
-    // Get the initial empty policy
+    // Get the initial empty policy.
     const [emptyPolicy] = await table.getIamPolicy();
 
-    // Initialize bindings if they do not exist
+    // Initialize bindings if they do not exist.
     if (!emptyPolicy.bindings) {
       emptyPolicy.bindings = [];
     }
 
-    // In an empty policy the role and principal should not be present
+    // In an empty policy the role and principal should not be present.
     assert.strictEqual(
       emptyPolicy.bindings.some(p => p.role === ROLE),
       false,
@@ -67,7 +67,7 @@ describe('grantAccessToTableOrView', () => {
       'Principal should not exist in empty policy'
     );
 
-    // Grant access to the table
+    // Grant access to the table.
     const updatedPolicy = await grantAccessToTableOrView(
       projectId,
       dataset.id,
@@ -76,14 +76,14 @@ describe('grantAccessToTableOrView', () => {
       ROLE
     );
 
-    // A binding with that role should exist
+    // A binding with that role should exist.
     assert.strictEqual(
       updatedPolicy.some(p => p.role === ROLE),
       true,
       'Role should exist after granting access'
     );
 
-    // A binding for that principal should exist
+    // A binding for that principal should exist.
     assert.strictEqual(
       updatedPolicy.some(p => p.members && p.members.includes(PRINCIPAL_ID)),
       true,

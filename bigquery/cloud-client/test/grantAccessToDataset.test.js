@@ -24,12 +24,12 @@ const {
 const {grantAccessToDataset} = require('../grantAccessToDataset');
 
 describe('grantAccessToDataset', () => {
-  // Set up fixtures before all tests (similar to pytest's module scope)
+  // Set up fixtures before all tests (similar to pytest's module scope).
   before(async () => {
     await setupBeforeAll();
   });
 
-  // Clean up after all tests
+  // Clean up after all tests.
   after(async () => {
     await teardownAfterAll();
   });
@@ -41,18 +41,18 @@ describe('grantAccessToDataset', () => {
     console.log({dataset});
     console.log({entityId});
 
-    // Act: Grant access to the dataset
+    // Act: Grant access to the dataset.
     const accessEntries = await grantAccessToDataset(
       dataset.id,
       entityId,
       'READER'
     );
 
-    // Assert: Check if entity was added to access entries
+    // Assert: Check if entity was added to access entries.
     const updatedEntityIds = accessEntries
       .filter(entry => entry !== null)
       .map(entry => {
-        // Handle different entity types
+        // Handle different entity types.
         if (entry.groupByEmail) {
           return entry.groupByEmail;
         } else if (entry.userByEmail) {
@@ -64,7 +64,7 @@ describe('grantAccessToDataset', () => {
       })
       .filter(id => id !== null);
 
-    // Check if our entity ID is in the updated access entries (similar to Python assertion)
+    // Check if our entity ID is in the updated access entries.
     expect(updatedEntityIds).to.include(entityId);
   });
 });

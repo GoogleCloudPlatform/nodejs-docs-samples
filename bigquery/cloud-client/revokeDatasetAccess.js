@@ -14,11 +14,6 @@
 
 'use strict';
 
-// Define enum for HTTP codes.
-const HTTP_STATUS = {
-  PRECONDITION_FAILED: 412,
-};
-
 /**
  * Revokes access to a dataset for a specified entity.
  *
@@ -31,6 +26,11 @@ const HTTP_STATUS = {
 async function revokeDatasetAccess(datasetId, entityId) {
   // [START bigquery_revoke_dataset_access]
   const {BigQuery} = require('@google-cloud/bigquery');
+
+  // Define enum for HTTP codes.
+  const HTTP_STATUS = {
+    PRECONDITION_FAILED: 412,
+  };
 
   // TODO (developer): Update and un-comment below lines.
 
@@ -83,8 +83,8 @@ async function revokeDatasetAccess(datasetId, entityId) {
       throw error;
     }
   }
+  // [END bigquery_revoke_dataset_access]
 }
-// [END bigquery_revoke_dataset_access]
 
 module.exports = {
   revokeDatasetAccess,

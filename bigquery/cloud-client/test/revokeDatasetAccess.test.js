@@ -24,33 +24,33 @@ const {
 } = require('./config');
 
 describe('revokeDatasetAccess', () => {
-  // Setup resources before all tests
+  // Setup resources before all tests.
   before(async () => {
     await setupBeforeAll();
   });
 
-  // Clean up resources after all tests
+  // Clean up resources after all tests.
   after(async () => {
     await teardownAfterAll();
   });
 
   it('should revoke access to a dataset', async () => {
-    // Get test resources
+    // Get test resources.
     const dataset = await getDataset();
     const entityId = getEntityId();
 
-    // Directly use the dataset ID
+    // Directly use the dataset ID.
     const datasetId = dataset.id;
     console.log(`Testing with dataset: ${datasetId} and entity: ${entityId}`);
 
-    // First grant access to the dataset
+    // First grant access to the dataset.
     const datasetAccessEntries = await grantAccessToDataset(
       datasetId,
       entityId,
       'READER'
     );
 
-    // Create a set of all entity IDs and email addresses to check
+    // Create a set of all entity IDs and email addresses to check.
     const datasetEntityIds = new Set();
     datasetAccessEntries.forEach(entry => {
       if (entry.entity_id) {
@@ -64,7 +64,7 @@ describe('revokeDatasetAccess', () => {
       }
     });
 
-    // Check if our entity ID is in the set
+    // Check if our entity ID is in the set.
     const hasAccess = datasetEntityIds.has(entityId);
     console.log(`Entity ${entityId} has access after granting: ${hasAccess}`);
     assert.strictEqual(
@@ -73,10 +73,10 @@ describe('revokeDatasetAccess', () => {
       'Entity should have access after granting'
     );
 
-    // Now revoke access
+    // Now revoke access.
     const newAccessEntries = await revokeDatasetAccess(datasetId, entityId);
 
-    // Check that the entity no longer has access
+    // Check that the entity no longer has access.
     const updatedEntityIds = new Set();
     newAccessEntries.forEach(entry => {
       if (entry.entity_id) {

@@ -60,8 +60,8 @@ async function viewTableOrViewAccessPolicy(projectId, datasetId, resourceName) {
   console.log(`etag: ${policy.etag}`);
   console.log(`Version: ${policy.version}`);
 
+  // [END bigquery_view_table_or_view_access_policy]
   return policy;
 }
-// [END bigquery_view_table_or_view_access_policy]
 
 module.exports = viewTableOrViewAccessPolicy;

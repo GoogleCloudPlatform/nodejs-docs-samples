@@ -44,15 +44,15 @@ describe('revokeTableOrViewAccess', () => {
     const ROLE = 'roles/bigquery.dataViewer';
     const PRINCIPAL_ID = `group:${entityId}`;
 
-    // Get the initial empty policy
+    // Get the initial empty policy.
     const [emptyPolicy] = await table.getIamPolicy();
 
-    // Initialize bindings if they do not exist
+    // Initialize bindings if they do not exist.
     if (!emptyPolicy.bindings) {
       emptyPolicy.bindings = [];
     }
 
-    // Grant access
+    // Grant access.
     const policyWithRole = await grantAccessToTableOrView(
       projectId,
       dataset.id,
@@ -61,11 +61,11 @@ describe('revokeTableOrViewAccess', () => {
       ROLE
     );
 
-    // Check that there is a binding with that role
+    // Check that there is a binding with that role.
     const hasRole = policyWithRole.some(b => b.role === ROLE);
     assert.isTrue(hasRole);
 
-    // Revoke access for the role
+    // Revoke access for the role.
     const policyWithRevokedRole = await revokeAccessToTableOrView(
       projectId,
       dataset.id,
@@ -74,7 +74,7 @@ describe('revokeTableOrViewAccess', () => {
       null
     );
 
-    // Check that this role is not present in the policy anymore
+    // Check that this role is not present in the policy anymore.
     const roleExists = policyWithRevokedRole.some(b => b.role === ROLE);
     assert.isFalse(roleExists);
   });
@@ -88,15 +88,15 @@ describe('revokeTableOrViewAccess', () => {
     const ROLE = 'roles/bigquery.dataViewer';
     const PRINCIPAL_ID = `group:${entityId}`;
 
-    // Get the initial empty policy
+    // Get the initial empty policy.
     const [emptyPolicy] = await table.getIamPolicy();
 
-    // Initialize bindings if they do not exist
+    // Initialize bindings if they do not exist.
     if (!emptyPolicy.bindings) {
       emptyPolicy.bindings = [];
     }
 
-    // Grant access
+    // Grant access.
     const updatedPolicy = await grantAccessToTableOrView(
       projectId,
       dataset.id,
@@ -105,13 +105,13 @@ describe('revokeTableOrViewAccess', () => {
       ROLE
     );
 
-    // There is a binding for that principal
+    // There is a binding for that principal.
     const hasPrincipal = updatedPolicy.some(
       b => b.members && b.members.includes(PRINCIPAL_ID)
     );
     assert.isTrue(hasPrincipal);
 
-    // Revoke access for the principal
+    // Revoke access for the principal.
     const policyWithRemovedPrincipal = await revokeAccessToTableOrView(
       projectId,
       dataset.id,
@@ -120,7 +120,7 @@ describe('revokeTableOrViewAccess', () => {
       PRINCIPAL_ID
     );
 
-    // This principal is not present in the policy anymore
+    // This principal is not present in the policy anymore.
     const hasPrincipalAfterRevoke = policyWithRemovedPrincipal.some(
       b => b.members && b.members.includes(PRINCIPAL_ID)
     );

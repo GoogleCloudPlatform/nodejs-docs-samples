@@ -14,16 +14,16 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const cp = require('child_process');
-const uuid = require('uuid');
-const DLP = require('@google-cloud/dlp');
+import { assert } from 'chai';
+import { describe, it, before } from 'mocha';
+import { execSync as _execSync } from 'child_process';
+import { v4 } from 'uuid';
+import { DlpServiceClient } from '@google-cloud/dlp';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 const templateName = '';
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 
 describe('templates', () => {
   let projectId;
@@ -32,8 +32,8 @@ describe('templates', () => {
   const MIN_LIKELIHOOD = 'VERY_LIKELY';
   const MAX_FINDINGS = 5;
   const INCLUDE_QUOTE = false;
-  const DISPLAY_NAME = `My Template ${uuid.v4()}`;
-  const TEMPLATE_NAME = `my-template-${uuid.v4()}`;
+  const DISPLAY_NAME = `My Template ${v4()}`;
+  const TEMPLATE_NAME = `my-template-${v4()}`;
 
   before(async () => {
     projectId = await client.getProjectId();

@@ -14,24 +14,24 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it, before} = require('mocha');
-const fs = require('fs');
-const cp = require('child_process');
-const {PNG} = require('pngjs');
-const pixelmatch = require('pixelmatch');
-const DLP = require('@google-cloud/dlp');
+import { assert } from 'chai';
+import { describe, it, before } from 'mocha';
+import { createReadStream } from 'fs';
+import { execSync as _execSync } from 'child_process';
+import { PNG } from 'pngjs';
+import pixelmatch from 'pixelmatch';
+import { DlpServiceClient } from '@google-cloud/dlp';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 const testImage = 'resources/test.png';
 const testResourcePath = 'system-test/resources';
 
-const client = new DLP.DlpServiceClient();
+const client = new DlpServiceClient();
 
 async function readImage(filePath) {
   return new Promise((resolve, reject) => {
-    fs.createReadStream(filePath)
+    createReadStream(filePath)
       .pipe(new PNG())
       .on('error', reject)
       .on('parsed', function () {

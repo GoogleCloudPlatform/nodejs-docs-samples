@@ -39,7 +39,7 @@ function main(
   const dlp = new DLP.DlpServiceClient();
 
   // Import other required libraries
-  const fs = require('fs');
+  import {fs} from 'fs';
 
   // The project ID to run the API call under
   // const projectId = 'my-project';

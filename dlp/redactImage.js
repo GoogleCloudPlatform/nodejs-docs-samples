@@ -24,8 +24,8 @@ function main(projectId, filepath, minLikelihood, infoTypes, outputPath) {
   import {DLP} from '@google-cloud/dlp';
 
   // Imports required Node.js libraries
-  const mime = require('mime');
-  const fs = require('fs');
+  import {mine} from 'mime';
+  import {fs} from 'fs';
 
   // Instantiates a client
   const dlp = new DLP.DlpServiceClient();

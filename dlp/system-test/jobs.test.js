@@ -53,7 +53,7 @@ describe('test', () => {
   // Helper function for creating test jobs
   const createTestJob = async () => {
     // Initialize client library
-    const DLP = require('@google-cloud/dlp').v2;
+    import {DLP} from '@google-cloud/dlp'; //.v2;
     const dlp = new DLP.DlpServiceClient();
 
     // Construct job request

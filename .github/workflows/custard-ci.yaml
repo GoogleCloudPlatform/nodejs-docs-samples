@@ -60,16 +60,44 @@ jobs:
           cat paths.txt
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
-  nodejs-lint:
-    name: lint
+  lint:
+    needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Setup Node
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
         with:
           node-version: 20
-      - run: make lint
+      - run: npm install
+      - name: Run lint
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        with:
+          script: |
+            const { execSync } = await import("node:child_process");
+
+            const cmd = 'npx gts lint';
+            const affected = ${{ needs.affected.outputs.nodejs-paths }};
+
+            let failed = false;
+            for (const path of affected) {
+              try {
+                execSync(cmd, {cwd: path});
+                console.log(`✅ [${path}]: ${cmd}`);
+              } catch (e) {
+                failed = true;
+                console.log(`❌ [${path}]: ${cmd} (status ${e.status})`);
+                console.log('--- stdout ---');
+                console.log(e.stdout.toString("utf8"));
+                console.log('--- stderr ---');
+                console.log(e.stderr.toString("utf8"));
+              }
+            }
+            if (failed) {
+              process.exit(1)
+            }
 
   region-tags:
     name: region tags

@@ -88,9 +88,8 @@
     "dialogflow-cx", // NOT_FOUND: com.google.apps.framework.request.NotFoundException: Agent 'undefined' does not exist
     "dlp", // [ERR_REQUIRE_ESM]: require() of ES Module
     "document-ai", // [ERR_REQUIRE_ESM]: require() of ES Module
-    "functions/billing", // Error: Request failed with status code 500
-    "functions/http/uploadFile", // npm error Missing script: "test"
-    "functions/ocr/app", // Error: Bucket not provided. Make sure you have a "bucket" property in your request
+    "functions/billing", // (untested) Error: Request failed with status code 500
+    "functions/ocr/app", // (untested) Error: Bucket not provided. Make sure you have a "bucket" property in your request
     "functions/slack", // TypeError [ERR_INVALID_ARG_TYPE]: The "key" argument must be of type ... Received undefined
     "healthcare/fhir", // Error: Cannot find module 'whatwg-url'
     "iam/deny", // PERMISSION_DENIED: Permission iam.googleapis.com/denypolicies.create denied on resource cloudresourcemanager.googleapis.com/projects/long-door-651

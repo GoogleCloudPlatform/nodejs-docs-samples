@@ -150,6 +150,7 @@
     "functions/log/helloWorld",
     "functions/log/processEntry",
     "functions/memorystore/redis",
+    "functions/ocr/app",
     "functions/pubsub/publish",
     "functions/pubsub/subscribe",
     "functions/scheduleinstance",

@@ -15,8 +15,6 @@
 'use strict';
 
 // [START gae_update_web_server_app]
-// [START app]
-// [START gae_update_app]
 const express = require('express');
 const path = require('path');
 
@@ -31,15 +29,12 @@ app.get('/', (req, res) => {
   res.send('Hello from App Engine!');
 });
 
-// [START add_display_form]
 // [START gae_add_display_form]
 app.get('/submit', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/form.html'));
 });
 // [END gae_add_display_form]
-// [END add_display_form]
 
-// [START add_post_handler]
 // [START gae_add_post_handler]
 app.post('/submit', (req, res) => {
   console.log({
@@ -49,15 +44,12 @@ app.post('/submit', (req, res) => {
   res.send('Thanks for your message!');
 });
 // [END gae_add_post_handler]
-// [END add_post_handler]
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
-// [END gae_update_app]
-// [END app]
 // [END gae_update_web_server_app]
 
 module.exports = app;

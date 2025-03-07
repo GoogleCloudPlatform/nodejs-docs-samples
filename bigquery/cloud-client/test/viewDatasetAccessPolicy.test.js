@@ -29,6 +29,7 @@ describe('viewDatasetAccessPolicy', () => {
     const dataset = await getDataset();
     const accessPolicy = await viewDatasetAccessPolicy(dataset.id);
 
-    assert(accessPolicy);
+    assert.ok(accessPolicy, 'Access policy should be defined');
+    assert.ok(Array.isArray(accessPolicy), 'Access policy should be an array');
   });
 });

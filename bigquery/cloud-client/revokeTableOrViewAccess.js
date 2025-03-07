@@ -21,7 +21,7 @@
  * @param {string} resourceName The ID of the table or view.
  * @param {string} [roleToRemove=null] Optional. Specific role to revoke.
  * @param {string} [principalToRemove=null] Optional. Specific principal to revoke access from.
- * @returns {Promise<Object>} The updated IAM policy.
+ * @returns {Promise<Array>} The updated IAM policy.
  */
 async function revokeAccessToTableOrView(
   projectId,
@@ -56,14 +56,15 @@ async function revokeAccessToTableOrView(
   // Instantiate a client.
   const client = new BigQuery();
 
-  // Get the table reference.
+  // Get a reference to the dataset by datasetId.
   const dataset = client.dataset(datasetId);
+  // Get a reference to the table by tableName.
   const table = dataset.table(resourceName);
 
   // Get the IAM access policy for the table or view.
   const [policy] = await table.getIamPolicy();
 
-  // Initialize bindings of they do not exist.
+  // Initialize bindings array.
   if (!policy.bindings) {
     policy.bindings = [];
   }
@@ -76,12 +77,12 @@ async function revokeAccessToTableOrView(
 
   if (roleToRemove) {
     // Filter out all bindings with the `roleToRemove`
-    // and assign a new list back to the policy bindings.
+    // and assign a new array back to the policy bindings.
     policy.bindings = policy.bindings.filter(b => b.role !== roleToRemove);
   }
 
   if (principalToRemove) {
-    // The `bindings` list is immutable. Create a copy for modifications.
+    // The `bindings` array is immutable. Create a copy for modifications.
     const bindings = [...policy.bindings];
 
     // Filter out the principal from each binding.
@@ -104,11 +105,10 @@ async function revokeAccessToTableOrView(
     // Get the policy again to confirm it's set correctly.
     const [verifiedPolicy] = await table.getIamPolicy();
 
-    if (verifiedPolicy && verifiedPolicy.bindings) {
-      return verifiedPolicy.bindings;
-    } else {
-      return [];
-    }
+    // Return the updated policy bindings.
+    return verifiedPolicy && verifiedPolicy.bindings
+      ? verifiedPolicy.bindings
+      : [];
   } catch (error) {
     console.error('Error settings IAM policy:', error);
     throw error;

@@ -58,7 +58,7 @@ async function grantAccessToDataset(datasetId, entityId, role) {
     // Get a reference to the dataset.
     const [dataset] = await client.dataset(datasetId).get();
 
-    // The 'access entries' list is immutable. Create a copy for modifications.
+    // The 'access entries' array is immutable. Create a copy for modifications.
     const entries = Array.isArray(dataset.metadata.access)
       ? [...dataset.metadata.access]
       : [];
@@ -71,7 +71,7 @@ async function grantAccessToDataset(datasetId, entityId, role) {
       [entityType]: entityId,
     });
 
-    // Assign the list of AccessEntries back to the dataset.
+    // Assign the array of AccessEntries back to the dataset.
     const metadata = {
       access: entries,
     };

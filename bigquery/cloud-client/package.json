@@ -4,7 +4,7 @@
     "version": "0.0.1",
     "private": true,
     "license": "Apache Version 2.0",
-    "author": "Google Inc.",
+    "author": "Google LLC",
     "engines": {
         "node": "20.x"
     },

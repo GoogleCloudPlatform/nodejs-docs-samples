@@ -56,14 +56,15 @@ async function grantAccessToTableOrView(
   // Instantiate a client.
   const client = new BigQuery();
 
-  // Get the table reference.
+  // Get a reference to the dataset by datasetId.
   const dataset = client.dataset(datasetId);
+  // Get a reference to the table by tableName.
   const table = dataset.table(resourceName);
 
   // Get the IAM access policy for the table or view.
   const [policy] = await table.getIamPolicy();
 
-  // Initialize bindings if they do not exist.
+  // Initialize bindings array.
   if (!policy.bindings) {
     policy.bindings = [];
   }

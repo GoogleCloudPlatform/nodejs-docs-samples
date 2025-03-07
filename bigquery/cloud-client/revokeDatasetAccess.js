@@ -48,13 +48,13 @@ async function revokeDatasetAccess(datasetId, entityId) {
   // Get a reference to the dataset.
   const [dataset] = await bigquery.dataset(datasetId).get();
 
-  // To revoke access to a dataset, remove elements from the access list.
+  // To revoke access to a dataset, remove elements from the access array.
   //
   // See the BigQuery client library documentation for more details on access entries:
   // https://cloud.google.com/nodejs/docs/reference/secret-manager/4.1.4
 
   // Filter access entries to exclude entries matching the specified entity_id
-  // and assign a new list back to the access list.
+  // and assign a new array back to the access array.
   dataset.metadata.access = dataset.metadata.access.filter(entry => {
     // Return false (remove entry) if any of these fields match entityId.
     return !(

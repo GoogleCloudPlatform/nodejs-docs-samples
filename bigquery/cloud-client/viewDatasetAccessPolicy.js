@@ -17,7 +17,7 @@
 /**
  * View access policies for a BigQuery dataset.
  * @param {string} datasetId Dataset ID to view access policies for.
- * @returns {Array} List of access entries.
+ * @returns {Array} Array of access entries.
  */
 function viewDatasetAccessPolicy(datasetId) {
   // [START bigquery_view_dataset_access_policy]
@@ -28,7 +28,7 @@ function viewDatasetAccessPolicy(datasetId) {
 
   // TODO (developer): Update and un-comment below lines.
 
-  // Dataset from which to get the access policy
+  // Dataset from which to get the access policy.
   // datasetId = "my_dataset_id";
 
   // Get a reference to the dataset.
@@ -37,7 +37,7 @@ function viewDatasetAccessPolicy(datasetId) {
   return dataset.getMetadata().then(([metadata]) => {
     const accessEntries = metadata.access || [];
 
-    // Show the list of AccessEntry objects.
+    // Show the array of AccessEntry objects.
     // More details about the AccessEntry object in the BigQuery documentation:
     // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
     console.log(

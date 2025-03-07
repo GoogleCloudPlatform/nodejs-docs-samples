@@ -47,7 +47,7 @@ describe('revokeTableOrViewAccess', () => {
     // Get the initial empty policy.
     const [emptyPolicy] = await table.getIamPolicy();
 
-    // Initialize bindings if they do not exist.
+    // Initialize bindings array.
     if (!emptyPolicy.bindings) {
       emptyPolicy.bindings = [];
     }
@@ -91,7 +91,7 @@ describe('revokeTableOrViewAccess', () => {
     // Get the initial empty policy.
     const [emptyPolicy] = await table.getIamPolicy();
 
-    // Initialize bindings if they do not exist.
+    // Initialize bindings array.
     if (!emptyPolicy.bindings) {
       emptyPolicy.bindings = [];
     }

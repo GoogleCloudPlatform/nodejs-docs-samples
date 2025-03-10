@@ -80,6 +80,9 @@ jobs:
 
             const cmd = 'npx gts lint';
             const affected = ${{ needs.affected.outputs.nodejs-paths }};
+            if (affected.length === 0) {
+              console.log("No packages were affected, nothing to lint.")
+            }
 
             let failed = false;
             for (const path of affected) {

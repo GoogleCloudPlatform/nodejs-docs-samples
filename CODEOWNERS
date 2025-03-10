@@ -28,10 +28,10 @@ service-directory @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-sam
 tpu @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 webrisk @GoogleCloudPlatform/dee-infra @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
-# SoDa teams
+# SDK teams
 cloud-sql @GoogleCloudPlatform/cloud-sql-connectors @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
-storagetransfer @GoogleCloudPlatform/cloud-storage-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+storagetransfer @GoogleCloudPlatform/gcs-sdk-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
 # One-offs
 composer @GoogleCloudPlatform/cloud-dpes-composer @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

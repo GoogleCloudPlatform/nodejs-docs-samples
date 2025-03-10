@@ -36,17 +36,6 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-describe('gae_update_app', () => {
-  it('should send greetings', async () => {
-    await requestObj
-      .get('/')
-      .expect(200)
-      .expect(response => {
-        assert.strictEqual(response.text, 'Hello from App Engine!');
-      });
-  });
-});
-
 describe('gae_update_web_server_app', () => {
   it('should send greetings', async () => {
     await requestObj
@@ -58,7 +47,7 @@ describe('gae_update_web_server_app', () => {
   });
 });
 
-describe('gae_add_display_form add_display_form', () => {
+describe('gae_add_display_form', () => {
   it('should display form', async () => {
     await requestObj
       .get('/submit')
@@ -74,7 +63,7 @@ describe('gae_add_display_form add_display_form', () => {
   });
 });
 
-describe('gae_add_post_handler add_post_handler gae_enable_parser', () => {
+describe('gae_add_post_handler gae_enable_parser', () => {
   it('should record message', async () => {
     await requestObj
       .post('/submit', {

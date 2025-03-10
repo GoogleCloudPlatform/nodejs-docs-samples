@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {spawn} = require('child_process');
+const {execSync, spawn} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
 const {request} = require('gaxios');
@@ -47,12 +47,25 @@ async function startFF(port) {
     let stderr = '';
     ffProc.stdout.on('data', data => (stdout += data));
     ffProc.stderr.on('data', data => (stderr += data));
-    ffProc.on('error', reject);
-    ffProc.on('exit', c => (c === 0 ? resolve(stdout) : reject(stderr)));
+    ffProc.on('exit', code => {
+      if (code === 0 || code === null) {
+        // code === null corresponds to a signal-kill
+        // (which doesn't necessarily indicate a test failure)
+        resolve(stdout);
+      } else {
+        stderr = `Error code: ${code}\n${stderr}`;
+        reject(new Error(stderr));
+      }
+    });
   });
   await waitPort({host: 'localhost', port});
   return {ffProc, ffProcHandler};
 }
+
+// ImageMagick is available by default in Cloud Run Functions environments
+// https://cloud.google.com/functions/1stgendocs/tutorials/imagemagick-1st-gen.md#importing_dependencies
+// Manually install it for testing only.
+execSync('sudo apt-get install imagemagick -y');
 
 describe('functions/imagemagick tests', () => {
   before(async () => {

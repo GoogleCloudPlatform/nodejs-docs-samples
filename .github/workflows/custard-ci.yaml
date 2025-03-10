@@ -113,8 +113,7 @@ jobs:
           node-version: 20
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
-  nodejs-test:
-    name: test
+  test:
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

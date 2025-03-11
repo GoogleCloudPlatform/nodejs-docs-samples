@@ -14,82 +14,58 @@
 
 'use strict';
 
-/**
- * Grants access to a BigQuery table or view for a specified principal.
- *
- * @param {string} projectId Google Cloud Platform project ID.
- * @param {string} datasetId Dataset where the table or view is.
- * @param {string} resourceName Table or view name to get the access policy.
- * @param {string} principalId The principal requesting access to the table or view.
- * @param {string} role Role to assign to the member.
- * @returns {Promise<object[]>} The updated policy bindings.
- */
-async function grantAccessToTableOrView(
-  projectId,
-  datasetId,
-  resourceName,
-  principalId,
-  role
-) {
+async function main(projectId, datasetId, tableId, principalId, role) {
   // [START bigquery_grant_access_to_table_or_view]
+
+  /**
+   * TODO(developer): Update and un-comment below lines
+   */
+  // const projectId = "YOUR_PROJECT_ID";
+  // const datasetId = "YOUR_DATASET_ID";
+  // const tableId = "YOUR_TABLE_ID";
+  // const principalId = "YOUR_PRINCIPAL_ID";
+  // const role = "YOUR_ROLE";
+
   const {BigQuery} = require('@google-cloud/bigquery');
-
-  // TODO(developer): Update and un-comment below lines.
-
-  // Google Cloud Platform project.
-  // projectId = "my_project_id"
-
-  // Dataset where the table or view is.
-  // datasetId = "my_dataset_id"
-
-  // Table or view name to get the access policy.
-  // resourceName = "my_table_id"
-
-  // The principal requesting access to the table or view.
-  // Find more details about principal identifiers here:
-  // https://cloud.google.com/iam/docs/principal-identifiers
-  // principalId = "user:bob@example.com"
-
-  // Role to assign to the member.
-  // role = "roles/bigquery.dataViewer"
 
   // Instantiate a client.
   const client = new BigQuery();
 
-  // Get a reference to the dataset by datasetId.
-  const dataset = client.dataset(datasetId);
-  // Get a reference to the table by tableName.
-  const table = dataset.table(resourceName);
+  async function grantAccessToTableOrView() {
+    const dataset = client.dataset(datasetId);
+    const table = dataset.table(tableId);
 
-  // Get the IAM access policy for the table or view.
-  const [policy] = await table.getIamPolicy();
+    // Get the IAM access policy for the table or view.
+    const [policy] = await table.getIamPolicy();
 
-  // Initialize bindings array.
-  if (!policy.bindings) {
-    policy.bindings = [];
+    // Initialize bindings array.
+    if (!policy.bindings) {
+      policy.bindings = [];
+    }
+
+    // To grant access to a table or view
+    // add bindings to the Table or View policy.
+    //
+    // Find more details about Policy and Binding objects here:
+    // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
+    // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Binding
+    const binding = {
+      role,
+      members: [principalId],
+    };
+    policy.bindings.push(binding);
+
+    // Set the IAM access policy with updated bindings.
+    await table.setIamPolicy(policy);
+
+    // Show a success message.
+    console.log(
+      `Role '${role}' granted for principal '${principalId}' on resource '${datasetId}.${tableId}'.`
+    );
   }
 
-  // To grant access to a table or view
-  // add bindings to the Table or View policy.
-  //
-  // Find more details about Policy and Binding objects here:
-  // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
-  // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Binding
-  const binding = {
-    role: role,
-    members: [principalId],
-  };
-  policy.bindings.push(binding);
-
-  // Set the IAM access policy with updated bindings.
-  const [updatedPolicy] = await table.setIamPolicy(policy);
-
-  // Show a success message.
-  console.log(
-    `Role '${role}' granted for principal '${principalId}' on resource '${datasetId}.${resourceName}'.`
-  );
+  await grantAccessToTableOrView();
   // [END bigquery_grant_access_to_table_or_view]
-  return updatedPolicy.bindings;
 }
 
-module.exports = {grantAccessToTableOrView};
+exports.grantAccessToTableOrView = main;

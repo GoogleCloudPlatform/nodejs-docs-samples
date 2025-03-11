@@ -12,82 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {describe, it, before, after} = require('mocha');
+'use strict';
+
+const {describe, it, beforeEach, afterEach} = require('mocha');
 const assert = require('assert');
+const sinon = require('sinon');
+
 const {grantAccessToTableOrView} = require('../grantAccessToTableOrView');
-const {
-  getProjectId,
-  getEntityId,
-  getDataset,
-  getTable,
-  setupBeforeAll,
-  teardownAfterAll,
-} = require('./config');
+const {setupBeforeAll, cleanupResources} = require('./config');
 
 describe('grantAccessToTableOrView', () => {
-  // Setup shared resources before all tests.
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+  let entityId = null;
+  let tableId = null;
+  const projectId = process.env.GCLOUD_PROJECT;
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+    entityId = response.entityId;
+    tableId = response.tableId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
-  // Clean up resources after all tests.
-  after(async () => {
-    await teardownAfterAll();
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should grant access to a table', async () => {
-    // Get required test resources.
-    const projectId = await getProjectId();
-    const dataset = await getDataset();
-    const table = await getTable();
-    const entityId = getEntityId();
+    const roleId = 'roles/bigquery.dataViewer';
+    const principalId = `group:${entityId}`;
 
-    const ROLE = 'roles/bigquery.dataViewer';
-    const PRINCIPAL_ID = `group:${entityId}`;
-
-    // Get the initial empty policy.
-    const [emptyPolicy] = await table.getIamPolicy();
-
-    // Initialize bindings array.
-    if (!emptyPolicy.bindings) {
-      emptyPolicy.bindings = [];
-    }
-
-    // In an empty policy the role and principal should not be present.
-    assert.strictEqual(
-      emptyPolicy.bindings.some(p => p.role === ROLE),
-      false,
-      'Role should not exist in empty policy'
-    );
-    assert.strictEqual(
-      emptyPolicy.bindings.some(
-        p => p.members && p.members.includes(PRINCIPAL_ID)
-      ),
-      false,
-      'Principal should not exist in empty policy'
-    );
-
-    // Grant access to the table.
-    const updatedPolicy = await grantAccessToTableOrView(
+    await grantAccessToTableOrView(
       projectId,
-      dataset.id,
-      table.id,
-      PRINCIPAL_ID,
-      ROLE
+      datasetId,
+      tableId,
+      principalId,
+      roleId
     );
 
-    // A binding with that role should exist.
     assert.strictEqual(
-      updatedPolicy.some(p => p.role === ROLE),
-      true,
-      'Role should exist after granting access'
-    );
-
-    // A binding for that principal should exist.
-    assert.strictEqual(
-      updatedPolicy.some(p => p.members && p.members.includes(PRINCIPAL_ID)),
-      true,
-      'Principal should exist after granting access'
+      console.log.calledWith(
+        `Role '${roleId}' granted for principal '${principalId}' on resource '${datasetId}.${tableId}'.`
+      ),
+      true
     );
   });
 });

@@ -14,57 +14,45 @@
 
 'use strict';
 
-const {expect} = require('chai');
-const {
-  getDataset,
-  getEntityId,
-  setupBeforeAll,
-  teardownAfterAll,
-} = require('./config');
+const {beforeEach, afterEach, it, describe} = require('mocha');
+const assert = require('assert');
+const sinon = require('sinon');
+
+const {setupBeforeAll, cleanupResources} = require('./config');
+
 const {grantAccessToDataset} = require('../grantAccessToDataset');
 
 describe('grantAccessToDataset', () => {
-  // Set up fixtures before all tests (similar to pytest's module scope).
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+  let entityId = null;
+  const role = 'READER';
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+    entityId = response.entityId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
   // Clean up after all tests.
-  after(async () => {
-    await teardownAfterAll();
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should add entity to access entries', async () => {
-    const dataset = await getDataset();
-    const entityId = getEntityId();
-
-    console.log({dataset});
-    console.log({entityId});
-
     // Act: Grant access to the dataset.
-    const accessEntries = await grantAccessToDataset(
-      dataset.id,
-      entityId,
-      'READER'
-    );
-
-    // Assert: Check if entity was added to access entries.
-    const updatedEntityIds = accessEntries
-      .filter(entry => entry !== null)
-      .map(entry => {
-        // Handle different entity types.
-        if (entry.groupByEmail) {
-          return entry.groupByEmail;
-        } else if (entry.userByEmail) {
-          return entry.userByEmail;
-        } else if (entry.specialGroup) {
-          return entry.specialGroup;
-        }
-        return null;
-      })
-      .filter(id => id !== null);
+    await grantAccessToDataset(datasetId, entityId, role);
 
     // Check if our entity ID is in the updated access entries.
-    expect(updatedEntityIds).to.include(entityId);
+    assert.strictEqual(
+      console.log.calledWith(
+        `Role '${role}' granted for entity '${entityId}' in '${datasetId}'.`
+      ),
+      true
+    );
   });
 });

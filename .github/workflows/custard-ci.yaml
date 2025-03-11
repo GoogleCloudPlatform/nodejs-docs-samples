@@ -99,15 +99,11 @@ jobs:
                 console.log(e.stderr.toString("utf8"));
               }
             }
-            core.notice("Summary:")
-            core.info("Summary:")
+            console.log("\n\n=== Summary ===")
             console.log(`  Passed: ${affected.length - failed.length}`)
             console.log(`  Failed: ${failed.length}`)
             if (failed.length > 0) {
-              for (const path of failed) {
-                console.log(`  - ❌ ${path}`)
-              }
-              core.setFailed(`Failed '${cmd}' on ${JSON.stringify(failed)}`)
+              core.setFailed(`Failed '${cmd}' on ${failed.join(', ')}`)
             }
 
   region-tags:

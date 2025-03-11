@@ -45,6 +45,7 @@ async function main(
       secretConfig.ttl = {
         seconds: parseInt(ttl.replace('s', ''), 10),
       };
+      console.log(`Secret TTL set to ${ttl}`);
     }
 
     const [secret] = await client.createSecret({

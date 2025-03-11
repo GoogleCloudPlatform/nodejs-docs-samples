@@ -16,6 +16,8 @@
 
 'use strict';
 
+const x = 'TODO: DELETE THIS'
+
 async function main(tpuClient) {
   // [START tpu_vm_create]
   // Import the TPUClient

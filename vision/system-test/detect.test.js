@@ -76,22 +76,20 @@ describe('detect', () => {
   it('should detect labels in a local file', async () => {
     const output = execSync(`${cmd} labels ${files[4].localPath}`);
     assert.match(output, /Labels:/);
-    assert.match(output.toLowerCase(), /cat/);
+    assert.match(output, /cat/i);
   });
 
   it('should detect labels in a remote file', async () => {
     const output = execSync(`${cmd} labels-gcs ${bucketName} ${files[4].name}`);
     assert.match(output, /Labels:/);
-    assert.match(output.toLowerCase(), /cat/);
+    assert.match(output, /cat/i);
   });
 
   it('should detect landmarks in a local file', async () => {
     const output = execSync(`${cmd} landmarks ${files[1].localPath}`);
     assert.match(output, /Landmarks:/);
-    // something changed in the output and this text is no longer in the output
-    // however, the API call itself still works, commenting this out so
-    // it's not breaking the tests.
-    // assert.match(output, /Palace of Fine Arts/i);
+    // FLAKY: confirm there is output, if not an exact match
+    assert.match(output, /description:/i);
   });
 
   it('should detect landmarks in a remote file', async () => {
@@ -99,10 +97,8 @@ describe('detect', () => {
       `${cmd} landmarks-gcs ${bucketName} ${files[1].name}`
     );
     assert.match(output, /Landmarks:/);
-    // something changed in the output and this text is no longer in the output
-    // however, the API call itself still works, commenting this out so
-    // it's not breaking the tests.
-    // assert.match(output, /Palace of Fine Arts/i);
+    // FLAKY: confirm there is output, if not an exact match
+    assert.match(output, /description:/i);
   });
 
   it('should detect text in a local file', async () => {
@@ -118,21 +114,17 @@ describe('detect', () => {
   });
 
   it('should detect logos in a local file', async () => {
-    const output = execSync(`${cmd} logos ${files[9].localPath}`);
+    const output = execSync(`${cmd} logos ${files[2].localPath}`);
     assert.match(output, /Logos:/);
-    // something changed in the output and this text is no longer in the output
-    // however, the API call itself still works, commenting this out so
-    // it's not breaking the tests.
-    // assert.match(output, /Google/);
+    // confirm output with a description, but not necessarily an exact value
+    assert.match(output, /description:/i);
   });
 
   it('should detect logos in a remote file', async () => {
-    const output = execSync(`${cmd} logos-gcs ${bucketName} ${files[9].name}`);
+    const output = execSync(`${cmd} logos-gcs ${bucketName} ${files[2].name}`);
     assert.match(output, /Logos:/);
-    // something changed in the output and this text is no longer in the output
-    // however, the API call itself still works, commenting this out so
-    // it's not breaking the tests.
-    // assert.match(output, /Google/);
+    // confirm output with a description, but not necessarily an exact value
+    assert.match(output, /description:/i);
   });
 
   it('should detect properties in a local file', async () => {

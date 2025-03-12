@@ -217,6 +217,7 @@
     "texttospeech",
     "tpu",
     "translate",
+    "vision",
     "workflows/invoke-private-endpoint"
   ]
 }

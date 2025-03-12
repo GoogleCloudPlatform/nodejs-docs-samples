@@ -24,6 +24,6 @@ describe('quickstart', () => {
   it('should detect labels in a remote file', async () => {
     const stdout = execSync('node quickstart.js');
     assert.match(stdout, /Labels:/);
-    assert.match(stdout.toLowerCase(), /cat/i);
+    assert.match(stdout, /cat/i);
   });
 });

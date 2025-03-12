@@ -16,6 +16,8 @@
 
 'use strict';
 
+// TODO: remove this comment, used to trigger tests only
+
 const assert = require('node:assert/strict');
 const {beforeEach, afterEach, describe, it} = require('mocha');
 const sinon = require('sinon');

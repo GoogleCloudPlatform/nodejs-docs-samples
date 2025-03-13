@@ -70,28 +70,46 @@ jobs:
       fail-fast: false
       matrix:
         path: ${{ fromJson(needs.affected.outputs.paths) }}
-    env:
-      GOOGLE_SAMPLES_PROJECT: long-door-651
-      GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+    # env:
+    #   GOOGLE_SAMPLES_PROJECT: long-door-651
+    #   GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
     steps:
-      - name: Setup Custard
-        # TODO: use version tag when available
-        uses: GoogleCloudPlatform/cloud-samples-tools/.github/setup-custard@main
-        with:
-          path: ${{ matrix.path }}
-          ci-setup: ${{ toJson(fromJson(needs.affected.outputs.ci-setups)[matrix.path]) }}
-          project-id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
-          workload-identity-provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service-account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
+      # - name: Setup Custard
+      #   # TODO: use version tag when available
+      #   uses: GoogleCloudPlatform/cloud-samples-tools/.github/setup-custard@main
+      #   with:
+      #     path: ${{ matrix.path }}
+      #     ci-setup: ${{ toJson(fromJson(needs.affected.outputs.ci-setups)[matrix.path]) }}
+      #     project-id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
+      #     workload-identity-provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+      #     service-account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
 
-      - name: Setup Node
-        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
-        with:
-          node-version: ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].node-version }}
-      - name: Run tests for ${{ matrix.path }}
+      # - name: Setup Node
+      #   uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+      #   with:
+      #     node-version: ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].node-version }}
+      # - name: Run tests for ${{ matrix.path }}
+      #   run: |
+      #     timeout ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].timeout-minutes }}m \
+      #       make test dir=${{ matrix.path }}
+
+      # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#using-data-from-the-triggering-workflow
+      - name: Save job inputs
         run: |
-          timeout ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].timeout-minutes }}m \
-            make test dir=${{ matrix.path }}
+          mkdir -p artifact/
+          cat > artifact/inputs.json << EOF
+          {
+            "pull-request-number": ${{ github.event.number }},
+            "path": ${{ matrix.path }},
+            "ci-setup": ${{ toJson(fromJson(needs.affected.outputs.ci-setups)[matrix.path]) }}
+          }
+          EOF
+      - name: Upload inputs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.pull_request.head.sha }}
+          path: artifact/
+
       # - name: Upload test results for FlakyBot workflow
       #   if: github.event.action == 'schedule' && always() # always() submits logs even if tests fail
       #   uses: actions/upload-artifact@v4

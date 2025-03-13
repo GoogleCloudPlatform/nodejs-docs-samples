@@ -49,7 +49,7 @@ async function main(tpuClient) {
   // The zone in which to create the node.
   // For more information about supported TPU types for specific zones,
   // see https://cloud.google.com/tpu/docs/regions-zones
-  const zone = `${region}-f`;
+  const zone = `${region}-a`;
 
   // The accelerator type that specifies the version and size of the node you want to create.
   // For more information about supported accelerator types for each TPU version,

@@ -50,11 +50,11 @@ async function main(tpuClient) {
   // The accelerator type that specifies the version and size of the Cloud TPU you want to create.
   // For more information about supported accelerator types for each TPU version,
   // see https://cloud.google.com/tpu/docs/system-architecture-tpu-vm#versions.
-  const tpuType = 'v2-8';
+  const tpuType = 'v5litepod-4';
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
+  const tpuSoftwareVersion = 'v2-tpuv5-litepod';
 
   async function callCreateTpuVMStartupScript() {
     // Create a node

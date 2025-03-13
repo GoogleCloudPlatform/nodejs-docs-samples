@@ -95,7 +95,6 @@
     "run/idp-sql", // (untested) Error: Invalid contents in the credentials file
     "storagetransfer", // CredentialsError: Missing credentials in config, if using AWS_CONFIG_FILE, set AWS_SDK_LOAD_CONFIG=1
     "video-intelligence", // PERMISSION_DENIED: The caller does not have permission
-    "vision", // REDIS: Error: connect ECONNREFUSED 127.0.0.1:6379
     "workflows", // SyntaxError: Cannot use import statement outside a module
     "workflows/quickstart" // [ERR_MODULE_NOT_FOUND]: Cannot find package 'ts-node' imported from ...
   ]

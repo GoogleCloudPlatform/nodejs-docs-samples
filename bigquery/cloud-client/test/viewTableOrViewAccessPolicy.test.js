@@ -24,14 +24,12 @@ const {viewTableOrViewAccessPolicy} = require('../viewTableOrViewAccessPolicy');
 describe('viewTableOrViewAccessPolicy', () => {
   let datasetId = null;
   let tableId = null;
-  let viewId = null;
   const projectId = process.env.GCLOUD_PROJECT;
 
   beforeEach(async () => {
     const response = await setupBeforeAll();
     datasetId = response.datasetId;
     tableId = response.tableId;
-    viewId = response.viewId;
 
     sinon.stub(console, 'log');
     sinon.stub(console, 'error');

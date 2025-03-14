@@ -36,7 +36,7 @@ describe('revokeDatasetAccess', () => {
     sinon.stub(console, 'error');
   });
 
-  // Clean up after all tests
+  // Clean up after all tests.
   afterEach(async () => {
     await cleanupResources(datasetId);
     console.log.restore();
@@ -44,16 +44,16 @@ describe('revokeDatasetAccess', () => {
   });
 
   it('should revoke access to a dataset', async () => {
-    // First grant access to the dataset
+    // Grant access to the dataset.
     await grantAccessToDataset(datasetId, entityId, role);
 
     // Reset console.log stub to clear the history of calls
     console.log.resetHistory();
 
-    // Now revoke access
+    // Now revoke access.
     await revokeDatasetAccess(datasetId, entityId);
 
-    // Check if the right message was logged
+    // Check if the right message was logged.
     assert.strictEqual(
       console.log.calledWith(
         `Revoked access to '${entityId}' from '${datasetId}'.`

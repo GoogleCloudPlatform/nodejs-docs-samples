@@ -46,9 +46,9 @@ describe('revokeTableOrViewAccess', () => {
   });
 
   it('should revoke access to a table for a specific role', async () => {
-    const principalId = `group: ${entityId}`;
+    const principalId = `group:${entityId}`;
 
-    // Grant access first
+    // Grant access first.
     await grantAccessToTableOrView(
       projectId,
       datasetId,
@@ -57,10 +57,10 @@ describe('revokeTableOrViewAccess', () => {
       roleId
     );
 
-    // Reset console log history
+    // Reset console log history.
     console.log.resetHistory();
 
-    // Revoke access for the role
+    // Revoke access for the role.
     await revokeAccessToTableOrView(
       projectId,
       datasetId,
@@ -69,7 +69,7 @@ describe('revokeTableOrViewAccess', () => {
       null
     );
 
-    // Check that the right message was logged
+    // Check that the right message was logged.
     assert.strictEqual(
       console.log.calledWith(
         `Role '${roleId}' revoked for all principals on resource '${datasetId}.${tableId}'.`
@@ -79,9 +79,9 @@ describe('revokeTableOrViewAccess', () => {
   });
 
   it('should revoke access to a table for a specific principal', async () => {
-    const principalId = `group: ${entityId}`;
+    const principalId = `group:${entityId}`;
 
-    // Grant access first
+    // Grant access first.
     await grantAccessToTableOrView(
       projectId,
       datasetId,
@@ -90,10 +90,10 @@ describe('revokeTableOrViewAccess', () => {
       roleId
     );
 
-    // Reset console log history
+    // Reset console log history.
     console.log.resetHistory();
 
-    // Revoke access for the principal
+    // Revoke access for the principal.
     await revokeAccessToTableOrView(
       projectId,
       datasetId,
@@ -102,7 +102,7 @@ describe('revokeTableOrViewAccess', () => {
       principalId
     );
 
-    // Check that the right message was logged
+    // Check that the right message was logged.
     assert.strictEqual(
       console.log.calledWith(
         `Access revoked for principal '${principalId}' on resource '${datasetId}.${tableId}'.`

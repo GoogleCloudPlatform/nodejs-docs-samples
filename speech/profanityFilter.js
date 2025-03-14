@@ -16,7 +16,6 @@
 
 function main(gcsUri) {
   // [START speech_syncRecognizeWithProfanityFilter]
-  // [START syncRecognizeWithProfanityFilter]
   // Filters profanity
 
   /**
@@ -54,7 +53,6 @@ function main(gcsUri) {
     console.log(`Transcription: ${transcription}`);
   }
   syncRecognizeWithProfanityFilter().catch(console.error);
-  // [END syncRecognizeWithProfanityFilter]
   // [END speech_syncRecognizeWithProfanityFilter]
 }
 

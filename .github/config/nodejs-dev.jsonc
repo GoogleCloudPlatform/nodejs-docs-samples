@@ -146,9 +146,11 @@
     "functions/http/httpContent",
     "functions/http/httpMethods",
     "functions/http/parseXML",
+    "functions/imagemagick",
     "functions/log/helloWorld",
     "functions/log/processEntry",
     "functions/memorystore/redis",
+    "functions/ocr/app",
     "functions/pubsub/publish",
     "functions/pubsub/subscribe",
     "functions/scheduleinstance",
@@ -172,6 +174,7 @@
     "functions/v2/helloGCS",
     "functions/v2/helloPubSub",
     "functions/v2/httpLogging",
+    "functions/v2/imagemagick",
     "functions/v2/log/processEntry",
     "functions/v2/ocr/app",
     "functions/v2/responseStreaming",
@@ -214,6 +217,7 @@
     "texttospeech",
     "tpu",
     "translate",
+    "vision",
     "workflows/invoke-private-endpoint"
   ]
 }

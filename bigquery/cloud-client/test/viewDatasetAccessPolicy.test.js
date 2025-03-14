@@ -12,24 +12,59 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
+const {beforeEach, afterEach, it, describe} = require('mocha');
 const assert = require('assert');
-const {getDataset, setupBeforeAll, teardownAfterAll} = require('./config');
+const sinon = require('sinon');
+
+const {setupBeforeAll, cleanupResources} = require('./config');
 const {viewDatasetAccessPolicy} = require('../viewDatasetAccessPolicy');
 
 describe('viewDatasetAccessPolicy', () => {
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
-  after(async () => {
-    await teardownAfterAll();
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should view dataset access policies', async () => {
-    const dataset = await getDataset();
-    const accessPolicy = await viewDatasetAccessPolicy(dataset.id);
+    // Act: View the dataset access policy
+    await viewDatasetAccessPolicy(datasetId);
 
-    assert.ok(accessPolicy, 'Access policy should be defined');
-    assert.ok(Array.isArray(accessPolicy), 'Access policy should be an array');
+    // Assert: Check that the initial message was logged
+    assert.strictEqual(
+      console.log.calledWith(
+        sinon.match(`Access entries in dataset '${datasetId}':`)
+      ),
+      true
+    );
+
+    // We're not checking the exact number of entries since that might vary,
+    // but we're making sure the appropriate logging format was followed
+    assert.ok(
+      console.log.calledWith(sinon.match(/Role:/)),
+      'Should log role information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match(/Special group:/)),
+      'Should log special group information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match(/User by Email:/)),
+      'Should log user by email information'
+    );
   });
 });

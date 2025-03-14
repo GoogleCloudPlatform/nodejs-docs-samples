@@ -14,30 +14,26 @@
 
 'use strict';
 
-/**
- * View access policies for a BigQuery dataset.
- * @param {string} datasetId Dataset ID to view access policies for.
- * @returns {Array} Array of access entries.
- */
-function viewDatasetAccessPolicy(datasetId) {
+async function main(datasetId) {
   // [START bigquery_view_dataset_access_policy]
+
+  /**
+   * TODO(developer): Update and un-comment below lines
+   */
+  // const datasetId = "my_project_id.my_dataset";
+
   const {BigQuery} = require('@google-cloud/bigquery');
 
   // Instantiate a client.
   const bigquery = new BigQuery();
 
-  // TODO (developer): Update and un-comment below lines.
+  async function viewDatasetAccessPolicy() {
+    const dataset = bigquery.dataset(datasetId);
 
-  // Dataset from which to get the access policy.
-  // datasetId = "my_dataset_id";
-
-  // Get a reference to the dataset.
-  const dataset = bigquery.dataset(datasetId);
-
-  return dataset.getMetadata().then(([metadata]) => {
+    const [metadata] = await dataset.getMetadata();
     const accessEntries = metadata.access || [];
 
-    // Show the array of AccessEntry objects.
+    // Show the list of AccessEntry objects.
     // More details about the AccessEntry object in the BigQuery documentation:
     // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
     console.log(
@@ -48,12 +44,9 @@ function viewDatasetAccessPolicy(datasetId) {
       console.log(`Special group: ${accessEntry.specialGroup || 'null'}`);
       console.log(`User by Email: ${accessEntry.userByEmail || 'null'}`);
     }
-
-    return accessEntries;
-  });
+  }
   // [END bigquery_view_dataset_access_policy]
+  await viewDatasetAccessPolicy();
 }
 
-module.exports = {
-  viewDatasetAccessPolicy,
-};
+exports.viewDatasetAccessPolicy = main;

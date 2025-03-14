@@ -12,79 +12,90 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
+const {describe, it, beforeEach, afterEach} = require('mocha');
 const assert = require('assert');
-const {
-  getProjectId,
-  getDataset,
-  getTable,
-  getView,
-  setupBeforeAll,
-  teardownAfterAll,
-} = require('./config.js');
-const viewTableOrViewAccessPolicy = require('../viewTableOrViewAccessPolicy.js');
+const sinon = require('sinon');
+
+const {setupBeforeAll, cleanupResources} = require('./config');
+const {viewTableOrViewAccessPolicy} = require('../viewTableOrViewAccessPolicy');
 
 describe('viewTableOrViewAccessPolicy', () => {
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+  let tableId = null;
+  let viewId = null;
+  const projectId = process.env.GCLOUD_PROJECT;
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+    tableId = response.tableId;
+    viewId = response.viewId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
-  after(async () => {
-    await teardownAfterAll();
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should view table access policies', async () => {
-    const projectId = await getProjectId();
-    const dataset = await getDataset();
-    const table = await getTable();
+    // View the table access policy
+    await viewTableOrViewAccessPolicy(projectId, datasetId, tableId);
 
-    const policy = await viewTableOrViewAccessPolicy(
-      projectId,
-      dataset.id,
-      table.id
-    );
-
-    // Verify that the policy exists.
-    assert.ok(policy, 'Policy should be defined');
-
-    // Verify that bindings exists and is an array.
-    assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
-
-    // In a new policy, bindings should be empty.
+    // Check that the right messages were logged
     assert.strictEqual(
-      policy.bindings.length,
-      0,
-      'Bindings list should be empty'
+      console.log.calledWith(
+        `Access Policy details for table or view '${tableId}'.`
+      ),
+      true
     );
 
-    // Verify that etag exists, but do not validate its exact value.
-    assert.ok(policy.etag, 'Etag should be defined');
+    assert.ok(
+      console.log.calledWith(sinon.match('Bindings:')),
+      'Should log bindings information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match('etag:')),
+      'Should log etag information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match('Version:')),
+      'Should log version information'
+    );
   });
 
   it('should view view access policies', async () => {
-    const projectId = await getProjectId();
-    const dataset = await getDataset();
-    const view = await getView();
+    // View the view access policy
+    await viewTableOrViewAccessPolicy(projectId, datasetId, viewId);
 
-    const policy = await viewTableOrViewAccessPolicy(
-      projectId,
-      dataset.id,
-      view.id
-    );
-
-    // Verify that the policy exists.
-    assert.ok(policy, 'Policy should be defined');
-
-    // Verify that bindings exists and is an array.
-    assert.ok(Array.isArray(policy.bindings), 'Bindings should be an array');
-
-    // In a new policy, bindings should be empty.
+    // Check that the right messages were logged
     assert.strictEqual(
-      policy.bindings.length,
-      0,
-      'Bindings list should be empty'
+      console.log.calledWith(
+        `Access Policy details for table or view '${viewId}'.`
+      ),
+      true
     );
 
-    // Verify that etag exists, but do not validate its exact value.
-    assert.ok(policy.etag, 'Etag should be defined');
+    assert.ok(
+      console.log.calledWith(sinon.match('Bindings:')),
+      'Should log bindings information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match('etag:')),
+      'Should log etag information'
+    );
+
+    assert.ok(
+      console.log.calledWith(sinon.match('Version:')),
+      'Should log version information'
+    );
   });
 });

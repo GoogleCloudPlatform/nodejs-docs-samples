@@ -245,11 +245,21 @@ describe('Secret Manager samples', () => {
     assert.match(stdout, new RegExp('Payload: bar'));
   });
 
-  it('creates a secret', async () => {
+  it('creates a secret with TTL', async () => {
+    const ttl = '900s';
     const output = execSync(
-      `node createSecret.js projects/${projectId} ${secretId}-2`
+      `node createSecret.js projects/${projectId} ${secretId}-2 ${ttl}`
     );
     assert.match(output, new RegExp('Created secret'));
+    assert.match(output, new RegExp(`Secret TTL set to ${ttl}`));
+  });
+
+  it('creates a secret without TTL', async () => {
+    const output = execSync(
+      `node createSecret.js projects/${projectId} ${secretId}-7`
+    );
+    assert.match(output, new RegExp('Created secret'));
+    assert.notMatch(output, new RegExp('Secret TTL set to'));
   });
 
   it('creates a regional secret', async () => {

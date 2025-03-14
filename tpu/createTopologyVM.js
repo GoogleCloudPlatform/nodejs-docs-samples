@@ -51,7 +51,7 @@ async function main(tpuClient) {
 
   // Software version that specifies the version of the TPU runtime to install. For more information,
   // see https://cloud.google.com/tpu/docs/runtimes
-  const tpuSoftwareVersion = 'tpu-vm-tf-2.17.0-pod-pjrt';
+  const tpuSoftwareVersion = 'v2-tpuv5-litepod';
 
   // The version of the Cloud TPU you want to create.
   // Available options: TYPE_UNSPECIFIED = 0, V2 = 2, V3 = 4, V4 = 7

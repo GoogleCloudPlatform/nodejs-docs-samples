@@ -33,7 +33,7 @@ async function main(tpuClient) {
   const projectId = await tpuClient.getProjectId();
 
   // The zone from which the Queued Resources are retrived.
-  const zone = 'us-central1-f';
+  const zone = 'us-central1-a';
 
   async function callGetQueuedResourcesList() {
     const request = {

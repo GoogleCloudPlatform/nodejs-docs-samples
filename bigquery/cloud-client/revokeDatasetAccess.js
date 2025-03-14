@@ -14,78 +14,54 @@
 
 'use strict';
 
-/**
- * Revokes access to a dataset for a specified entity.
- *
- * @param {string} datasetId ID of the dataset to revoke access to.
- * @param {string} entityId  ID of the user or group from whom you are revoking access.
- *                            Alternatively, the JSON REST API representation of the entity,
- *                            such as a view's table reference.
- * @returns {Promise<Array>} A promise that resolves to the updated access entries.
- */
-async function revokeDatasetAccess(datasetId, entityId) {
+async function main(datasetId, entityId) {
   // [START bigquery_revoke_dataset_access]
-  const {BigQuery} = require('@google-cloud/bigquery');
 
-  // Define enum for HTTP codes.
-  const HTTP_STATUS = {
-    PRECONDITION_FAILED: 412,
-  };
+  /**
+   * TODO(developer): Update and un-comment below lines
+   */
 
-  // TODO (developer): Update and un-comment below lines.
-
-  // ID of the dataset to revoke access to.
-  // datasetId = "my_project.my_dataset"
+  // const datasetId = "my_project_id.my_dataset"
 
   // ID of the user or group from whom you are revoking access.
-  // Alternatively, the JSON REST API representation of the entity,
-  // such as a view's table reference.
-  // entityId = "user-or-group-to-remove@example.com"
+  // const entityId = "user-or-group-to-remove@example.com"
+
+  const {BigQuery} = require('@google-cloud/bigquery');
 
   // Instantiate a client.
   const bigquery = new BigQuery();
 
-  // Get a reference to the dataset.
-  const [dataset] = await bigquery.dataset(datasetId).get();
+  async function revokeDatasetAccess() {
+    const [dataset] = await bigquery.dataset(datasetId).get();
 
-  // To revoke access to a dataset, remove elements from the access array.
-  //
-  // See the BigQuery client library documentation for more details on access entries:
-  // https://cloud.google.com/nodejs/docs/reference/secret-manager/4.1.4
+    // To revoke access to a dataset, remove elements from the access list.
+    //
+    // See the BigQuery client library documentation for more details on access entries:
+    // https://cloud.google.com/nodejs/docs/reference/bigquery/latest
 
-  // Filter access entries to exclude entries matching the specified entity_id
-  // and assign a new array back to the access array.
-  dataset.metadata.access = dataset.metadata.access.filter(entry => {
-    // Return false (remove entry) if any of these fields match entityId.
-    return !(
-      entry.entity_id === entityId ||
-      entry.userByEmail === entityId ||
-      entry.groupByEmail === entityId
-    );
-  });
-
-  // Update will only succeed if the dataset
-  // has not been modified externally since retrieval.
-
-  try {
-    // Update just the access entries property of the dataset.
-    const [updatedDataset] = await dataset.setMetadata(dataset.metadata);
-
-    return updatedDataset.access;
-  } catch (error) {
-    // Check if it's a precondition failed error (a read-modify-write error).
-    if (error.code === HTTP_STATUS.PRECONDITION_FAILED) {
-      console.log(
-        `Dataset '${dataset.id}' was modified remotely before this update. ` +
-          'Fetch the latest version and retry.'
+    // Filter access entries to exclude entries matching the specified entity_id
+    // and assign a new list back to the access list.
+    dataset.metadata.access = dataset.metadata.access.filter(entry => {
+      return !(
+        entry.entity_id === entityId ||
+        entry.userByEmail === entityId ||
+        entry.groupByEmail === entityId
       );
-    } else {
-      throw error;
-    }
+    });
+
+    // Update will only succeed if the dataset
+    // has not been modified externally since retrieval.
+    //
+    // See the BigQuery client library documentation for more details on metadata updates:
+    // https://cloud.google.com/bigquery/docs/updating-datasets
+
+    // Update just the 'access entries' property of the dataset.
+    await dataset.setMetadata(dataset.metadata);
+
+    console.log(`Revoked access to '${entityId}' from '${datasetId}'.`);
   }
   // [END bigquery_revoke_dataset_access]
+  await revokeDatasetAccess();
 }
 
-module.exports = {
-  revokeDatasetAccess,
-};
+exports.revokeDatasetAccess = main;

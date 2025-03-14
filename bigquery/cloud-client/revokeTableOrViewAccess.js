@@ -14,106 +14,96 @@
 
 'use strict';
 
-/**
- * Revokes access to a BigQuery table or view.
- * @param {string} projectId The ID of the Google Cloud project.
- * @param {string} datasetId The ID of the dataset containing the table/view.
- * @param {string} resourceName The ID of the table or view.
- * @param {string} [roleToRemove=null] Optional. Specific role to revoke.
- * @param {string} [principalToRemove=null] Optional. Specific principal to revoke access from.
- * @returns {Promise<Array>} The updated IAM policy.
- */
-async function revokeAccessToTableOrView(
+async function main(
   projectId,
   datasetId,
-  resourceName,
+  tableId,
   roleToRemove = null,
   principalToRemove = null
 ) {
   // [START bigquery_revoke_access_to_table_or_view]
+
+  /**
+   * TODO(developer): Update and un-comment below lines
+   */
+  // const projectId = "YOUR_PROJECT_ID"
+  // const datasetId = "YOUR_DATASET_ID"
+  // const tableId = "YOUR_TABLE_ID"
+  // const roleToRemove = "YOUR_ROLE"
+  // const principalToRemove = "YOUR_PRINCIPAL_ID"
+
   const {BigQuery} = require('@google-cloud/bigquery');
-
-  // TODO (developer): Update and un-comment below lines.
-
-  // Google Cloud Platform project.
-  // projectId = "my_project_id"
-
-  // Dataset where the table or view is.
-  // datasetId = "my_dataset_id"
-
-  // Table or view name to get the access policy.
-  // resourceName = "my_table_id"
-
-  // (Optional) Role to remove from the table or view.
-  // roleToRemove = "roles/bigquery.dataViewer"
-
-  // (Optional) Principal to remove from the table or view.
-  // principalToRemove = "user:alice@example.com"
-
-  // Find more information about roles and principals (refered as members) here:
-  // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Binding
 
   // Instantiate a client.
   const client = new BigQuery();
 
-  // Get a reference to the dataset by datasetId.
-  const dataset = client.dataset(datasetId);
-  // Get a reference to the table by tableName.
-  const table = dataset.table(resourceName);
+  async function revokeAccessToTableOrView() {
+    const dataset = client.dataset(datasetId);
+    const table = dataset.table(tableId);
 
-  // Get the IAM access policy for the table or view.
-  const [policy] = await table.getIamPolicy();
+    // Get the IAM access policy for the table or view.
+    const [policy] = await table.getIamPolicy();
 
-  // Initialize bindings array.
-  if (!policy.bindings) {
-    policy.bindings = [];
-  }
-
-  // To revoke access to a table or view,
-  // remove bindings from the Table or View policy.
-  //
-  // Find more details about Policy objects here:
-  // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
-
-  if (roleToRemove) {
-    // Filter out all bindings with the `roleToRemove`
-    // and assign a new array back to the policy bindings.
-    policy.bindings = policy.bindings.filter(b => b.role !== roleToRemove);
-  }
-
-  if (principalToRemove) {
-    // The `bindings` array is immutable. Create a copy for modifications.
-    const bindings = [...policy.bindings];
-
-    // Filter out the principal from each binding.
-    for (const binding of bindings) {
-      if (binding.members) {
-        binding.members = binding.members.filter(m => m !== principalToRemove);
-      }
+    // Initialize bindings array.
+    if (!policy.bindings) {
+      policy.bindings = [];
     }
 
-    // Filter out bindings with empty members.
-    policy.bindings = bindings.filter(
-      binding => binding.members && binding.members.length > 0
-    );
-  }
+    // To revoke access to a table or view,
+    // remove bindings from the Table or View policy.
+    //
+    // Find more details about Policy objects here:
+    // https://cloud.google.com/security-command-center/docs/reference/rest/Shared.Types/Policy
 
-  try {
+    if (principalToRemove) {
+      // Create a copy of bindings for modifications.
+      const bindings = [...policy.bindings];
+
+      // Filter out the principal from each binding.
+      for (const binding of bindings) {
+        if (binding.members) {
+          binding.members = binding.members.filter(
+            m => m !== principalToRemove
+          );
+        }
+      }
+
+      // Filter out bindings with empty members.
+      policy.bindings = bindings.filter(
+        binding => binding.members && binding.members.length > 0
+      );
+    }
+
+    if (roleToRemove) {
+      // Filter out all bindings with the roleToRemove
+      // and assign a new list back to the policy bindings.
+      policy.bindings = policy.bindings.filter(b => b.role !== roleToRemove);
+    }
+
     // Set the IAM access policy with updated bindings.
     await table.setIamPolicy(policy);
 
-    // Get the policy again to confirm it's set correctly.
-    const [verifiedPolicy] = await table.getIamPolicy();
-
-    // Return the updated policy bindings.
-    return verifiedPolicy && verifiedPolicy.bindings
-      ? verifiedPolicy.bindings
-      : [];
-  } catch (error) {
-    console.error('Error settings IAM policy:', error);
-    throw error;
+    // Create a descriptive message based on what was actually removed
+    if (roleToRemove && principalToRemove) {
+      console.log(
+        `Role '${roleToRemove}' revoked for principal '${principalToRemove}' on resource '${datasetId}.${tableId}'.`
+      );
+    } else if (roleToRemove) {
+      console.log(
+        `Role '${roleToRemove}' revoked for all principals on resource '${datasetId}.${tableId}'.`
+      );
+    } else if (principalToRemove) {
+      console.log(
+        `Access revoked for principal '${principalToRemove}' on resource '${datasetId}.${tableId}'.`
+      );
+    } else {
+      console.log(
+        `No changes made to access policy for '${datasetId}.${tableId}'.`
+      );
+    }
   }
   // [END bigquery_revoke_access_to_table_or_view]
+  await revokeAccessToTableOrView();
 }
 
-module.exports = {revokeAccessToTableOrView};
+exports.revokeAccessToTableOrView = main;

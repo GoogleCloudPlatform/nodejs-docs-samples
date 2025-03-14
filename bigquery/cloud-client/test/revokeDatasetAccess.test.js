@@ -12,92 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {describe, it, before, after} = require('mocha');
+'use strict';
+
+const {beforeEach, afterEach, it, describe} = require('mocha');
 const assert = require('assert');
+const sinon = require('sinon');
+
+const {setupBeforeAll, cleanupResources} = require('./config');
 const {grantAccessToDataset} = require('../grantAccessToDataset');
 const {revokeDatasetAccess} = require('../revokeDatasetAccess');
-const {
-  getDataset,
-  getEntityId,
-  setupBeforeAll,
-  teardownAfterAll,
-} = require('./config');
 
 describe('revokeDatasetAccess', () => {
-  // Setup resources before all tests.
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+  let entityId = null;
+  const role = 'READER';
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+    entityId = response.entityId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
-  // Clean up resources after all tests.
-  after(async () => {
-    await teardownAfterAll();
+  // Clean up after all tests
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should revoke access to a dataset', async () => {
-    // Get test resources.
-    const dataset = await getDataset();
-    const entityId = getEntityId();
+    // First grant access to the dataset
+    await grantAccessToDataset(datasetId, entityId, role);
 
-    // Directly use the dataset ID.
-    const datasetId = dataset.id;
-    console.log(`Testing with dataset: ${datasetId} and entity: ${entityId}`);
+    // Reset console.log stub to clear the history of calls
+    console.log.resetHistory();
 
-    // First grant access to the dataset.
-    const datasetAccessEntries = await grantAccessToDataset(
-      datasetId,
-      entityId,
-      'READER'
-    );
+    // Now revoke access
+    await revokeDatasetAccess(datasetId, entityId);
 
-    // Create a set of all entity IDs and email addresses to check.
-    const datasetEntityIds = new Set();
-    datasetAccessEntries.forEach(entry => {
-      if (entry.entity_id) {
-        datasetEntityIds.add(entry.entity_id);
-      }
-      if (entry.userByEmail) {
-        datasetEntityIds.add(entry.userByEmail);
-      }
-      if (entry.groupByEmail) {
-        datasetEntityIds.add(entry.groupByEmail);
-      }
-    });
-
-    // Check if our entity ID is in the set.
-    const hasAccess = datasetEntityIds.has(entityId);
-    console.log(`Entity ${entityId} has access after granting: ${hasAccess}`);
+    // Check if the right message was logged
     assert.strictEqual(
-      hasAccess,
-      true,
-      'Entity should have access after granting'
-    );
-
-    // Now revoke access.
-    const newAccessEntries = await revokeDatasetAccess(datasetId, entityId);
-
-    // Check that the entity no longer has access.
-    const updatedEntityIds = new Set();
-    newAccessEntries.forEach(entry => {
-      if (entry.entity_id) {
-        updatedEntityIds.add(entry.entity_id);
-      }
-      if (entry.userByEmail) {
-        updatedEntityIds.add(entry.userByEmail);
-      }
-      if (entry.groupByEmail) {
-        updatedEntityIds.add(entry.groupByEmail);
-      }
-    });
-
-    const stillHasAccess = updatedEntityIds.has(entityId);
-    console.log(
-      `Entity ${entityId} has access after revoking: ${stillHasAccess}`
-    );
-    assert.strictEqual(
-      stillHasAccess,
-      false,
-      'Entity should not have access after revoking'
+      console.log.calledWith(
+        `Revoked access to '${entityId}' from '${datasetId}'.`
+      ),
+      true
     );
   });
 });

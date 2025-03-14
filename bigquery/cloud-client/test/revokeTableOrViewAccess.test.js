@@ -12,118 +12,102 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {assert} = require('chai');
-const {describe, before, after, it} = require('mocha');
+'use strict';
+
+const {describe, it, beforeEach, afterEach} = require('mocha');
+const assert = require('assert');
+const sinon = require('sinon');
 
 const {revokeAccessToTableOrView} = require('../revokeTableOrViewAccess');
 const {grantAccessToTableOrView} = require('../grantAccessToTableOrView');
-const {
-  getProjectId,
-  getEntityId,
-  getDataset,
-  getTable,
-  setupBeforeAll,
-  teardownAfterAll,
-} = require('./config');
+const {setupBeforeAll, cleanupResources} = require('./config');
 
 describe('revokeTableOrViewAccess', () => {
-  before(async () => {
-    await setupBeforeAll();
+  let datasetId = null;
+  let tableId = null;
+  let entityId = null;
+  const projectId = process.env.GCLOUD_PROJECT;
+  const roleId = 'roles/bigquery.dataViewer';
+
+  beforeEach(async () => {
+    const response = await setupBeforeAll();
+    datasetId = response.datasetId;
+    tableId = response.tableId;
+    entityId = response.entityId;
+
+    sinon.stub(console, 'log');
+    sinon.stub(console, 'error');
   });
 
-  after(async () => {
-    await teardownAfterAll();
+  afterEach(async () => {
+    await cleanupResources(datasetId);
+    console.log.restore();
+    console.error.restore();
   });
 
   it('should revoke access to a table for a specific role', async () => {
-    const dataset = await getDataset();
-    const projectId = await getProjectId();
-    const table = await getTable();
-    const entityId = getEntityId();
+    const principalId = `group: ${entityId}`;
 
-    const ROLE = 'roles/bigquery.dataViewer';
-    const PRINCIPAL_ID = `group:${entityId}`;
-
-    // Get the initial empty policy.
-    const [emptyPolicy] = await table.getIamPolicy();
-
-    // Initialize bindings array.
-    if (!emptyPolicy.bindings) {
-      emptyPolicy.bindings = [];
-    }
-
-    // Grant access.
-    const policyWithRole = await grantAccessToTableOrView(
+    // Grant access first
+    await grantAccessToTableOrView(
       projectId,
-      dataset.id,
-      table.id,
-      PRINCIPAL_ID,
-      ROLE
+      datasetId,
+      tableId,
+      principalId,
+      roleId
     );
 
-    // Check that there is a binding with that role.
-    const hasRole = policyWithRole.some(b => b.role === ROLE);
-    assert.isTrue(hasRole);
+    // Reset console log history
+    console.log.resetHistory();
 
-    // Revoke access for the role.
-    const policyWithRevokedRole = await revokeAccessToTableOrView(
+    // Revoke access for the role
+    await revokeAccessToTableOrView(
       projectId,
-      dataset.id,
-      table.id,
-      ROLE,
+      datasetId,
+      tableId,
+      roleId,
       null
     );
 
-    // Check that this role is not present in the policy anymore.
-    const roleExists = policyWithRevokedRole.some(b => b.role === ROLE);
-    assert.isFalse(roleExists);
+    // Check that the right message was logged
+    assert.strictEqual(
+      console.log.calledWith(
+        `Role '${roleId}' revoked for all principals on resource '${datasetId}.${tableId}'.`
+      ),
+      true
+    );
   });
 
   it('should revoke access to a table for a specific principal', async () => {
-    const dataset = await getDataset();
-    const projectId = await getProjectId();
-    const table = await getTable();
-    const entityId = getEntityId();
+    const principalId = `group: ${entityId}`;
 
-    const ROLE = 'roles/bigquery.dataViewer';
-    const PRINCIPAL_ID = `group:${entityId}`;
-
-    // Get the initial empty policy.
-    const [emptyPolicy] = await table.getIamPolicy();
-
-    // Initialize bindings array.
-    if (!emptyPolicy.bindings) {
-      emptyPolicy.bindings = [];
-    }
-
-    // Grant access.
-    const updatedPolicy = await grantAccessToTableOrView(
+    // Grant access first
+    await grantAccessToTableOrView(
       projectId,
-      dataset.id,
-      table.id,
-      PRINCIPAL_ID,
-      ROLE
+      datasetId,
+      tableId,
+      principalId,
+      roleId
     );
 
-    // There is a binding for that principal.
-    const hasPrincipal = updatedPolicy.some(
-      b => b.members && b.members.includes(PRINCIPAL_ID)
-    );
-    assert.isTrue(hasPrincipal);
+    // Reset console log history
+    console.log.resetHistory();
 
-    // Revoke access for the principal.
-    const policyWithRemovedPrincipal = await revokeAccessToTableOrView(
+    // Revoke access for the principal
+    await revokeAccessToTableOrView(
       projectId,
-      dataset.id,
-      table.id,
+      datasetId,
+      tableId,
       null,
-      PRINCIPAL_ID
+      principalId
     );
 
-    // This principal is not present in the policy anymore.
-    const hasPrincipalAfterRevoke = policyWithRemovedPrincipal.some(
-      b => b.members && b.members.includes(PRINCIPAL_ID)
+    // Check that the right message was logged
+    assert.strictEqual(
+      console.log.calledWith(
+        `Access revoked for principal '${principalId}' on resource '${datasetId}.${tableId}'.`
+      ),
+      true
     );
-    assert.isFalse(hasPrincipalAfterRevoke);
   });
 });

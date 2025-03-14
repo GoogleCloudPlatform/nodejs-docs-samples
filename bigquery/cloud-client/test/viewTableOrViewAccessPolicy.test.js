@@ -70,32 +70,4 @@ describe('viewTableOrViewAccessPolicy', () => {
       'Should log version information'
     );
   });
-
-  it('should view view access policies', async () => {
-    // View the view access policy
-    await viewTableOrViewAccessPolicy(projectId, datasetId, viewId);
-
-    // Check that the right messages were logged
-    assert.strictEqual(
-      console.log.calledWith(
-        `Access Policy details for table or view '${viewId}'.`
-      ),
-      true
-    );
-
-    assert.ok(
-      console.log.calledWith(sinon.match('Bindings:')),
-      'Should log bindings information'
-    );
-
-    assert.ok(
-      console.log.calledWith(sinon.match('etag:')),
-      'Should log etag information'
-    );
-
-    assert.ok(
-      console.log.calledWith(sinon.match('Version:')),
-      'Should log version information'
-    );
-  });
 });

@@ -1,0 +1,9 @@
+{
+    "env": {
+        "FUNCTIONS_BUCKET": "nodejs-docs-samples-tests",
+        "RESULT_BUCKET": "nodejs-docs-samples-tests",
+        "TRANSLATE_TOPIC": "integration-tests-instance",
+        "RESULT_TOPIC": "integration-tests-instance",
+        "TO_LANG": "en,es"
+    }
+}

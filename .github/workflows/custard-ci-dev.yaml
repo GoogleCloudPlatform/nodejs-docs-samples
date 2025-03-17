@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: custard CI
+name: custard CI (dev)
 on:
   push:
     branches:
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           fetch-depth: 0
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           repository: GoogleCloudPlatform/cloud-samples-tools
           ref: v0.2.1
@@ -56,31 +56,9 @@ jobs:
       - name: Find Node.js affected packages
         id: nodejs
         run: |
-          echo "paths=$(./cloud-samples-tools/bin/custard affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
+          echo "paths=$(./cloud-samples-tools/bin/custard affected .github/config/nodejs-dev.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
           cat paths.txt
-          echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
-
-  nodejs-lint:
-    name: lint
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
-        with:
-          node-version: 20
-      - run: make lint
-
-  region-tags:
-    name: region tags
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
-        with:
-          node-version: 20
-      - run: ./.github/workflows/utils/region-tags-tests.sh
+          echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
     name: test
@@ -136,10 +114,3 @@ jobs:
         run: |
           timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
             make test dir=${{ matrix.path }}
-      # - name: Upload test results for FlakyBot workflow
-      #   if: github.event.action == 'schedule' && always() # always() submits logs even if tests fail
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results
-      #     path: ${{ matrix.package }}/${{ env.MOCHA_REPORTER_OUTPUT }}
-      #     retention-days: 1

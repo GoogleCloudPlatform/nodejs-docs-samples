@@ -23,7 +23,7 @@ const forceDeleteQueuedResource = require('../queuedResources/forceDeleteQueuedR
 
 describe('TPU queued resource force deletion', async () => {
   const queuedResourceName = 'queued-resource-1';
-  const zone = 'us-central1-f';
+  const zone = 'us-central1-a';
   const projectId = 'project_id';
   let tpuClientMock;
 

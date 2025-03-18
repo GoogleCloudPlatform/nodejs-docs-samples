@@ -14,13 +14,18 @@
 
 'use strict';
 
-async function main(parent = 'projects/my-project', secretId = 'my-secret') {
+async function main(
+  parent = 'projects/my-project',
+  secretId = 'my-secret',
+  ttl = undefined
+) {
   // [START secretmanager_create_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const parent = 'projects/my-project';
   // const secretId = 'my-secret';
+  // const ttl = undefined // Optional: Specify TTL in seconds (e.g., '900s' for 15 minutes).
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -29,14 +34,24 @@ async function main(parent = 'projects/my-project', secretId = 'my-secret') {
   const client = new SecretManagerServiceClient();
 
   async function createSecret() {
+    const secretConfig = {
+      replication: {
+        automatic: {},
+      },
+    };
+
+    // Add TTL to the secret configuration if provided
+    if (ttl) {
+      secretConfig.ttl = {
+        seconds: parseInt(ttl.replace('s', ''), 10),
+      };
+      console.log(`Secret TTL set to ${ttl}`);
+    }
+
     const [secret] = await client.createSecret({
       parent: parent,
       secretId: secretId,
-      secret: {
-        replication: {
-          automatic: {},
-        },
-      },
+      secret: secretConfig,
     });
 
     console.log(`Created secret ${secret.name}`);

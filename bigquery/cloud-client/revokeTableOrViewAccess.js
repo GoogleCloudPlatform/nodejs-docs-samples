@@ -83,20 +83,29 @@ async function main(
     // Set the IAM access policy with updated bindings.
     await table.setIamPolicy(policy);
 
-    // Create a descriptive message based on what was actually removed
-    if (roleToRemove && principalToRemove) {
+    // Both role and principal are removed
+    if (roleToRemove !== null && principalToRemove !== null) {
       console.log(
         `Role '${roleToRemove}' revoked for principal '${principalToRemove}' on resource '${datasetId}.${tableId}'.`
       );
-    } else if (roleToRemove) {
+    }
+
+    // Only role is removed
+    if (roleToRemove !== null && principalToRemove === null) {
       console.log(
         `Role '${roleToRemove}' revoked for all principals on resource '${datasetId}.${tableId}'.`
       );
-    } else if (principalToRemove) {
+    }
+
+    // Only principal is removed
+    if (roleToRemove === null && principalToRemove !== null) {
       console.log(
         `Access revoked for principal '${principalToRemove}' on resource '${datasetId}.${tableId}'.`
       );
-    } else {
+    }
+
+    // No changes were made
+    if (roleToRemove === null && principalToRemove === null) {
       console.log(
         `No changes made to access policy for '${datasetId}.${tableId}'.`
       );

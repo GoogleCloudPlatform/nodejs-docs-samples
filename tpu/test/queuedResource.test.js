@@ -27,7 +27,7 @@ const deleteQueuedResource = require('../queuedResources/deleteQueuedResource.js
 describe('TPU queued resource', () => {
   const queuedResourceName = 'queued-resource-1';
   const nodeName = 'node-name-1';
-  const zone = 'us-central1-f';
+  const zone = 'us-central1-a';
   const projectId = 'project_id';
   let tpuClientMock;
 

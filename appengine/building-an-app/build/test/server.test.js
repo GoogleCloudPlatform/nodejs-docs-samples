@@ -15,15 +15,14 @@ const supertest = require('supertest');
 const path = require('path');
 const app = require(path.join(__dirname, '../', 'server.js'));
 
-
 describe('gae_app', () => {
   it('should be listening', async () => {
     await supertest(app).get('/').expect(200);
   });
-})
+});
 
 describe('gae_build_web_server_app', () => {
   it('should be listening', async () => {
     await supertest(app).get('/').expect(200);
   });
-})
+});

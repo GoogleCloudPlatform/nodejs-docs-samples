@@ -11,7 +11,7 @@
       "node": ">=16.0.0"
     },
     "scripts": {
-      "test": "c8 mocha -p -j 2 --recursive test/ --timeout=800000"
+      "test": "c8 mocha -p -j 2 --recursive test/ --timeout=60000"
     },
     "dependencies": {
       "@google-cloud/modelarmor": "^0.1.0"

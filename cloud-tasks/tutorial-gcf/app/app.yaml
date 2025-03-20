@@ -19,7 +19,7 @@ runtime: nodejs16
 env_variables:
   QUEUE_NAME: "my-queue"
   QUEUE_LOCATION: "us-central1"
-  FUNCTION_URL: "https://<region>-<project_id>.cloudfunctions.net/sendEmail"
+  FUNCTION_URL: "https://<region>-<project_id>.cloudfunctions.net/send-email"
   SERVICE_ACCOUNT_EMAIL: "<member>@<project_id>.iam.gserviceaccount.com"
 # [END cloud_tasks_app_env_vars]
 

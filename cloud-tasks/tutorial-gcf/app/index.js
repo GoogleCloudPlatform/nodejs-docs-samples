@@ -28,12 +28,12 @@ const {SERVICE_ACCOUNT_EMAIL} = process.env;
 app.use(express.urlencoded({extended: true}));
 
 // [START cloud_tasks_app]
-app.post('/send-email', (req, res) => {
+app.post('/send-email', async (req, res) => {
   // Set the task payload to the form submission.
   const {to_name, from_name, to_email, date} = req.body;
   const payload = {to_name, from_name, to_email};
 
-  createHttpTaskWithToken(
+  await createHttpTaskWithToken(
     process.env.GOOGLE_CLOUD_PROJECT,
     QUEUE_NAME,
     QUEUE_LOCATION,

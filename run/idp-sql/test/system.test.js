@@ -43,6 +43,9 @@ describe('System Tests', () => {
   if (!CLOUD_SQL_CONNECTION_NAME) {
     throw Error('"CLOUD_SQL_CONNECTION_NAME" env var not found.');
   }
+
+  const {DB_NAME} = process.env;
+  const {DB_USER} = process.env;
   const {DB_PASSWORD} = process.env;
   if (!DB_PASSWORD) {
     throw Error('"DB_PASSWORD" env var not found.');
@@ -71,6 +74,8 @@ describe('System Tests', () => {
 
     if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (DB_USER) buildCmd += `,_DB_USER=${DB_USER}`;
+    if (DB_NAME) buildCmd += `,_DB_NAME=${DB_NAME}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {timeout: 240000, shell: true}); // timeout at 4 mins

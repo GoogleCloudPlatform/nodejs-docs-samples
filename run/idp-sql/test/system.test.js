@@ -91,6 +91,8 @@ describe('System Tests', () => {
     }
 
     // Retrieve ID token for testing
+
+    console.log('Retrieving IDP token...');
     const customToken = await admin.auth().createCustomToken('a-user-id');
     const response = await got(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
@@ -111,6 +113,8 @@ describe('System Tests', () => {
     const tokens = JSON.parse(response.body);
     CUSTOM_TOKEN = tokens.idToken;
     if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');
+
+    console.log('Retrieved IDP token');
   });
 
   after(() => {

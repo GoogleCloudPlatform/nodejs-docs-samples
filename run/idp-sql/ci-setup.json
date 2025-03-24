@@ -7,6 +7,6 @@
     "DB_USER": "ci-user"
   },
   "secrets": {
-    "IDP_KEY": "nodejs-docs-samples-tests/nodejs-docs-samples-idp-key",
+    "IDP_KEY": "nodejs-docs-samples-tests/long-door-651-idp-key",
     "DB_PASSWORD": "nodejs-docs-samples-tests/nodejs-docs-samples-test-postgres-instance-ci-user-password"  }
 }

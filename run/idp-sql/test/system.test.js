@@ -113,7 +113,7 @@ describe('System Tests', () => {
       const tokens = JSON.parse(response.body);
       CUSTOM_TOKEN = tokens.idToken;
     } catch (err) {
-      throw Error('IDP Token retrieval failed: ', err);
+      throw Error('IDP Token retrieval failed: ', err.response.body);
     }
 
     if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');

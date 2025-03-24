@@ -16,7 +16,6 @@
 'use strict';
 
 // [START endpoints_server_setup]
-// [START setup]
 const express = require('express');
 
 const app = express();
@@ -25,7 +24,6 @@ app.set('case sensitive routing', true);
 
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.json());
-// [END setup]
 // [END endpoints_server_setup]
 
 app.post('/echo', (req, res) => {
@@ -46,13 +44,11 @@ app.get('/auth/info/googleidtoken', authInfoHandler);
 
 if (module === require.main) {
   // [START endpoints_server_listen]
-  // [START listen]
   const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
   });
-  // [END listen]
   // [END endpoints_server_listen]
 }
 // [END endpoints_express_auth]

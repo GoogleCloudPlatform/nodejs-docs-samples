@@ -153,7 +153,7 @@ describe('System Tests', () => {
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`
+        Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`,
       },
       retry: {
         limit: 5,
@@ -178,7 +178,7 @@ describe('System Tests', () => {
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: 'Bearer iam-a-token'
+        Authorization: 'Bearer iam-a-token',
       },
       retry: {
         limit: 5,

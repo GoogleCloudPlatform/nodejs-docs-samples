@@ -94,24 +94,28 @@ describe('System Tests', () => {
 
     console.log('Retrieving IDP token...');
     const customToken = await admin.auth().createCustomToken('a-user-id');
-    const response = await got(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
-      {
-        method: 'POST',
-        retry: {
-          limit: 5,
-          statusCodes: [404, 401, 403, 500],
-          methods: ['POST'],
-        },
-        body: JSON.stringify({
-          token: customToken,
-          returnSecureToken: true,
-        }),
-      }
-    );
+    try {
+      const response = await got(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
+        {
+          method: 'POST',
+          retry: {
+            limit: 5,
+            statusCodes: [404, 401, 403, 500],
+            methods: ['POST'],
+          },
+          body: JSON.stringify({
+            token: customToken,
+            returnSecureToken: true,
+          }),
+        }
+      );
+      const tokens = JSON.parse(response.body);
+      CUSTOM_TOKEN = tokens.idToken;
+    } catch (err) {
+      throw Error('IDP Token retrieval failed: ', err);
+    }
 
-    const tokens = JSON.parse(response.body);
-    CUSTOM_TOKEN = tokens.idToken;
     if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');
 
     console.log('Retrieved IDP token');

@@ -62,7 +62,6 @@ steps:
       --region ${_REGION} \
       --service-account ${_SERVICE_ACCOUNT} \
       --add-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \
-      --add-custom-audiences="https://action.test/" \
       --update-secrets CLOUD_SQL_CREDENTIALS_SECRET=${_SERVICE}-secrets:latest"
 
 images:

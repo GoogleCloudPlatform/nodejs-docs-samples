@@ -51,6 +51,12 @@ describe('System Tests', () => {
     throw Error('"DB_PASSWORD" env var not found.');
   }
 
+ // Get ID token for the authentication part
+ const {ID_TOKEN} = process.env;
+ if (!ID_TOKEN) {
+   throw Error('"ID_TOKEN" env var not found.');
+ }
+
   // Get Firebase Key to create Id Tokens
   const {IDP_KEY} = process.env;
   if (!IDP_KEY) {
@@ -154,6 +160,7 @@ describe('System Tests', () => {
       form: {team: 'DOGS'},
       headers: {
         Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`,
+        'X-Serverless-Authorization': `Bearer ${ID_TOKEN}`,
       },
       retry: {
         limit: 5,
@@ -179,6 +186,7 @@ describe('System Tests', () => {
       form: {team: 'DOGS'},
       headers: {
         Authorization: 'Bearer iam-a-token',
+        'X-Serverless-Authorization': `Bearer ${ID_TOKEN}`,
       },
       retry: {
         limit: 5,

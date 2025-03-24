@@ -58,7 +58,7 @@ steps:
   - |
     ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
-      --allow-unauthenticated \
+      --no-allow-unauthenticated \
       --region ${_REGION} \
       --service-account ${_SERVICE_ACCOUNT} \
       --add-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \

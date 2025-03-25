@@ -93,7 +93,6 @@ const createPool = async () => {
       throw err;
     }
   }
-  console.log("Instance vars: ", process.env.INSTANCE_HOST, " -- ", process.env.INSTANCE_UNIX_SOCKET)
 
   if (process.env.INSTANCE_HOST) {
     // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined

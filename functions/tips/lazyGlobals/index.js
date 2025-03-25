@@ -30,7 +30,6 @@ const fileWideComputation = lightComputation;
 
 // [START functions_tips_lazy_globals]
 // [START cloudrun_tips_global_lazy]
-// [START run_tips_global_lazy]
 const functions = require('@google-cloud/functions-framework');
 
 // Always initialized (at cold-start)
@@ -51,6 +50,5 @@ functions.http('lazyGlobals', (req, res) => {
 
   res.send(`Lazy global: ${lazyGlobal}, non-lazy global: ${nonLazyGlobal}`);
 });
-// [END run_tips_global_lazy]
 // [END cloudrun_tips_global_lazy]
 // [END functions_tips_lazy_globals]

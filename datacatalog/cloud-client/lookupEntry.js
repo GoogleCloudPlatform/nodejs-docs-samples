@@ -22,7 +22,7 @@
  * documentation at https://cloud.google.com/data-catalog/docs.
  */
 const main = async (projectId, datasetId) => {
-  // [START datacatalog_lookup_dataset]
+  // [START data_catalog_lookup_dataset]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -41,7 +41,7 @@ const main = async (projectId, datasetId) => {
 
   const response = await lookup();
   console.log(response);
-  // [END datacatalog_lookup_dataset]
+  // [END data_catalog_lookup_dataset]
 };
 
 // node lookupEntry.js <projectId> <datasetID>

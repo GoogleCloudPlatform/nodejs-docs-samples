@@ -40,7 +40,7 @@ function main(
   instanceName,
   hostname,
   machineType = 'n1-standard-1',
-  sourceImage = 'projects/debian-cloud/global/images/family/debian-10',
+  sourceImage = 'projects/debian-cloud/global/images/family/debian-11',
   networkName = 'global/networks/default'
 ) {
   // [START compute_instances_create_custom_hostname]
@@ -52,7 +52,7 @@ function main(
   // const instanceName = 'YOUR_INSTANCE_NAME'
   // const hostname = 'host.example.com'
   // const machineType = 'n1-standard-1';
-  // const sourceImage = 'projects/debian-cloud/global/images/family/debian-10';
+  // const sourceImage = 'projects/debian-cloud/global/images/family/debian-11';
   // const networkName = 'global/networks/default';
 
   const compute = require('@google-cloud/compute');

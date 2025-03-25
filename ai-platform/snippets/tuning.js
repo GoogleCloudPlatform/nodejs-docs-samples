@@ -26,6 +26,7 @@ async function main(
   trainSteps = 300
 ) {
   // [START aiplatform_model_tuning]
+  // [START generativeaionvertexai_model_tuning]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -97,6 +98,7 @@ async function main(
 
   await tuneLLM();
   // [END aiplatform_model_tuning]
+  // [END generativeaionvertexai_model_tuning]
 }
 
 exports.tuneModel = main;

@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-docs-samples-tpu",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": "googleapis/nodejs-tpu",
+  "private": true,
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "test": "c8 mocha -p -j 2 test --timeout 1200000"
+  },
+  "dependencies": {
+    "@google-cloud/tpu": "^3.5.0",
+    "sinon": "^19.0.2"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "mocha": "^10.0.0"
+  }
+}

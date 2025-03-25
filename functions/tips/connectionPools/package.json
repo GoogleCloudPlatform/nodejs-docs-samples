@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.1.2",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^3.0.0"
   },
   "scripts": {
     "test": "echo \"No tests exist for this sample.\""

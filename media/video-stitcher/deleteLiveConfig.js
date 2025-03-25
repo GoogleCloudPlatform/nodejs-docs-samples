@@ -40,13 +40,12 @@ function main(projectId, location, liveConfigId) {
     console.log('Deleted live config');
   }
 
-  deleteLiveConfig();
+  deleteLiveConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_delete_live_config]
 }
 
 // node deleteLiveConfig.js <projectId> <location> <liveConfigId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

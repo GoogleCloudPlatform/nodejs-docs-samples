@@ -14,7 +14,7 @@
 
 'use strict';
 
-function main(
+async function main(
   inFile = 'resources/example.txt',
   outFile = 'resources/example.mp3'
 ) {
@@ -119,8 +119,11 @@ function main(
   }
   // [END tts_ssml_address_ssml]
   const ssml = textToSsml(inFile);
-  ssmlToAudio(ssml, outFile);
+  await ssmlToAudio(ssml, outFile);
   // [END tts_ssml_address_test]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err.stack);
+  process.exitCode = 1;
+});

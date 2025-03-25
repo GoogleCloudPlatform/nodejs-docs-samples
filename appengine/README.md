@@ -12,7 +12,6 @@ for sample applications and scaffolding for other frameworks and use cases.
 * [Run Locally](#run-locally)
 * [Deploying](#deploying)
 * [Official samples](#official-samples)
-* [Community samples](#community-samples)
 
 ## Run Locally
 
@@ -96,9 +95,6 @@ Generally speaking, to deploy a sample application:
 
 View the [Official App Engine Node.js samples][official_samples].
 
-## Community samples
-
-View the [Community-contributed App Engine Node.js samples][community_samples].
 
 [nodejs]: https://nodejs.org/
 [appengine]: https://cloud.google.com/appengine/
@@ -107,4 +103,3 @@ View the [Community-contributed App Engine Node.js samples][community_samples].
 [console]: https://console.cloud.google.com
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [official_samples]: https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/appengine
-[community_samples]: https://cloud.google.com/community/tutorials/?q=%22Node.js%22

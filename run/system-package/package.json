@@ -6,20 +6,22 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
+    "test": "npm -- run all-test",
+    "all-test": "npm run unit-test && npm run system-test",
+    "unit-test": "c8 mocha -p -j 2 test/app.test.js --check-leaks",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
+    "c8": "^10.0.0",
     "google-auth-library": "^9.0.0",
     "got": "^11.5.0",
     "mocha": "^10.0.0",
-    "supertest": "^6.0.0"
+    "supertest": "^7.0.0"
   }
 }

@@ -1,9 +1,7 @@
 {
-  "extends": [
-    "config:base",
-    "config:semverAllMonthly"
-  ],
+  "extends": ["config:recommended", "config:semverAllMonthly"],
   "baseBranches": ["main"],
+  "ignorePaths": ["**/flexible_nodejs16_and_earlier/**"],
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
@@ -14,6 +12,11 @@
       "matchUpdateTypes": ["minor", "patch"],
       "matchBaseBranches": ["main"],
       "enabled": false
+    },
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
     }
   ],
   "force": {
@@ -21,9 +24,9 @@
       "node": "< 15.0.0"
     }
   },
-  "dependencyDashboardAutoclose": true,  
+  "dependencyDashboardAutoclose": true,
   "schedule": "after 11am every 3 weeks on Monday",
-  "stabilityDays": 15,
-  "pinVersions": false,
-  "rebaseStalePrs": true
+  "minimumReleaseAge": "15 days",
+  "rangeStrategy": "replace",
+  "rebaseWhen": "behind-base-branch"
 }

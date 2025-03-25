@@ -14,7 +14,7 @@
   "devDependencies": {
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^16.0.0"
+    "sinon": "^18.0.0"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.0.0",

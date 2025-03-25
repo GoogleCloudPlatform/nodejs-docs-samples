@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START aiplatform_gemini_get_started]
+// [START generativeaionvertexai_gemini_get_started]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -21,7 +21,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createNonStreamingMultipartContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-vision',
+  model = 'gemini-1.5-flash-001',
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {
@@ -53,20 +53,17 @@ async function createNonStreamingMultipartContent(
   console.log(request.contents[0].parts[1].text);
 
   console.log('Non-Streaming Response Text:');
-  // Create the response stream
-  const responseStream =
-    await generativeVisionModel.generateContentStream(request);
 
-  // Wait for the response stream to complete
-  const aggregatedResponse = await responseStream.response;
+  // Generate a response
+  const response = await generativeVisionModel.generateContent(request);
 
   // Select the text from the response
   const fullTextResponse =
-    aggregatedResponse.candidates[0].content.parts[0].text;
+    response.response.candidates[0].content.parts[0].text;
 
   console.log(fullTextResponse);
 }
-// [END aiplatform_gemini_get_started]
+// [END generativeaionvertexai_gemini_get_started]
 
 createNonStreamingMultipartContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

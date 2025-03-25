@@ -25,7 +25,7 @@
  *    https://cloud.google.com/sdk/gcloud/reference/compute/machine-types/list
  * @param {string} sourceImage - Path the the disk image you want to use for your boot
  *    disk. This can be one of the public images
- *    (e.g. "projects/debian-cloud/global/images/family/debian-10")
+ *    (e.g. "projects/debian-cloud/global/images/family/debian-11")
  *    or a private image you have access to.
  *    You can check the list of available public images using:
  *    $ gcloud compute images list
@@ -37,7 +37,7 @@ function main(
   zone,
   instanceName,
   machineType = 'n1-standard-1',
-  sourceImage = 'projects/debian-cloud/global/images/family/debian-10',
+  sourceImage = 'projects/debian-cloud/global/images/family/debian-11',
   networkName = 'global/networks/default'
 ) {
   // [START compute_instances_create]
@@ -48,7 +48,7 @@ function main(
   // const zone = 'europe-central2-b'
   // const instanceName = 'YOUR_INSTANCE_NAME'
   // const machineType = 'n1-standard-1';
-  // const sourceImage = 'projects/debian-cloud/global/images/family/debian-10';
+  // const sourceImage = 'projects/debian-cloud/global/images/family/debian-11';
   // const networkName = 'global/networks/default';
 
   const compute = require('@google-cloud/compute');

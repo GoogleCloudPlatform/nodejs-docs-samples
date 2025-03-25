@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START app]
+// [START endpoints_express_auth]
 'use strict';
 
-// [START setup]
+// [START endpoints_server_setup]
 const express = require('express');
 
 const app = express();
@@ -24,7 +24,7 @@ app.set('case sensitive routing', true);
 
 // This middleware is available in Express v4.16.0 onwards
 app.use(express.json());
-// [END setup]
+// [END endpoints_server_setup]
 
 app.post('/echo', (req, res) => {
   res.status(200).json({message: req.body.message}).end();
@@ -43,14 +43,14 @@ app.get('/auth/info/googlejwt', authInfoHandler);
 app.get('/auth/info/googleidtoken', authInfoHandler);
 
 if (module === require.main) {
-  // [START listen]
+  // [START endpoints_server_listen]
   const PORT = parseInt(process.env.PORT) || 8080;
   app.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
   });
-  // [END listen]
+  // [END endpoints_server_listen]
 }
-// [END app]
+// [END endpoints_express_auth]
 
 module.exports = app;

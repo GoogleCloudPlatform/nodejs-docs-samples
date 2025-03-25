@@ -58,8 +58,6 @@ async function main(
       // format: 'projects/{project}/locations/{location}/models/{model}'
       model: modelName,
       displayName: deployedModelDisplayName,
-      // AutoML Vision models require `automatic_resources` field
-      // Other model types may require `dedicated_resources` field instead
       automaticResources: {minReplicaCount: 1, maxReplicaCount: 1},
     };
     const request = {

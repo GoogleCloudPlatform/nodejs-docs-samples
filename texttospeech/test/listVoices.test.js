@@ -14,16 +14,16 @@
 
 'use strict';
 
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
+const cp = require('node:child_process');
+
 const {describe, it} = require('mocha');
-const cp = require('child_process');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const cmd = 'node listVoices.js';
 
 describe('list voices', () => {
-  it('should list voices', async () => {
+  it('should list voices', () => {
     const stdout = execSync(`${cmd} list-voices`);
     assert.match(stdout, /SSML Voice Gender: FEMALE/);
     assert.match(stdout, /Natural Sample Rate Hertz: 24000/);

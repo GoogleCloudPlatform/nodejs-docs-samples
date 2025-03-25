@@ -16,70 +16,46 @@
 
 'use strict';
 
-async function main(project, location = 'us-central1') {
-  // [START aiplatform_sdk_embedding]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
-   */
-  // const project = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_PROJECT_LOCATION';
+// [START aiplatform_sdk_embedding]
+// [START generativeaionvertexai_sdk_embedding]
+async function main(
+  project,
+  model = 'text-embedding-005',
+  texts = 'banana bread?;banana muffins?',
+  task = 'QUESTION_ANSWERING',
+  dimensionality = 0,
+  apiEndpoint = 'us-central1-aiplatform.googleapis.com'
+) {
   const aiplatform = require('@google-cloud/aiplatform');
-
-  // Imports the Google Cloud Prediction service client
   const {PredictionServiceClient} = aiplatform.v1;
-
-  // Import the helper module for converting arbitrary protobuf.Value objects.
-  const {helpers} = aiplatform;
-
-  // Specifies the location of the api endpoint
-  const clientOptions = {
-    apiEndpoint: 'us-central1-aiplatform.googleapis.com',
-  };
-
-  const publisher = 'google';
-  const model = 'textembedding-gecko@001';
-
-  // Instantiates a client
-  const predictionServiceClient = new PredictionServiceClient(clientOptions);
+  const {helpers} = aiplatform; // helps construct protobuf.Value objects.
+  const clientOptions = {apiEndpoint: apiEndpoint};
+  const location = 'us-central1';
+  const endpoint = `projects/${project}/locations/${location}/publishers/google/models/${model}`;
 
   async function callPredict() {
-    // Configure the parent resource
-    const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
-
-    const instance = {
-      content: 'What is life?',
-    };
-    const instanceValue = helpers.toValue(instance);
-    const instances = [instanceValue];
-
-    const parameter = {
-      temperature: 0,
-      maxOutputTokens: 256,
-      topP: 0,
-      topK: 1,
-    };
-    const parameters = helpers.toValue(parameter);
-
-    const request = {
-      endpoint,
-      instances,
-      parameters,
-    };
-
-    // Predict request
-    const [response] = await predictionServiceClient.predict(request);
-    console.log('Get text embeddings response');
+    const instances = texts
+      .split(';')
+      .map(e => helpers.toValue({content: e, task_type: task}));
+    const parameters = helpers.toValue(
+      dimensionality > 0 ? {outputDimensionality: parseInt(dimensionality)} : {}
+    );
+    const request = {endpoint, instances, parameters};
+    const client = new PredictionServiceClient(clientOptions);
+    const [response] = await client.predict(request);
     const predictions = response.predictions;
-    console.log('\tPredictions :');
-    for (const prediction of predictions) {
-      console.log(`\t\tPrediction : ${JSON.stringify(prediction)}`);
-    }
+    const embeddings = predictions.map(p => {
+      const embeddingsProto = p.structValue.fields.embeddings;
+      const valuesProto = embeddingsProto.structValue.fields.values;
+      return valuesProto.listValue.values.map(v => v.numberValue);
+    });
+    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
   }
 
   callPredict();
-  // [END aiplatform_sdk_embedding]
 }
+// [END aiplatform_sdk_embedding]
+// [END generativeaionvertexai_sdk_embedding]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

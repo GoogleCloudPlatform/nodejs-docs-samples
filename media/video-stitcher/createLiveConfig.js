@@ -53,13 +53,12 @@ function main(projectId, location, liveConfigId, sourceUri, adTagUri, slateId) {
     console.log(`response.name: ${response.name}`);
   }
 
-  createLiveConfig();
+  createLiveConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_live_config]
 }
 
 // node createLiveConfig.js <projectId> <location> <liveConfigId> <sourceUri> <adTagUri> <slateId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

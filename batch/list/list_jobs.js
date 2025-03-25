@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
  * @param {string} projectId - ID or number of the Google Cloud project you want to use.
  * @param {string} region - The Google Cloud region to use, e.g. 'us-central1'
  */
-function main(projectId, region) {
+async function main(projectId, region) {
   // [START batch_list_jobs]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
@@ -50,12 +50,11 @@ function main(projectId, region) {
     }
   }
 
-  callListJobs();
+  await callListJobs();
   // [END batch_list_jobs]
 }
 
-process.on('unhandledRejection', err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));

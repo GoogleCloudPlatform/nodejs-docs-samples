@@ -14,15 +14,13 @@
 
 # Use the official super-lightweight Node image.
 # https://hub.docker.com/_/node
-FROM node:10-alpine
+FROM node:20-alpine
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
 
 # [START cloudrun_system_package_alpine]
-# [START run_system_package_alpine]
-RUN apk --no-cache add graphviz ttf-ubuntu-font-family
-# [END run_system_package_alpine]
+RUN apk --no-cache add graphviz
 # [END cloudrun_system_package_alpine]
 
 # Copy application dependency manifests to the container image.

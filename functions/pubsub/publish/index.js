@@ -23,11 +23,6 @@ const pubsub = new PubSub();
 /**
  * Publishes a message to a Cloud Pub/Sub Topic.
  *
- * @example
- * gcloud functions call publish --data '{"topic":"[YOUR_TOPIC_NAME]","message":"Hello, world!"}'
- *
- *   - Replace `[YOUR_TOPIC_NAME]` with your Cloud Pub/Sub topic name.
- *
  * @param {object} req Cloud Function request context.
  * @param {object} req.body The request body.
  * @param {string} req.body.topic Topic name on which to publish.

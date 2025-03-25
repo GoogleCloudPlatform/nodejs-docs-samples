@@ -14,14 +14,14 @@
 
 'use strict';
 
-const {assert} = require('chai');
+const assert = require('node:assert/strict');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro-vision';
+const model = 'gemini-1.5-flash-001';
 
 describe('Generative AI Stream MultiModal with Image', () => {
   /**
@@ -30,7 +30,7 @@ describe('Generative AI Stream MultiModal with Image', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro-vision';
+  // const model = 'gemini-1.5-flash-001';
 
   it('should create stream multimodal content', async () => {
     const output = execSync(

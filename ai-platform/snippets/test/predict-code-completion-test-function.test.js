@@ -24,17 +24,11 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-const project = process.env.CAIP_PROJECT_ID;
-const location = 'us-central1';
-
 describe('AI platform predict code completion', () => {
   it('should make predictions using a large language model', async () => {
-    const stdout = execSync(
-      `node ./predict-code-completion-test-function.js ${project} ${location}`,
-      {
-        cwd,
-      }
-    );
+    const stdout = execSync('node ./predict-code-completion-test-function.js', {
+      cwd,
+    });
     assert.match(stdout, /Get code completion response/);
   });
 });

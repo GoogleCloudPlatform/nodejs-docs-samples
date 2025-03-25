@@ -132,7 +132,7 @@ describe('create start instance tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-10',
+      family: 'debian-11',
     });
 
     await createDisk(projectId, zone, diskName, newestDebian.selfLink);
@@ -163,7 +163,7 @@ describe('create start instance tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-10',
+      family: 'debian-11',
     });
 
     let output;

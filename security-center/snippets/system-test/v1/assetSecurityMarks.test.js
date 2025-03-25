@@ -20,7 +20,8 @@ const {describe, it, before} = require('mocha');
 const {execSync} = require('child_process');
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-const organizationId = process.env['GCLOUD_ORGANIZATION'];
+// TODO(developers): update for your own environment
+const organizationId = '1081635000895';
 
 describe('client with security marks for assets', async () => {
   let data;

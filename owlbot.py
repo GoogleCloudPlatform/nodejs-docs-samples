@@ -51,7 +51,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool) -> list[
             output.check_returncode()
         except subprocess.CalledProcessError as error:
             if error.returncode == 128:
-                logger.info(f"Error: ${e.output}; skipping fetching main")
+                logger.info(f"Error: ${error.output}; skipping fetching main")
             else:
                 raise error
     for path_object in dir.glob("**/package.json"):

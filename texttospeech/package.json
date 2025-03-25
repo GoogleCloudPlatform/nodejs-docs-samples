@@ -2,24 +2,24 @@
   "name": "nodejs-docs-samples-text-to-speech",
   "private": true,
   "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "author": "Google LLC",
   "repository": "googleapis/nodejs-text-to-speech",
   "files": [
     "*.js"
   ],
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout=60000"
+    "test": "c8 mocha -p -j 2 --timeout=60000",
+    "lint": "gts lint"
   },
   "dependencies": {
-    "@google-cloud/text-to-speech": "^5.0.0",
+    "@google-cloud/text-to-speech": "^5.3.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
+    "c8": "^10.0.0",
     "mocha": "^10.0.0"
   }
 }

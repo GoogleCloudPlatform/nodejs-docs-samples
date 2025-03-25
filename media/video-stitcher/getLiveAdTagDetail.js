@@ -45,13 +45,12 @@ function main(projectId, location, sessionId, adTagDetailId) {
     console.log(`Live ad tag detail: ${adTagDetail.name}`);
   }
 
-  getLiveAdTagDetail();
+  getLiveAdTagDetail().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_live_ad_tag_detail]
 }
 
 // node getLiveAdTagDetail.js <projectId> <location> <sessionId> <adTagDetailId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

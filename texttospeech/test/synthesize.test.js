@@ -14,14 +14,14 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const {assert} = require('chai');
-const {describe, it, afterEach} = require('mocha');
-const cp = require('child_process');
+const assert = require('node:assert/strict');
+const cp = require('node:child_process');
+const {existsSync, unlinkSync} = require('node:fs');
+const path = require('node:path');
+
+const {after, beforeEach, describe, it} = require('mocha');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const cmd = 'node synthesize.js';
 const text = 'Hello there.';
 const ssml = '<speak>Hello there.</speak>';
@@ -33,56 +33,63 @@ const files = ['hello.txt', 'hello.ssml'].map(name => {
   };
 });
 
+function removeOutput() {
+  try {
+    // Remove if outputFile exists
+    unlinkSync(outputFile);
+  } catch {
+    // OK to ignore error if outputFile doesn't exist already
+  }
+}
+
 describe('synthesize', () => {
-  afterEach(() => {
-    try {
-      fs.unlinkSync(outputFile);
-    } catch (err) {
-      // Ignore error
-    }
+  // Remove file if it already exists
+  beforeEach(() => {
+    removeOutput();
   });
 
-  it('should synthesize audio from text', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+  // Remove file after testing
+  after(() => {
+    removeOutput();
+  });
+
+  it('should synthesize audio from text', () => {
+    assert.equal(existsSync(outputFile), false);
     const output = execSync(`${cmd} text '${text}' --outputFile ${outputFile}`);
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile}`)
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
     );
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(existsSync(outputFile));
   });
 
-  it('should synthesize audio from ssml', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+  it('should synthesize audio from ssml', () => {
+    assert.equal(existsSync(outputFile), false);
     const output = execSync(`${cmd} ssml "${ssml}" --outputFile ${outputFile}`);
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile}`)
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
     );
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(existsSync(outputFile));
   });
 
-  it('should synthesize audio from text file', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+  it('should synthesize audio from text file', () => {
+    assert.equal(existsSync(outputFile), false);
     const output = execSync(
       `${cmd} text-file ${files[0].localPath} --outputFile ${outputFile}`
     );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile}`)
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
     );
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(existsSync(outputFile));
   });
 
-  it('should synthesize audio from ssml file', async () => {
-    assert.strictEqual(fs.existsSync(outputFile), false);
+  it('should synthesize audio from ssml file', () => {
+    assert.equal(existsSync(outputFile), false);
     const output = execSync(
       `${cmd} ssml-file ${files[1].localPath} --outputFile ${outputFile}`
     );
-    assert.match(
-      output,
-      new RegExp(`Audio content written to file: ${outputFile}`)
+    assert.ok(
+      new RegExp(`Audio content written to file: ${outputFile}`).test(output)
     );
-    assert.ok(fs.existsSync(outputFile));
+    assert.ok(existsSync(outputFile));
   });
 });

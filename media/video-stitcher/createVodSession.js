@@ -15,17 +15,14 @@
 
 'use strict';
 
-function main(projectId, location, sourceUri, adTagUri) {
+function main(projectId, location, vodConfigId) {
   // [START videostitcher_create_vod_session]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // sourceUri = 'https://storage.googleapis.com/my-bucket/main.mpd';
-  // See VMAP Pre-roll
-  // (https://developers.google.com/interactive-media-ads/docs/sdks/html5/client-side/tags)
-  // adTagUri = 'https://pubads.g.doubleclick.net/gampad/ads...';
+  // vodConfigId = 'my-vod-config-id';
 
   // Imports the Video Stitcher library
   const {VideoStitcherServiceClient} =
@@ -38,8 +35,11 @@ function main(projectId, location, sourceUri, adTagUri) {
     const request = {
       parent: stitcherClient.locationPath(projectId, location),
       vodSession: {
-        sourceUri: sourceUri,
-        adTagUri: adTagUri,
+        vodConfig: stitcherClient.vodConfigPath(
+          projectId,
+          location,
+          vodConfigId
+        ),
         adTracking: 'SERVER',
       },
     };
@@ -47,13 +47,12 @@ function main(projectId, location, sourceUri, adTagUri) {
     console.log(`VOD session: ${session.name}`);
   }
 
-  createVodSession();
+  createVodSession().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_vod_session]
 }
 
-// node createVodSession.js <projectId> <location> <sourceUri> <adTagUri>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+// node createVodSession.js <projectId> <location> <vodConfigId>
 main(...process.argv.slice(2));

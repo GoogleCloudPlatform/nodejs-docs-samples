@@ -1,10 +1,11 @@
 /*
- * Copyright 2019, Google, LLC.
+ * Copyright 2019 Google LLC
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    https://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +18,7 @@
 /**
  * Demonstrates how to create a new security finding in CSCC.
  */
-function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
+async function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
   // [START securitycenter_create_finding]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
@@ -54,8 +55,11 @@ function main(sourceName = 'FULL_PATH_TO_SOURCE_FOR_FINDING') {
     });
     console.log('New finding created: %j', newFinding);
   }
-  createFinding();
+  await createFinding();
   // [END securitycenter_create_finding]
 }
 
-main(...process.argv.slice(2));
+main(process.argv.slice(2)[0]).catch(err => {
+  console.log(err);
+  process.exitCode = 1;
+});

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // [START cloudrun_helloworld_service]
-// [START run_helloworld_service]
 import express from 'express';
 const app = express();
 
@@ -26,7 +25,6 @@ const port = parseInt(process.env.PORT) || 8080;
 app.listen(port, () => {
   console.log(`helloworld: listening on port ${port}`);
 });
-// [END run_helloworld_service]
 // [END cloudrun_helloworld_service]
 
 // Exports for testing purposes.

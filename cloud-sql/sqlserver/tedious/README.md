@@ -33,11 +33,9 @@ project](https://cloud.google.com/resource-manager/docs/creating-managing-projec
 
     1. Click **CREATE**.
 
-1. Create a service account following these
-   [instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating),
-   and then grant the `roles/cloudsql.client` role following these
-   [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role).
-   Download a JSON key to use to authenticate your connection.
+1. Set up [Application Default Credentials][adc]
+
+[adc]: https://cloud.google.com/docs/authentication/provide-credentials-adc
 
 Note: Defining credentials in environment variables is convenient, but not
 secure. For a more secure solution, use [Secret
@@ -243,7 +241,6 @@ launch the proxy as shown below.
 Use these terminal commands to initialize environment variables:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS='/path/to/service/account/key.json'
 export INSTANCE_HOST='127.0.0.1'
 export DB_PORT='1433'
 export DB_USER='<DB_USER_NAME>'
@@ -254,7 +251,7 @@ export DB_NAME='<DB_NAME>'
 Then use this command to launch the proxy in the background:
 
 ```bash
-./cloud-sql-proxy <PROJECT_ID>:<INSTANCE_REGION>:<INSTANCE_NAME> &
+./cloud-sql-proxy --port=1433 <PROJECT_ID>:<INSTANCE_REGION>:<INSTANCE_NAME> &
 ```
 
 #### Windows/PowerShell
@@ -262,7 +259,6 @@ Then use this command to launch the proxy in the background:
 Use these PowerShell commands to initialize environment variables:
 
 ```powershell
-$env:GOOGLE_APPLICATION_CREDENTIALS="<CREDENTIALS_JSON_FILE>"
 $env:INSTANCE_HOST="127.0.0.1"
 $env:DB_PORT="1433"
 $env:DB_USER="<DB_USER_NAME>"
@@ -273,7 +269,7 @@ $env:DB_NAME="<DB_NAME>"
 Then use this command to launch the proxy in a separate PowerShell session:
 
 ```powershell
-Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "-instances=<project-id>:<region>:<instance-name>=tcp:1433 -credential_file=<CREDENTIALS_JSON_FILE>"
+Start-Process -filepath "C:\<path to proxy exe>" -ArgumentList "<project-id>:<region>:<instance-name> --port=1433"
 ```
 
 ### Testing the application

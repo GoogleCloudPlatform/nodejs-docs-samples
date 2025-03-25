@@ -1,4 +1,4 @@
-// Copyright 2018, Google, Inc.
+// Copyright 2018 Google LLC
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -36,16 +36,18 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-it('should send greetings', async () => {
-  await requestObj
-    .get('/')
-    .expect(200)
-    .expect(response => {
-      assert.strictEqual(response.text, 'Hello from App Engine!');
-    });
+describe('gae_update_web_server_app', () => {
+  it('should send greetings', async () => {
+    await requestObj
+      .get('/')
+      .expect(200)
+      .expect(response => {
+        assert.strictEqual(response.text, 'Hello from App Engine!');
+      });
+  });
 });
 
-describe('add_display_form', () => {
+describe('gae_add_display_form', () => {
   it('should display form', async () => {
     await requestObj
       .get('/submit')
@@ -61,7 +63,7 @@ describe('add_display_form', () => {
   });
 });
 
-describe('add_post_handler enable_parser', () => {
+describe('gae_add_post_handler gae_enable_parser', () => {
   it('should record message', async () => {
     await requestObj
       .post('/submit', {

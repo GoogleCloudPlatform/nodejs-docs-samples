@@ -46,7 +46,7 @@ describe('Cloud Workflows Quickstart Tests', () => {
           name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
         });
         return workflowGet.state === 'ACTIVE';
-      } catch (e) {
+      } catch {
         // If there is an error getting the workflow, it probably doesn't exist.
         return false;
       }

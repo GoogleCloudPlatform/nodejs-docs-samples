@@ -50,9 +50,6 @@ export FUNCTIONS_BUCKET=$GOOGLE_CLOUD_PROJECT
 export FUNCTIONS_DELETABLE_BUCKET=$GOOGLE_CLOUD_PROJECT-functions
 export BASE_URL="https://$GCF_REGION-$GOOGLE_CLOUD_PROJECT.cloudfunctions.net/"
 
-#  functions/speech-to-speech
-export OUTPUT_BUCKET=$FUNCTIONS_BUCKET
-
 #  functions/memorystore/redis
 export REDISHOST=$(cat $KOKORO_GFILE_DIR/secrets-memorystore-redis-ip.txt)
 export REDISPORT=6379
@@ -138,22 +135,6 @@ print_logfile() {
 	cat $MOCHA_REPORTER_OUTPUT
 	echo '----- End ${MOCHA_REPORTER_OUTPUT} -----'
 }
-
-# If tests are running against main, configure FlakyBot
-# to open issues on failures:
-if [[ $KOKORO_BUILD_ARTIFACTS_SUBDIR = *"release"* ]]; then
-	export MOCHA_REPORTER_SUITENAME=${PROJECT}
-	cleanup() {
-	chmod +x $KOKORO_GFILE_DIR/linux_amd64/flakybot
-	$KOKORO_GFILE_DIR/linux_amd64/flakybot
-
-	# We can only set one trap per signal, so run `print_logfile` here
-	print_logfile
-	}
-	trap cleanup EXIT HUP
-else
-	trap print_logfile EXIT HUP
-fi
 
 npm test
 

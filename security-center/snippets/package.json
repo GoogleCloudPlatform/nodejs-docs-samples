@@ -9,17 +9,19 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "c8 mocha -p -j 2 system-test/ --recursive --timeout 6000000"
+    "test": "c8 mocha -p -j 2 --recursive --timeout 6000000 system-test/"
   },
   "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/pubsub": "^4.0.0",
-    "@google-cloud/security-center": "^8.0.0"
+    "@google-cloud/security-center": "^8.7.0",
+    "@google-cloud/securitycentermanagement": "^0.5.0"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.0.0",
-    "uuid": "^9.0.0"
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
+    "mocha": "^10.4.0",
+    "uuid": "^10.0.0",
+    "@google-cloud/bigquery": "^7.0.0"
   }
 }

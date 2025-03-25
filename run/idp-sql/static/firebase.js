@@ -1,3 +1,18 @@
+/**
+ * Copyright 2024 Google LLC
+ * Licensed under the Apache License, Version 2.0 (the `License`);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an `AS IS` BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 firebase.initializeApp(config);
 
 // Watch for state change from sign in
@@ -19,7 +34,6 @@ window.onload = function () {
 };
 
 // [START cloudrun_end_user_firebase_sign_in]
-// [START run_end_user_firebase_sign_in]
 function signIn() {
   const provider = new firebase.auth.GoogleAuthProvider();
   provider.addScope('https://www.googleapis.com/auth/userinfo.email');
@@ -36,7 +50,6 @@ function signIn() {
       window.alert('Sign in failed. Retry or check your browser logs.');
     });
 }
-// [END run_end_user_firebase_sign_in]
 // [END cloudrun_end_user_firebase_sign_in]
 
 function signOut() {
@@ -60,7 +73,6 @@ function toggle() {
 }
 
 // [START cloudrun_end_user_token]
-// [START run_end_user_token]
 async function vote(team) {
   if (firebase.auth().currentUser) {
     // Retrieve JWT to identify the user to the Identity Platform service.
@@ -89,5 +101,4 @@ async function vote(team) {
     window.alert('User not signed in.');
   }
 }
-// [END run_end_user_token]
 // [END cloudrun_end_user_token]

@@ -16,14 +16,16 @@
 
 'use strict';
 
-async function main(project, location = 'us-central1') {
+async function main() {
   // [START aiplatform_sdk_ideation]
+  // [START generativeaionvertexai_sdk_ideation]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.\
-   * (Not necessary if passing values as arguments)
+   * TODO(developer): Update these variables before running the sample.
    */
-  // const project = 'YOUR_PROJECT_ID';
-  // const location = 'YOUR_PROJECT_LOCATION';
+  const PROJECT_ID = process.env.CAIP_PROJECT_ID;
+  const LOCATION = 'us-central1';
+  const PUBLISHER = 'google';
+  const MODEL = 'text-bison@001';
   const aiplatform = require('@google-cloud/aiplatform');
 
   // Imports the Google Cloud Prediction service client
@@ -37,15 +39,12 @@ async function main(project, location = 'us-central1') {
     apiEndpoint: 'us-central1-aiplatform.googleapis.com',
   };
 
-  const publisher = 'google';
-  const model = 'text-bison@001';
-
   // Instantiates a client
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
   async function callPredict() {
     // Configure the parent resource
-    const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
+    const endpoint = `projects/${PROJECT_ID}/locations/${LOCATION}/publishers/${PUBLISHER}/models/${MODEL}`;
 
     const prompt = {
       prompt:
@@ -76,6 +75,7 @@ async function main(project, location = 'us-central1') {
 
   callPredict();
   // [END aiplatform_sdk_ideation]
+  // [END generativeaionvertexai_sdk_ideation]
 }
 
 process.on('unhandledRejection', err => {
@@ -83,4 +83,4 @@ process.on('unhandledRejection', err => {
   process.exitCode = 1;
 });
 
-main(...process.argv.slice(2));
+main();

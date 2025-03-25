@@ -20,11 +20,9 @@ project](https://cloud.google.com/resource-manager/docs/creating-managing-projec
 
     1. Click **CREATE**.
 
-1. Create a service account following these
-   [instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating),
-   and then grant the `roles/cloudsql.client` role following these
-   [instructions](https://cloud.google.com/iam/docs/granting-changing-revoking-access#grant-single-role).
-   Download a JSON key to use to authenticate your connection.
+1. Set up [Application Default Credentials][adc]
+
+[adc]: https://cloud.google.com/docs/authentication/provide-credentials-adc
 
 ## Running locally
 
@@ -32,7 +30,6 @@ Use the information noted in the previous steps to set the following environment
 variables:
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service/account/key.json
 export INSTANCE_CONNECTION_NAME='<MY-PROJECT>:<INSTANCE-REGION>:<INSTANCE-NAME>'
 export INSTANCE_HOST='127.0.0.1'
 export DB_PORT='1433'
@@ -56,7 +53,7 @@ Download and install the `cloud_sql_proxy` by following the instructions
 Then, use the following command to start the proxy in the background using TCP:
 
 ```bash
-./cloud_sql_proxy -instances=${INSTANCE_CONNECTION_NAME}=tcp:1433 sqlserver -u ${DB_USER} --host 127.0.0.1
+./cloud-sql-proxy --port=1433 "$INSTANCE_CONNECTION_NAME" &
 ```
 
 Next, setup install the requirements with `npm`:

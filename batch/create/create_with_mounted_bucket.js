@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
  *  The '-' character cannot be the first or the last one.
  * @param {string} bucketName - The name of the bucket to be mounted.
  */
-function main(projectId, region, jobName, bucketName) {
+async function main(projectId, region, jobName, bucketName) {
   // [START batch_create_script_job_with_bucket]
   /**
    * TODO(developer): Uncomment and replace these variables before running the sample.
@@ -121,12 +121,11 @@ function main(projectId, region, jobName, bucketName) {
     console.log(response);
   }
 
-  callCreateJob();
+  await callCreateJob();
   // [END batch_create_script_job_with_bucket]
 }
 
-process.on('unhandledRejection', err => {
+main(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));

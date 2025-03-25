@@ -154,7 +154,7 @@ describe('Logging', () => {
       // Concurrency is supporting by distinctly named service deployment per test run.
       let entries;
       let attempt = 0;
-      const maxAttempts = 10;
+      const maxAttempts = 13;
       // Filter by service name over the last 5 minutes
       const filter = `resource.labels.service_name="${service_name}" timestamp>="${dateMinutesAgo(
         new Date(),

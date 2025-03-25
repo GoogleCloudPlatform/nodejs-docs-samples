@@ -48,13 +48,12 @@ function main(projectId, location, liveConfigId) {
     console.log(`Play URI: ${session.playUri}`);
   }
 
-  createLiveSession();
+  createLiveSession().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_live_session]
 }
 
 // node createLiveSession.js <projectId> <location> <liveConfigId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

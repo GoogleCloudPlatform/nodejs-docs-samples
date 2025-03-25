@@ -18,6 +18,7 @@
 
 async function main(project, location = 'us-central1') {
   // [START aiplatform_sdk_code_generation_function]
+  // [START generativeaionvertexai_sdk_code_generation_function]
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -76,6 +77,7 @@ async function main(project, location = 'us-central1') {
 
   callPredict();
   // [END aiplatform_sdk_code_generation_function]
+  // [END generativeaionvertexai_sdk_code_generation_function]
 }
 
 process.on('unhandledRejection', err => {

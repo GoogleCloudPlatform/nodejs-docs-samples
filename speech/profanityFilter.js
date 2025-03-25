@@ -15,7 +15,7 @@
 'use strict';
 
 function main(gcsUri) {
-  // [START syncRecognizeWithProfanityFilter]
+  // [START speech_syncRecognizeWithProfanityFilter]
   // Filters profanity
 
   /**
@@ -53,7 +53,7 @@ function main(gcsUri) {
     console.log(`Transcription: ${transcription}`);
   }
   syncRecognizeWithProfanityFilter().catch(console.error);
-  // [END syncRecognizeWithProfanityFilter]
+  // [END speech_syncRecognizeWithProfanityFilter]
 }
 
 main(...process.argv.slice(2));

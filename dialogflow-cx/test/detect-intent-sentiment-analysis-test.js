@@ -19,7 +19,7 @@ const {describe, it} = require('mocha');
 const execSync = require('child_process').execSync;
 const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 
-describe.skip('detect intent with sentiment analysis', () => {
+describe('detect intent with sentiment analysis', () => {
   const cmd = 'node detect-intent-with-sentiment-analysis.js';
 
   const projectId = process.env.GCLOUD_PROJECT;

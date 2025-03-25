@@ -40,13 +40,12 @@ function main(projectId, location, cdnKeyId) {
     console.log('Deleted CDN key');
   }
 
-  deleteCdnKey();
+  deleteCdnKey().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_delete_cdn_key]
 }
 
 // node deleteCdnKey.js <projectId> <location> <cdnKeyId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

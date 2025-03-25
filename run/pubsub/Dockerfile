@@ -1,14 +1,22 @@
-# Copyright 2020 Google LLC. All rights reserved.
-# Use of this source code is governed by the Apache 2.0
-# license that can be found in the LICENSE file.
+# Copyright 2020 Google LLC.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# [START cloudrun_pubsub_dockerfile]
-# [START run_pubsub_dockerfile]
+# [START cloudrun_pubsub_dockerfile_nodejs]
 
 # Use the official lightweight Node.js image.
 # https://hub.docker.com/_/node
-FROM node:18-slim
-
+FROM node:20-slim
 # Create and change to the app directory.
 WORKDIR /usr/src/app
 
@@ -18,9 +26,14 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install dependencies.
-# If you add a package-lock.json speed your build by switching to 'npm ci'.
-# RUN npm ci --only=production
-RUN npm install --production
+# if you need a deterministic and repeatable build create a
+# package-lock.json file and use npm ci:
+# RUN npm ci --omit=dev
+# if you need to include development dependencies during development
+# of your application, use:
+# RUN npm install --dev
+
+RUN npm install --omit=dev
 
 # Copy local code to the container image.
 COPY . .
@@ -28,5 +41,4 @@ COPY . .
 # Run the web service on container startup.
 CMD [ "npm", "start" ]
 
-# [END run_pubsub_dockerfile]
-# [END cloudrun_pubsub_dockerfile]
+# [END cloudrun_pubsub_dockerfile_nodejs]

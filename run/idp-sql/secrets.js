@@ -17,7 +17,6 @@ const {logger} = require('./logging');
 // Load the Cloud SQL config from Secret Manager
 function getCredConfig() {
   // [START cloudrun_user_auth_secrets]
-  // [START run_user_auth_secrets]
   // CLOUD_SQL_CREDENTIALS_SECRET is the resource ID of the secret, passed in by environment variable.
   // Format: projects/PROJECT_ID/secrets/SECRET_ID/versions/VERSION
   const {CLOUD_SQL_CREDENTIALS_SECRET} = process.env;
@@ -32,7 +31,6 @@ function getCredConfig() {
       );
     }
   }
-  // [END run_user_auth_secrets]
   // [END cloudrun_user_auth_secrets]
   logger.info(
     'CLOUD_SQL_CREDENTIALS_SECRET env var not set. Defaulting to environment variables.'

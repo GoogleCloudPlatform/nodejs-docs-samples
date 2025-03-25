@@ -28,26 +28,5 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-      - name: authenticate
-        uses: 'google-github-actions/auth@v1'
-        with:
-          workload_identity_provider: 'projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider'
-          service_account: 'kokoro-system-test@long-door-651.iam.gserviceaccount.com'
-          create_credentials_file: 'true'
-          access_token_lifetime: 600s
-      - name: download test results
-        uses: actions/download-artifact@v3
-        with:
-          name: test-results
-      - name: download FlakyBot
-        run: |
-          curl -s -L https://github.com/googleapis/repo-automation-bots/archive/refs/tags/flakybot-v${{ env.FLAKYBOT_VERSION }}.tar.gz -o flakybot.tar.gz
-          tar xzf flakybot.tar.gz
-          cp -rT repo-automation-bots-flakybot-v${{ env.FLAKYBOT_VERSION}}/packages/flakybot/ .
-      - uses: actions/setup-go@v4
-        with:
-          cache: true
-          cache-dependency-path: '${{ github.workspace }}/go.sum'
-          go-version-file: '${{ github.workspace }}/go.mod'
-      - name: run FlakyBot
-        run: go run flakybot.go --repo GoogleCloudPlatform/nodejs-docs-samples --commit_hash ${{github.sha}} --build_url https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      - name: DISABLED run FlakyBot
+        run: echo flakybot error reporting disabled

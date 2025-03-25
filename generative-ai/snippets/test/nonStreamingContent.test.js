@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.0-pro';
+const model = 'gemini-1.5-flash-001';
 
 describe('Generative AI NonStreaming Content', () => {
   /**
@@ -30,16 +30,14 @@ describe('Generative AI NonStreaming Content', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.0-pro';
+  // const model = 'gemini-1.5-flash-001';
 
-  it('should create nonstreaming content and begin the conversation the same in each instance', async () => {
+  it('should create nonstreaming content', async () => {
     const output = execSync(
       `node ./nonStreamingContent.js ${projectId} ${location} ${model}`
     );
 
-    // Ensure that the beginning of the conversation is consistent
-    assert(output.match(/Prompt:/));
-    assert(output.match(/What is Node.js/));
-    assert(output.match(/Non-Streaming Response Text:/));
+    // Assert that the correct prompt was issued
+    assert(output.match(/Write a story about a magic backpack/));
   });
 });

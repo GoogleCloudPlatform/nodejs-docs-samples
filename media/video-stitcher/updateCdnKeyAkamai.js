@@ -52,13 +52,12 @@ function main(projectId, cdnKeyId, hostname, akamaiTokenKey) {
     console.log(`Updated hostname: ${response.hostname}`);
   }
 
-  updateCdnKeyAkamai();
+  updateCdnKeyAkamai().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_update_cdn_key_akamai]
 }
 
 // node updateCdnKeyAkamai.js <projectId> <cdnKeyId> <akamaiTokenKey> <location> <hostname>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

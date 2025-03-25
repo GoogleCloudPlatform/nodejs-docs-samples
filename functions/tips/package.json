@@ -19,7 +19,7 @@
     "mocha": "^10.0.0"
   },
   "devDependencies": {
-    "node-fetch": "^2.6.1",
-    "sinon": "^16.0.0"
+    "node-fetch": "^3.0.0",
+    "sinon": "^18.0.0"
   }
 }

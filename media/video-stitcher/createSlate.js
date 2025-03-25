@@ -45,13 +45,12 @@ function main(projectId, location, slateId, slateUri) {
     console.log(`response.name: ${response.name}`);
   }
 
-  createSlate();
+  createSlate().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_create_slate]
 }
 
 // node createSlate.js <projectId> <location> <slateId> <slateUri>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

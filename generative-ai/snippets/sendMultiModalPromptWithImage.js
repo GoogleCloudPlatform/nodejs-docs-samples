@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START aiplatform_gemini_single_turn_multi_image]
+// [START generativeaionvertexai_gemini_single_turn_multi_image]
 const {VertexAI} = require('@google-cloud/vertexai');
 const axios = require('axios');
 
@@ -27,7 +27,7 @@ async function getBase64(url) {
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.0-pro-vision'
+  model = 'gemini-1.5-flash-001'
 ) {
   // For images, the SDK supports base64 strings
   const landmarkImage1 = await getBase64(
@@ -93,7 +93,7 @@ async function sendMultiModalPromptWithImage(
 
   console.log(fullTextResponse);
 }
-// [END aiplatform_gemini_single_turn_multi_image]
+// [END generativeaionvertexai_gemini_single_turn_multi_image]
 
 sendMultiModalPromptWithImage(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

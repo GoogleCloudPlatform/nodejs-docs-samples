@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "form-data": "^4.0.0",
-    "node-fetch": "^2.2.0"
+    "node-fetch": "^3.0.0"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -18,7 +18,7 @@
   "devDependencies": {
     "mocha": "^10.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^16.0.0"
+    "sinon": "^18.0.0"
   },
   "scripts": {
     "test": "mocha test/*.test.js --timeout=20000"

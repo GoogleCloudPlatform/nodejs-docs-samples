@@ -39,13 +39,12 @@ function main(projectId, location, slateId) {
     console.log(`Slate: ${slate.name}`);
   }
 
-  getSlate();
+  getSlate().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_slate]
 }
 
 // node getSlate.js <projectId> <location> <slateId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

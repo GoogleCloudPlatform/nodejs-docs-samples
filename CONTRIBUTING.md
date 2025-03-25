@@ -9,7 +9,9 @@ a great sample but it is not used in Google's official documentation, there are
 better suited places to publish it such as a [community
 tutorial](https://cloud.google.com/community/).
 
-## Run the tests for a single sample
+## Run the tests
+
+### Run the tests locally for a single sample
 
 1. Obtain authentication credentials. Depending on the sample, you need to
 enable the appropriate APIs in the [Cloud
@@ -29,12 +31,38 @@ Console](https://console.cloud.google.com/apis/library).
 
         npm test
 
+### Running the tests for a Pull Request
+
+When a Pull Request is opened, reopened, or has new commits pushed the sample tests (unit, integration, end-to-end) will be run.
+
+If the tests for a sample change do not run, they can be triggered by adding the `actions:force-run` label.
+
+If tests need to be triggered multiple times, manually remove `actions:force-run` and then re-add this label.
+
+The automatic clean-up of labels is currently disabled. Please remove the actions:force-run before merging the Pull Request.
+
 ## Adding new samples
 
 All samples must have tests. We use `mocha` as testing framework. The
 `package.json` file within your sample directory must contain a test script that
 executes the `mocha` tests via `npm test`
 ([example](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/batch/package.json#L13)).
+
+### Third party libraries
+
+Contributors are encouraged to use vanilla Node.js as much as pragmatically
+possible to standardize writing, reviewing, and maintaining samples and their
+tests, ideally reducing dependencies on third party libraries.
+
+For tests, we recommend using the standard
+library [assert](https://nodejs.org/docs/latest-v18.x/api/assert.html). The library provides a strict and a legacy mode; please use the
+strict mode as shown below:
+
+```js
+const assert = require('node:assert/strict');
+```
+
+### CI testing
 
 For new samples, a GitHub Actions workflow should be created to run your tests
 on the CI system:

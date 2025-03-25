@@ -39,13 +39,12 @@ function main(projectId, location, liveConfigId) {
     console.log(`Live config: ${liveConfig.name}`);
   }
 
-  getLiveConfig();
+  getLiveConfig().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_live_config]
 }
 
 // node getLiveConfig.js <projectId> <location> <liveConfigId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

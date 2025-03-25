@@ -45,13 +45,12 @@ function main(projectId, location, sessionId, adTagDetailId) {
     console.log(`VOD ad tag detail: ${adTagDetail.name}`);
   }
 
-  getVodAdTagDetail();
+  getVodAdTagDetail().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_vod_ad_tag_detail]
 }
 
 // node getVodAdTagDetail.js <projectId> <location> <sessionId> <adTagDetailId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

@@ -66,13 +66,12 @@ function main(projectId, cdnKeyId, hostname, privateKey, isMediaCdn = true) {
     console.log(`Updated hostname: ${response.hostname}`);
   }
 
-  updateCdnKey();
+  updateCdnKey().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_update_cdn_key]
 }
 
 // node updateCdnKey.js <projectId> <cdnKeyId> <privateKey> <isMediaCdn> <location> <hostname> <keyName>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

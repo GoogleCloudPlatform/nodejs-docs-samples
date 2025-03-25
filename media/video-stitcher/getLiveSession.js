@@ -39,13 +39,12 @@ function main(projectId, location, sessionId) {
     console.log(`Live session: ${session.name}`);
   }
 
-  getLiveSession();
+  getLiveSession().catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
   // [END videostitcher_get_live_session]
 }
 
 // node getLiveSession.js <projectId> <location> <sessionId>
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

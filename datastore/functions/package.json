@@ -14,17 +14,17 @@
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=5000"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^8.0.0"
+    "@google-cloud/datastore": "^9.0.0"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^3.0.0",
-    "c8": "^8.0.0",
+    "c8": "^10.0.0",
     "child-process-promise": "^2.2.1",
     "mocha": "^10.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^16.0.0",
-    "uuid": "^9.0.0",
+    "sinon": "^18.0.0",
+    "uuid": "^10.0.0",
     "wait-port": "^1.0.4"
   }
 }

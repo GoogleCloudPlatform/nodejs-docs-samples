@@ -66,50 +66,6 @@ const comment = (req, res) => {
 };
 
 const {createAssessment} = require('../recaptcha/createAssessment');
-// On homepage load, execute reCAPTCHA Enterprise assessment and take action according to the score.
-const onHomepageLoad = async (req, res) => {
-  try {
-    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Starts -->
-    const recaptchaAction = PROPERTIES.get('recaptcha_action.home');
-    const assessmentResponse = await createAssessment(
-      context.project_id,
-      context.site_key,
-      req.body.token,
-      recaptchaAction
-    );
-
-    // Check if the token is valid, score is above threshold score and the action equals expected.
-    // Take action based on the result (BAD / NOT_BAD).
-    //
-    // If result.label is NOT_BAD:
-    // Load the home page.
-    // Business logic.
-    //
-    // If result.label is BAD:
-    // Trigger email/ phone verification flow.
-    const result = checkForBadAction(assessmentResponse, recaptchaAction);
-    // <!-- ATTENTION: reCAPTCHA Example (Server Part 1/2) Ends -->
-
-    // Below code is only used to send response to the client for demo purposes.
-    // DO NOT send scores or other assessment response to the client.
-    // Return the response.
-    result.score =
-      assessmentResponse.riskAnalysis && assessmentResponse.riskAnalysis.score
-        ? assessmentResponse.riskAnalysis.score.toFixed(1)
-        : (0.0).toFixed(1);
-
-    res.json({
-      data: result,
-    });
-  } catch (e) {
-    res.json({
-      data: {
-        error_msg: e,
-      },
-    });
-  }
-};
-
 // On signup button click, execute reCAPTCHA Enterprise assessment and take action according to the score.
 const onSignup = async (req, res) => {
   try {
@@ -293,6 +249,7 @@ const onCommentSubmit = async (req, res) => {
 };
 
 // Classify the action as BAD/ NOT_BAD based on conditions specified.
+// See https://cloud.google.com/recaptcha/docs/interpret-assessment-website
 const checkForBadAction = function (assessmentResponse, recaptchaAction) {
   let label = Label.NOT_BAD;
   let reason = '';
@@ -323,7 +280,6 @@ module.exports = {
   login,
   store,
   comment,
-  onHomepageLoad,
   onSignup,
   onLogin,
   onStoreCheckout,

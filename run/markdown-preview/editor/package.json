@@ -16,7 +16,9 @@
   "main": "main.js",
   "scripts": {
     "start": "node index.js",
-    "test": "c8 mocha -p -j 2 test/app.test.js --timeout=10000 --exit",
+    "test": "npm -- run all-test",
+    "all-test": "npm run unit-test && npm run system-test",
+    "unit-test": "c8 mocha -p -j 2 test/app.test.js --timeout=10000 --exit",
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=480000 --exit"
   },
   "dependencies": {
@@ -26,8 +28,8 @@
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
-    "c8": "^8.0.0",
+    "c8": "^10.0.0",
     "mocha": "^10.0.0",
-    "supertest": "^6.0.0"
+    "supertest": "^7.0.0"
   }
 }

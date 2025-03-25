@@ -30,18 +30,22 @@ describe('End-to-End Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "editor"');
     SERVICE_NAME = 'renderer';
   }
+  const {ID_TOKEN} = process.env;
+  if (!ID_TOKEN) throw Error('ID token not in envvar');
   const {SAMPLE_VERSION} = process.env;
-  const PLATFORM = 'managed';
+  const {SERVICE_ACCOUNT} = process.env;
   const REGION = 'us-central1';
 
-  let BASE_URL, ID_TOKEN;
+
+  let BASE_URL;
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
@@ -50,23 +54,20 @@ describe('End-to-End Tests', () => {
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--platform=${PLATFORM} --region=${REGION} --format='value(status.url)'`
+        `--region=${REGION} --format='value(status.url)'`
     );
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
 
-    const client = await auth.getIdTokenClient(BASE_URL);
-    const clientHeaders = await client.getRequestHeaders();
-    ID_TOKEN = clientHeaders['Authorization'];
-    if (!ID_TOKEN) throw Error('ID token could not be created');
   });
 
   after(() => {
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd);
   });
@@ -75,7 +76,7 @@ describe('End-to-End Tests', () => {
     const options = {
       prefixUrl: BASE_URL.trim(),
       headers: {
-        Authorization: ID_TOKEN.trim(),
+        Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
       method: 'POST',
       retry: 3,

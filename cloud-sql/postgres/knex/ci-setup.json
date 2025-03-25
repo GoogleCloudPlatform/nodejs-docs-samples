@@ -1,5 +1,9 @@
 {
     "env": {
-        "INSTANCE_HOST": "127.0.0.1"
-    }
-}
+      "CLOUD_SQL_CONNECTION_NAME": "nodejs-docs-samples-tests:us-central1:postgres-ci",
+      "DB_NAME": "kokoro_ci",
+      "DB_USER": "kokoro_ci"
+    },
+    "secrets": {
+      "DB_PASSWORD": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"  }
+  }

@@ -14,7 +14,13 @@
 
 # Proof of concept: setting up proxy
 
-curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.15.1/cloud-sql-proxy.linux.amd64
+PROXY_VERSION="v2.15.1"
+
+curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${PROXY_VERSION}/cloud-sql-proxy.linux.amd64
+if [ $? -ne 0 ]; then
+  echo "Failed to download cloud-sql-proxy"
+  exit 1
+fi
 chmod +x cloud-sql-proxy
 ./cloud-sql-proxy $CLOUD_SQL_CONNECTION_NAME &
 sleep 10

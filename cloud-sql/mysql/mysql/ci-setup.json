@@ -6,5 +6,5 @@
       "DB_USER": "kokoro_ci"
     },
     "secrets": {
-      "DB_PASSWORD": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"  }
+      "DB_PASS": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"  }
   }

@@ -14,7 +14,6 @@
 
 'use strict';
 
-
 const express = require('express');
 const createConnectorConnection = require('./connect-connector.js');
 const createTcpConnection = require('./connect-tcp.js');

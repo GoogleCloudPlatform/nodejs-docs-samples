@@ -14,7 +14,6 @@
 
 'use strict';
 
-
 const express = require('express');
 const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js');
 const createConnectorPool = require('./connect-connector.js');

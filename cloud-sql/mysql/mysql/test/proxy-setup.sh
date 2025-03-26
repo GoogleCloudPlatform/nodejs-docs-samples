@@ -15,6 +15,12 @@
 # Proof of concept: setting up proxy
 
 PROXY_VERSION="v2.15.1"
+SETUP_STYLE=${1:-tcp}
+
+if [ $SETUP_STYLE -ne "tcp" ]; then
+  mkdir cloudsql && chmod 777 cloudsql
+  socket="--unix-socket /cloudsql"
+; fi
 
 curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${PROXY_VERSION}/cloud-sql-proxy.linux.amd64
 if [ $? -ne 0 ]; then
@@ -22,5 +28,5 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 chmod +x cloud-sql-proxy
-./cloud-sql-proxy $CLOUD_SQL_CONNECTION_NAME &
+./cloud-sql-proxy $CLOUD_SQL_CONNECTION_NAME $socket &
 sleep 10

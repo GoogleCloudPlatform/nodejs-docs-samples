@@ -14,23 +14,23 @@
 
 const assert = require('assert');
 const got = require('got');
-const {execSync} = require('child_process');
+const { execSync } = require('child_process');
 
 describe('End-to-End Tests', () => {
   // Retrieve Cloud Run service test config
-  const {GOOGLE_CLOUD_PROJECT} = process.env;
+  const { GOOGLE_CLOUD_PROJECT } = process.env;
   if (!GOOGLE_CLOUD_PROJECT) {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
-  let {SERVICE_NAME} = process.env;
+  let { SERVICE_NAME } = process.env;
   if (!SERVICE_NAME) {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "editor"');
     SERVICE_NAME = 'renderer';
   }
-  const {ID_TOKEN} = process.env;
+  const { ID_TOKEN } = process.env;
   if (!ID_TOKEN) throw Error('ID token not in envvar');
-  const {SAMPLE_VERSION} = process.env;
-  const {SERVICE_ACCOUNT} = process.env;
+  const { SAMPLE_VERSION } = process.env;
+  const { SERVICE_ACCOUNT } = process.env;
   const REGION = 'us-central1';
 
 
@@ -45,13 +45,13 @@ describe('End-to-End Tests', () => {
     if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     console.log('Starting Cloud Build...');
-    execSync(buildCmd, {timeout: 240000}); // timeout at 4 mins
+    execSync(buildCmd, { timeout: 240000 }); // timeout at 4 mins
     console.log('Cloud Build completed.');
 
     // Retrieve URL of Cloud Run service
     const url = execSync(
       `gcloud run services describe ${SERVICE_NAME} --project=${GOOGLE_CLOUD_PROJECT} ` +
-        `--region=${REGION} --format='value(status.url)'`
+      `--region=${REGION} --format='value(status.url)'`
     );
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');

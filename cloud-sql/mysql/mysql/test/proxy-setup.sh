@@ -24,6 +24,8 @@ if [[ $SETUP_STYLE -ne "tcp" ]]; then
   socket="--unix-socket /cloudsql"
 fi
 
+echo "Setting up cloud-sql-proxy for $SETUP_STYLE connections"
+
 if [[ ! -f cloud-sql-proxy ]]; then
 
   curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${PROXY_VERSION}/cloud-sql-proxy.linux.amd64
@@ -38,3 +40,5 @@ fi
 
 ./cloud-sql-proxy $CLOUD_SQL_CONNECTION_NAME $socket &
 sleep 10
+
+echo "Proxy ready for use"

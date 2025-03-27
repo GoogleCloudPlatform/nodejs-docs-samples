@@ -20,6 +20,8 @@ import {join} from 'path';
 import {v4} from 'uuid';
 import {stub} from 'sinon';
 import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import waitPort from 'wait-port';
 import {Datastore} from '@google-cloud/datastore';
 
@@ -27,6 +29,8 @@ const datastore = new Datastore();
 import {set, get, del} from '../';
 
 const FF_TIMEOUT = 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const cwd = join(__dirname, '..');
 const NAME = 'sampletask1';
 const KIND = `Task-${v4()}`;

@@ -24,7 +24,7 @@ if [[ $SETUP_STYLE -ne "tcp" ]]; then
   socket="--unix-socket /cloudsql"
 fi
 
-if [[ -! f cloud-sql-proxy ]]; then
+if [[ ! -f cloud-sql-proxy ]]; then
 
   curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${PROXY_VERSION}/cloud-sql-proxy.linux.amd64
   if [[ $? -ne 0 ]]; then

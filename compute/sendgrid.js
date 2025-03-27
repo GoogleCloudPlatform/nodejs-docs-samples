@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START compute_sendgrid_nodejs]
+// [START compute_sendgrid]
 // [START compute_send]
 // This sample is based off of:
 // https://github.com/sendgrid/sendgrid-nodejs/tree/master/packages/mail
@@ -31,4 +31,4 @@ async function sendgridExample() {
 }
 sendgridExample();
 // [END compute_send]
-// [END compute_sendgrid_nodejs]
+// [END compute_sendgrid]

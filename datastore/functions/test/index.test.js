@@ -14,22 +14,22 @@
 
 'use strict';
 
-const assert = require('assert');
-const execPromise = require('child-process-promise').exec;
-const path = require('path');
-const uuid = require('uuid');
-const sinon = require('sinon');
-const fetch = require('node-fetch');
-const waitPort = require('wait-port');
-const {Datastore} = require('@google-cloud/datastore');
+import { ok, strictEqual, deepStrictEqual } from 'assert';
+import { exec as execPromise } from 'child-process-promise';
+import { join } from 'path';
+import { v4 } from 'uuid';
+import { stub } from 'sinon';
+import fetch from 'node-fetch';
+import waitPort from 'wait-port';
+import { Datastore } from '@google-cloud/datastore';
 
 const datastore = new Datastore();
-const program = require('../');
+import { set, get, del } from '../';
 
 const FF_TIMEOUT = 3000;
-const cwd = path.join(__dirname, '..');
+const cwd = join(__dirname, '..');
 const NAME = 'sampletask1';
-const KIND = `Task-${uuid.v4()}`;
+const KIND = `Task-${v4()}`;
 const VALUE = {
   description: 'Buy milk',
 };
@@ -72,14 +72,14 @@ describe('functions/datastore', () => {
         body: {},
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.set(req, res);
+      await set(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Value')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Value')));
     });
 
     it('set: Fails without a key', async () => {
@@ -89,12 +89,12 @@ describe('functions/datastore', () => {
         },
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
-      await program.set(req, res);
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Key')));
+      await set(req, res);
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Key')));
     });
 
     it('set: Fails without a kind', async () => {
@@ -105,14 +105,14 @@ describe('functions/datastore', () => {
         },
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.set(req, res);
+      await set(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Kind')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Kind')));
     });
 
     it('set: Saves an entity', async () => {
@@ -125,9 +125,9 @@ describe('functions/datastore', () => {
         }),
         headers: {'Content-Type': 'application/json'},
       });
-      assert.strictEqual(response.status, 200);
+      strictEqual(response.status, 200);
       const body = await response.text();
-      assert.ok(body.includes(`Entity ${KIND}/${NAME} saved`));
+      ok(body.includes(`Entity ${KIND}/${NAME} saved`));
     });
   });
 
@@ -159,9 +159,9 @@ describe('functions/datastore', () => {
         validateStatus: () => true,
       });
 
-      assert.strictEqual(response.status, 500);
+      strictEqual(response.status, 500);
       const body = await response.text();
-      assert.ok(
+      ok(
         new RegExp(
           /(Missing or insufficient permissions.)|(No entity found for key)/
         ).test(body)
@@ -177,9 +177,9 @@ describe('functions/datastore', () => {
         }),
         headers: {'Content-Type': 'application/json'},
       });
-      assert.strictEqual(response.status, 200);
+      strictEqual(response.status, 200);
       const body = await response.json();
-      assert.deepStrictEqual(body, {
+      deepStrictEqual(body, {
         description: 'Buy milk',
       });
     });
@@ -189,14 +189,14 @@ describe('functions/datastore', () => {
         body: {},
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.get(req, res);
+      await get(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Key')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Key')));
     });
 
     it('get: Fails without a kind', async () => {
@@ -206,14 +206,14 @@ describe('functions/datastore', () => {
         },
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.get(req, res);
+      await get(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Kind')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Kind')));
     });
   });
 
@@ -239,14 +239,14 @@ describe('functions/datastore', () => {
         body: {},
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.del(req, res);
+      await del(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Key')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Key')));
     });
 
     it('del: Fails without a kind', async () => {
@@ -256,14 +256,14 @@ describe('functions/datastore', () => {
         },
       };
       const res = {
-        status: sinon.stub().returnsThis(),
-        send: sinon.stub(),
+        status: stub().returnsThis(),
+        send: stub(),
       };
 
-      await program.del(req, res);
+      await del(req, res);
 
-      assert.ok(res.status.calledWith(500));
-      assert.ok(res.send.calledWith(errorMsg('Kind')));
+      ok(res.status.calledWith(500));
+      ok(res.send.calledWith(errorMsg('Kind')));
     });
 
     it("del: Doesn't fail when entity does not exist", async () => {
@@ -275,9 +275,9 @@ describe('functions/datastore', () => {
         }),
         headers: {'Content-Type': 'application/json'},
       });
-      assert.strictEqual(response.status, 200);
+      strictEqual(response.status, 200);
       const body = await response.text();
-      assert.strictEqual(body, `Entity ${KIND}/nonexistent deleted.`);
+      strictEqual(body, `Entity ${KIND}/nonexistent deleted.`);
     });
 
     it('del: Deletes an entity', async () => {
@@ -289,13 +289,13 @@ describe('functions/datastore', () => {
         }),
         headers: {'Content-Type': 'application/json'},
       });
-      assert.strictEqual(response.status, 200);
+      strictEqual(response.status, 200);
       const body = await response.text();
-      assert.strictEqual(body, `Entity ${KIND}/${NAME} deleted.`);
+      strictEqual(body, `Entity ${KIND}/${NAME} deleted.`);
 
       const key = datastore.key([KIND, NAME]);
       const [entity] = await datastore.get(key);
-      assert.ok(!entity);
+      ok(!entity);
     });
   });
 });

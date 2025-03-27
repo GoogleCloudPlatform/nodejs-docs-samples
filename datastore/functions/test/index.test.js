@@ -14,17 +14,17 @@
 
 'use strict';
 
-import { ok, strictEqual, deepStrictEqual } from 'assert';
-import { exec as execPromise } from 'child-process-promise';
-import { join } from 'path';
-import { v4 } from 'uuid';
-import { stub } from 'sinon';
+import {ok, strictEqual, deepStrictEqual} from 'assert';
+import {exec as execPromise} from 'child-process-promise';
+import {join} from 'path';
+import {v4} from 'uuid';
+import {stub} from 'sinon';
 import fetch from 'node-fetch';
 import waitPort from 'wait-port';
-import { Datastore } from '@google-cloud/datastore';
+import {Datastore} from '@google-cloud/datastore';
 
 const datastore = new Datastore();
-import { set, get, del } from '../';
+import {set, get, del} from '../';
 
 const FF_TIMEOUT = 3000;
 const cwd = join(__dirname, '..');

@@ -14,7 +14,7 @@
 
 'use strict';
 
-import { Datastore } from '@google-cloud/datastore';
+import {Datastore} from '@google-cloud/datastore';
 
 // Instantiates a client
 const datastore = new Datastore();

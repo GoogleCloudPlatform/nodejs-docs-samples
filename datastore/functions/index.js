@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {Datastore} = require('@google-cloud/datastore');
+import {Datastore} from '@google-cloud/datastore';
 
 // Instantiates a client
 const datastore = new Datastore();
@@ -58,7 +58,7 @@ const getKeyFromRequestData = requestData => {
  * @param {object} req.body.value Value to save to Cloud Datastore, e.g. {"description":"Buy milk"}
  * @param {object} res Cloud Function response context.
  */
-exports.set = async (req, res) => {
+export async function set(req, res) {
   // The value contains a JSON document representing the entity we want to save
   if (!req.body.value) {
     const err = makeErrorObj('Value');
@@ -80,7 +80,7 @@ exports.set = async (req, res) => {
     console.error(new Error(err.message)); // Add to Stackdriver Error Reporting
     res.status(500).send(err.message);
   }
-};
+}
 
 /**
  * Retrieves a record.
@@ -94,7 +94,7 @@ exports.set = async (req, res) => {
  * @param {string} req.body.key Key at which to retrieve the data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.get = async (req, res) => {
+export async function get(req, res) {
   try {
     const key = await getKeyFromRequestData(req.body);
     const [entity] = await datastore.get(key);
@@ -110,7 +110,7 @@ exports.get = async (req, res) => {
     console.error(new Error(err.message)); // Add to Stackdriver Error Reporting
     res.status(500).send(err.message);
   }
-};
+}
 
 /**
  * Deletes a record.
@@ -124,7 +124,7 @@ exports.get = async (req, res) => {
  * @param {string} req.body.key Key at which to delete data, e.g. "sampletask1".
  * @param {object} res Cloud Function response context.
  */
-exports.del = async (req, res) => {
+export async function del(req, res) {
   // Deletes the entity
   // The delete operation will not fail for a non-existent entity, it just
   // doesn't delete anything
@@ -136,4 +136,4 @@ exports.del = async (req, res) => {
     console.error(new Error(err.message)); // Add to Stackdriver Error Reporting
     res.status(500).send(err.message);
   }
-};
+}

@@ -38,7 +38,7 @@ else
   echo "cloud-sql-proxy already downloaded"
 fi
 
-./cloud-sql-proxy $CLOUD_SQL_CONNECTION_NAME $socket &
+./cloud-sql-proxy $socket $CLOUD_SQL_CONNECTION_NAME &
 sleep 10
 
 echo "Proxy ready for use"

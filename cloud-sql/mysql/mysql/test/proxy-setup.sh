@@ -19,8 +19,9 @@
 PROXY_VERSION="v2.15.1"
 SETUP_STYLE=${1:-tcp}
 
-if [[ $SETUP_STYLE -ne "tcp" ]]; then
-  mkdir cloudsql && chmod 777 cloudsql
+if [[ ! $SETUP_STYLE == "tcp" ]]; then
+  echo "setup for sockets"
+  mkdir /cloudsql && chmod 777 /cloudsql
   socket="--unix-socket /cloudsql"
 fi
 

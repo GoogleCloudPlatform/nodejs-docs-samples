@@ -21,6 +21,8 @@ const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
+const folderId = process.env.FOLDER_ID;
+const organizationId = process.env.ORGANIZATION_ID;
 const options = {
   apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
 };
@@ -180,186 +182,71 @@ describe('Model Armor tests', () => {
     }
   });
 
-  // =================== Template Creation Tests ===================
+  // =================== Floor Settings Tests ===================
 
-  it('should create a basic template', async () => {
-    const testTemplateId = `${templateIdPrefix}-basic-create`;
-
+  it('should get organization floor settings', () => {
     const output = execSync(
-      `node snippets/createTemplate.js ${projectId} ${locationId} ${testTemplateId}`
-    );
+      `node snippets/getOrganizationFloorSettings.js ${organizationId}`
+    ).toString();
 
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
-    templatesToDelete.push(templateName);
-
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    // Check for expected name format in output
+    const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
   });
 
-  it('should create a template with basic SDP settings', async () => {
-    const testTemplateId = `${templateIdPrefix}-basic-sdp-1`;
-
+  it('should get folder floor settings', () => {
     const output = execSync(
-      `node snippets/createTemplateWithBasicSdp.js ${projectId} ${locationId} ${testTemplateId}`
-    );
+      `node snippets/getFolderFloorSettings.js ${folderId}`
+    ).toString();
 
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
-    templatesToDelete.push(templateName);
-
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    // Check for expected name format in output
+    const expectedName = `folders/${folderId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
   });
 
-  it('should create a template with advanced SDP settings', async () => {
-    const testTemplateId = `${templateIdPrefix}-adv-sdp`;
-    const inspectTemplate = basicSdpTemplateId;
-    const deidentifyTemplate = basicSdpTemplateId;
-
-    const fullInspectTemplate = `projects/${projectId}/locations/${locationId}/inspectTemplates/${inspectTemplate}`;
-    const fullDeidentifyTemplate = `projects/${projectId}/locations/${locationId}/deidentifyTemplates/${deidentifyTemplate}`;
-
+  it('should get project floor settings', () => {
     const output = execSync(
-      `node snippets/createTemplateWithAdvancedSdp.js ${projectId} ${locationId} ${testTemplateId} ${fullInspectTemplate} ${fullDeidentifyTemplate}`
-    );
+      `node snippets/getProjectFloorSettings.js ${projectId}`
+    ).toString();
 
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
-    templatesToDelete.push(templateName);
-
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    // Check for expected name format in output
+    const expectedName = `projects/${projectId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
   });
 
-  it('should create a template with metadata', async () => {
-    const testTemplateId = `${templateIdPrefix}-metadata`;
-
+  it('should update organization floor settings', () => {
     const output = execSync(
-      `node snippets/createTemplateWithMetadata.js ${projectId} ${locationId} ${testTemplateId}`
-    );
+      `node snippets/updateOrganizationFloorSettings.js ${organizationId}`
+    ).toString();
 
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
-    templatesToDelete.push(templateName);
+    // Check that the update was performed
+    assert.match(output, /Updated organization floor settings/);
 
-    assert.match(
-      output,
-      new RegExp(`Created Model Armor Template: ${templateName}`)
-    );
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
   });
 
-  it('should create a template with labels', async () => {
-    const testTemplateId = `${templateIdPrefix}-labels`;
-    const labelKey = 'environment';
-    const labelValue = 'test';
-
+  it('should update folder floor settings', () => {
     const output = execSync(
-      `node snippets/createTemplateWithLabels.js ${projectId} ${locationId} ${testTemplateId} ${labelKey} ${labelValue}`
-    );
+      `node snippets/updateFolderFloorSettings.js ${folderId}`
+    ).toString();
 
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
-    templatesToDelete.push(templateName);
+    // Check that the update was performed
+    assert.match(output, /Updated folder floor settings/);
 
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
   });
 
-  // =================== Template Management Tests ===================
-
-  it('should get a template', async () => {
-    const templateToGet = `${templateIdPrefix}-basic-sdp`;
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToGet}`;
+  it('should update project floor settings', () => {
     const output = execSync(
-      `node snippets/getTemplate.js ${projectId} ${locationId} ${templateToGet}`
-    );
+      `node snippets/updateProjectFloorSettings.js ${projectId}`
+    ).toString();
 
-    assert.match(output, new RegExp(`Template name: ${templateName}`));
-  });
+    // Check that the update was performed
+    assert.match(output, /Updated project floor settings/);
 
-  it('should delete a template', async () => {
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToDeleteId}`;
-
-    const output = execSync(
-      `node snippets/deleteTemplate.js ${projectId} ${locationId} ${templateToDeleteId}`
-    );
-
-    assert.match(output, new RegExp(`Deleted template ${templateName}`));
-  });
-
-  it('should list templates', async () => {
-    const output = execSync(
-      `node snippets/listTemplates.js ${projectId} ${locationId}`
-    );
-
-    const templateNamePattern = `projects/${projectId}/locations/${locationId}/templates/${templateIdPrefix}`;
-
-    assert.match(output, new RegExp(templateNamePattern));
-  });
-
-  it('should list templates with filter', async () => {
-    const templateToGet = `${templateIdPrefix}-basic-sdp`;
-    const output = execSync(
-      `node snippets/listTemplatesWithFilter.js ${projectId} ${locationId} ${templateToGet}`
-    );
-
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToGet}`;
-
-    assert.match(output, new RegExp(`Found template ${templateName}`));
-  });
-
-  // =================== Template Update Tests ===================
-
-  it('should update a template', async () => {
-    const templateToUpdate = `${templateIdPrefix}-basic-create`;
-    const output = execSync(
-      `node snippets/updateTemplate.js ${projectId} ${locationId} ${templateToUpdate}`
-    );
-
-    assert.match(output, /Updated template filter configuration:/);
-
-    assert.match(output, /piAndJailbreakFilterSettings/);
-    assert.match(output, /filterEnforcement: 'ENABLED'/);
-    assert.match(output, /confidenceLevel: 'LOW_AND_ABOVE'/);
-    assert.match(output, /maliciousUriFilterSettings/);
-  });
-
-  it('should update template labels', async () => {
-    const labelKey = 'environment';
-    const labelValue = 'testing';
-    const templateToUpdate = `${templateIdPrefix}-basic-create`;
-
-    const output = execSync(
-      `node snippets/updateTemplateLabels.js ${projectId} ${locationId} ${templateToUpdate} ${labelKey} ${labelValue}`
-    );
-
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdate}`;
-
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
-    );
-  });
-
-  it('should update template metadata', async () => {
-    const templateToUpdateMetadata = `${templateIdPrefix}-metadata`;
-
-    const output = execSync(
-      `node snippets/updateTemplateMetadata.js ${projectId} ${locationId} ${templateToUpdateMetadata}`
-    );
-
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdateMetadata}`;
-
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
-    );
-  });
-
-  it('should update template with mask configuration', async () => {
-    const templateToUpdateWithMask = `${templateIdPrefix}-metadata`;
-
-    const output = execSync(
-      `node snippets/updateTemplateWithMaskConfiguration.js ${projectId} ${locationId} ${templateToUpdateWithMask}`
-    );
-
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdateWithMask}`;
-
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
-    );
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
   });
 });

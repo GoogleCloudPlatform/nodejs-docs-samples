@@ -16,7 +16,6 @@
 # https://hub.docker.com/_/node
 FROM node:20-slim
 # [START cloudrun_imageproc_dockerfile_nodejs]
-# [START cloudrun_imageproc_dockerfile_imagemagick]
 
 # Install Imagemagick into the container image.
 # For more on system packages review the system packages tutorial.
@@ -26,7 +25,6 @@ RUN set -ex; \
   apt-get -y install imagemagick; \
   rm -rf /var/lib/apt/lists/*
 
-# [END cloudrun_imageproc_dockerfile_imagemagick]
 # [END cloudrun_imageproc_dockerfile_nodejs]
 
 # Create and change to the app directory.

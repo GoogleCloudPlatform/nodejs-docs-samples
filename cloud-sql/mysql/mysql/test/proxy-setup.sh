@@ -21,7 +21,7 @@ SETUP_STYLE=${1:-tcp}
 
 if [[ ! $SETUP_STYLE == "tcp" ]]; then
   echo "setup for sockets"
-  mkdir $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
+  mkdir -p $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
   socket="--unix-socket $UNIX_SOCKET_DIR"
 fi
 

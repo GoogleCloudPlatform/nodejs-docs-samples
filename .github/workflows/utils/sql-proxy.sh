@@ -36,12 +36,17 @@
 PROXY_VERSION="v2.15.1"
 SOCKET=${SOCKET:-tcp}
 
+echop(){
+  echo "\033[0;35m $1 \033[0m"
+}
+
+
 if [[ $SOCKET == "unix" ]]; then
   UNIX_SOCKET_DIR=${UNIX_SOCKET_DIR:-"tmp/cloudsql"}
   mkdir -p $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
   socket="--unix-socket $UNIX_SOCKET_DIR"
 fi
-echo "Setting up cloud-sql-proxy for $SOCKET socket connections"
+echop "Setting up cloud-sql-proxy for $SOCKET socket connections"
 
 # Download the Cloud SQL Auth Proxy (only once)
 if [[ ! -f cloud-sql-proxy ]]; then
@@ -58,13 +63,13 @@ fi
 # Setup proxy
 ./cloud-sql-proxy $socket $CLOUD_SQL_CONNECTION_NAME &
 sleep 5
-echo "Proxy ready for use"
+echop "Proxy ready for use"
 
 # Run whatever command was passed to this script
 $@ || STATUS=$?
 
 # Cleanup
-echo "Shutting down proxy process"
+echop "Shutting down proxy process"
 pkill -f "cloud-sql-proxy"  || echo "cloud-sql-proxy process not found. Was it already stopped?"
 
 # Fail if the tests failed

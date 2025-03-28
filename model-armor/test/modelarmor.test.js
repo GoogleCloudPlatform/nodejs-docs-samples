@@ -99,8 +99,7 @@ describe('Model Armor tests', () => {
   const templatesToDelete = [];
 
   before(async () => {
-    // projectId = await client.getProjectId();
-    projectId = 'ma-crest-data-test-2';
+    projectId = await client.getProjectId();
 
     // Import necessary enums
     const {protos} = require('@google-cloud/modelarmor');

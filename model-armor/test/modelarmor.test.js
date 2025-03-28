@@ -363,5 +363,4 @@ describe('Model Armor tests', () => {
       new RegExp(`Updated Model Armor Template: ${templateName}`)
     );
   });
-
 });

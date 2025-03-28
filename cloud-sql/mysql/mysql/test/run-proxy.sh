@@ -15,4 +15,4 @@
 # limitations under the License.
 
 # Run shared proxy setup
-source $GITHUB_WORKSPACE/.github/workflows/util/sql-proxy.sh
+source $GITHUB_WORKSPACE/../.github/workflows/util/sql-proxy.sh

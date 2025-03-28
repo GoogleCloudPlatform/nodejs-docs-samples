@@ -77,7 +77,6 @@
     // TODO: fix these
     "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.
     "automl", // (untested) FAILED_PRECONDITION: Google Cloud AutoML Natural Language was retired on March 15, 2024. Please migrate to Vertex AI instead
-    "cloud-sql/mysql/mysql", // (untested) Error: expected 200 "OK", got 500 "Internal Server Error"
     "cloud-sql/mysql/mysql2", // (untested) Error: Cannot find module './connect-connector-with-iam-authn.js'
     "cloud-sql/postgres/knex", // (untested) CloudSQLConnectorError: Malformed instance connection name provided: expected format of "PROJECT:REGION:INSTANCE", got undefined
     "cloud-sql/sqlserver/mssql", // (untested) TypeError: The "config.server" property is required and must be of type string.

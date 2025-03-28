@@ -37,7 +37,7 @@ PROXY_VERSION="v2.15.1"
 SOCKET=${SOCKET:-tcp}
 
 echop(){
-  echo "\033[0;35m $1 \033[0m"
+  echo "👾 $1"
 }
 
 

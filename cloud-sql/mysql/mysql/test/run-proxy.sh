@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 # Copyright 2025 Google LLC
 #
@@ -14,9 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Proof of concept: shutting down proxy
-
-echo "Shutting down proxy process"
-
-pkill -f "cloud-sql-proxy"  || echo "cloud-sql-proxy process not found. Was it already stopped?"
-
+# Run shared proxy setup
+source $GITHUB_WORKSPACE/.github/workflows/util/sql-proxy.sh

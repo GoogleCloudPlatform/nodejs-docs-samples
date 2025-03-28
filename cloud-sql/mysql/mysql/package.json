@@ -13,8 +13,8 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "system-test": "test/proxy-setup.sh tcp && c8 mocha -p -j 2 test/server.test.js --timeout=60000 --exit && test/proxy-shutdown.sh",
-    "system-test-unix": "test/proxy-setup.sh socket && c8 mocha -p -j 2 test/server-unix.test.js --timeout=60000 --exit && test/proxy-shutdown.sh",
+    "system-test": "test/run-proxy.sh && c8 mocha -p -j 2 test/server.test.js --timeout=60000 --exit",
+    "system-test-unix": "test/run-proxy.sh && c8 mocha -p -j 2 test/server-unix.test.js --timeout=60000 --exit",
     "test": "npm run system-test && npm run system-test-unix"
   },
   "dependencies": {

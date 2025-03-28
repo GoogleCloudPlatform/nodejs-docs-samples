@@ -43,3 +43,10 @@ fi
 sleep 10
 
 echo "Proxy ready for use"
+
+# Run test
+$@
+
+echo "Shutting down proxy process"
+
+pkill -f "cloud-sql-proxy"  || echo "cloud-sql-proxy process not found. Was it already stopped?"

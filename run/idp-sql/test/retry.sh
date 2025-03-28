@@ -59,7 +59,7 @@ do
     if ((attempt_num==max_attempts))
     then
         echo "Attempt $attempt_num / $max_attempts failed! No more retries left!"
-        exit
+        exit 1
     else
         echo "Attempt $attempt_num / $max_attempts failed!"
         sleep $((attempt_num++))

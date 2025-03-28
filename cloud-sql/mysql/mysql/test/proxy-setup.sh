@@ -21,8 +21,8 @@ SETUP_STYLE=${1:-tcp}
 
 if [[ ! $SETUP_STYLE == "tcp" ]]; then
   echo "setup for sockets"
-  mkdir /cloudsql && chmod 777 /cloudsql
-  socket="--unix-socket /cloudsql"
+  mkdir $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
+  socket="--unix-socket $UNIX_SOCKET_DIR"
 fi
 
 echo "Setting up cloud-sql-proxy for $SETUP_STYLE connections"

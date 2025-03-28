@@ -16,30 +16,32 @@
 
 # Shared Cloud SQL Proxy setup
 # Presumes the following variables in ci-setup.json:
-#  * $CLOUD_SQL_CONNECTION_NAME - the project:region:instance of a Cloud SQL instance.
+#  * CLOUD_SQL_CONNECTION_NAME - the project:region:instance of a Cloud SQL instance.
+#  * UNIX_SOCKET_DIR - a local directory to set the proxy to (default tmp/cloudsql)
+#
+# Note: in GitHub Actions environments, `/cloudsql` is not valid.
+# Ensure any INSTANCE_UNIX_SOCKET value is ~= $UNIX_SOCKET_DIR/$CLOUD_SQL_CONNECTION_NAME
 #
 # Usage:
-#    sql-proxy.sh [..]    - sets up a TCP proxy
-#    sql-proxy.sh -s [..] - sets up a Unix socket proxy
+#    sql-proxy.sh [..]
 #
-# Any [..] commands are run directly (e.g. `c8 mocha ...`)
+# Defaults to TCP socket proxy. Set `SOCKET=unix` for Unix sockets.
+#
+# Usage in package.json:
+#
+#    "proxy": "bash $GITHUB_WORKSPACE/.github/workflows/utils/debug-sql-proxy.sh",
+#    "system-test": "npm run proxy -- c8 mocha test/... ",
+#    "system-test-unix": "SOCKET=unix npm run proxy -- c8 mocha test/... ",
 
 PROXY_VERSION="v2.15.1"
+SOCKET=${SOCKET:-tcp}
 
-# If no `-s` flag is set, use tcp connection style.
-SETUP_STYLE="tcp"
-while getopts s: flag
-do
-    case "${flag}" in
-        s) SETUP_STYLE="socket";;
-    esac
-done
-
-if [[ ! $SETUP_STYLE == "tcp" ]]; then
+if [[ $SOCKET == "unix" ]]; then
+  UNIX_SOCKET_DIR=${UNIX_SOCKET_DIR:-"tmp/cloudsql"}
   mkdir -p $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
   socket="--unix-socket $UNIX_SOCKET_DIR"
 fi
-echo "Setting up cloud-sql-proxy for $SETUP_STYLE connections"
+echo "Setting up cloud-sql-proxy for $SOCKET socket connections"
 
 # Download the Cloud SQL Auth Proxy (only once)
 if [[ ! -f cloud-sql-proxy ]]; then
@@ -55,12 +57,11 @@ fi
 
 # Setup proxy
 ./cloud-sql-proxy $socket $CLOUD_SQL_CONNECTION_NAME &
-sleep 10
-
+sleep 5
 echo "Proxy ready for use"
 
 # Run whatever command was passed to this script
-$@ ||  STATUS=$?
+$@ || STATUS=$?
 
 # Cleanup
 echo "Shutting down proxy process"

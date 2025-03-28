@@ -14,27 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Proof of concept: setting up proxy
+# Shared Cloud SQL Proxy setup
+# Presumes the following variables in ci-setup.json:
+#  * $CLOUD_SQL_CONNECTION_NAME - the project:region:instance of a Cloud SQL instance.
+#
+# Usage:
+#    sql-proxy.sh [..]    - sets up a TCP proxy
+#    sql-proxy.sh -s [..] - sets up a Unix socket proxy
+#
+# Any [..] commands are run directly (e.g. `c8 mocha ...`)
 
 PROXY_VERSION="v2.15.1"
 
-while getopts c: flag
+# If no `-s` flag is set, use tcp connection style.
+SETUP_STYLE="tcp"
+while getopts s: flag
 do
     case "${flag}" in
-        c) SETUP_STYLE=${1:-tcp};;
+        s) SETUP_STYLE="socket";;
     esac
 done
 
 if [[ ! $SETUP_STYLE == "tcp" ]]; then
-  echo "setup for sockets"
   mkdir -p $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
   socket="--unix-socket $UNIX_SOCKET_DIR"
 fi
-
 echo "Setting up cloud-sql-proxy for $SETUP_STYLE connections"
 
+# Download the Cloud SQL Auth Proxy (only once)
 if [[ ! -f cloud-sql-proxy ]]; then
-
   curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${PROXY_VERSION}/cloud-sql-proxy.linux.amd64
   if [[ $? -ne 0 ]]; then
     echo "Failed to download cloud-sql-proxy"
@@ -45,17 +53,17 @@ else
   echo "cloud-sql-proxy already downloaded"
 fi
 
+# Setup proxy
 ./cloud-sql-proxy $socket $CLOUD_SQL_CONNECTION_NAME &
 sleep 10
 
 echo "Proxy ready for use"
 
-# Run test
+# Run whatever command was passed to this script
 $@ ||  STATUS=$?
 
-
+# Cleanup
 echo "Shutting down proxy process"
-
 pkill -f "cloud-sql-proxy"  || echo "cloud-sql-proxy process not found. Was it already stopped?"
 
 # Fail if the tests failed

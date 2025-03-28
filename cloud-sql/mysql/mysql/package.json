@@ -15,7 +15,7 @@
     "start": "node server/server.js",
     "proxy": "bash $GITHUB_WORKSPACE/.github/workflows/utils/sql-proxy.sh",
     "system-test": "npm run proxy -- c8 mocha -p -j 2 test/server.test.js --timeout=60000 --exit",
-    "system-test-unix": "npm run proxy -- c8 mocha -p -j 2 test/server-unix.test.js --timeout=60000 --exit",
+    "system-test-unix": "npm run proxy -c socket -- c8 mocha -p -j 2 test/server-unix.test.js --timeout=60000 --exit",
     "test": "npm run system-test && npm run system-test-unix"
   },
   "dependencies": {

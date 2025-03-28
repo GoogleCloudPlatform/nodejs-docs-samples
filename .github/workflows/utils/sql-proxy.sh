@@ -17,7 +17,13 @@
 # Proof of concept: setting up proxy
 
 PROXY_VERSION="v2.15.1"
-SETUP_STYLE=${1:-tcp}
+
+while getopts c: flag
+do
+    case "${flag}" in
+        c) SETUP_STYLE=${1:-tcp};;
+    esac
+done
 
 if [[ ! $SETUP_STYLE == "tcp" ]]; then
   echo "setup for sockets"
@@ -45,8 +51,12 @@ sleep 10
 echo "Proxy ready for use"
 
 # Run test
-$@
+$@ ||  STATUS=$?
+
 
 echo "Shutting down proxy process"
 
 pkill -f "cloud-sql-proxy"  || echo "cloud-sql-proxy process not found. Was it already stopped?"
+
+# Fail if the tests failed
+exit $STATUS

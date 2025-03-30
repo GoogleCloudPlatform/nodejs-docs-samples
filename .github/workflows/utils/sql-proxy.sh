@@ -21,28 +21,47 @@
 #
 # Note: in GitHub Actions environments, `/cloudsql` is not valid.
 # Ensure any INSTANCE_UNIX_SOCKET value is ~= $UNIX_SOCKET_DIR/$CLOUD_SQL_CONNECTION_NAME
-#
+
+usage() {
+  cat << EOF
 # Usage:
-#    sql-proxy.sh [..]
+#    CLOUD_SQL_CONNECTION_NAME=project:region:instance sql-proxy.sh [..]
 #
 # Defaults to TCP socket proxy. Set `SOCKET=unix` for Unix sockets.
 #
 # Usage in package.json:
 #
-#    "proxy": "bash $GITHUB_WORKSPACE/.github/workflows/utils/debug-sql-proxy.sh",
+#    "proxy": "$GITHUB_WORKSPACE/.github/workflows/utils/debug-sql-proxy.sh",
 #    "system-test": "npm run proxy -- c8 mocha test/... ",
 #    "system-test-unix": "SOCKET=unix npm run proxy -- c8 mocha test/... ",
+EOF
+}
+
 
 PROXY_VERSION="v2.15.1"
 SOCKET=${SOCKET:-tcp}
 
-echop(){
+echop(){  # Print Echo
   echo "👾 $1"
 }
 
+exit_message() {  # Error Echo
+  echo "❌ $1"
+  usage()
+  exit 1
+}
+
+if [[ -z "$CLOUD_SQL_CONNECTION_NAME" ]]; then
+    exit_message "Must provide CLOUD_SQL_CONNECTION_NAME"
+fi
 
 if [[ $SOCKET == "unix" ]]; then
   UNIX_SOCKET_DIR=${UNIX_SOCKET_DIR:-"tmp/cloudsql"}
+
+  if [[ $UNIX_SOCKET_DIR == "/cloudsql "]]; then
+    exit_message "Cannot use /cloudsql in a GitHub Actions context"
+  fi
+
   mkdir -p $UNIX_SOCKET_DIR && chmod 777 $UNIX_SOCKET_DIR
   socket="--unix-socket $UNIX_SOCKET_DIR"
 fi

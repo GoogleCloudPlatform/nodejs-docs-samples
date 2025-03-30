@@ -58,7 +58,7 @@ fi
 if [[ $SOCKET == "unix" ]]; then
   UNIX_SOCKET_DIR=${UNIX_SOCKET_DIR:-"tmp/cloudsql"}
 
-  if [[ $UNIX_SOCKET_DIR == "/cloudsql "]]; then
+  if [[ $UNIX_SOCKET_DIR == "/cloudsql" ]]; then
     exit_message "Cannot use /cloudsql in a GitHub Actions context"
   fi
 

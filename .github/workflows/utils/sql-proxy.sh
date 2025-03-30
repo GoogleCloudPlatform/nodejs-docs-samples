@@ -47,7 +47,7 @@ echop(){  # Print Echo
 
 exit_message() {  # Error Echo
   echo "❌ $1"
-  usage()
+  usage
   exit 1
 }
 

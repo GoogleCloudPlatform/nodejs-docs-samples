@@ -101,6 +101,7 @@
     "batch",
     "cloud-language",
     "cloud-sql/mysql/mysql",
+    "cloud-sql/postgres/knex",
     "cloud-tasks/snippets",
     "cloud-tasks/tutorial-gcf/app",
     "cloud-tasks/tutorial-gcf/function",

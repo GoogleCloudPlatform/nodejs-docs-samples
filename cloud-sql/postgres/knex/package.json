@@ -15,7 +15,8 @@
   "scripts": {
     "start": "node server/server.js",
     "start-proxy": "! pgrep cloud_sql_proxy > /dev/null && cloud_sql_proxy -dir=/cloudsql -instances=$INSTANCE_CONNECTION_NAME &",
-    "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit"
+    "proxy": "$GITHUB_WORKSPACE/.github/workflows/utils/debug-sql-proxy.sh",
+    "test": "npm run proxy -- c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit"
   },
   "dependencies": {
     "@google-cloud/cloud-sql-connector": "^1.0.0",

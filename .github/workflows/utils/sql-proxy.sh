@@ -31,7 +31,7 @@ usage() {
 #
 # Usage in package.json:
 #
-#    "proxy": "$GITHUB_WORKSPACE/.github/workflows/utils/debug-sql-proxy.sh",
+#    "proxy": "$GITHUB_WORKSPACE/.github/workflows/utils/sql-proxy.sh",
 #    "system-test": "npm run proxy -- c8 mocha test/... ",
 #    "system-test-unix": "SOCKET=unix npm run proxy -- c8 mocha test/... ",
 EOF

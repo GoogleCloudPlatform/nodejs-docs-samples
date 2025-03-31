@@ -12,9 +12,5 @@
 # limitations under the License.
 
 # [START gae_update_app_yaml_node]
-# [START gae_app_yaml]
-# [START app_yaml]
 runtime: nodejs20
-# [END app_yaml]
-# [END gae_app_yaml]
 # [END gae_update_app_yaml_node]

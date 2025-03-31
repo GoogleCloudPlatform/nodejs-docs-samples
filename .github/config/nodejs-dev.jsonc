@@ -100,6 +100,7 @@
     "auth",
     "batch",
     "cloud-language",
+    "cloud-sql/mysql/mysql",
     "cloud-tasks/snippets",
     "cloud-tasks/tutorial-gcf/app",
     "cloud-tasks/tutorial-gcf/function",

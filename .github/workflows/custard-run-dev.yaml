@@ -39,7 +39,6 @@ on:
   # schedule:
   #   # https://crontab.guru/#0_12_*_*_0
   #   - cron: 0 12 * * 0 # At 12:00 on Sunday
-  pull_request: # TODO: remove this
 
 jobs:
   affected:

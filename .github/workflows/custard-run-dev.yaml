@@ -119,23 +119,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       statuses: write
+    if: always()
     steps:
       - name: Check success
         uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
         with:
           check: ${{ needs.affected.outputs.check }}
           status: success
-
-  nothing-to-do:
-    if: needs.affected.outputs.paths != '[]'
-    needs: [affected]
-    runs-on: ubuntu-latest
-    permissions:
-      statuses: write
-    steps:
-      - name: Check success
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
-        with:
-          check: ${{ needs.affected.outputs.check }}
-          status: success
-          title: Nothing to test

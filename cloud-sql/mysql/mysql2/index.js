@@ -170,7 +170,7 @@ const httpGet = app.get('/', async (req, res) => {
 
     // Run queries concurrently, and wait for them to complete
     // This is faster than await-ing each query object as it is created
-    const recentVotes = await recentVotesQuery;
+    const [recentVotes] = await recentVotesQuery; // Return only the results, not the field metadata
     const [tabsVotes] = await tabsQuery;
     const [spacesVotes] = await spacesQuery;
 

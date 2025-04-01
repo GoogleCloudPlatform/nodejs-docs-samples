@@ -61,7 +61,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        path: ${{ needs.affected.outputs.paths }}
+        path: ${{ fromJson(needs.affected.outputs.paths) }}
     continue-on-error: true
     env:
       GOOGLE_SAMPLES_PROJECT: long-door-651

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Custard run (experimental)
+name: (experimental) Custard run
 
 on:
   push:
@@ -50,7 +50,7 @@ jobs:
       head-sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       config-file: .github/config/nodejs.jsonc
       paths: ${{ (inputs.run-all && '.') || inputs.paths || '' }}
-      check-name: Custard CI (experimental)
+      check-name: (experimental) Custard CI
       create-check-if: ${{ !!github.event.workflow_run }}
 
   lint:
@@ -66,7 +66,7 @@ jobs:
         with:
           sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
           status: in_progress
-          name: Custard CI (experimental) / ${{ github.job }}
+          name: (experimental) Custard CI / ${{ github.job }}
           if: ${{ !!github.event.workflow_run }}
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -113,7 +113,7 @@ jobs:
         id: queued
         with:
           sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
-          name: Custard CI (experimental) / ${{ github.job }} (${{ matrix.path }})
+          name: (experimental) Custard CI / ${{ github.job }} (${{ matrix.path }})
           job-name: ${{ github.job }} (${{ matrix.path }})
           if: ${{ !!github.event.workflow_run }}
       - name: Setup Custard

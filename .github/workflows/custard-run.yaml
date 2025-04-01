@@ -93,7 +93,7 @@ jobs:
           status: failure
 
   test:
-    if: needs.affected.outputs.paths
+    if: needs.affected.outputs.paths != '[]'
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

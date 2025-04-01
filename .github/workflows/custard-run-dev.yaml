@@ -54,7 +54,7 @@ jobs:
       create-check-if: ${{ !!github.event.workflow_run }}
 
   test:
-    if: needs.affected.outputs.paths
+    if: needs.affected.outputs.paths != '[]'
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

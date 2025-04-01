@@ -249,6 +249,7 @@ const onCommentSubmit = async (req, res) => {
 };
 
 // Classify the action as BAD/ NOT_BAD based on conditions specified.
+// See https://cloud.google.com/recaptcha/docs/interpret-assessment-website
 const checkForBadAction = function (assessmentResponse, recaptchaAction) {
   let label = Label.NOT_BAD;
   let reason = '';

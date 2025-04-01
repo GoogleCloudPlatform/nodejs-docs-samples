@@ -32,6 +32,8 @@ describe('System Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "idp-sql"');
     SERVICE_NAME = 'idp-sql';
   }
+
+  const {SERVICE_ACCOUNT} = process.env;
   const {SAMPLE_VERSION} = process.env;
   const PLATFORM = 'managed';
   const REGION = 'us-central1';
@@ -41,6 +43,9 @@ describe('System Tests', () => {
   if (!CLOUD_SQL_CONNECTION_NAME) {
     throw Error('"CLOUD_SQL_CONNECTION_NAME" env var not found.');
   }
+
+  const {DB_NAME} = process.env;
+  const {DB_USER} = process.env;
   const {DB_PASSWORD} = process.env;
   if (!DB_PASSWORD) {
     throw Error('"DB_PASSWORD" env var not found.');
@@ -52,15 +57,19 @@ describe('System Tests', () => {
     throw Error('"IDP_KEY" env var not found.');
   }
 
-  let BASE_URL, ID_TOKEN;
+  let BASE_URL, CUSTOM_TOKEN;
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_setup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}` +
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}` +
       `,_DB_PASSWORD=${DB_PASSWORD},_CLOUD_SQL_CONNECTION_NAME=${CLOUD_SQL_CONNECTION_NAME}`;
+
+    if (SERVICE_ACCOUNT) buildCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
     if (SAMPLE_VERSION) buildCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (DB_USER) buildCmd += `,_DB_USER=${DB_USER}`;
+    if (DB_NAME) buildCmd += `,_DB_NAME=${DB_NAME}`;
 
     console.log('Starting Cloud Build...');
     execSync(buildCmd, {timeout: 240000, shell: true}); // timeout at 4 mins
@@ -82,34 +91,43 @@ describe('System Tests', () => {
     }
 
     // Retrieve ID token for testing
-    const customToken = await admin.auth().createCustomToken('a-user-id');
-    const response = await got(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
-      {
-        method: 'POST',
-        retry: {
-          limit: 5,
-          statusCodes: [404, 401, 403, 500],
-          methods: ['POST'],
-        },
-        body: JSON.stringify({
-          token: customToken,
-          returnSecureToken: true,
-        }),
-      }
-    );
 
-    const tokens = JSON.parse(response.body);
-    ID_TOKEN = tokens.idToken;
-    if (!ID_TOKEN) throw Error('Unable to acquire an ID token.');
+    console.log('Retrieving IDP token...');
+    const customToken = await admin.auth().createCustomToken('a-user-id');
+    try {
+      const response = await got(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${IDP_KEY}`,
+        {
+          method: 'POST',
+          retry: {
+            limit: 5,
+            statusCodes: [404, 401, 403, 500],
+            methods: ['POST'],
+          },
+          body: JSON.stringify({
+            token: customToken,
+            returnSecureToken: true,
+          }),
+        }
+      );
+      const tokens = JSON.parse(response.body);
+      CUSTOM_TOKEN = tokens.idToken;
+    } catch (err) {
+      throw Error('IDP Token retrieval failed: ', err.response.body);
+    }
+
+    if (!CUSTOM_TOKEN) throw Error('Unable to acquire an IDP token.');
+
+    console.log('Retrieved IDP token');
   });
 
   after(() => {
     let cleanUpCmd =
       `gcloud builds submit --project ${GOOGLE_CLOUD_PROJECT} ` +
       '--config ./test/e2e_test_cleanup.yaml ' +
-      `--substitutions _SERVICE=${SERVICE_NAME},_PLATFORM=${PLATFORM},_REGION=${REGION}`;
+      `--substitutions _SERVICE=${SERVICE_NAME},_REGION=${REGION}`;
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
+    if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
     execSync(cleanUpCmd, {shell: true});
   });
@@ -128,14 +146,14 @@ describe('System Tests', () => {
   });
 
   it('Can make a POST request with token', async () => {
-    assert(ID_TOKEN && ID_TOKEN.length > 0);
+    assert(CUSTOM_TOKEN && CUSTOM_TOKEN.length > 0);
 
     const options = {
       prefixUrl: BASE_URL.trim(),
       method: 'POST',
       form: {team: 'DOGS'},
       headers: {
-        Authorization: `Bearer ${ID_TOKEN.trim()}`,
+        Authorization: `Bearer ${CUSTOM_TOKEN.trim()}`,
       },
       retry: {
         limit: 5,

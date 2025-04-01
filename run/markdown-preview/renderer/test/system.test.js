@@ -33,7 +33,6 @@ describe('End-to-End Tests', () => {
   const {SERVICE_ACCOUNT} = process.env;
   const REGION = 'us-central1';
 
-
   let BASE_URL;
   before(async () => {
     // Deploy service using Cloud Build
@@ -55,7 +54,6 @@ describe('End-to-End Tests', () => {
     );
     BASE_URL = url.toString('utf-8').trim();
     if (!BASE_URL) throw Error('Cloud Run service URL not found');
-
   });
 
   after(() => {

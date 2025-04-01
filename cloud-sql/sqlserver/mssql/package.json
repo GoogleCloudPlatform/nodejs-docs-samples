@@ -13,7 +13,8 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "system-test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit",
+    "proxy": "$GITHUB_WORKSPACE/.github/workflows/utils/sql-proxy.sh",
+    "system-test": "npm run proxy -- c8 mocha -p -j 2 test/*.test.js --timeout=60000 --exit",
     "test": "npm run system-test"
   },
   "dependencies": {

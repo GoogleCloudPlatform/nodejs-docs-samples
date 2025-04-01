@@ -101,6 +101,8 @@
     "batch",
     "cloud-language",
     "cloud-sql/mysql/mysql",
+    "cloud-sql/sqlserver/mssql",
+    "cloud-sql/sqlserver/tedious",
     "cloud-tasks/snippets",
     "cloud-tasks/tutorial-gcf/app",
     "cloud-tasks/tutorial-gcf/function",

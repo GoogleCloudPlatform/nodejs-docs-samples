@@ -1,0 +1,12 @@
+{
+  "env": {
+    "SERVICE_NAME": "idp-sql-${RUN_ID}",
+    "SAMPLE_VERSION": "${RUN_ID}",
+    "CLOUD_SQL_CONNECTION_NAME": "nodejs-docs-samples-tests:us-central1:test-postgres-instance",
+    "DB_NAME": "ci-database",
+    "DB_USER": "ci-user"
+  },
+  "secrets": {
+    "IDP_KEY": "nodejs-docs-samples-tests/long-door-651-idp-key",
+    "DB_PASSWORD": "nodejs-docs-samples-tests/nodejs-docs-samples-test-postgres-instance-ci-user-password"  }
+}

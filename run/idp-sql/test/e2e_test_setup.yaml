@@ -1,3 +1,18 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 steps:
 
 - id: 'Add a Secret to Secret Manager'
@@ -12,8 +27,12 @@ steps:
       sed -i "s/\"DB_USER\": \"postgres\"/\"DB_USER\": \"${_DB_USER}\"/" postgres-secrets.json
 
       ./test/retry.sh "gcloud secrets create ${_SERVICE}-secrets \
-        --replication-policy="automatic" \
+        --replication-policy=automatic \
         --data-file=postgres-secrets.json"
+
+      ./test/retry.sh "gcloud secrets add-iam-policy-binding ${_SERVICE}-secrets \
+        --member=serviceAccount:${_SERVICE_ACCOUNT} \
+        --role=roles/secretmanager.secretAccessor"
 
 - id: 'Build Container Image'
   name: 'gcr.io/cloud-builders/docker'
@@ -37,11 +56,11 @@ steps:
   args:
   - '-c'
   - |
-    ./test/retry.sh "gcloud beta run deploy ${_SERVICE} \
+    ./test/retry.sh "gcloud run deploy ${_SERVICE} \
       --image gcr.io/${PROJECT_ID}/${_SERVICE}:${_VERSION} \
       --allow-unauthenticated \
       --region ${_REGION} \
-      --platform ${_PLATFORM} \
+      --service-account ${_SERVICE_ACCOUNT} \
       --add-cloudsql-instances ${_CLOUD_SQL_CONNECTION_NAME} \
       --update-secrets CLOUD_SQL_CREDENTIALS_SECRET=${_SERVICE}-secrets:latest"
 
@@ -52,8 +71,13 @@ substitutions:
   _SERVICE: idp-sql
   _VERSION: manual
   _REGION: us-central1
-  _PLATFORM: managed
   _CLOUD_SQL_CONNECTION_NAME: $PROJECT_ID:us-central1:idp-sql-instance
   _DB_NAME: postgres
   _DB_USER: postgres
   _DB_PASSWORD: password1234
+  _SERVICE_ACCOUNT: ${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com
+
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${_SERVICE_ACCOUNT}'
+options:
+    logging: CLOUD_LOGGING_ONLY
+    dynamicSubstitutions: true

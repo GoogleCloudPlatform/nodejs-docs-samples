@@ -56,13 +56,9 @@ jobs:
       - name: Find Node.js affected packages
         id: nodejs
         run: |
-          echo "-> run affected"
           echo "paths=$(./cloud-samples-tools/bin/custard affected .github/config/nodejs-prod.jsonc diffs.txt paths.txt)" >> $GITHUB_OUTPUT
-          echo "Status: $?"
           cat paths.txt
-          echo "-> run setup-files"
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-prod.jsonc paths.txt)" >> $GITHUB_OUTPUT
-          echo "Status: $?"
 
   lint:
     needs: affected

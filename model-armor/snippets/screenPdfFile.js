@@ -27,10 +27,10 @@ async function main(projectId, locationId, templateId, pdfContentBase64) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const projectId = 'your-project-id';
-  // const locationId = 'us-central1';
-  // const templateId = 'template-id';
-  // const pdfContentBase64 = 'BASE64_ENCODED_PDF_CONTENT';
+  // const projectId = process.env.PROJECT_ID || 'your-project-id';
+  // const locationId = process.env.LOCATION_ID || 'us-central1';
+  // const templateId = process.env.TEMPLATE_ID || 'template-id';
+  // const pdfContentBase64 = process.env.PDF_CONTENT_BASE64 || 'BASE64_ENCODED_PDF_CONTENT';
 
   // Imports the Model Armor library
   const modelarmor = require('@google-cloud/modelarmor');

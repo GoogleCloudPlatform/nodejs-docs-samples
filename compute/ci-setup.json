@@ -1,1 +1,5 @@
-{}
+
+{
+  "_justification": "Compute tests take longer to run",
+  "timeout-minutes": 120
+}

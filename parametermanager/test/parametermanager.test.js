@@ -43,13 +43,13 @@ const keyId1 = `test-parameter-${uuidv4()}`;
 let parameter;
 let regionalParameter;
 
-const keyRing = `projects/${projectId}/locations/global/keyRings/${keyRingId}`;
-const kmsKey = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
-const kmsKey1 = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
+let keyRing;
+let kmsKey;
+let kmsKey1;
 
-const regionalKeyRing = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`;
-const regionalKmsKey = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
-const regionalKmsKey1 = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
+let regionalKeyRing;
+let regionalKmsKey;
+let regionalKmsKey1;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
@@ -57,6 +57,12 @@ describe('Parameter Manager samples', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
+    keyRing = `projects/${projectId}/locations/global/keyRings/${keyRingId}`;
+    kmsKey = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
+    kmsKey1 = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
+    regionalKeyRing = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`;
+    regionalKmsKey = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
+    regionalKmsKey1 = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
 
     // Create a test global parameter
     [parameter] = await client.createParameter({
@@ -79,7 +85,7 @@ describe('Parameter Manager samples', () => {
     regionalParametersToDelete.push(regionalParameter);
 
     try {
-      await client.getKeyRing({name: keyRing});
+      await kmsClient.getKeyRing({name: keyRing});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createKeyRing({
@@ -90,7 +96,7 @@ describe('Parameter Manager samples', () => {
     }
 
     try {
-      await client.getKeyRing({name: regionalKeyRing});
+      await kmsClient.getKeyRing({name: regionalKeyRing});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createKeyRing({
@@ -101,16 +107,17 @@ describe('Parameter Manager samples', () => {
     }
 
     try {
-      await client.getCryptoKey({name: kmsKey});
+      await kmsClient.getCryptoKey({name: kmsKey});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createCryptoKey({
           parent: kmsClient.keyRingPath(projectId, 'global', keyRingId),
           cryptoKeyId: keyId,
           cryptoKey: {
-            purpose: 'ASYMMETRIC_DECRYPT',
+            purpose: 'ENCRYPT_DECRYPT',
             versionTemplate: {
-              algorithm: 'RSA_DECRYPT_OAEP_2048_SHA256',
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
             },
           },
         });
@@ -118,16 +125,17 @@ describe('Parameter Manager samples', () => {
     }
 
     try {
-      await client.getCryptoKey({name: regionalKmsKey});
+      await kmsClient.getCryptoKey({name: regionalKmsKey});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createCryptoKey({
           parent: kmsClient.keyRingPath(projectId, locationId, keyRingId),
           cryptoKeyId: keyId,
           cryptoKey: {
-            purpose: 'ASYMMETRIC_DECRYPT',
+            purpose: 'ENCRYPT_DECRYPT',
             versionTemplate: {
-              algorithm: 'RSA_DECRYPT_OAEP_2048_SHA256',
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
             },
           },
         });
@@ -135,16 +143,17 @@ describe('Parameter Manager samples', () => {
     }
 
     try {
-      await client.getCryptoKey({name: kmsKey1});
+      await kmsClient.getCryptoKey({name: kmsKey1});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createCryptoKey({
           parent: kmsClient.keyRingPath(projectId, 'global', keyRingId),
           cryptoKeyId: keyId1,
           cryptoKey: {
-            purpose: 'ASYMMETRIC_DECRYPT',
+            purpose: 'ENCRYPT_DECRYPT',
             versionTemplate: {
-              algorithm: 'RSA_DECRYPT_OAEP_2048_SHA256',
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
             },
           },
         });
@@ -152,16 +161,17 @@ describe('Parameter Manager samples', () => {
     }
 
     try {
-      await client.getCryptoKey({name: regionalKmsKey1});
+      await kmsClient.getCryptoKey({name: regionalKmsKey1});
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createCryptoKey({
           parent: kmsClient.keyRingPath(projectId, kmsKey1, keyRingId),
           cryptoKeyId: keyId1,
           cryptoKey: {
-            purpose: 'ASYMMETRIC_DECRYPT',
+            purpose: 'ENCRYPT_DECRYPT',
             versionTemplate: {
-              algorithm: 'RSA_DECRYPT_OAEP_2048_SHA256',
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
             },
           },
         });
@@ -185,7 +195,7 @@ describe('Parameter Manager samples', () => {
       });
     } catch (error) {
       if (error.code === 5) {
-        console.info(`Already destroyed: ${error.message}`);
+        // If the method is not found, skip it.
       }
     }
 
@@ -195,7 +205,7 @@ describe('Parameter Manager samples', () => {
       });
     } catch (error) {
       if (error.code === 5) {
-        console.error(`Already destroyed: ${error.message}`);
+        // If the method is not found, skip it.
       }
     }
 
@@ -205,7 +215,7 @@ describe('Parameter Manager samples', () => {
       });
     } catch (error) {
       if (error.code === 5) {
-        console.error(`Already destroyed: ${error.message}`);
+        // If the method is not found, skip it.
       }
     }
 
@@ -215,7 +225,7 @@ describe('Parameter Manager samples', () => {
       });
     } catch (error) {
       if (error.code === 5) {
-        console.error(`Already destroyed: ${error.message}`);
+        // If the method is not found, skip it.
       }
     }
   });

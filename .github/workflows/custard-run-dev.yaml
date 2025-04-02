@@ -115,10 +115,10 @@ jobs:
 
   done:
     needs: [affected, test]
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       statuses: write
-    if: always()
     steps:
       - name: Check success
         uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3

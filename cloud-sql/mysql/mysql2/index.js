@@ -15,7 +15,7 @@
 'use strict';
 
 const express = require('express');
-const createConnectorIAMAuthnPool = require('./connect-connector-with-iam-authn.js');
+const createConnectorIAMAuthnPool = require('./connect-connector-auto-iam-authn.js');
 const createConnectorPool = require('./connect-connector.js');
 const createTcpPool = require('./connect-tcp.js');
 const createUnixSocketPool = require('./connect-unix.js');
@@ -65,9 +65,7 @@ const createPool = async () => {
     // 'connectTimeout' is the maximum number of milliseconds before a timeout
     // occurs during the initial connection to the database.
     connectTimeout: 10000, // 10 seconds
-    // 'acquireTimeout' is the maximum number of milliseconds to wait when
-    // checking out a connection from the pool before a timeout error occurs.
-    acquireTimeout: 10000, // 10 seconds
+    // 'acquireTimeout' is currently unsupported by mysql2
     // 'waitForConnections' determines the pool's action when no connections are
     // free. If true, the request will queued and a connection will be presented
     // when ready. If false, the pool will call back with an error.
@@ -172,7 +170,7 @@ const httpGet = app.get('/', async (req, res) => {
 
     // Run queries concurrently, and wait for them to complete
     // This is faster than await-ing each query object as it is created
-    const recentVotes = await recentVotesQuery;
+    const [recentVotes] = await recentVotesQuery; // Return only the results, not the field metadata
     const [tabsVotes] = await tabsQuery;
     const [spacesVotes] = await spacesQuery;
 

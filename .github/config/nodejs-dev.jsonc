@@ -109,6 +109,7 @@
     "cloudbuild",
     "composer",
     "composer/functions/composer-storage-trigger",
+    "compute",
     "contact-center-insights",
     "container",
     "container-analysis/snippets",

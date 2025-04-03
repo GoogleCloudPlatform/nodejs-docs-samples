@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-docs-samples-compute",
+  "name": "nodejs-docs-samples-compute-custom-hostname-instance",
   "license": "Apache-2.0",
   "author": "Google Inc.",
   "engines": {

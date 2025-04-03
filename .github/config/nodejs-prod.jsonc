@@ -73,6 +73,7 @@
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
     "recaptcha_enterprise/demosite/app", // no tests exist
+    "compute", // parent directory
 
     // TODO: fix these
     "ai-platform/snippets", // PERMISSION_DENIED: Permission denied: Consumer 'projects/undefined' has been suspended.

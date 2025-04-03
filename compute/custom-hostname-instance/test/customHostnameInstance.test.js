@@ -42,7 +42,7 @@ describe('Instance with a custom hostname samples', () => {
   it('should create instance with a custom hostname and return correct hostname', async () => {
     const projectId = await instancesClient.getProjectId();
     let output = execSync(
-      `node custom-hostname-instance/createInstanceWithCustomHostname ${projectId} ${zone} ${instanceName} ${custom_hostname}`
+      `node createInstanceWithCustomHostname ${projectId} ${zone} ${instanceName} ${custom_hostname}`
     );
 
     const instance = await getInstance(projectId, zone, instanceName);
@@ -51,7 +51,7 @@ describe('Instance with a custom hostname samples', () => {
     assert.match(output, /Instance created./);
 
     output = execSync(
-      `node custom-hostname-instance/getInstanceHostname ${projectId} ${zone} ${instanceName}`
+      `node getInstanceHostname ${projectId} ${zone} ${instanceName}`
     );
 
     assert.include(
@@ -67,7 +67,7 @@ describe('Instance with a custom hostname samples', () => {
 
     execSync(`node createInstance ${projectId} ${zone} ${instanceName}`);
     const output = execSync(
-      `node custom-hostname-instance/getInstanceHostname ${projectId} ${zone} ${instanceName}`
+      `node getInstanceHostname ${projectId} ${zone} ${instanceName}`
     );
 
     assert.include(output, `Instance ${instanceName} has hostname: undefined`);

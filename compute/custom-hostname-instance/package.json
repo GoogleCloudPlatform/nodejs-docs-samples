@@ -11,7 +11,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 test --timeout 1200000"
+    "test": "c8 mocha -p -j 2 test --timeout 300000"
   },
   "dependencies": {
     "@google-cloud/compute": "^4.0.0"

@@ -34,16 +34,14 @@ const getInstance = async (projectId, zone, instanceName) => {
   return instance;
 };
 
-
 // DEBUG: copied from createInstance.js, could be simplified.
-const createInstance = async (projectId, zone, instanceName)  => {
-
+const createInstance = async (projectId, zone, instanceName) => {
   const machineType = 'n1-standard-1';
   const sourceImage = 'projects/debian-cloud/global/images/family/debian-11';
   const networkName = 'global/networks/default';
   console.log(`Creating the ${instanceName} instance in ${zone}...`);
 
-  const [response] = await instancesClient.insert({
+  await instancesClient.insert({
     instanceResource: {
       name: instanceName,
       disks: [
@@ -67,14 +65,11 @@ const createInstance = async (projectId, zone, instanceName)  => {
     project: projectId,
     zone,
   });
-
-}
+};
 
 describe('Instance with a custom hostname samples', () => {
   const zone = 'europe-central2-b';
   const custom_hostname = 'host.domain.com';
-
-
 
   it('should create instance with a custom hostname and return correct hostname', async () => {
     const instanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
@@ -105,12 +100,11 @@ describe('Instance with a custom hostname samples', () => {
   });
 
   it('should return undefined if hostname is not set', async () => {
-
     const instanceName = `gcloud-test-instance-${uuid.v4().split('-')[0]}`;
     const projectId = await instancesClient.getProjectId();
 
     await createInstance(projectId, zone, instanceName);
-    console.log("Instance", instanceName, "created")
+    console.log('Instance', instanceName, 'created');
     const output = execSync(
       `node getInstanceHostname ${projectId} ${zone} ${instanceName}`
     );

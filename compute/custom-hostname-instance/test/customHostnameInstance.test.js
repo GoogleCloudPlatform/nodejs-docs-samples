@@ -59,7 +59,11 @@ describe('Instance with a custom hostname samples', () => {
       `Instance ${instanceName} has hostname: ${custom_hostname}`
     );
 
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+    await instancesClient.delete({
+      project: projectId,
+      zone: zone,
+      instance: instanceName,
+    });
   });
 
   it('should return undefined if hostname is not set', async () => {
@@ -72,6 +76,10 @@ describe('Instance with a custom hostname samples', () => {
 
     assert.include(output, `Instance ${instanceName} has hostname: undefined`);
 
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+    await instancesClient.delete({
+      project: projectId,
+      zone: zone,
+      instance: instanceName,
+    });
   });
 });

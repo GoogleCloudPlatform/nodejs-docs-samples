@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-docs-samples-compute",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": "googleapis/nodejs-compute",
+  "private": true,
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "test": "c8 mocha -p -j 2 test --timeout 1200000"
+  },
+  "dependencies": {
+    "@google-cloud/compute": "^4.0.0"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
+    "mocha": "^10.0.0",
+    "uuid": "^10.0.0"
+  }
+}

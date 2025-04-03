@@ -75,6 +75,7 @@
     "functions/pubsub", // parent directory
     "memorystore/redis", // parent directory
     "recaptcha_enterprise/demosite/app", // no tests exist
+    "compute", // parent directory
 
     // These tests are already passing in prod, so skip them in dev.
     "appengine/building-an-app/build",

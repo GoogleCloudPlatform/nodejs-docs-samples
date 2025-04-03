@@ -72,7 +72,7 @@ describe('Parameter Manager samples', () => {
         format: 'JSON',
       },
     });
-    parametersToDelete.push(parameter);
+    parametersToDelete.push(parameter.name);
 
     // Create a test regional parameter
     [regionalParameter] = await regionalClient.createParameter({
@@ -82,7 +82,7 @@ describe('Parameter Manager samples', () => {
         format: 'JSON',
       },
     });
-    regionalParametersToDelete.push(regionalParameter);
+    regionalParametersToDelete.push(regionalParameter.name);
 
     try {
       await kmsClient.getKeyRing({name: keyRing});
@@ -165,7 +165,7 @@ describe('Parameter Manager samples', () => {
     } catch (error) {
       if (error.code === 5) {
         await kmsClient.createCryptoKey({
-          parent: kmsClient.keyRingPath(projectId, kmsKey1, keyRingId),
+          parent: kmsClient.keyRingPath(projectId, locationId, keyRingId),
           cryptoKeyId: keyId1,
           cryptoKey: {
             purpose: 'ENCRYPT_DECRYPT',
@@ -234,7 +234,7 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node createParamWithKmsKey.js ${projectId} ${parameterId}-1 ${kmsKey}`
     );
-    parametersToDelete.push(`${parameterId}-1`);
+    parametersToDelete.push(`projects/${projectId}/locations/global/parameters/${parameterId}-1`);
     assert.include(
       output,
       `Created parameter projects/${projectId}/locations/global/parameters/${parameterId}-1 with kms_key ${kmsKey}`
@@ -245,7 +245,7 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node regional_samples/createRegionalParamWithKmsKey.js ${projectId} ${locationId} ${regionalParameterId}-1 ${regionalKmsKey}`
     );
-    regionalParametersToDelete.push(`${regionalParameterId}-1`);
+    regionalParametersToDelete.push(`projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1`);
     assert.include(
       output,
       `Created regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1 with kms_key ${regionalKmsKey}`
@@ -256,7 +256,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node updateParamKmsKey.js ${projectId} ${parameterId} ${kmsKey}`
     );
-    parametersToDelete.push(`${parameterId}`);
     assert.include(
       output,
       `Updated parameter projects/${projectId}/locations/global/parameters/${parameterId} with kms_key ${kmsKey}`
@@ -267,7 +266,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node regional_samples/updateRegionalParamKmsKey.js ${projectId} ${locationId} ${regionalParameterId} ${regionalKmsKey}`
     );
-    regionalParametersToDelete.push(`${regionalParameterId}`);
     assert.include(
       output,
       `Updated regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId} with kms_key ${regionalKmsKey}`
@@ -278,7 +276,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node removeParamKmsKey.js ${projectId} ${parameterId} ${kmsKey}`
     );
-    parametersToDelete.push(`${parameterId}`);
     assert.include(
       output,
       `Removed kms_key for parameter projects/${projectId}/locations/global/parameters/${parameterId}`
@@ -289,7 +286,6 @@ describe('Parameter Manager samples', () => {
     const output = execSync(
       `node regional_samples/removeRegionalParamKmsKey.js ${projectId} ${locationId} ${regionalParameterId} ${regionalKmsKey}`
     );
-    regionalParametersToDelete.push(`${regionalParameterId}`);
     assert.include(
       output,
       `Removed kms_key for regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`

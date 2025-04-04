@@ -116,6 +116,7 @@
     "datacatalog/quickstart",
     "datacatalog/snippets",
     "datalabeling",
+    "datastore/functions",
     "dialogflow",
     "discoveryengine",
     "document-warehouse",

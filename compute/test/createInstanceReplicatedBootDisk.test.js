@@ -19,7 +19,7 @@
 const path = require('path');
 const assert = require('node:assert/strict');
 const uuid = require('uuid');
-const {after, before, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
 const {getStaleVMInstances, deleteInstance} = require('./util');
@@ -119,7 +119,6 @@ describe('Create compute instance with replicated boot disk', async () => {
   let diskSnapshotLink;
 
   it('should create an instance with replicated boot disk', async () => {
-
     // before
     const instancesClient = new computeLib.InstancesClient();
     projectId = await instancesClient.getProjectId();

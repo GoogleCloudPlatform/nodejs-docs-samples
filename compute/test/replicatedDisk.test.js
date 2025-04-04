@@ -19,7 +19,7 @@
 const path = require('path');
 const assert = require('node:assert/strict');
 const uuid = require('uuid');
-const {after, before, describe, it} = require('mocha');
+const {describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
 
@@ -56,7 +56,6 @@ describe('Create compute regional replicated disk', async () => {
   const zone1 = `${region}-a`;
   const zone2 = `${region}-b`;
   let projectId;
-
 
   it('should create a regional replicated disk and attach to vm', async () => {
     const instancesClient = new computeLib.InstancesClient();

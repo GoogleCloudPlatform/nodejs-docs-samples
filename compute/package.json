@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "test-only": "mocha --timeout 1000000 -g",
-    "test": "c8 mocha -p -j 4 test --timeout 1100000"
+    "test": "c8 mocha -p -j 8 test --timeout 1100000"
   },
   "dependencies": {
     "@google-cloud/compute": "^4.0.0",

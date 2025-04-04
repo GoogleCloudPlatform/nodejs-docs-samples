@@ -57,20 +57,11 @@ describe('Create compute regional replicated disk', async () => {
   const zone2 = `${region}-b`;
   let projectId;
 
-  before(async () => {
+
+  it('should create a regional replicated disk and attach to vm', async () => {
     const instancesClient = new computeLib.InstancesClient();
     projectId = await instancesClient.getProjectId();
-  });
 
-  after(async () => {
-    // Cleanup resources
-    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
-      cwd,
-    });
-    await deleteDisk(projectId, region, diskName);
-  });
-
-  it('should create a regional replicated disk', () => {
     const response = execSync(
       `node ./disks/createRegionalReplicatedDisk.js ${diskName} ${region} ${zone1} ${zone2}`,
       {
@@ -79,9 +70,7 @@ describe('Create compute regional replicated disk', async () => {
     );
 
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
-  });
 
-  it('should attach replicated disk to vm', () => {
     // Create VM, where replicated disk will be attached.
     execSync(
       `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
@@ -90,7 +79,7 @@ describe('Create compute regional replicated disk', async () => {
       }
     );
 
-    const response = execSync(
+    const responseAttach = execSync(
       `node ./disks/attachRegionalDisk.js ${diskName} ${region} ${vmName} ${zone1}`,
       {
         cwd,
@@ -98,9 +87,15 @@ describe('Create compute regional replicated disk', async () => {
     );
 
     assert(
-      response.includes(
+      responseAttach.includes(
         `Replicated disk: ${diskName} attached to VM: ${vmName}.`
       )
     );
+
+    // Cleanup resources
+    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
+      cwd,
+    });
+    await deleteDisk(projectId, region, diskName);
   });
 });

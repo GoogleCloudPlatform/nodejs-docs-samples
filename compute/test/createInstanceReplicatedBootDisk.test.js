@@ -118,28 +118,16 @@ describe('Create compute instance with replicated boot disk', async () => {
   let projectId;
   let diskSnapshotLink;
 
-  before(async () => {
+  it('should create an instance with replicated boot disk', async () => {
+
+    // before
     const instancesClient = new computeLib.InstancesClient();
     projectId = await instancesClient.getProjectId();
     diskSnapshotLink = `projects/${projectId}/global/snapshots/${snapshotName}`;
 
     await createDisk(projectId, zone1, diskName);
     await createDiskSnapshot(projectId, zone1, diskName, snapshotName);
-  });
 
-  after(async () => {
-    // Cleanup resources
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
-    await deleteDiskSnapshot(projectId, snapshotName);
-    await deleteDisk(projectId, zone1, diskName);
-  });
-
-  it('should create an instance with replicated boot disk', () => {
     const response = execSync(
       `node ./instances/create-start-instance/createInstanceReplicatedBootDisk.js ${zone1} ${zone2} ${vmName} ${diskSnapshotLink}`,
       {
@@ -152,5 +140,15 @@ describe('Create compute instance with replicated boot disk', async () => {
         `Instance: ${vmName} with replicated boot disk created.`
       )
     );
+
+    // after Cleanup resources
+    const instances = await getStaleVMInstances();
+    await Promise.all(
+      instances.map(instance =>
+        deleteInstance(instance.zone, instance.instanceName)
+      )
+    );
+    await deleteDiskSnapshot(projectId, snapshotName);
+    await deleteDisk(projectId, zone1, diskName);
   });
 });

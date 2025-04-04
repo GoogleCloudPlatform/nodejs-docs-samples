@@ -68,6 +68,8 @@ describe('Create compute regional replicated disk', async () => {
       }
     );
 
+    console.log(`replicatedDisk.tests.js: Disk ${diskName} created.`)
+
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
 
     // Create VM, where replicated disk will be attached.
@@ -78,12 +80,16 @@ describe('Create compute regional replicated disk', async () => {
       }
     );
 
+    console.log(`replicatedDisk.tests.js: Instance ${vmName} created.`)
+
     const responseAttach = execSync(
       `node ./disks/attachRegionalDisk.js ${diskName} ${region} ${vmName} ${zone1}`,
       {
         cwd,
       }
     );
+
+    console.log(`replicatedDisk.tests.js: Disk ${diskName} attached to ${vmName}.`)
 
     assert(
       responseAttach.includes(

@@ -11,6 +11,7 @@
     "*.js"
   ],
   "scripts": {
+    "test-only": "mocha --timeout 1000000 -g",
     "test": "c8 mocha -p -j 4 test --timeout 1100000"
   },
   "dependencies": {

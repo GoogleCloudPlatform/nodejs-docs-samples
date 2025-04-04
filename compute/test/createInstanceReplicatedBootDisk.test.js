@@ -141,13 +141,13 @@ describe('Create compute instance with replicated boot disk', async () => {
     );
 
     // after Cleanup resources
+    await deleteDiskSnapshot(projectId, snapshotName);
+    await deleteDisk(projectId, zone1, diskName);
     const instances = await getStaleVMInstances();
     await Promise.all(
       instances.map(instance =>
         deleteInstance(instance.zone, instance.instanceName)
       )
     );
-    await deleteDiskSnapshot(projectId, snapshotName);
-    await deleteDisk(projectId, zone1, diskName);
   });
 });

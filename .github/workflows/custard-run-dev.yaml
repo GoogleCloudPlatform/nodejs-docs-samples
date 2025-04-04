@@ -61,6 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit
     permissions:
+      id-token: write
       statuses: write
     strategy:
       fail-fast: false
@@ -108,13 +109,6 @@ jobs:
         with:
           check: ${{ steps.in_progress.outputs.check }}
           status: failure
-      # - name: Upload test results for FlakyBot workflow
-      #   if: github.event.action == 'schedule' && always() # always() submits logs even if tests fail
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results
-      #     path: ${{ matrix.path }}/${{ github.run_id }}_sponge_log.xml
-      #     retention-days: 1
 
   done:
     needs: [affected, test]

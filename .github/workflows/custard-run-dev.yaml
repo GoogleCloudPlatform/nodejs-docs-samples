@@ -15,14 +15,20 @@
 name: (experimental / dev) Custard run
 
 on:
-  push:
-    branches:
-      - main
+  # Run tests when a pull request is created or updated.
+  # This allows to run tests from forked repos (after reviewer's approval).
   workflow_run:
     workflows:
       - Custard CI # .github/workflows/custard-ci.yaml
     types:
       - in_progress
+
+  # Run tests again as validation when a PR merge into main.
+  push:
+    branches:
+      - main
+
+  # To do manual runs through the Actions UI.
   workflow_dispatch:
     inputs:
       run-all:
@@ -36,9 +42,6 @@ on:
         description: Branch, tag, or commit SHA to run tests on
         type: string
         default: main
-  # schedule:
-  #   # https://crontab.guru/#0_12_*_*_0
-  #   - cron: 0 12 * * 0 # At 12:00 on Sunday
 
 jobs:
   affected:

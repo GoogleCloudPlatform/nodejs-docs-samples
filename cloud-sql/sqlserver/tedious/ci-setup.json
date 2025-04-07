@@ -7,7 +7,7 @@
       "INSTANCE_UNIX_SOCKET": "$UNIX_SOCKET_DIR/$INSTANCE_CONNECTION_NAME",
       "DB_NAME": "kokoro_ci",
       "DB_USER": "kokoro_ci",
-      "PRIVATE_IP": "1"
+      "PRIVATE_IP": "true"
     },
     "secrets": {
       "DB_PASS": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"

@@ -5,6 +5,7 @@
   "private": true,
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"

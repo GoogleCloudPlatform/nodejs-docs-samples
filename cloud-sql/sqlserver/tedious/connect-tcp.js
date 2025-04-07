@@ -49,6 +49,7 @@ const connectWithTcpSocket = async config => {
   if (process.env.PRIVATE_IP === '1' || process.env.PRIVATE_IP === 'true') {
     dbConfig.options.encrypt = true;
     dbConfig.options.private = true;
+    dbConfig.options.server = "0.0.0.0";
   }
 
   // [START cloud_sql_sqlserver_tedious_connect_tcp]

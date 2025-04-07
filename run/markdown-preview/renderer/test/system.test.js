@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const got = require('got');
-const {execSync} = require('child_process');
+import assert from 'assert';
+import got from 'got';
+import {execSync} from 'child_process';
 
 describe('End-to-End Tests', () => {
   // Retrieve Cloud Run service test config
@@ -22,18 +22,19 @@ describe('End-to-End Tests', () => {
   if (!GOOGLE_CLOUD_PROJECT) {
     throw Error('"GOOGLE_CLOUD_PROJECT" env var not found.');
   }
+
   let {SERVICE_NAME} = process.env;
   if (!SERVICE_NAME) {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "editor"');
     SERVICE_NAME = 'renderer';
   }
-  const {ID_TOKEN} = process.env;
-  if (!ID_TOKEN) throw Error('ID token not in envvar');
-  const {SAMPLE_VERSION} = process.env;
-  const {SERVICE_ACCOUNT} = process.env;
+
+  const {ID_TOKEN, SAMPLE_VERSION, SERVICE_ACCOUNT} = process.env;
   const REGION = 'us-central1';
+  if (!ID_TOKEN) throw Error('ID token not in envvar');
 
   let BASE_URL;
+
   before(async () => {
     // Deploy service using Cloud Build
     let buildCmd =
@@ -74,7 +75,7 @@ describe('End-to-End Tests', () => {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
       method: 'POST',
-      retry: 3,
+      retry: {limit: 3},
       throwHttpErrors: false,
     };
     const response = await got('', options);

@@ -44,6 +44,10 @@ assign_issues_by:
   - "api: parametermanager"
   to:
   - GoogleCloudPlatform/cloud-parameters-team
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team
 
 assign_prs_by:
 - labels:
@@ -77,3 +81,7 @@ assign_prs_by:
   - "api: parametermanager"
   to:
   - GoogleCloudPlatform/cloud-parameters-team
+- labels:
+  - "api: modelarmor"
+  to:
+  - GoogleCloudPlatform/cloud-modelarmor-team

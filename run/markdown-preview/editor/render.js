@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // [START cloudrun_secure_request]
-import { GoogleAuth } from 'google-auth-library';
+import {GoogleAuth} from 'google-auth-library';
 import got from 'got';
 
 const auth = new GoogleAuth();
@@ -43,7 +43,8 @@ const renderRequest = async markdown => {
     // [END cloudrun_secure_request]
     // If we're in the test environment, use the envvar instead
     if (process.env.ID_TOKEN) {
-      serviceRequestOptions.headers['Authorization'] = `Bearer ${process.env.ID_TOKEN}`;
+      serviceRequestOptions.headers['Authorization'] =
+        `Bearer ${process.env.ID_TOKEN}`;
     } else {
       // [START cloudrun_secure_request]
       // Create a Google Auth client with the Renderer service url as the target audience.
@@ -62,7 +63,7 @@ const renderRequest = async markdown => {
 
   try {
     // serviceResponse converts the Markdown plaintext to HTML.
-    const { body } = await got(serviceUrl, serviceRequestOptions);
+    const {body} = await got(serviceUrl, serviceRequestOptions);
     return body;
   } catch (err) {
     throw Error('request to rendering service failed: ' + err.message);

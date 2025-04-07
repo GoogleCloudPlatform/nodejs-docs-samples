@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const got = require('got');
-const {execSync} = require('child_process');
+import assert from 'assert';
+import got from 'got';
+import {execSync} from 'child_process';
 
 describe('End-to-End Tests', () => {
   // Retrieve Cloud Run service test config
@@ -27,13 +27,13 @@ describe('End-to-End Tests', () => {
     console.log('"SERVICE_NAME" env var not found. Defaulting to "editor"');
     SERVICE_NAME = 'editor';
   }
-  const {ID_TOKEN} = process.env;
-  if (!ID_TOKEN) throw Error('ID token not in envvar');
-  const {SAMPLE_VERSION} = process.env;
-  const {SERVICE_ACCOUNT} = process.env;
+
+  const {ID_TOKEN, SAMPLE_VERSION, SERVICE_ACCOUNT} = process.env;
   const REGION = 'us-central1';
+  if (!ID_TOKEN) throw Error('ID token not in envvar');
 
   let BASE_URL;
+
   before(async () => {
     // Deploy Renderer service
     let buildRendererCmd =
@@ -88,7 +88,7 @@ describe('End-to-End Tests', () => {
       headers: {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
-      retry: 3,
+      retry: {limit: 3},
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);

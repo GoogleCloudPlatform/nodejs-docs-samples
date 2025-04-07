@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { app } from './app';
+import {app} from './app';
 import pkg from './package.json' assert {type: 'json'};
 
 const PORT = parseInt(process.env.PORT) || 8080;

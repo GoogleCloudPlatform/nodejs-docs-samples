@@ -101,6 +101,8 @@
     "batch",
     "cloud-language",
     "cloud-sql/mysql/mysql",
+    "cloud-sql/mysql/mysql2",
+    "cloud-sql/postgres/knex",
     "cloud-sql/sqlserver/mssql",
     "cloud-sql/sqlserver/tedious",
     "cloud-tasks/snippets",

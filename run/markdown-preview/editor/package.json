@@ -24,7 +24,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "google-auth-library": "^9.0.0",
-    "got": "^11.5.0",
+    "got": "^12.6.1",
     "handlebars": "^4.7.6"
   },
   "devDependencies": {

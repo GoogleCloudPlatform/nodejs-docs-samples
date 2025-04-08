@@ -24,12 +24,10 @@ const serverConnector = require(SAMPLE_PATH);
 
 const _instance_connect_backup = process.env.INSTANCE_CONNECTION_NAME;
 delete process.env.INSTANCE_CONNECTION_NAME;
-process.env.PRIVATE_IP = "true"
 
 const serverTcp = require(SAMPLE_PATH);
 
 process.env.INSTANCE_CONNECTION_NAME = _instance_connect_backup;
-process.env.PRIVATE_IP = ""
 
 after(() => {
   serverTcp.close();

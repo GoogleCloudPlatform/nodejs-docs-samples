@@ -103,6 +103,7 @@
     "cloud-sql/mysql/mysql",
     "cloud-sql/mysql/mysql2",
     "cloud-sql/postgres/knex",
+    "cloud-sql/sqlserver/mssql",
     "cloud-tasks/snippets",
     "cloud-tasks/tutorial-gcf/app",
     "cloud-tasks/tutorial-gcf/function",

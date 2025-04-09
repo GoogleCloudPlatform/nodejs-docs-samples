@@ -1,0 +1,168 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: (experimental) Custard run
+
+on:
+  # Run tests when a pull request is created or updated.
+  # This allows to run tests from forked repos (after reviewer's approval).
+  workflow_run:
+    workflows:
+      - Custard CI # .github/workflows/custard-ci.yaml
+    types:
+      - in_progress
+
+  # Run tests again as validation when a PR merge into main.
+  push:
+    branches:
+      - main
+
+  # To do manual runs through the Actions UI.
+  workflow_dispatch:
+    inputs:
+      run-all:
+        description: Run all tests
+        type: boolean
+        default: false
+      paths:
+        description: Comma separated packages to test
+        type: string
+      ref:
+        description: Branch, tag, or commit SHA to run tests on
+        type: string
+        default: main
+
+  # For nightly tests.
+  # schedule:
+  #   # https://crontab.guru/#0_12_*_*_0
+  #   - cron: 0 12 * * 0 # At 12:00 on Sunday
+
+jobs:
+  affected:
+    uses: GoogleCloudPlatform/cloud-samples-tools/.github/workflows/affected.yaml@v0.2.3
+    permissions:
+      statuses: write
+    with:
+      head-sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
+      config-file: .github/config/nodejs.jsonc
+      paths: ${{ (inputs.run-all && '.') || inputs.paths || '' }}
+      check-name: (experimental) Custard CI
+      create-check-if: ${{ !!github.event.workflow_run }}
+
+  lint:
+    needs: affected
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+    timeout-minutes: 5
+    steps:
+      - name: Check in_progress
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@v0.2.3
+        id: in_progress
+        with:
+          sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
+          status: in_progress
+          name: (experimental) Custard CI / ${{ github.job }}
+          if: ${{ !!github.event.workflow_run }}
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - name: Setup Node
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: npx gtx lint (${{ needs.affected.outputs.num-paths }} packages)
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/map-run@v0.2.3
+        with:
+          command: npx gts lint
+          paths: ${{ needs.affected.outputs.paths }}
+      - name: Check success
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        with:
+          check: ${{ steps.in_progress.outputs.check }}
+          status: success
+      - name: Check failure
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        if: failure()
+        with:
+          check: ${{ steps.in_progress.outputs.check }}
+          status: failure
+
+  test:
+    if: needs.affected.outputs.paths != '[]'
+    needs: affected
+    runs-on: ubuntu-latest
+    timeout-minutes: 120 # 2 hours hard limit
+    permissions:
+      id-token: write
+      statuses: write
+    strategy:
+      fail-fast: false
+      matrix:
+        path: ${{ fromJson(needs.affected.outputs.paths) }}
+    continue-on-error: true
+    env:
+      GOOGLE_SAMPLES_PROJECT: long-door-651
+      GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+    steps:
+      - name: Check queued
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@v0.2.3
+        id: queued
+        with:
+          sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
+          name: (experimental) Custard CI / ${{ github.job }} (${{ matrix.path }})
+          job-name: ${{ github.job }} (${{ matrix.path }})
+          if: ${{ !!github.event.workflow_run }}
+      - name: Setup Custard
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/setup-custard@v0.2.3
+        with:
+          path: ${{ matrix.path }}
+          ci-setup: ${{ toJson(fromJson(needs.affected.outputs.ci-setups)[matrix.path]) }}
+          project-id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
+          workload-identity-provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+          service-account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
+      - name: Check in_progress
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        id: in_progress
+        with:
+          check: ${{ steps.queued.outputs.check }}
+          status: in_progress
+      - name: Run tests for ${{ matrix.path }}
+        run: |
+          timeout ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].timeout-minutes }}m \
+            make test dir=${{ matrix.path }}
+      - name: Check success
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        with:
+          check: ${{ steps.in_progress.outputs.check }}
+          status: success
+      - name: Check failure
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        if: failure()
+        with:
+          check: ${{ steps.in_progress.outputs.check }}
+          status: failure
+
+  done:
+    needs: [affected, lint, test]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+    steps:
+      - name: Check success
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@v0.2.3
+        with:
+          check: ${{ needs.affected.outputs.check }}
+          status: success

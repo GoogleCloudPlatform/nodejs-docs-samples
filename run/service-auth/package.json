@@ -1,0 +1,27 @@
+{
+    "name": "service-auth",
+    "description": "Node.js samples for authenticated service-to-service communication",
+    "version": "0.0.1",
+    "private": true,
+    "license": "Apache-2.0",
+    "author": "Google LLC",
+    "engines": {
+        "node": "20.x"
+    },
+    "scripts": {
+        "start": "node index.js",
+        "deploy": "gcloud run deploy service-auth --source .",
+        "unit-test": "c8 mocha -p -j 2 test/ --timeout=10000 --exit",
+        "test": "npm run unit-test"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "google-auth-library": "^9.0.0"
+    },
+    "devDependencies": {
+        "c8": "^10.0.0",
+        "chai": "^4.5.0",
+        "mocha": "^10.0.0",
+        "sinon": "^18.0.0"
+    }
+}

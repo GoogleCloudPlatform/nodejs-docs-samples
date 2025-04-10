@@ -14,60 +14,60 @@
 
 'use strict';
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 const sinon = require('sinon');
-const { OAuth2Client } = require('google-auth-library');
-const { main } = require('../receive');
+const {OAuth2Client} = require('google-auth-library');
+const {main} = require('../receive');
 
 const TEST_VALID_TOKEN = 'test-valid-token';
 const TEST_INVALID_TOKEN = 'test-invalid-token';
 
 describe('receiveRequestAndParseAuthHeader sample', () => {
-    let verifyStub, consoleStub;
+  let verifyStub, consoleStub;
 
-    beforeEach(() => {
-        verifyStub = sinon.stub(OAuth2Client.prototype, 'verifyIdToken');
-        consoleStub = sinon.stub(console, 'log');
+  beforeEach(() => {
+    verifyStub = sinon.stub(OAuth2Client.prototype, 'verifyIdToken');
+    consoleStub = sinon.stub(console, 'log');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should log greeting if token is valid', async () => {
+    const mockReq = {
+      headers: {
+        authorization: `Bearer ${TEST_VALID_TOKEN}`,
+      },
+    };
+
+    verifyStub.resolves({
+      getPayload: () => ({email: 'test@example.com'}),
     });
 
-    afterEach(() => {
-        sinon.restore();
-    });
+    await main(mockReq);
+    expect(consoleStub.calledWith('Hello, test@example.com!\n')).to.be.true;
+  });
 
-    it('should log greeting if token is valid', async () => {
-        const mockReq = {
-            headers: {
-                authorization: `Bearer ${TEST_VALID_TOKEN}`,
-            },
-        };
+  it('should log error message if token is invalid', async () => {
+    const mockReq = {
+      headers: {
+        authorization: `Bearer ${TEST_INVALID_TOKEN}`,
+      },
+    };
 
-        verifyStub.resolves({
-            getPayload: () => ({ email: 'test@example.com' }),
-        });
+    verifyStub.rejects(new Error('invalid'));
 
-        await main(mockReq);
-        expect(consoleStub.calledWith('Hello, test@example.com!\n')).to.be.true;
-    });
+    await main(mockReq);
+    expect(consoleStub.calledWithMatch(/Invalid token: invalid/)).to.be.true;
+  });
 
-    it('should log error message if token is invalid', async () => {
-        const mockReq = {
-            headers: {
-                authorization: `Bearer ${TEST_INVALID_TOKEN}`,
-            },
-        };
+  it('should log anonymous message if no auth header', async () => {
+    const mockReq = {
+      headers: {},
+    };
 
-        verifyStub.rejects(new Error('invalid'));
-
-        await main(mockReq);
-        expect(consoleStub.calledWithMatch(/Invalid token: invalid/)).to.be.true;
-    });
-
-    it('should log anonymous message if no auth header', async () => {
-        const mockReq = {
-            headers: {},
-        };
-
-        await main(mockReq);
-        expect(consoleStub.calledWith('Hello, anonymous user.\n')).to.be.true;
-    });
+    await main(mockReq);
+    expect(consoleStub.calledWith('Hello, anonymous user.\n')).to.be.true;
+  });
 });

@@ -16,7 +16,7 @@ visit the [Google Cloud Samples][cloud_samples] page.
 
 ## Setup
 
-1. Install [Node.js version 14 or greater][node]
+1. Install [Node.js version 18 or greater][node]
 1. Install the [Google Cloud CLI (gcloud)][gcloud]
 1. Clone this repository:
 

@@ -19,6 +19,7 @@ const axios = require('axios');
 const {execSync} = require('child_process');
 const {v4: uuidv4} = require('uuid');
 
+const INVALID_TOKEN = 'invalid-token';
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const REGION = 'us-central1';
 
@@ -84,7 +85,7 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
     try {
       await axios.get(serviceUrl, {
         headers: {
-          Authorization: 'Bearer invalid-token',
+          Authorization: `Bearer ${INVALID_TOKEN}`,
         },
       });
     } catch (err) {

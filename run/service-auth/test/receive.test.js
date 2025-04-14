@@ -15,59 +15,81 @@
 'use strict';
 
 const {expect} = require('chai');
-const sinon = require('sinon');
-const {OAuth2Client} = require('google-auth-library');
-const {main} = require('../receive');
+const axios = require('axios');
+const {execSync} = require('child_process');
+const {v4: uuidv4} = require('uuid');
 
-const TEST_VALID_TOKEN = 'test-valid-token';
-const TEST_INVALID_TOKEN = 'test-invalid-token';
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
+const REGION = 'us-central1';
 
-describe('receiveRequestAndParseAuthHeader sample', () => {
-  let verifyStub, consoleStub;
+describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', function () {
+  this.timeout(5 * 60 * 1000); // 5 minutes for deploy + test
+  const serviceName = `receive-${uuidv4().slice(0, 8)}`;
+  let serviceUrl;
 
-  beforeEach(() => {
-    verifyStub = sinon.stub(OAuth2Client.prototype, 'verifyIdToken');
-    consoleStub = sinon.stub(console, 'log');
+  before(() => {
+    console.log(`Deploying Cloud Run service: ${serviceName}...`);
+    execSync(
+      `gcloud run deploy ${serviceName} \
+      --project=${PROJECT_ID} \
+      --region=${REGION} \
+      --source=. \
+      --allow-unauthenticated \
+      --quiet`,
+      {stdio: 'inherit'}
+    );
+
+    console.log('Fetching service URL...');
+    serviceUrl = execSync(`gcloud run services describe ${serviceName} \
+      --project=${PROJECT_ID} \
+      --region=${REGION} \
+      --format='value(status.url)'`)
+      .toString()
+      .trim();
+
+    console.log(`Service URL: ${serviceUrl}`);
   });
 
-  afterEach(() => {
-    sinon.restore();
+  after(() => {
+    console.log(`Deleting service: ${serviceName}...`);
+    execSync(`gcloud run services delete ${serviceName} \
+      --project=${PROJECT_ID} \
+      --region=${REGION} \
+      --quiet`);
   });
 
-  it('should log greeting if token is valid', async () => {
-    const mockReq = {
+  function getIdentityToken() {
+    return execSync('gcloud auth print-identity-token').toString().trim();
+  }
+
+  it('should respond with greeting if token is valid', async () => {
+    const token = getIdentityToken();
+    const res = await axios.get(serviceUrl, {
       headers: {
-        authorization: `Bearer ${TEST_VALID_TOKEN}`,
+        Authorization: `Bearer ${token}`,
       },
-    };
-
-    verifyStub.resolves({
-      getPayload: () => ({email: 'test@example.com'}),
     });
 
-    await main(mockReq);
-    expect(consoleStub.calledWith('Hello, test@example.com!\n')).to.be.true;
+    expect(res.status).to.equal(200);
+    expect(res.data).to.match(/^Hello, .@.\.\w+!\n$/);
   });
 
-  it('should log error message if token is invalid', async () => {
-    const mockReq = {
-      headers: {
-        authorization: `Bearer ${TEST_INVALID_TOKEN}`,
-      },
-    };
-
-    verifyStub.rejects(new Error('invalid'));
-
-    await main(mockReq);
-    expect(consoleStub.calledWithMatch(/Invalid token: invalid/)).to.be.true;
+  it('should respond with anonymous if no token is provided', async () => {
+    const res = await axios.get(serviceUrl);
+    expect(res.status).to.equal(200);
+    expect(res.data).to.equal('Hello, anonymous user.\n');
   });
 
-  it('should log anonymous message if no auth header', async () => {
-    const mockReq = {
-      headers: {},
-    };
-
-    await main(mockReq);
-    expect(consoleStub.calledWith('Hello, anonymous user.\n')).to.be.true;
+  it('should respond with 401 if token is invalid', async () => {
+    try {
+      await axios.get(serviceUrl, {
+        headers: {
+          Authorization: 'Bearer invalid-token',
+        },
+      });
+    } catch (err) {
+      expect(err.response.status).to.equal(401);
+      expect(err.response.data).to.include('Invalid token');
+    }
   });
 });

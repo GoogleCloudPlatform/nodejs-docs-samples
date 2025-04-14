@@ -19,9 +19,11 @@
         "google-auth-library": "^9.0.0"
     },
     "devDependencies": {
+        "axios": "^1.8.4",
         "c8": "^10.0.0",
         "chai": "^4.5.0",
         "mocha": "^10.0.0",
-        "sinon": "^18.0.0"
+        "sinon": "^18.0.0",
+        "uuid": "^11.1.0"
     }
 }

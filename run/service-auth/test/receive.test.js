@@ -18,8 +18,9 @@ const {expect} = require('chai');
 const axios = require('axios');
 const {execSync} = require('child_process');
 const {v4: uuidv4} = require('uuid');
+const {StatusCodes} = require('http-status-codes');
 
-const INVALID_TOKEN = 'invalid-token';
+const TEST_INVALID_TOKEN = 'test-invalid-token';
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const REGION = 'us-central1';
 
@@ -71,25 +72,25 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
       },
     });
 
-    expect(res.status).to.equal(200);
+    expect(res.status).to.equal(StatusCodes.OK);
     expect(res.data).to.match(/^Hello, .@.\.\w+!\n$/);
   });
 
   it('should respond with anonymous if no token is provided', async () => {
     const res = await axios.get(serviceUrl);
-    expect(res.status).to.equal(200);
+    expect(res.status).to.equal(StatusCodes.OK);
     expect(res.data).to.equal('Hello, anonymous user.\n');
   });
 
-  it('should respond with 401 if token is invalid', async () => {
+  it('should respond with unoauthorized if token is invalid', async () => {
     try {
       await axios.get(serviceUrl, {
         headers: {
-          Authorization: `Bearer ${INVALID_TOKEN}`,
+          Authorization: `Bearer ${TEST_INVALID_TOKEN}`,
         },
       });
     } catch (err) {
-      expect(err.response.status).to.equal(401);
+      expect(err.response.status).to.equal(StatusCodes.UNAUTHORIZED);
       expect(err.response.data).to.include('Invalid token');
     }
   });

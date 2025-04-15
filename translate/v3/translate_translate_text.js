@@ -39,7 +39,7 @@ function main(
     // MIME type of the content to translate
     // Supported MIME types:
     // https://cloud.google.com/translate/docs/supported-formats
-    const mimeType = "text/plain";
+    const mimeType = 'text/plain';
 
     // Construct request
     const request = {

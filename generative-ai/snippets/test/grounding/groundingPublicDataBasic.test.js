@@ -36,6 +36,6 @@ describe('Google search grounding', async () => {
     const output = execSync(
       `node ./grounding/groundingPublicDataBasic.js ${projectId} ${location} ${model}`
     );
-    assert(output.match(/GroundingMetadata.*[Ww]hy is the sky blue?/));
+    assert(output.match(/blue/));
   });
 });

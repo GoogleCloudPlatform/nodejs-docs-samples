@@ -31,13 +31,13 @@ async function generateContentWithGoogleSearchGrounding(
     generationConfig: {maxOutputTokens: 256},
   });
 
-  const googleSearchRetrievalTool = {
-    googleSearchRetrieval: {},
+  const googleSearchTool = {
+    googleSearch: {},
   };
 
   const request = {
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [googleSearchRetrievalTool],
+    tools: [googleSearchTool],
   };
 
   const result = await generativeModelPreview.generateContent(request);

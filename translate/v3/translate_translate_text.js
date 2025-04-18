@@ -21,42 +21,41 @@ function main(
 ) {
   // [START translate_v3_translate_text]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * TODO(developer): Uncomment these variables before running the sample
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'global';
   // const text = 'text to translate';
 
-  // [START translate_v3_translate_text_0]
   // Imports the Google Cloud Translation library
+  // [START translate_v3_import_client_library]
   const {TranslationServiceClient} = require('@google-cloud/translate');
-  // [END translate_v3_translate_text_0]
+  // [END translate_v3_import_client_library]
 
-  // [START translate_v3_translate_text_1]
   // Instantiates a client
   const translationClient = new TranslationServiceClient();
-  // [END translate_v3_translate_text_1]
 
   async function translateText() {
-    // [START translate_v3_translate_text_2]
+    // MIME type of the content to translate
+    // Supported MIME types:
+    // https://cloud.google.com/translate/docs/supported-formats
+    const mimeType = 'text/plain';
+
     // Construct request
     const request = {
       parent: `projects/${projectId}/locations/${location}`,
       contents: [text],
-      mimeType: 'text/plain', // mime types: text/plain, text/html
+      mimeType: mimeType,
       sourceLanguageCode: 'en',
       targetLanguageCode: 'sr-Latn',
     };
-    // [END translate_v3_translate_text_2]
 
-    // [START translate_v3_translate_text_3]
     // Run request
     const [response] = await translationClient.translateText(request);
 
     for (const translation of response.translations) {
       console.log(`Translation: ${translation.translatedText}`);
     }
-    // [END translate_v3_translate_text_3]
   }
 
   translateText();

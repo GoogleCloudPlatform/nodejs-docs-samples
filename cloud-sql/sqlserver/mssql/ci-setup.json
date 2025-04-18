@@ -1,0 +1,12 @@
+{
+    "env": {
+      "INSTANCE_HOST": "127.0.0.1",
+      "INSTANCE_CONNECTION_NAME": "nodejs-docs-samples-tests:us-central1:sql-server-ci",
+      "CLOUD_SQL_CONNECTION_NAME": "$INSTANCE_CONNECTION_NAME",
+      "DB_NAME": "kokoro_ci",
+      "DB_USER": "kokoro_ci"
+    },
+    "secrets": {
+      "DB_PASS": "nodejs-docs-samples-tests/nodejs-docs-samples-sql-password"
+    }
+  }

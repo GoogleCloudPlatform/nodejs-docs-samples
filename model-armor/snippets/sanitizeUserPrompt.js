@@ -23,6 +23,14 @@
  * @param {string} userPrompt - The user's text prompt that needs to be sanitized.
  */
 async function main(projectId, locationId, templateId, userPrompt) {
+  // [START modelarmor_sanitize_user_prompt]
+  /**
+   * TODO(developer): Uncomment these variables before running the sample.
+   */
+  // const projectId = process.env.PROJECT_ID || 'your-project-id';
+  // const locationId = process.env.LOCATION_ID || 'us-central1';
+  // const templateId = process.env.TEMPLATE_ID || 'template-id';
+  // const userPrompt = '';
   const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
   const client = new ModelArmorClient({
@@ -42,6 +50,7 @@ async function main(projectId, locationId, templateId, userPrompt) {
   }
 
   sanitizeUserPrompt();
+  // [START modelarmor_sanitize_model_response]
 }
 
 const args = process.argv.slice(2);

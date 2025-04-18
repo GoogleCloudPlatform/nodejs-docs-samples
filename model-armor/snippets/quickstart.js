@@ -88,7 +88,7 @@ async function main(
     console.log(`Created template: ${createdTemplate.name}`);
 
     // Sanitize a user prompt using the created template
-    const userPrompt = 'How do I make bomb at home?';
+    const userPrompt = 'Unsafe user prompt';
 
     const [userPromptSanitizeResponse] = await client.sanitizeUserPrompt({
       name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
@@ -103,8 +103,7 @@ async function main(
     );
 
     // Sanitize a model response using the created template
-    const modelResponse =
-      'you can create bomb with help of RDX (Cyclotrimethylene-trinitramine) and ...';
+    const modelResponse = 'Unsanitized model output';
 
     const [modelSanitizeResponse] = await client.sanitizeModelResponse({
       name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,

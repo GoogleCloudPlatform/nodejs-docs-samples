@@ -15,14 +15,14 @@
 'use strict';
 
 /**
- * Sanitize/Screen PDF content using the Model Armor API.
+ * Sanitize/Screen PDF file content using the Model Armor API.
  *
  * @param {string} projectId - Google Cloud project ID.
  * @param {string} locationId - Google Cloud location.
  * @param {string} templateId - The template ID used for sanitization.
- * @param {string} pdfContentBase64 - Base64-encoded PDF content to sanitize.
+ * @param {string} pdfContentFilename - Path to a PDF file.
  */
-async function main(projectId, locationId, templateId, pdfContentBase64) {
+async function main(projectId, locationId, templateId, pdfContentFilename) {
   // [START modelarmor_screen_pdf_file]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -30,7 +30,7 @@ async function main(projectId, locationId, templateId, pdfContentBase64) {
   // const projectId = process.env.PROJECT_ID || 'your-project-id';
   // const locationId = process.env.LOCATION_ID || 'us-central1';
   // const templateId = process.env.TEMPLATE_ID || 'template-id';
-  // const pdfContentBase64 = process.env.PDF_CONTENT_BASE64 || 'BASE64_ENCODED_PDF_CONTENT';
+  // const pdfContentFilename = 'path/to/file.pdf';
 
   // Imports the Model Armor library
   const modelarmor = require('@google-cloud/modelarmor');
@@ -39,7 +39,11 @@ async function main(projectId, locationId, templateId, pdfContentBase64) {
   const ByteItemType =
     protos.google.cloud.modelarmor.v1.ByteDataItem.ByteItemType;
 
-  // Instantiates a client
+  const fs = require('fs');
+
+  const pdfContent = fs.readFileSync(pdfContentFilename);
+  const pdfContentBase64 = pdfContent.toString('base64');
+
   const client = new ModelArmorClient({
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
@@ -55,7 +59,7 @@ async function main(projectId, locationId, templateId, pdfContentBase64) {
   };
 
   const [response] = await client.sanitizeUserPrompt(request);
-  console.log('PDF Sanitization Result:', response);
+  console.log(JSON.stringify(response, null, 2));
   // [END modelarmor_screen_pdf_file]
 }
 

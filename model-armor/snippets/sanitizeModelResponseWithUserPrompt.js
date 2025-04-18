@@ -46,7 +46,7 @@ async function main(
     };
 
     const [response] = await client.sanitizeModelResponse(request);
-    console.log('Sanitized model response with user prompt:', response);
+    console.log(JSON.stringify(response, null, 2));
   }
 
   sanitizeModelResponseWithUserPrompt();

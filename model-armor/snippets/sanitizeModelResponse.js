@@ -38,7 +38,7 @@ async function main(projectId, locationId, templateId, modelResponse) {
     };
 
     const [response] = await client.sanitizeModelResponse(request);
-    console.log('Sanitized model response:', response);
+    console.log(JSON.stringify(response, null, 2));
   }
 
   sanitizeModelResponse();

@@ -75,6 +75,70 @@ async function deleteTemplate(templateName) {
   }
 }
 
+async function disableFloorSettings() {
+  try {
+    // Disable project floor settings
+    const [projectFloorSettings] = await client.getFloorSetting({
+      name: `projects/${projectId}/locations/global/floorSetting`,
+    });
+
+    if (projectFloorSettings.enableFloorSettingEnforcement) {
+      const [updatedProjectSettings] = await client.updateFloorSetting({
+        floorSetting: {
+          name: `projects/${projectId}/locations/global/floorSetting`,
+          enableFloorSettingEnforcement: false,
+        },
+        updateMask: {
+          paths: ['enable_floor_setting_enforcement'],
+        },
+      });
+      console.log('Disabled project floor settings:', updatedProjectSettings.name);
+    }
+
+    // Disable folder floor settings if folderId is available
+    if (folderId) {
+      const [folderFloorSettings] = await client.getFloorSetting({
+        name: `folders/${folderId}/locations/global/floorSetting`,
+      });
+
+      if (folderFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedFolderSettings] = await client.updateFloorSetting({
+          floorSetting: {
+            name: `folders/${folderId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log('Disabled folder floor settings:', updatedFolderSettings.name);
+      }
+    }
+
+    // Disable organization floor settings if organizationId is available
+    if (organizationId) {
+      const [orgFloorSettings] = await client.getFloorSetting({
+        name: `organizations/${organizationId}/locations/global/floorSetting`,
+      });
+
+      if (orgFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedOrgSettings] = await client.updateFloorSetting({
+          floorSetting: {
+            name: `organizations/${organizationId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log('Disabled organization floor settings:', updatedOrgSettings.name);
+      }
+    }
+  } catch (error) {
+    console.error('Error disabling floor settings:', error);
+  }
+}
+
 describe('Model Armor tests', () => {
   const templatesToDelete = [];
 
@@ -164,6 +228,9 @@ describe('Model Armor tests', () => {
   });
 
   after(async () => {
+    // Disable floor settings to restore original state
+    await disableFloorSettings();
+    
     // Clean up all templates
     const directTemplates = [emptyTemplateId, basicTemplateId];
     for (const templateId of directTemplates) {

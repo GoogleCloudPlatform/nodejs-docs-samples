@@ -21,7 +21,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function generateContentWithGoogleSearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.5-flash-001'
+  model = 'gemini-2.0-flash-001'
 ) {
   // Initialize Vertex with your Cloud project and location
   const vertexAI = new VertexAI({project: projectId, location: location});
@@ -31,13 +31,13 @@ async function generateContentWithGoogleSearchGrounding(
     generationConfig: {maxOutputTokens: 256},
   });
 
-  const googleSearchRetrievalTool = {
-    googleSearchRetrieval: {},
+  const googleSearchTool = {
+    googleSearch: {},
   };
 
   const request = {
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [googleSearchRetrievalTool],
+    tools: [googleSearchTool],
   };
 
   const result = await generativeModelPreview.generateContent(request);

@@ -39,7 +39,7 @@ async function main(projectId, outputUri) {
     'gs://cloud-samples-data/generative-ai/batch/batch_requests_for_multimodal_input.jsonl';
   const location = 'us-central1';
   const parent = `projects/${projectId}/locations/${location}`;
-  const modelName = `${parent}/publishers/google/models/gemini-1.5-flash-002`;
+  const modelName = `${parent}/publishers/google/models/gemini-2.0-flash-001`;
 
   // Specify the location of the api endpoint.
   const clientOptions = {

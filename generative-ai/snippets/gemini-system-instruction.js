@@ -22,7 +22,7 @@ async function set_system_instruction(projectId = 'PROJECT_ID') {
   const vertexAI = new VertexAI({project: projectId, location: 'us-central1'});
 
   const generativeModel = vertexAI.getGenerativeModel({
-    model: 'gemini-1.5-flash-001',
+    model: 'gemini-2.0-flash-001',
     systemInstruction: {
       parts: [
         {text: 'You are a helpful language translator.'},

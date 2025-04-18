@@ -25,7 +25,7 @@ const {
 async function generateContentWithVertexAISearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-1.5-flash-001',
+  model = 'gemini-2.0-flash-001',
   dataStoreId = 'DATASTORE_ID'
 ) {
   // Initialize Vertex with your Cloud project and location

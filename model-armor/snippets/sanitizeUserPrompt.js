@@ -38,7 +38,7 @@ async function main(projectId, locationId, templateId, userPrompt) {
     };
 
     const [response] = await client.sanitizeUserPrompt(request);
-    console.log('Sanitized user prompt:', response);
+    console.log(JSON.stringify(response, null, 2));
   }
 
   sanitizeUserPrompt();

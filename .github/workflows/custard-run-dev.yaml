@@ -45,7 +45,7 @@ on:
 
 jobs:
   affected:
-    uses: GoogleCloudPlatform/cloud-samples-tools/.github/workflows/affected.yaml@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+    uses: GoogleCloudPlatform/cloud-samples-tools/.github/workflows/affected.yaml@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
     permissions:
       statuses: write
     with:
@@ -73,7 +73,7 @@ jobs:
       GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
     steps:
       - name: Check queued
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         id: queued
         with:
           sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
@@ -81,7 +81,7 @@ jobs:
           job-name: ${{ github.job }} (${{ matrix.path }})
           if: ${{ !!github.event.workflow_run }}
       - name: Setup Custard
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/setup-custard@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/setup-custard@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         with:
           path: ${{ matrix.path }}
           ci-setup: ${{ toJson(fromJson(needs.affected.outputs.ci-setups)[matrix.path]) }}
@@ -89,7 +89,7 @@ jobs:
           workload-identity-provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service-account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
       - name: Check in_progress
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         id: in_progress
         with:
           check: ${{ steps.queued.outputs.check }}
@@ -99,12 +99,12 @@ jobs:
           timeout ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].timeout-minutes }}m \
             make test dir=${{ matrix.path }}
       - name: Check success
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         with:
           check: ${{ steps.in_progress.outputs.check }}
           status: success
       - name: Check failure
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         if: failure()
         with:
           check: ${{ steps.in_progress.outputs.check }}
@@ -118,7 +118,7 @@ jobs:
       statuses: write
     steps:
       - name: Check success
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@967334777b636ec212c32bf60e69b6635971b593 # v0.2.3
+        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@34b34881006f34d210c4af9d0f7ba9b2d681621d # v0.2.5
         with:
           check: ${{ needs.affected.outputs.check }}
           status: success

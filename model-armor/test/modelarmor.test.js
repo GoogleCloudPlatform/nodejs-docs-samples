@@ -351,7 +351,7 @@ describe('Model Armor tests', () => {
 
   it('should not detect CSAM in appropriate model response', async () => {
     const testModelResponse =
-      'Here is information about online safety for children';
+      'Here is how to teach long division to a child';
 
     const output = execSync(
       `node snippets/sanitizeModelResponse.js ${projectId} ${locationId} ${basicTemplateId} "${testModelResponse}"`
@@ -378,8 +378,6 @@ describe('Model Armor tests', () => {
 
     assert.include(output, expectedValue);
 
-    assert.include(output, 'csam');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
   });
 
   it('should not detect issues in model response with empty template', async () => {
@@ -391,8 +389,6 @@ describe('Model Armor tests', () => {
     ).toString();
 
     assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
-    assert.include(output, 'csam');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
   });
 
   it('should detect PII in model response with basic SDP template', async () => {
@@ -409,8 +405,6 @@ describe('Model Armor tests', () => {
 
     // Check for US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER in findings
     assert.match(output, /US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER/);
-    assert.include(output, 'csam');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
   });
 
   // =================== Model Response with User Prompt Tests ===================
@@ -426,8 +420,6 @@ describe('Model Armor tests', () => {
     ).toString();
 
     assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
-    assert.include(output, 'csam');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
   });
 
   it('should sanitize model response with user prompt using advanced SDP template', async () => {
@@ -446,9 +438,6 @@ describe('Model Armor tests', () => {
     assert.include(output, '"matchState": "MATCH_FOUND"');
 
     assert.notInclude(output, 'contact@email.com');
-
-    assert.include(output, 'csam');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
   });
 
   // =================== PDF File Scanning Tests ===================

@@ -27,148 +27,17 @@ const options = {
 const client = new ModelArmorClient(options);
 const templateIdPrefix = `test-template-${uuidv4().substring(0, 8)}`;
 
-let emptyTemplateId;
-let basicTemplateId;
-let basicSdpTemplateId;
-let templateToDeleteId;
-
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
-// Helper function to create a template for sanitization tests
-async function createTemplate(templateId, filterConfig) {
-  const parent = `projects/${projectId}/locations/${locationId}`;
-
-  try {
-    const [response] = await client.createTemplate({
-      parent: parent,
-      templateId: templateId,
-      template: {
-        filterConfig: filterConfig,
-      },
-    });
-
-    console.log(`Created template: ${response.name}`);
-    return response;
-  } catch (error) {
-    console.error(`Error creating template ${templateId}:`, error);
-    throw error;
-  }
-}
-
-// Helper function to delete a template
-async function deleteTemplate(templateName) {
-  try {
-    await client.deleteTemplate({
-      name: templateName,
-    });
-    console.log(`Deleted template: ${templateName}`);
-  } catch (error) {
-    if (error.code === 5) {
-      // Not found
-      console.log(`Template ${templateName} was not found.`);
-    } else {
-      console.error(`Error deleting template ${templateName}:`, error);
-    }
-  }
-}
 
 describe('Model Armor tests', () => {
   const templatesToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
-
-    // Import necessary enums
-    const {protos} = require('@google-cloud/modelarmor');
-    const DetectionConfidenceLevel =
-      protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
-    const PiAndJailbreakFilterEnforcement =
-      protos.google.cloud.modelarmor.v1.PiAndJailbreakFilterSettings
-        .PiAndJailbreakFilterEnforcement;
-    const MaliciousUriFilterEnforcement =
-      protos.google.cloud.modelarmor.v1.MaliciousUriFilterSettings
-        .MaliciousUriFilterEnforcement;
-    const RaiFilterType = protos.google.cloud.modelarmor.v1.RaiFilterType;
-    const SdpBasicConfigEnforcement =
-      protos.google.cloud.modelarmor.v1.SdpBasicConfig
-        .SdpBasicConfigEnforcement;
-
-    // Create empty template for sanitizeUserPrompt tests
-    emptyTemplateId = `${templateIdPrefix}-empty`;
-    await createTemplate(emptyTemplateId, {});
-
-    // Create basic template with PI/Jailbreak and Malicious URI filters for sanitizeUserPrompt tests
-    basicTemplateId = `${templateIdPrefix}-basic`;
-    await createTemplate(basicTemplateId, {
-      piAndJailbreakFilterSettings: {
-        filterEnforcement: PiAndJailbreakFilterEnforcement.ENABLED,
-        confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-      },
-      maliciousUriFilterSettings: {
-        filterEnforcement: MaliciousUriFilterEnforcement.ENABLED,
-      },
-    });
-
-    // Create a template to be deleted
-    templateToDeleteId = `${templateIdPrefix}-to-delete`;
-    await createTemplate(templateToDeleteId, {
-      piAndJailbreakFilterSettings: {
-        filterEnforcement: PiAndJailbreakFilterEnforcement.ENABLED,
-        confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-      },
-      maliciousUriFilterSettings: {
-        filterEnforcement: MaliciousUriFilterEnforcement.ENABLED,
-      },
-    });
-
-    // Create a basic SDP template for testing
-    basicSdpTemplateId = `${templateIdPrefix}-basic-sdp`;
-    await createTemplate(basicSdpTemplateId, {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.DANGEROUS,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.HARASSMENT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
-        sdpSettings: {
-          basicConfig: {
-            filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
-          },
-        },
-      },
-    });
-
-    templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${basicTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`
-    );
   });
 
   after(async () => {
     // Clean up all templates
-    const directTemplates = [emptyTemplateId, basicTemplateId];
-    for (const templateId of directTemplates) {
-      await deleteTemplate(
-        `projects/${projectId}/locations/${locationId}/templates/${templateId}`
-      );
-    }
-
     for (const templateName of templatesToDelete) {
       try {
         await client.deleteTemplate({name: templateName});

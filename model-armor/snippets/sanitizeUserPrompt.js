@@ -50,7 +50,7 @@ async function main(projectId, locationId, templateId, userPrompt) {
   }
 
   sanitizeUserPrompt();
-  // [START modelarmor_sanitize_model_response]
+  // [END modelarmor_sanitize_user_prompt]
 }
 
 const args = process.argv.slice(2);

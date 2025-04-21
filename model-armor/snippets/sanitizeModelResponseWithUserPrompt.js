@@ -59,7 +59,7 @@ async function main(
   }
 
   sanitizeModelResponseWithUserPrompt();
-  // [START modelarmor_sanitize_model_response_with_user_prompt]
+  // [END modelarmor_sanitize_model_response_with_user_prompt]
 }
 
 const args = process.argv.slice(2);

@@ -21,8 +21,8 @@ const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
-const folderId = process.env.FOLDER_ID;
-const organizationId = process.env.ORGANIZATION_ID;
+const folderId = process.env.MA_FOLDER_ID;
+const organizationId = process.env.MA_ORG_ID;
 const options = {
   apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
 };

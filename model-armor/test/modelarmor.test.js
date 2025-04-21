@@ -34,6 +34,7 @@ let basicTemplateId;
 let basicSdpTemplateId;
 let advanceSdpTemplateId;
 let templateToDeleteId;
+let allFilterTemplateId;
 let inspectTemplateName;
 let deidentifyTemplateName;
 
@@ -195,6 +196,8 @@ describe('Model Armor tests', () => {
     const SdpAdvancedConfigEnforcement =
       protos.google.cloud.modelarmor.v1.SdpAdvancedConfig
         .SdpAdvancedConfigEnforcement;
+    const RaiFilterType =
+        protos.google.cloud.modelarmor.v1.RaiFilterType;
 
     // Create empty template for sanitizeUserPrompt tests
     emptyTemplateId = `${templateIdPrefix}-empty`;
@@ -252,6 +255,41 @@ describe('Model Armor tests', () => {
       `projects/${projectId}/locations/${locationId}/templates/${advanceSdpTemplateId}`
     );
 
+    // Create all-filter template
+    allFilterTemplateId = `${templateIdPrefix}-all-filters`;
+    await createTemplate(allFilterTemplateId, {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.DANGEROUS,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.HATE_SPEECH,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+        ],
+      },
+      piAndJailbreakFilterSettings: {
+        filterEnforcement: PiAndJailbreakFilterEnforcement.ENABLED,
+        confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
+      },
+      maliciousUriFilterSettings: {
+        filterEnforcement: MaliciousUriFilterEnforcement.ENABLED,
+      },
+    });
+    templatesToDelete.push(
+      `projects/${projectId}/locations/${locationId}/templates/${allFilterTemplateId}`
+    );
+
     // Create a template to be deleted
     templateToDeleteId = `${templateIdPrefix}-to-delete`;
     await createTemplate(templateToDeleteId, {
@@ -273,6 +311,27 @@ describe('Model Armor tests', () => {
     await deleteDlpTemplates();
   });
 
+  // =================== RAI Filter Tests ===================
+
+  it('should sanitize user prompt with all RAI filter template', async () => {
+    const testUserPrompt = "How to make cheesecake without oven at home?";
+  
+    const output = execSync(
+      `node snippets/sanitizeUserPrompt.js ${projectId} ${locationId} ${allFilterTemplateId} "${testUserPrompt}"`
+    ).toString();
+    const response = JSON.parse(output);
+
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.rai.raiFilterResult.matchState,
+      "NO_MATCH_FOUND"
+    );
+  });
+
   // =================== User Prompt Sanitization Tests ===================
 
   it('should detect malicious URL in user prompt', async () => {
@@ -282,11 +341,19 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeUserPrompt.js ${projectId} ${locationId} ${basicTemplateId} "${testUserPrompt}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "MATCH_FOUND"');
-
-    assert.include(output, '"maliciousUriFilterResult"');
-    assert.include(output, '"matchState": "MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.malicious_uris.maliciousUriFilterResult.matchState,
+      "MATCH_FOUND"
+    );
+    
     assert.include(
       output,
       'https://testsafebrowsing.appspot.com/s/malware.html'
@@ -299,11 +366,18 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeUserPrompt.js ${projectId} ${locationId} ${basicTemplateId} "${testUserPrompt}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
-
-    assert.include(output, '"csamFilterFilterResult"');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.csam.csamFilterFilterResult.matchState,
+      "NO_MATCH_FOUND"
+    );
   });
 
   it('should detect jailbreak in user prompt', async () => {
@@ -313,11 +387,18 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeUserPrompt.js ${projectId} ${locationId} ${basicTemplateId} "${testUserPrompt}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "MATCH_FOUND"');
-
-    assert.include(output, '"piAndJailbreakFilterResult"');
-    assert.include(output, '"matchState": "MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.pi_and_jailbreak.piAndJailbreakFilterResult.matchState,
+      "MATCH_FOUND"
+    );
   });
 
   it('should not detect issues in user prompt with empty template', async () => {
@@ -327,8 +408,13 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeUserPrompt.js ${projectId} ${locationId} ${emptyTemplateId} "${testUserPrompt}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
   });
 
   // =================== Model Response Sanitization Tests ===================
@@ -340,11 +426,18 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeModelResponse.js ${projectId} ${locationId} ${basicTemplateId} "${testModelResponse}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "MATCH_FOUND"');
-
-    assert.include(output, '"maliciousUriFilterResult"');
-    assert.include(output, '"matchState": "MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.malicious_uris.maliciousUriFilterResult.matchState,
+      "MATCH_FOUND"
+    );
   });
 
   it('should not detect CSAM in appropriate model response', async () => {
@@ -354,11 +447,18 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeModelResponse.js ${projectId} ${locationId} ${basicTemplateId} "${testModelResponse}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
-
-    assert.include(output, '"csamFilterFilterResult"');
-    assert.include(output, '"matchState": "NO_MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
+    
+    assert.equal(
+      response.sanitizationResult.filterResults.csam.csamFilterFilterResult.matchState,
+      "NO_MATCH_FOUND"
+    );
   });
 
   it('should sanitize model response with advanced SDP template', async () => {
@@ -386,8 +486,13 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeModelResponse.js ${projectId} ${locationId} ${emptyTemplateId} "${testModelResponse}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
   });
 
   it('should detect PII in model response with basic SDP template', async () => {
@@ -402,7 +507,6 @@ describe('Model Armor tests', () => {
     assert.include(output, '"sdpFilterResult"');
     assert.include(output, '"matchState": "MATCH_FOUND"');
 
-    // Check for US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER in findings
     assert.match(output, /US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER/);
   });
 
@@ -417,8 +521,13 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/sanitizeModelResponseWithUserPrompt.js ${projectId} ${locationId} ${emptyTemplateId} "${testUserPrompt}" "${testModelResponse}"`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND"
+    );
   });
 
   it('should sanitize model response with user prompt using advanced SDP template', async () => {
@@ -447,7 +556,11 @@ describe('Model Armor tests', () => {
     const output = execSync(
       `node snippets/screenPdfFile.js ${projectId} ${locationId} ${basicSdpTemplateId} ${testPdfPath}`
     ).toString();
-
-    assert.include(output, '"filterMatchState": "NO_MATCH_FOUND"');
-  });
+    
+    const response = JSON.parse(output);
+    
+    assert.equal(
+      response.sanitizationResult.filterMatchState,
+      "NO_MATCH_FOUND");
+    });
 });

@@ -36,7 +36,7 @@ let datasetId = '';
 const datasetDisplayName = `temp_import_data_node_var_${uuid()}`;
 const gcsSourceUri = 'gs://automl-video-demo-data/ucaip-var/swimrun.jsonl';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform import data video action recognition', () => {
   before('should create the new dataset', async () => {

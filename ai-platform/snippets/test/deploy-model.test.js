@@ -28,7 +28,7 @@ const endpointDisplayName = `temp_create_endpoint_test_${uuid()}`;
 const modelId = '4190810559500779520';
 const deployedModelDisplayName = `temp_deploy_model_test_${uuid()}`;
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 let deployedModelId;
 let endpointId;
 

@@ -21,7 +21,7 @@ You can generate a development-only JWT token using Google Cloud CLI:
 ```
 $ gcloud auth print-identity-token
 ```
-See [print-identity-token](https://cloud.google.com/sdk/gcloud/reference/auth/print-identity-token) for more info.
+See [get-id-token#generic-dev](https://cloud.google.com/docs/authentication/get-id-token#generic-dev) for more info.
 
 Then run the client using this token:
 ```

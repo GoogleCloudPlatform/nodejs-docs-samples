@@ -30,7 +30,7 @@ async function main(projectId, locationId, templateId, userPrompt) {
   // const projectId = process.env.PROJECT_ID || 'your-project-id';
   // const locationId = process.env.LOCATION_ID || 'us-central1';
   // const templateId = process.env.TEMPLATE_ID || 'template-id';
-  // const userPrompt = '';
+  // const userPrompt = 'unsafe user prompt';
   const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
   const client = new ModelArmorClient({

@@ -42,7 +42,7 @@ const startServer = PORT => {
     `0.0.0.0:${PORT}`,
     grpc.ServerCredentials.createInsecure(),
     () => {
-      server.start();
+      console.log(`gRPC server started on port ${PORT}`);
     }
   );
 };

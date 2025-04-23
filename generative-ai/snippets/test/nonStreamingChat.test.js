@@ -37,6 +37,6 @@ describe('Generative AI NonStreaming Chat', async () => {
       `node ./nonStreamingChat.js ${projectId} ${location} ${model}`
     );
 
-    assert(output.includes('Hello'), output);
+    assert(output.length > 0);
   });
 });

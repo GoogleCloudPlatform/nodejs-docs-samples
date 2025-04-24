@@ -32,7 +32,8 @@ const location = 'us-central1';
 let deployedModelId;
 let endpointId;
 
-describe('AI platform deploy model', () => {
+// Skip as model server exited unexpectedly
+describe.skip('AI platform deploy model', () => {
   it('should deploy the model in the specified endpoint', async () => {
     const endOut =
       execSync(`node ./create-endpoint.js ${endpointDisplayName} ${project} \

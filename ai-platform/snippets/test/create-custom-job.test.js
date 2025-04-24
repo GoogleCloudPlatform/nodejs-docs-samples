@@ -43,7 +43,8 @@ function parseResponse(stdout) {
 
 let customJobId;
 
-describe('AI platform create custom job', async function () {
+// Image gcr.io/ucaip-sample-tests/ucaip-training-test:latest no longer exists
+describe.skip('AI platform create custom job', async function () {
   this.retries(2);
   it('should create a new custom job', async () => {
     const stdout = execSync(

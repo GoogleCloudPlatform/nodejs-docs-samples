@@ -45,18 +45,29 @@ async function main(projectId = 'my-project', parameterId = 'my-parameter') {
     };
 
     // Use listParameterVersionsAsync to handle pagination automatically
-    const iterable = await client.listParameterVersionsAsync(request);
+    const parameterVersions = await client.listParameterVersionsAsync(request);
 
-    for await (const version of iterable) {
+    for await (const version of parameterVersions) {
       console.log(
         `Found parameter version ${version.name} with state ${version.disabled ? 'disabled' : 'enabled'}`
       );
     }
+    return parameterVersions;
   }
 
-  await listParamVersions();
+  return await listParamVersions();
   // [END parametermanager_list_param_versions]
 }
+module.exports.main = main;
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

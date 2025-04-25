@@ -57,22 +57,32 @@ async function main(
     };
 
     // Render the parameter version
-    const [response] = await client.renderParameterVersion(request);
-    console.log(`Rendered parameter version: ${response.parameterVersion}`);
+    const [parameterVersion] = await client.renderParameterVersion(request);
+    console.log(`Rendered parameter version: ${parameterVersion.parameterVersion}`);
 
     // If the parameter contains secret references, they will be resolved
     // and the actual secret values will be included in the rendered output.
     // Be cautious with logging or displaying this information.
     console.log(
       'Rendered payload: ',
-      response.renderedPayload.toString('utf-8')
+      parameterVersion.renderedPayload.toString('utf-8')
     );
+    return parameterVersion;
   }
 
-  await renderParamVersion();
+  return await renderParamVersion();
   // [END parametermanager_render_param_version]
 }
+module.exports.main = main;
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

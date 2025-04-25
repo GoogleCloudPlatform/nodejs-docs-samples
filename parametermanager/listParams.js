@@ -42,18 +42,29 @@ async function main(projectId = 'my-project') {
     };
 
     // Use listParametersAsync to handle pagination automatically
-    const iterable = await client.listParametersAsync(request);
+    const parameters = await client.listParametersAsync(request);
 
-    for await (const parameter of iterable) {
+    for await (const parameter of parameters) {
       console.log(
         `Found parameter ${parameter.name} with format ${parameter.format}`
       );
     }
+    return parameters;
   }
 
-  await listParams();
+  return await listParams();
   // [END parametermanager_list_params]
 }
+module.exports.main = main;
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

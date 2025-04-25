@@ -43,11 +43,22 @@ async function main(projectId = 'my-project', parameterId = 'my-parameter') {
 
     const [parameter] = await client.createParameter(request);
     console.log(`Created parameter: ${parameter.name}`);
+    return parameter;
   }
 
-  await createParam();
+  return await createParam();
   // [END parametermanager_create_param]
 }
+module.exports.main = main;
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

@@ -56,12 +56,22 @@ async function main(
 
     const [parameter] = await client.createParameter(request);
     console.log(`Created regional parameter: ${parameter.name}`);
+    return parameter;
   }
 
-  await createRegionalParam();
+  return await createRegionalParam();
   // [END parametermanager_create_regional_param]
 }
+module.exports.main = main;
 
-// This sample demonstrates how to create a regional parameter with unstructured data.
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

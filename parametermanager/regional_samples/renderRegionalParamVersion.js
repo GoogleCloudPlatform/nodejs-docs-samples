@@ -65,10 +65,10 @@ async function main(
     };
 
     // Render the parameter version
-    const [response] = await client.renderParameterVersion(request);
+    const [paramVersions] = await client.renderParameterVersion(request);
 
     console.log(
-      `Rendered regional parameter version: ${response.parameterVersion}`
+      `Rendered regional parameter version: ${paramVersions.parameterVersion}`
     );
 
     // If the parameter contains secret references, they will be resolved
@@ -76,14 +76,24 @@ async function main(
     // Be cautious with logging or displaying this information.
     console.log(
       'Rendered payload: ',
-      response.renderedPayload.toString('utf-8')
+      paramVersions.renderedPayload.toString('utf-8')
     );
+    return paramVersions;
   }
 
-  await renderRegionalParamVersion();
+  return await renderRegionalParamVersion();
   // [END parametermanager_render_regional_param_version]
 }
+module.exports.main = main;
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

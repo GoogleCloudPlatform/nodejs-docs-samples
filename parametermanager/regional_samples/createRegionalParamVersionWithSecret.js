@@ -78,16 +78,26 @@ async function main(
     };
 
     // Create the regional parameter version
-    const [response] = await client.createParameterVersion(request);
+    const [paramVersion] = await client.createParameterVersion(request);
     console.log(
-      `Created regional parameter version with secret: ${response.name}`
+      `Created regional parameter version with secret: ${paramVersion.name}`
     );
+    return paramVersion;
   }
 
-  await createRegionalParamVersionWithSecret();
+  return await createRegionalParamVersionWithSecret();
   // [END parametermanager_create_regional_param_version_with_secret]
 }
+module.exports.main = main;
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

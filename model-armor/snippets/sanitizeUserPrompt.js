@@ -22,7 +22,12 @@
  * @param {string} templateId - Identifier of the template to use for sanitization.
  * @param {string} userPrompt - The user's text prompt that needs to be sanitized.
  */
-async function main(projectId, locationId, templateId, userPrompt) {
+async function sanitizeUserPrompt(
+  projectId,
+  locationId,
+  templateId,
+  userPrompt
+) {
   // [START modelarmor_sanitize_user_prompt]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -37,21 +42,23 @@ async function main(projectId, locationId, templateId, userPrompt) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function sanitizeUserPrompt() {
-    const request = {
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      userPromptData: {
-        text: userPrompt,
-      },
-    };
+  const request = {
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    userPromptData: {
+      text: userPrompt,
+    },
+  };
 
-    const [response] = await client.sanitizeUserPrompt(request);
-    console.log(JSON.stringify(response, null, 2));
-  }
-
-  sanitizeUserPrompt();
+  const [response] = await client.sanitizeUserPrompt(request);
+  console.log(JSON.stringify(response, null, 2));
+  return response;
   // [END modelarmor_sanitize_user_prompt]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = sanitizeUserPrompt;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// sanitizeUserPrompt(...process.argv.slice(2)).catch(err => {
+//   console.error(err.message);
+//   process.exitCode = 1;
+// });

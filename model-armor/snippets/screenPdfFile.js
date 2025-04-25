@@ -22,7 +22,12 @@
  * @param {string} templateId - The template ID used for sanitization.
  * @param {string} pdfContentFilename - Path to a PDF file.
  */
-async function main(projectId, locationId, templateId, pdfContentFilename) {
+async function screenPdfFile(
+  projectId,
+  locationId,
+  templateId,
+  pdfContentFilename
+) {
   // [START modelarmor_screen_pdf_file]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -60,8 +65,14 @@ async function main(projectId, locationId, templateId, pdfContentFilename) {
 
   const [response] = await client.sanitizeUserPrompt(request);
   console.log(JSON.stringify(response, null, 2));
+  return response;
   // [END modelarmor_screen_pdf_file]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = screenPdfFile;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// screenPdfFile(...process.argv.slice(2)).catch(err => {
+//   console.error(err.message);
+//   process.exitCode = 1;
+// });

@@ -23,7 +23,7 @@
  * @param {string} modelResponse - The text response from a model that needs to be sanitized.
  * @param {string} userPrompt - The original user prompt that generated the model response.
  */
-async function main(
+async function sanitizeModelResponseWithUserPrompt(
   projectId,
   locationId,
   templateId,
@@ -45,22 +45,24 @@ async function main(
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function sanitizeModelResponseWithUserPrompt() {
-    const request = {
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      modelResponseData: {
-        text: modelResponse,
-      },
-      userPrompt: userPrompt,
-    };
+  const request = {
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    modelResponseData: {
+      text: modelResponse,
+    },
+    userPrompt: userPrompt,
+  };
 
-    const [response] = await client.sanitizeModelResponse(request);
-    console.log(JSON.stringify(response, null, 2));
-  }
-
-  sanitizeModelResponseWithUserPrompt();
+  const [response] = await client.sanitizeModelResponse(request);
+  console.log(JSON.stringify(response, null, 2));
+  return response;
   // [END modelarmor_sanitize_model_response_with_user_prompt]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = sanitizeModelResponseWithUserPrompt;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// sanitizeModelResponseWithUserPrompt(...process.argv.slice(2)).catch(err => {
+//   console.error(err.message);
+//   process.exitCode = 1;
+// });

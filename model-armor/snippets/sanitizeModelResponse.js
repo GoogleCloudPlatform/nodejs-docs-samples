@@ -22,7 +22,12 @@
  * @param {string} templateId - Identifier of the template to use for sanitization.
  * @param {string} modelResponse - The text response from a model that needs to be sanitized.
  */
-async function main(projectId, locationId, templateId, modelResponse) {
+async function sanitizeModelResponse(
+  projectId,
+  locationId,
+  templateId,
+  modelResponse
+) {
   // [START modelarmor_sanitize_model_response]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -37,21 +42,23 @@ async function main(projectId, locationId, templateId, modelResponse) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function sanitizeModelResponse() {
-    const request = {
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      modelResponseData: {
-        text: modelResponse,
-      },
-    };
+  const request = {
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    modelResponseData: {
+      text: modelResponse,
+    },
+  };
 
-    const [response] = await client.sanitizeModelResponse(request);
-    console.log(JSON.stringify(response, null, 2));
-  }
-
-  sanitizeModelResponse();
+  const [response] = await client.sanitizeModelResponse(request);
+  console.log(JSON.stringify(response, null, 2));
   // [END modelarmor_sanitize_model_response]
+  return response;
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = sanitizeModelResponse;
+
+// TODO(developer): Uncomment below lines before running the sample.
+// sanitizeModelResponse(...process.argv.slice(2)).catch(err => {
+//   console.error(err.message);
+//   process.exitCode = 1;
+// });

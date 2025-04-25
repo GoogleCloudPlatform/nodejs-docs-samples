@@ -22,7 +22,7 @@
  * @param {string} locationId - Google Cloud location.
  * @param {string} templateId - ID for the template to create.
  */
-async function main(
+async function quickstart(
   projectId = 'my-project',
   locationId = 'us-central1',
   templateId = 'my-template'
@@ -48,79 +48,68 @@ async function main(
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function quickstart() {
-    const parent = `projects/${projectId}/locations/${locationId}`;
+  const parent = `projects/${projectId}/locations/${locationId}`;
 
-    // Build the Model Armor template with preferred filters
-    // For more details on filters, refer to:
-    // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-    const template = {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.DANGEROUS,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.HARASSMENT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
+  // Build the Model Armor template with preferred filters
+  // For more details on filters, refer to:
+  // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+  const template = {
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.DANGEROUS,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
+          },
+          {
+            filterType: RaiFilterType.HATE_SPEECH,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+        ],
       },
-    };
+    },
+  };
 
-    const [createdTemplate] = await client.createTemplate({
-      parent,
-      templateId,
-      template,
-    });
+  const [createdTemplate] = await client.createTemplate({
+    parent,
+    templateId,
+    template,
+  });
 
-    console.log(`Created template: ${createdTemplate.name}`);
+  // Sanitize a user prompt using the created template
+  const userPrompt = 'Unsafe user prompt';
 
-    // Sanitize a user prompt using the created template
-    const userPrompt = 'Unsafe user prompt';
+  const [userPromptSanitizeResponse] = await client.sanitizeUserPrompt({
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    userPromptData: {
+      text: userPrompt,
+    },
+  });
 
-    const [userPromptSanitizeResponse] = await client.sanitizeUserPrompt({
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      userPromptData: {
-        text: userPrompt,
-      },
-    });
+  // Sanitize a model response using the created template
+  const modelResponse = 'Unsanitized model output';
 
-    console.log(
-      'Result for User Prompt Sanitization:',
-      userPromptSanitizeResponse.sanitizationResult
-    );
+  const [modelSanitizeResponse] = await client.sanitizeModelResponse({
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    modelResponseData: {
+      text: modelResponse,
+    },
+  });
 
-    // Sanitize a model response using the created template
-    const modelResponse = 'Unsanitized model output';
-
-    const [modelSanitizeResponse] = await client.sanitizeModelResponse({
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      modelResponseData: {
-        text: modelResponse,
-      },
-    });
-
-    console.log(
-      'Result for Model Response Sanitization:',
-      modelSanitizeResponse.sanitizationResult
-    );
-  }
-
-  await quickstart();
+  return {
+    templateName: createdTemplate.name,
+    userPromptSanitizeResponse,
+    modelSanitizeResponse
+  };
   // [END modelarmor_quickstart]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = quickstart;

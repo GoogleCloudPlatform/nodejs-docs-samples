@@ -50,11 +50,14 @@ describe('Model Armor tests', () => {
 
   // =================== Quickstart Tests ===================
 
-  it('should create a template and sanitize content', () => {
+  it('should create a template and sanitize content', async () => {
+    const quickstart = require('../snippets/quickstart');
     const testQuickstartTemplateId = `${templateIdPrefix}-quickstart`;
 
-    execSync(
-      `node snippets/quickstart.js ${projectId} ${locationId} ${testQuickstartTemplateId}`
+    await quickstart(
+      projectId,
+      locationId,
+      testQuickstartTemplateId
     );
 
     templatesToDelete.push(

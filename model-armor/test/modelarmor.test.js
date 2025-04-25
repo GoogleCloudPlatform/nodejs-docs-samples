@@ -15,7 +15,6 @@
 'use strict';
 
 const {assert} = require('chai');
-const cp = require('child_process');
 const {v4: uuidv4} = require('uuid');
 const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
@@ -32,8 +31,6 @@ let emptyTemplateId;
 let basicTemplateId;
 let basicSdpTemplateId;
 let templateToDeleteId;
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 // Helper function to create a template for sanitization tests
 async function createTemplate(templateId, filterConfig) {
@@ -184,77 +181,90 @@ describe('Model Armor tests', () => {
 
   it('should create a basic template', async () => {
     const testTemplateId = `${templateIdPrefix}-basic-create`;
+    const createTemplate = require('../snippets/createTemplate');
 
-    const output = execSync(
-      `node snippets/createTemplate.js ${projectId} ${locationId} ${testTemplateId}`
+    const response = await createTemplate(
+      projectId,
+      locationId,
+      testTemplateId
     );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
     templatesToDelete.push(templateName);
 
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    assert.strictEqual(response.name, templateName);
   });
 
   it('should create a template with basic SDP settings', async () => {
     const testTemplateId = `${templateIdPrefix}-basic-sdp-1`;
+    const createTemplateWithBasicSdp = require('../snippets/createTemplateWithBasicSdp');
 
-    const output = execSync(
-      `node snippets/createTemplateWithBasicSdp.js ${projectId} ${locationId} ${testTemplateId}`
+    const response = await createTemplateWithBasicSdp(
+      projectId,
+      locationId,
+      testTemplateId
     );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
     templatesToDelete.push(templateName);
 
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    assert.strictEqual(response.name, templateName);
   });
 
   it('should create a template with advanced SDP settings', async () => {
     const testTemplateId = `${templateIdPrefix}-adv-sdp`;
     const inspectTemplate = basicSdpTemplateId;
     const deidentifyTemplate = basicSdpTemplateId;
+    const createTemplateWithAdvancedSdp = require('../snippets/createTemplateWithAdvancedSdp');
 
     const fullInspectTemplate = `projects/${projectId}/locations/${locationId}/inspectTemplates/${inspectTemplate}`;
     const fullDeidentifyTemplate = `projects/${projectId}/locations/${locationId}/deidentifyTemplates/${deidentifyTemplate}`;
 
-    const output = execSync(
-      `node snippets/createTemplateWithAdvancedSdp.js ${projectId} ${locationId} ${testTemplateId} ${fullInspectTemplate} ${fullDeidentifyTemplate}`
+    const response = await createTemplateWithAdvancedSdp(
+      projectId,
+      locationId,
+      testTemplateId,
+      fullInspectTemplate,
+      fullDeidentifyTemplate
     );
 
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
     templatesToDelete.push(templateName);
 
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    assert.strictEqual(response.name, templateName);
   });
 
   it('should create a template with metadata', async () => {
     const testTemplateId = `${templateIdPrefix}-metadata`;
+    const createTemplateWithMetadata = require('../snippets/createTemplateWithMetadata');
 
-    const output = execSync(
-      `node snippets/createTemplateWithMetadata.js ${projectId} ${locationId} ${testTemplateId}`
+    const response = await createTemplateWithMetadata(
+      projectId,
+      locationId,
+      testTemplateId
     );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
     templatesToDelete.push(templateName);
 
-    assert.match(
-      output,
-      new RegExp(`Created Model Armor Template: ${templateName}`)
-    );
+    assert.strictEqual(response.name, templateName);
   });
 
   it('should create a template with labels', async () => {
     const testTemplateId = `${templateIdPrefix}-labels`;
     const labelKey = 'environment';
     const labelValue = 'test';
+    const createTemplateWithLabels = require('../snippets/createTemplateWithLabels');
 
-    const output = execSync(
-      `node snippets/createTemplateWithLabels.js ${projectId} ${locationId} ${testTemplateId} ${labelKey} ${labelValue}`
+    const response = await createTemplateWithLabels(
+      projectId,
+      locationId,
+      testTemplateId,
+      labelKey,
+      labelValue
     );
 
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${testTemplateId}`;
     templatesToDelete.push(templateName);
 
-    assert.match(output, new RegExp(`Created template: ${templateName}`));
+    assert.strictEqual(response.name, templateName);
   });
 
   // =================== Template Management Tests ===================
@@ -262,104 +272,143 @@ describe('Model Armor tests', () => {
   it('should get a template', async () => {
     const templateToGet = `${templateIdPrefix}-basic-sdp`;
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToGet}`;
-    const output = execSync(
-      `node snippets/getTemplate.js ${projectId} ${locationId} ${templateToGet}`
-    );
 
-    assert.match(output, new RegExp(`Template name: ${templateName}`));
+    const getTemplate = require('../snippets/getTemplate');
+    const template = await getTemplate(projectId, locationId, templateToGet);
+
+    assert.strictEqual(template.name, templateName);
   });
 
   it('should delete a template', async () => {
-    const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToDeleteId}`;
-
-    const output = execSync(
-      `node snippets/deleteTemplate.js ${projectId} ${locationId} ${templateToDeleteId}`
+    const deleteTemplate = require('../snippets/deleteTemplate');
+    const response = await deleteTemplate(
+      projectId,
+      locationId,
+      templateToDeleteId
     );
+    assert.isArray(response);
+    assert.isObject(response[0]);
+    assert.isNull(response[1]);
+    assert.isNull(response[2]);
 
-    assert.match(output, new RegExp(`Deleted template ${templateName}`));
+    assert.deepEqual(response[0], {});
   });
 
   it('should list templates', async () => {
-    const output = execSync(
-      `node snippets/listTemplates.js ${projectId} ${locationId}`
+    const listTemplates = require('../snippets/listTemplates');
+    const templates = await listTemplates(projectId, locationId);
+
+    const hasMatchingTemplate = templates.some(template =>
+      template.name.includes(templateIdPrefix)
     );
 
-    const templateNamePattern = `projects/${projectId}/locations/${locationId}/templates/${templateIdPrefix}`;
-
-    assert.match(output, new RegExp(templateNamePattern));
+    assert.isTrue(
+      hasMatchingTemplate,
+      `Should find at least one template with prefix ${templateIdPrefix}`
+    );
   });
 
   it('should list templates with filter', async () => {
     const templateToGet = `${templateIdPrefix}-basic-sdp`;
-    const output = execSync(
-      `node snippets/listTemplatesWithFilter.js ${projectId} ${locationId} ${templateToGet}`
-    );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToGet}`;
 
-    assert.match(output, new RegExp(`Found template ${templateName}`));
+    const listTemplatesWithFilter = require('../snippets/listTemplatesWithFilter');
+    const templates = await listTemplatesWithFilter(
+      projectId,
+      locationId,
+      templateToGet
+    );
+    // Should find exactly one template
+    assert.strictEqual(templates.length, 1);
+    assert.strictEqual(templates[0].name, templateName);
   });
 
   // =================== Template Update Tests ===================
 
   it('should update a template', async () => {
     const templateToUpdate = `${templateIdPrefix}-basic-create`;
-    const output = execSync(
-      `node snippets/updateTemplate.js ${projectId} ${locationId} ${templateToUpdate}`
+
+    const updateTemplate = require('../snippets/updateTemplate');
+    const response = await updateTemplate(
+      projectId,
+      locationId,
+      templateToUpdate
     );
+    assert.property(response, 'filterConfig');
+    assert.property(response.filterConfig, 'piAndJailbreakFilterSettings');
+    assert.property(response.filterConfig, 'maliciousUriFilterSettings');
 
-    assert.match(output, /Updated template filter configuration:/);
+    const piSettings = response.filterConfig.piAndJailbreakFilterSettings;
+    assert.strictEqual(piSettings.filterEnforcement, 'ENABLED');
+    assert.strictEqual(piSettings.confidenceLevel, 'LOW_AND_ABOVE');
 
-    assert.match(output, /piAndJailbreakFilterSettings/);
-    assert.match(output, /filterEnforcement: 'ENABLED'/);
-    assert.match(output, /confidenceLevel: 'LOW_AND_ABOVE'/);
-    assert.match(output, /maliciousUriFilterSettings/);
+    const uriSettings = response.filterConfig.maliciousUriFilterSettings;
+    assert.strictEqual(uriSettings.filterEnforcement, 'ENABLED');
   });
 
   it('should update template labels', async () => {
     const labelKey = 'environment';
     const labelValue = 'testing';
     const templateToUpdate = `${templateIdPrefix}-basic-create`;
-
-    const output = execSync(
-      `node snippets/updateTemplateLabels.js ${projectId} ${locationId} ${templateToUpdate} ${labelKey} ${labelValue}`
-    );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdate}`;
 
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
+    const updateTemplateWithLabels = require('../snippets/updateTemplateLabels');
+    const response = await updateTemplateWithLabels(
+      projectId,
+      locationId,
+      templateToUpdate,
+      labelKey,
+      labelValue
     );
+
+    assert.strictEqual(response.name, templateName);
+    assert.property(response, 'labels');
   });
 
   it('should update template metadata', async () => {
     const templateToUpdateMetadata = `${templateIdPrefix}-metadata`;
-
-    const output = execSync(
-      `node snippets/updateTemplateMetadata.js ${projectId} ${locationId} ${templateToUpdateMetadata}`
-    );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdateMetadata}`;
 
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
+    const updateTemplateMetadata = require('../snippets/updateTemplateMetadata');
+    const response = await updateTemplateMetadata(
+      projectId,
+      locationId,
+      templateToUpdateMetadata
     );
+    assert.strictEqual(response.name, templateName);
+
+    assert.property(response, 'templateMetadata');
+    assert.property(
+      response.templateMetadata,
+      'ignorePartialInvocationFailures'
+    );
+    assert.property(response.templateMetadata, 'logSanitizeOperations');
+    assert.strictEqual(
+      response.templateMetadata.ignorePartialInvocationFailures,
+      true
+    );
+    assert.strictEqual(response.templateMetadata.logSanitizeOperations, false);
   });
 
   it('should update template with mask configuration', async () => {
     const templateToUpdateWithMask = `${templateIdPrefix}-metadata`;
-
-    const output = execSync(
-      `node snippets/updateTemplateWithMaskConfiguration.js ${projectId} ${locationId} ${templateToUpdateWithMask}`
-    );
-
     const templateName = `projects/${projectId}/locations/${locationId}/templates/${templateToUpdateWithMask}`;
 
-    assert.match(
-      output,
-      new RegExp(`Updated Model Armor Template: ${templateName}`)
+    const updateTemplateWithMaskConfiguration = require('../snippets/updateTemplateWithMaskConfiguration');
+    const response = await updateTemplateWithMaskConfiguration(
+      projectId,
+      locationId,
+      templateToUpdateWithMask
     );
+
+    assert.strictEqual(response.name, templateName);
+
+    assert.property(response, 'filterConfig');
+    assert.property(response.filterConfig, 'piAndJailbreakFilterSettings');
+    assert.property(response.filterConfig, 'maliciousUriFilterSettings');
+
+    const piSettings = response.filterConfig.piAndJailbreakFilterSettings;
+    assert.strictEqual(piSettings.filterEnforcement, 'ENABLED');
+    assert.strictEqual(piSettings.confidenceLevel, 'LOW_AND_ABOVE');
   });
 });

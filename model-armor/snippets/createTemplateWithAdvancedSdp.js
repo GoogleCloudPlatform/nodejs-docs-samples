@@ -42,7 +42,7 @@
             `organizations/{organization}/locations/{location}/deidentifyTemplates/{deidentify_template}`
             `projects/{project}/locations/{location}/deidentifyTemplates/{deidentify_template}`
  */
-async function main(
+async function createTemplateWithAdvancedSdp(
   projectId,
   locationId,
   templateId,
@@ -75,55 +75,49 @@ async function main(
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function createTemplateWithAdvancedSdp() {
-    // Configuration for the template with advanced SDP settings
-    const templateConfig = {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.DANGEROUS,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.HARASSMENT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
-        sdpSettings: {
-          advancedConfig: {
-            inspectTemplate: inspectTemplate,
-            deidentifyTemplate: deidentifyTemplate,
+  // Configuration for the template with advanced SDP settings
+  const templateConfig = {
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.DANGEROUS,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
           },
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
+          },
+          {
+            filterType: RaiFilterType.HATE_SPEECH,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+        ],
+      },
+      sdpSettings: {
+        advancedConfig: {
+          inspectTemplate: inspectTemplate,
+          deidentifyTemplate: deidentifyTemplate,
         },
       },
-    };
+    },
+  };
 
-    // Construct request
-    const request = {
-      parent,
-      templateId,
-      template: templateConfig,
-    };
+  // Construct request
+  const request = {
+    parent,
+    templateId,
+    template: templateConfig,
+  };
 
-    // Create the template
-    const [response] = await client.createTemplate(request);
-    console.log(`Created template: ${response.name}`);
-  }
-
-  createTemplateWithAdvancedSdp();
+  // Create the template
+  const [response] = await client.createTemplate(request);
+  return response;
   // [END modelarmor_create_template_with_advanced_sdp]
 }
 
-// Check if this script is being run directly
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = createTemplateWithAdvancedSdp;

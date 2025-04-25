@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location where the template exists.
  * @param {string} templateId - ID of the template to update.
  */
-async function main(projectId, locationId, templateId) {
+async function updateTemplate(projectId, locationId, templateId) {
   // [START modelarmor_update_template]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -48,35 +48,27 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function updateTemplate() {
-    // Build the updated template configuration
-    const updatedTemplate = {
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      filterConfig: {
-        piAndJailbreakFilterSettings: {
-          filterEnforcement: PiAndJailbreakFilterEnforcement.ENABLED,
-          confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
-        },
-        maliciousUriFilterSettings: {
-          filterEnforcement: MaliciousUriFilterEnforcement.ENABLED,
-        },
+  // Build the updated template configuration
+  const updatedTemplate = {
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    filterConfig: {
+      piAndJailbreakFilterSettings: {
+        filterEnforcement: PiAndJailbreakFilterEnforcement.ENABLED,
+        confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
       },
-    };
+      maliciousUriFilterSettings: {
+        filterEnforcement: MaliciousUriFilterEnforcement.ENABLED,
+      },
+    },
+  };
 
-    const request = {
-      template: updatedTemplate,
-    };
+  const request = {
+    template: updatedTemplate,
+  };
 
-    const [response] = await client.updateTemplate(request);
-    console.log(
-      'Updated template filter configuration:',
-      response.filterConfig
-    );
-  }
-
-  return updateTemplate();
+  const [response] = await client.updateTemplate(request);
+  return response;
   // [END modelarmor_update_template]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = updateTemplate;

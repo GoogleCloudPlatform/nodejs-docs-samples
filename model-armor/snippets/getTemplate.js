@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location (region) of the template.
  * @param {string} templateId - Identifier of the template to retrieve.
  */
-async function main(projectId, locationId, templateId) {
+async function getTemplate(projectId, locationId, templateId) {
   // [START modelarmor_get_template]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -40,19 +40,14 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function getModelArmorTemplate() {
-    const request = {
-      name: name,
-    };
+  const request = {
+    name: name,
+  };
 
-    // Run request
-    const response = await client.getTemplate(request);
-    console.log(`Template name: ${response[0].name}`);
-  }
-
-  getModelArmorTemplate();
+  // Run request
+  const [response] = await client.getTemplate(request);
+  return response;
   // [END modelarmor_get_template]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = getTemplate;

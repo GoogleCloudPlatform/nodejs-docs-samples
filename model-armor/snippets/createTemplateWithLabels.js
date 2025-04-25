@@ -23,7 +23,13 @@
  * @param {string} labelKey - The key for the label to add to the template.
  * @param {string} labelValue - The value for the label.
  */
-async function main(projectId, locationId, templateId, labelKey, labelValue) {
+async function createTemplateWithLabels(
+  projectId,
+  locationId,
+  templateId,
+  labelKey,
+  labelValue
+) {
   // [START modelarmor_create_template_with_labels]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -46,47 +52,41 @@ async function main(projectId, locationId, templateId, labelKey, labelValue) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function createTemplateWithLabels() {
-    // Construct the request with template configuration and labels
-    const request = {
-      parent,
-      templateId,
-      template: {
-        filterConfig: {
-          raiSettings: {
-            raiFilters: [
-              {
-                filterType:
-                  protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
-                confidenceLevel:
-                  protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
-                    .HIGH,
-              },
-              {
-                filterType:
-                  protos.google.cloud.modelarmor.v1.RaiFilterType
-                    .SEXUALLY_EXPLICIT,
-                confidenceLevel:
-                  protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
-                    .MEDIUM_AND_ABOVE,
-              },
-            ],
-          },
-        },
-        labels: {
-          [labelKey]: labelValue,
+  // Construct the request with template configuration and labels
+  const request = {
+    parent,
+    templateId,
+    template: {
+      filterConfig: {
+        raiSettings: {
+          raiFilters: [
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+            },
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType
+                  .SEXUALLY_EXPLICIT,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                  .MEDIUM_AND_ABOVE,
+            },
+          ],
         },
       },
-    };
+      labels: {
+        [labelKey]: labelValue,
+      },
+    },
+  };
 
-    // Create the template
-    const [response] = await client.createTemplate(request);
-    console.log(`Created template: ${response.name}`);
-  }
-
-  createTemplateWithLabels();
+  // Create the template
+  const [response] = await client.createTemplate(request);
+  return response;
   // [END modelarmor_create_template_with_labels]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = createTemplateWithLabels;

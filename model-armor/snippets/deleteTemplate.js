@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location (region) of the template, e.g., 'us-central1'.
  * @param {string} templateId - Identifier of the template to delete.
  */
-async function main(projectId, locationId, templateId) {
+async function deleteTemplate(projectId, locationId, templateId) {
   // [START modelarmor_delete_template]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -40,17 +40,11 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function deleteTemplate() {
-    await client.deleteTemplate({
-      name: name,
-    });
-
-    console.log(`Deleted template ${name}`);
-  }
-
-  deleteTemplate();
+  const response = await client.deleteTemplate({
+    name: name,
+  });
+  return response;
   // [END modelarmor_delete_template]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = deleteTemplate;

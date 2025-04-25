@@ -23,7 +23,7 @@
  * @param {string} locationId - Google Cloud location (region) for the template, e.g., 'us-central1'.
  * @param {string} templateId - Unique identifier for the new template.
  */
-async function main(projectId, locationId, templateId) {
+async function createTemplate(projectId, locationId, templateId) {
   // [START modelarmor_create_template]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -44,49 +44,43 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function createTemplate() {
-    /**  Build the Model Armor template with your preferred filters.
-        For more details on filters, please refer to the following doc:
-        https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-     */
-    const templateConfig = {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType:
-                protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
-              confidenceLevel:
-                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType:
-                protos.google.cloud.modelarmor.v1.RaiFilterType
-                  .SEXUALLY_EXPLICIT,
-              confidenceLevel:
-                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
-                  .MEDIUM_AND_ABOVE,
-            },
-          ],
-        },
+  /**  Build the Model Armor template with your preferred filters.
+      For more details on filters, please refer to the following doc:
+      https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+   */
+  const templateConfig = {
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType:
+              protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
+            confidenceLevel:
+              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType:
+              protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel:
+              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                .MEDIUM_AND_ABOVE,
+          },
+        ],
       },
-    };
+    },
+  };
 
-    // Construct request
-    const request = {
-      parent,
-      templateId,
-      template: templateConfig,
-    };
+  // Construct request
+  const request = {
+    parent,
+    templateId,
+    template: templateConfig,
+  };
 
-    // Create the template
-    const [response] = await client.createTemplate(request);
-    console.log(`Created template: ${response.name}`);
-  }
-
-  createTemplate();
+  // Create the template
+  const [response] = await client.createTemplate(request);
+  return response;
   // [END modelarmor_create_template]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = createTemplate;

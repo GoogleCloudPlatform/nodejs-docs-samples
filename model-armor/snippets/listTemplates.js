@@ -20,7 +20,7 @@
  * @param {string} projectId - Google Cloud project ID to list templates from.
  * @param {string} locationId - Google Cloud location (region) to list templates from.
  */
-async function main(projectId, locationId) {
+async function listTemplates(projectId, locationId) {
   // [START modelarmor_list_templates]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -38,21 +38,19 @@ async function main(projectId, locationId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function listTemplates() {
-    const request = {
-      parent: parent,
-    };
+  const request = {
+    parent: parent,
+  };
 
-    // Run request
-    const iterable = client.listTemplatesAsync(request);
-    for await (const template of iterable) {
-      console.log(template.name);
-    }
+  // Run request and collect all results
+  const templates = [];
+  const iterable = client.listTemplatesAsync(request);
+  for await (const template of iterable) {
+    templates.push(template);
   }
 
-  listTemplates();
+  return templates;
   // [END modelarmor_list_templates]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = listTemplates;

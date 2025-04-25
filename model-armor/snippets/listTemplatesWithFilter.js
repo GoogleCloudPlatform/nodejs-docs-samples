@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location (region) to list templates from, e.g., 'us-central1'.
  * @param {string} templateId - Template ID to filter by. Only templates with this ID will be returned.
  */
-async function main(projectId, locationId, templateId) {
+async function listTemplatesWithFilter(projectId, locationId, templateId) {
   // [START modelarmor_list_templates_with_filter]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -40,22 +40,21 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function listModelArmorTemplatesWithFilter() {
-    const request = {
-      parent: parent,
-      filter: `name="${parent}/templates/${templateId}"`,
-    };
+  const request = {
+    parent: parent,
+    filter: `name="${parent}/templates/${templateId}"`,
+  };
 
-    const iterable = await client.listTemplatesAsync(request);
+  // Run request and collect all results
+  const templates = [];
+  const iterable = await client.listTemplatesAsync(request);
 
-    for await (const template of iterable) {
-      console.log(`Found template ${template.name}`);
-    }
+  for await (const template of iterable) {
+    templates.push(template);
   }
 
-  listModelArmorTemplatesWithFilter();
+  return templates;
   // [END modelarmor_list_templates_with_filter]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = listTemplatesWithFilter;

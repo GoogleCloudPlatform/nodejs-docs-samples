@@ -23,7 +23,13 @@
  * @param {string} labelKey - The key for the label to add or update.
  * @param {string} labelValue - The value for the label to add or update.
  */
-async function main(projectId, locationId, templateId, labelKey, labelValue) {
+async function updateTemplateWithLabels(
+  projectId,
+  locationId,
+  templateId,
+  labelKey,
+  labelValue
+) {
   // [START modelarmor_update_template_with_labels]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -41,31 +47,26 @@ async function main(projectId, locationId, templateId, labelKey, labelValue) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function updateTemplateLabels() {
-    const labels = {};
-    labels[labelKey] = labelValue;
+  const labels = {};
+  labels[labelKey] = labelValue;
 
-    const template = {
-      name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
-      labels: labels,
-    };
+  const template = {
+    name: `projects/${projectId}/locations/${locationId}/templates/${templateId}`,
+    labels: labels,
+  };
 
-    const updateMask = {
-      paths: ['labels'],
-    };
+  const updateMask = {
+    paths: ['labels'],
+  };
 
-    const request = {
-      template: template,
-      updateMask: updateMask,
-    };
+  const request = {
+    template: template,
+    updateMask: updateMask,
+  };
 
-    const [response] = await client.updateTemplate(request);
-    console.log(`Updated Model Armor Template: ${response.name}`);
-  }
-
-  return updateTemplateLabels();
+  const [response] = await client.updateTemplate(request);
+  return response;
   // [END modelarmor_update_template_with_labels]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = updateTemplateWithLabels;

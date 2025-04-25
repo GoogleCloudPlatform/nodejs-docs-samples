@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location where the template will be created.
  * @param {string} templateId - ID for the template to create.
  */
-async function main(projectId, locationId, templateId) {
+async function createTemplateWithMetadata(projectId, locationId, templateId) {
   // [START modelarmor_create_template_with_metadata]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -46,47 +46,42 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function createTemplateWithMetadata() {
-    /** Add template metadata to the template.
-     * For more details on template metadata, please refer to the following doc:
-     * https://cloud.google.com/security-command-center/docs/reference/model-armor/rest/v1/projects.locations.templates#templatemetadata
-     */
-    const templateConfig = {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-          ],
-        },
+  /** Add template metadata to the template.
+   * For more details on template metadata, please refer to the following doc:
+   * https://cloud.google.com/security-command-center/docs/reference/model-armor/rest/v1/projects.locations.templates#templatemetadata
+   */
+  const templateConfig = {
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.HATE_SPEECH,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
+          },
+        ],
       },
-      templateMetadata: {
-        ignorePartialInvocationFailures: true,
-        logSanitizeOperations: true,
-      },
-    };
+    },
+    templateMetadata: {
+      ignorePartialInvocationFailures: true,
+      logSanitizeOperations: true,
+    },
+  };
 
-    // Construct request
-    const request = {
-      parent,
-      templateId,
-      template: templateConfig,
-    };
+  // Construct request
+  const request = {
+    parent,
+    templateId,
+    template: templateConfig,
+  };
 
-    // Create the template
-    const [response] = await client.createTemplate(request);
-    console.log(`Created Model Armor Template: ${response.name}`);
-  }
-
-  return createTemplateWithMetadata();
+  // Create the template
+  const [response] = await client.createTemplate(request);
+  return response;
   // [END modelarmor_create_template_with_metadata]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = createTemplateWithMetadata;

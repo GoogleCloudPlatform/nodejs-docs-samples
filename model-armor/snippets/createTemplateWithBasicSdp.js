@@ -21,7 +21,7 @@
  * @param {string} locationId - Google Cloud location where the template will be created.
  * @param {string} templateId - ID for the template to create.
  */
-async function main(projectId, locationId, templateId) {
+async function createTemplateWithBasicSdp(projectId, locationId, templateId) {
   // [START modelarmor_create_template_with_basic_sdp]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -48,52 +48,47 @@ async function main(projectId, locationId, templateId) {
     apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
   });
 
-  async function createTemplateWithBasicSdp() {
-    // Configuration for the template with basic SDP settings
-    const templateConfig = {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.DANGEROUS,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.HARASSMENT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
-        sdpSettings: {
-          basicConfig: {
-            filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
+  // Configuration for the template with basic SDP settings
+  const templateConfig = {
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.DANGEROUS,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
           },
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
+          },
+          {
+            filterType: RaiFilterType.HATE_SPEECH,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.HIGH,
+          },
+        ],
+      },
+      sdpSettings: {
+        basicConfig: {
+          filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
         },
       },
-    };
+    },
+  };
 
-    // Construct request
-    const request = {
-      parent,
-      templateId,
-      template: templateConfig,
-    };
+  // Construct request
+  const request = {
+    parent,
+    templateId,
+    template: templateConfig,
+  };
 
-    const [response] = await client.createTemplate(request);
-    console.log(`Created template: ${response.name}`);
-  }
-
-  return createTemplateWithBasicSdp();
+  const [response] = await client.createTemplate(request);
+  return response;
   // [END modelarmor_create_template_with_basic_sdp]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = createTemplateWithBasicSdp;

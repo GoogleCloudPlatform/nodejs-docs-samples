@@ -58,7 +58,9 @@ async function main(
 
     // Render the parameter version
     const [parameterVersion] = await client.renderParameterVersion(request);
-    console.log(`Rendered parameter version: ${parameterVersion.parameterVersion}`);
+    console.log(
+      `Rendered parameter version: ${parameterVersion.parameterVersion}`
+    );
 
     // If the parameter contains secret references, they will be resolved
     // and the actual secret values will be included in the rendered output.

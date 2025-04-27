@@ -29,7 +29,7 @@ const datasetDisplayName = `temp_create_dataset_test_${uuid()}`;
 const metadataSchemaUri =
   'gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let datasetId;
 

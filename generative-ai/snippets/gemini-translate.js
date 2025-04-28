@@ -26,7 +26,7 @@ async function geminiTranslation(projectId) {
    */
   // projectId = 'your-project-id';
   const location = 'us-central1';
-  const modelName = 'gemini-1.0-pro';
+  const modelName = 'gemini-2.0-flash-001';
   // The text to be translated.
   const text = 'Hello! How are you doing today?';
   // The language code of the target language. Defaults to "fr" (*French).

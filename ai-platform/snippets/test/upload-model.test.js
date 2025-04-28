@@ -30,7 +30,7 @@ const imageUri =
   'gcr.io/cloud-ml-service-public/cloud-ml-online-prediction-model-server-cpu:v1_15py3cmle_op_images_20200229_0210_RC00';
 const artifactUri = 'gs://ucaip-samples-us-central1/model/explain/';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let modelId;
 

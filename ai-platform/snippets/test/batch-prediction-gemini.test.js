@@ -74,7 +74,7 @@ describe('Batch predict with Gemini', async () => {
     batchPredictionGcsJobId = response
       .split('/locations/us-central1/batchPredictionJobs/')[1]
       .split('\n')[0];
-  }).timeout(10000);
+  }).timeout(100000);
 
   it('should create Batch prediction Gemini job with BigQuery', async () => {
     const response = execSync(
@@ -85,5 +85,5 @@ describe('Batch predict with Gemini', async () => {
     batchPredictionBqJobId = response
       .split('/locations/us-central1/batchPredictionJobs/')[1]
       .split('\n')[0];
-  }).timeout(10000);
+  }).timeout(100000);
 });

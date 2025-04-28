@@ -13,9 +13,28 @@ $ node server.js -p 50051
 ```
 
 ### Run the client
+For running the client locally, you'll need either an API key or a JWT auth token:
+
+#### Using a JWT token (recommended for local development)
+You can generate a development-only JWT token using Google Cloud CLI:
+
 ```
-$ node client.js -h localhost:50051
+$ gcloud auth print-identity-token
 ```
+See [get-id-token#generic-dev](https://cloud.google.com/docs/authentication/get-id-token#generic-dev) for more info.
+
+Then run the client using this token:
+```
+$ node client.js -h localhost:50051 -j YOUR_JWT_TOKEN
+```
+
+#### Using an API key
+Alternatively, you can use an API key from your Google Cloud project:
+```
+$ node client.js -h localhost:50051 -k YOUR_API_KEY
+```
+
+You can create API keys in the [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
 
 ## Running on Google Cloud Platform
 ### Setup

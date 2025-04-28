@@ -26,7 +26,7 @@ const cwd = path.join(__dirname, '..');
 
 const customJobId = '7980906305281851392';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get custom job', () => {
   it('should get the specified custom job', async () => {

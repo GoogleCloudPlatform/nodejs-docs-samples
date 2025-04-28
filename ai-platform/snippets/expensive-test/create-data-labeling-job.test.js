@@ -33,7 +33,7 @@ const inputsSchemaUri =
   'gs://google-cloud-aiplatform/schema/datalabelingjob/inputs/image_classification.yaml';
 const annotationSpec = 'daisy';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let dataLabelingJobId;
 

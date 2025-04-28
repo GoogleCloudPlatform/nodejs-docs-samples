@@ -31,7 +31,7 @@ const instructionUri =
   'gs://ucaip-sample-resources/images/datalabeling_instructions.pdf';
 const annotationSpec = 'cartwheel';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let dataLabelingJobId;
 

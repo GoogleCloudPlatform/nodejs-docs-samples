@@ -15,7 +15,6 @@
 'use strict';
 
 const {assert} = require('chai');
-const cp = require('child_process');
 const {v4: uuidv4} = require('uuid');
 
 const {ParameterManagerClient} = require('@google-cloud/parametermanager');
@@ -30,8 +29,6 @@ const regionalClient = new ParameterManagerClient(options);
 
 const {KeyManagementServiceClient} = require('@google-cloud/kms');
 const kmsClient = new KeyManagementServiceClient();
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const parameterId = `test-parameter-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
@@ -231,64 +228,82 @@ describe('Parameter Manager samples', () => {
   });
 
   it('should create a parameter with kms_key', async () => {
-    const output = execSync(
-      `node createParamWithKmsKey.js ${projectId} ${parameterId}-1 ${kmsKey}`
+    const sample = require('../createParamWithKmsKey');
+    const parameter = await sample.main(projectId, parameterId + '-1', kmsKey);
+    parametersToDelete.push(
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1`
     );
-    parametersToDelete.push(`projects/${projectId}/locations/global/parameters/${parameterId}-1`);
-    assert.include(
-      output,
-      `Created parameter projects/${projectId}/locations/global/parameters/${parameterId}-1 with kms_key ${kmsKey}`
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1`
     );
   });
 
   it('should create a regional parameter with kms_key', async () => {
-    const output = execSync(
-      `node regional_samples/createRegionalParamWithKmsKey.js ${projectId} ${locationId} ${regionalParameterId}-1 ${regionalKmsKey}`
+    const sample = require('../regional_samples/createRegionalParamWithKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId + '-1',
+      regionalKmsKey
     );
-    regionalParametersToDelete.push(`projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1`);
-    assert.include(
-      output,
-      `Created regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1 with kms_key ${regionalKmsKey}`
+    regionalParametersToDelete.push(
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1`
+    );
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1`
     );
   });
 
   it('should update a parameter with kms_key', async () => {
-    const output = execSync(
-      `node updateParamKmsKey.js ${projectId} ${parameterId} ${kmsKey}`
-    );
-    assert.include(
-      output,
-      `Updated parameter projects/${projectId}/locations/global/parameters/${parameterId} with kms_key ${kmsKey}`
+    const sample = require('../updateParamKmsKey');
+    const parameter = await sample.main(projectId, parameterId, kmsKey);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
     );
   });
 
   it('should update a regional parameter with kms_key', async () => {
-    const output = execSync(
-      `node regional_samples/updateRegionalParamKmsKey.js ${projectId} ${locationId} ${regionalParameterId} ${regionalKmsKey}`
+    const sample = require('../regional_samples/updateRegionalParamKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      regionalKmsKey
     );
-    assert.include(
-      output,
-      `Updated regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId} with kms_key ${regionalKmsKey}`
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
     );
   });
 
   it('should remove a kms_key for parameter', async () => {
-    const output = execSync(
-      `node removeParamKmsKey.js ${projectId} ${parameterId} ${kmsKey}`
-    );
-    assert.include(
-      output,
-      `Removed kms_key for parameter projects/${projectId}/locations/global/parameters/${parameterId}`
+    const sample = require('../removeParamKmsKey');
+    const parameter = await sample.main(projectId, parameterId);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
     );
   });
 
   it('should remove a kms_key for regional parameter', async () => {
-    const output = execSync(
-      `node regional_samples/removeRegionalParamKmsKey.js ${projectId} ${locationId} ${regionalParameterId} ${regionalKmsKey}`
+    const sample = require('../regional_samples/removeRegionalParamKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId
     );
-    assert.include(
-      output,
-      `Removed kms_key for regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
     );
   });
 });

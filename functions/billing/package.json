@@ -16,7 +16,7 @@
   "dependencies": {
     "@google-cloud/billing": "^4.0.0",
     "@google-cloud/compute": "^4.0.0",
-    "@slack/bolt": "^4.2.1",
+    "@slack/web-api": "^7.9.1",
     "google-auth-library": "^9.0.0",
     "googleapis": "^143.0.0"
   },

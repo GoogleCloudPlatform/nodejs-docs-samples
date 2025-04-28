@@ -111,26 +111,26 @@ describe('Parameter Manager samples', () => {
   it('should create a structured parameter', async () => {
     const sample = require('../createStructuredParam');
     const parameter = await sample.main(projectId, parameterId + '-2');
+    parametersToDelete.push(
+      client.parameterPath(projectId, 'global', `${parameterId}-2`)
+    );
     assert.exists(parameter);
     assert.equal(
       parameter.name,
       `projects/${projectId}/locations/global/parameters/${parameterId}-2`
-    );
-    parametersToDelete.push(
-      client.parameterPath(projectId, 'global', `${parameterId}-2`)
     );
   });
 
   it('should create a unstructured parameter', async () => {
     const sample = require('../createParam');
     const parameter = await sample.main(projectId, parameterId + '-3');
+    parametersToDelete.push(
+      client.parameterPath(projectId, 'global', `${parameterId}-3`)
+    );
     assert.exists(parameter);
     assert.equal(
       parameter.name,
       `projects/${projectId}/locations/global/parameters/${parameterId}-3`
-    );
-    parametersToDelete.push(
-      client.parameterPath(projectId, 'global', `${parameterId}-3`)
     );
   });
 

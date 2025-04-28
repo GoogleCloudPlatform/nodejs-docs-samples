@@ -22,7 +22,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const location = process.env.LOCATION;
 const datastore_id = process.env.DATASTORE_ID;
-const model = 'gemini-1.5-flash-001';
+const model = 'gemini-2.0-flash-001';
 
 describe('Private data grounding', async () => {
   /**
@@ -31,7 +31,7 @@ describe('Private data grounding', async () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-flash-001';
+  // const model = 'gemini-2.0-flash-001';
 
   it('should ground results in private VertexAI search data', async () => {
     const output = execSync(

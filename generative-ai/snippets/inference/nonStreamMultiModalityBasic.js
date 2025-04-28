@@ -20,7 +20,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
  */
 const PROJECT_ID = process.env.CAIP_PROJECT_ID;
 const LOCATION = 'us-central1';
-const MODEL = 'gemini-1.5-flash-001';
+const MODEL = 'gemini-2.0-flash-001';
 
 async function generateContent() {
   // Initialize Vertex AI

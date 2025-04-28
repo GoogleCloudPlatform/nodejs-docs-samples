@@ -22,7 +22,7 @@ async function transcript_audio(projectId = 'PROJECT_ID') {
   const vertexAI = new VertexAI({project: projectId, location: 'us-central1'});
 
   const generativeModel = vertexAI.getGenerativeModel({
-    model: 'gemini-1.5-flash-001',
+    model: 'gemini-2.0-flash-001',
   });
 
   const filePart = {

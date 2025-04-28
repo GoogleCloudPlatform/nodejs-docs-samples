@@ -42,7 +42,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline text sentiment analysis', async function () {
+// Training text objective TEXT_SENTIMENT is no longer supported.
+describe.skip('AI platform create training pipeline text sentiment analysis', async function () {
   this.retries(2);
   it('should create a new text sentiment analysis training pipeline', async () => {
     const stdout = execSync(

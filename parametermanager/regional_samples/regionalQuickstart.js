@@ -83,17 +83,27 @@ async function main(
     console.log(`Created regional parameter version: ${parameterVersion.name}`);
 
     // Get the parameter version
-    const [response] = await client.getParameterVersion({
+    const [paramVersion] = await client.getParameterVersion({
       name: parameterVersion.name,
     });
-    console.log(`Retrieved regional parameter version: ${response.name}`);
-    console.log('Payload:', response.payload.data.toString('utf8'));
+    console.log(`Retrieved regional parameter version: ${paramVersion.name}`);
+    console.log('Payload:', paramVersion.payload.data.toString('utf8'));
+    return paramVersion;
   }
 
-  await regionalQuickstart();
+  return await regionalQuickstart();
   // [END parametermanager_regional_quickstart]
 }
+module.exports.main = main;
 
-// The command-line arguments are passed as an array to main()
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

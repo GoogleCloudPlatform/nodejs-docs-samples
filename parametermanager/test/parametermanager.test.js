@@ -15,7 +15,6 @@
 'use strict';
 
 const {assert} = require('chai');
-const cp = require('child_process');
 const {v4: uuidv4} = require('uuid');
 
 const {ParameterManagerClient} = require('@google-cloud/parametermanager');
@@ -28,16 +27,12 @@ options.apiEndpoint = `parametermanager.${locationId}.rep.googleapis.com`;
 
 const regionalClient = new ParameterManagerClient(options);
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const parameterId = `test-parameter-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
 const parameterVersionId = 'v1';
 
 let parameter;
 let regionalParameter;
-let parameterVersion;
-let regionalParameterVersion;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
@@ -54,6 +49,7 @@ describe('Parameter Manager samples', () => {
         format: 'JSON',
       },
     });
+    parametersToDelete.push(parameter.name);
 
     // Create a test regional parameter
     [regionalParameter] = await regionalClient.createParameter({
@@ -63,9 +59,10 @@ describe('Parameter Manager samples', () => {
         format: 'JSON',
       },
     });
+    regionalParametersToDelete.push(regionalParameter.name);
 
     // Create a version for the global parameter
-    [parameterVersion] = await client.createParameterVersion({
+    await client.createParameterVersion({
       parent: parameter.name,
       parameterVersionId: parameterVersionId,
       parameterVersion: {
@@ -76,7 +73,7 @@ describe('Parameter Manager samples', () => {
     });
 
     // Create a version for the regional parameter
-    [regionalParameterVersion] = await regionalClient.createParameterVersion({
+    await regionalClient.createParameterVersion({
       parent: regionalParameter.name,
       parameterVersionId: parameterVersionId,
       parameterVersion: {
@@ -104,123 +101,148 @@ describe('Parameter Manager samples', () => {
   });
 
   it('should runs the quickstart', async () => {
-    const output = execSync(
-      `node quickstart.js ${projectId} ${parameterId}-quickstart ${parameterVersionId}`
+    const sample = require('../quickstart');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId + '-quickstart',
+      parameterVersionId
     );
-    parametersToDelete.push(`${parameterId}-quickstart`);
-    assert.include(
-      output,
-      `Created parameter projects/${projectId}/locations/global/parameters/${parameterId}-quickstart with format JSON`
+    parametersToDelete.push(
+      `projects/${projectId}/locations/global/parameters/${parameterId}-quickstart`
     );
-    assert.include(
-      output,
-      `Created parameter version: projects/${projectId}/locations/global/parameters/${parameterId}-quickstart/versions/v1`
-    );
-    assert.include(
-      output,
-      `Retrieved parameter version: projects/${projectId}/locations/global/parameters/${parameterId}-quickstart/versions/v1`
-    );
-    assert.include(
-      output,
-      'Payload: {"username":"test-user","host":"localhost"}'
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-quickstart/versions/${parameterVersionId}`
     );
   });
 
   it('should runs the regional quickstart', async () => {
-    const output = execSync(
-      `node regional_samples/regionalQuickstart.js ${projectId} ${locationId} ${regionalParameterId}-quickstart ${parameterVersionId}`
+    const sample = require('../regional_samples/regionalQuickstart');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId + '-quickstart',
+      parameterVersionId
     );
-    regionalParametersToDelete.push(`${regionalParameterId}-quickstart`);
-    assert.include(
-      output,
-      `Created regional parameter projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart with format JSON`
+    regionalParametersToDelete.push(
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart`
     );
-    assert.include(
-      output,
-      `Created regional parameter version: projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart/versions/v1`
-    );
-    assert.include(
-      output,
-      `Retrieved regional parameter version: projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart/versions/v1`
-    );
-    assert.include(
-      output,
-      'Payload: {"username":"test-user","host":"localhost"}'
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart/versions/${parameterVersionId}`
     );
   });
 
   it('should disable a parameter version', async () => {
-    const output = execSync(
-      `node disableParamVersion.js ${projectId} ${parameterId} ${parameterVersionId}`
+    const sample = require('../disableParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Disabled parameter version ${parameterVersion.name} for parameter ${parameterId}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should disable a regional parameter version', async () => {
-    const output = execSync(
-      `node regional_samples/disableRegionalParamVersion.js ${projectId} ${locationId} ${regionalParameterId} ${parameterVersionId}`
+    const sample = require('../regional_samples/disableRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Disabled regional parameter version ${regionalParameterVersion.name} for parameter ${regionalParameterId}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should enable a parameter version', async () => {
-    const output = execSync(
-      `node enableParamVersion.js ${projectId} ${parameterId} ${parameterVersionId}`
+    const sample = require('../enableParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Enabled parameter version ${parameterVersion.name} for parameter ${parameterId}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should enable a regional parameter version', async () => {
-    const output = execSync(
-      `node regional_samples/enableRegionalParamVersion.js ${projectId} ${locationId} ${regionalParameterId} ${parameterVersionId}`
+    const sample = require('../regional_samples/enableRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Enabled regional parameter version ${regionalParameterVersion.name} for parameter ${regionalParameterId}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should delete a parameter version', async () => {
-    const output = execSync(
-      `node deleteParamVersion.js ${projectId} ${parameterId} ${parameterVersionId}`
+    const sample = require('../deleteParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Deleted parameter version: ${parameterVersion.name}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should delete a regional parameter version', async () => {
-    const output = execSync(
-      `node regional_samples/deleteRegionalParamVersion.js ${projectId} ${locationId} ${regionalParameterId} ${parameterVersionId}`
+    const sample = require('../regional_samples/deleteRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
     );
-    assert.include(
-      output,
-      `Deleted regional parameter version: ${regionalParameterVersion.name}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
     );
   });
 
   it('should delete a parameter', async () => {
-    const output = execSync(`node deleteParam.js ${projectId} ${parameterId}`);
-    assert.include(output, `Deleted parameter: ${parameter.name}`);
+    const sample = require('../deleteParam');
+    const parameterVersion = await sample.main(projectId, parameterId);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
+    );
   });
 
   it('should delete a regional parameter', async () => {
-    const output = execSync(
-      `node regional_samples/deleteRegionalParam.js ${projectId} ${locationId} ${regionalParameterId}`
+    const sample = require('../regional_samples/deleteRegionalParam');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId
     );
-    assert.include(
-      output,
-      `Deleted regional parameter: ${regionalParameter.name}`
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
     );
   });
 });

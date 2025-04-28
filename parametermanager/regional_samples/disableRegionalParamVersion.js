@@ -73,17 +73,27 @@ async function main(
     };
 
     // Make the API call to update the parameter version
-    const [response] = await client.updateParameterVersion(request);
+    const [paramVersion] = await client.updateParameterVersion(request);
 
     console.log(
-      `Disabled regional parameter version ${response.name} for parameter ${parameterId}`
+      `Disabled regional parameter version ${paramVersion.name} for parameter ${parameterId}`
     );
-    return response;
+    return paramVersion;
   }
 
-  await disableRegionalParamVersion();
+  return await disableRegionalParamVersion();
   // [END parametermanager_disable_regional_param_version]
 }
+module.exports.main = main;
 
-// The command-line arguments are passed as an array to main().
-main(...process.argv.slice(2)).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

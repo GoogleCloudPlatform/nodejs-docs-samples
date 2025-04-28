@@ -56,12 +56,22 @@ async function main(
     });
 
     console.log(`Deleted regional parameter: ${name}`);
+    return name;
   }
 
-  await deleteRegionalParam();
+  return await deleteRegionalParam();
   // [END parametermanager_delete_regional_param]
 }
+module.exports.main = main;
 
-// The command-line arguments are passed as an array to main()
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

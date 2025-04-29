@@ -10,6 +10,7 @@
   "engines": {
     "node": ">=16.0.0"
   },
+  "type": "module",
   "scripts": {
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=5000"
   },

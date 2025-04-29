@@ -86,8 +86,11 @@ const formatSlackMessage = (query, response) => {
 
 // [START functions_verify_webhook]
 /**
- * Verify that the webhook request came from Slack.
+ * Verify that the webhook request came from Slack by validating its signature.
  *
+ * This function follows the official Slack verification process:
+ * https://api.slack.com/authentication/verifying-requests-from-slack
+ * 
  * @param {object} req Cloud Function request object.
  * @param {string} req.headers Headers Slack SDK uses to authenticate request.
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
@@ -98,28 +101,34 @@ const verifyWebhook = req => {
   const requestTimestamp = req.headers['x-slack-request-timestamp'];
 
   if (!requestSignature || !requestTimestamp) {
-    throw new Error('Missing slack signature or timestamp headers');
+    throw new Error('Missing Slack signature or timestamp headers');
   }
 
-  // Prevent repeat seizures (5 minutes tolerance)
+  // Protect against replay sttacks by ensuring the request is recent (within 5 minutes)
   const fiveMinutesAgo = Math.floor(Date.now() / 1000) - 300;
-  if (parseInt(requestTime, 10) < fiveMinutesAgo) {
-    throw new Error('Requested slack timestamp is too old');
+  if (parseInt(requestTimestamp, 10) < fiveMinutesAgo) {
+    throw new Error('Slack request timestamp is too old');
   }
 
+  // Create the base string as Slack expects: version + ':' timestamp + ':' + raw body
   const basestring = `v0:${requestTimestamp}:${req.rawBody}`;
+
+  // Create a HMAC SHA256 hash using the Slack signing secret
   const hmac = crypto.createHmac('sha256', slackSigningSecret);
   hmac.update(basestring, 'utf-8');
   const digest = `v0=${hmac.digest('hex')}`;
 
-  if (!crypto.timingSafeEqual(Buffer.from(digest, 'utf-8'), Buffer.from(requestSignature, 'utf8'))) {
-    const error = new Error('slack invalid signature');
+  // Perform a constant-time comparison to prevent timing attacks
+  if (
+    !crypto.timingSafeEqual(
+      Buffer.from(digest, 'utf-8'),
+      Buffer.from(requestSignature, 'utf8')
+    )
+  ) {
+    const error = new Error('Invalid Slack signature');
     error.code = 401;
     throw error;
   }
-
-  // This method throws an exception if an incoming request is invalid.
-  verifyRequestSignature(signature);
 };
 // [END functions_verify_webhook]
 

@@ -54,7 +54,10 @@ const getSample = () => {
 
 const getMocks = () => {
   const req = {
-    headers: {},
+    headers: {
+      'x-slack-signature': 'v0=fakesignature',
+      'x-slack-request-timestamp': `${Math.floor(Date.now() / 1000)}`,
+    },
     query: {},
     body: {},
     get: function (header) {

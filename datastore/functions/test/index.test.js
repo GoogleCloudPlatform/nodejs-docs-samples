@@ -27,7 +27,9 @@ const datastore = new Datastore();
 const program = require('../');
 
 const FF_TIMEOUT = 3000;
-const cwd = path.join(__dirname, '..');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const cwd = join(__dirname, '..');
 const NAME = 'sampletask1';
 const KIND = `Task-${uuid.v4()}`;
 const VALUE = {

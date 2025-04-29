@@ -38,15 +38,11 @@ const getSample = () => {
   const googleapis = {
     kgsearch: sinon.stub().returns(kgsearch),
   };
-  const eventsApi = {
-    verifyRequestSignature: sinon.stub().returns(true),
-  };
 
   return {
     program: proxyquire('../', {
       '@googleapis/kgsearch': googleapis,
       process: {env: config},
-      '@slack/events-api': eventsApi,
     }),
     mocks: {
       googleapis: googleapis,
@@ -110,33 +106,6 @@ describe('functions_slack_search', () => {
     const error = new Error('Only POST requests are accepted');
     error.code = 405;
     const mocks = getMocks();
-
-    const kgSearch = getFunction('kgSearch');
-
-    try {
-      await kgSearch(mocks.req, mocks.res);
-    } catch (err) {
-      assert.deepStrictEqual(err, error);
-      assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-      assert.strictEqual(mocks.res.send.callCount, 1);
-      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-      assert.strictEqual(console.error.callCount, 1);
-      assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    }
-  });
-});
-
-describe('functions_slack_search functions_verify_webhook', () => {
-  it('Throws if invalid slack token', async () => {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
-    const mocks = getMocks();
-    const sample = getSample();
-
-    mocks.req.method = method;
-    mocks.req.body.text = 'not empty';
-    sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
 
     const kgSearch = getFunction('kgSearch');
 

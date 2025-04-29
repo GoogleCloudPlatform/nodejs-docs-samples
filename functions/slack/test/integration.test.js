@@ -101,6 +101,12 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const query = 'kolach';
 
     const server = functionsFramework.getTestServer('kgSearch');
-    await supertest(server).post('/').send({text: query}).expect(500);
+    await supertest(server)
+      .post('/')
+      .set({
+        'x-slack-request-timestamp': Date.now().toString(),
+      })
+      .send({text: query})
+      .expect(401);
   });
 });

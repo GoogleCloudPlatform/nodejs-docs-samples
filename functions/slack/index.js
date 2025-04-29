@@ -17,7 +17,7 @@
 // [START functions_slack_setup]
 const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
-const crypto = require('crypto')
+const crypto = require('crypto');
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');

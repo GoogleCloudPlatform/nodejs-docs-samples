@@ -17,7 +17,7 @@
 // [START functions_slack_setup]
 const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
-const {verifyRequestSignature} = require('@slack/events-api');
+const crypto = require('crypto')
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -93,12 +93,30 @@ const formatSlackMessage = (query, response) => {
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
 const verifyWebhook = req => {
-  const signature = {
-    signingSecret: process.env.SLACK_SECRET,
-    requestSignature: req.headers['x-slack-signature'],
-    requestTimestamp: req.headers['x-slack-request-timestamp'],
-    body: req.rawBody,
-  };
+  const slackSigningSecret = process.env.SLACK_SECRET;
+  const requestSignature = req.headers['x-slack-signature'];
+  const requestTimestamp = req.headers['x-slack-request-timestamp'];
+
+  if (!requestSignature || !requestTimestamp) {
+    throw new Error('Missing slack signature or timestamp headers');
+  }
+
+  // Prevent repeat seizures (5 minutes tolerance)
+  const fiveMinutesAgo = Math.floor(Date.now() / 1000) - 300;
+  if (parseInt(requestTime, 10) < fiveMinutesAgo) {
+    throw new Error('Requested slack timestamp is too old');
+  }
+
+  const basestring = `v0:${requestTimestamp}:${req.rawBody}`;
+  const hmac = crypto.createHmac('sha256', slackSigningSecret);
+  hmac.update(basestring, 'utf-8');
+  const digest = `v0=${hmac.digest('hex')}`;
+
+  if (!crypto.timingSafeEqual(Buffer.from(digest, 'utf-8'), Buffer.from(requestSignature, 'utf8'))) {
+    const error = new Error('slack invalid signature');
+    error.code = 401;
+    throw error;
+  }
 
   // This method throws an exception if an incoming request is invalid.
   verifyRequestSignature(signature);

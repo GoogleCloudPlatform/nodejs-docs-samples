@@ -48,7 +48,6 @@ const getSample = () => {
       googleapis: googleapis,
       kgsearch: kgsearch,
       config: config,
-      eventsApi: eventsApi,
     },
   };
 };

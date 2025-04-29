@@ -19,7 +19,7 @@ const crypto = require('crypto');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
-const {SLACK_SECRET} = process.env;
+process.env.SLACK_SECRET = 'testsecret';
 const SLACK_TIMESTAMP = Date.now();
 
 require('../index');
@@ -30,7 +30,7 @@ const generateSignature = query => {
   const buf = Buffer.from(body);
   const plaintext = `v0:${SLACK_TIMESTAMP}:${buf}`;
 
-  const hmac = crypto.createHmac('sha256', SLACK_SECRET);
+  const hmac = crypto.createHmac('sha256', process.env.SLACK_SECRET);
   hmac.update(plaintext);
   const ciphertext = hmac.digest('hex');
 

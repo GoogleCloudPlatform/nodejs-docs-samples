@@ -27,7 +27,7 @@ const clusterClient = new dataproc.v1.ClusterControllerClient({
   apiEndpoint: `${region}-dataproc.googleapis.com`,
 });
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.PROJECT_ID;
 
 const execSync = cmd =>
   cp.execSync(cmd, {

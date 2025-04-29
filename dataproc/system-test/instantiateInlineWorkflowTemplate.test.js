@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 const cp = require('child_process');
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.PROJECT_ID;
 const region = 'us-central1';
 
 const execSync = cmd =>

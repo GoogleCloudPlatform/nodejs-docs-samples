@@ -19,7 +19,7 @@ const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.PROJECT_ID;
 const region = 'us-central1';
 const clusterName = `node-sj-test-${v4()}`;
 const cluster = {

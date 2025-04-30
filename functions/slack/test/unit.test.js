@@ -102,7 +102,8 @@ afterEach(restoreConsole);
 
 describe('functions_slack_search', () => {
   before(async () => {
-    require('../index.js');
+    const mod = require('../index.js');
+    mod.verifyWebhook = () => {};
   });
   it('Send fails if not a POST request', async () => {
     const error = new Error('Only POST requests are accepted');
@@ -127,7 +128,8 @@ describe('functions_slack_search', () => {
 
 describe('functions_slack_request functions_slack_search functions_verify_webhook', () => {
   it('Handles search error', async () => {
-    const error = new Error('error');
+    const error = new Error('Invalid Slack signature');
+    error.code = 401;
     const mocks = getMocks();
     const sample = getSample();
 
@@ -147,7 +149,7 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
           err.message === 'Invalid Slack signature'
       );
       assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
       assert.strictEqual(mocks.res.send.callCount, 1);
       assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
       assert.strictEqual(console.error.callCount, 1);

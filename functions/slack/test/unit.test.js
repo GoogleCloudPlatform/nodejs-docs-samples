@@ -19,7 +19,6 @@ const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const {getFunction} = require('@google-cloud/functions-framework/testing');
-const {verifyWebhook} = require('..');
 
 const method = 'POST';
 const query = 'giraffe';

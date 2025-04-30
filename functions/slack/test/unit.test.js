@@ -103,7 +103,7 @@ afterEach(restoreConsole);
 let mod;
 
 before(() => {
-  mod = proxysquire('../index.js', {
+  mod = proxyquire('../index.js', {
     './index.js': {
       verifyWebhook: () => {},
     },

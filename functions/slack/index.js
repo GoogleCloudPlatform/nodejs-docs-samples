@@ -101,7 +101,9 @@ const verifyWebhook = req => {
   const requestTimestamp = req.headers['x-slack-request-timestamp'];
 
   if (!requestSignature || !requestTimestamp) {
-    throw new Error('Missing Slack signature or timestamp headers');
+    const error = new Error('Missing Slack signature or timestamp headers');
+    error.code = 401;
+    throw error;
   }
 
   // Protect against replay sttacks by ensuring the request is recent (within 5 minutes)

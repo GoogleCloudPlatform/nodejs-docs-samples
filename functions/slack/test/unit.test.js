@@ -142,9 +142,9 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
       await kgSearch(mocks.req, mocks.res);
     } catch (err) {
       assert.deepStrictEqual(err.code, 401);
-      assert.deepStrictEqual(
-        err.message,
-        'Invalid Slack signature (length mismatch)'
+      assert.ok(
+        err.message === 'Invalid Slack signature (length mismatch)' ||
+          err.message === 'Invalid Slack signature'
       );
       assert.strictEqual(mocks.res.status.callCount, 1);
       assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);

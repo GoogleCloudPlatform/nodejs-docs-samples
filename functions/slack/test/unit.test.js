@@ -55,7 +55,7 @@ const getSample = () => {
 const getMocks = () => {
   const req = {
     headers: {
-      'x-slack-signature': 'v0=fakesignature',
+      'x-slack-signature': 'v0=' + 'a'.repeat(64),
       'x-slack-request-timestamp': `${Math.floor(Date.now() / 1000)}`,
     },
     query: {},
@@ -141,7 +141,11 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
     try {
       await kgSearch(mocks.req, mocks.res);
     } catch (err) {
-      assert.deepStrictEqual(err, error);
+      assert.deepStrictEqual(err.code, 401);
+      assert.deepStrictEqual(
+        err.message,
+        'Invalid Slack signature (length mismatch)'
+      );
       assert.strictEqual(mocks.res.status.callCount, 1);
       assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
       assert.strictEqual(mocks.res.send.callCount, 1);

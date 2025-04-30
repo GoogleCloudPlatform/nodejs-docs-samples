@@ -90,7 +90,7 @@ const formatSlackMessage = (query, response) => {
  *
  * This function follows the official Slack verification process:
  * https://api.slack.com/authentication/verifying-requests-from-slack
- * 
+ *
  * @param {object} req Cloud Function request object.
  * @param {string} req.headers Headers Slack SDK uses to authenticate request.
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
@@ -118,13 +118,18 @@ const verifyWebhook = req => {
   hmac.update(basestring, 'utf-8');
   const digest = `v0=${hmac.digest('hex')}`;
 
+  // Convert digest and signature to Buffers for secure comparison
+  const digestBuf = Buffer.from(digest, 'utf-8');
+  const sigBuf = Buffer.from(requestSignature, 'utf-8');
+
+  if (digestBuf.length !== sigBuf.length) {
+    const error = new Error('Invalid Slack signature (length mismatch)');
+    error.code = 401;
+    throw error;
+  }
+
   // Perform a constant-time comparison to prevent timing attacks
-  if (
-    !crypto.timingSafeEqual(
-      Buffer.from(digest, 'utf-8'),
-      Buffer.from(requestSignature, 'utf8')
-    )
-  ) {
+  if (!crypto.timingSafeEqual(digestBuf, sigBuf)) {
     const error = new Error('Invalid Slack signature');
     error.code = 401;
     throw error;

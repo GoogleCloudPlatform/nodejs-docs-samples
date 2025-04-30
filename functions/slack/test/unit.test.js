@@ -102,9 +102,13 @@ afterEach(restoreConsole);
 let mod;
 
 before(() => {
-  mod = proxyquire('../index.js', {
-    './index.js': {
-      verifyWebhook: () => {},
+  proxyquire('../index.js', {
+    crypto: {
+      createHmac: () => ({
+        update: () => {},
+        digest: () => 'v0=' + 'a'.repeat(64),
+      }),
+      timingSafeEqual: () => true,
     },
   });
 });

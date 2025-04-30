@@ -212,3 +212,7 @@ functions.http('kgSearch', async (req, res) => {
   }
 });
 // [END functions_slack_search]
+
+module.exports = {
+  verifyWebhook,
+};

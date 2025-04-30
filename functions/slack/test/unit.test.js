@@ -19,6 +19,7 @@ const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const {getFunction} = require('@google-cloud/functions-framework/testing');
+const {verifyWebhook} = require('..');
 
 const method = 'POST';
 const query = 'giraffe';
@@ -99,16 +100,17 @@ const restoreConsole = function () {
 };
 beforeEach(stubConsole);
 afterEach(restoreConsole);
-before(async () => {
-  const mod = require('../index.js');
-  mod.verifyWebhook = () => {};
+let mod;
+
+before(() => {
+  mod = proxysquire('../index.js', {
+    './index.js': {
+      verifyWebhook: () => {},
+    },
+  });
 });
 
 describe('functions_slack_search', () => {
-  before(async () => {
-    const mod = require('../index.js');
-    mod.verifyWebhook = () => {};
-  });
   it('Send fails if not a POST request', async () => {
     const error = new Error('Only POST requests are accepted');
     error.code = 405;

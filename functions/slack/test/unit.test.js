@@ -99,6 +99,10 @@ const restoreConsole = function () {
 };
 beforeEach(stubConsole);
 afterEach(restoreConsole);
+before(async () => {
+  const mod = require('../index.js');
+  mod.verifyWebhook = () => {};
+});
 
 describe('functions_slack_search', () => {
   before(async () => {

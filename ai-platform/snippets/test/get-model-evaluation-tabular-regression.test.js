@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const modelId = '8842430840248991744';
 const evaluationId = '4944816689650806017';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get tabular regression model evaluation', () => {
   it('should get the evaluation from the specified model', async () => {

@@ -24,7 +24,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const tuningJobId = '2216298782247616512';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get hyperparameter tuning job', () => {
   it('should get the specified hyperparameter tuning job', async () => {

@@ -28,7 +28,7 @@ const datasetId = '6203215905493614592';
 const gcsSourceUri =
   'gs://cloud-ml-data/NL-entity/AIPlatform-unified/entity_extraction_dataset.jsonl';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform import data text entity extraction', () => {
   it('should import data to text entity extraction dataset', async () => {

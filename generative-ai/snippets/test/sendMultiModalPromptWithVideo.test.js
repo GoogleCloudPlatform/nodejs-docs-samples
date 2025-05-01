@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-1.5-flash-001';
+const model = 'gemini-2.0-flash-001';
 
 describe('Generative AI Stream MultiModal with Video', () => {
   /**
@@ -30,7 +30,7 @@ describe('Generative AI Stream MultiModal with Video', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-1.5-flash-001';
+  // const model = 'gemini-2.0-flash-001';
 
   it('should create stream multimodal content', async () => {
     const output = execSync(

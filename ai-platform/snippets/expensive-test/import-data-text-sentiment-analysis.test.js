@@ -28,9 +28,10 @@ const datasetId = '5148529167758786560';
 const gcsSourceUri =
   'gs://cloud-ml-data/NL-sentiment/crowdflower-twitter-claritin-80-10-10.csv';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
-describe('AI platform import data text sentiment analysis', () => {
+// Training text objective TEXT_SENTIMENT is no longer supported.
+describe.skip('AI platform import data text sentiment analysis', () => {
   it('should import data text sentiment analysis to dataset', async () => {
     const stdout = execSync(
       `node ./import-data-text-sentiment-analysis.js ${datasetId} \

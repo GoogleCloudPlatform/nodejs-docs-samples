@@ -39,7 +39,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let batchPredictionJobId;
 
-describe('AI platform create batch prediction job text sentiment analysis', () => {
+// Training text objective TEXT_SENTIMENT is no longer supported.
+describe.skip('AI platform create batch prediction job text sentiment analysis', () => {
   it('should create a text sentiment analysis batch prediction job', async () => {
     const stdout = execSync(
       `node ./create-batch-prediction-job-text-sentiment-analysis.js ${batchPredictionDisplayName} ${modelId} ${gcsSourceUri} ${gcsDestinationOutputUriPrefix} ${project} ${location}`

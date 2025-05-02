@@ -23,11 +23,7 @@
  * @param {string} parameterId - The ID of the parameter for which version details are to be rendered.
  * @param {string} parameterVersionId - The ID of the parameter version to be rendered.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1'
-) {
+async function main(projectId, parameterId, parameterVersionId) {
   // [START parametermanager_render_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

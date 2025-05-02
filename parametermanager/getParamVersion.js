@@ -22,11 +22,7 @@
  * @param {string} parameterId - The ID of the parameter for which the version details are to be retrieved.
  * @param {string} versionId - The version ID of the parameter to retrieve.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  versionId = 'v1'
-) {
+async function main(projectId, parameterId, versionId) {
   // [START parametermanager_get_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

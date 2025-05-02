@@ -24,12 +24,7 @@
  * @param {string} parameterVersionId - The ID of the parameter version to be created.
  * @param {string} secretId - The ID of the secret to be referenced.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  secretId = 'projects/my-project/secrets/application-secret/version/latest'
-) {
+async function main(projectId, parameterId, parameterVersionId, secretId) {
   // [START parametermanager_create_param_version_with_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

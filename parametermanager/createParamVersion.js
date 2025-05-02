@@ -22,12 +22,7 @@
  * @param {string} parameterVersionId - The ID of the parameter version to be created.
  * @param {string} payload - The unformatted string payload to be stored in the new parameter version.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  payload = 'This is unstructured data'
-) {
+async function main(projectId, parameterId, parameterVersionId, payload) {
   // [START parametermanager_create_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

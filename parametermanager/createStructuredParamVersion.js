@@ -24,12 +24,7 @@
  * @param {string} parameterVersionId - The ID of the parameter version to be created.
  * @param {Object} payload - The JSON payload data to be stored in the parameter version.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  payload = {username: 'test-user', host: 'localhost'}
-) {
+async function main(projectId, parameterId, parameterVersionId, payload) {
   // [START parametermanager_create_structured_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

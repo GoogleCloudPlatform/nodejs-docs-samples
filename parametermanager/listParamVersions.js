@@ -22,7 +22,7 @@
  * @param {string} projectId - The Google Cloud project ID where parameter is located.
  * @param {string} parameterId - The parameter ID for which versions are to be listed.
  */
-async function main(projectId = 'my-project', parameterId = 'my-parameter') {
+async function main(projectId, parameterId) {
   // [START parametermanager_list_param_versions]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

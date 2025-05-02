@@ -21,7 +21,7 @@
  * @param {string} projectId - The Google Cloud project ID where the parameter is located.
  * @param {string} parameterId - The ID of the parameter to retrieve.
  */
-async function main(projectId = 'my-project', parameterId = 'my-parameter') {
+async function main(projectId, parameterId) {
   // [START parametermanager_get_param]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

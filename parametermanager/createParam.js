@@ -20,7 +20,7 @@
  * @param {string} projectId - The Google Cloud project ID where the parameter is to be created.
  * @param {string} parameterId - The ID of the parameter to create. This ID must be unique within the project.
  */
-async function main(projectId = 'my-project', parameterId = 'my-parameter') {
+async function main(projectId, parameterId) {
   // [START parametermanager_create_param]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

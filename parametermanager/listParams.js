@@ -20,7 +20,7 @@
  *
  * @param {string} projectId - The Google Cloud project ID where the parameters are located.
  */
-async function main(projectId = 'my-project') {
+async function main(projectId) {
   // [START parametermanager_list_params]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

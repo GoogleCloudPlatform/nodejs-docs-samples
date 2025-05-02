@@ -33,7 +33,10 @@ secretOptions.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
 const secretId = `test-secret-${uuidv4()}`;
 const parameterId = `test-parameter-${uuidv4()}`;
-const parameterVersionId = 'v1';
+const parameterVersionId = `test-version-${uuidv4()}`;
+
+const jsonPayload = '{username: "test-user", host: "localhost"}';
+const payload = 'This is unstructured data';
 
 let parameter;
 let secret;
@@ -41,6 +44,7 @@ let secretVersion;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
+  const parameterVersionsToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
@@ -76,21 +80,45 @@ describe('Parameter Manager samples', () => {
   });
 
   after(async () => {
-    // Clean up
-    parametersToDelete.forEach(async parameterName => {
-      await client.deleteParameterVersion({
-        name: `${parameterName}/versions/v1`,
-      });
-      if (parameterName === parameter.name) {
-        await client.deleteParameterVersion({
-          name: `${parameterName}/versions/v12`,
-        });
+    // Delete all parameter versions first
+    try {
+      await Promise.all(
+        parameterVersionsToDelete.map(async parameterVersionName => {
+          await client.deleteParameterVersion({
+            name: parameterVersionName,
+          });
+        })
+      );
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
       }
-      await client.deleteParameter({name: parameterName});
-    });
-    await secretClient.deleteSecret({
-      name: secret.name,
-    });
+    }
+
+    // Delete all parameters
+    try {
+      await Promise.all(
+        parametersToDelete.map(async parameterName => {
+          await client.deleteParameter({
+            name: parameterName,
+          });
+        })
+      );
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await secretClient.deleteSecret({
+        name: secret.name,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('should create parameter version with secret references', async () => {
@@ -98,22 +126,32 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       parameterId,
-      parameterVersionId + '2',
+      parameterVersionId + '-1',
       secretVersion.name
     );
+    parameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}2`
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}-1`
     );
   });
 
   it('should create a structured parameter', async () => {
     const sample = require('../createStructuredParam');
-    const parameter = await sample.main(projectId, parameterId + '-2');
-    parametersToDelete.push(
-      client.parameterPath(projectId, 'global', `${parameterId}-2`)
+    const parameter = await sample.main(projectId, parameterId + '-1');
+    parametersToDelete.push(parameter.name);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1`
     );
+  });
+
+  it('should create a unstructured parameter', async () => {
+    const sample = require('../createParam');
+    const parameter = await sample.main(projectId, parameterId + '-2');
+    parametersToDelete.push(parameter.name);
     assert.exists(parameter);
     assert.equal(
       parameter.name,
@@ -121,30 +159,19 @@ describe('Parameter Manager samples', () => {
     );
   });
 
-  it('should create a unstructured parameter', async () => {
-    const sample = require('../createParam');
-    const parameter = await sample.main(projectId, parameterId + '-3');
-    parametersToDelete.push(
-      client.parameterPath(projectId, 'global', `${parameterId}-3`)
-    );
-    assert.exists(parameter);
-    assert.equal(
-      parameter.name,
-      `projects/${projectId}/locations/global/parameters/${parameterId}-3`
-    );
-  });
-
   it('should create a structured parameter version', async () => {
     const sample = require('../createStructuredParamVersion');
     const parameterVersion = await sample.main(
       projectId,
-      parameterId + '-2',
-      parameterVersionId
+      parameterId + '-1',
+      parameterVersionId + '-2',
+      jsonPayload
     );
+    parameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/global/parameters/${parameterId}-2/versions/${parameterVersionId}`
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1/versions/${parameterVersionId}-2`
     );
   });
 
@@ -152,10 +179,16 @@ describe('Parameter Manager samples', () => {
     const sample = require('../createParamVersion');
     const parameterVersion = await sample.main(
       projectId,
-      parameterId + '-3',
-      parameterVersionId
+      parameterId + '-2',
+      parameterVersionId + '-3',
+      payload
     );
+    parameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-2/versions/${parameterVersionId}-3`
+    );
   });
 
   it('should list parameters', async () => {
@@ -185,12 +218,12 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       parameterId,
-      parameterVersionId + '2'
+      parameterVersionId + '-1'
     );
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}2`
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}-1`
     );
   });
 
@@ -216,7 +249,7 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       parameterId,
-      parameterVersionId + '2'
+      parameterVersionId + '-1'
     );
     assert.exists(parameterVersion);
   });

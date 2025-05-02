@@ -20,7 +20,7 @@
  * @param {string} projectId - The Google Cloud project ID where the parameter is to be updated.
  * @param {string} parameterId - The ID of the parameter to update. This ID must be unique within the project.
  */
-async function main(projectId = 'my-project', parameterId = 'my-parameter') {
+async function main(projectId, parameterId) {
   // [START parametermanager_remove_param_kms_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

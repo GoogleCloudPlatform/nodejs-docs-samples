@@ -22,12 +22,7 @@
  * @param {string} parameterId - The ID of the parameter to update. This ID must be unique within the project.
  * @param {string} kmsKey - The ID of the KMS key to be used for encryption.
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  kmsKey = 'projects/my-project/locations/us-central1/keyRings/my-key-ring/cryptoKeys/my-encryption-key'
-) {
+async function main(projectId, locationId, parameterId, kmsKey) {
   // [START parametermanager_update_regional_param_kms_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

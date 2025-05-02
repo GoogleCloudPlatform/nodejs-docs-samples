@@ -21,11 +21,7 @@
  * @param {string} parameterId - The ID of the parameter to create. This ID must be unique within the project.
  * @param {string} kmsKey - The ID of the KMS key to be used for encryption.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  kmsKey = 'projects/my-project/locations/global/keyRings/my-key-ring/cryptoKeys/my-encryption-key'
-) {
+async function main(projectId, parameterId, kmsKey) {
   // [START parametermanager_create_param_with_kms_key]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

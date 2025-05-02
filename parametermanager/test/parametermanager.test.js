@@ -179,11 +179,23 @@ describe('Parameter Manager samples', () => {
   after(async () => {
     // Clean up
     parametersToDelete.forEach(async parameterName => {
-      await client.deleteParameter({name: parameterName});
+      try {
+        await client.deleteParameter({name: parameterName});
+      } catch (err) {
+        if (!err.message.includes('NOT_FOUND')) {
+          throw err;
+        }
+      }
     });
 
     regionalParametersToDelete.forEach(async regionalParameterName => {
-      await regionalClient.deleteParameter({name: regionalParameterName});
+      try {
+        await regionalClient.deleteParameter({name: regionalParameterName});
+      } catch (err) {
+        if (!err.message.includes('NOT_FOUND')) {
+          throw err;
+        }
+      }
     });
 
     try {

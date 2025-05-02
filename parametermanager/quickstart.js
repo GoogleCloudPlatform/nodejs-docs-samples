@@ -29,11 +29,7 @@
  * @param {string} parameterId - The ID of the new parameter.
  * @param {string} parameterVersionId - The ID of the parameter version.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1'
-) {
+async function main(projectId, parameterId, parameterVersionId) {
   // [START parametermanager_quickstart]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

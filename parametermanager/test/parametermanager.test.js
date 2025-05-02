@@ -29,14 +29,18 @@ const regionalClient = new ParameterManagerClient(options);
 
 const parameterId = `test-parameter-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
-const parameterVersionId = 'v1';
+const parameterVersionId = `test-version-${uuidv4()}`;
 
 let parameter;
 let regionalParameter;
+let parameterVersion;
+let regionalParameterVersion;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
   const regionalParametersToDelete = [];
+  const regionalParameterVersionsToDelete = [];
+  const parameterVersionsToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
@@ -62,7 +66,7 @@ describe('Parameter Manager samples', () => {
     regionalParametersToDelete.push(regionalParameter.name);
 
     // Create a version for the global parameter
-    await client.createParameterVersion({
+    [parameterVersion] = await client.createParameterVersion({
       parent: parameter.name,
       parameterVersionId: parameterVersionId,
       parameterVersion: {
@@ -71,9 +75,10 @@ describe('Parameter Manager samples', () => {
         },
       },
     });
+    parameterVersionsToDelete.push(parameterVersion.name);
 
     // Create a version for the regional parameter
-    await regionalClient.createParameterVersion({
+    [regionalParameterVersion] = await regionalClient.createParameterVersion({
       parent: regionalParameter.name,
       parameterVersionId: parameterVersionId,
       parameterVersion: {
@@ -82,22 +87,67 @@ describe('Parameter Manager samples', () => {
         },
       },
     });
+    regionalParameterVersionsToDelete.push(regionalParameterVersion.name);
   });
 
   after(async () => {
-    // Clean up
-    parametersToDelete.forEach(async parameterName => {
-      await client.deleteParameterVersion({
-        name: `${parameterName}/versions/v1`,
-      });
-      await client.deleteParameter({name: parameterName});
-    });
-    regionalParametersToDelete.forEach(async regionalParameterName => {
-      await regionalClient.deleteParameterVersion({
-        name: `${regionalParameterName}/versions/v1`,
-      });
-      await regionalClient.deleteParameter({name: regionalParameterName});
-    });
+    // Delete all parameter versions first
+    await Promise.all(
+      regionalParameterVersionsToDelete.map(
+        async regionalParameterVersionName => {
+          try {
+            await regionalClient.deleteParameterVersion({
+              name: regionalParameterVersionName,
+            });
+          } catch (err) {
+            if (!err.message.includes('NOT_FOUND')) {
+              throw err;
+            }
+          }
+        }
+      )
+    );
+
+    await Promise.all(
+      parameterVersionsToDelete.map(async parameterVersionName => {
+        try {
+          await client.deleteParameterVersion({
+            name: parameterVersionName,
+          });
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
+
+    // Delete all parameters
+    await Promise.all(
+      parametersToDelete.map(async parameterName => {
+        try {
+          await client.deleteParameter({
+            name: parameterName,
+          });
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
+
+    await Promise.all(
+      regionalParametersToDelete.map(async regionalParameterName => {
+        try {
+          await regionalClient.deleteParameter({name: regionalParameterName});
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
   });
 
   it('should runs the quickstart', async () => {
@@ -110,6 +160,7 @@ describe('Parameter Manager samples', () => {
     parametersToDelete.push(
       `projects/${projectId}/locations/global/parameters/${parameterId}-quickstart`
     );
+    parameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
@@ -128,6 +179,7 @@ describe('Parameter Manager samples', () => {
     regionalParametersToDelete.push(
       `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart`
     );
+    regionalParameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,

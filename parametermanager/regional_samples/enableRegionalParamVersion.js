@@ -24,12 +24,7 @@
  * @param {string} parameterId - The ID of the parameter for which version is to be enabled.
  * @param {string} versionId - The version ID of the parameter to be enabled.
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  versionId = 'v1'
-) {
+async function main(projectId, locationId, parameterId, versionId) {
   // [START parametermanager_enable_regional_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

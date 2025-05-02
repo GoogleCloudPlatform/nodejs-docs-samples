@@ -24,12 +24,7 @@
  * @param {string} parameterId - The ID of the parameter to create.
  * @param {string} parameterVersionId - The ID of the parameter version to create.
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1'
-) {
+async function main(projectId, locationId, parameterId, parameterVersionId) {
   // [START parametermanager_regional_quickstart]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

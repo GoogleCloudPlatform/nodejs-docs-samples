@@ -23,11 +23,7 @@
  * @param {string} parameterId - The ID of the parameter for which version is to be disabled.
  * @param {string} versionId - The version ID of the parameter to be disabled.
  */
-async function main(
-  projectId = 'my-project',
-  parameterId = 'my-parameter',
-  versionId = 'v1'
-) {
+async function main(projectId, parameterId, versionId) {
   // [START parametermanager_disable_param_version]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

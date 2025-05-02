@@ -22,11 +22,7 @@
  * @param {string} locationId - The ID of the region where parameter is located.
  * @param {string} parameterId - The ID of the parameter to delete.
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter'
-) {
+async function main(projectId, locationId, parameterId) {
   // [START parametermanager_delete_regional_param]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

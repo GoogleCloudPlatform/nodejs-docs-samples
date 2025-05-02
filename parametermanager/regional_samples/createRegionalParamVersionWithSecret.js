@@ -26,11 +26,11 @@
  * @param {string} secretId - The ID of the secret to be referenced.
  */
 async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  secretId = 'projects/my-project/secrets/application-secret/version/latest'
+  projectId,
+  locationId,
+  parameterId,
+  parameterVersionId,
+  secretId
 ) {
   // [START parametermanager_create_regional_param_version_with_secret]
   /**

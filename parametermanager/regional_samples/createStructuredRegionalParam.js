@@ -14,8 +14,6 @@
 
 'use strict';
 
-const {protos} = require('@google-cloud/parametermanager');
-
 /**
  * Creates a parameter in the specified region of the specified project using the Google Cloud Parameter Manager SDK.
  * The parameter is created with the specified format type.
@@ -25,12 +23,7 @@ const {protos} = require('@google-cloud/parametermanager');
  * @param {string} parameterId - The ID of the parameter to create.
  * @param {string} formatType - The format type of the parameter (UNFORMATTED, YAML, JSON).
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-json-parameter',
-  formatType = protos.google.cloud.parametermanager.v1.ParameterFormat.JSON
-) {
+async function main(projectId, locationId, parameterId, formatType) {
   // [START parametermanager_create_structured_regional_param]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

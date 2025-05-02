@@ -36,7 +36,10 @@ const regionalSecretClient = new SecretManagerServiceClient(secretOptions);
 
 const secretId = `test-secret-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
-const parameterVersionId = 'v1';
+const parameterVersionId = `test-version-${uuidv4()}`;
+
+const jsonPayload = '{username: "test-user", host: "localhost"}';
+const payload = 'This is unstructured data';
 
 let regionalParameter;
 let regionalSecret;
@@ -44,6 +47,7 @@ let regionalSecretVersion;
 
 describe('Parameter Manager samples', () => {
   const regionalParametersToDelete = [];
+  const regionalParameterVersionsToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
@@ -74,21 +78,44 @@ describe('Parameter Manager samples', () => {
   });
 
   after(async () => {
-    // Clean up
-    regionalParametersToDelete.forEach(async regionalParameterName => {
-      await regionalClient.deleteParameterVersion({
-        name: `${regionalParameterName}/versions/v1`,
-      });
-      if (regionalParameterName === regionalParameter.name) {
-        await regionalClient.deleteParameterVersion({
-          name: `${regionalParameterName}/versions/v12`,
-        });
+    // Delete all parameter versions first
+    try {
+      await Promise.all(
+        regionalParameterVersionsToDelete.map(
+          async regionalParameterVersionName => {
+            await regionalClient.deleteParameterVersion({
+              name: regionalParameterVersionName,
+            });
+          }
+        )
+      );
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
       }
-      await regionalClient.deleteParameter({name: regionalParameterName});
-    });
-    await regionalSecretClient.deleteSecret({
-      name: regionalSecret.name,
-    });
+    }
+
+    // Delete all parameters
+    try {
+      await Promise.all(
+        regionalParametersToDelete.map(async regionalParameterName => {
+          await regionalClient.deleteParameter({name: regionalParameterName});
+        })
+      );
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+    try {
+      await regionalSecretClient.deleteSecret({
+        name: regionalSecret.name,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('should create regional parameter version with secret references', async () => {
@@ -97,13 +124,14 @@ describe('Parameter Manager samples', () => {
       projectId,
       locationId,
       regionalParameterId,
-      parameterVersionId + '2',
+      parameterVersionId + '-1',
       regionalSecretVersion.name
     );
+    regionalParameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}2`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}-1`
     );
   });
 
@@ -112,15 +140,13 @@ describe('Parameter Manager samples', () => {
     const parameter = await sample.main(
       projectId,
       locationId,
-      regionalParameterId + '-2'
+      regionalParameterId + '-1'
     );
-    regionalParametersToDelete.push(
-      client.parameterPath(projectId, locationId, `${regionalParameterId}-2`)
-    );
+    regionalParametersToDelete.push(parameter.name);
     assert.exists(parameter);
     assert.equal(
       parameter.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-2`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1`
     );
   });
 
@@ -129,15 +155,13 @@ describe('Parameter Manager samples', () => {
     const parameter = await sample.main(
       projectId,
       locationId,
-      regionalParameterId + '-3'
+      regionalParameterId + '-2'
     );
-    regionalParametersToDelete.push(
-      client.parameterPath(projectId, locationId, `${regionalParameterId}-3`)
-    );
+    regionalParametersToDelete.push(parameter.name);
     assert.exists(parameter);
     assert.equal(
       parameter.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-3`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-2`
     );
   });
 
@@ -146,13 +170,15 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       locationId,
-      regionalParameterId + '-2',
-      parameterVersionId
+      regionalParameterId + '-1',
+      parameterVersionId + '-2',
+      jsonPayload
     );
+    regionalParameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-2/versions/${parameterVersionId}`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-1/versions/${parameterVersionId}-2`
     );
   });
 
@@ -161,13 +187,15 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       locationId,
-      regionalParameterId + '-3',
-      parameterVersionId
+      regionalParameterId + '-2',
+      parameterVersionId + '-3',
+      payload
     );
+    regionalParameterVersionsToDelete.push(parameterVersion.name);
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-3/versions/${parameterVersionId}`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-2/versions/${parameterVersionId}-3`
     );
   });
 
@@ -182,23 +210,23 @@ describe('Parameter Manager samples', () => {
     const parameter = await sample.main(
       projectId,
       locationId,
-      regionalParameterId + '-2'
+      regionalParameterId
     );
     assert.exists(parameter);
     assert.equal(
       parameter.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-2`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
     );
   });
 
   it('should list regional parameter versions', async () => {
     const sample = require('../regional_samples/listRegionalParamVersions');
-    const parameterVersion = await sample.main(
+    const parameterVersions = await sample.main(
       projectId,
       locationId,
       regionalParameterId
     );
-    assert.exists(parameterVersion);
+    assert.exists(parameterVersions);
   });
 
   it('should get a regional parameter version', async () => {
@@ -207,13 +235,14 @@ describe('Parameter Manager samples', () => {
       projectId,
       locationId,
       regionalParameterId,
-      parameterVersionId + '2'
+      parameterVersionId + '-1'
     );
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion.name,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}2`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}-1`
     );
+    assert.equal(parameterVersion.disabled, false);
   });
 
   it('should render regional parameter version', async () => {
@@ -241,7 +270,7 @@ describe('Parameter Manager samples', () => {
       projectId,
       locationId,
       regionalParameterId,
-      parameterVersionId + '2'
+      parameterVersionId + '-1'
     );
     assert.exists(parameterVersion);
   });

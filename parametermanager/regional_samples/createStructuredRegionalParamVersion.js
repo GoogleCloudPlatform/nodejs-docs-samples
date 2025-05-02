@@ -26,11 +26,11 @@
  * @param {Object} payload - The JSON data payload to be stored in the parameter version.
  */
 async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  payload = {username: 'test-user', host: 'localhost'}
+  projectId,
+  locationId,
+  parameterId,
+  parameterVersionId,
+  payload
 ) {
   // [START parametermanager_create_structured_regional_param_version]
   /**

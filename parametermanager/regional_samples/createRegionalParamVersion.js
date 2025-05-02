@@ -26,11 +26,11 @@
  * @param {string} payload - The unformatted string payload to be stored in the parameter version.
  */
 async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-parameter',
-  parameterVersionId = 'v1',
-  payload = 'This is unstructured data'
+  projectId,
+  locationId,
+  parameterId,
+  parameterVersionId,
+  payload
 ) {
   // [START parametermanager_create_regional_param_version]
   /**

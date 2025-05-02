@@ -23,11 +23,7 @@
  * @param {string} locationId - The ID of the region where parameter is to be created.
  * @param {string} parameterId - The ID of the parameter to create. This ID must be unique within the project location.
  */
-async function main(
-  projectId = 'my-project',
-  locationId = 'us-central1',
-  parameterId = 'my-regional-parameter'
-) {
+async function main(projectId, locationId, parameterId) {
   // [START parametermanager_create_regional_param]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

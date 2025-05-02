@@ -79,34 +79,35 @@ describe('Parameter Manager samples', () => {
 
   after(async () => {
     // Delete all parameter versions first
-    try {
-      await Promise.all(
-        regionalParameterVersionsToDelete.map(
-          async regionalParameterVersionName => {
+    await Promise.all(
+      regionalParameterVersionsToDelete.map(
+        async regionalParameterVersionName => {
+          try {
             await regionalClient.deleteParameterVersion({
               name: regionalParameterVersionName,
             });
+          } catch (err) {
+            if (!err.message.includes('NOT_FOUND')) {
+              throw err;
+            }
           }
-        )
-      );
-    } catch (err) {
-      if (!err.message.includes('NOT_FOUND')) {
-        throw err;
-      }
-    }
+        }
+      )
+    );
 
     // Delete all parameters
-    try {
-      await Promise.all(
-        regionalParametersToDelete.map(async regionalParameterName => {
+    await Promise.all(
+      regionalParametersToDelete.map(async regionalParameterName => {
+        try {
           await regionalClient.deleteParameter({name: regionalParameterName});
-        })
-      );
-    } catch (err) {
-      if (!err.message.includes('NOT_FOUND')) {
-        throw err;
-      }
-    }
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
+
     try {
       await regionalSecretClient.deleteSecret({
         name: regionalSecret.name,

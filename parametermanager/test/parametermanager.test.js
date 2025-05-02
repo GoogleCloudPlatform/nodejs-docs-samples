@@ -81,34 +81,34 @@ describe('Parameter Manager samples', () => {
 
   after(async () => {
     // Delete all parameter versions first
-    try {
-      await Promise.all(
-        parameterVersionsToDelete.map(async parameterVersionName => {
+    await Promise.all(
+      parameterVersionsToDelete.map(async parameterVersionName => {
+        try {
           await client.deleteParameterVersion({
             name: parameterVersionName,
           });
-        })
-      );
-    } catch (err) {
-      if (!err.message.includes('NOT_FOUND')) {
-        throw err;
-      }
-    }
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
 
     // Delete all parameters
-    try {
-      await Promise.all(
-        parametersToDelete.map(async parameterName => {
+    await Promise.all(
+      parametersToDelete.map(async parameterName => {
+        try {
           await client.deleteParameter({
             name: parameterName,
           });
-        })
-      );
-    } catch (err) {
-      if (!err.message.includes('NOT_FOUND')) {
-        throw err;
-      }
-    }
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
 
     try {
       await secretClient.deleteSecret({

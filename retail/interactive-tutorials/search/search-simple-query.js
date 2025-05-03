@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START retail_search_simple_query]
+
 'use strict';
 
 async function main() {
@@ -69,6 +71,8 @@ async function main() {
 
   callSearch();
 }
+
+// [END retail_search_simple_query]
 
 process.on('unhandledRejection', err => {
   console.error(err.message);

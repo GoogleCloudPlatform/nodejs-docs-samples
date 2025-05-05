@@ -60,9 +60,3 @@ async function sanitizeModelResponseWithUserPrompt(
 }
 
 module.exports = sanitizeModelResponseWithUserPrompt;
-
-// TODO(developer): Uncomment below lines before running the sample.
-// sanitizeModelResponseWithUserPrompt(...process.argv.slice(2)).catch(err => {
-//   console.error(err.message);
-//   process.exitCode = 1;
-// });

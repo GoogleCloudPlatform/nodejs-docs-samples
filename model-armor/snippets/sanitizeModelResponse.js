@@ -56,9 +56,3 @@ async function sanitizeModelResponse(
 }
 
 module.exports = sanitizeModelResponse;
-
-// TODO(developer): Uncomment below lines before running the sample.
-// sanitizeModelResponse(...process.argv.slice(2)).catch(err => {
-//   console.error(err.message);
-//   process.exitCode = 1;
-// });

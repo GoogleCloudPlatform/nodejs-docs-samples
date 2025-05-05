@@ -70,9 +70,3 @@ async function screenPdfFile(
 }
 
 module.exports = screenPdfFile;
-
-// TODO(developer): Uncomment below lines before running the sample.
-// screenPdfFile(...process.argv.slice(2)).catch(err => {
-//   console.error(err.message);
-//   process.exitCode = 1;
-// });

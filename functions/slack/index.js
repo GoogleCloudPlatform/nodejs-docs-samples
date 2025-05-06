@@ -181,7 +181,7 @@ const makeSearchRequest = query => {
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-functions.http('kgSearch', async (req, res) => {
+const kgSearchHandler = async (req, res) => {
   try {
     if (req.method !== 'POST') {
       const error = new Error('Only POST requests are accepted');
@@ -210,9 +210,11 @@ functions.http('kgSearch', async (req, res) => {
     res.status(err.code || 500).send(err);
     return Promise.reject(err);
   }
-});
+};
+functions.http('kgsearch', kgSearchHandler);
 // [END functions_slack_search]
 
 module.exports = {
   verifyWebhook,
+  kgSearchHandler,
 };

@@ -99,18 +99,9 @@ const restoreConsole = function () {
 };
 beforeEach(stubConsole);
 afterEach(restoreConsole);
-let mod;
 
 before(() => {
-  proxyquire('../index.js', {
-    crypto: {
-      createHmac: () => ({
-        update: () => {},
-        digest: () => 'v0=' + 'a'.repeat(64),
-      }),
-      timingSafeEqual: () => true,
-    },
-  });
+  require('..').verifyWebhook = () => {};
 });
 
 describe('functions_slack_search', () => {

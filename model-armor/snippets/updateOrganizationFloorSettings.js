@@ -19,7 +19,7 @@
  *
  * @param {string} organizationId - Google Cloud organization ID for which floor settings need to be updated.
  */
-async function main(organizationId) {
+async function updateOrganizationFloorSettings(organizationId) {
   // [START modelarmor_update_organization_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -59,10 +59,8 @@ async function main(organizationId) {
   };
 
   const [response] = await client.updateFloorSetting(request);
-  console.log('Updated organization floor settings:', response);
-
+  return response;
   // [END modelarmor_update_organization_floor_settings]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = updateOrganizationFloorSettings;

@@ -92,7 +92,10 @@ async function disableFloorSettings() {
           paths: ['enable_floor_setting_enforcement'],
         },
       });
-      console.log('Disabled project floor settings:', updatedProjectSettings.name);
+      console.log(
+        'Disabled project floor settings:',
+        updatedProjectSettings.name
+      );
     }
 
     // Disable folder floor settings if folderId is available
@@ -111,7 +114,10 @@ async function disableFloorSettings() {
             paths: ['enable_floor_setting_enforcement'],
           },
         });
-        console.log('Disabled folder floor settings:', updatedFolderSettings.name);
+        console.log(
+          'Disabled folder floor settings:',
+          updatedFolderSettings.name
+        );
       }
     }
 
@@ -131,7 +137,10 @@ async function disableFloorSettings() {
             paths: ['enable_floor_setting_enforcement'],
           },
         });
-        console.log('Disabled organization floor settings:', updatedOrgSettings.name);
+        console.log(
+          'Disabled organization floor settings:',
+          updatedOrgSettings.name
+        );
       }
     }
   } catch (error) {
@@ -230,7 +239,7 @@ describe('Model Armor tests', () => {
   after(async () => {
     // Disable floor settings to restore original state
     await disableFloorSettings();
-    
+
     // Clean up all templates
     const directTemplates = [emptyTemplateId, basicTemplateId];
     for (const templateId of directTemplates) {

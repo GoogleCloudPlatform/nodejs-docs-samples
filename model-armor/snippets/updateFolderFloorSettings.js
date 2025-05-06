@@ -19,7 +19,7 @@
  *
  * @param {string} folderId - Google Cloud folder ID for which floor settings need to be updated.
  */
-async function main(folderId) {
+async function updateFolderFloorSettings(folderId) {
   // [START modelarmor_update_folder_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -34,40 +34,35 @@ async function main(folderId) {
   // Instantiates a client
   const client = new ModelArmorClient();
 
-  async function updateFolderFloorSettings() {
-    const floorSettingsName = `folders/${folderId}/locations/global/floorSetting`;
+  const floorSettingsName = `folders/${folderId}/locations/global/floorSetting`;
 
-    // Build the floor settings with your preferred filters
-    // For more details on filters, please refer to the following doc:
-    // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-    const floorSetting = {
-      name: floorSettingsName,
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType:
-                protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
-              confidenceLevel:
-                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
+  // Build the floor settings with your preferred filters
+  // For more details on filters, please refer to the following doc:
+  // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+  const floorSetting = {
+    name: floorSettingsName,
+    filterConfig: {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType:
+              protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
+            confidenceLevel:
+              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+          },
+        ],
       },
-      enableFloorSettingEnforcement: true,
-    };
+    },
+    enableFloorSettingEnforcement: true,
+  };
 
-    const request = {
-      floorSetting: floorSetting,
-    };
+  const request = {
+    floorSetting: floorSetting,
+  };
 
-    const [response] = await client.updateFloorSetting(request);
-    console.log('Updated folder floor settings', response);
-  }
-
-  updateFolderFloorSettings();
+  const [response] = await client.updateFloorSetting(request);
+  return response;
   // [END modelarmor_update_folder_floor_settings]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = updateFolderFloorSettings;

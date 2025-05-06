@@ -19,7 +19,7 @@
  *
  * @param {string} projectId - Google Cloud project ID for which floor settings need to be updated.
  */
-async function main(projectId) {
+async function updateProjectFloorSettings(projectId) {
   // [START modelarmor_update_project_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -59,9 +59,8 @@ async function main(projectId) {
   };
 
   const [response] = await client.updateFloorSetting(request);
-  console.log('Updated project floor settings:', response);
+  return response;
   // [END modelarmor_update_project_floor_settings]
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+module.exports = updateProjectFloorSettings;

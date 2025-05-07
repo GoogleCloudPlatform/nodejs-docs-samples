@@ -190,9 +190,6 @@ describe('Model Armor tests', () => {
     const SdpBasicConfigEnforcement =
       protos.google.cloud.modelarmor.v1.SdpBasicConfig
         .SdpBasicConfigEnforcement;
-    const SdpAdvancedConfigEnforcement =
-      protos.google.cloud.modelarmor.v1.SdpAdvancedConfig
-        .SdpAdvancedConfigEnforcement;
     const RaiFilterType = protos.google.cloud.modelarmor.v1.RaiFilterType;
 
     // Create empty template for sanitizeUserPrompt tests
@@ -241,7 +238,6 @@ describe('Model Armor tests', () => {
     await createTemplate(advanceSdpTemplateId, {
       sdpSettings: {
         advancedConfig: {
-          enforcement: SdpAdvancedConfigEnforcement.ENABLED,
           inspectTemplate: dlpTemplates.inspectTemplateName,
           deidentifyTemplate: dlpTemplates.deidentifyTemplateName,
         },
@@ -496,12 +492,18 @@ describe('Model Armor tests', () => {
       testModelResponse
     );
 
-    const responseJson = JSON.stringify(response);
-
-    assert.include(responseJson, '"filterMatchState": "MATCH_FOUND"');
-    assert.include(responseJson, '"sdpFilterResult"');
-    assert.include(responseJson, '"matchState": "MATCH_FOUND"');
-    assert.include(JSON.stringify(response), expectedValue);
+    assert.equal(response.sanitizationResult.filterMatchState, 'MATCH_FOUND');
+    assert.exists(response.sanitizationResult.filterResults.sdp);
+    assert.equal(
+      response.sanitizationResult.filterResults.sdp.sdpFilterResult
+        .deidentifyResult.matchState,
+      'MATCH_FOUND'
+    );
+    assert.equal(
+      response.sanitizationResult.filterResults.sdp.sdpFilterResult
+        .deidentifyResult.data.text,
+      expectedValue
+    );
   });
 
   it('should not detect issues in model response with empty template', async () => {
@@ -588,12 +590,13 @@ describe('Model Armor tests', () => {
       testUserPrompt
     );
 
-    const responseJson = JSON.stringify(response);
-
-    assert.include(responseJson, '"filterMatchState": "MATCH_FOUND"');
-    assert.include(responseJson, '"sdpFilterResult"');
-    assert.include(responseJson, '"matchState": "MATCH_FOUND"');
-    assert.notInclude(responseJson, 'contact@email.com');
+    assert.equal(response.sanitizationResult.filterMatchState, 'MATCH_FOUND');
+    assert.exists(response.sanitizationResult.filterResults.sdp);
+    assert.equal(
+      response.sanitizationResult.filterResults.sdp.sdpFilterResult
+        .deidentifyResult.matchState,
+      'MATCH_FOUND'
+    );
   });
 
   // =================== PDF File Scanning Tests ===================

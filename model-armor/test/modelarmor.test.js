@@ -15,7 +15,6 @@
 'use strict';
 
 const {assert} = require('chai');
-const cp = require('child_process');
 const {v4: uuidv4} = require('uuid');
 const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 const {DlpServiceClient} = require('@google-cloud/dlp');
@@ -37,8 +36,6 @@ let templateToDeleteId;
 let allFilterTemplateId;
 let inspectTemplateName;
 let deidentifyTemplateName;
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 async function createTemplate(templateId, filterConfig) {
   const parent = `projects/${projectId}/locations/${locationId}`;

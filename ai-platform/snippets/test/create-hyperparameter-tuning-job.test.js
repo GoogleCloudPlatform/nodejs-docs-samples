@@ -38,7 +38,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let tuningJobId;
 
-describe('AI platform create hyperparameter tuning job', async function () {
+// Image gcr.io/ucaip-sample-tests/ucaip-training-test:latest no longer exists
+describe.skip('AI platform create hyperparameter tuning job', async function () {
   this.retries(2);
   it('should create a new hyperparameter tuning job', async () => {
     const stdout = execSync(

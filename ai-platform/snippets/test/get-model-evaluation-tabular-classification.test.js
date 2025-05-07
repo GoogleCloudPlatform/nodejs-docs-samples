@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const modelId = '6036688272397172736';
 const evaluationId = '1866113044163962838';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get tabular classification model evaluation', () => {
   it('should get the evaluation from the specified model', async () => {

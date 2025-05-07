@@ -76,7 +76,7 @@ function main(
           {
             machineSpec: {
               machineType: 'n1-standard-4',
-              acceleratorType: 'NVIDIA_TESLA_K80',
+              acceleratorType: 'NVIDIA_TESLA_T4',
               acceleratorCount: 1,
             },
             replicaCount: 1,

@@ -28,7 +28,7 @@ const datasetId = '1138566280794603520';
 const gcsSourceUri =
   'gs://ucaip-sample-resources/youtube_8m_videos_animal_full.jsonl';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform import data video object tracking', () => {
   it('should import video object tracking data to dataset', async () => {

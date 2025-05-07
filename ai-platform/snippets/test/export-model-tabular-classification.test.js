@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const gcsDestinationOutputUriPrefix = 'gs://ucaip-samples-test-output';
 const modelId = '6036688272397172736';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform export data tabular classification', () => {
   it('should export model', async () => {

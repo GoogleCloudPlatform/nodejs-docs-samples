@@ -28,7 +28,7 @@ const modelId = '3512561418744365056';
 const evaluationId = '9035588644970168320';
 const sliceId = '6481571820677004173';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get model evaluation slice', () => {
   it('should get the evaluation slice from the specified model', async () => {

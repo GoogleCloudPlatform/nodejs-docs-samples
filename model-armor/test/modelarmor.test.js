@@ -14,7 +14,6 @@
 
 'use strict';
 
-const cp = require('child_process');
 const {v4: uuidv4} = require('uuid');
 const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
@@ -26,8 +25,6 @@ const options = {
 
 const client = new ModelArmorClient(options);
 const templateIdPrefix = `test-template-${uuidv4().substring(0, 8)}`;
-
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('Model Armor tests', () => {
   const templatesToDelete = [];
@@ -54,11 +51,7 @@ describe('Model Armor tests', () => {
     const quickstart = require('../snippets/quickstart');
     const testQuickstartTemplateId = `${templateIdPrefix}-quickstart`;
 
-    await quickstart(
-      projectId,
-      locationId,
-      testQuickstartTemplateId
-    );
+    await quickstart(projectId, locationId, testQuickstartTemplateId);
 
     templatesToDelete.push(
       `projects/${projectId}/locations/${locationId}/templates/${testQuickstartTemplateId}`

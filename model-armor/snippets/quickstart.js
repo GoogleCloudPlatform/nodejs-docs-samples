@@ -107,7 +107,7 @@ async function quickstart(
   return {
     templateName: createdTemplate.name,
     userPromptSanitizeResponse,
-    modelSanitizeResponse
+    modelSanitizeResponse,
   };
   // [END modelarmor_quickstart]
 }

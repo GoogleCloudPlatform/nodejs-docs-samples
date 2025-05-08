@@ -25,6 +25,7 @@
     "eslint-plugin-n": "^14.0.0",
     "eslint-plugin-prettier": "^5.0.0-alpha.1",
     "gts": "5.3.0",
+    "http-status-codes": "^2.3.0",
     "mocha": "^10.2.0",
     "nunjucks": "^3.2.4",
     "prettier": "^3.0.3",

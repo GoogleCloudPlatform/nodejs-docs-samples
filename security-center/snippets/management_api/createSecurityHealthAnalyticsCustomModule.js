@@ -54,6 +54,7 @@ function main(organizationId, customModuleDisplayName, locationId = 'global') {
   // define the CEL expression here and this will scans for keys that have not been rotated in
   // the last 30 days, change it according to your requirements
   const expr = {
+    // eslint-disable-next-line quotes
     expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`,
   };
 

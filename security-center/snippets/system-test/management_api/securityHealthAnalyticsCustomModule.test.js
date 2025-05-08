@@ -44,6 +44,7 @@ describe('security health analytics custom module', async () => {
     const parent = `organizations/${organizationId}/locations/${locationId}`;
     const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/custom_module`;
     const expr = {
+      // eslint-disable-next-line quotes
       expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`,
     };
     const resourceSelector = {

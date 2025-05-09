@@ -20,16 +20,21 @@ const gcpMetadata = require('gcp-metadata');
 const billing = new CloudBillingClient();
 
 functions.cloudEvent('stopBilling', async cloudEvent => {
-  let PROJECT_ID;
+  // TODO(developer): As stopping billing is a destructive action
+  // for your project, change the following constant to false
+  // after you validate with a test budget.
+  const simulateDeactivation = true;
+
+  let projectId;
 
   try {
-    PROJECT_ID = await gcpMetadata.project('project-id');
+    projectId = await gcpMetadata.project('project-id');
   } catch (error) {
-    console.error('PROJECT_ID not found:', error);
+    console.error('project-id metadata not found:', error);
     return;
   }
 
-  const PROJECT_NAME = `projects/${PROJECT_ID}`;
+  const projectName = `projects/${projectId}`;
 
   const eventData = Buffer.from(
     cloudEvent.data['message']['data'],
@@ -47,9 +52,11 @@ functions.cloudEvent('stopBilling', async cloudEvent => {
     return;
   }
 
-  const billingEnabled = await _isBillingEnabled(PROJECT_NAME);
+  console.log(`Disabling billing for project '${projectName}'...`);
+
+  const billingEnabled = await _isBillingEnabled(projectName);
   if (billingEnabled) {
-    _disableBillingForProject(PROJECT_NAME);
+    _disableBillingForProject(projectName, simulateDeactivation);
   } else {
     console.log('Billing is already disabled.');
   }
@@ -57,8 +64,8 @@ functions.cloudEvent('stopBilling', async cloudEvent => {
 
 /**
  * Determine whether billing is enabled for a project
- * @param {string} projectName Name of project to check if billing is enabled
- * @return {bool} Whether project has billing enabled or not
+ * @param {string} projectName The name of the project to check
+ * @returns {boolean} Whether the project has billing enabled or not
  */
 const _isBillingEnabled = async projectName => {
   try {
@@ -79,30 +86,30 @@ const _isBillingEnabled = async projectName => {
 
 /**
  * Disable billing for a project by removing its billing account
- * @param {string} projectName Name of project disable billing on
+ * @param {string} projectName The name of the project to disable billing
+ * @param {boolean} simulateDeactivation
+ *   If true, it won't actually disable billing.
+ *   Useful to validate with test budgets.
+ * @returns {void}
  */
-const _disableBillingForProject = async projectName => {
-  console.log(`Disabling billing for project '${projectName}'...`);
-
-  // To disable billing set the `billingAccountName` field to empty
-  // LINT: Commented out to pass linter
-  // const requestBody = {billingAccountName: ''};
-
-  // Find more information about `updateBillingInfo` API method here:
-  // https://cloud.google.com/billing/docs/reference/rest/v1/projects/updateBillingInfo
-
-  try {
-    // DEBUG: Simulate disabling billing
+const _disableBillingForProject = async (projectName, simulateDeactivation) => {
+  if (simulateDeactivation) {
     console.log('Billing disabled. (Simulated)');
+    return;
+  }
 
-    /*
+  // Find more information about `projects/updateBillingInfo` API method here:
+  // https://cloud.google.com/billing/docs/reference/rest/v1/projects/updateBillingInfo
+  try {
+    // To disable billing set the `billingAccountName` field to empty
+    const requestBody = {billingAccountName: ''};
+
     const [response] = await billing.updateProjectBillingInfo({
       name: projectName,
-      resource: body, // Disable billing
+      resource: requestBody,
     });
 
     console.log(`Billing disabled: ${JSON.stringify(response)}`);
-    */
   } catch (e) {
     console.log('Failed to disable billing, check permissions.', e);
   }

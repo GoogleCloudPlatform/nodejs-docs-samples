@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: (experimental / dev) Custard run
+name: (dev) Custard run
 
 on:
   # Run tests when a pull request is created or updated.

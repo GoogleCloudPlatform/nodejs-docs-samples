@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO: remove this comment, used to trigger tests
+
 // [START cloudrun_helloworld_service]
 import express from 'express';
 const app = express();

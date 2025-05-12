@@ -52,7 +52,7 @@ jobs:
       head-sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       config-file: .github/config/nodejs-dev.jsonc
       paths: ${{ (inputs.run-all && '.') || inputs.paths || '' }}
-      check-name: (experimental / dev) Custard CI
+      check-name: (dev) Custard CI
       create-check-if: ${{ !!github.event.workflow_run }}
 
   test:
@@ -77,7 +77,7 @@ jobs:
         id: queued
         with:
           sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
-          name: (experimental / dev) Custard CI / ${{ github.job }} (${{ matrix.path }})
+          name: (dev) Custard CI / ${{ github.job }} (${{ matrix.path }})
           job-name: ${{ github.job }} (${{ matrix.path }})
           if: ${{ !!github.event.workflow_run }}
       - name: Checkout

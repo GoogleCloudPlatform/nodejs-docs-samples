@@ -33,6 +33,8 @@ jobs:
   # TODO: REMOVE THIS BEFORE MERGING
   experiment:
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write
     steps:
       - name: Create check
         uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@9ee708234e240605d96e78f652c333ed6aa95a23 # v0.3.2

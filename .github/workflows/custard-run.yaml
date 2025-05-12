@@ -114,7 +114,7 @@ jobs:
     continue-on-error: true
     env:
       GOOGLE_SAMPLES_PROJECT: long-door-651
-      GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+      SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
     steps:
       - name: Check queued
         uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@9ee708234e240605d96e78f652c333ed6aa95a23 # v0.3.2
@@ -132,7 +132,7 @@ jobs:
         with:
           project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-          service_account: ${{ env.GOOGLE_SERVICE_ACCOUNT }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
           access_token_lifetime: 600s # 10 minutes
           token_format: id_token
           id_token_audience: https://action.test/ # service must have this custom audience

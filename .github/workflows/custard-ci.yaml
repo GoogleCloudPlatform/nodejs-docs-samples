@@ -78,7 +78,6 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   lint:
-    name: lint (legacy)
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 5

@@ -61,6 +61,7 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
+    if: github.event.pull_request && github.event.pull_request.head.repo.fork == false
     name: test
     needs: affected
     runs-on: ubuntu-latest

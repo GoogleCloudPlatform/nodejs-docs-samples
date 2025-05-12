@@ -82,6 +82,8 @@ jobs:
           if: ${{ !!github.event.workflow_run }}
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       - name: Authenticate
         uses: google-github-actions/auth@ba79af03959ebeac9769e648f473a284504d9193 # v2.1.10
         id: auth

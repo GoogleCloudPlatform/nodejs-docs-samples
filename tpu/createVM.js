@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// TODO: remove this comment, used to trigger tests for validation
+
 'use strict';
 
 async function main(tpuClient) {

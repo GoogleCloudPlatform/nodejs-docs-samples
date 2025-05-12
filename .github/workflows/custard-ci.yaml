@@ -14,8 +14,10 @@
 
 # IMPORTANT: DO NOT REMOVE THIS FILE!
 # This workflow triggers both custard-run.yaml and custard-run-dev.yaml.
-# TODO: to sunset old tests, remove all jobs here and only keep `region-tags` job.
-name: Custard CI
+# TODO: To sunset old tests
+#   1) Remove (legacy) from the workflow name.
+#   2) Remove `affected`, `lint`, and `test` jobs (only keep `region-tags`).
+name: (legacy) Custard CI
 on:
   push:
     branches:
@@ -31,7 +33,7 @@ env:
 # TODO: remove all jobs except region-tags (should be tested by custard-run workflows)
 jobs:
   affected:
-    name: (legacy) Finding affected tests
+    name: Finding affected tests
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -65,7 +67,6 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   lint:
-    name: (legacy) lint
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -123,7 +124,6 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   test:
-    name: (legacy) test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

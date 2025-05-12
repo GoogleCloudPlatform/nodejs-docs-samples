@@ -31,7 +31,7 @@ env:
 # TODO: remove all jobs except region-tags (should be tested by custard-run workflows)
 jobs:
   affected:
-    name: Finding affected tests (legacy)
+    name: (legacy) Finding affected tests
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -123,7 +123,7 @@ jobs:
 
   test:
     if: github.event.pull_request && github.event.pull_request.head.repo.fork == false
-    name: test (legacy)
+    name: (legacy) test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

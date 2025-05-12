@@ -27,7 +27,7 @@ env:
 
 jobs:
   affected:
-    name: Finding affected tests
+    name: (legacy) Finding affected tests
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -62,7 +62,7 @@ jobs:
 
   nodejs-test:
     if: github.event.pull_request && github.event.pull_request.head.repo.fork == false
-    name: test
+    name: (legacy) test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

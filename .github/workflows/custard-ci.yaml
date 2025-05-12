@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: (legacy) Custard CI
+# This workflow triggers custard-run.yaml
+# TODO: remove all jobs and only keep `region-tags` job.
+name: Custard CI
 on:
   push:
     branches:
@@ -28,7 +30,7 @@ env:
 # TODO: remove all jobs except region-tags (should be tested by custard-run workflows)
 jobs:
   affected:
-    name: Finding affected tests
+    name: (legacy) Finding affected tests
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -62,6 +64,7 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   lint:
+    name: (legacy) lint
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -119,6 +122,7 @@ jobs:
       - run: ./.github/workflows/utils/region-tags-tests.sh
 
   test:
+    name: (legacy) test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

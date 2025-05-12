@@ -64,34 +64,35 @@ const assert = require('node:assert/strict');
 
 ### CI testing
 
-For new samples, a GitHub Actions workflow should be created to run your tests
-on the CI system:
+> **tl;dr**: Any check with `(dev)`, `(experimental)`, or `(legacy)` can be ignored and should **not block** your PR from merging.
 
-1. Check that your new samples and sample tests are on a branch created directly from this repo `GoogleCloudPlatform/nodejs-docs-samples`. Not a fork.
+This repository uses the 🍮 **Custard CI** from
+[`GoogleCloudPlatform/cloud-samples-tools`](https://github.com/GoogleCloudPlatform/cloud-samples-tools)
+to set up and run tests.
 
-1. Add an entry to
-   [.github/workflows/utils/workflows.json](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows/utils/workflows.json)
-   matching the directory with your sample code.
+First, it checks which files changed in a PR to find which packages were affected.
+In this repo, a _package_ is defined as a directory containing a `package.json` file.
 
-1. From the root of the repo, generate a new workflow in the
-   [workflows](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/workflows)
-   directory. You can specify a `path` to only generate the specific workflow,
-   e.g. `cloud-tasks`. If the path is omitted, all workflows will be generated.
+If a global file (not belonging to a package) is changed, all packages are marked as affected.
+Global files are can contain repo-level configurations that could affect other packages.
+Typically, contributors should only modify files in a package.
 
-        node .github/workflows/utils/generate.js -s [path]
+Only affected packages are linted and tested.
+For tests, we use a
+[matrix strategy](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow)
+to generate isolated jobs for each affected test.
 
-> **Note** There are some existing samples that use an alternative CI system. It
-> is recommended to use GitHub Actions for new samples, but these instructions
-> are provided below for your reference.
->
-> Add a **build configuration file (`.cfg`)** for your samples in
-> **[`.kokoro/`](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/.kokoro)**.
-> Check existing config files for the right format.
->
-> All tests need a corresponding job file outside of GitHub. If you are a
-> Googler, please provide the CL alongside your PR. See the internal codelab for
-> Kokoro for details. If you don't work at Google, the person reviewing your PR
-> will create the job config for you.
+We're working to improve the testing infrastructure, while keeping tests stable.
+This means you'll sometimes see some new experimental tests, you can generally ignore them.
+Or two versions of one test running while we make sure the new version works well.
+
+Here's a list of which tests are required and which ones you can ignore.
+* `Custard CI`: (**required**) this is the main status of the tests
+* `Custard CI / lint`: (**required**) runs only for affected packages
+* `Custard CI / test (package)`: (**required**) runs only for affected packages
+* `(dev) Custard CI / test (package)`: (_ignore_) this test has errors we're working on
+* `(experimental) Custard CI / ...`: (_ignore_) this is a new unstable version
+* `Custard CI / (legacy) ...`: (_ignore_) this is the old version running while we make sure the new one works
 
 ### TypeScript Support
 

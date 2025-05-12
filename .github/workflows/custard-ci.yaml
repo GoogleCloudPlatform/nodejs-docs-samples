@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This workflow triggers custard-run.yaml
-# TODO: remove all jobs and only keep `region-tags` job.
+# IMPORTANT: DO NOT REMOVE THIS FILE!
+# This workflow triggers both custard-run.yaml and custard-run-dev.yaml.
+# TODO: to sunset old tests, remove all jobs here and only keep `region-tags` job.
 name: Custard CI
 on:
   push:

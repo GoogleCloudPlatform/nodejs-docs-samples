@@ -87,7 +87,7 @@ This means you'll sometimes see some new experimental tests, you can generally i
 Or two versions of one test running while we make sure the new version works well.
 
 Here's a list of which tests are required and which ones you can ignore.
-* `Custard CI`: (**required**) this is the main status of the tests
+* `Custard CI / tests`: (**required**) this succeeds until all tests have finished
 * `Custard CI / lint`: (**required**) runs only for affected packages
 * `Custard CI / test (package)`: (**required**) runs only for affected packages
 * `(dev) Custard CI / test (package)`: (_ignore_) this test has errors we're working on

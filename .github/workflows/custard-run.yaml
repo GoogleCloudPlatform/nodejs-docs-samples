@@ -57,7 +57,7 @@ jobs:
       head-sha: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       config-file: .github/config/nodejs.jsonc
       paths: ${{ (inputs.run-all && '.') || inputs.paths || '' }}
-      check-name: Custard CI
+      check-name: Custard CI / tests
       create-check-if: ${{ !!github.event.workflow_run }}
 
   lint:

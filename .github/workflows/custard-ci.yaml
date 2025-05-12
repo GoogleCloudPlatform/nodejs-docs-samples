@@ -30,19 +30,6 @@ env:
 
 # TODO: remove all jobs except region-tags (should be tested by custard-run workflows)
 jobs:
-  # TODO: REMOVE THIS BEFORE MERGING
-  experiment:
-    runs-on: ubuntu-latest
-    permissions:
-      statuses: write
-    steps:
-      - name: Create check
-        uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/create-check@9ee708234e240605d96e78f652c333ed6aa95a23 # v0.3.2
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
-          name: lint
-          status: success
-
   affected:
     name: Finding affected tests (legacy)
     runs-on: ubuntu-latest

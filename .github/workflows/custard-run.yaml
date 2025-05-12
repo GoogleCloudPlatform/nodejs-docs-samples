@@ -153,6 +153,9 @@ jobs:
         run: |
           timeout ${{ fromJson(needs.affected.outputs.ci-setups)[matrix.path].timeout-minutes }}m \
             make test dir=${{ matrix.path }}
+        env:
+          # TODO: remove this when the self-contained runner lands.
+          SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
       - name: Check success
         uses: GoogleCloudPlatform/cloud-samples-tools/actions/steps/update-check@9ee708234e240605d96e78f652c333ed6aa95a23 # v0.3.2
         with:

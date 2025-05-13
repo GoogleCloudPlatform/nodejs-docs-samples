@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Custard CI (dev)
+name: (legacy dev) Custard CI
 on:
   push:
     branches:
@@ -27,7 +27,7 @@ env:
 
 jobs:
   affected:
-    name: Finding affected tests
+    name: (legacy) Finding affected tests
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -61,7 +61,8 @@ jobs:
           echo "setups=$(./cloud-samples-tools/bin/custard setup-files .github/config/nodejs-dev.jsonc paths.txt)" >> $GITHUB_OUTPUT
 
   nodejs-test:
-    name: test
+    if: github.event.pull_request && github.event.pull_request.head.repo.fork == false
+    name: (legacy) test
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

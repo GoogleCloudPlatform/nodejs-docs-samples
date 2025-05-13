@@ -88,7 +88,7 @@ Or two versions of one test running while we make sure the new version works wel
 
 Here's a list of which tests are required and which ones you can ignore.
 * `Custard CI / lint`: (**required**) runs only for affected packages
-* `Custard CI / tests`: (**required**) this succeeds until all tests have finished
+* `Custard CI / tests`: (**required**) this runs until all tests have finished
 * `Custard CI / test (package)`: (**required**) runs only for affected packages
 * `(dev) Custard CI / test (package)`: (_ignore_) this test has errors we're working on
 * `(experimental) Custard CI / ...`: (_ignore_) this is a new unstable version

@@ -17,9 +17,12 @@
 // [START googlegenaisdk_textgen_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
+const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
+const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+
 async function generateContent(
-  projectId = process.env.GOOGLE_CLOUD_PROJECT,
-  location = process.env.GOOGLE_CLOUD_LOCATION || 'global'
+  projectId = GOOGLE_CLOUD_PROJECT,
+  location = GOOGLE_CLOUD_LOCATION
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,

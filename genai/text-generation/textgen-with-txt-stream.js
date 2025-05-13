@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_textgen_with_txt_stream]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,16 +30,19 @@ async function generateContent(
     location: location,
   });
 
-  const response = await ai.models.generateContent({
+  const response = await ai.models.generateContentStream({
     model: 'gemini-2.0-flash',
-    contents: 'How does AI work?',
+    contents: 'Why is the sky blue?',
   });
 
-  console.log(response.text);
-
-  return response.text;
+  let response_text = '';
+  for await (const chunk of response) {
+    response_text += chunk.text;
+    console.log(chunk.text);
+  }
+  return response_text;
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_textgen_with_txt_stream]
 
 module.exports = {
   generateContent,

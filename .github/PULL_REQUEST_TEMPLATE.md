@@ -16,3 +16,5 @@ Note: Before submitting a pull request, please open an issue for discussion if y
 - [ ] This sample adds a new sample directory, and I created [GitHub Actions workflow](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md#adding-new-samples) for this sample
 - [ ] This sample adds a new **Product API**, and I updated the [Blunderbuss issue/PR auto-assigner](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/.github/blunderbuss.yml) with the codeowners for this sample
 - [ ] Please **merge** this PR for me once it is approved
+
+> **Note**: Any check with `(dev)`, `(experimental)`, or `(legacy)` can be ignored and should **not block** your PR from merging (see [CI testing](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/CONTRIBUTING.md#ci-testing)).

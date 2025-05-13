@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_txt]
+// [START googlegenaisdk_ctrlgen_with_enum_schema]
 const {GoogleGenAI, Type} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -48,7 +48,7 @@ async function generateContent(
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_with_txt]
+// [END googlegenaisdk_ctrlgen_with_enum_schema]
 
 module.exports = {
   generateContent,

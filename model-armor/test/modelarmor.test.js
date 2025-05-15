@@ -378,16 +378,10 @@ describe('Model Armor tests', () => {
     assert.strictEqual(response.name, templateName);
 
     assert.property(response, 'templateMetadata');
-    assert.property(
-      response.templateMetadata,
-      'ignorePartialInvocationFailures'
-    );
+    assert.property(response.templateMetadata, 'logTemplateOperations');
     assert.property(response.templateMetadata, 'logSanitizeOperations');
-    assert.strictEqual(
-      response.templateMetadata.ignorePartialInvocationFailures,
-      true
-    );
-    assert.strictEqual(response.templateMetadata.logSanitizeOperations, false);
+    assert.strictEqual(response.templateMetadata.logTemplateOperations, true);
+    assert.strictEqual(response.templateMetadata.logSanitizeOperations, true);
   });
 
   it('should update template with mask configuration', async () => {

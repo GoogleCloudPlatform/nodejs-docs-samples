@@ -61,8 +61,8 @@ async function updateTemplateMetadata(projectId, locationId, templateId) {
       },
     },
     templateMetadata: {
-      ignorePartialInvocationFailures: true,
-      logSanitizeOperations: false,
+      logTemplateOperations: true,
+      logSanitizeOperations: true,
     },
   };
 

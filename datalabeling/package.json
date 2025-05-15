@@ -14,11 +14,11 @@
     "test": "c8 mocha -p -j 2 --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/datalabeling": "^4.0.0"
+    "@google-cloud/datalabeling": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0"
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0"
   }
 }

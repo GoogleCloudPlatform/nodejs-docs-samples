@@ -44,6 +44,7 @@ document-warehouse @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPla
 ai-platform @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/text-embedding @GoogleCloudPlatform/cloud-samples-reviewers
 asset @GoogleCloudPlatform/cloud-asset-analysis-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 dlp @GoogleCloudPlatform/googleapis-dlp @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+model-armor @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-modelarmor-team
 security-center @GoogleCloudPlatform/gcp-security-command-center @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 retail @GoogleCloudPlatform/cloud-retail-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers

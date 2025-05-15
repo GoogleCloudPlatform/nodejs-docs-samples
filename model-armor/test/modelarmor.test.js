@@ -303,6 +303,19 @@ describe('Model Armor tests', () => {
     await deleteDlpTemplates();
   });
 
+  // =================== Quickstart Tests ===================
+
+  it('should create a template and sanitize content', async () => {
+    const quickstart = require('../snippets/quickstart');
+    const testQuickstartTemplateId = `${templateIdPrefix}-quickstart`;
+
+    await quickstart(projectId, locationId, testQuickstartTemplateId);
+
+    templatesToDelete.push(
+      `projects/${projectId}/locations/${locationId}/templates/${testQuickstartTemplateId}`
+    );
+  });
+  
   // =================== RAI Filter Tests ===================
 
   it('should sanitize user prompt with all RAI filter template', async () => {

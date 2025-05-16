@@ -315,7 +315,7 @@ describe('Model Armor tests', () => {
       `projects/${projectId}/locations/${locationId}/templates/${testQuickstartTemplateId}`
     );
   });
-  
+
   // =================== RAI Filter Tests ===================
 
   it('should sanitize user prompt with all RAI filter template', async () => {

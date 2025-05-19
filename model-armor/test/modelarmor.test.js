@@ -284,29 +284,18 @@ describe('Model Armor tests', () => {
       `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${basicTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${allFilterTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${advanceSdpTemplateId}`,
+      `projects/${projectId}/locations/${locationId}/templates/${allFilterTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${templateToDeleteId}`
     );
   });
 
   after(async () => {
-    // Clean up all templates
-    const directTemplates = [emptyTemplateId, basicTemplateId];
-    for (const templateId of directTemplates) {
-      await deleteTemplate(
-        `projects/${projectId}/locations/${locationId}/templates/${templateId}`
-      );
+    for (const templateName of templatesToDelete) {
+      await deleteTemplate(templateName);
     }
 
-    for (const templateName of templatesToDelete) {
-      try {
-        await client.deleteTemplate({name: templateName});
-        console.log(`Cleaned up template: ${templateName}`);
-      } catch (error) {
-        console.error(`Failed to delete template ${templateName}:`, error);
-      }
-    }
+    await deleteDlpTemplates();
   });
 
   // =================== Template Creation Tests ===================
@@ -536,11 +525,6 @@ describe('Model Armor tests', () => {
     const piSettings = response.filterConfig.piAndJailbreakFilterSettings;
     assert.strictEqual(piSettings.filterEnforcement, 'ENABLED');
     assert.strictEqual(piSettings.confidenceLevel, 'LOW_AND_ABOVE');
-    for (const templateName of templatesToDelete) {
-      await deleteTemplate(templateName);
-    }
-
-    await deleteDlpTemplates();
   });
 
   // =================== Quickstart Tests ===================

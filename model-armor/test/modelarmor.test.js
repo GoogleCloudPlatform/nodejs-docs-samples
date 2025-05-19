@@ -199,9 +199,6 @@ describe('Model Armor tests', () => {
     // Create empty template for sanitizeUserPrompt tests
     emptyTemplateId = `${templateIdPrefix}-empty`;
     await createTemplate(emptyTemplateId, {});
-    templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`
-    );
 
     // Create basic template with PI/Jailbreak and Malicious URI filters for sanitizeUserPrompt tests
     basicTemplateId = `${templateIdPrefix}-basic`;
@@ -229,9 +226,6 @@ describe('Model Armor tests', () => {
         },
       },
     });
-    templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`
-    );
 
     // Create advanced SDP template with DLP templates
     const dlpTemplates = await createDlpTemplates();
@@ -244,9 +238,6 @@ describe('Model Armor tests', () => {
         },
       },
     });
-    templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${advanceSdpTemplateId}`
-    );
 
     // Create all-filter template
     allFilterTemplateId = `${templateIdPrefix}-all-filters`;
@@ -280,45 +271,6 @@ describe('Model Armor tests', () => {
       },
     });
 
-    // Create a basic SDP template for testing
-    basicSdpTemplateId = `${templateIdPrefix}-basic-sdp`;
-    await createTemplate(basicSdpTemplateId, {
-      filterConfig: {
-        raiSettings: {
-          raiFilters: [
-            {
-              filterType: RaiFilterType.DANGEROUS,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.HARASSMENT,
-              confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
-            },
-            {
-              filterType: RaiFilterType.HATE_SPEECH,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-            {
-              filterType: RaiFilterType.SEXUALLY_EXPLICIT,
-              confidenceLevel: DetectionConfidenceLevel.HIGH,
-            },
-          ],
-        },
-        sdpSettings: {
-          basicConfig: {
-            filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
-          },
-        },
-      },
-    });
-
-    templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${basicTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`,
-      `projects/${projectId}/locations/${locationId}/templates/${allFilterTemplateId}`
-    );
-
     // Create a template to be deleted
     templateToDeleteId = `${templateIdPrefix}-to-delete`;
     await createTemplate(templateToDeleteId, {
@@ -327,7 +279,13 @@ describe('Model Armor tests', () => {
         confidenceLevel: DetectionConfidenceLevel.MEDIUM_AND_ABOVE,
       },
     });
+
     templatesToDelete.push(
+      `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`,
+      `projects/${projectId}/locations/${locationId}/templates/${basicTemplateId}`,
+      `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`,
+      `projects/${projectId}/locations/${locationId}/templates/${allFilterTemplateId}`,
+      `projects/${projectId}/locations/${locationId}/templates/${advanceSdpTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${templateToDeleteId}`
     );
   });

@@ -41,20 +41,26 @@ async function generateContent(
     },
   });
 
-  let i = 0;
+  const generatedFileNames = [];
+  let imageIndex = 0;
   for await (const chunk of response) {
     const text = chunk.text;
     const data = chunk.data;
     if (text) {
       console.debug(text);
     } else if (data) {
-      const fileName = `generate_content_streaming_image_${i++}.png`;
+      const fileName = `generate_content_streaming_image_${imageIndex++}.png`;
       console.debug(`Writing response image to file: ${fileName}.`);
-      fs.writeFileSync(fileName, data);
+      try {
+        fs.writeFileSync(fileName, data);
+        generatedFileNames.push(fileName);
+      } catch (error) {
+        console.error(`Failed to write image file ${fileName}:`, error);
+      }
     }
   }
 
-  return 'generate_content_streaming_image';
+  return generatedFileNames;
 }
 // [END googlegenaisdk_imggen_mmflash_with_txt]
 

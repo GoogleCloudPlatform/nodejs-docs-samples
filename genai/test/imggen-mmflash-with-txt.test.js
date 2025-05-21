@@ -21,8 +21,9 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-mmflash-with-txt.js');
 
 describe('imggen-mmflash-with-txt', async () => {
-  it('should generate image from a text prompt', async () => {
-    const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('image'));
+  it('should generate images from a text prompt', async () => {
+    const generatedFileNames = await sample.generateContent(projectId);
+    assert(Array.isArray(generatedFileNames));
+    assert(generatedFileNames.length > 0);
   });
 });

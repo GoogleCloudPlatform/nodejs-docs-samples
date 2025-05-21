@@ -14,6 +14,8 @@
 
 'use strict';
 
+// [START retail_search_simple_query]
+
 async function main() {
   // Call Retail API to search for a products in a catalog using only search query.
 
@@ -76,3 +78,5 @@ process.on('unhandledRejection', err => {
 });
 
 main();
+
+// [END retail_search_simple_query]

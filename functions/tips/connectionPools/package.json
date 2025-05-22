@@ -12,7 +12,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.2",
+    "@google-cloud/functions-framework": "^4.0.0",
     "node-fetch": "^3.0.0"
   },
   "scripts": {

@@ -15,13 +15,13 @@
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.0.0"
+    "@google-cloud/functions-framework": "^4.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "mocha": "^10.0.0",
-    "sinon": "^18.0.0",
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0",
     "supertest": "^7.0.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   }
 }

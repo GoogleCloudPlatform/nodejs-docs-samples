@@ -15,14 +15,14 @@
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=20000"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^4.0.0",
+    "@google-cloud/pubsub": "^5.0.0",
     "@google-cloud/storage": "^7.0.0",
-    "@google-cloud/translate": "^8.0.0",
-    "@google-cloud/vision": "^4.0.0"
+    "@google-cloud/translate": "^9.0.0",
+    "@google-cloud/vision": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "mocha": "^10.0.0",
-    "sinon": "^18.0.0"
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0"
   }
 }

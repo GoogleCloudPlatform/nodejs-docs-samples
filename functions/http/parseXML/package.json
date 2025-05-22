@@ -15,13 +15,13 @@
     "test": "c8 mocha -p -j 2 test/*.test.js --timeout=6000 --exit"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.2",
+    "@google-cloud/functions-framework": "^4.0.0",
     "xml2js": "^0.6.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
     "gaxios": "^6.0.0",
-    "mocha": "^10.2.0",
+    "mocha": "^11.0.0",
     "wait-port": "^1.0.4"
   }
 }

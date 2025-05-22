@@ -17,15 +17,15 @@
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "@google-cloud/talent": "^6.0.0",
+    "@google-cloud/talent": "^7.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.0",
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
-    "uuid": "^10.0.0"
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0",
+    "uuid": "^11.0.0"
   }
 }

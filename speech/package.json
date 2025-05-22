@@ -15,18 +15,18 @@
     "test": "c8 mocha -p -j 2 system-test --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/speech": "^6.0.0",
+    "@google-cloud/speech": "^7.0.0",
     "@google-cloud/storage": "^7.0.0",
     "chalk": "^5.0.0",
     "fs.promises": "^0.1.2",
     "node-record-lpcm16": "^1.0.1",
-    "sinon": "^18.0.0",
+    "sinon": "^20.0.0",
     "yargs": "^17.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
-    "uuid": "^10.0.0"
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0",
+    "uuid": "^11.0.0"
   }
 }

@@ -14,12 +14,12 @@
         "test": "c8 mocha -p -j 2 test/*.test.js --timeout=60000"
     },
     "dependencies": {
-        "@google-cloud/iam": "^1.0.0"
+        "@google-cloud/iam": "^2.0.0"
     },
     "devDependencies": {
         "c8": "^10.0.0",
-        "chai": "^4.5.0",
-        "mocha": "^10.0.0",
-        "uuid": "^10.0.0"
+        "chai": "^5.0.0",
+        "mocha": "^11.0.0",
+        "uuid": "^11.0.0"
     }
 }

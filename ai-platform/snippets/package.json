@@ -13,16 +13,16 @@
     "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js"
   },
   "dependencies": {
-    "@google-cloud/aiplatform": "^3.0.0",
-    "@google-cloud/bigquery": "^7.0.0",
+    "@google-cloud/aiplatform": "^4.0.0",
+    "@google-cloud/bigquery": "^8.0.0",
     "@google-cloud/storage": "^7.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
-    "uuid": "^10.0.0",
-    "sinon": "^18.0.0"
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0",
+    "uuid": "^11.0.0",
+    "sinon": "^20.0.0"
   }
 }
 

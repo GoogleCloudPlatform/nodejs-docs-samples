@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@google-cloud/error-reporting": "^3.0.4",
-    "express": "^4.16.3"
+    "express": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
+    "chai": "^5.0.0",
     "gaxios": "^6.0.0",
-    "mocha": "^10.0.0"
+    "mocha": "^11.0.0"
   }
 }

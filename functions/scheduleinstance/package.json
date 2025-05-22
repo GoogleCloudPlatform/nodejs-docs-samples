@@ -16,11 +16,11 @@
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^11.0.0",
     "proxyquire": "^2.0.0",
-    "sinon": "^18.0.0"
+    "sinon": "^20.0.0"
   },
   "dependencies": {
-    "@google-cloud/compute": "^4.0.0"
+    "@google-cloud/compute": "^5.0.0"
   }
 }

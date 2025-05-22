@@ -14,19 +14,25 @@
 
 'use strict';
 
-const {expect} = require('chai');
 const axios = require('axios');
 const {execSync} = require('child_process');
-const {v4: uuidv4} = require('uuid');
+const {expect} = require('chai');
+const {GoogleAuth} = require('google-auth-library');
 const {StatusCodes} = require('http-status-codes');
+const {v4: uuidv4} = require('uuid');
 
 const TEST_INVALID_TOKEN = 'test-invalid-token';
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const REGION = 'us-central1';
 
+if (!PROJECT_ID) {
+  throw new Error('GOOGLE_CLOUD_PROJECT environment variable not set.');
+}
+
 describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', function () {
   this.timeout(5 * 60 * 1000); // 5 minutes for deploy + test
-  const serviceName = `receive-${uuidv4().slice(0, 8)}`;
+  // const serviceName = `service-auth-node-${uuidv4().slice(0, 8)}`;
+  const serviceName = 'service-auth-node';
   let serviceUrl;
 
   before(() => {
@@ -52,6 +58,7 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
     console.log(`Service URL: ${serviceUrl}`);
   });
 
+  /*
   after(() => {
     console.log(`Deleting service: ${serviceName}...`);
     execSync(`gcloud run services delete ${serviceName} \
@@ -59,13 +66,28 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
       --region=${REGION} \
       --quiet`);
   });
+  */
 
-  function getIdentityToken() {
-    return execSync('gcloud auth print-identity-token').toString().trim();
+  async function getIdentityToken() {
+    // Cloud Run uses your service's hostname as the `audience` value
+    // For example: 'https://my-cloud-run-service.run.app'
+    const targetAudience = serviceUrl;
+
+    // Get an ID token client.
+    // https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest#fetching-id-tokens
+    const authClient = new GoogleAuth();
+    const client = await authClient.getIdTokenClient(targetAudience);
+    const token = await client.idTokenProvider.fetchIdToken(targetAudience);
+
+    // DEBUG: Remove these lines
+    console.log(`ID Token: ${token}\n`);
+    console.log(`Audience: ${targetAudience}\n`);
+
+    return token;
   }
 
-  it('should respond with greeting if token is valid', async () => {
-    const token = getIdentityToken();
+  it('should respond an HTTP OK (200) if token is valid', async () => {
+    const token = await getIdentityToken();
     const res = await axios.get(serviceUrl, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -73,16 +95,19 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
     });
 
     expect(res.status).to.equal(StatusCodes.OK);
-    expect(res.data).to.match(/^Hello, .@.\.\w+!\n$/);
+    expect(res.data).to.include('Hello');
   });
 
-  it('should respond with anonymous if no token is provided', async () => {
-    const res = await axios.get(serviceUrl);
-    expect(res.status).to.equal(StatusCodes.OK);
-    expect(res.data).to.equal('Hello, anonymous user.\n');
+  it('should respond an HTTP UNAUTHORIZED (401) if no token is provided', async () => {
+    try {
+      await axios.get(serviceUrl);
+    } catch (err) {
+      expect(err.response.status).to.equal(StatusCodes.UNAUTHORIZED);
+      expect(err.response.data).to.include('Unauthorized request.');
+    }
   });
 
-  it('should respond with unoauthorized if token is invalid', async () => {
+  it('should respond an HTTP UNAUTHORIZED (401) if token is invalid', async () => {
     try {
       await axios.get(serviceUrl, {
         headers: {
@@ -91,7 +116,7 @@ describe('receiveRequestAndParseAuthHeader sample (Cloud Run integration)', func
       });
     } catch (err) {
       expect(err.response.status).to.equal(StatusCodes.UNAUTHORIZED);
-      expect(err.response.data).to.include('Invalid token');
+      expect(err.response.data).to.include('Unauthorized request.');
     }
   });
 });

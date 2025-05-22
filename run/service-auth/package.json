@@ -10,20 +10,22 @@
     },
     "scripts": {
         "start": "node index.js",
-        "deploy": "gcloud run deploy service-auth --source .",
         "unit-test": "c8 mocha -p -j 2 test/ --timeout=10000 --exit",
         "test": "npm run unit-test"
     },
     "dependencies": {
-        "express": "^4.17.1",
-        "google-auth-library": "^9.0.0"
+        "express": "^5.1.0",
+        "google-auth-library": "^9.15.0",
+        "gcp-metadata": "^6.1.1",
+        "@google-cloud/run": "^2.1.0",
+        "http-status-codes": "^2.3.0"
     },
     "devDependencies": {
-        "axios": "^1.8.4",
-        "c8": "^10.0.0",
-        "chai": "^4.5.0",
-        "mocha": "^10.0.0",
-        "sinon": "^18.0.0",
+        "axios": "^1.9.0",
+        "c8": "^10.1.0",
+        "chai": "^5.2.0",
+        "mocha": "^11.4.0",
+        "sinon": "^20.0.0",
         "uuid": "^11.1.0"
     }
 }

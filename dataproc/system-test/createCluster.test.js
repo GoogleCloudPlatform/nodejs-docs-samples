@@ -19,7 +19,7 @@ const {describe, it, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
 
-const region = 'us-central1';
+const region = 'us-west1';
 const clusterName = `node-cc-test-${v4()}`;
 
 const dataproc = require('@google-cloud/dataproc');
@@ -27,7 +27,7 @@ const clusterClient = new dataproc.v1.ClusterControllerClient({
   apiEndpoint: `${region}-dataproc.googleapis.com`,
 });
 
-const projectId = process.env.GCLOUD_PROJECT;
+const projectId = process.env.PROJECT_ID;
 
 const execSync = cmd =>
   cp.execSync(cmd, {

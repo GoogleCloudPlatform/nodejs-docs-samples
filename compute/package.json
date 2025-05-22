@@ -14,18 +14,18 @@
     "test": "c8 mocha -p -j 2 test --timeout 1200000"
   },
   "dependencies": {
-    "@google-cloud/compute": "^4.0.0",
+    "@google-cloud/compute": "^5.0.0",
     "@sendgrid/mail": "^8.0.0",
-    "nodemailer": "^6.0.0",
+    "nodemailer": "^7.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
-    "sinon": "^19.0.2"
+    "sinon": "^20.0.0"
   },
   "devDependencies": {
     "@google-cloud/storage": "^7.0.0",
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
+    "chai": "^5.0.0",
+    "mocha": "^11.0.0",
     "proxyquire": "^2.0.1",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   }
 }

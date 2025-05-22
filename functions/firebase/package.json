@@ -12,11 +12,11 @@
     "node": ">=16.0.0"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
+    "mocha": "^11.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^18.0.0",
+    "sinon": "^20.0.0",
     "supertest": "^7.0.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   },
   "dependencies": {
     "@google-cloud/firestore": "^7.0.0"

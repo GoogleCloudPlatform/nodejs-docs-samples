@@ -12,13 +12,13 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^4.0.0"
+    "@google-cloud/pubsub": "^5.0.0"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/functions-framework": "^4.0.0",
     "gaxios": "^6.0.0",
-    "mocha": "^10.0.0",
-    "sinon": "^18.0.0",
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0",
     "wait-port": "^1.0.4"
   }
 }

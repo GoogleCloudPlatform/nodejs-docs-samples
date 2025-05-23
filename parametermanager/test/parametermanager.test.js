@@ -20,6 +20,9 @@ const {v4: uuidv4} = require('uuid');
 const {ParameterManagerClient} = require('@google-cloud/parametermanager');
 const client = new ParameterManagerClient();
 
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const secretClient = new SecretManagerServiceClient();
+
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
 const options = {};
@@ -27,23 +30,53 @@ options.apiEndpoint = `parametermanager.${locationId}.rep.googleapis.com`;
 
 const regionalClient = new ParameterManagerClient(options);
 
+const secretOptions = {};
+secretOptions.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
+
+const secretId = `test-secret-${uuidv4()}`;
 const parameterId = `test-parameter-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
 const parameterVersionId = `test-version-${uuidv4()}`;
 
+const jsonPayload = '{username: "test-user", host: "localhost"}';
+const payload = 'This is unstructured data';
+
 let parameter;
+let parameterToDelete;
 let regionalParameter;
+let regionalParameterToDelete;
 let parameterVersion;
 let regionalParameterVersion;
+let secret;
+let secretVersion;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
+  const parameterVersionsToDelete = [];
   const regionalParametersToDelete = [];
   const regionalParameterVersionsToDelete = [];
-  const parameterVersionsToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
+
+    // Create a secret
+    [secret] = await secretClient.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: secretId,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+      },
+    });
+
+    // Create a secret version
+    [secretVersion] = await secretClient.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from('my super secret data', 'utf-8'),
+      },
+    });
 
     // Create a test global parameter
     [parameter] = await client.createParameter({
@@ -55,15 +88,15 @@ describe('Parameter Manager samples', () => {
     });
     parametersToDelete.push(parameter.name);
 
-    // Create a test regional parameter
-    [regionalParameter] = await regionalClient.createParameter({
-      parent: `projects/${projectId}/locations/${locationId}`,
-      parameterId: regionalParameterId,
+    // Create a test global parameter for delete use case
+    [parameterToDelete] = await client.createParameter({
+      parent: `projects/${projectId}/locations/global`,
+      parameterId: parameterId + '-3',
       parameter: {
         format: 'JSON',
       },
     });
-    regionalParametersToDelete.push(regionalParameter.name);
+    parametersToDelete.push(parameterToDelete.name);
 
     // Create a version for the global parameter
     [parameterVersion] = await client.createParameterVersion({
@@ -76,6 +109,26 @@ describe('Parameter Manager samples', () => {
       },
     });
     parameterVersionsToDelete.push(parameterVersion.name);
+
+    // Create a test regional parameter
+    [regionalParameter] = await regionalClient.createParameter({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      parameterId: regionalParameterId,
+      parameter: {
+        format: 'JSON',
+      },
+    });
+    regionalParametersToDelete.push(regionalParameter.name);
+
+    // Create a test regional parameter for delete use case
+    [regionalParameterToDelete] = await regionalClient.createParameter({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      parameterId: regionalParameterId + '-3',
+      parameter: {
+        format: 'JSON',
+      },
+    });
+    regionalParametersToDelete.push(regionalParameterToDelete.name);
 
     // Create a version for the regional parameter
     [regionalParameterVersion] = await regionalClient.createParameterVersion({
@@ -92,22 +145,6 @@ describe('Parameter Manager samples', () => {
 
   after(async () => {
     // Delete all parameter versions first
-    await Promise.all(
-      regionalParameterVersionsToDelete.map(
-        async regionalParameterVersionName => {
-          try {
-            await regionalClient.deleteParameterVersion({
-              name: regionalParameterVersionName,
-            });
-          } catch (err) {
-            if (!err.message.includes('NOT_FOUND')) {
-              throw err;
-            }
-          }
-        }
-      )
-    );
-
     await Promise.all(
       parameterVersionsToDelete.map(async parameterVersionName => {
         try {
@@ -137,6 +174,34 @@ describe('Parameter Manager samples', () => {
       })
     );
 
+    try {
+      await secretClient.deleteSecret({
+        name: secret.name,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    // Delete all regional parameter versions first
+    await Promise.all(
+      regionalParameterVersionsToDelete.map(
+        async regionalParameterVersionName => {
+          try {
+            await regionalClient.deleteParameterVersion({
+              name: regionalParameterVersionName,
+            });
+          } catch (err) {
+            if (!err.message.includes('NOT_FOUND')) {
+              throw err;
+            }
+          }
+        }
+      )
+    );
+
+    // Delete all regional parameters
     await Promise.all(
       regionalParametersToDelete.map(async regionalParameterName => {
         try {
@@ -148,6 +213,139 @@ describe('Parameter Manager samples', () => {
         }
       })
     );
+  });
+
+  it('should create parameter version with secret references', async () => {
+    const sample = require('../createParamVersionWithSecret');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId + '-1',
+      secretVersion.name
+    );
+    parameterVersionsToDelete.push(parameterVersion.name);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}-1`
+    );
+  });
+
+  it('should create a structured parameter', async () => {
+    const sample = require('../createStructuredParam');
+    const parameter = await sample.main(projectId, parameterId + '-1');
+    parametersToDelete.push(parameter.name);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1`
+    );
+  });
+
+  it('should create a unstructured parameter', async () => {
+    const sample = require('../createParam');
+    const parameter = await sample.main(projectId, parameterId + '-2');
+    parametersToDelete.push(parameter.name);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-2`
+    );
+  });
+
+  it('should create a structured parameter version', async () => {
+    const sample = require('../createStructuredParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId + '-1',
+      parameterVersionId + '-2',
+      jsonPayload
+    );
+    parameterVersionsToDelete.push(parameterVersion.name);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-1/versions/${parameterVersionId}-2`
+    );
+  });
+
+  it('should create a unstructured parameter version', async () => {
+    const sample = require('../createParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId + '-2',
+      parameterVersionId + '-3',
+      payload
+    );
+    parameterVersionsToDelete.push(parameterVersion.name);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-2/versions/${parameterVersionId}-3`
+    );
+  });
+
+  it('should list parameters', async () => {
+    const sample = require('../listParams');
+    const parameters = await sample.main(projectId);
+    assert.exists(parameters);
+  });
+
+  it('should get a parameter', async () => {
+    const sample = require('../getParam');
+    const parameter = await sample.main(projectId, parameterId);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
+    );
+  });
+
+  it('should list parameter versions', async () => {
+    const sample = require('../listParamVersions');
+    const parameterVersions = await sample.main(projectId, parameterId);
+    assert.exists(parameterVersions);
+  });
+
+  it('should get a parameter version', async () => {
+    const sample = require('../getParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId + '-1'
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}-1`
+    );
+  });
+
+  it('should render parameter version', async () => {
+    // Get the current IAM policy.
+    const [policy] = await secretClient.getIamPolicy({
+      resource: secret.name,
+    });
+
+    // Add the user with accessor permissions to the bindings list.
+    policy.bindings.push({
+      role: 'roles/secretmanager.secretAccessor',
+      members: [parameter.policyMember.iamPolicyUidPrincipal],
+    });
+
+    // Save the updated IAM policy.
+    await secretClient.setIamPolicy({
+      resource: secret.name,
+      policy: policy,
+    });
+
+    const sample = require('../renderParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId + '-1'
+    );
+    assert.exists(parameterVersion);
   });
 
   it('should runs the quickstart', async () => {
@@ -276,11 +474,11 @@ describe('Parameter Manager samples', () => {
 
   it('should delete a parameter', async () => {
     const sample = require('../deleteParam');
-    const parameterVersion = await sample.main(projectId, parameterId);
+    const parameterVersion = await sample.main(projectId, parameterId + '-3');
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion,
-      `projects/${projectId}/locations/global/parameters/${parameterId}`
+      `projects/${projectId}/locations/global/parameters/${parameterId}-3`
     );
   });
 
@@ -289,12 +487,12 @@ describe('Parameter Manager samples', () => {
     const parameterVersion = await sample.main(
       projectId,
       locationId,
-      regionalParameterId
+      regionalParameterId + '-3'
     );
     assert.exists(parameterVersion);
     assert.equal(
       parameterVersion,
-      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-3`
     );
   });
 });

@@ -50,9 +50,10 @@ async function main(projectId, parameterId, kmsKey) {
     console.log(
       `Created parameter ${parameter.name} with kms_key ${parameter.kmsKey}`
     );
+    return parameter;
   }
 
-  await createParamWithKmsKey();
+  return await createParamWithKmsKey();
   // [END parametermanager_create_param_with_kms_key]
 }
 module.exports.main = main;

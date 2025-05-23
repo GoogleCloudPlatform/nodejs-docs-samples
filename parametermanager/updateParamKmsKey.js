@@ -52,9 +52,10 @@ async function main(projectId, parameterId, kmsKey) {
     console.log(
       `Updated parameter ${parameter.name} with kms_key ${parameter.kmsKey}`
     );
+    return parameter;
   }
 
-  await updateParamKmsKey();
+  return await updateParamKmsKey();
   // [END parametermanager_update_param_kms_key]
 }
 module.exports.main = main;

@@ -59,9 +59,10 @@ async function main(projectId, locationId, parameterId, kmsKey) {
     console.log(
       `Updated regional parameter ${parameter.name} with kms_key ${parameter.kmsKey}`
     );
+    return parameter;
   }
 
-  await updateRegionalParamKmsKey();
+  return await updateRegionalParamKmsKey();
   // [END parametermanager_update_regional_param_kms_key]
 }
 module.exports.main = main;

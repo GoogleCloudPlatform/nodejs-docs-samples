@@ -47,9 +47,10 @@ async function main(projectId, parameterId) {
 
     const [parameter] = await client.updateParameter(request);
     console.log(`Removed kms_key for parameter ${parameter.name}`);
+    return parameter;
   }
 
-  await removeParamKmsKey();
+  return await removeParamKmsKey();
   // [END parametermanager_remove_param_kms_key]
 }
 module.exports.main = main;

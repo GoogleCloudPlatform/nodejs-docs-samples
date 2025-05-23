@@ -54,9 +54,10 @@ async function main(projectId, locationId, parameterId) {
 
     const [parameter] = await client.updateParameter(request);
     console.log(`Removed kms_key for regional parameter ${parameter.name}`);
+    return parameter;
   }
 
-  await removeRegionalParamKmsKey();
+  return await removeRegionalParamKmsKey();
   // [END parametermanager_remove_regional_param_kms_key]
 }
 module.exports.main = main;

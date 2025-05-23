@@ -57,9 +57,10 @@ async function main(projectId, locationId, parameterId, kmsKey) {
     console.log(
       `Created regional parameter ${parameter.name} with kms_key ${parameter.kmsKey}`
     );
+    return parameter;
   }
 
-  await createRegionalParamWithKmsKey();
+  return await createRegionalParamWithKmsKey();
   // [END parametermanager_create_regional_param_with_kms_key]
 }
 module.exports.main = main;

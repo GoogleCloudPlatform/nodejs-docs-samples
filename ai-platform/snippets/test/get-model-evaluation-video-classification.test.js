@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const modelId = '8596984660557299712';
 const evaluationId = '7092045712224944128';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get video classification model evaluation', () => {
   it('should get the evaluation from the specified model', async () => {

@@ -28,7 +28,7 @@ const datasetId = '3757409464110546944';
 const gcsSourceUri =
   'gs://ucaip-sample-resources/hmdb_split1_5classes_train.jsonl';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform import data video classification', () => {
   it('should import video classification data to dataset', async () => {

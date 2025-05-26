@@ -42,7 +42,8 @@ const project = process.env.CAIP_PROJECT_ID;
 
 let trainingPipelineId;
 
-describe('AI platform create training pipeline text entity extraction', async function () {
+// Training text objective TEXT_EXTRACTION is no longer supported
+describe.skip('AI platform create training pipeline text entity extraction', async function () {
   this.retries(2);
   it('should create a new text entity extraction training pipeline', async () => {
     const stdout = execSync(

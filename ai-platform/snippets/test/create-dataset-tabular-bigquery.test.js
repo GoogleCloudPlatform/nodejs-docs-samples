@@ -28,7 +28,7 @@ const cwd = path.join(__dirname, '..');
 const datasetDisplayName = `temp_create_dataset_tables_bigquery_test_${uuid()}`;
 const bigquerySourceUri = 'bq://ucaip-sample-tests.table_test.all_bq_types';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let datasetId;
 

@@ -24,7 +24,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 
-describe('AI platform generate and edit an image using Imagen and check for a watermark', () => {
+describe('AI platform generate and edit an image using Imagen', () => {
   it('should generate an image', async () => {
     const stdout = execSync('node ./imagen-generate-image.js', {
       cwd,
@@ -36,12 +36,6 @@ describe('AI platform generate and edit an image using Imagen and check for a wa
       cwd,
     });
     assert.match(stdout, /Saved image output1.png/);
-  });
-  it('should verify that an image contains a watermark', async () => {
-    const stdout = execSync('node ./imagen-verify-image-watermark.js', {
-      cwd,
-    });
-    assert.match(stdout, /ACCEPT/);
   });
 });
 

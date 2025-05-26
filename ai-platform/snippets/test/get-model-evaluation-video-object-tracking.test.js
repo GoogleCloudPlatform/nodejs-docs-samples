@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 const modelId = '8609932509485989888';
 const evaluationId = '6016811301190238208';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get video object tracking model evaluation', () => {
   it('should get the evaluation from the specified model', async () => {

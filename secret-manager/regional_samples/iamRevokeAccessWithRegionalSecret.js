@@ -15,7 +15,7 @@
 'use strict';
 
 async function main(projectId, locationId, secretId, versionId, member) {
-  // [START secretmanager_iam_revoke_access_regional_secret]
+  // [START secretmanager_iam_revoke_access_with_regional_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -69,7 +69,7 @@ async function main(projectId, locationId, secretId, versionId, member) {
   }
 
   grantAccessRegionalSecret();
-  // [END secretmanager_iam_revoke_access_regional_secret]
+  // [END secretmanager_iam_revoke_access_with_regional_secret]
 }
 
 const args = process.argv.slice(2);

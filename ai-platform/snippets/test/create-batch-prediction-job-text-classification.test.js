@@ -16,18 +16,18 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {after, describe, it} = require('mocha');
-const uuid = require('uuid').v4;
-const cp = require('child_process');
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+import { assert } from 'chai';
+import { after, describe, it } from 'mocha';
+import { v4 as uuid } from 'uuid';
+import { execSync as _execSync } from 'child_process';
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
-const aiplatform = require('@google-cloud/aiplatform');
+import { v1 } from '@google-cloud/aiplatform';
 const clientOptions = {
   apiEndpoint: 'us-central1-aiplatform.googleapis.com',
 };
 
-const jobServiceClient = new aiplatform.v1.JobServiceClient(clientOptions);
+const jobServiceClient = new v1.JobServiceClient(clientOptions);
 
 const batchPredictionDisplayName = `temp_create_batch_prediction_text_classification_test${uuid()}`;
 const modelId = '7827432074230366208';

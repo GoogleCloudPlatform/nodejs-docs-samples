@@ -1,0 +1,5 @@
+{
+  "secrets": {
+    "CAIP_PROJECT_ID": "nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id"
+  }
+}

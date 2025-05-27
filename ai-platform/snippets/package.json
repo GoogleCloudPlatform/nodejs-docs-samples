@@ -10,7 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js"
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.js --reporter list"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^3.0.0",

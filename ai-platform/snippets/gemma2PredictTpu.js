@@ -68,7 +68,7 @@ async function gemma2PredictTpu(predictionServiceClient) {
   return text;
 }
 
-module.exports = gemma2PredictTpu;
+export default gemma2PredictTpu;
 
 // TODO(developer): Uncomment below lines before running the sample.
 // gemma2PredictTpu(...process.argv.slice(2)).catch(err => {

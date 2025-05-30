@@ -16,13 +16,10 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it} = require('mocha');
-const sinon = require('sinon');
-
-const {
-  predictImageFromImageAndText,
-} = require('../predict-image-from-image-and-text');
+import {assert} from 'chai';
+import {describe, it} from 'mocha';
+import sinon from 'sinon';
+import {predictImageFromImageAndText} from '../predict-image-from-image-and-text.js';
 
 const project = process.env.CAIP_PROJECT_ID;
 const LOCATION = 'us-central1';

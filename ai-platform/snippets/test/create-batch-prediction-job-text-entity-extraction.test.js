@@ -16,13 +16,13 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {after, describe, it} = require('mocha');
-const uuid = require('uuid').v4;
-const cp = require('child_process');
+import {assert} from 'chai';
+import {after, describe, it} from 'mocha';
+import {v4 as uuid} from 'uuid';
+import cp from 'node:child_process';
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const aiplatform = require('@google-cloud/aiplatform');
+import aiplatform from '@google-cloud/aiplatform';
 const clientOptions = {
   apiEndpoint: 'us-central1-aiplatform.googleapis.com',
 };

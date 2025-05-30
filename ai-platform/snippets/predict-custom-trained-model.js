@@ -27,8 +27,8 @@ async function main(filename, endpointId, project, location = 'us-central1') {
   // const endpointId = "YOUR_ENDPOINT_ID";
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
-  const util = require('util');
-  const {readFile} = require('fs');
+  const util = require('node:util');
+  const {readFile} = require('node:fs');
   const readFileAsync = util.promisify(readFile);
 
   // Imports the Google Cloud Prediction Service Client library

@@ -18,7 +18,7 @@
 
 import { assert } from 'chai';
 import { after, describe, it } from 'mocha';
-import { execSync as _execSync } from 'child_process';
+import { execSync as _execSync } from 'node:child_process';
 import { JobServiceClient } from '@google-cloud/aiplatform';
 
 const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});

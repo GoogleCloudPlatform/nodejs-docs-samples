@@ -19,7 +19,7 @@
 import { assert } from 'chai';
 import { after, describe, it } from 'mocha';
 import { v4 as uuid } from 'uuid';
-import { execSync as _execSync } from 'child_process';
+import { execSync as _execSync } from 'node:child_process';
 const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 import { v1 } from '@google-cloud/aiplatform';

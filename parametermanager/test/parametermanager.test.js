@@ -23,6 +23,9 @@ const client = new ParameterManagerClient();
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 const secretClient = new SecretManagerServiceClient();
 
+const {KeyManagementServiceClient} = require('@google-cloud/kms');
+const kmsClient = new KeyManagementServiceClient();
+
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
 const options = {};
@@ -38,17 +41,29 @@ const parameterId = `test-parameter-${uuidv4()}`;
 const regionalParameterId = `test-regional-${uuidv4()}`;
 const parameterVersionId = `test-version-${uuidv4()}`;
 
+const keyRingId = 'node-test-kms-key';
+const keyId = `test-parameter-${uuidv4()}`;
+const keyId1 = `test-parameter-${uuidv4()}`;
+
 const jsonPayload = '{username: "test-user", host: "localhost"}';
 const payload = 'This is unstructured data';
 
 let parameter;
-let parameterToDelete;
 let regionalParameter;
+let secret;
+let secretVersion;
+let parameterToDelete;
 let regionalParameterToDelete;
 let parameterVersion;
 let regionalParameterVersion;
-let secret;
-let secretVersion;
+
+let keyRing;
+let kmsKey;
+let kmsKey1;
+
+let regionalKeyRing;
+let regionalKmsKey;
+let regionalKmsKey1;
 
 describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
@@ -58,6 +73,12 @@ describe('Parameter Manager samples', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
+    keyRing = `projects/${projectId}/locations/global/keyRings/${keyRingId}`;
+    kmsKey = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
+    kmsKey1 = `projects/${projectId}/locations/global/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
+    regionalKeyRing = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}`;
+    regionalKmsKey = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId}`;
+    regionalKmsKey1 = `projects/${projectId}/locations/${locationId}/keyRings/${keyRingId}/cryptoKeys/${keyId1}`;
 
     // Create a secret
     [secret] = await secretClient.createSecret({
@@ -88,6 +109,16 @@ describe('Parameter Manager samples', () => {
     });
     parametersToDelete.push(parameter.name);
 
+    // Create a test regional parameter
+    [regionalParameter] = await regionalClient.createParameter({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      parameterId: regionalParameterId,
+      parameter: {
+        format: 'JSON',
+      },
+    });
+    regionalParametersToDelete.push(regionalParameter.name);
+
     // Create a test global parameter for delete use case
     [parameterToDelete] = await client.createParameter({
       parent: `projects/${projectId}/locations/global`,
@@ -110,16 +141,6 @@ describe('Parameter Manager samples', () => {
     });
     parameterVersionsToDelete.push(parameterVersion.name);
 
-    // Create a test regional parameter
-    [regionalParameter] = await regionalClient.createParameter({
-      parent: `projects/${projectId}/locations/${locationId}`,
-      parameterId: regionalParameterId,
-      parameter: {
-        format: 'JSON',
-      },
-    });
-    regionalParametersToDelete.push(regionalParameter.name);
-
     // Create a test regional parameter for delete use case
     [regionalParameterToDelete] = await regionalClient.createParameter({
       parent: `projects/${projectId}/locations/${locationId}`,
@@ -141,6 +162,100 @@ describe('Parameter Manager samples', () => {
       },
     });
     regionalParameterVersionsToDelete.push(regionalParameterVersion.name);
+
+    try {
+      await kmsClient.getKeyRing({name: keyRing});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createKeyRing({
+          parent: kmsClient.locationPath(projectId, 'global'),
+          keyRingId: keyRingId,
+        });
+      }
+    }
+
+    try {
+      await kmsClient.getKeyRing({name: regionalKeyRing});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createKeyRing({
+          parent: kmsClient.locationPath(projectId, locationId),
+          keyRingId: keyRingId,
+        });
+      }
+    }
+
+    try {
+      await kmsClient.getCryptoKey({name: kmsKey});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createCryptoKey({
+          parent: kmsClient.keyRingPath(projectId, 'global', keyRingId),
+          cryptoKeyId: keyId,
+          cryptoKey: {
+            purpose: 'ENCRYPT_DECRYPT',
+            versionTemplate: {
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
+            },
+          },
+        });
+      }
+    }
+
+    try {
+      await kmsClient.getCryptoKey({name: regionalKmsKey});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createCryptoKey({
+          parent: kmsClient.keyRingPath(projectId, locationId, keyRingId),
+          cryptoKeyId: keyId,
+          cryptoKey: {
+            purpose: 'ENCRYPT_DECRYPT',
+            versionTemplate: {
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
+            },
+          },
+        });
+      }
+    }
+
+    try {
+      await kmsClient.getCryptoKey({name: kmsKey1});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createCryptoKey({
+          parent: kmsClient.keyRingPath(projectId, 'global', keyRingId),
+          cryptoKeyId: keyId1,
+          cryptoKey: {
+            purpose: 'ENCRYPT_DECRYPT',
+            versionTemplate: {
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
+            },
+          },
+        });
+      }
+    }
+
+    try {
+      await kmsClient.getCryptoKey({name: regionalKmsKey1});
+    } catch (error) {
+      if (error.code === 5) {
+        await kmsClient.createCryptoKey({
+          parent: kmsClient.keyRingPath(projectId, locationId, keyRingId),
+          cryptoKeyId: keyId1,
+          cryptoKey: {
+            purpose: 'ENCRYPT_DECRYPT',
+            versionTemplate: {
+              algorithm: 'GOOGLE_SYMMETRIC_ENCRYPTION',
+              protectionLevel: 'HSM',
+            },
+          },
+        });
+      }
+    }
   });
 
   after(async () => {
@@ -213,6 +328,46 @@ describe('Parameter Manager samples', () => {
         }
       })
     );
+
+    try {
+      await kmsClient.destroyCryptoKeyVersion({
+        name: `${kmsKey}/cryptoKeyVersions/1`,
+      });
+    } catch (error) {
+      if (error.code === 5) {
+        // If the method is not found, skip it.
+      }
+    }
+
+    try {
+      await kmsClient.destroyCryptoKeyVersion({
+        name: `${kmsKey1}/cryptoKeyVersions/1`,
+      });
+    } catch (error) {
+      if (error.code === 5) {
+        // If the method is not found, skip it.
+      }
+    }
+
+    try {
+      await kmsClient.destroyCryptoKeyVersion({
+        name: `${regionalKmsKey}/cryptoKeyVersions/1`,
+      });
+    } catch (error) {
+      if (error.code === 5) {
+        // If the method is not found, skip it.
+      }
+    }
+
+    try {
+      await kmsClient.destroyCryptoKeyVersion({
+        name: `${regionalKmsKey1}/cryptoKeyVersions/1`,
+      });
+    } catch (error) {
+      if (error.code === 5) {
+        // If the method is not found, skip it.
+      }
+    }
   });
 
   it('should create parameter version with secret references', async () => {
@@ -346,6 +501,86 @@ describe('Parameter Manager samples', () => {
       parameterVersionId + '-1'
     );
     assert.exists(parameterVersion);
+  });
+
+  it('should create a parameter with kms_key', async () => {
+    const sample = require('../createParamWithKmsKey');
+    const parameter = await sample.main(projectId, parameterId + '-4', kmsKey);
+    parametersToDelete.push(
+      `projects/${projectId}/locations/global/parameters/${parameterId}-4`
+    );
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-4`
+    );
+  });
+
+  it('should create a regional parameter with kms_key', async () => {
+    const sample = require('../regional_samples/createRegionalParamWithKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId + '-4',
+      regionalKmsKey
+    );
+    regionalParametersToDelete.push(
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-4`
+    );
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-4`
+    );
+  });
+
+  it('should update a parameter with kms_key', async () => {
+    const sample = require('../updateParamKmsKey');
+    const parameter = await sample.main(projectId, parameterId, kmsKey);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
+    );
+  });
+
+  it('should update a regional parameter with kms_key', async () => {
+    const sample = require('../regional_samples/updateRegionalParamKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      regionalKmsKey
+    );
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
+    );
+  });
+
+  it('should remove a kms_key for parameter', async () => {
+    const sample = require('../removeParamKmsKey');
+    const parameter = await sample.main(projectId, parameterId);
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}`
+    );
+  });
+
+  it('should remove a kms_key for regional parameter', async () => {
+    const sample = require('../regional_samples/removeRegionalParamKmsKey');
+    const parameter = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId
+    );
+    assert.exists(parameter);
+    assert.equal(
+      parameter.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
+    );
   });
 
   it('should runs the quickstart', async () => {

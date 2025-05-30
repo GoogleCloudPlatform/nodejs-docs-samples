@@ -37,7 +37,7 @@ const texts = [
 describe('predict text embeddings', () => {
   it('should get text embeddings using the latest model', async () => {
     const stdout = execSync(
-      `node ./predict-text-embeddings.js ${project} text-embedding-004 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
+      `node ./predict-text-embeddings.js ${project} gemini-embedding-001 '${texts.join(';')}' QUESTION_ANSWERING ${dimensionality}`,
       {cwd}
     );
     const embeddings = JSON.parse(stdout.trimEnd().split('\n').at(-1));

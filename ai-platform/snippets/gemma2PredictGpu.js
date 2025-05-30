@@ -65,7 +65,7 @@ async function gemma2PredictGpu(predictionServiceClient) {
   return text;
 }
 
-module.exports = gemma2PredictGpu;
+export default gemma2PredictGpu;
 
 // TODO(developer): Uncomment below lines before running the sample.
 // gemma2PredictGpu(...process.argv.slice(2)).catch(err => {

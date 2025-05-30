@@ -52,6 +52,10 @@ let parameter;
 let regionalParameter;
 let secret;
 let secretVersion;
+let parameterToDelete;
+let regionalParameterToDelete;
+let parameterVersion;
+let regionalParameterVersion;
 
 let keyRing;
 let kmsKey;
@@ -65,6 +69,7 @@ describe('Parameter Manager samples', () => {
   const parametersToDelete = [];
   const parameterVersionsToDelete = [];
   const regionalParametersToDelete = [];
+  const regionalParameterVersionsToDelete = [];
 
   before(async () => {
     projectId = await client.getProjectId();
@@ -113,6 +118,50 @@ describe('Parameter Manager samples', () => {
       },
     });
     regionalParametersToDelete.push(regionalParameter.name);
+
+    // Create a test global parameter for delete use case
+    [parameterToDelete] = await client.createParameter({
+      parent: `projects/${projectId}/locations/global`,
+      parameterId: parameterId + '-3',
+      parameter: {
+        format: 'JSON',
+      },
+    });
+    parametersToDelete.push(parameterToDelete.name);
+
+    // Create a version for the global parameter
+    [parameterVersion] = await client.createParameterVersion({
+      parent: parameter.name,
+      parameterVersionId: parameterVersionId,
+      parameterVersion: {
+        payload: {
+          data: Buffer.from(JSON.stringify({key: 'global_value'}), 'utf-8'),
+        },
+      },
+    });
+    parameterVersionsToDelete.push(parameterVersion.name);
+
+    // Create a test regional parameter for delete use case
+    [regionalParameterToDelete] = await regionalClient.createParameter({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      parameterId: regionalParameterId + '-3',
+      parameter: {
+        format: 'JSON',
+      },
+    });
+    regionalParametersToDelete.push(regionalParameterToDelete.name);
+
+    // Create a version for the regional parameter
+    [regionalParameterVersion] = await regionalClient.createParameterVersion({
+      parent: regionalParameter.name,
+      parameterVersionId: parameterVersionId,
+      parameterVersion: {
+        payload: {
+          data: Buffer.from(JSON.stringify({key: 'regional_value'}), 'utf-8'),
+        },
+      },
+    });
+    regionalParameterVersionsToDelete.push(regionalParameterVersion.name);
 
     try {
       await kmsClient.getKeyRing({name: keyRing});
@@ -250,15 +299,35 @@ describe('Parameter Manager samples', () => {
       }
     }
 
-    regionalParametersToDelete.forEach(async regionalParameterName => {
-      try {
-        await regionalClient.deleteParameter({name: regionalParameterName});
-      } catch (err) {
-        if (!err.message.includes('NOT_FOUND')) {
-          throw err;
+    // Delete all regional parameter versions first
+    await Promise.all(
+      regionalParameterVersionsToDelete.map(
+        async regionalParameterVersionName => {
+          try {
+            await regionalClient.deleteParameterVersion({
+              name: regionalParameterVersionName,
+            });
+          } catch (err) {
+            if (!err.message.includes('NOT_FOUND')) {
+              throw err;
+            }
+          }
         }
-      }
-    });
+      )
+    );
+
+    // Delete all regional parameters
+    await Promise.all(
+      regionalParametersToDelete.map(async regionalParameterName => {
+        try {
+          await regionalClient.deleteParameter({name: regionalParameterName});
+        } catch (err) {
+          if (!err.message.includes('NOT_FOUND')) {
+            throw err;
+          }
+        }
+      })
+    );
 
     try {
       await kmsClient.destroyCryptoKeyVersion({
@@ -511,6 +580,154 @@ describe('Parameter Manager samples', () => {
     assert.equal(
       parameter.name,
       `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}`
+    );
+  });
+
+  it('should runs the quickstart', async () => {
+    const sample = require('../quickstart');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId + '-quickstart',
+      parameterVersionId
+    );
+    parametersToDelete.push(
+      `projects/${projectId}/locations/global/parameters/${parameterId}-quickstart`
+    );
+    parameterVersionsToDelete.push(parameterVersion.name);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-quickstart/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should runs the regional quickstart', async () => {
+    const sample = require('../regional_samples/regionalQuickstart');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId + '-quickstart',
+      parameterVersionId
+    );
+    regionalParametersToDelete.push(
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart`
+    );
+    regionalParameterVersionsToDelete.push(parameterVersion.name);
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-quickstart/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should disable a parameter version', async () => {
+    const sample = require('../disableParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should disable a regional parameter version', async () => {
+    const sample = require('../regional_samples/disableRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should enable a parameter version', async () => {
+    const sample = require('../enableParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should enable a regional parameter version', async () => {
+    const sample = require('../regional_samples/enableRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion.name,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should delete a parameter version', async () => {
+    const sample = require('../deleteParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      parameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/global/parameters/${parameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should delete a regional parameter version', async () => {
+    const sample = require('../regional_samples/deleteRegionalParamVersion');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId,
+      parameterVersionId
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}/versions/${parameterVersionId}`
+    );
+  });
+
+  it('should delete a parameter', async () => {
+    const sample = require('../deleteParam');
+    const parameterVersion = await sample.main(projectId, parameterId + '-3');
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/global/parameters/${parameterId}-3`
+    );
+  });
+
+  it('should delete a regional parameter', async () => {
+    const sample = require('../regional_samples/deleteRegionalParam');
+    const parameterVersion = await sample.main(
+      projectId,
+      locationId,
+      regionalParameterId + '-3'
+    );
+    assert.exists(parameterVersion);
+    assert.equal(
+      parameterVersion,
+      `projects/${projectId}/locations/${locationId}/parameters/${regionalParameterId}-3`
     );
   });
 });

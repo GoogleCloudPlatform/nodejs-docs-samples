@@ -14,15 +14,15 @@
     "publish": "echo 'sample test; do not publish'"
   },
   "dependencies": {
-    "@google-cloud/batch": "^1.0.0"
+    "@google-cloud/batch": "^2.0.0"
   },
   "devDependencies": {
-    "@google-cloud/compute": "^4.0.0",
-    "@google-cloud/resource-manager": "^5.0.0",
+    "@google-cloud/compute": "^5.0.0",
+    "@google-cloud/resource-manager": "^6.0.0",
     "@google-cloud/storage": "^7.0.0",
     "@types/mocha": "^10.0.7",
     "c8": "^10.0.0",
-    "mocha": "^10.0.0",
-    "nanoid": "^3.3.7"
+    "mocha": "^11.0.0",
+    "nanoid": "^5.0.0"
   }
 }

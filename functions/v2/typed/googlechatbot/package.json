@@ -9,11 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.3.0"
+    "@google-cloud/functions-framework": "^4.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "mocha": "^10.2.0",
-    "sinon": "^18.0.0"
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0"
   }
 }

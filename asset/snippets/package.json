@@ -16,18 +16,18 @@
     "test": "c8 mocha -p -j 2 test --timeout 600000"
   },
   "dependencies": {
-    "@google-cloud/asset": "^5.0.0",
-    "@google-cloud/bigquery": "^7.0.0",
-    "@google-cloud/compute": "^4.0.0",
-    "@google-cloud/resource-manager": "^5.0.0",
+    "@google-cloud/asset": "^6.0.0",
+    "@google-cloud/bigquery": "^8.0.0",
+    "@google-cloud/compute": "^5.0.0",
+    "@google-cloud/resource-manager": "^6.0.0",
     "@google-cloud/storage": "^7.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "gts": "^5.0.0",
-    "mocha": "^10.0.0",
-    "sinon": "^18.0.0",
-    "uuid": "^10.0.0"
+    "chai": "^5.0.0",
+    "gts": "^6.0.0",
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0",
+    "uuid": "^11.0.0"
   }
 }

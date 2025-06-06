@@ -19,15 +19,15 @@
     "system-test": "c8 mocha -p -j 2 test/system.test.js --timeout=360000 --exit"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
     "google-auth-library": "^9.0.0",
-    "got": "^11.5.0",
-    "mocha": "^10.0.0",
-    "sinon": "^18.0.0",
+    "got": "^14.0.0",
+    "mocha": "^11.0.0",
+    "sinon": "^20.0.0",
     "supertest": "^7.0.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   }
 }

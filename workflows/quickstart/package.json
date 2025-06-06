@@ -14,13 +14,13 @@
     "test": "mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
   },
   "dependencies": {
-    "@google-cloud/workflows": "^3.0.0",
+    "@google-cloud/workflows": "^4.0.0",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
-    "@types/node": "^20.0.0",
-    "gts": "^5.0.0",
-    "mocha": "^10.2.0"
+    "@types/node": "^22.0.0",
+    "gts": "^6.0.0",
+    "mocha": "^11.0.0"
   }
 }

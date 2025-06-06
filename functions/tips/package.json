@@ -15,11 +15,11 @@
     "test": "echo \"Notice: tests moved into topic sub-directories\" && exit 0"
   },
   "dependencies": {
-    "@google-cloud/pubsub": "^4.0.0",
-    "mocha": "^10.0.0"
+    "@google-cloud/pubsub": "^5.0.0",
+    "mocha": "^11.0.0"
   },
   "devDependencies": {
     "node-fetch": "^3.0.0",
-    "sinon": "^18.0.0"
+    "sinon": "^20.0.0"
   }
 }

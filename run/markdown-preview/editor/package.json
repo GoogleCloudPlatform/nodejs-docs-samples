@@ -5,6 +5,7 @@
   "private": true,
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
@@ -23,7 +24,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "google-auth-library": "^9.0.0",
-    "got": "^11.5.0",
+    "got": "^12.6.1",
     "handlebars": "^4.7.6"
   },
   "devDependencies": {

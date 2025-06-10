@@ -13,6 +13,7 @@
 // limitations under the License.
 
 // [START retail_search_simple_query]
+
 'use strict';
 
 async function main() {

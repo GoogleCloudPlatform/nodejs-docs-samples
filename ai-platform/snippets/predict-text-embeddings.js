@@ -20,7 +20,7 @@
 // [START generativeaionvertexai_sdk_embedding]
 async function main(
   project,
-  model = 'text-embedding-005',
+  model = 'gemini-embedding-001',
   texts = 'banana bread?;banana muffins?',
   task = 'QUESTION_ANSWERING',
   dimensionality = 0,
@@ -37,19 +37,29 @@ async function main(
     const instances = texts
       .split(';')
       .map(e => helpers.toValue({content: e, task_type: task}));
+    
+    const client = new PredictionServiceClient(clientOptions);
     const parameters = helpers.toValue(
       dimensionality > 0 ? {outputDimensionality: parseInt(dimensionality)} : {}
     );
-    const request = {endpoint, instances, parameters};
-    const client = new PredictionServiceClient(clientOptions);
-    const [response] = await client.predict(request);
-    const predictions = response.predictions;
-    const embeddings = predictions.map(p => {
-      const embeddingsProto = p.structValue.fields.embeddings;
-      const valuesProto = embeddingsProto.structValue.fields.values;
-      return valuesProto.listValue.values.map(v => v.numberValue);
-    });
-    console.log('Got embeddings: \n' + JSON.stringify(embeddings));
+    const allEmbeddings = []
+    // gemini-embedding-001 takes one input at a time.
+    for (const instance of instances) {
+      const request = {endpoint, instances: [instance], parameters};
+      const [response] = await client.predict(request);
+      const predictions = response.predictions;
+
+      const embeddings = predictions.map(p => {
+        const embeddingsProto = p.structValue.fields.embeddings;
+        const valuesProto = embeddingsProto.structValue.fields.values;
+        return valuesProto.listValue.values.map(v => v.numberValue);
+      });
+
+      allEmbeddings.push(embeddings[0])
+    }
+
+
+    console.log('Got embeddings: \n' + JSON.stringify(allEmbeddings));
   }
 
   callPredict();

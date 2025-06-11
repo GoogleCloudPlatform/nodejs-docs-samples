@@ -46,7 +46,14 @@ async function updateFolderFloorSettings(folderId) {
         raiFilters: [
           {
             filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.HATE_SPEECH,
+              protos.google.cloud.modelarmor.v1.RaiFilterType.HARASSMENT,
+            confidenceLevel:
+              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                .LOW_AND_ABOVE,
+          },
+          {
+            filterType:
+              protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
             confidenceLevel:
               protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
           },

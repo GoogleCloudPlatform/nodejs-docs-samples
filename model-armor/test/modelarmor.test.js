@@ -14,19 +14,23 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {v4: uuidv4} = require('uuid');
-const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
-const {DlpServiceClient} = require('@google-cloud/dlp');
+const { assert } = require('chai');
+const cp = require('child_process');
+const { v4: uuidv4 } = require('uuid');
+const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
+const { DlpServiceClient } = require('@google-cloud/dlp');
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
+const folderId = process.env.MA_FOLDER_ID;
+const organizationId = process.env.MA_ORG_ID;
 const options = {
   apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
 };
 
 const client = new ModelArmorClient(options);
 const templateIdPrefix = `test-template-${uuidv4().substring(0, 8)}`;
+const execSync = cmd => cp.execSync(cmd, { encoding: 'utf-8' });
 
 let emptyTemplateId;
 let basicTemplateId;
@@ -72,6 +76,79 @@ async function deleteTemplate(templateName) {
     } else {
       console.error(`Error deleting template ${templateName}:`, error);
     }
+  }
+}
+
+async function disableFloorSettings() {
+  try {
+    // Disable project floor settings
+    const [projectFloorSettings] = await client.getFloorSetting({
+      name: `projects/${projectId}/locations/global/floorSetting`,
+    });
+
+    if (projectFloorSettings.enableFloorSettingEnforcement) {
+      const [updatedProjectSettings] = await client.updateFloorSetting({
+        floorSetting: {
+          name: `projects/${projectId}/locations/global/floorSetting`,
+          enableFloorSettingEnforcement: false,
+        },
+        updateMask: {
+          paths: ['enable_floor_setting_enforcement'],
+        },
+      });
+      console.log(
+        'Disabled project floor settings:',
+        updatedProjectSettings.name
+      );
+    }
+
+    // Disable folder floor settings if folderId is available
+    if (folderId) {
+      const [folderFloorSettings] = await client.getFloorSetting({
+        name: `folders/${folderId}/locations/global/floorSetting`,
+      });
+
+      if (folderFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedFolderSettings] = await client.updateFloorSetting({
+          floorSetting: {
+            name: `folders/${folderId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log(
+          'Disabled folder floor settings:',
+          updatedFolderSettings.name
+        );
+      }
+    }
+
+    // Disable organization floor settings if organizationId is available
+    if (organizationId) {
+      const [orgFloorSettings] = await client.getFloorSetting({
+        name: `organizations/${organizationId}/locations/global/floorSetting`,
+      });
+
+      if (orgFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedOrgSettings] = await client.updateFloorSetting({
+          floorSetting: {
+            name: `organizations/${organizationId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log(
+          'Disabled organization floor settings:',
+          updatedOrgSettings.name
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error disabling floor settings:', error);
   }
 }
 
@@ -292,6 +369,12 @@ describe('Model Armor tests', () => {
 
   after(async () => {
     for (const templateName of templatesToDelete) {
+
+      // TODO: Enable clean up once tests are enabled.
+      // Disable floor settings to restore original state
+      // await disableFloorSettings();
+
+
       await deleteTemplate(templateName);
     }
 
@@ -300,7 +383,65 @@ describe('Model Armor tests', () => {
 
   // =================== Floor Settings Tests ===================
 
-  // TODO: Add tests for floor settings once the floor setting API issues are resolved.
+  // TODO: Enable these tests once floor settings API issue is resolved.
+
+  it.skip('should get organization floor settings', () => {
+    const output = execSync(
+      `node snippets/getOrganizationFloorSettings.js ${organizationId}`
+    ).toString();
+    const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
+  });
+
+  it.skip('should get folder floor settings', () => {
+    const output = execSync(
+      `node snippets/getFolderFloorSettings.js ${folderId}`
+    ).toString();
+
+    // Check for expected name format in output
+    const expectedName = `folders/${folderId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
+  });
+
+  it.skip('should get project floor settings', () => {
+    const output = execSync(
+      `node snippets/getProjectFloorSettings.js ${projectId}`
+    ).toString();
+
+    // Check for expected name format in output
+    const expectedName = `projects/${projectId}/locations/global/floorSetting`;
+    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
+  });
+
+  it.skip('should update organization floor settings', () => {
+    const output = execSync(
+      `node snippets/updateOrganizationFloorSettings.js ${organizationId}`
+    ).toString();
+    // Check that the update was performed
+    assert.match(output, /Updated organization floor settings/);
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
+  });
+
+  it.skip('should update folder floor settings', () => {
+    const output = execSync(
+      `node snippets/updateFolderFloorSettings.js ${folderId}`
+    ).toString();
+    // Check that the update was performed
+    assert.match(output, /Updated folder floor settings/);
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
+  });
+
+  it.skip('should update project floor settings', () => {
+    const output = execSync(
+      `node snippets/updateProjectFloorSettings.js ${projectId}`
+    ).toString();
+    // Check that the update was performed
+    assert.match(output, /Updated project floor settings/);
+    // Check that the response contains enableFloorSettingEnforcement=true
+    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
+  });
 
   // =================== Template Creation Tests ===================
 

@@ -66,7 +66,7 @@ async function createTemplateWithMetadata(projectId, locationId, templateId) {
       },
     },
     templateMetadata: {
-      ignorePartialInvocationFailures: true,
+      logTemplateOperations: true,
       logSanitizeOperations: true,
     },
   };

@@ -298,6 +298,10 @@ describe('Model Armor tests', () => {
     await deleteDlpTemplates();
   });
 
+  // =================== Floor Settings Tests ===================
+
+  // TODO: Add tests for floor settings once the floor setting API issues are resolved.
+
   // =================== Template Creation Tests ===================
 
   it('should create a basic template', async () => {

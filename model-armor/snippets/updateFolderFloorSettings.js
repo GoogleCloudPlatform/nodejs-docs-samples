@@ -19,7 +19,7 @@
  *
  * @param {string} folderId - Google Cloud folder ID for which floor settings need to be updated.
  */
-async function updateFolderFloorSettings(folderId) {
+async function main(folderId) {
   // [START modelarmor_update_folder_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -28,51 +28,57 @@ async function updateFolderFloorSettings(folderId) {
 
   // Imports the Model Armor library
   const modelarmor = require('@google-cloud/modelarmor');
-  const {ModelArmorClient} = modelarmor.v1;
-  const {protos} = modelarmor;
+  const { ModelArmorClient } = modelarmor.v1;
+  const { protos } = modelarmor;
 
   // Instantiates a client
   const client = new ModelArmorClient();
 
-  const floorSettingsName = `folders/${folderId}/locations/global/floorSetting`;
+  async function updateFolderFloorSettings() {
 
-  // Build the floor settings with your preferred filters
-  // For more details on filters, please refer to the following doc:
-  // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-  const floorSetting = {
-    name: floorSettingsName,
-    filterConfig: {
-      raiSettings: {
-        raiFilters: [
-          {
-            filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.HARASSMENT,
-            confidenceLevel:
-              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
-                .LOW_AND_ABOVE,
-          },
-          {
-            filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
-            confidenceLevel:
-              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
-          },
-        ],
+    const floorSettingsName = `folders/${folderId}/locations/global/floorSetting`;
+
+    // Build the floor settings with your preferred filters
+    // For more details on filters, please refer to the following doc:
+    // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+    const floorSetting = {
+      name: floorSettingsName,
+      filterConfig: {
+        raiSettings: {
+          raiFilters: [
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType.HARASSMENT,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                  .LOW_AND_ABOVE,
+            },
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+            },
+          ],
+        },
       },
-    },
-    enableFloorSettingEnforcement: true,
-  };
+      enableFloorSettingEnforcement: true,
+    };
 
-  const request = {
-    floorSetting: floorSetting,
-  };
+    const request = {
+      floorSetting: floorSetting,
+    };
 
-  const [response] = await client.updateFloorSetting(request);
-  return response;
+    const [response] = await client.updateFloorSetting(request);
+    return response;
+
+  }
+
+  return await updateFolderFloorSettings();
   // [END modelarmor_update_folder_floor_settings]
 }
 
-module.exports = updateFolderFloorSettings;
+module.exports.main = main;
 
 /* c8 ignore next 10 */
 if (require.main === module) {

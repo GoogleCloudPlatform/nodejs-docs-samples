@@ -20,7 +20,7 @@
  * @param {string} projectId - The ID of the Google Cloud project for which to retrieve
  *                            floor settings.
  */
-async function getProjectFloorSettings(projectId) {
+async function main(projectId) {
   // [START modelarmor_get_project_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -30,23 +30,27 @@ async function getProjectFloorSettings(projectId) {
   const name = `projects/${projectId}/locations/global/floorSetting`;
 
   // Imports the Modelarmor library
-  const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
+  const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
 
   // Instantiates a client
   const modelarmorClient = new ModelArmorClient();
 
-  // Construct request
-  const request = {
-    name,
-  };
+  async function getProjectFloorSettings() {
+    // Construct request
+    const request = {
+      name,
+    };
 
-  // Run request
-  const [response] = await modelarmorClient.getFloorSetting(request);
-  return response;
+    // Run request
+    const [response] = await modelarmorClient.getFloorSetting(request);
+    return response;
+  }
+
+  return await getProjectFloorSettings();
   // [END modelarmor_get_project_floor_settings]
 }
 
-module.exports = getProjectFloorSettings;
+module.exports.main = main;
 
 /* c8 ignore next 10 */
 if (require.main === module) {

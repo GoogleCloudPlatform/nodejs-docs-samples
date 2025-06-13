@@ -19,7 +19,7 @@
  *
  * @param {string} organizationId - Google Cloud organization ID for which floor settings need to be updated.
  */
-async function updateOrganizationFloorSettings(organizationId) {
+async function main(organizationId) {
   // [START modelarmor_update_organization_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -32,42 +32,59 @@ async function updateOrganizationFloorSettings(organizationId) {
 
   const client = new ModelArmorClient();
 
-  const floorSettingsName = `organizations/${organizationId}/locations/global/floorSetting`;
+  async function updateOrganizationFloorSettings() {
+    const floorSettingsName = `organizations/${organizationId}/locations/global/floorSetting`;
 
-  // Build the floor settings with your preferred filters
-  // For more details on filters, please refer to the following doc:
-  // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
-  const floorSetting = {
-    name: floorSettingsName,
-    filterConfig: {
-      raiSettings: {
-        raiFilters: [
-          {
-            filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.HARASSMENT,
-            confidenceLevel:
-              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
-                .LOW_AND_ABOVE,
-          },
-          {
-            filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
-            confidenceLevel:
-              protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
-          },
-        ],
+    // Build the floor settings with your preferred filters
+    // For more details on filters, please refer to the following doc:
+    // https://cloud.google.com/security-command-center/docs/key-concepts-model-armor#ma-filters
+    const floorSetting = {
+      name: floorSettingsName,
+      filterConfig: {
+        raiSettings: {
+          raiFilters: [
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType.HARASSMENT,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                  .LOW_AND_ABOVE,
+            },
+            {
+              filterType:
+                protos.google.cloud.modelarmor.v1.RaiFilterType
+                  .SEXUALLY_EXPLICIT,
+              confidenceLevel:
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+            },
+          ],
+        },
       },
-    },
-    enableFloorSettingEnforcement: true,
-  };
+      enableFloorSettingEnforcement: true,
+    };
 
-  const request = {
-    floorSetting: floorSetting,
-  };
+    const request = {
+      floorSetting: floorSetting,
+    };
 
-  const [response] = await client.updateFloorSetting(request);
-  return response;
+    const [response] = await client.updateFloorSetting(request);
+    return response;
+  }
+
+  return await updateOrganizationFloorSettings();
   // [END modelarmor_update_organization_floor_settings]
 }
 
-module.exports = updateOrganizationFloorSettings;
+module.exports.main = main;
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

@@ -21,6 +21,8 @@ const {DlpServiceClient} = require('@google-cloud/dlp');
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
+const folderId = process.env.MA_FOLDER_ID;
+const organizationId = process.env.MA_ORG_ID;
 const options = {
   apiEndpoint: `modelarmor.${locationId}.rep.googleapis.com`,
 };
@@ -72,6 +74,83 @@ async function deleteTemplate(templateName) {
     } else {
       console.error(`Error deleting template ${templateName}:`, error);
     }
+  }
+}
+
+// eslint-disable-next-line no-unused-vars
+async function disableFloorSettings() {
+  try {
+    // Create global client
+    const global_client = new ModelArmorClient();
+
+    // Disable project floor settings
+    const [projectFloorSettings] = await global_client.getFloorSetting({
+      name: `projects/${projectId}/locations/global/floorSetting`,
+    });
+
+    if (projectFloorSettings.enableFloorSettingEnforcement) {
+      const [updatedProjectSettings] = await global_client.updateFloorSetting({
+        floorSetting: {
+          name: `projects/${projectId}/locations/global/floorSetting`,
+          enableFloorSettingEnforcement: false,
+        },
+        updateMask: {
+          paths: ['enable_floor_setting_enforcement'],
+        },
+      });
+      console.log(
+        'Disabled project floor settings:',
+        updatedProjectSettings.name
+      );
+    }
+
+    // Disable folder floor settings if folderId is available
+    if (folderId) {
+      const [folderFloorSettings] = await global_client.getFloorSetting({
+        name: `folders/${folderId}/locations/global/floorSetting`,
+      });
+
+      if (folderFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedFolderSettings] = await global_client.updateFloorSetting({
+          floorSetting: {
+            name: `folders/${folderId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log(
+          'Disabled folder floor settings:',
+          updatedFolderSettings.name
+        );
+      }
+    }
+
+    // Disable organization floor settings if organizationId is available
+    if (organizationId) {
+      const [orgFloorSettings] = await global_client.getFloorSetting({
+        name: `organizations/${organizationId}/locations/global/floorSetting`,
+      });
+
+      if (orgFloorSettings.enableFloorSettingEnforcement) {
+        const [updatedOrgSettings] = await global_client.updateFloorSetting({
+          floorSetting: {
+            name: `organizations/${organizationId}/locations/global/floorSetting`,
+            enableFloorSettingEnforcement: false,
+          },
+          updateMask: {
+            paths: ['enable_floor_setting_enforcement'],
+          },
+        });
+        console.log(
+          'Disabled organization floor settings:',
+          updatedOrgSettings.name
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error disabling floor settings:', error);
   }
 }
 
@@ -292,15 +371,15 @@ describe('Model Armor tests', () => {
 
   after(async () => {
     for (const templateName of templatesToDelete) {
+      // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
+      // Disable floor settings to restore original state
+      // await disableFloorSettings();
+
       await deleteTemplate(templateName);
     }
 
     await deleteDlpTemplates();
   });
-
-  // =================== Floor Settings Tests ===================
-
-  // TODO: Add tests for floor settings once the floor setting API issues are resolved.
 
   // =================== Template Creation Tests ===================
 
@@ -857,5 +936,58 @@ describe('Model Armor tests', () => {
       response.sanitizationResult.filterMatchState,
       'NO_MATCH_FOUND'
     );
+  });
+
+  // =================== Floor Settings Tests ===================
+
+  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
+
+  it.skip('should get organization floor settings', async () => {
+    const getOrganizationFloorSettings = require('../snippets/getOrganizationFloorSettings');
+
+    const output = await getOrganizationFloorSettings.main(organizationId);
+
+    const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should get folder floor settings', async () => {
+    const getFolderFloorSettings = require('../snippets/getFolderFloorSettings');
+
+    const output = await getFolderFloorSettings.main(folderId);
+
+    // Check for expected name format in output
+    const expectedName = `folders/${folderId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should get project floor settings', async () => {
+    const getProjectFloorSettings = require('../snippets/getProjectFloorSettings');
+
+    const output = await getProjectFloorSettings.main(projectId);
+    // Check for expected name format in output
+    const expectedName = `projects/${projectId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should update organization floor settings', async () => {
+    const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
+    const output = await updateOrganizationFloorSettings.main(organizationId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it.skip('should update folder floor settings', async () => {
+    const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
+    const output = await updateFolderFloorSettings.main(folderId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it.skip('should update project floor settings', async () => {
+    const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
+    const output = await updateProjectFloorSettings.main(projectId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
   });
 });

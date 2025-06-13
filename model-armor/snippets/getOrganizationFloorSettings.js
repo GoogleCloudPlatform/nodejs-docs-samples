@@ -20,13 +20,12 @@
  * @param {string} organizationId - The ID of the Google Cloud organization for which to retrieve
  *                                 floor settings.
  */
-async function getOrganizationFloorSettings(organizationId) {
+async function main(organizationId) {
   // [START modelarmor_get_organization_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // const organizationId = 'your-organization-id';
-
   const name = `organizations/${organizationId}/locations/global/floorSetting`;
 
   // Imports the Modelarmor library
@@ -35,15 +34,31 @@ async function getOrganizationFloorSettings(organizationId) {
   // Instantiates a client
   const modelarmorClient = new ModelArmorClient();
 
-  // Construct request
-  const request = {
-    name,
-  };
+  async function getOrganizationFloorSettings() {
+    // Construct request
+    const request = {
+      name,
+    };
 
-  // Run request
-  const [response] = await modelarmorClient.getFloorSetting(request);
-  return response;
+    // Run request
+    const [response] = await modelarmorClient.getFloorSetting(request);
+    return response;
+  }
+
+  return await getOrganizationFloorSettings();
   // [END modelarmor_get_organization_floor_settings]
 }
 
-module.exports = getOrganizationFloorSettings;
+module.exports.main = main;
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

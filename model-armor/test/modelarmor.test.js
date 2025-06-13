@@ -14,10 +14,10 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {v4: uuidv4} = require('uuid');
-const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
-const {DlpServiceClient} = require('@google-cloud/dlp');
+const { assert } = require('chai');
+const { v4: uuidv4 } = require('uuid');
+const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
+const { DlpServiceClient } = require('@google-cloud/dlp');
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
@@ -173,9 +173,9 @@ async function createDlpTemplates() {
       inspectTemplate: {
         inspectConfig: {
           infoTypes: [
-            {name: 'EMAIL_ADDRESS'},
-            {name: 'PHONE_NUMBER'},
-            {name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER'},
+            { name: 'EMAIL_ADDRESS' },
+            { name: 'PHONE_NUMBER' },
+            { name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER' },
           ],
         },
       },
@@ -260,7 +260,7 @@ describe('Model Armor tests', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
-    const {protos} = require('@google-cloud/modelarmor');
+    const { protos } = require('@google-cloud/modelarmor');
     // Import necessary enums
     const DetectionConfidenceLevel =
       protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
@@ -298,9 +298,9 @@ describe('Model Armor tests', () => {
         basicConfig: {
           filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
           infoTypes: [
-            {name: 'EMAIL_ADDRESS'},
-            {name: 'PHONE_NUMBER'},
-            {name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER'},
+            { name: 'EMAIL_ADDRESS' },
+            { name: 'PHONE_NUMBER' },
+            { name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER' },
           ],
         },
       },
@@ -379,66 +379,6 @@ describe('Model Armor tests', () => {
     }
 
     await deleteDlpTemplates();
-  });
-
-  // =================== Floor Settings Tests ===================
-
-  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
-
-  it.skip('should get organization floor settings', () => {
-    const getOrganizationFloorSettings = require('../snippets/getOrganizationFloorSettings');
-
-    const output = getOrganizationFloorSettings(organizationId).toString();
-
-    const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
-    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
-  });
-
-  it.skip('should get folder floor settings', () => {
-    const getFolderFloorSettings = require('../snippets/getFolderFloorSettings');
-
-    const output = getFolderFloorSettings(folderId).toString();
-
-    // Check for expected name format in output
-    const expectedName = `folders/${folderId}/locations/global/floorSetting`;
-    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
-  });
-
-  it.skip('should get project floor settings', () => {
-    const getProjectFloorSettings = require('../snippets/getProjectFloorSettings');
-
-    const output = getProjectFloorSettings(projectId).toString();
-
-    // Check for expected name format in output
-    const expectedName = `projects/${projectId}/locations/global/floorSetting`;
-    assert.match(output, new RegExp(expectedName.replace(/\//g, '\\/')));
-  });
-
-  it.skip('should update organization floor settings', () => {
-    const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
-    const output = updateOrganizationFloorSettings(organizationId).toString();
-    // Check that the update was performed
-    assert.match(output, /Updated organization floor settings/);
-    // Check that the response contains enableFloorSettingEnforcement=true
-    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
-  });
-
-  it.skip('should update folder floor settings', () => {
-    const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
-    const output = updateFolderFloorSettings(folderId).toString();
-    // Check that the update was performed
-    assert.match(output, /Updated folder floor settings/);
-    // Check that the response contains enableFloorSettingEnforcement=true
-    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
-  });
-
-  it.skip('should update project floor settings', () => {
-    const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
-    const output = updateProjectFloorSettings(projectId).toString();
-    // Check that the update was performed
-    assert.match(output, /Updated project floor settings/);
-    // Check that the response contains enableFloorSettingEnforcement=true
-    assert.match(output, /enableFloorSettingEnforcement:\s*true/);
   });
 
   // =================== Template Creation Tests ===================
@@ -996,5 +936,58 @@ describe('Model Armor tests', () => {
       response.sanitizationResult.filterMatchState,
       'NO_MATCH_FOUND'
     );
+  });
+
+  // =================== Floor Settings Tests ===================
+
+  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
+
+  it.skip('should get organization floor settings', async () => {
+    const getOrganizationFloorSettings = require('../snippets/getOrganizationFloorSettings');
+
+    const output = await getOrganizationFloorSettings.main(organizationId);
+
+    const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should get folder floor settings', async () => {
+    const getFolderFloorSettings = require('../snippets/getFolderFloorSettings');
+
+    const output = await getFolderFloorSettings.main(folderId);
+
+    // Check for expected name format in output
+    const expectedName = `folders/${folderId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should get project floor settings', async () => {
+    const getProjectFloorSettings = require('../snippets/getProjectFloorSettings');
+
+    const output = await getProjectFloorSettings.main(projectId)
+    // Check for expected name format in output
+    const expectedName = `projects/${projectId}/locations/global/floorSetting`;
+    assert.equal(output.name, expectedName);
+  });
+
+  it.skip('should update organization floor settings', async () => {
+    const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
+    const output = await updateOrganizationFloorSettings.main(organizationId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it.skip('should update folder floor settings', async () => {
+    const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
+    const output = await updateFolderFloorSettings.main(folderId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it.skip('should update project floor settings', async () => {
+    const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
+    const output = await updateProjectFloorSettings.main(projectId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
   });
 });

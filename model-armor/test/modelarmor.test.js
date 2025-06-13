@@ -14,10 +14,10 @@
 
 'use strict';
 
-const { assert } = require('chai');
-const { v4: uuidv4 } = require('uuid');
-const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
-const { DlpServiceClient } = require('@google-cloud/dlp');
+const {assert} = require('chai');
+const {v4: uuidv4} = require('uuid');
+const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
+const {DlpServiceClient} = require('@google-cloud/dlp');
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
@@ -173,9 +173,9 @@ async function createDlpTemplates() {
       inspectTemplate: {
         inspectConfig: {
           infoTypes: [
-            { name: 'EMAIL_ADDRESS' },
-            { name: 'PHONE_NUMBER' },
-            { name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER' },
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PHONE_NUMBER'},
+            {name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER'},
           ],
         },
       },
@@ -260,7 +260,7 @@ describe('Model Armor tests', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
-    const { protos } = require('@google-cloud/modelarmor');
+    const {protos} = require('@google-cloud/modelarmor');
     // Import necessary enums
     const DetectionConfidenceLevel =
       protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
@@ -298,9 +298,9 @@ describe('Model Armor tests', () => {
         basicConfig: {
           filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
           infoTypes: [
-            { name: 'EMAIL_ADDRESS' },
-            { name: 'PHONE_NUMBER' },
-            { name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER' },
+            {name: 'EMAIL_ADDRESS'},
+            {name: 'PHONE_NUMBER'},
+            {name: 'US_INDIVIDUAL_TAXPAYER_IDENTIFICATION_NUMBER'},
           ],
         },
       },
@@ -964,7 +964,7 @@ describe('Model Armor tests', () => {
   it.skip('should get project floor settings', async () => {
     const getProjectFloorSettings = require('../snippets/getProjectFloorSettings');
 
-    const output = await getProjectFloorSettings.main(projectId)
+    const output = await getProjectFloorSettings.main(projectId);
     // Check for expected name format in output
     const expectedName = `projects/${projectId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);

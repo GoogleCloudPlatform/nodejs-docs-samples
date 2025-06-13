@@ -27,14 +27,13 @@ async function main(projectId) {
   // const projectId = 'your-project-id';
 
   const modelarmor = require('@google-cloud/modelarmor');
-  const { ModelArmorClient } = modelarmor.v1;
-  const { protos } = modelarmor;
+  const {ModelArmorClient} = modelarmor.v1;
+  const {protos} = modelarmor;
 
   // Initiate client
   const client = new ModelArmorClient();
 
   async function updateProjectFloorSettings() {
-
     const floorSettingsName = `projects/${projectId}/locations/global/floorSetting`;
 
     // Build the floor settings with your preferred filters
@@ -54,7 +53,8 @@ async function main(projectId) {
             },
             {
               filterType:
-              protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
+                protos.google.cloud.modelarmor.v1.RaiFilterType
+                  .SEXUALLY_EXPLICIT,
               confidenceLevel:
                 protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
             },

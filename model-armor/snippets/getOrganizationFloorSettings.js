@@ -29,7 +29,7 @@ async function main(organizationId) {
   const name = `organizations/${organizationId}/locations/global/floorSetting`;
 
   // Imports the Modelarmor library
-  const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
+  const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
   // Instantiates a client
   const modelarmorClient = new ModelArmorClient();
@@ -43,7 +43,6 @@ async function main(organizationId) {
     // Run request
     const [response] = await modelarmorClient.getFloorSetting(request);
     return response;
-
   }
 
   return await getOrganizationFloorSettings();
@@ -62,4 +61,4 @@ if (require.main === module) {
     console.error(err.message);
     process.exitCode = 1;
   });
-} 
+}

@@ -20,7 +20,6 @@
  * @param {string} organizationId - Google Cloud organization ID for which floor settings need to be updated.
  */
 async function main(organizationId) {
-
   // [START modelarmor_update_organization_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -28,13 +27,12 @@ async function main(organizationId) {
   // const organizationId = 'your-organization-id';
 
   const modelarmor = require('@google-cloud/modelarmor');
-  const { ModelArmorClient } = modelarmor.v1;
-  const { protos } = modelarmor;
+  const {ModelArmorClient} = modelarmor.v1;
+  const {protos} = modelarmor;
 
   const client = new ModelArmorClient();
 
   async function updateOrganizationFloorSettings() {
-
     const floorSettingsName = `organizations/${organizationId}/locations/global/floorSetting`;
 
     // Build the floor settings with your preferred filters
@@ -54,7 +52,8 @@ async function main(organizationId) {
             },
             {
               filterType:
-                protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
+                protos.google.cloud.modelarmor.v1.RaiFilterType
+                  .SEXUALLY_EXPLICIT,
               confidenceLevel:
                 protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
             },
@@ -88,4 +87,4 @@ if (require.main === module) {
     console.error(err.message);
     process.exitCode = 1;
   });
-} 
+}

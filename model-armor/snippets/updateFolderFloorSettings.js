@@ -28,14 +28,13 @@ async function main(folderId) {
 
   // Imports the Model Armor library
   const modelarmor = require('@google-cloud/modelarmor');
-  const { ModelArmorClient } = modelarmor.v1;
-  const { protos } = modelarmor;
+  const {ModelArmorClient} = modelarmor.v1;
+  const {protos} = modelarmor;
 
   // Instantiates a client
   const client = new ModelArmorClient();
 
   async function updateFolderFloorSettings() {
-
     const floorSettingsName = `folders/${folderId}/locations/global/floorSetting`;
 
     // Build the floor settings with your preferred filters
@@ -55,7 +54,8 @@ async function main(folderId) {
             },
             {
               filterType:
-                protos.google.cloud.modelarmor.v1.RaiFilterType.SEXUALLY_EXPLICIT,
+                protos.google.cloud.modelarmor.v1.RaiFilterType
+                  .SEXUALLY_EXPLICIT,
               confidenceLevel:
                 protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
             },
@@ -71,7 +71,6 @@ async function main(folderId) {
 
     const [response] = await client.updateFloorSetting(request);
     return response;
-
   }
 
   return await updateFolderFloorSettings();
@@ -90,4 +89,4 @@ if (require.main === module) {
     console.error(err.message);
     process.exitCode = 1;
   });
-} 
+}

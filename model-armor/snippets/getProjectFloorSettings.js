@@ -30,7 +30,7 @@ async function main(projectId) {
   const name = `projects/${projectId}/locations/global/floorSetting`;
 
   // Imports the Modelarmor library
-  const { ModelArmorClient } = require('@google-cloud/modelarmor').v1;
+  const {ModelArmorClient} = require('@google-cloud/modelarmor').v1;
 
   // Instantiates a client
   const modelarmorClient = new ModelArmorClient();
@@ -62,4 +62,4 @@ if (require.main === module) {
     console.error(err.message);
     process.exitCode = 1;
   });
-} 
+}

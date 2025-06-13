@@ -47,3 +47,15 @@ async function getOrganizationFloorSettings(organizationId) {
 }
 
 module.exports = getOrganizationFloorSettings;
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+} 

@@ -19,7 +19,7 @@
  *
  * @param {string} folderId - The ID of the Google Cloud folder for which to retrieve floor settings.
  */
-async function getFolderFloorSettings(folderId) {
+async function main(folderId) {
   // [START modelarmor_get_folder_floor_settings]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -34,14 +34,30 @@ async function getFolderFloorSettings(folderId) {
   // Instantiates a client
   const modelarmorClient = new ModelArmorClient();
 
-  // Construct request
-  const request = {
-    name,
-  };
+  async function getFolderFloorSettings() {
+    // Construct request
+    const request = {
+      name,
+    };
 
-  const [response] = await modelarmorClient.getFloorSetting(request);
-  return response;
+    const [response] = await modelarmorClient.getFloorSetting(request);
+    return response;
+  }
+
+  return await getFolderFloorSettings();
   // [END modelarmor_get_folder_floor_settings]
 }
 
-module.exports = getFolderFloorSettings;
+module.exports.main = main;
+
+/* c8 ignore next 10 */
+if (require.main === module) {
+  main(...process.argv.slice(2)).catch(err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+  process.on('unhandledRejection', err => {
+    console.error(err.message);
+    process.exitCode = 1;
+  });
+}

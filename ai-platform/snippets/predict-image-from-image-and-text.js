@@ -30,7 +30,7 @@ async function main(
    */
   // const project = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_PROJECT_LOCATION';
-  // const bastImagePath = "YOUR_BASED_IMAGE_PATH"
+  // const baseImagePath = 'YOUR_BASE_IMAGE_PATH';
   // const textPrompt = 'YOUR_TEXT_PROMPT';
   const aiplatform = require('@google-cloud/aiplatform');
 

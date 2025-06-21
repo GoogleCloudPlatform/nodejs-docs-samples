@@ -16,10 +16,10 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {after, before, describe, it} = require('mocha');
-const uuid = require('uuid').v4;
-const cp = require('child_process');
+import {assert} from 'chai';
+import {after, before, describe, it} from 'mocha';
+import {v4 as uuid} from 'uuid';
+import cp from 'node:child_process';
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const project = process.env.CAIP_PROJECT_ID;

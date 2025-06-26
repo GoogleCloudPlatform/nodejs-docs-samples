@@ -41,7 +41,7 @@ async function getSecret(projectId, secretId) {
     }
     return secret;
   } catch (err) {
-    console.error('Failed to retrieve secret ${name}:', err);
+    console.error(`Failed to retrieve secret ${name}:`, err);
   } finally {
     await client.close();
   }

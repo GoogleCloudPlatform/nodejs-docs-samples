@@ -27,7 +27,7 @@ const cwd = path.join(__dirname, '..');
 
 const endpointDisplayName = `temp_create_endpoint_test_${uuid()}`;
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 let endpointId;
 
 describe('AI platform create endpoint', () => {

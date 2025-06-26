@@ -26,7 +26,7 @@ const cwd = path.join(__dirname, '..');
 
 const modelId = '3512561418744365056';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get model', () => {
   it('should get the specified model', async () => {

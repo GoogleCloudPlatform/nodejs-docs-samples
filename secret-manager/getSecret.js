@@ -14,32 +14,54 @@
 
 'use strict';
 
-async function main(name = 'projects/my-project/secrets/my-secret') {
-  // [START secretmanager_get_secret]
-  /**
-   * TODO(developer): Uncomment these variables before running the sample.
-   */
-  // const name = 'projects/my-project/secrets/my-secret';
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Imports the Secret Manager library
-  const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
-
-  // Instantiates a client
+// [START secretmanager_get_secret]
+/**
+ * Get metadata about a secret.
+ *
+ * @param {string} projectId The ID of the Google Cloud project.
+ * @param {string} secretId The ID of the secret to retrieve.
+ */
+async function getSecret(projectId, secretId) {
   const client = new SecretManagerServiceClient();
-
-  async function getSecret() {
+  const name = `projects/${projectId}/secrets/${secretId}`;
+  
+  try {
     const [secret] = await client.getSecret({
       name: name,
     });
 
-    const policy = secret.replication.replication;
+    if (secret.replication && secret.replication.replication) {
+      const policy = secret.replication.replication;
+      console.info(
+        `Found secret ${secret.name} with replication policy ${policy}`
+      );
 
-    console.info(`Found secret ${secret.name} (${policy})`);
+    } else {
+      console.info(`Found secret ${secret.name} with no replication policy.`);
+    }
+    return secret;
+  } catch (err) {
+    console.error('Failed to retrieve secret ${name}:', err);
+  } finally {
+    await client.close();
   }
+}
+// [END secretmanager_get_secret]
 
-  getSecret();
-  // [END secretmanager_get_secret]
+async function main() {
+  const projectId = process.argv[2] || process.env.PROJECT_ID;
+  const secretId = process.argv[3] || process.env.SECRET_ID;
+
+  await getSecret(projectId, secretId);
 }
 
-const args = process.argv.slice(2);
-main(...args).catch(console.error);
+if (require.main === module) {
+  main().catch(err => {
+    console.error(err.message);
+    process.exit(1);
+  });
+}
+
+module.exports.getSecret = getSecret;

@@ -26,7 +26,6 @@ const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 async function getSecret(projectId, secretId) {
   const client = new SecretManagerServiceClient();
   const name = `projects/${projectId}/secrets/${secretId}`;
-  
   try {
     const [secret] = await client.getSecret({
       name: name,
@@ -37,7 +36,6 @@ async function getSecret(projectId, secretId) {
       console.info(
         `Found secret ${secret.name} with replication policy ${policy}`
       );
-
     } else {
       console.info(`Found secret ${secret.name} with no replication policy.`);
     }
@@ -60,7 +58,6 @@ async function main() {
 if (require.main === module) {
   main().catch(err => {
     console.error(err.message);
-    process.exit(1);
   });
 }
 

@@ -316,8 +316,8 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`${regionalSecret.name}`));
   });
 
-  it('gets a secret', async () => {
-    const output = execSync(`node getSecret.js ${secret.name}`);
+  it('gets metadata about a secret', async () => {
+    const output = execSync(`node getSecret.js ${projectId} ${secretId}`);
     assert.match(output, new RegExp(`Found secret ${secret.name}`));
   });
 

@@ -14,7 +14,7 @@ See the [Writing and Viewing Logs from Cloud Functions documentation][docs].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../../README.md#prerequisites).
+1. Read and follow the [prerequisites](../../../README.md#setup).
 
 1. Install dependencies:
 

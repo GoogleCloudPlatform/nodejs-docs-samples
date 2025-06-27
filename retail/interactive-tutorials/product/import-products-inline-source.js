@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-
+// [START retail_import_products_from_inline_source]
 async function main(id1, id2) {
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
@@ -126,3 +126,4 @@ process.on('unhandledRejection', err => {
 });
 
 main(...process.argv.slice(2));
+// [END retail_import_products_from_inline_source]

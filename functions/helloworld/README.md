@@ -27,7 +27,7 @@ complete list, see the [gcloud reference](https://cloud.google.com/sdk/gcloud/re
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../../README.md#prerequisites).
+1. Read and follow the [prerequisites](../../../README.md#setup).
 
 
 1. Install dependencies:

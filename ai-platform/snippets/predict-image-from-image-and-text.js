@@ -54,7 +54,7 @@ async function main(
     // Configure the parent resource
     const endpoint = `projects/${project}/locations/${location}/publishers/${publisher}/models/${model}`;
 
-    const fs = require('fs');
+    const fs = require('node:fs');
     const imageFile = fs.readFileSync(baseImagePath);
 
     // Convert the image data to a Buffer and base64 encode it.
@@ -95,4 +95,4 @@ async function main(
   // [END generativeaionvertexai_sdk_text_image_embedding]
 }
 
-exports.predictImageFromImageAndText = main;
+export {main as predictImageFromImageAndText};

@@ -90,4 +90,4 @@ process.on('unhandledRejection', err => {
 });
 
 main();
-// [END retail_search_product_with_boost_spec]
+// [END retail_search_with_boost_spec]

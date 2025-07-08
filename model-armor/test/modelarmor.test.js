@@ -947,6 +947,7 @@ describe('Model Armor tests', () => {
 
     const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
   it('should get folder floor settings', async () => {
@@ -957,6 +958,7 @@ describe('Model Armor tests', () => {
     // Check for expected name format in output
     const expectedName = `folders/${folderId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
   it('should get project floor settings', async () => {
@@ -966,6 +968,7 @@ describe('Model Armor tests', () => {
     // Check for expected name format in output
     const expectedName = `projects/${projectId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
   it('should update organization floor settings', async () => {

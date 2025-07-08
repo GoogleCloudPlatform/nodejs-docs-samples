@@ -50,4 +50,4 @@ myFirstWorkflow.workflows.yaml`
    ]
    ```
 
-[prereq]: ../../README.md#prerequisities
+[prereq]: ../../README.md#setup

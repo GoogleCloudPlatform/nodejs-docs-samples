@@ -16,7 +16,7 @@ See the [Cloud Functions OCR tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](https://github.com/GoogleCloudPlatform/nodejs-docs-samples#prerequisites).
+1. Read and follow the [prerequisites](https://github.com/GoogleCloudPlatform/nodejs-docs-samples#setup).
 
 1. Install dependencies:
 

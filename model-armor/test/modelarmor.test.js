@@ -371,9 +371,8 @@ describe('Model Armor tests', () => {
 
   after(async () => {
     for (const templateName of templatesToDelete) {
-      // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
       // Disable floor settings to restore original state
-      // await disableFloorSettings();
+      await disableFloorSettings();
 
       await deleteTemplate(templateName);
     }

@@ -18,7 +18,7 @@ See the [HTTP functions tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../#how-to-run-the-tests).
+1. Read and follow the [prerequisites](../../#setup).
 
 1. Install dependencies:
 

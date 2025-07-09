@@ -14,9 +14,7 @@
 
 'use strict';
 
-async function main(
-  projectId, locationId, secretId, updatedTimeToLive
-) {
+async function main(projectId, locationId, secretId, updatedTimeToLive) {
   // [START secretmanager_update_regional_secret_with_delayed_destroy]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

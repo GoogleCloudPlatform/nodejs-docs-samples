@@ -42,7 +42,7 @@ async function main() {
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
   async function getShortFormImageCaptions() {
-    const fs = require('fs');
+    const fs = require('node:fs');
     // Configure the parent resource
     const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagetext@001`;
 

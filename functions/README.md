@@ -13,7 +13,7 @@ There are two versions of Cloud Run functions:
 
 1. Read [Prerequisites][prereq] and [How to run a sample][run] first.
 
-[prereq]: ../README.md#prerequisities
+[prereq]: ../README.md#setup
 [run]: ../README.md#how-to-run-a-sample
 
 ## Samples

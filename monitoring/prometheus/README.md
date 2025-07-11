@@ -16,7 +16,7 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 
         npm install
 
-[prereq]: ../../README.md#prerequisites
+[prereq]: ../../README.md#setup
 [run]: ../../README.md#how-to-run-a-sample
 
 ## Samples

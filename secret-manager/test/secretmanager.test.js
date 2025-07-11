@@ -19,7 +19,11 @@ const cp = require('child_process');
 const {v4} = require('uuid');
 
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const {TagKeysClient} = require('@google-cloud/resource-manager').v3;
+const {TagValuesClient} = require('@google-cloud/resource-manager').v3;
 const client = new SecretManagerServiceClient();
+const resourcemanagerTagKeyClient = new TagKeysClient();
+const resourcemanagerTagValueClient = new TagValuesClient();
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
@@ -39,6 +43,9 @@ let secret;
 let regionalSecret;
 let version;
 let regionalVersion;
+
+let tagKey;
+let tagValue;
 
 const options = {};
 options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
@@ -94,6 +101,28 @@ describe('Secret Manager samples', () => {
         data: Buffer.from(payload),
       },
     });
+
+    // Create tag key
+    const [keyOperation] = await resourcemanagerTagKeyClient.createTagKey({
+      tagKey: {
+        parent: `projects/${projectId}`,
+        shortName: v4(),
+      },
+    });
+    const [tagKeyResponse] = await keyOperation.promise();
+    tagKey = tagKeyResponse.name;
+
+    // Create tag value
+    const [valueOperation] = await resourcemanagerTagValueClient.createTagValue(
+      {
+        tagValue: {
+          parent: tagKey,
+          shortName: v4(),
+        },
+      }
+    );
+    const [tagValueResponse] = await valueOperation.promise();
+    tagValue = tagValueResponse.name;
 
     await regionalClient.createSecret({
       parent: `projects/${projectId}/locations/${locationId}`,
@@ -176,7 +205,22 @@ describe('Secret Manager samples', () => {
       await client.deleteSecret({
         name: `${secret.name}-4`,
       });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
 
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-7`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+    try {
       await regionalClient.deleteSecret({
         name: `${regionalSecret.name}-3`,
       });
@@ -220,6 +264,72 @@ describe('Secret Manager samples', () => {
       await regionalClient.deleteSecret({
         name: `${regionalSecret.name}-6`,
       });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-with-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-with-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-bind-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-bind-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 20000));
+    const [deleteValueOperation] =
+      await resourcemanagerTagValueClient.deleteTagValue({
+        name: tagValue,
+      });
+    try {
+      await deleteValueOperation.promise();
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    const [deleteKeyOperation] = await resourcemanagerTagKeyClient.deleteTagKey(
+      {
+        name: tagKey,
+      }
+    );
+    try {
+      await deleteKeyOperation.promise();
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
         throw err;
@@ -542,5 +652,41 @@ describe('Secret Manager samples', () => {
       `node regional_samples/destroyRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Destroyed ${regionalVersion.name}`));
+  });
+
+  it('creates secret with tags', async () => {
+    const output = cp.execSync(
+      `node createSecretWithTags.js ${projectId} ${secretId}-with-tags ${tagKey} ${tagValue}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-with-tags`));
+  });
+
+  it('creates regional secret with tags', async () => {
+    const output = cp.execSync(
+      `node regional_samples/createRegionalSecretWithTags.js ${projectId} ${locationId} ${secretId}-with-tags ${tagKey} ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-with-tags`)
+    );
+  });
+
+  it('bind tags to secret', async () => {
+    const output = cp.execSync(
+      `node bindTagsToSecret.js ${projectId} ${secretId}-bind-tags ${tagValue}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-bind-tags`));
+    assert.match(output, new RegExp('Created Tag Binding'));
+  });
+
+  it('bind tags to regional secret', async () => {
+    const output = cp.execSync(
+      `node regional_samples/bindTagsToRegionalSecret.js ${projectId} ${locationId} ${secretId}-bind-tags ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-bind-tags`)
+    );
+    assert.match(output, new RegExp('Created Tag Binding'));
   });
 });

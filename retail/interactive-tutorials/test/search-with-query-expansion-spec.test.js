@@ -97,7 +97,7 @@ describe('Search with query expansion spec', () => {
       }
     });
 
-    // https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues/4136
+    // TODO(#4136): Re-enable this test. See https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues/4136
     it.skip('should contain expanded query', () => {
       const searchResponse = response[IResponseParams.ISearchResponse];
       expect(

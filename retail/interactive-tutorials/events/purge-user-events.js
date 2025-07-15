@@ -69,5 +69,4 @@ process.on('unhandledRejection', err => {
 });
 
 main();
-
 // [END retail_purge_user_events]

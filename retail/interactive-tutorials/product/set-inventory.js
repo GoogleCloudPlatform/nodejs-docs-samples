@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // [START retail_set_inventory]
-//
+
 'use strict';
 
 async function main(generatedProductId) {
@@ -100,5 +100,4 @@ process.on('unhandledRejection', err => {
 });
 
 main(...process.argv.slice(2));
-//
 // [END retail_set_inventory]

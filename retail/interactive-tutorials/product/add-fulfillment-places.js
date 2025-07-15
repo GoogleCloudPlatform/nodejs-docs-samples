@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-
+// [START retail_add_fulfillment_places]
 async function main(generatedProductId) {
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
@@ -89,3 +89,4 @@ process.on('unhandledRejection', err => {
 });
 
 main(...process.argv.slice(2));
+// [END retail_add_fulfillment_places]

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// [START search_for_products_with_ordering]
+// [START retail_search_products_with_ordering]
 
 'use strict';
 
@@ -82,5 +82,4 @@ process.on('unhandledRejection', err => {
 });
 
 main();
-
-// [END search_for_products_with_ordering]
+// [END retail_search_products_with_ordering]

@@ -11,9 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// [START retail_search_products_with_ordering]
 
 'use strict';
+
+// [START retail_search_for_products_with_ordering]
 
 async function main() {
   // Call Retail API to search for a products in a catalog, order the results by different product fields.
@@ -82,4 +83,4 @@ process.on('unhandledRejection', err => {
 });
 
 main();
-// [END retail_search_products_with_ordering]
+// [END retail_search_for_products_with_ordering]

@@ -38,6 +38,12 @@ async function main(name, annotationKey) {
 
   async function deleteSecretAnnotation() {
     const oldSecret = await getSecret();
+    if (!oldSecret.annotations) {
+      console.info(
+        `Secret ${oldSecret.name} has no annotations, skipping update.`
+      );
+      return;
+    }
     delete oldSecret.annotations[annotationKey];
     const [secret] = await client.updateSecret({
       secret: {

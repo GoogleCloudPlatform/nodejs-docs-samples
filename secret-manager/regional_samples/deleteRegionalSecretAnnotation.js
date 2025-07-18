@@ -45,6 +45,12 @@ async function main(projectId, locationId, secretId, annotationKey) {
 
   async function deleteRegionalSecretAnnotation() {
     const oldSecret = await getSecret();
+    if (!oldSecret.annotations) {
+      console.info(
+        `Secret ${oldSecret.name} has no annotations, skipping update.`
+      );
+      return;
+    }
     delete oldSecret.annotations[annotationKey];
     const [secret] = await client.updateSecret({
       secret: {

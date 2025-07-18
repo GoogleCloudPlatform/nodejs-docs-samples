@@ -42,8 +42,8 @@ async function main() {
   const predictionServiceClient = new PredictionServiceClient(clientOptions);
 
   async function generateImage() {
-    const fs = require('fs');
-    const util = require('util');
+    const fs = require('node:fs');
+    const util = require('node:util');
     // Configure the parent resource
     const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-001`;
 

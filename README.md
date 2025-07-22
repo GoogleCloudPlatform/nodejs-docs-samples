@@ -72,3 +72,5 @@ View the [tutorial][bookshelf_docs] or the [source code][bookshelf_code].
 Contributions welcome! See the [Contributing Guide][contrib].
 
 [contrib]: CONTRIBUTING.md
+
+https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git

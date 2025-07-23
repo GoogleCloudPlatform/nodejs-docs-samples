@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/googleapis/nodejs-recaptcha-enterprise.git"
+        "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
     },
     "dependencies": {
         "@google-cloud/recaptcha-enterprise": "^5.5.0",

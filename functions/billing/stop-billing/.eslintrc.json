@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "node/no-missing-import": ["off"],
+    "node/no-missing-require": ["off"],
+    "node/no-unpublished-import": ["off"],
+    "node/no-unpublished-require": ["off"],
+    "node/no-unsupported-features/es-syntax": ["off"]
+  },
+  "parserOptions": {
+    // This sample is designed for Node.js 20+ which supports ECMAScript 2020
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  }
+}

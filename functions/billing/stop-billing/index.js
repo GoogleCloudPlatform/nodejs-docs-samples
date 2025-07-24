@@ -30,7 +30,9 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
   let projectId = projectIdEnv;
 
   if (projectId === undefined) {
-    console.log('Project ID not found in env variables. Getting GCP metadata...');
+    console.log(
+      'Project ID not found in env variables. Getting GCP metadata...'
+    );
     try {
       projectId = await gcpMetadata.project('project-id');
     } catch (error) {

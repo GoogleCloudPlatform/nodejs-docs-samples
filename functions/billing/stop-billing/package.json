@@ -1,6 +1,6 @@
 {
   "name": "cloud-functions-stop-billing",
-  "private": "true",
+  "private": true,
   "version": "0.0.1",
   "description": "Disable billing with a budget notification.",
   "main": "index.js",

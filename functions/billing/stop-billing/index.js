@@ -30,7 +30,7 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
   let projectId = projectIdEnv;
 
   if (projectId === undefined) {
-    console.log('Project ID not found in Env variables. Reading metadata...');
+    console.log('Project ID not found in env variables. Getting GCP metadata...');
     try {
       projectId = await gcpMetadata.project('project-id');
     } catch (error) {
@@ -43,12 +43,20 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
 
   // Find more information about the notification format here:
   // https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification-format
-  const eventData = Buffer.from(
-    cloudEvent.data['message']['data'],
-    'base64'
-  ).toString();
+  const messageData = cloudEvent.data?.message?.data;
+  if (!messageData) {
+    console.error('Invalid CloudEvent: missing data.message.data');
+    return;
+  }
+  const eventData = Buffer.from(messageData, 'base64').toString();
 
-  const eventObject = JSON.parse(eventData);
+  let eventObject;
+  try {
+    eventObject = JSON.parse(eventData);
+  } catch (e) {
+    console.error('Error parsing event data:', e);
+    return;
+  }
 
   console.log(
     `Project ID: ${projectId} ` +
@@ -63,7 +71,7 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
 
   console.log(`Disabling billing for project '${projectName}'...`);
 
-  const billingEnabled = await _isBillingEnabled(projectName);
+  const billingEnabled = _isBillingEnabled(projectName);
   if (billingEnabled) {
     _disableBillingForProject(projectName, simulateDeactivation);
   } else {

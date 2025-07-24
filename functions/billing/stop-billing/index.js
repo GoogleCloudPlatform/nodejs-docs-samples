@@ -73,9 +73,9 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
 
   console.log(`Disabling billing for project '${projectName}'...`);
 
-  const billingEnabled = _isBillingEnabled(projectName);
+  const billingEnabled = await _isBillingEnabled(projectName);
   if (billingEnabled) {
-    _disableBillingForProject(projectName, simulateDeactivation);
+    await _disableBillingForProject(projectName, simulateDeactivation);
   } else {
     console.log('Billing is already disabled.');
   }

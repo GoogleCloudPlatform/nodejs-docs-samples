@@ -77,41 +77,43 @@ const getCloudEventOverBudgetAlert = isOverBudget => {
   });
 };
 
-describe('Billing Stop Function', () => {
-  let consoleOutput = '';
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
+describe('index.test.js', () => {
+  describe('functions_billing_stop StopBillingCloudEvent', () => {
+    let consoleOutput = '';
+    const originalConsoleLog = console.log;
+    const originalConsoleError = console.error;
 
-  beforeEach(async () => {
-    consoleOutput = '';
-    console.log = message => (consoleOutput += message + '\n');
-    console.error = message => (consoleOutput += 'ERROR: ' + message + '\n');
-  });
+    beforeEach(async () => {
+      consoleOutput = '';
+      console.log = message => (consoleOutput += message + '\n');
+      console.error = message => (consoleOutput += 'ERROR: ' + message + '\n');
+    });
 
-  afterEach(() => {
-    console.log = originalConsoleLog;
-    console.error = originalConsoleError;
-  });
+    afterEach(() => {
+      console.log = originalConsoleLog;
+      console.error = originalConsoleError;
+    });
 
-  it('should receive a notification within budget', async () => {
-    const StopBillingCloudEvent = getFunction('StopBillingCloudEvent');
-    const isOverBudget = false;
-    await StopBillingCloudEvent(getCloudEventOverBudgetAlert(isOverBudget));
+    it('should receive a notification within budget', async () => {
+      const StopBillingCloudEvent = getFunction('StopBillingCloudEvent');
+      const isOverBudget = false;
+      await StopBillingCloudEvent(getCloudEventOverBudgetAlert(isOverBudget));
 
-    assert.ok(
-      consoleOutput.includes(
-        'No action required. Current cost is within budget.'
-      )
-    );
-  });
+      assert.ok(
+        consoleOutput.includes(
+          'No action required. Current cost is within budget.'
+        )
+      );
+    });
 
-  it('should receive a notification exceeding the budget and simulate stopping billing', async () => {
-    const StopBillingCloudEvent = getFunction('StopBillingCloudEvent');
-    const isOverBudget = true;
-    await StopBillingCloudEvent(getCloudEventOverBudgetAlert(isOverBudget));
+    it('should receive a notification exceeding the budget and simulate stopping billing', async () => {
+      const StopBillingCloudEvent = getFunction('StopBillingCloudEvent');
+      const isOverBudget = true;
+      await StopBillingCloudEvent(getCloudEventOverBudgetAlert(isOverBudget));
 
-    assert.ok(consoleOutput.includes('Getting billing info'));
-    assert.ok(consoleOutput.includes('Disabling billing for project'));
-    assert.ok(consoleOutput.includes('Billing disabled. (Simulated)'));
+      assert.ok(consoleOutput.includes('Getting billing info'));
+      assert.ok(consoleOutput.includes('Disabling billing for project'));
+      assert.ok(consoleOutput.includes('Billing disabled. (Simulated)'));
+    });
   });
 });

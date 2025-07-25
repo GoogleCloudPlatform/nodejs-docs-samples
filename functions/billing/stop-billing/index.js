@@ -93,8 +93,8 @@ const _isBillingEnabled = async projectName => {
 
     return res.billingEnabled;
   } catch (e) {
-    console.log('Error getting billing info:', e);
-    console.log(
+    console.error('Error getting billing info:', e);
+    console.error(
       'Unable to determine if billing is enabled on specified project, ' +
         'assuming billing is enabled'
     );
@@ -130,7 +130,7 @@ const _disableBillingForProject = async (projectName, simulateDeactivation) => {
 
     console.log(`Billing disabled: ${JSON.stringify(response)}`);
   } catch (e) {
-    console.log('Failed to disable billing, check permissions.', e);
+    console.error('Failed to disable billing, check permissions.', e);
   }
 };
 // [END functions_billing_stop]

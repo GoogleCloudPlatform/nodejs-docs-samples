@@ -10,7 +10,7 @@
   "scripts": {
     "test": "c8 mocha -p -j 2 test/index.test.js --timeout=5000 --exit"
   },
-  "author": "Emmanuel Parada <paradalicea@google.com>",
+  "author": "Google Inc.",
   "license": "Apache-2.0",
   "dependencies": {
     "@google-cloud/billing": "^5.1.0",

@@ -19,24 +19,23 @@ const gcpMetadata = require('gcp-metadata');
 
 const billing = new CloudBillingClient();
 
-const projectIdEnv = process.env.GOOGLE_CLOUD_PROJECT;
+let projectId = process.env.GOOGLE_CLOUD_PROJECT;
+
+// TODO(developer): Since stopping billing is a destructive action
+// for your project, first validate a test budget with a dry run enabled.
+const dryRun = true;
 
 functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
-  // TODO(developer): As stopping billing is a destructive action
-  // for your project, change the following constant to `false`
-  // after you validate with a test budget.
-  const simulateDeactivation = true;
-
-  let projectId = projectIdEnv;
-
   if (projectId === undefined) {
-    console.log(
-      'Project ID not found in env variables. Getting GCP metadata...'
-    );
     try {
       projectId = await gcpMetadata.project('project-id');
     } catch (error) {
       console.error('project-id metadata not found:', error);
+
+      console.error(
+        'Project ID could not be found in environment variables ' +
+          'or Cloud Run metadata server. Stopping execution.'
+      );
       return;
     }
   }
@@ -50,6 +49,7 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
     console.error('Invalid CloudEvent: missing data.message.data');
     return;
   }
+
   const eventData = Buffer.from(messageData, 'base64').toString();
 
   let eventObject;
@@ -75,7 +75,7 @@ functions.cloudEvent('StopBillingCloudEvent', async cloudEvent => {
 
   const billingEnabled = await _isBillingEnabled(projectName);
   if (billingEnabled) {
-    await _disableBillingForProject(projectName, simulateDeactivation);
+    await _disableBillingForProject(projectName);
   } else {
     console.log('Billing is already disabled.');
   }
@@ -106,14 +106,12 @@ const _isBillingEnabled = async projectName => {
 /**
  * Disable billing for a project by removing its billing account
  * @param {string} projectName The name of the project to disable billing
- * @param {boolean} simulateDeactivation
- *   If true, it won't actually disable billing.
- *   Useful to validate with test budgets.
  * @returns {void}
  */
-const _disableBillingForProject = async (projectName, simulateDeactivation) => {
-  if (simulateDeactivation) {
-    console.log('Billing disabled. (Simulated)');
+const _disableBillingForProject = async projectName => {
+  if (dryRun) {
+    console.log('** DRY RUN: simulating billing deactivation');
+    console.log('Billing disabled.');
     return;
   }
 
@@ -128,7 +126,7 @@ const _disableBillingForProject = async (projectName, simulateDeactivation) => {
       resource: requestBody,
     });
 
-    console.log(`Billing disabled: ${JSON.stringify(response)}`);
+    console.log(`Billing disabled. Response: ${JSON.stringify(response)}`);
   } catch (e) {
     console.error('Failed to disable billing, check permissions.', e);
   }

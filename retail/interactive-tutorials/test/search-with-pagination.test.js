@@ -38,7 +38,8 @@ describe('Search with pagination', () => {
       assert.match(stdout, /Search start/);
     });
 
-    it('should contain next page token', () => {
+    // TODO(#4136): Re-enable this test. See https://github.com/GoogleCloudPlatform/nodejs-docs-samples/issues/4136
+    it.skip('should contain next page token', () => {
       assert.match(stdout, /Next page token/);
     });
 

@@ -110,8 +110,10 @@ const _isBillingEnabled = async projectName => {
  */
 const _disableBillingForProject = async projectName => {
   if (dryRun) {
-    console.log('** DRY RUN: simulating billing deactivation');
-    console.log('Billing disabled.');
+    console.log(
+      '** This script would disable billing here, but "dryRun" has been set to true.' +
+        'Change "dryRun" to alter this behaviour.'
+    );
     return;
   }
 

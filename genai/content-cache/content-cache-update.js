@@ -21,13 +21,11 @@ const {DateTime} = require('luxon');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-const CACHE_NAME =
-  'projects/448220130128/locations/us-central1/cachedContents/4839555542676406272';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION,
-  cacheName = CACHE_NAME
+  cacheName
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,

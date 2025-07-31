@@ -21,35 +21,34 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-const CACHE_NAME = 'projects/448220130128/locations/us-central1/cachedContents/8186785596975349760'
+const CACHE_NAME =
+  'projects/448220130128/locations/us-central1/cachedContents/8186785596975349760';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = CACHE_NAME
-){
-
+) {
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {
-      apiVersion: 'v1'
-    }
+      apiVersion: 'v1',
+    },
   });
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'Summarize the pdfs',
     config: {
-      cachedContent: cacheName
+      cachedContent: cacheName,
     },
   });
 
   console.log(response.text);
 
   return response.text;
-
 }
 // [END googlegenaisdk_contentcache_use_with_txt]
 

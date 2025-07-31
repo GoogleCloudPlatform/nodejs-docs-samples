@@ -16,31 +16,30 @@
 
 // [START googlegenaisdk_contentcache_update]
 const {GoogleGenAI} = require('@google/genai');
-const { DateTime } = require('luxon');
-
+const {DateTime} = require('luxon');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-const CACHE_NAME = 'projects/448220130128/locations/us-central1/cachedContents/4839555542676406272'
+const CACHE_NAME =
+  'projects/448220130128/locations/us-central1/cachedContents/4839555542676406272';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = CACHE_NAME
 ) {
-
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {
-      apiVersion: 'v1'
-    }
+      apiVersion: 'v1',
+    },
   });
 
   let contentCache = await ai.caches.get({
-    name: cacheName
+    name: cacheName,
   });
 
   console.log('Expire time', contentCache.expireTime);
@@ -48,30 +47,29 @@ async function generateContent(
   contentCache = await ai.caches.update({
     name: cacheName,
     config: {
-      ttl: '36000s'
-    }
+      ttl: '36000s',
+    },
   });
 
-  const expireTime = DateTime.fromISO(contentCache.expireTime, { zone: 'utc' });
+  const expireTime = DateTime.fromISO(contentCache.expireTime, {zone: 'utc'});
   const now = DateTime.utc();
   const timeDiff = expireTime.diff(now, ['seconds']);
 
   console.log('Expire time (after update):', expireTime.toISO());
   console.log('Expire time (in seconds):', Math.floor(timeDiff.seconds));
 
-  const nextWeekUtc = DateTime.utc().plus({ days: 7 });
+  const nextWeekUtc = DateTime.utc().plus({days: 7});
   console.log('Next week (UTC):', nextWeekUtc.toISO());
 
   contentCache = await ai.caches.update({
     name: cacheName,
     config: {
-      expireTime: nextWeekUtc
-    }
+      expireTime: nextWeekUtc,
+    },
   });
 
   console.log('Expire time (after update):', contentCache.expireTime);
   return contentCache;
-
 }
 // [END googlegenaisdk_contentcache_update]
 

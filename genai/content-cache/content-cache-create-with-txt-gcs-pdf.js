@@ -23,16 +23,14 @@ const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
-){
-
-
+) {
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {
-      apiVersion: 'v1'
-    }
+      apiVersion: 'v1',
+    },
   });
 
   const systemInstruction = `
@@ -40,44 +38,41 @@ async function generateContent(
   Now look at these research papers, and answer the following questions.
   `;
 
-
   const contents = [
     {
-      role: "user",
+      role: 'user',
       parts: [
         {
           fileData: {
-            fileUri: "gs://cloud-samples-data/generative-ai/pdf/2312.11805v3.pdf",
-            mimeType: "application/pdf",
-          }
+            fileUri:
+              'gs://cloud-samples-data/generative-ai/pdf/2312.11805v3.pdf',
+            mimeType: 'application/pdf',
+          },
         },
         {
           fileData: {
-            fileUri: "gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf",
-            mimeType: "application/pdf",
-          }
-        }
-      ]
-    }
+            fileUri: 'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf',
+            mimeType: 'application/pdf',
+          },
+        },
+      ],
+    },
   ];
 
-
-  const content_cache = await ai.caches.create({
+  const contentCache = await ai.caches.create({
     model: 'gemini-2.5-flash',
     config: {
       contents: contents,
       systemInstruction: systemInstruction,
       displayName: 'example-cache',
-      ttl: '86400s'
+      ttl: '86400s',
     },
   });
 
+  console.log(contentCache);
+  console.log(contentCache.name);
 
-  console.log(content_cache);
-  console.log(content_cache.name);
-
-  return content_cache.name;
-
+  return contentCache.name;
 }
 
 // [END googlegenaisdk_contentcache_create_with_txt_gcs_pdf]

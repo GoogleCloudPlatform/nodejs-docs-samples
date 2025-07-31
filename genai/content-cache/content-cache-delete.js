@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//    https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,42 +14,39 @@
 
 'use strict';
 
-// [START googlegenaisdk_contentcache_list]
-
+// [START googlegenaisdk_contentcache_delete]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+
+const CACHE_NAME =
+  'projects/448220130128/locations/us-central1/cachedContents/4839555542676406272';
+
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  cacheName = CACHE_NAME
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {
-      apiVersion: 'v1'
-    }
+      apiVersion: 'v1',
+    },
   });
 
-  const contentCacheList = await ai.caches.list()
+  console.log('Removing cache');
+  const contentCache = await ai.caches.delete({
+    name: cacheName,
+  });
 
+  console.log(contentCache.text);
 
-  // Access individual properties of a ContentCache object(s)
-  const  contentCacheNames = []
-  for (const contentCache of contentCacheList.pageInternal) {
-    console.log(`Cache \`${contentCache.name}\` for model \`${contentCache.model}\``);
-    console.log(`Last updated at: ${contentCache.updateTime}`);
-    console.log(`Expires at: ${contentCache.expireTime}`);
-    contentCacheNames.push(contentCache.name);
-  }
-  console.log()
-
-  return contentCacheNames;
-
+  return contentCache;
 }
-// [END googlegenaisdk_contentcache_list]
+// [END googlegenaisdk_contentcache_delete]
 
 module.exports = {
   generateContent,

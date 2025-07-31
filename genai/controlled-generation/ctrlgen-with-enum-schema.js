@@ -36,7 +36,7 @@ async function generateContent(
   };
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: 'What type of instrument is an oboe?',
     config: {
       responseMimeType: 'text/x.enum',

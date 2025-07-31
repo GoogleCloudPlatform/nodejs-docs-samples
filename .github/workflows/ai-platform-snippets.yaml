@@ -80,19 +80,3 @@ jobs:
         GOOGLE_SAMPLES_PROJECT: "long-door-651"
         LOCATION: ${{ steps.secrets.outputs.location }}
         CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}
-    - name: upload test results for FlakyBot workflow
-      if: github.event.action == 'schedule' && always()
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-      env:
-        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
-      with:
-        name: test-results
-        path: ai-platform/snippets/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1
-  flakybot:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
-    uses: ./.github/workflows/flakybot.yaml
-    needs: [test]

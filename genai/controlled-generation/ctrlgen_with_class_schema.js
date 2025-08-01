@@ -15,7 +15,7 @@
 'use strict';
 
 // [START googlegenaisdk_ctrlgen_with_class_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';

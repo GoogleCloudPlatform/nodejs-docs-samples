@@ -371,9 +371,8 @@ describe('Model Armor tests', () => {
 
   after(async () => {
     for (const templateName of templatesToDelete) {
-      // TODO(b/424365799): Uncomment below code once the mentioned issue is resolved
       // Disable floor settings to restore original state
-      // await disableFloorSettings();
+      await disableFloorSettings();
 
       await deleteTemplate(templateName);
     }
@@ -940,18 +939,17 @@ describe('Model Armor tests', () => {
 
   // =================== Floor Settings Tests ===================
 
-  // TODO(b/424365799): Enable below tests once the mentioned issue is resolved
-
-  it.skip('should get organization floor settings', async () => {
+  it('should get organization floor settings', async () => {
     const getOrganizationFloorSettings = require('../snippets/getOrganizationFloorSettings');
 
     const output = await getOrganizationFloorSettings.main(organizationId);
 
     const expectedName = `organizations/${organizationId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
-  it.skip('should get folder floor settings', async () => {
+  it('should get folder floor settings', async () => {
     const getFolderFloorSettings = require('../snippets/getFolderFloorSettings');
 
     const output = await getFolderFloorSettings.main(folderId);
@@ -959,32 +957,34 @@ describe('Model Armor tests', () => {
     // Check for expected name format in output
     const expectedName = `folders/${folderId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
-  it.skip('should get project floor settings', async () => {
+  it('should get project floor settings', async () => {
     const getProjectFloorSettings = require('../snippets/getProjectFloorSettings');
 
     const output = await getProjectFloorSettings.main(projectId);
     // Check for expected name format in output
     const expectedName = `projects/${projectId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
+    assert.exists(output.enableFloorSettingEnforcement);
   });
 
-  it.skip('should update organization floor settings', async () => {
+  it('should update organization floor settings', async () => {
     const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
     const output = await updateOrganizationFloorSettings.main(organizationId);
     // Check that the enableFloorSettingEnforcement=true
     assert.equal(output.enableFloorSettingEnforcement, true);
   });
 
-  it.skip('should update folder floor settings', async () => {
+  it('should update folder floor settings', async () => {
     const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
     const output = await updateFolderFloorSettings.main(folderId);
     // Check that the enableFloorSettingEnforcement=true
     assert.equal(output.enableFloorSettingEnforcement, true);
   });
 
-  it.skip('should update project floor settings', async () => {
+  it('should update project floor settings', async () => {
     const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
     const output = await updateProjectFloorSettings.main(projectId);
     // Check that the enableFloorSettingEnforcement=true

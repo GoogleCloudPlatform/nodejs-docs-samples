@@ -44,10 +44,3 @@ jobs:
     with:
       name: 'workflows'
       path: 'workflows'
-  flakybot:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
-    uses: ./.github/workflows/flakybot.yaml
-    needs: [test]

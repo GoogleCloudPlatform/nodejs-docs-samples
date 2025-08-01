@@ -65,10 +65,3 @@ jobs:
       run: make test dir=${{ inputs.path }}
       env:
         GOOGLE_SAMPLES_PROJECT: "long-door-651"
-    - name: upload test results for FlakyBot workflow
-      if: github.event.action == 'schedule' && always()
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-      with:
-        name: test-results
-        path: ${{ inputs.path }}/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1

@@ -71,8 +71,10 @@ async function generateContent(
     trends in music consumption.
   `;
 
+  const MODEL_NAME = 'gemini-2.5-flash';
+
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       tools: [sales_tool],

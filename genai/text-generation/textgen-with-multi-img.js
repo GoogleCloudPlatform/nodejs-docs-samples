@@ -45,7 +45,7 @@ async function generateContent(
   };
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: [
       image1,
       image2,

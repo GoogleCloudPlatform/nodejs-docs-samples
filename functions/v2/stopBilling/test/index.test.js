@@ -113,9 +113,7 @@ describe('index.test.js', () => {
 
       assert.ok(consoleOutput.includes('Getting billing info'));
       assert.ok(consoleOutput.includes('Disabling billing for project'));
-      assert.ok(
-        consoleOutput.includes('This script would disable billing here')
-      );
+      assert.ok(consoleOutput.includes('Disabling running in info-only mode'));
     });
   });
 });

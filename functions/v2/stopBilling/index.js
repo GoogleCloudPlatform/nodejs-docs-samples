@@ -111,8 +111,8 @@ const _isBillingEnabled = async projectName => {
 const _disableBillingForProject = async projectName => {
   if (dryRun) {
     console.log(
-      '** This script would disable billing here, but "dryRun" has been set to true.' +
-        'Change "dryRun" to alter this behaviour.'
+      '** INFO: Disabling running in info-only mode because "dryRun" is true. ' +
+        'To disable billing, set "dryRun" to false.'
     );
     return;
   }

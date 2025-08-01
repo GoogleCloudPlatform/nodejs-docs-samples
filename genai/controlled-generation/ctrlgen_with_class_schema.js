@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
+// [START googlegenaisdk_ctrlgen_with_class_schema]
 const {GoogleGenAI, Type} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,25 +30,32 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
+  class Recipe {
+    /**
+     * @param {string} recipe_name
+     * @param {string[]} ingredients
+     */
+    constructor(recipe_name, ingredients) {
+      this.recipe_name = recipe_name;
+      this.ingredients = ingredients;
+    }
+  }
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents: 'List a few popular cookie recipes?',
     config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+      responseMimeType: 'application/json',
+      responseSchema: Recipe,
     },
   });
 
   console.log(response.text);
+  console.log(response);
 
   return response.text;
 }
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_ctrlgen_with_class_schema]
 
 module.exports = {
   generateContent,

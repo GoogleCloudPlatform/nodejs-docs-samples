@@ -15,6 +15,7 @@
 'use strict';
 
 // [START googlegenaisdk_ctrlgen_with_resp_schema]
+// todo
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,34 +31,20 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `
-  The week ahead brings a mix of weather conditions.
-  Sunday is expected to be sunny with a temperature of 77°F and a humidity level of 50%. Winds will be light at around 10 km/h.
-  Monday will see partly cloudy skies with a slightly cooler temperature of 72°F and the winds will pick up slightly to around 15 km/h.
-  Tuesday brings rain showers, with temperatures dropping to 64°F and humidity rising to 70%.
-  Wednesday may see thunderstorms, with a temperature of 68°F.
-  Thursday will be cloudy with a temperature of 66°F and moderate humidity at 60%.
-  Friday returns to partly cloudy conditions, with a temperature of 73°F and the Winds will be light at 12 km/h.
-  Finally, Saturday rounds off the week with sunny skies, a temperature of 80°F, and a humidity level of 40%. Winds will be gentle at 8 km/h.
-`;
+  const prompt = 'List a few popular cookie recipes.';
 
   const responseSchema = {
-    type: 'object',
-    properties: {
-      forecast: {
-        type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            Day: { type: 'string', nullable: true },
-            Forecast: { type: 'string', nullable: true },
-            Temperature: { type: 'integer', nullable: true },
-            Humidity: { type: 'string', nullable: true },
-            'Wind Speed': { type: 'integer', nullable: true },
-          },
-          required: ['Day', 'Temperature', 'Forecast', 'Wind Speed'],
+    type: 'ARRAY',
+    items: {
+      type: 'OBJECT',
+      properties: {
+        recipe_name: {type: 'STRING'},
+        ingredients: {
+          type: 'ARRAY',
+          items: {type: 'STRING'},
         },
       },
+      required: ['recipe_name', 'ingredients'],
     },
   };
 
@@ -69,7 +56,6 @@ async function generateContent(
       responseSchema: responseSchema,
     },
   });
-  console.log(response);
 
   console.log(response.text);
 

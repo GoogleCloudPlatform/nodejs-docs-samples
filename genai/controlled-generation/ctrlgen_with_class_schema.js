@@ -51,8 +51,6 @@ async function generateContent(
   });
 
   console.log(response.text);
-  console.log(response);
-
   return response.text;
 }
 // [END googlegenaisdk_ctrlgen_with_class_schema]

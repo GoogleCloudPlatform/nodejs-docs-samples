@@ -30,7 +30,6 @@ async function generateContent(
     location: location,
   });
 
-
   const Grade = Object.freeze({
     A_PLUS: 'a+',
     A: 'a',
@@ -56,7 +55,8 @@ async function generateContent(
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'List about 10 home-baked cookies and give them grades based on tastiness.',
+    contents:
+      'List about 10 home-baked cookies and give them grades based on tastiness.',
     config: {
       responseMimeType: 'application/json',
       responseSchema: Recipe,

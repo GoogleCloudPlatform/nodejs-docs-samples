@@ -31,28 +31,27 @@ async function generateContent(
   });
 
   class InstrumentClass {
-    static PERCUSSION = "Percussion";
-    static STRING = "String";
-    static WOODWIND = "Woodwind";
-    static BRASS = "Brass";
-    static KEYBOARD = "Keyboard";
-
     static values() {
       return [
-        this.PERCUSSION,
-        this.STRING,
-        this.WOODWIND,
-        this.BRASS,
-        this.KEYBOARD
+        InstrumentClass.PERCUSSION,
+        InstrumentClass.STRING,
+        InstrumentClass.WOODWIND,
+        InstrumentClass.BRASS,
+        InstrumentClass.KEYBOARD,
       ];
     }
   }
 
+  InstrumentClass.PERCUSSION = 'Percussion';
+  InstrumentClass.STRING = 'String';
+  InstrumentClass.WOODWIND = 'Woodwind';
+  InstrumentClass.BRASS = 'Brass';
+  InstrumentClass.KEYBOARD = 'Keyboard';
+
   const responseSchema = {
-    type: "string",
+    type: 'string',
     enum: InstrumentClass.values(),
   };
-
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
@@ -62,7 +61,6 @@ async function generateContent(
       responseSchema: responseSchema,
     },
   });
-  console.log(response);
 
   console.log(response.text);
 

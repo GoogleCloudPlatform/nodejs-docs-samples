@@ -1,0 +1,24 @@
+{
+  "name": "cloud-functions-stop-billing",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Disable billing with a budget notification.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha -p -j 2 test/index.test.js --timeout=5000 --exit"
+  },
+  "author": "Google Inc.",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google-cloud/billing": "^5.1.0",
+    "@google-cloud/functions-framework": "^4.0.0",
+    "cloudevents": "^10.0.0",
+    "gcp-metadata": "^7.0.1"
+  },
+  "devDependencies": {
+    "c8": "^10.1.3"
+  }
+}

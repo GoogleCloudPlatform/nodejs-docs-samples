@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-multi-img.js');
 
-describe('textgen-with-multi-img', function () {
+describe('textgen-with-multi-img', () => {
   it('should generate text content from a text prompt and multiple images', async function () {
     this.timeout(60000);
 

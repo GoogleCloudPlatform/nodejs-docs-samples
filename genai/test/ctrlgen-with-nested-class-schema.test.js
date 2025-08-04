@@ -18,12 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../controlled-generation/ctrlgen_with_enum_class_schema.js');
+const sample = require('../controlled-generation/ctrlgen-with-nested-class-schema.js');
 
-describe('ctrlgen_with_enum_class_schema', () => {
+describe('ctrlgen_with_nested_class_schema', () => {
   it('should generate text content in Json', async function () {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('String'));
+    assert(output.length > 0 && output.includes('B'));
   });
 });

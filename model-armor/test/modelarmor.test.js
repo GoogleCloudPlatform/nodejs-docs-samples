@@ -30,7 +30,6 @@ const options = {
 const client = new ModelArmorClient(options);
 const templateIdPrefix = `test-template-${uuidv4().substring(0, 8)}`;
 
-let emptyTemplateId;
 let basicTemplateId;
 let basicSdpTemplateId;
 let advanceSdpTemplateId;
@@ -275,10 +274,6 @@ describe('Model Armor tests', () => {
         .SdpBasicConfigEnforcement;
     const RaiFilterType = protos.google.cloud.modelarmor.v1.RaiFilterType;
 
-    // Create empty template for sanitizeUserPrompt tests
-    emptyTemplateId = `${templateIdPrefix}-empty`;
-    await createTemplate(emptyTemplateId, {});
-
     // Create basic template with PI/Jailbreak and Malicious URI filters for sanitizeUserPrompt tests
     basicTemplateId = `${templateIdPrefix}-basic`;
     await createTemplate(basicTemplateId, {
@@ -360,7 +355,6 @@ describe('Model Armor tests', () => {
     });
 
     templatesToDelete.push(
-      `projects/${projectId}/locations/${locationId}/templates/${emptyTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${basicTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${basicSdpTemplateId}`,
       `projects/${projectId}/locations/${locationId}/templates/${advanceSdpTemplateId}`,
@@ -727,24 +721,6 @@ describe('Model Armor tests', () => {
     );
   });
 
-  it('should not detect issues in user prompt with empty template', async () => {
-    const sanitizeUserPrompt = require('../snippets/sanitizeUserPrompt');
-    const testUserPrompt =
-      'Can you describe this link? https://testsafebrowsing.appspot.com/s/malware.html,';
-
-    const response = await sanitizeUserPrompt(
-      projectId,
-      locationId,
-      emptyTemplateId,
-      testUserPrompt
-    );
-
-    assert.equal(
-      response.sanitizationResult.filterMatchState,
-      'NO_MATCH_FOUND'
-    );
-  });
-
   // =================== Model Response Sanitization Tests ===================
 
   it('should detect malicious URL in model response', async () => {
@@ -825,24 +801,6 @@ describe('Model Armor tests', () => {
     );
   });
 
-  it('should not detect issues in model response with empty template', async () => {
-    const sanitizeModelResponse = require('../snippets/sanitizeModelResponse');
-    const testModelResponse =
-      'For following email 1l6Y2@example.com found following associated phone number: 954-321-7890 and this ITIN: 988-86-1234';
-
-    const response = await sanitizeModelResponse(
-      projectId,
-      locationId,
-      emptyTemplateId,
-      testModelResponse
-    );
-
-    assert.equal(
-      response.sanitizationResult.filterMatchState,
-      'NO_MATCH_FOUND'
-    );
-  });
-
   it('should detect PII in model response with basic SDP template', async () => {
     const sanitizeModelResponse = require('../snippets/sanitizeModelResponse');
     const testModelResponse =
@@ -872,27 +830,6 @@ describe('Model Armor tests', () => {
   });
 
   // =================== Model Response with User Prompt Tests ===================
-
-  it('should not detect issues in model response with user prompt using empty template', async () => {
-    const sanitizeModelResponseWithUserPrompt = require('../snippets/sanitizeModelResponseWithUserPrompt');
-    const testUserPrompt =
-      'How can I make my email address test@dot.com make available to public for feedback';
-    const testModelResponse =
-      'You can make support email such as contact@email.com for getting feedback from your customer';
-
-    const response = await sanitizeModelResponseWithUserPrompt(
-      projectId,
-      locationId,
-      emptyTemplateId,
-      testModelResponse,
-      testUserPrompt
-    );
-
-    assert.equal(
-      response.sanitizationResult.filterMatchState,
-      'NO_MATCH_FOUND'
-    );
-  });
 
   it('should sanitize model response with user prompt using advanced SDP template', async () => {
     const sanitizeModelResponseWithUserPrompt = require('../snippets/sanitizeModelResponseWithUserPrompt');

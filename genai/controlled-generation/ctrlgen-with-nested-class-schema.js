@@ -41,14 +41,14 @@ async function generateContent(
 
   class Recipe {
     /**
-     * @param {string} recipe_name
+     * @param {string} recipeName
      * @param {string} rating - Must be one of Grade enum values
      */
-    constructor(recipe_name, rating) {
+    constructor(recipeName, rating) {
       if (!Object.values(Grade).includes(rating)) {
         throw new Error(`Invalid rating: ${rating}`);
       }
-      this.recipe_name = recipe_name;
+      this.recipeName = recipeName;
       this.rating = rating;
     }
   }

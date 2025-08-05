@@ -37,13 +37,13 @@ async function generateContent(
     items: {
       type: 'OBJECT',
       properties: {
-        recipe_name: {type: 'STRING'},
+        recipeName: {type: 'STRING'},
         ingredients: {
           type: 'ARRAY',
           items: {type: 'STRING'},
         },
       },
-      required: ['recipe_name', 'ingredients'],
+      required: ['recipeName', 'ingredients'],
     },
   };
 

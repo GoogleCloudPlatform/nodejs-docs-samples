@@ -32,11 +32,11 @@ async function generateContent(
 
   class Recipe {
     /**
-     * @param {string} recipe_name
+     * @param {string} recipeName
      * @param {string[]} ingredients
      */
-    constructor(recipe_name, ingredients) {
-      this.recipe_name = recipe_name;
+    constructor(recipeName, ingredients) {
+      this.recipeName = recipeName;
       this.ingredients = ingredients;
     }
   }

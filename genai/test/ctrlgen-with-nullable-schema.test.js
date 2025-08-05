@@ -20,8 +20,8 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../controlled-generation/ctrlgen-with-nullable-schema.js');
 
-describe('ctrlgen_with_nullable_schema', () => {
-  it('should generate text content in Json', async function () {
+describe('ctrlgen-with-nullable-schema', () => {
+  it('should generate text content using nullable schema', async function () {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0 && output.includes('Day'));

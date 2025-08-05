@@ -20,8 +20,8 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../controlled-generation/ctrlgen-with-enum-class-schema.js');
 
-describe('ctrlgen_with_enum_class_schema', () => {
-  it('should generate text content in Json', async function () {
+describe('ctrlgen-with-enum-class-schema', () => {
+  it('should generate text content matching enum schema', async function () {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0 && output.includes('String'));

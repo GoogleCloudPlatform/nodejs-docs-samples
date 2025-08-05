@@ -44,40 +44,38 @@ jobs:
       run:
         working-directory: 'iam/deny'
     steps:
-      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - uses: google-github-actions/auth@71fee32a0bb7e97b4d33d548e7d957010649d8fa # v2.1.3
-        with:
-          workload_identity_provider: 'projects/949737848314/locations/global/workloadIdentityPools/iam-deny-test-pool/providers/iam-deny-test-provider'
-          service_account: 'kokoro-ca@isakovf-iam-deny-samples.iam.gserviceaccount.com'
-          create_credentials_file: true
-          access_token_lifetime: 600s
-
-      - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-        with:
+       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+         with:
+         ref: ${{github.event.pull_request.head.sha}}
+       - uses: 'google-github-actions/auth@71fee32a0bb7e97b4d33d548e7d957010649d8fa' # v2.1.3
+         with:
+         workload_identity_provider: 'projects/949737848314/locations/global/workloadIdentityPools/iam-deny-test-pool/providers/iam-deny-test-provider'
+         service_account: 'kokoro-ca@isakovf-iam-deny-samples.iam.gserviceaccount.com'
+         create_credentials_file: 'true'
+         access_token_lifetime: 600s
+       - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+         with:
           node-version: 16
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
-        id: npm-cache
-        with:
+       - name: Get npm cache directory
+         id: npm-cache-dir
+         shell: bash
+         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+       - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
+         id: npm-cache
+         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: "${{ runner.os }}-node-   \n"
-      - name: install repo dependencies
-        run: npm install
-        working-directory: .
-      - name: install directory dependencies
-        run: npm install
-      - run: npm run build --if-present
-      - name: set env vars for scheduled run
-        if: github.event.action == 'schedule'
-        run: |
+       - name: install repo dependencies
+         run: npm install
+         working-directory: .
+       - name: install directory dependencies
+         run: npm install
+       - run: npm run build --if-present
+       - name: set env vars for scheduled run
+         if: github.event.action == 'schedule'
+         run: |
           echo "MOCHA_REPORTER_SUITENAME=iam-deny" >> $GITHUB_ENV
           echo "MOCHA_REPORTER_OUTPUT=${{github.run_id}}_sponge_log.xml" >> $GITHUB_ENV
           echo "MOCHA_REPORTER=xunit" >> $GITHUB_ENV
-      - run: npm test
+       - run: npm test

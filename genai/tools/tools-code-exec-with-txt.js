@@ -30,8 +30,10 @@ async function generateContent(
     location: location,
   });
 
+  const MODEL_NAME = 'gemini-2.5-flash';
+
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-05-20',
+    model: MODEL_NAME,
     contents:
       'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
     config: {

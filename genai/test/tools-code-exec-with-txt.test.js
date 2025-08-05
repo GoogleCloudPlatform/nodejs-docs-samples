@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-code-exec-with-txt.js');
 
 describe('tools-code-exec-with-txt', async () => {
-  it('should generate code and execution result', async function() {
+  it('should generate code and execution result', async function () {
     this.timeout(50000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

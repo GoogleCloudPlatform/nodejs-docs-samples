@@ -18,10 +18,10 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
+const sample = require('../tools/tools-google-search-with-txt.js');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function() {
+describe('tools-google-search-with-txt', async () => {
+  it('should generate answer to a question in prompt using google search', async function() {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

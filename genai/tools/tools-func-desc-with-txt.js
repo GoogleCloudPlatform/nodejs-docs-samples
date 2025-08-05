@@ -19,7 +19,6 @@ const {GoogleGenAI, Type} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
@@ -72,17 +71,17 @@ async function generateContent(
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: prompt,
     config: {
       tools: [sales_tool],
       temperature: 0,
     },
   });
+  const output = JSON.stringify(response.functionCalls, null, 2)
+  console.log(output);
 
-  console.log(response.functionCalls);
-
-  return response.functionCalls;
+  return output;
 }
 // [END googlegenaisdk_tools_func_desc_with_txt]
 

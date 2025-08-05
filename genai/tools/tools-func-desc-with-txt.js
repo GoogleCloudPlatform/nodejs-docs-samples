@@ -68,7 +68,7 @@ async function generateContent(
     lagged at 120,000. Their up-and-coming indie artist, "Luna Bloom's" EP, "Whispers of Dawn",
     secured 75,000 sales. The biggest disappointment was the highly-anticipated rap album "Street Symphony" 
     only reaching 100,000 units. Overall, Stellar Sounds moved over 645,000 units this year, revealing unexpected
-    trends in music consumption.
+    trends in music consumption
   `;
 
   const response = await ai.models.generateContent({

@@ -176,10 +176,3 @@ jobs:
         run: |
           timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
             make test dir=${{ matrix.path }}
-      # - name: Upload test results for FlakyBot workflow
-      #   if: github.event.action == 'schedule' && always() # always() submits logs even if tests fail
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results
-      #     path: ${{ matrix.package }}/${{ env.MOCHA_REPORTER_OUTPUT }}
-      #     retention-days: 1

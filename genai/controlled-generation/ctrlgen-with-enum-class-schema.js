@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_ctrlgen_with_enum_class_schema]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,22 +30,43 @@ async function generateContent(
     location: location,
   });
 
+  class InstrumentClass {
+    static values() {
+      return [
+        InstrumentClass.PERCUSSION,
+        InstrumentClass.STRING,
+        InstrumentClass.WOODWIND,
+        InstrumentClass.BRASS,
+        InstrumentClass.KEYBOARD,
+      ];
+    }
+  }
+
+  InstrumentClass.PERCUSSION = 'Percussion';
+  InstrumentClass.STRING = 'String';
+  InstrumentClass.WOODWIND = 'Woodwind';
+  InstrumentClass.BRASS = 'Brass';
+  InstrumentClass.KEYBOARD = 'Keyboard';
+
+  const responseSchema = {
+    type: 'string',
+    enum: InstrumentClass.values(),
+  };
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+    contents: 'What type of instrument is a guitar?',
     config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+      responseMimeType: 'text/x.enum',
+      responseSchema: responseSchema,
     },
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_ctrlgen_with_enum_class_schema]
 
 module.exports = {
   generateContent,

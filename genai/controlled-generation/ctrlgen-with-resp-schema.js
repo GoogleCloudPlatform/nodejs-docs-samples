@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_ctrlgen_with_resp_schema]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,22 +30,37 @@ async function generateContent(
     location: location,
   });
 
+  const prompt = 'List a few popular cookie recipes.';
+
+  const responseSchema = {
+    type: 'ARRAY',
+    items: {
+      type: 'OBJECT',
+      properties: {
+        recipeName: {type: 'STRING'},
+        ingredients: {
+          type: 'ARRAY',
+          items: {type: 'STRING'},
+        },
+      },
+      required: ['recipeName', 'ingredients'],
+    },
+  };
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+    contents: prompt,
     config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+      responseMimeType: 'application/json',
+      responseSchema: responseSchema,
     },
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_ctrlgen_with_resp_schema]
 
 module.exports = {
   generateContent,

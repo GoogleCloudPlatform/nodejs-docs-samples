@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_ctrlgen_with_nested_class_schema]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,22 +30,44 @@ async function generateContent(
     location: location,
   });
 
+  const Grade = Object.freeze({
+    A_PLUS: 'a+',
+    A: 'a',
+    B: 'b',
+    C: 'c',
+    D: 'd',
+    F: 'f',
+  });
+
+  class Recipe {
+    /**
+     * @param {string} recipeName
+     * @param {string} rating - Must be one of Grade enum values
+     */
+    constructor(recipeName, rating) {
+      if (!Object.values(Grade).includes(rating)) {
+        throw new Error(`Invalid rating: ${rating}`);
+      }
+      this.recipeName = recipeName;
+      this.rating = rating;
+    }
+  }
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+      'List about 10 home-baked cookies and give them grades based on tastiness.',
     config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+      responseMimeType: 'application/json',
+      responseSchema: Recipe,
     },
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_ctrlgen_with_nested_class_schema]
 
 module.exports = {
   generateContent,

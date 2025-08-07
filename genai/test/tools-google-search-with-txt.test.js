@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-google-search-with-txt.js');
 
-describe('tools-google-search-with-txt', async () => {
+describe('tools-google-search-with-txt', () => {
   it('should generate answer to a question in prompt using google search', async function () {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);

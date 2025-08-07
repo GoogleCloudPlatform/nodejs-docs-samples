@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_counttoken_with_txt]
+// [START googlegenaisdk_counttoken_resp_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -28,18 +28,19 @@ async function countTokens(
     vertexai: true,
     project: projectId,
     location: location,
+    httpOptions: {apiVersion: 'v1'},
   });
 
-  const response = await ai.models.countTokens({
+  const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What is the highest mountain in Africa?',
+    contents: 'Why is the sky blue?',
   });
 
-  console.log(response);
+  console.log(response.usageMetadata);
 
-  return response.totalTokens;
+  return response.usageMetadata;
 }
-// [END googlegenaisdk_counttoken_with_txt]
+// [END googlegenaisdk_counttoken_resp_with_txt]
 
 module.exports = {
   countTokens,

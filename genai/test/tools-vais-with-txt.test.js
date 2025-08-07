@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-vais-with-txt.js');
 
 describe('tools-vais-with-txt', async () => {
-  it('should generate a function call', async function (){
+  it('should generate a function call', async function () {
     this.timeout(60000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

@@ -15,7 +15,7 @@
 'use strict';
 
 // [START googlegenaisdk_tools_func_def_with_txt]
-const {GoogleGenAI, GenerateContentConfig} = require('@google/genai');
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -24,14 +24,13 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  function getCurrentWeather({ location }) {
+  function getCurrentWeather({location}) {
     const weatherMap = {
       'Boston, MA': 'snowing',
       'San Francisco, CA': 'foggy',
@@ -44,14 +43,15 @@ async function generateContent(
     };
   }
 
-
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'What is the weather like in Boston?',
     config: {
-      tools: [{
-        functionDeclarations: [getCurrentWeather]
-      }],
+      tools: [
+        {
+          functionDeclarations: [getCurrentWeather],
+        },
+      ],
       temperature: 0,
     },
   });

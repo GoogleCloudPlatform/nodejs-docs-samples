@@ -15,7 +15,7 @@
 'use strict';
 
 // [START googlegenaisdk_tools_google_search_with_txt]
-const {GoogleGenAI, Type} = require('@google/genai');
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -30,7 +30,6 @@ async function generateContent(
     location: location,
   });
 
-
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'When is the next total solar eclipse in Poland?',
@@ -42,7 +41,6 @@ async function generateContent(
       ],
     },
   });
-
 
   console.log(response.text);
 

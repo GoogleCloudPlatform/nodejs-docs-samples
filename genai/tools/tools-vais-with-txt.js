@@ -22,22 +22,22 @@ const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION,
+  location = GOOGLE_CLOUD_LOCATION
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {
-      apiVersion: 'v1'
-    }
+      apiVersion: 'v1',
+    },
   });
 
   const datastore = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'How do I make an appointment to renew my driver\'s license?',
+    contents: "How do I make an appointment to renew my driver's license?",
     config: {
       tools: [
         {

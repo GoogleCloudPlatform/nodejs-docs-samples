@@ -78,7 +78,7 @@ async function generateContent(
       temperature: 0,
     },
   });
-  const output = JSON.stringify(response.functionCalls, null, 2)
+  const output = JSON.stringify(response.functionCalls, null, 2);
   console.log(output);
 
   return output;

@@ -33,7 +33,7 @@ async function generateContent(
     },
   });
 
-  const datastore = `projects/${process.env.GOOGLE_CLOUD_PROJECT}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
+  const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',

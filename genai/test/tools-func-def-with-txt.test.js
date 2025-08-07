@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-func-def-with-txt.js');
 
-describe('tools-func-def-with-txt', async () => {
+describe('tools-func-def-with-txt', () => {
   it('should generate a function definition', async function () {
     this.timeout(10000);
     const output = await sample.generateContent(projectId);

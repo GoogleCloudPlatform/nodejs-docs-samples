@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-code-exec-with-txt.js');
 
-describe('tools-code-exec-with-txt', async () => {
+describe('tools-code-exec-with-txt', () => {
   it('should generate code and execution result', async function () {
     this.timeout(50000);
     const output = await sample.generateContent(projectId);

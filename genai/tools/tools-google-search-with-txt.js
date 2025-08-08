@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_tools_google_search_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -32,20 +32,21 @@ async function generateContent(
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+    contents: 'When is the next total solar eclipse in Poland?',
     config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+      tools: [
+        {
+          googleSearch: {},
+        },
+      ],
     },
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_tools_google_search_with_txt]
 
 module.exports = {
   generateContent,

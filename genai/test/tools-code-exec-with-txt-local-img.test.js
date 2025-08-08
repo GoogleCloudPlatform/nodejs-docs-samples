@@ -18,11 +18,11 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
+const sample = require('../tools/tools-code-exec-with-txt-local-img.js');
 
-describe('tools-func-desc-with-txt', () => {
-  it('should generate a function call', async function () {
-    this.timeout(10000);
+describe('tools-code-exec-with-txt-local-img', () => {
+  it('should generate a function definition', async function () {
+    this.timeout(100000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);
   });

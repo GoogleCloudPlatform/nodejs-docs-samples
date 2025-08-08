@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [START googlegenaisdk_textgen_with_gcs_audio]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,8 +30,7 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `Transcribe the interview, in the format of timecode, speaker, caption.
-    Use speaker A, speaker B, etc. to identify speakers.`;
+  const prompt = `Provide a concise summary of the main points in the audio file.`;
 
 
   const response = await ai.models.generateContent({
@@ -44,17 +43,14 @@ async function generateContent(
           mimeType: 'audio/mpeg',
         },
       },
-    ],
-    config: {
-      audioTimestamp: true,
-    },
+    ]
   });
 
   console.log(response.text);
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [END googlegenaisdk_textgen_with_gcs_audio]
 
 module.exports = {
   generateContent,

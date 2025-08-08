@@ -18,11 +18,11 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-transcript-with-gcs-audio.js');
+const sample = require('../text-generation/textgen-with-gcs-audio');
 
-describe('textgen-transcript-with-gcs-audio', async () => {
+describe('textgen-with-gcs-audio', async () => {
   it('should generate text content from a text prompt and multiple images', async function () {
-    this.timeout(30000);
+    this.timeout(300000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);
   });

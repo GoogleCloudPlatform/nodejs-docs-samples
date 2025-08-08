@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [START googlegenaisdk_textgen_with_pdf]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,31 +30,28 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `Transcribe the interview, in the format of timecode, speaker, caption.
-    Use speaker A, speaker B, etc. to identify speakers.`;
+  const prompt = `You are a highly skilled document summarization specialist.
+    Your task is to provide a concise executive summary of no more than 300 words.
+    Please summarize the given document for a general audience.`;
+
+  const pdfFile = {
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/generative-ai/pdf/1706.03762v7.pdf',
+      mimeType: 'application/pdf',
+    },
+  };
 
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: [
-      { text: prompt },
-      {
-        fileData: {
-          fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
-          mimeType: 'audio/mpeg',
-        },
-      },
-    ],
-    config: {
-      audioTimestamp: true,
-    },
+    contents: [pdfFile, prompt]
   });
 
   console.log(response.text);
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [END googlegenaisdk_textgen_with_pdf]
 
 module.exports = {
   generateContent,

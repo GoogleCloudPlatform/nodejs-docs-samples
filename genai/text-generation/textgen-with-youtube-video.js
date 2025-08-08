@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [START googlegenaisdk_textgen_with_pdf]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,31 +30,26 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `Transcribe the interview, in the format of timecode, speaker, caption.
-    Use speaker A, speaker B, etc. to identify speakers.`;
+  const prompt = `Write a short and engaging blog post based on this video.`;
+
+  const ytVideo = {
+    fileData: {
+      fileUri: 'https://www.youtube.com/watch?v=3KtWfp0UopM',
+      mimeType: 'video/mp4',
+    },
+  };
 
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: [
-      { text: prompt },
-      {
-        fileData: {
-          fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
-          mimeType: 'audio/mpeg',
-        },
-      },
-    ],
-    config: {
-      audioTimestamp: true,
-    },
+    contents: [ytVideo, prompt]
   });
 
   console.log(response.text);
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [END googlegenaisdk_textgen_with_pdf]
 
 module.exports = {
   generateContent,

@@ -16,7 +16,7 @@ See the [Cloud Functions Using Environment Variables tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../#how-to-run-the-tests).
+1. Read and follow the [prerequisites](../../#setup).
 
 2. Install dependencies:
 

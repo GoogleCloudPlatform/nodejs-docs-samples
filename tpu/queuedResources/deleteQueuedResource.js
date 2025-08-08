@@ -36,7 +36,7 @@ async function main(tpuClient) {
   const queuedResourceName = 'queued-resource-1';
 
   // The zone of your queued resource.
-  const zone = 'us-central1-f';
+  const zone = 'us-central1-a';
 
   async function callDeleteTpuVM(nodeName) {
     const request = {

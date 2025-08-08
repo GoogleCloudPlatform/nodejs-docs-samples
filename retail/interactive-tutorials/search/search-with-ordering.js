@@ -14,6 +14,8 @@
 
 'use strict';
 
+// [START retail_search_for_products_with_ordering]
+
 async function main() {
   // Call Retail API to search for a products in a catalog, order the results by different product fields.
 
@@ -81,3 +83,4 @@ process.on('unhandledRejection', err => {
 });
 
 main();
+// [END retail_search_for_products_with_ordering]

@@ -19,7 +19,11 @@ const cp = require('child_process');
 const {v4} = require('uuid');
 
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
+const {TagKeysClient} = require('@google-cloud/resource-manager').v3;
+const {TagValuesClient} = require('@google-cloud/resource-manager').v3;
 const client = new SecretManagerServiceClient();
+const resourcemanagerTagKeyClient = new TagKeysClient();
+const resourcemanagerTagValueClient = new TagValuesClient();
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
@@ -39,6 +43,9 @@ let secret;
 let regionalSecret;
 let version;
 let regionalVersion;
+
+let tagKey;
+let tagValue;
 
 const options = {};
 options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
@@ -94,6 +101,28 @@ describe('Secret Manager samples', () => {
         data: Buffer.from(payload),
       },
     });
+
+    // Create tag key
+    const [keyOperation] = await resourcemanagerTagKeyClient.createTagKey({
+      tagKey: {
+        parent: `projects/${projectId}`,
+        shortName: v4(),
+      },
+    });
+    const [tagKeyResponse] = await keyOperation.promise();
+    tagKey = tagKeyResponse.name;
+
+    // Create tag value
+    const [valueOperation] = await resourcemanagerTagValueClient.createTagValue(
+      {
+        tagValue: {
+          parent: tagKey,
+          shortName: v4(),
+        },
+      }
+    );
+    const [tagValueResponse] = await valueOperation.promise();
+    tagValue = tagValueResponse.name;
 
     await regionalClient.createSecret({
       parent: `projects/${projectId}/locations/${locationId}`,
@@ -176,7 +205,22 @@ describe('Secret Manager samples', () => {
       await client.deleteSecret({
         name: `${secret.name}-4`,
       });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
 
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-7`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+    try {
       await regionalClient.deleteSecret({
         name: `${regionalSecret.name}-3`,
       });
@@ -225,6 +269,82 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-2-dd`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-with-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-with-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-bind-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-bind-tags`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+    // Wait for 20 seconds before deleting the tag value
+    await new Promise(resolve => setTimeout(resolve, 20000));
+    const [deleteValueOperation] =
+      await resourcemanagerTagValueClient.deleteTagValue({
+        name: tagValue,
+      });
+    try {
+      await deleteValueOperation.promise();
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    const [deleteKeyOperation] = await resourcemanagerTagKeyClient.deleteTagKey(
+      {
+        name: tagKey,
+      }
+    );
+    try {
+      await deleteKeyOperation.promise();
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
   });
 
   it('runs the quickstart', async () => {
@@ -245,11 +365,21 @@ describe('Secret Manager samples', () => {
     assert.match(stdout, new RegExp('Payload: bar'));
   });
 
-  it('creates a secret', async () => {
+  it('creates a secret with TTL', async () => {
+    const ttl = '900s';
     const output = execSync(
-      `node createSecret.js projects/${projectId} ${secretId}-2`
+      `node createSecret.js projects/${projectId} ${secretId}-2 ${ttl}`
     );
     assert.match(output, new RegExp('Created secret'));
+    assert.match(output, new RegExp(`Secret TTL set to ${ttl}`));
+  });
+
+  it('creates a secret without TTL', async () => {
+    const output = execSync(
+      `node createSecret.js projects/${projectId} ${secretId}-7`
+    );
+    assert.match(output, new RegExp('Created secret'));
+    assert.notMatch(output, new RegExp('Secret TTL set to'));
   });
 
   it('creates a regional secret', async () => {
@@ -306,8 +436,8 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`${regionalSecret.name}`));
   });
 
-  it('gets a secret', async () => {
-    const output = execSync(`node getSecret.js ${secret.name}`);
+  it('gets metadata about a secret', async () => {
+    const output = execSync(`node getSecret.js ${projectId} ${secretId}`);
     assert.match(output, new RegExp(`Found secret ${secret.name}`));
   });
 
@@ -413,6 +543,20 @@ describe('Secret Manager samples', () => {
   it('deletes a regional secret label', async () => {
     const output = execSync(
       `node regional_samples/deleteRegionalSecretLabel.js ${projectId} ${locationId} ${secretId} ${labelKey}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
+  });
+
+  it('deletes a secret annotation', async () => {
+    const output = execSync(
+      `node deleteSecretAnnotation.js ${secret.name} ${annotationKey}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
+  });
+
+  it('deletes a regional secret annotation', async () => {
+    const output = execSync(
+      `node regional_samples/deleteRegionalSecretAnnotation.js ${projectId} ${locationId} ${secretId} ${annotationKey}`
     );
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });
@@ -532,5 +676,147 @@ describe('Secret Manager samples', () => {
       `node regional_samples/destroyRegionalSecretVersion.js ${projectId} ${locationId} ${secretId} 1`
     );
     assert.match(output, new RegExp(`Destroyed ${regionalVersion.name}`));
+  });
+
+  it('creates a secret with delayed destroy enabled', async () => {
+    const timeToLive = 24 * 60 * 60;
+    const output = execSync(
+      `node createSecretWithDelayedDestroy.js projects/${projectId} ${secretId}-2 ${timeToLive}`
+    );
+    assert.match(output, new RegExp('Created secret'));
+  });
+
+  it('disables a secret delayed destroy', async () => {
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-delayedDestroy`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        version_destroy_ttl: {
+          seconds: 24 * 60 * 60,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node disableSecretDelayedDestroy.js ${secret.name}-delayedDestroy`
+    );
+    assert.match(output, new RegExp('Disabled delayed destroy'));
+
+    await client.deleteSecret({
+      name: `${secret.name}-delayedDestroy`,
+    });
+  });
+
+  it('updates a secret delayed destroy', async () => {
+    const updatedTimeToLive = 24 * 60 * 60 * 2;
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-delayedDestroy`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        version_destroy_ttl: {
+          seconds: 24 * 60 * 60,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node updateSecretWithDelayedDestroy.js ${secret.name}-delayedDestroy ${updatedTimeToLive}`
+    );
+    assert.match(output, new RegExp('Updated secret'));
+    await client.deleteSecret({
+      name: `${secret.name}-delayedDestroy`,
+    });
+  });
+
+  it('creates a regional secret with delayed destroy', async () => {
+    const timeToLive = 24 * 60 * 60;
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${secretId}-2-dd ${timeToLive}`
+    );
+    assert.match(output, new RegExp('Created regional secret'));
+  });
+
+  it('disables a regional secret delayed destroy', async () => {
+    await regionalClient.createSecret({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      secretId: `${secretId}-delayedDestroy`,
+      secret: {
+        version_destroy_ttl: {
+          seconds: 24 * 60 * 60,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node regional_samples/disableRegionalSecretDelayedDestroy.js ${projectId} ${locationId} ${secretId}-delayedDestroy`
+    );
+    assert.match(output, new RegExp('Disabled delayed destroy'));
+
+    await regionalClient.deleteSecret({
+      name: `projects/${projectId}/locations/${locationId}/secrets/${secretId}-delayedDestroy`,
+    });
+  });
+
+  it('updates a regional secret delayed destroy', async () => {
+    const updatedTimeToLive = 24 * 60 * 60 * 2;
+    await regionalClient.createSecret({
+      parent: `projects/${projectId}/locations/${locationId}`,
+      secretId: `${secretId}-delayedDestroy`,
+      secret: {
+        version_destroy_ttl: {
+          seconds: 24 * 60 * 60,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node regional_samples/updateRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${secretId}-delayedDestroy ${updatedTimeToLive}`
+    );
+    assert.match(output, new RegExp('Updated regional secret'));
+    await regionalClient.deleteSecret({
+      name: `projects/${projectId}/locations/${locationId}/secrets/${secretId}-delayedDestroy`,
+    });
+  });
+
+  it('creates secret with tags', async () => {
+    const output = cp.execSync(
+      `node createSecretWithTags.js ${projectId} ${secretId}-with-tags ${tagKey} ${tagValue}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-with-tags`));
+  });
+
+  it('creates regional secret with tags', async () => {
+    const output = cp.execSync(
+      `node regional_samples/createRegionalSecretWithTags.js ${projectId} ${locationId} ${secretId}-with-tags ${tagKey} ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-with-tags`)
+    );
+  });
+
+  it('bind tags to secret', async () => {
+    const output = cp.execSync(
+      `node bindTagsToSecret.js ${projectId} ${secretId}-bind-tags ${tagValue}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-bind-tags`));
+    assert.match(output, new RegExp('Created Tag Binding'));
+  });
+
+  it('bind tags to regional secret', async () => {
+    const output = cp.execSync(
+      `node regional_samples/bindTagsToRegionalSecret.js ${projectId} ${locationId} ${secretId}-bind-tags ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-bind-tags`)
+    );
+    assert.match(output, new RegExp('Created Tag Binding'));
   });
 });

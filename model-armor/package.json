@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-model-armor-samples",
+  "private": true,
+  "license": "Apache-2.0",
+  "files": [
+    "*.js"
+  ],
+  "author": "Google LLC",
+  "repository": "googleapis/nodejs-model-armor",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha -p -j 2 --recursive test/ --timeout=60000"
+  },
+  "dependencies": {
+    "@google-cloud/modelarmor": "^0.1.0",
+    "@google-cloud/dlp": "^5.0.0"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
+    "mocha": "^10.0.0",
+    "uuid": "^10.0.0"
+  }
+}

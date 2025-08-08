@@ -28,7 +28,7 @@ const cwd = path.join(__dirname, '..');
 const datasetDisplayName = `temp_create_dataset_tables_gcs_test_${uuid()}`;
 const gcsSourceUri = 'gs://cloud-ml-tables-data/bank-marketing.csv';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 let datasetId;
 

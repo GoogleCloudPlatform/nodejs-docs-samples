@@ -25,7 +25,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const modelId = '3530998029718913024';
 const evaluationId = '305008923591573504';
 const project = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = 'us-central1';
 
 describe('AI platform get video action recognition model evaluation', () => {
   it('should get the evaluation from the specified model', async () => {

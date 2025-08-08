@@ -18,7 +18,7 @@ See the [HTTP functions tutorial][tutorial].
 
 ## Run the tests
 
-1. Read and follow the [prerequisites](../../../README.md#prerequisites).
+1. Read and follow the [prerequisites](../../../README.md#setup).
 
 1. Install dependencies:
 

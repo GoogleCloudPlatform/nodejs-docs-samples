@@ -30,7 +30,6 @@ async function generateContent(
     location: location,
   });
 
-
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
@@ -40,7 +39,8 @@ async function generateContent(
           {
             fileData: {
               mimeType: 'video/mp4',
-              fileUri: 'gs://cloud-samples-data/generative-ai/video/ad_copy_from_video.mp4',
+              fileUri:
+                'gs://cloud-samples-data/generative-ai/video/ad_copy_from_video.mp4',
             },
           },
           {

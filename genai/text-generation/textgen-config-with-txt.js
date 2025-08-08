@@ -46,7 +46,7 @@ async function generateContent(
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'Why is the sky blue?',
-    config: config
+    config: config,
   });
 
   console.log(response.text);

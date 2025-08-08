@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_async_with_txt]
+// [START googlegenaisdk_textgen_chat_stream_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,20 +30,19 @@ async function generateContent(
     location: location,
   });
 
-  const response = await ai.models.generateContent({
+  const chatSession = ai.chats.create({
     model: 'gemini-2.5-flash',
-    contents:
-      'Compose a song about the adventures of a time-traveling nuggets.',
-    config: {
-      responseMimeType: 'text/plain',
-    },
   });
 
-  console.log(response.text);
+  for await (const chunk of await chatSession.sendMessageStream({
+    message: 'Why lava is red?',
+  })) {
+    console.log(chunk.text);
+  }
 
-  return response.text;
+  return true;
 }
-// [END googlegenaisdk_textgen_async_with_txt]
+// [END googlegenaisdk_textgen_chat_stream_with_txt]
 
 module.exports = {
   generateContent,

@@ -35,11 +35,11 @@ async function generateContent(
     history: [
       {
         role: 'user',
-        parts: [{ text: 'Hello' }],
+        parts: [{text: 'Hello'}],
       },
       {
         role: 'model',
-        parts: [{ text: 'Great to meet you. What would you like to know?' }],
+        parts: [{text: 'Great to meet you. What would you like to know?'}],
       },
     ],
   });

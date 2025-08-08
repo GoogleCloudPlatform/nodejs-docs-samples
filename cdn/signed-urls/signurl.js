@@ -1,4 +1,4 @@
-// Copyright 2018 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START nodejs_cdn_signed_urls]
+// [START cloudcdn_sign_url]
 const crypto = require('crypto');
 
 /**
@@ -41,7 +41,7 @@ function signUrl(url, keyName, keyValue, expirationDate) {
 
   return urlObject.href;
 }
-// [END nodejs_cdn_signed_urls]
+// [END cloudcdn_sign_url]
 
 module.exports = {
   signUrl,

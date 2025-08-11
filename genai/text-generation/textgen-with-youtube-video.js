@@ -30,7 +30,7 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `Write a short and engaging blog post based on this video.`;
+  const prompt = 'Write a short and engaging blog post based on this video.';
 
   const ytVideo = {
     fileData: {
@@ -39,10 +39,9 @@ async function generateContent(
     },
   };
 
-
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: [ytVideo, prompt]
+    contents: [ytVideo, prompt],
   });
 
   console.log(response.text);

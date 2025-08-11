@@ -33,11 +33,10 @@ async function generateContent(
   const prompt = `Transcribe the interview, in the format of timecode, speaker, caption.
     Use speaker A, speaker B, etc. to identify speakers.`;
 
-
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
-      { text: prompt },
+      {text: prompt},
       {
         fileData: {
           fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',

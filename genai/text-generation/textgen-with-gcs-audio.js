@@ -30,20 +30,20 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `Provide a concise summary of the main points in the audio file.`;
-
+  const prompt =
+    'Provide a concise summary of the main points in the audio file.';
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
-      { text: prompt },
+      {text: prompt},
       {
         fileData: {
           fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
           mimeType: 'audio/mpeg',
         },
       },
-    ]
+    ],
   });
 
   console.log(response.text);

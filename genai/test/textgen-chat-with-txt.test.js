@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-chat-with-txt.js');
 
 describe('textgen-chat-with-txt', () => {
-  it('should generate text content from a text prompt and with system instructions', async function () {
+  it('should generate chat content from a text prompt', async function () {
     this.timeout(100000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

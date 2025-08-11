@@ -260,6 +260,7 @@ describe('Model Armor tests', () => {
   before(async () => {
     projectId = await client.getProjectId();
     const {protos} = require('@google-cloud/modelarmor');
+
     // Import necessary enums
     const DetectionConfidenceLevel =
       protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel;
@@ -273,6 +274,8 @@ describe('Model Armor tests', () => {
       protos.google.cloud.modelarmor.v1.SdpBasicConfig
         .SdpBasicConfigEnforcement;
     const RaiFilterType = protos.google.cloud.modelarmor.v1.RaiFilterType;
+
+    await disableFloorSettings();
 
     // Create basic template with PI/Jailbreak and Malicious URI filters for sanitizeUserPrompt tests
     basicTemplateId = `${templateIdPrefix}-basic`;
@@ -365,9 +368,6 @@ describe('Model Armor tests', () => {
 
   after(async () => {
     for (const templateName of templatesToDelete) {
-      // Disable floor settings to restore original state
-      await disableFloorSettings();
-
       await deleteTemplate(templateName);
     }
 
@@ -873,8 +873,37 @@ describe('Model Armor tests', () => {
       'NO_MATCH_FOUND'
     );
   });
+});
 
-  // =================== Floor Settings Tests ===================
+describe('Model Armor floor setting tests', () => {
+  before(async () => {
+    projectId = await client.getProjectId();
+  });
+
+  after(async () => {
+    await disableFloorSettings();
+  });
+
+  it('should update organization floor settings', async () => {
+    const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
+    const output = await updateOrganizationFloorSettings.main(organizationId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it('should update folder floor settings', async () => {
+    const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
+    const output = await updateFolderFloorSettings.main(folderId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
+
+  it('should update project floor settings', async () => {
+    const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
+    const output = await updateProjectFloorSettings.main(projectId);
+    // Check that the enableFloorSettingEnforcement=true
+    assert.equal(output.enableFloorSettingEnforcement, true);
+  });
 
   it('should get organization floor settings', async () => {
     const getOrganizationFloorSettings = require('../snippets/getOrganizationFloorSettings');
@@ -905,26 +934,5 @@ describe('Model Armor tests', () => {
     const expectedName = `projects/${projectId}/locations/global/floorSetting`;
     assert.equal(output.name, expectedName);
     assert.exists(output.enableFloorSettingEnforcement);
-  });
-
-  it('should update organization floor settings', async () => {
-    const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
-    const output = await updateOrganizationFloorSettings.main(organizationId);
-    // Check that the enableFloorSettingEnforcement=true
-    assert.equal(output.enableFloorSettingEnforcement, true);
-  });
-
-  it('should update folder floor settings', async () => {
-    const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
-    const output = await updateFolderFloorSettings.main(folderId);
-    // Check that the enableFloorSettingEnforcement=true
-    assert.equal(output.enableFloorSettingEnforcement, true);
-  });
-
-  it('should update project floor settings', async () => {
-    const updateProjectFloorSettings = require('../snippets/updateProjectFloorSettings');
-    const output = await updateProjectFloorSettings.main(projectId);
-    // Check that the enableFloorSettingEnforcement=true
-    assert.equal(output.enableFloorSettingEnforcement, true);
   });
 });

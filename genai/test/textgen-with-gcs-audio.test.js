@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-gcs-audio');
 
 describe('textgen-with-gcs-audio', async () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
+  it('should generate text content from gsc audio', async function () {
     this.timeout(300000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

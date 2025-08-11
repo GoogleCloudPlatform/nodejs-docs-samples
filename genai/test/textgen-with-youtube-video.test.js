@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-youtube-video');
 
 describe('textgen-with-youtube-video', async () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
+  it('should generate text content from yt video', async function () {
     this.timeout(300000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

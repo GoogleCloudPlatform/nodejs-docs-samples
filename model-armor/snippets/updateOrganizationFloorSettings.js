@@ -55,7 +55,8 @@ async function main(organizationId) {
                 protos.google.cloud.modelarmor.v1.RaiFilterType
                   .SEXUALLY_EXPLICIT,
               confidenceLevel:
-                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel.HIGH,
+                protos.google.cloud.modelarmor.v1.DetectionConfidenceLevel
+                  .LOW_AND_ABOVE,
             },
           ],
         },

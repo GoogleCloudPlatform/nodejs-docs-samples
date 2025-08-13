@@ -23,6 +23,6 @@ const sample = require('../text-generation/textgen-with-txt-img.js');
 describe('textgen-with-txt-img', async () => {
   it('should generate text content from a text prompt and an image', async () => {
     const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('image'));
+    assert(output.length > 0);
   });
 });

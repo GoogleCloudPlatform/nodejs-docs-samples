@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_tools_vais_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -28,24 +28,34 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
-  });
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
-    config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+    httpOptions: {
+      apiVersion: 'v1',
     },
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
-  return response.codeExecutionResult;
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: "How do I make an appointment to renew my driver's license?",
+    config: {
+      tools: [
+        {
+          retrieval: {
+            vertexAiSearch: {
+              datastore: datastore,
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  console.debug(response.text);
+
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_tools_vais_with_txt]
 
 module.exports = {
   generateContent,

@@ -15,6 +15,9 @@
 'use strict';
 
 // [START googlegenaisdk_tools_code_exec_with_txt]
+const fs = require('fs').promises;
+const path = require('path');
+
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,10 +33,45 @@ async function generateContent(
     location: location,
   });
 
+  const imagePath = path.join(
+    __dirname,
+    '../test-data/640px-Monty_open_door.svg.png'
+  );
+  const imageBuffer = await fs.readFile(imagePath);
+  const imageBase64 = imageBuffer.toString('base64');
+
+  const prompt = `
+    Run a simulation of the Monty Hall Problem with 1,000 trials.
+    Here's how this works as a reminder. In the Monty Hall Problem, you're on a game
+    show with three doors. Behind one is a car, and behind the others are goats. You
+    pick a door. The host, who knows what's behind the doors, opens a different door
+    to reveal a goat. Should you switch to the remaining unopened door?
+    The answer has always been a little difficult for me to understand when people
+    solve it with math - so please run a simulation with Python to show me what the
+    best strategy is.
+    Thank you!
+    `;
+
+  const contents = [
+    {
+      role: 'user',
+      parts: [
+        {
+          inlineData: {
+            mimeType: 'image/png',
+            data: imageBase64,
+          },
+        },
+        {
+          text: prompt,
+        },
+      ],
+    },
+  ];
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+    contents: contents,
     config: {
       tools: [{codeExecution: {}}],
       temperature: 0,

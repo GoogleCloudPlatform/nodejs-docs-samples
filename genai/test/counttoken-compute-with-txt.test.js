@@ -20,7 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../count-tokens/counttoken-compute-with-txt.js');
 
-describe('counttoken-compute-with-txt', async () => {
+describe('counttoken-compute-with-txt', () => {
   it('should return tokensInfo from text prompt', async () => {
     const output = await sample.countTokens(projectId);
     assert(output.length > 0);

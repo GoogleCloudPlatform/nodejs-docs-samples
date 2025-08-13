@@ -18,11 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-with-multi-img.js');
+const sample = require('../count-tokens/counttoken-compute-with-txt.js');
 
-describe('textgen-with-multi-img', async () => {
-  it('should generate text content from a text prompt and multiple images', async () => {
-    const output = await sample.generateContent(projectId);
+describe('counttoken-compute-with-txt', () => {
+  it('should return tokensInfo from text prompt', async function () {
+    this.timeout(50000);
+    const output = await sample.countTokens(projectId);
     assert(output.length > 0);
   });
 });

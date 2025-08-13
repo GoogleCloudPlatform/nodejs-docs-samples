@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_counttoken_compute_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function countTokens(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -28,25 +28,20 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
+    httpOptions: {apiVersion: 'v1'},
   });
 
-  const response = await ai.models.generateContent({
+  const response = await ai.models.computeTokens({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
-    config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
-    },
+    contents: "What's the longest word in the English language?",
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response);
 
-  return response.codeExecutionResult;
+  return response.tokensInfo;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_counttoken_compute_with_txt]
 
 module.exports = {
-  generateContent,
+  countTokens,
 };

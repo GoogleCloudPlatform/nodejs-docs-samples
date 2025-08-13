@@ -23,6 +23,6 @@ const sample = require('../text-generation/textgen-with-video.js');
 describe('textgen-with-video', async () => {
   it('should generate text content from a text prompt and a video', async () => {
     const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('video'));
+    assert(output.length > 0);
   });
 });

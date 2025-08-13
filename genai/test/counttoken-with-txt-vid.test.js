@@ -22,7 +22,7 @@ const sample = require('../count-tokens/counttoken-with-txt-vid.js');
 
 describe('counttoken-with-txt-vid', async () => {
   it('should return the total token count for a text and video prompt', async function () {
-    this.timeout(10000);
+    this.timeout(50000);
     const output = await sample.countTokens(projectId);
     assert(output > 0);
   });

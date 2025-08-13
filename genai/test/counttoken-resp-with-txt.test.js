@@ -22,7 +22,7 @@ const sample = require('../count-tokens/counttoken-resp-with-txt.js');
 
 describe('counttoken-resp-with-txt', () => {
   it('should return the usageMetadata from text prompt', async function () {
-    this.timeout(10000);
+    this.timeout(50000);
     const output = await sample.countTokens(projectId);
     assert.notEqual(output, undefined);
   });

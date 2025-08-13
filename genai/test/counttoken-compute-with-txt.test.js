@@ -21,7 +21,8 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../count-tokens/counttoken-compute-with-txt.js');
 
 describe('counttoken-compute-with-txt', () => {
-  it('should return tokensInfo from text prompt', async () => {
+  it('should return tokensInfo from text prompt', async function () {
+    this.timeout(10000);
     const output = await sample.countTokens(projectId);
     assert(output.length > 0);
   });

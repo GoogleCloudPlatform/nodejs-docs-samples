@@ -21,7 +21,8 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../count-tokens/counttoken-resp-with-txt.js');
 
 describe('counttoken-resp-with-txt', () => {
-  it('should return the usageMetadata from text prompt', async () => {
+  it('should return the usageMetadata from text prompt', async function () {
+    this.timeout(10000);
     const output = await sample.countTokens(projectId);
     assert.notEqual(output, undefined);
   });

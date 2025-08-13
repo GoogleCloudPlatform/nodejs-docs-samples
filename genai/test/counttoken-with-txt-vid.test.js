@@ -21,7 +21,8 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../count-tokens/counttoken-with-txt-vid.js');
 
 describe('counttoken-with-txt-vid', async () => {
-  it('should return the total token count for a text and video prompt', async () => {
+  it('should return the total token count for a text and video prompt', async function () {
+    this.timeout(10000);
     const output = await sample.countTokens(projectId);
     assert(output > 0);
   });

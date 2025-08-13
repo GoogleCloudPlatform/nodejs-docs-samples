@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_counttoken_resp_with_txt]
+// [START googlegenaisdk_counttoken_compute_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -40,7 +40,7 @@ async function countTokens(
 
   return response.tokensInfo;
 }
-// [END googlegenaisdk_counttoken_resp_with_txt]
+// [END googlegenaisdk_counttoken_compute_with_txt]
 
 module.exports = {
   countTokens,

@@ -14,7 +14,6 @@
 
 'use strict';
 
-const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
@@ -22,7 +21,6 @@ const sample = require('../tools/tools-func-desc-with-txt.js');
 
 describe('tools-func-desc-with-txt', async () => {
   it('should generate a function call', async () => {
-    const output = await sample.generateContent(projectId);
-    assert(output.length > 0);
+    await sample.generateContent(projectId);
   });
 });

@@ -24,8 +24,6 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-
-  //todo not working
   const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
@@ -33,18 +31,18 @@ async function generateContent(
     httpOptions: {
       apiVersion: 'v1',
       headers: {
-    // Options:
-    // - "dedicated": Use Provisioned Throughput
-    // - "shared": Use pay-as-you-go
-    // https://cloud.google.com/vertex-ai/generative-ai/docs/use-provisioned-throughput
-        "X-Vertex-AI-LLM-Request-Type": "shared"
-      }
-    }
+        // Options:
+        // - "dedicated": Use Provisioned Throughput
+        // - "shared": Use pay-as-you-go
+        // https://cloud.google.com/vertex-ai/generative-ai/docs/use-provisioned-throughput
+        'X-Vertex-AI-LLM-Request-Type': 'shared',
+      },
+    },
   });
 
-  const response = await ai.models.embedContent({
+  const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'How does AI work?'
+    contents: 'How does AI work?',
   });
 
   console.log(response.text);

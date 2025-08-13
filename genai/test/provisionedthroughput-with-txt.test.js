@@ -20,9 +20,10 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../provisioned-throughput/provisionedthroughput-with-txt.js');
 
-describe('provisionedthroughput-with-txt', async () => {
-  it('provisionedthroughput-with-txt', async () => {
-    const generatedFileNames = await sample.generateContent(projectId);
-
+describe('provisionedthroughput-with-txt', () => {
+  it('should return provisioned throughput result', async function () {
+    this.timeout(50000);
+    const output = await sample.generateContent(projectId);
+    assert(output.length > 0);
   });
 });

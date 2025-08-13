@@ -18,11 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../embeddings/embeddings-docretrieval-with-txt.js');
+const sample = require('../safety/safety-with-txt.js');
 
-describe('embeddings-docretrieval-with-txt', async () => {
-  it('should return an object containing embeddings and metadata', async () => {
-    const generatedFileNames = await sample.generateContent(projectId);
-    assert.containsAllKeys(generatedFileNames, ['embeddings', 'metadata']);
+describe('safety-with-txt', () => {
+  it('should call generateContentStream with safety instructions', async function () {
+    this.timeout(50000);
+    const output = await sample.generateContent(projectId);
+    assert(output.text.length > 0);
   });
 });

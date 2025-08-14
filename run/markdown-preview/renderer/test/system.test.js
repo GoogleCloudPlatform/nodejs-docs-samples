@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const got = require('got');
-const {execSync} = require('child_process');
+import assert from 'assert';
+import got from 'got';
+import {execSync} from 'child_process';
+import {GoogleAuth} from 'google-auth-library';
+
+const auth = new GoogleAuth();
 
 describe('End-to-End Tests', () => {
   // Retrieve Cloud Run service test config

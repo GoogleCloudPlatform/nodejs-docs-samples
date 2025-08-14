@@ -38,7 +38,7 @@ async function countTokens(
   };
 
   const response = await ai.models.countTokens({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: [video, 'Provide a description of the video.'],
   });
 

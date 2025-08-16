@@ -52,7 +52,7 @@ function main(filename, endpointId, project, location = 'us-central1') {
     });
     const parameters = parametersObj.toValue();
 
-    const fs = require('fs');
+    const fs = require('node:fs');
     const image = fs.readFileSync(filename, 'base64');
     const instanceObj = new instance.ImageClassificationPredictionInstance({
       content: image,

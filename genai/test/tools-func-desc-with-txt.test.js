@@ -18,9 +18,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-func-desc-with-txt.js');
+const {delay} = require('./util');
 
 describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async () => {
+  it('should generate a function call', async function () {
+    this.timeout(6000);
+    this.retries(4);
+    await delay(this.test);
     await sample.generateContent(projectId);
   });
 });

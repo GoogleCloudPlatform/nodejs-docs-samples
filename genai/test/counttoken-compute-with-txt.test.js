@@ -23,7 +23,7 @@ const {delay} = require('./util');
 
 describe('counttoken-compute-with-txt', () => {
   it('should return tokensInfo from text prompt', async function () {
-    this.timeout(120000);
+    this.timeout(180000);
     this.retries(4);
     await delay(this.test);
     const output = await sample.countTokens(projectId);

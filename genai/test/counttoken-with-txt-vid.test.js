@@ -23,7 +23,7 @@ const {delay} = require('./util');
 
 describe('counttoken-with-txt-vid', async () => {
   it('should return the total token count for a text and video prompt', async function () {
-    this.timeout(6000);
+    this.timeout(120000);
     this.retries(4);
     await delay(this.test);
     const output = await sample.countTokens(projectId);

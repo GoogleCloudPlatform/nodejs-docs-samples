@@ -23,7 +23,7 @@ const {delay} = require('./util');
 
 describe('ctrlgen-with-enum-schema', async () => {
   it('should generate text content in Json', async function () {
-    this.timeout(6000);
+    this.timeout(120000);
     this.retries(4);
     await delay(this.test);
     const output = await sample.generateContent(projectId);

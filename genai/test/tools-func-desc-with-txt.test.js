@@ -22,7 +22,7 @@ const {delay} = require('./util');
 
 describe('tools-func-desc-with-txt', async () => {
   it('should generate a function call', async function () {
-    this.timeout(6000);
+    this.timeout(120000);
     this.retries(4);
     await delay(this.test);
     await sample.generateContent(projectId);

@@ -23,7 +23,7 @@ const {delay} = require('./util');
 
 describe('textgen-with-txt-img', async () => {
   it('should generate text content from a text prompt and an image', async function () {
-    this.timeout(6000);
+    this.timeout(120000);
     this.retries(4);
     await delay(this.test);
     const output = await sample.generateContent(projectId);

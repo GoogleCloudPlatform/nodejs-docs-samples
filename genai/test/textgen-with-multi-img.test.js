@@ -23,7 +23,6 @@ const sample = require('../text-generation/textgen-with-multi-img.js');
 describe('textgen-with-multi-img', () => {
   it('should generate text content from a text prompt and multiple images', async function () {
     this.timeout(300000);
-
     const output = await sample.generateContent(projectId);
     console.log('Generated output:', output);
 

@@ -19,9 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-txt-img.js');
+const {delay} = require('./util');
 
 describe('textgen-with-txt-img', async () => {
-  it('should generate text content from a text prompt and an image', async () => {
+  it('should generate text content from a text prompt and an image', async function () {
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);
   });

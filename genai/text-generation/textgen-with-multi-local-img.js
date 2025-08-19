@@ -14,15 +14,23 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_code_with_pdf]
+// [START googlegenaisdk_textgen_with_multi_local_img]
 const {GoogleGenAI} = require('@google/genai');
+const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
+function loadImageAsBase64(path) {
+  const bytes = fs.readFileSync(path);
+  return bytes.toString('base64');
+}
+
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  imagePath1,
+  imagePath2
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,
@@ -30,32 +38,41 @@ async function generateContent(
     location: location,
   });
 
-  const contents = [
-    {
-      role: 'user',
-      parts: [
-        {text: 'Convert this python code to use Google Python Style Guide.'},
-        {
-          fileData: {
-            fileUri:
-              'https://storage.googleapis.com/cloud-samples-data/generative-ai/text/inefficient_fibonacci_series_python_code.pdf',
-            mimeType: 'application/pdf',
-          },
-        },
-      ],
-    },
-  ];
+  // TODO(Developer): Update the below file paths to your images
+  const image1 = loadImageAsBase64(imagePath1);
+  const image2 = loadImageAsBase64(imagePath2);
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: contents,
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'Generate a list of all the objects contained in both images.',
+          },
+          {
+            inlineData: {
+              data: image1,
+              mimeType: 'image/jpeg',
+            },
+          },
+          {
+            inlineData: {
+              data: image2,
+              mimeType: 'image/jpeg',
+            },
+          },
+        ],
+      },
+    ],
   });
 
   console.log(response.text);
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_code_with_pdf]
+// [END googlegenaisdk_textgen_with_multi_local_img]
 
 module.exports = {
   generateContent,

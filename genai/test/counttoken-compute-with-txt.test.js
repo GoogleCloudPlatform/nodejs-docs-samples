@@ -14,17 +14,19 @@
 
 'use strict';
 
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
+const sample = require('../count-tokens/counttoken-compute-with-txt.js');
 const {delay} = require('./util');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
+describe('counttoken-compute-with-txt', () => {
+  it('should return tokensInfo from text prompt', async function () {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    await sample.generateContent(projectId);
+    const output = await sample.countTokens(projectId);
+    assert(output.length > 0);
   });
 });

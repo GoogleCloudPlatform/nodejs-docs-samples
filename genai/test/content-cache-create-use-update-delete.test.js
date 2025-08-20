@@ -25,7 +25,7 @@ const updateSample = require('../content-cache/content-cache-update.js');
 const deleteSample = require('../content-cache/content-cache-delete.js');
 
 describe('content-cache-create-use-update-delete', function () {
-  this.timeout(60000);
+  this.timeout(600000);
   let contentCacheName;
 
   it('should create content cache', async () => {

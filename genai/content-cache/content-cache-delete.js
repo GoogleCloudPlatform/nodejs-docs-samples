@@ -43,6 +43,8 @@ async function generateContent(
 
   return contentCache;
 }
+// Example response
+//    Deleted Cache projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
 // [END googlegenaisdk_contentcache_delete]
 
 module.exports = {

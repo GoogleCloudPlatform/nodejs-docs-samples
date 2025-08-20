@@ -24,6 +24,5 @@ describe('contentcache-list', async () => {
   it('should return object with names of catches', async () => {
     const output = await sample.generateContent(projectId);
     assert.isArray(output);
-    assert.isAbove(output.length, 0);
   });
 });

@@ -45,10 +45,16 @@ async function generateContent(
     console.log(`Expires at: ${contentCache.expireTime}`);
     contentCacheNames.push(contentCache.name);
   }
-  console.log();
+  console.log(contentCacheNames);
 
   return contentCacheNames;
 }
+// Example response:
+//    * Cache `projects/111111111111/locations/us-central1/cachedContents/1111111111111111111` for
+//    model `projects/111111111111/locations/us-central1/publishers/google/models/gemini-XXX-pro-XXX`
+//    * Last updated at: 2025-02-13 14:46:42.620490+00:00
+//    * CachedContentUsageMetadata(audio_duration_seconds=None, image_count=167, text_count=153, total_token_count=43130, video_duration_seconds=None)
+// ...
 // [END googlegenaisdk_contentcache_list]
 
 module.exports = {

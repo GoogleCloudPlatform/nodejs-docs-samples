@@ -47,6 +47,9 @@ async function generateContent(
 
   return response.text;
 }
+// Example response
+//    The Gemini family of multimodal models from Google DeepMind demonstrates remarkable capabilities across various
+//    modalities, including image, audio, video, and text....
 // [END googlegenaisdk_contentcache_use_with_txt]
 
 module.exports = {

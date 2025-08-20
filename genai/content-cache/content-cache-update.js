@@ -68,6 +68,8 @@ async function generateContent(
   console.log('Expire time (after update):', contentCache.expireTime);
   return contentCache;
 }
+// Example response
+//    Expire time(after update): 2025-02-20 15:51:42.614968+00:00
 // [END googlegenaisdk_contentcache_update]
 
 module.exports = {

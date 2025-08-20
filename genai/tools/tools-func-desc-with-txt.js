@@ -83,6 +83,19 @@ async function generateContent(
 
   return output;
 }
+// Example response:
+//    [FunctionCall(
+//     id=None,
+//     name="get_album_sales",
+//     args={
+//         "albums": [
+//             {"album_name": "Echoes of the Night", "copies_sold": 350000},
+//             {"copies_sold": 120000, "album_name": "Reckless Hearts"},
+//             {"copies_sold": 75000, "album_name": "Whispers of Dawn"},
+//             {"copies_sold": 100000, "album_name": "Street Symphony"},
+//          ]
+//      },
+//     )]
 // [END googlegenaisdk_tools_func_desc_with_txt]
 
 module.exports = {

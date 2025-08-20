@@ -45,6 +45,28 @@ async function generateContent(
 
   return response.codeExecutionResult;
 }
+// Example response:
+// // Code:
+// function fibonacci(n) {
+//   if (n <= 0) {
+//     return 0;
+//   } else if (n === 1) {
+//     return 1;
+//   } else {
+//     let a = 0, b = 1;
+//     for (let i = 2; i <= n; i++) {
+//       [a, b] = [b, a + b];
+//     }
+//     return b;
+//   }
+// }
+//
+// const fib20 = fibonacci(20);
+// console.log(`fib20=${fib20}`);
+//
+// // Outcome:
+// // fib20=6765
+
 // [END googlegenaisdk_tools_code_exec_with_txt]
 
 module.exports = {

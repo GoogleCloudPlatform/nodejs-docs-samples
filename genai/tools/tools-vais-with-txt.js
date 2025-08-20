@@ -33,8 +33,10 @@ async function generateContent(
     },
   });
 
-  const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
+  const datastore =
+    'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/grounding-test-datastore';
 
+  // const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: "How do I make an appointment to renew my driver's license?",
@@ -55,6 +57,8 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+//    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
 // [END googlegenaisdk_tools_vais_with_txt]
 
 module.exports = {

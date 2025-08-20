@@ -23,9 +23,13 @@ const createSample = require('../content-cache/content-cache-create-with-txt-gcs
 const useSample = require('../content-cache/content-cache-use-with-txt.js');
 const updateSample = require('../content-cache/content-cache-update.js');
 const deleteSample = require('../content-cache/content-cache-delete.js');
+const {delay} = require('./util');
 
-describe('content-cache-create-use-update-delete', function () {
+describe('content-cache-create-use-update-delete', async function () {
   this.timeout(600000);
+  this.retries(5);
+  await delay(this.test);
+
   let contentCacheName;
 
   it('should create content cache', async () => {

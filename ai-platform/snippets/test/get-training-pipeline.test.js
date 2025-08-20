@@ -16,10 +16,9 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {describe, it} = require('mocha');
-
-const cp = require('child_process');
+import {assert} from 'chai';
+import {describe, it} from 'mocha';
+import cp from 'node:child_process';
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const trainingPipelineId = '1419759782528548864';

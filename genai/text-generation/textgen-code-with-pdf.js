@@ -55,6 +55,22 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+// Here's the Python code converted to adhere to the Google Python Style Guide, along with explanations for the changes:
+//
+// ```python
+// """Calculates the Fibonacci sequence up to n numbers.
+//
+// This module provides a function to generate a Fibonacci sequence,
+// demonstrating adherence to the Google Python Style Guide.
+// """
+//
+// def fibonacci(n: int) -> list[int]:
+//   """Calculates the Fibonacci sequence up to n numbers.
+//
+//   This function generates the first 'n' terms of the Fibonacci sequence,
+//   starting with 0, 1, 1, 2...
+// ...
 // [END googlegenaisdk_textgen_code_with_pdf]
 
 module.exports = {

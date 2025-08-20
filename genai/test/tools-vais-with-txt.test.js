@@ -19,11 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tools/tools-vais-with-txt.js');
+const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 describe('tools-vais-with-txt', () => {
   it('should generate a function call', async function () {
     this.timeout(60000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateContent(datastore, projectId, location);
     assert(output.length > 0);
   });
 });

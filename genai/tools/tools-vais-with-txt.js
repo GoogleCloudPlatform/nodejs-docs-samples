@@ -19,8 +19,11 @@ const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const DATASTORE =
+  'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/example-adk-website-datastore_1755611010401';
 
 async function generateContent(
+  datastore = DATASTORE,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -33,10 +36,6 @@ async function generateContent(
     },
   });
 
-  const datastore =
-    'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/example-adk-website-datastore_1755611010401';
-
-  // const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: "How do I make an appointment to renew my driver's license?",

@@ -50,6 +50,12 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+//  Here is a summary of the document in 300 words.
+//  The paper introduces the Transformer, a novel neural network architecture for
+//  sequence transduction tasks like machine translation. Unlike existing models that rely on recurrent or
+//  convolutional layers, the Transformer is based entirely on attention mechanisms.
+//  ...
 // [END googlegenaisdk_textgen_with_pdf]
 
 module.exports = {

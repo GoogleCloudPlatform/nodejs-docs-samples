@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_pdf]
+// [START googlegenaisdk_textgen_with_local_video]
 const {GoogleGenAI} = require('@google/genai');
 const fs = require('fs');
 
@@ -51,7 +51,11 @@ async function generateContent(
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_with_pdf]
+// Example response:
+// Okay, here's a short and engaging blog post based on the climbing video:
+// **Title: Conquering the Wall: A Glimpse into the World of Indoor Climbing**
+// ...
+// [END googlegenaisdk_textgen_with_local_video]
 
 module.exports = {
   generateContent,

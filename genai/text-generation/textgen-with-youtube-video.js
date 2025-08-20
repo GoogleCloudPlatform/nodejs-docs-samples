@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_pdf]
+// [START googlegenaisdk_textgen_with_youtube_video]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -48,7 +48,11 @@ async function generateContent(
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_with_pdf]
+// Example response:
+//  Here's a short blog post based on the video provided:
+//  **Google Turns 25: A Quarter Century of Search!**
+//  ...
+// [END googlegenaisdk_textgen_with_youtube_video]
 
 module.exports = {
   generateContent,

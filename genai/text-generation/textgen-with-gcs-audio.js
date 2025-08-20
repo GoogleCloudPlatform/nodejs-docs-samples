@@ -50,6 +50,9 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+//  Here's a summary of the main points from the audio file:
+//  The Made by Google podcast discusses the Pixel feature drops with product managers Aisha Sheriff and De Carlos Love.  The key idea is that devices should improve over time, with a connected experience across phones, watches, earbuds, and tablets.
 // [END googlegenaisdk_textgen_with_gcs_audio]
 
 module.exports = {

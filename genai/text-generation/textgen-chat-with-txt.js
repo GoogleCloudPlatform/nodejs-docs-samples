@@ -49,6 +49,9 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+// Okay, here's a story for you:
+// ...
 // [END googlegenaisdk_textgen_chat_with_txt]
 
 module.exports = {

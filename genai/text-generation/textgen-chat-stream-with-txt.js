@@ -42,6 +42,11 @@ async function generateContent(
 
   return true;
 }
+// Example response:
+// The
+// sky appears blue due to a phenomenon called **Rayleigh scattering**. Here's
+// a breakdown of why:
+// ...
 // [END googlegenaisdk_textgen_chat_stream_with_txt]
 
 module.exports = {

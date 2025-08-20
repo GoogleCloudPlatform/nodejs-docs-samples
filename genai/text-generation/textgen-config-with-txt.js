@@ -53,6 +53,10 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+// {
+//   "explanation": "The sky appears blue due to a phenomenon called Rayleigh scattering. When ...
+// }
 // [END googlegenaisdk_textgen_config_with_txt]
 
 module.exports = {

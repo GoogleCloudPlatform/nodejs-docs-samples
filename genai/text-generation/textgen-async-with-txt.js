@@ -43,6 +43,10 @@ async function generateContent(
 
   return response.text;
 }
+// Example response:
+// (Verse 1)
+// Sammy the nugget, a furry little friend
+// Had a knack for adventure, beyond all comprehend
 // [END googlegenaisdk_textgen_async_with_txt]
 
 module.exports = {

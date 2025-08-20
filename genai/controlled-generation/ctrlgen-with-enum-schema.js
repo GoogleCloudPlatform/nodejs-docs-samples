@@ -48,6 +48,8 @@ async function generateContent(
 
   return response.text;
 }
+// Example output:
+//  Woodwind
 // [END googlegenaisdk_ctrlgen_with_enum_schema]
 
 module.exports = {

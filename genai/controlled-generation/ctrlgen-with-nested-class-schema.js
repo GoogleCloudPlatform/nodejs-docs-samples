@@ -67,6 +67,8 @@ async function generateContent(
 
   return response.text;
 }
+// Example output:
+//  [{"rating": "a+", "recipe_name": "Classic Chocolate Chip Cookies"}, ...]
 // [END googlegenaisdk_ctrlgen_with_nested_class_schema]
 
 module.exports = {

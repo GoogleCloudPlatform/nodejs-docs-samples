@@ -29,3 +29,4 @@ describe('tools-vais-with-txt', () => {
     assert(output.length > 0);
   });
 });
+6;

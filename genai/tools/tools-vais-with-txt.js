@@ -34,7 +34,7 @@ async function generateContent(
   });
 
   const datastore =
-    'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/grounding-test-datastore';
+    'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/example-adk-website-datastore_1755611010401';
 
   // const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
   const response = await ai.models.generateContent({

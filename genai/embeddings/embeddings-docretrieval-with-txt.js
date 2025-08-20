@@ -39,7 +39,10 @@ async function generateContent(projectId = GOOGLE_CLOUD_PROJECT) {
   });
 
   console.log(response);
-
+  // Example response:
+  //  embeddings=[ContentEmbedding(values=[-0.06302902102470398, 0.00928034819662571, 0.014716853387653828, -0.028747491538524628, ... ],
+  //  statistics=ContentEmbeddingStatistics(truncated=False, token_count=13.0))]
+  //  metadata=EmbedContentMetadata(billable_character_count=112)
   return response;
 }
 // [END googlegenaisdk_embeddings_docretrieval_with_txt]

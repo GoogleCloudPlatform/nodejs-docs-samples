@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_googlegenaisdk_provisionedthroughput_with_txt]
+// [START googlegenaisdk_provisionedthroughput_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -49,7 +49,11 @@ async function generateContent(
 
   return response.text;
 }
-// [END googlegenaisdk_googlegenaisdk_provisionedthroughput_with_txt]
+// Example response:
+//  Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
+//  Here's a simplified overview:
+//  ...
+// [END googlegenaisdk_provisionedthroughput_with_txt]
 
 module.exports = {
   generateContent,

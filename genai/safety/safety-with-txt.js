@@ -77,6 +77,36 @@ async function generateContent(
 
   return response;
 }
+// Example response:
+//
+//     Category:  HarmCategory.HARM_CATEGORY_HATE_SPEECH
+//     Is Blocked: False
+//     Probability:  HarmProbability.NEGLIGIBLE
+//     Probability Score:  2.547714e-05
+//     Severity: HarmSeverity.HARM_SEVERITY_NEGLIGIBLE
+//     Severity Score: None
+//
+//     Category:  HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT
+//     Is Blocked: False
+//     Probability:  HarmProbability.NEGLIGIBLE
+//     Probability Score:  3.6103818e-06
+//     Severity: HarmSeverity.HARM_SEVERITY_NEGLIGIBLE
+//     Severity Score: None
+//
+//     Category:  HarmCategory.HARM_CATEGORY_HARASSMENT
+//     Is Blocked: True
+//     Probability:  HarmProbability.MEDIUM
+//     Probability Score:  0.71599233
+//     Severity: HarmSeverity.HARM_SEVERITY_MEDIUM
+//     Severity Score: 0.30782545
+//
+//     Category:  HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT
+//     Is Blocked: False
+//     Probability:  HarmProbability.NEGLIGIBLE
+//     Probability Score:  1.5624657e-05
+//     Severity: HarmSeverity.HARM_SEVERITY_NEGLIGIBLE
+//     Severity Score: None
+
 // [END googlegenaisdk_safety_with_txt]
 
 module.exports = {

@@ -41,7 +41,8 @@ async function generateContent(
   });
 
   console.log(response.text);
-
+  // Example response:
+  //  The lava is red because ...
   return response.text;
 }
 // [END googlegenaisdk_tuning_textgen_with_txt]

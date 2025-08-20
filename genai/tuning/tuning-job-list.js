@@ -34,6 +34,8 @@ async function generateContent(
   for await (const item of responses) {
     if (item.name && item.name.includes('/tuningJobs/')) {
       console.log(item.name);
+      // Example response:
+      //  projects/123456789012/locations/us-central1/tuningJobs/123456789012345
     }
   }
 

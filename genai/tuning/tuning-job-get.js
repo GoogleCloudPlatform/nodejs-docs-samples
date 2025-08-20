@@ -31,11 +31,17 @@ async function generateContent(
     location: location,
   });
 
+  // Get the tuning job and the tuned model.
   const tuningJob = await ai.tunings.get({name: tuningJobName});
 
   console.log(tuningJob.tunedModel.model);
   console.log(tuningJob.tunedModel.endpoint);
   console.log(tuningJob.experiment);
+
+  // Example response:
+  //  projects/123456789012/locations/us-central1/models/1234567890@1
+  //  projects/123456789012/locations/us-central1/endpoints/123456789012345
+  //  projects/123456789012/locations/us-central1/metadataStores/default/contexts/tuning-experiment-2025010112345678
 
   return tuningJob.name;
 }

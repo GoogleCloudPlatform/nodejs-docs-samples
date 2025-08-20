@@ -57,7 +57,10 @@ async function generateContent(
   console.log(tuningJob.tunedModel.model);
   console.log(tuningJob.tunedModel.endpoint);
   console.log(tuningJob.experiment);
-
+  // Example response:
+  //  projects/123456789012/locations/us-central1/models/1234567890@1
+  //  projects/123456789012/locations/us-central1/endpoints/123456789012345
+  //  projects/123456789012/locations/us-central1/metadataStores/default/contexts/tuning-experiment-2025010112345678
   return tuningJob.name;
 }
 // [END googlegenaisdk_tuning_job_create]

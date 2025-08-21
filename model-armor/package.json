@@ -14,13 +14,13 @@
     "test": "c8 mocha -p -j 2 --recursive test/ --timeout=60000"
   },
   "dependencies": {
-    "@google-cloud/modelarmor": "^0.1.0",
-    "@google-cloud/dlp": "^5.0.0"
+    "@google-cloud/modelarmor": "^0.4.0",
+    "@google-cloud/dlp": "^6.3.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
-    "uuid": "^10.0.0"
+    "chai": "^5.2.1",
+    "mocha": "^11.7.1",
+    "uuid": "^11.1.0"
   }
 }

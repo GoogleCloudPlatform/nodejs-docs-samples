@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-const {describe, it} = require('mocha');
-
-const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
-const {delay} = require('./util');
-
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
-    this.timeout(180000);
-    this.retries(4);
-    await delay(this.test);
-    await sample.generateContent(projectId);
-  });
-});
+// ML tests frequently run into concurrency and quota issues, for which
+// retrying with a backoff is a good strategy:
+module.exports = {
+  async delay(test) {
+    const retries = test.currentRetry();
+    if (retries === 0) return; // no retry on the first failure.
+    // see: https://cloud.google.com/storage/docs/exponential-backoff:
+    const ms = Math.pow(2, retries) * 1000 + Math.random() * 2000;
+    return new Promise(done => {
+      console.info(`retrying "${test.title}" in ${ms}ms`);
+      setTimeout(done, ms);
+    });
+  },
+};

@@ -19,7 +19,7 @@ const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-// put your path Data Store
+// (Developer) put your path Data Store
 const DATASTORE =
   'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/example-adk-website-datastore_1755611010401';
 

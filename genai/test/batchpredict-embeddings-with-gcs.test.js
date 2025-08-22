@@ -16,7 +16,7 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const { Storage } = require("@google-cloud/storage");
+const {Storage} = require('@google-cloud/storage');
 
 const storage = new Storage();
 
@@ -44,12 +44,11 @@ async function gcs_output_uri() {
   };
 }
 
-
 describe('batchpredict-embeddings-with-gcs', () => {
   it('should return the batch job state', async function () {
     this.timeout(50000);
-    const gscOutput = gcs_output_uri()
-    const gscUri = (await gscOutput).uri
+    const gscOutput = gcs_output_uri();
+    const gscUri = (await gscOutput).uri;
     const output = await sample.generateContent(gscUri, projectId, location);
     assert.notEqual(output, undefined);
   });

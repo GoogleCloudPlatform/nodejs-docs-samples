@@ -16,7 +16,7 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const { BigQuery } =  require("@google-cloud/bigquery");
+const {BigQuery} = require('@google-cloud/bigquery');
 
 const bigquery = new BigQuery();
 
@@ -25,7 +25,6 @@ const BQ_OUTPUT_DATASET = `${process.env.BQ_OUTPUT_DATASET}.gen_ai_batch_predict
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const sample = require('../batch-prediction/batchpredict-with-bq');
-
 
 async function bq_output_uri() {
   const dt = new Date();
@@ -46,8 +45,8 @@ async function bq_output_uri() {
 describe('batchpredict-with-bq', () => {
   it('should return the batch job state', async function () {
     this.timeout(50000);
-    const bqOutput = bq_output_uri()
-    const bqUri = (await bqOutput).uri
+    const bqOutput = bq_output_uri();
+    const bqUri = (await bqOutput).uri;
     const output = await sample.generateContent(bqUri, projectId, location);
     assert.notEqual(output, undefined);
   });

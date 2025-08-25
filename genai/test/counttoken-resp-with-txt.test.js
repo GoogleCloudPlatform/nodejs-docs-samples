@@ -14,17 +14,16 @@
 
 'use strict';
 
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../count-tokens/counttoken-resp-with-txt.js');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
-    this.timeout(180000);
-    this.retries(4);
-    await delay(this.test);
-    await sample.generateContent(projectId);
+describe('counttoken-resp-with-txt', () => {
+  it('should return the usageMetadata from text prompt', async function () {
+    this.timeout(50000);
+    const output = await sample.countTokens(projectId);
+    assert.notEqual(output, undefined);
   });
 });

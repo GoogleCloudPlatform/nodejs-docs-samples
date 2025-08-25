@@ -31,7 +31,7 @@ async function countTokens(
   });
 
   const response = await ai.models.countTokens({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: 'What is the highest mountain in Africa?',
   });
 

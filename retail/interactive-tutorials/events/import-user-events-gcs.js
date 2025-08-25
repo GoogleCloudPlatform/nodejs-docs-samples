@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// [START retail_import_user_events_from_gcs]
 
 'use strict';
 
@@ -89,3 +90,5 @@ main(
     return argv.length ? argv : [process.env['EVENTS_BUCKET_NAME']];
   })()
 );
+
+// [END retail_import_user_events_from_gcs]

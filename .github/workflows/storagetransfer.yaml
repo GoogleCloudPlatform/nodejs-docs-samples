@@ -90,19 +90,3 @@ jobs:
         AZURE_STORAGE_ACCOUNT: ${{ fromJSON(steps.secrets.outputs.sts_azure_secret).StorageAccount }}
         AZURE_CONNECTION_STRING: ${{ fromJSON(steps.secrets.outputs.sts_azure_secret).ConnectionString }}
         AZURE_SAS_TOKEN: ${{ fromJSON(steps.secrets.outputs.sts_azure_secret).SAS }}
-    - name: upload test results for FlakyBot workflow
-      if: github.event.action == 'schedule' && always()
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-      env:
-        MOCHA_REPORTER_OUTPUT: "${{github.run_id}}_sponge_log.xml"
-      with:
-        name: test-results
-        path: storagetransfer/${{ env.MOCHA_REPORTER_OUTPUT }}
-        retention-days: 1
-  flakybot:
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    if: github.event_name == 'schedule' && always() # always() submits logs even if tests fail
-    uses: ./.github/workflows/flakybot.yaml
-    needs: [test]

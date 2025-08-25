@@ -547,6 +547,20 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
   });
 
+  it('deletes a secret annotation', async () => {
+    const output = execSync(
+      `node deleteSecretAnnotation.js ${secret.name} ${annotationKey}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${secret.name}`));
+  });
+
+  it('deletes a regional secret annotation', async () => {
+    const output = execSync(
+      `node regional_samples/deleteRegionalSecretAnnotation.js ${projectId} ${locationId} ${secretId} ${annotationKey}`
+    );
+    assert.match(output, new RegExp(`Updated secret ${regionalSecret.name}`));
+  });
+
   it('deletes a regional secret', async () => {
     const output = execSync(
       `node regional_samples/deleteRegionalSecret.js ${projectId} ${locationId} ${secretId}-3`

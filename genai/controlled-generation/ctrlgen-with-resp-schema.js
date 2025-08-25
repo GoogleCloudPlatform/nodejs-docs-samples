@@ -14,8 +14,8 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_ctrlgen_with_resp_schema]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -30,16 +30,28 @@ async function generateContent(
     location: location,
   });
 
+  const prompt = 'List a few popular cookie recipes.';
+
   const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
+    type: 'ARRAY',
+    items: {
+      type: 'OBJECT',
+      properties: {
+        recipeName: {type: 'STRING'},
+        ingredients: {
+          type: 'ARRAY',
+          items: {type: 'STRING'},
+        },
+      },
+      required: ['recipeName', 'ingredients'],
+    },
   };
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents: prompt,
     config: {
-      responseMimeType: 'text/x.enum',
+      responseMimeType: 'application/json',
       responseSchema: responseSchema,
     },
   });
@@ -49,8 +61,23 @@ async function generateContent(
   return response.text;
 }
 // Example output:
-//  Woodwind
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [
+//     {
+//         "ingredients": [
+//             "2 1/4 cups all-purpose flour",
+//             "1 teaspoon baking soda",
+//             "1 teaspoon salt",
+//             "1 cup (2 sticks) unsalted butter, softened",
+//             "3/4 cup granulated sugar",
+//             "3/4 cup packed brown sugar",
+//             "1 teaspoon vanilla extract",
+//             "2 large eggs",
+//             "2 cups chocolate chips",
+//         ],
+//         "recipe_name": "Chocolate Chip Cookies",
+//     }
+// ]
+// [END googlegenaisdk_ctrlgen_with_resp_schema]
 
 module.exports = {
   generateContent,

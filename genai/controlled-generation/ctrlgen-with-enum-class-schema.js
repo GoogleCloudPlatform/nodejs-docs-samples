@@ -14,8 +14,8 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_ctrlgen_with_enum_class_schema]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -30,14 +30,32 @@ async function generateContent(
     location: location,
   });
 
+  class InstrumentClass {
+    static values() {
+      return [
+        InstrumentClass.PERCUSSION,
+        InstrumentClass.STRING,
+        InstrumentClass.WOODWIND,
+        InstrumentClass.BRASS,
+        InstrumentClass.KEYBOARD,
+      ];
+    }
+  }
+
+  InstrumentClass.PERCUSSION = 'Percussion';
+  InstrumentClass.STRING = 'String';
+  InstrumentClass.WOODWIND = 'Woodwind';
+  InstrumentClass.BRASS = 'Brass';
+  InstrumentClass.KEYBOARD = 'Keyboard';
+
   const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
+    type: 'string',
+    enum: InstrumentClass.values(),
   };
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents: 'What type of instrument is a guitar?',
     config: {
       responseMimeType: 'text/x.enum',
       responseSchema: responseSchema,
@@ -49,8 +67,8 @@ async function generateContent(
   return response.text;
 }
 // Example output:
-//  Woodwind
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+//  String
+// [END googlegenaisdk_ctrlgen_with_enum_class_schema]
 
 module.exports = {
   generateContent,

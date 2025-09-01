@@ -92,8 +92,6 @@ async function generateContent(
 
   const turns = await handleTurn(session);
 
-  console.log('dupsko ', turns);
-
   session.close();
   return turns;
 }

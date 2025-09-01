@@ -36,8 +36,13 @@ async function generateContent(
   const modelId = 'gemini-2.0-flash-live-preview-04-09';
   const config = {
     responseModalities: [Modality.AUDIO],
-    inputAudioTranscription: {},
-    outputAudioTranscription: {},
+    speechConfig: {
+      voiceConfig: {
+        prebuiltVoiceConfig: {
+          voiceName: voiceName,
+        },
+      },
+    },
   };
 
 
@@ -51,51 +56,46 @@ async function generateContent(
   }
 
   async function handleTurn(session) {
-    const turns = [];
+    const audioChunks = [];
     let done = false;
-    let outputMessage = [];
+
     while (!done) {
       const message = await waitMessage();
-      turns.push(message);
 
       const sc = message.serverContent;
-      if (sc?.modelTurn) {
-        console.log('Model turn:', sc.modelTurn);
-      }
-      if (sc?.inputTranscription) {
-        console.log('Input transcript:', sc.inputTranscription.text);
-      }
-      if (sc?.outputTranscription?.text) {
-        outputMessage.push(sc.outputTranscription.text);
+      if (sc?.modelTurn?.parts) {
+        for (const part of sc.modelTurn.parts) {
+          if (part.inlineData?.data) {
+            audioChunks.push(Buffer.from(part.inlineData.data));
+          }
+        }
       }
 
       if (sc?.turnComplete) {
         done = true;
       }
     }
-    console.log('Output transcript:', outputMessage.join(''));
-    return turns;
+
+    return audioChunks;
   }
 
   const session = await ai.live.connect({
-    model: modelId,
-    config: config,
+    model,
+    config,
     callbacks: {
       onmessage: msg => responseQueue.push(msg),
       onerror: e => console.error('Error:', e.message),
     },
   });
 
-  const inputTxt = 'Hello? Gemini, are you there?';
-  console.log('> ', inputTxt, '\n');
+  const textInput = 'Hello? Gemini are you there?';
+  console.log('> ', textInput, '\n');
 
   await session.sendClientContent({
-    turns: [{role: 'user', parts: [{text: inputTxt}]}],
+    turns: [{ role: 'user', parts: [{ text: textInput }] }],
   });
 
-  const turns = await handleTurn(session);
-
-  console.log('dupsko ', turns);
+  const audioChunks = await handleTurn(session);
 
   session.close();
   return turns;

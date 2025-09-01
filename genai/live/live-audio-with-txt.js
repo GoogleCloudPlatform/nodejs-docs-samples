@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_live_transcribe_with_audio]
+// [START googlegenaisdk_live_audio_with_txt]
 
 'use strict';
 
 const {GoogleGenAI, Modality} = require('@google/genai');
+const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -31,12 +32,14 @@ async function generateContent(
     location: location,
   });
 
-  const modelId = 'gemini-live-2.5-flash-preview-native-audio';
+  const voiceName = 'Aoede';
+  const modelId = 'gemini-2.0-flash-live-preview-04-09';
   const config = {
     responseModalities: [Modality.AUDIO],
     inputAudioTranscription: {},
     outputAudioTranscription: {},
   };
+
 
   const responseQueue = [];
 
@@ -100,7 +103,7 @@ async function generateContent(
 // Example output:
 //> Hello? Gemini, are you there?
 // Yes, I'm here. What would you like to talk about?
-// [END googlegenaisdk_live_transcribe_with_audio]
+// [END googlegenaisdk_live_audio_with_txt]
 
 module.exports = {
   generateContent,

@@ -18,9 +18,9 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../live/live-transcribe-with-audio');
+const sample = require('../live/live-audio-with-txt');
 
-describe('live-transcribe-with-audio', () => {
+describe('live-audio-with-txt', () => {
   it('should generate text content from a text prompt and multiple images', async function () {
     this.timeout(180000);
     const output = await sample.generateContent(projectId);

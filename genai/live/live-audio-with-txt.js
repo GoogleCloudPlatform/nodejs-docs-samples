@@ -80,8 +80,8 @@ async function generateContent(
   }
 
   const session = await ai.live.connect({
-    model,
-    config,
+    model: modelId,
+    config: config,
     callbacks: {
       onmessage: msg => responseQueue.push(msg),
       onerror: e => console.error('Error:', e.message),
@@ -98,11 +98,18 @@ async function generateContent(
   const audioChunks = await handleTurn(session);
 
   session.close();
-  return turns;
+
+  if (audioChunks.length > 0) {
+    const audioBuffer = Buffer.concat(audioChunks);
+    fs.writeFileSync('response.raw', audioBuffer);
+    console.log('Received audio answer (saved to response.raw)');
+  }
+
+  return audioChunks;
 }
 // Example output:
 //> Hello? Gemini, are you there?
-// Yes, I'm here. What would you like to talk about?
+// Received audio answer (saved to response.raw)
 // [END googlegenaisdk_live_audio_with_txt]
 
 module.exports = {

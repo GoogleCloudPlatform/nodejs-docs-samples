@@ -21,7 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../thinking/thinking-includethoughts-with-txt.js');
 
 describe('thinking-includethoughts-with-txt', async () => {
-  it('should return Thought Process ', async function () {
+  it('should return Thought Process', async function () {
     this.timeout(50000);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0);

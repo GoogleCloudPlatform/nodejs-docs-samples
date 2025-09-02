@@ -35,7 +35,7 @@ async function generateContent(
   });
 
   for await (const chunk of await chatSession.sendMessageStream({
-    message: 'Why lava is red?',
+    message: 'Why is the sky blue?',
   })) {
     console.log(chunk.text);
   }

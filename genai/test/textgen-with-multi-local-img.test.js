@@ -14,17 +14,25 @@
 
 'use strict';
 
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
-const {delay} = require('./util');
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
-    this.timeout(180000);
-    this.retries(4);
-    await delay(this.test);
-    await sample.generateContent(projectId);
+const sample = require('../text-generation/textgen-with-multi-local-img.js');
+
+describe('textgen-with-multi-local-img', () => {
+  it('should generate text content from multiple images', async function () {
+    this.timeout(100000);
+    const imagePath1 = './test/test-data/latte.jpg';
+    const imagePath2 = './test/test-data/scones.jpg';
+    const output = await sample.generateContent(
+      projectId,
+      location,
+      imagePath1,
+      imagePath2
+    );
+    assert(output.length > 0);
   });
 });

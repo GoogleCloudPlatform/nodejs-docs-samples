@@ -14,15 +14,23 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_textgen_with_multi_local_img]
 const {GoogleGenAI} = require('@google/genai');
+const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
+function loadImageAsBase64(path) {
+  const bytes = fs.readFileSync(path);
+  return bytes.toString('base64');
+}
+
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  imagePath1,
+  imagePath2
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,
@@ -30,22 +38,44 @@ async function generateContent(
     location: location,
   });
 
+  // TODO(Developer): Update the below file paths to your images
+  const image1 = loadImageAsBase64(imagePath1);
+  const image2 = loadImageAsBase64(imagePath2);
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
-    config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
-    },
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: 'Generate a list of all the objects contained in both images.',
+          },
+          {
+            inlineData: {
+              data: image1,
+              mimeType: 'image/jpeg',
+            },
+          },
+          {
+            inlineData: {
+              data: image2,
+              mimeType: 'image/jpeg',
+            },
+          },
+        ],
+      },
+    ],
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// Example response:
+//  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
+//  ...
+// [END googlegenaisdk_textgen_with_multi_local_img]
 
 module.exports = {
   generateContent,

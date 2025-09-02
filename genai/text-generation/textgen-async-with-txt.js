@@ -33,7 +33,7 @@ async function generateContent(
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents:
-      'Compose a song about the adventures of a time-traveling nuggets.',
+      'Compose a song about the adventures of a time-traveling squirrel.',
     config: {
       responseMimeType: 'text/plain',
     },

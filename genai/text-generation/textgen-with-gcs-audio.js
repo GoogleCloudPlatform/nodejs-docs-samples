@@ -36,13 +36,13 @@ async function generateContent(
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
-      {text: prompt},
       {
         fileData: {
           fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
           mimeType: 'audio/mpeg',
         },
       },
+      { text: prompt },
     ],
   });
 

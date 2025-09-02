@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_live_transcribe_with_audio]
+// [START googlegenaisdk_live_txt_with_audio]
 
 'use strict';
 
 const {GoogleGenAI, Modality} = require('@google/genai');
+const fetch = require('node-fetch');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -31,11 +32,9 @@ async function generateContent(
     location: location,
   });
 
-  const modelId = 'gemini-live-2.5-flash-preview-native-audio';
+  const modelId = 'gemini-2.0-flash-live-preview-04-09';
   const config = {
-    responseModalities: [Modality.AUDIO],
-    inputAudioTranscription: {},
-    outputAudioTranscription: {},
+    responseModalities: [Modality.TEXT],
   };
 
   const responseQueue = [];
@@ -50,27 +49,13 @@ async function generateContent(
   async function handleTurn() {
     const turns = [];
     let done = false;
-    const outputMessage = [];
     while (!done) {
       const message = await waitMessage();
       turns.push(message);
-
-      const sc = message.serverContent;
-      if (sc.modelTurn) {
-        console.log('Model turn:', sc.modelTurn);
-      }
-      if (sc.inputTranscription) {
-        console.log('Input transcript:', sc.inputTranscription.text);
-      }
-      if (sc.outputTranscription.text) {
-        outputMessage.push(sc.outputTranscription.text);
-      }
-
-      if (sc.turnComplete) {
+      if (message.serverContent && message.serverContent.turnComplete) {
         done = true;
       }
     }
-    console.log('Output transcript:', outputMessage.join(''));
     return turns;
   }
 
@@ -83,22 +68,42 @@ async function generateContent(
     },
   });
 
-  const inputTxt = 'Hello? Gemini, are you there?';
-  console.log('> ', inputTxt, '\n');
+  const audioUrl =
+    'https://storage.googleapis.com/generativeai-downloads/data/16000.wav';
 
-  await session.sendClientContent({
-    turns: [{role: 'user', parts: [{text: inputTxt}]}],
+  console.log('> Answer to this audio url', audioUrl);
+
+  const res = await fetch(audioUrl);
+  if (!res.ok) throw new Error(`Failed to fetch audio: ${res.status}`);
+  const arrayBuffer = await res.arrayBuffer();
+  const audioBytes = Buffer.from(arrayBuffer).toString('base64');
+
+  await session.sendRealtimeInput({
+    media: {
+      data: audioBytes,
+      mimeType: 'audio/pcm;rate=16000',
+    },
   });
 
-  const turns = await handleTurn(session);
+  const turns = await handleTurn();
 
+  const response = [];
+  for (const turn of turns) {
+    if (turn.text) {
+      response.push(turn.text);
+    }
+  }
+
+  console.log('Final response:', response.join(''));
   session.close();
-  return turns;
+
+  return response;
 }
+
 // Example output:
-//> Hello? Gemini, are you there?
-// Yes, I'm here. What would you like to talk about?
-// [END googlegenaisdk_live_transcribe_with_audio]
+//> Answer to this audio url https://storage.googleapis.com/generativeai-downloads/data/16000.wav
+// Final response: Yes, I can hear you. How are you doing today?
+// [END googlegenaisdk_live_txt_with_audio]
 
 module.exports = {
   generateContent,

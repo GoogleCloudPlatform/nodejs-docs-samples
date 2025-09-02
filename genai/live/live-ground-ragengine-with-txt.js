@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_live_transcribe_with_audio]
+// [START googlegenaisdk_live_audio_with_txt]
 
 'use strict';
 
@@ -21,7 +21,12 @@ const {GoogleGenAI, Modality} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
+// (DEVELOPER) put here your memory corpus
+const MEMORY_CORPUS =
+  'projects/cloud-ai-devrel-softserve/locations/us-central1/ragCorpora/2305843009213693952';
+
 async function generateContent(
+  memoryCorpus = MEMORY_CORPUS,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -31,11 +36,27 @@ async function generateContent(
     location: location,
   });
 
-  const modelId = 'gemini-live-2.5-flash-preview-native-audio';
+  const modelId = 'gemini-2.0-flash-live-preview-04-09';
+
+  // RAG store config
+  const ragStore = {
+    ragResources: [
+      {
+        ragCorpus: memoryCorpus, // Use memory corpus if you want to store context
+      },
+    ],
+    storeContext: true, // sink context into your memory corpus
+  };
+
   const config = {
-    responseModalities: [Modality.AUDIO],
-    inputAudioTranscription: {},
-    outputAudioTranscription: {},
+    responseModalities: [Modality.TEXT],
+    tools: [
+      {
+        retrieval: {
+          vertexRagStore: ragStore,
+        },
+      },
+    ],
   };
 
   const responseQueue = [];
@@ -50,27 +71,13 @@ async function generateContent(
   async function handleTurn() {
     const turns = [];
     let done = false;
-    const outputMessage = [];
     while (!done) {
       const message = await waitMessage();
       turns.push(message);
-
-      const sc = message.serverContent;
-      if (sc.modelTurn) {
-        console.log('Model turn:', sc.modelTurn);
-      }
-      if (sc.inputTranscription) {
-        console.log('Input transcript:', sc.inputTranscription.text);
-      }
-      if (sc.outputTranscription.text) {
-        outputMessage.push(sc.outputTranscription.text);
-      }
-
-      if (sc.turnComplete) {
+      if (message.serverContent && message.serverContent.turnComplete) {
         done = true;
       }
     }
-    console.log('Output transcript:', outputMessage.join(''));
     return turns;
   }
 
@@ -83,22 +90,32 @@ async function generateContent(
     },
   });
 
-  const inputTxt = 'Hello? Gemini, are you there?';
-  console.log('> ', inputTxt, '\n');
+  const textInput =
+    "What year did Mariusz Pudzianowski win World's Strongest Man?";
+  console.log('> ', textInput, '\n');
 
   await session.sendClientContent({
-    turns: [{role: 'user', parts: [{text: inputTxt}]}],
+    turns: [{role: 'user', parts: [{text: textInput}]}],
   });
 
-  const turns = await handleTurn(session);
+  const turns = await handleTurn();
+  const response = [];
 
+  for (const turn of turns) {
+    if (turn.text) {
+      response.push(turn.text);
+    }
+  }
+
+  console.log(response.join(''));
   session.close();
-  return turns;
+
+  return response;
 }
 // Example output:
-//> Hello? Gemini, are you there?
-// Yes, I'm here. What would you like to talk about?
-// [END googlegenaisdk_live_transcribe_with_audio]
+// > What year did Mariusz Pudzianowski win World's Strongest Man?
+//  Mariusz Pudzianowski won World's Strongest Man in 2002, 2003, 2005, 2007, and 2008.
+// [END googlegenaisdk_live_audio_with_txt]
 
 module.exports = {
   generateContent,

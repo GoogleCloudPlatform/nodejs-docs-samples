@@ -45,7 +45,6 @@ async function generateContent(
     },
   };
 
-
   const responseQueue = [];
 
   async function waitMessage() {
@@ -55,7 +54,7 @@ async function generateContent(
     return responseQueue.shift();
   }
 
-  async function handleTurn(session) {
+  async function handleTurn() {
     const audioChunks = [];
     let done = false;
 
@@ -63,15 +62,15 @@ async function generateContent(
       const message = await waitMessage();
 
       const sc = message.serverContent;
-      if (sc?.modelTurn?.parts) {
+      if (sc.modelTurn.parts) {
         for (const part of sc.modelTurn.parts) {
-          if (part.inlineData?.data) {
+          if (part.inlineData.data) {
             audioChunks.push(Buffer.from(part.inlineData.data));
           }
         }
       }
 
-      if (sc?.turnComplete) {
+      if (sc.turnComplete) {
         done = true;
       }
     }
@@ -92,7 +91,7 @@ async function generateContent(
   console.log('> ', textInput, '\n');
 
   await session.sendClientContent({
-    turns: [{ role: 'user', parts: [{ text: textInput }] }],
+    turns: [{role: 'user', parts: [{text: textInput}]}],
   });
 
   const audioChunks = await handleTurn(session);

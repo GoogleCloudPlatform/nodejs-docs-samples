@@ -44,6 +44,7 @@ async function generateContent(
         },
       },
     ],
+    // Required to enable timestamp understanding for audio-only files
     config: {
       audioTimestamp: true,
     },

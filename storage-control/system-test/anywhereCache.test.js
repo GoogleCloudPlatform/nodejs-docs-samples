@@ -22,7 +22,6 @@ const uuid = require('uuid');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const bucketPrefix = `storage-control-samples-${uuid.v4()}`;
 const bucketName = `${bucketPrefix}-a`;
-// const bucketName = 'php-gcscontrol-sample-awc-17510023031559095173';
 const controlClient = new StorageControlClient();
 const storage = new Storage({projectId: 'storage-sdk-vendor'});
 const bucket = new Bucket(storage, bucketName);
@@ -50,6 +49,9 @@ describe('Anywhere Cache', () => {
   });
 
   after(async function () {
+    // Sets the timeout for the test to 3600000 milliseconds (1 hour).
+    // This is necessary for long-running operations, such as waiting for a
+    // cache to be disabled, to prevent the test from failing due to a timeout.
     this.timeout(3600000);
     let caches = false;
     // The `while` loop will continue to run as long as the `caches` flag is `false`.
@@ -78,6 +80,9 @@ describe('Anywhere Cache', () => {
   });
 
   it('should create an anywhere cache', async function () {
+    // Sets the timeout for the test to 3600000 milliseconds (1 hour).
+    // This is necessary for long-running operations, such as waiting for a
+    // cache to be created, to prevent the test from failing due to a timeout.
     this.timeout(3600000);
     const output = execSync(
       `node createAnywhereCache.js ${bucketName} ${location} ${cacheName}`

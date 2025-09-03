@@ -42,7 +42,7 @@ async function generateContent(
           mimeType: 'audio/mpeg',
         },
       },
-      { text: prompt },
+      {text: prompt},
     ],
   });
 

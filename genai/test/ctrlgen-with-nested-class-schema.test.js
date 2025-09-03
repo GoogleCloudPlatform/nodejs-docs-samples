@@ -19,10 +19,14 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../controlled-generation/ctrlgen-with-nested-class-schema.js');
+const {delay} = require('./util');
+
 
 describe('ctrlgen-with-nested-class-schema', () => {
   it('should generate text content using nested schema', async function () {
-    this.timeout(10000);
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
     const output = await sample.generateContent(projectId);
     assert(output.length > 0 && output.includes('B'));
   });

@@ -76,6 +76,7 @@
     "recaptcha_enterprise/demosite/app", // no tests exist
 
     // These tests are already passing in prod, so skip them in dev.
+    "ai-platform/snippets",
     "appengine/building-an-app/build",
     "appengine/building-an-app/update",
     "appengine/datastore",

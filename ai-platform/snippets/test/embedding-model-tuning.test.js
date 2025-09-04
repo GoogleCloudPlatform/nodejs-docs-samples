@@ -16,11 +16,11 @@
 
 'use strict';
 
-const path = require('path');
-const {assert} = require('chai');
-const {describe, it} = require('mocha');
-const aiplatform = require('@google-cloud/aiplatform');
-const cp = require('child_process');
+import path from 'node:path';
+import {assert} from 'chai';
+import {describe, it} from 'mocha';
+import aiplatform from '@google-cloud/aiplatform';
+import cp from 'node:child_process';
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
 

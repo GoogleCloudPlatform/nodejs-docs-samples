@@ -46,10 +46,12 @@ async function generateContent(
   });
 
   console.log(response.text);
+
   // Example response:
   //  Okay, let's break down how AI works. It's a broad field, so I'll focus on the ...
   //  Here's a simplified overview:
   //  ...
+
   return response.text;
 }
 

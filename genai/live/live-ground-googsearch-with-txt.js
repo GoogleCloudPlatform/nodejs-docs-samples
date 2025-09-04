@@ -81,15 +81,18 @@ async function generateContent(
       console.log('Received text:', turn.text);
     }
   }
+
+  // Example output:
+  //> When did the last Poland vs. Portugal soccer match happen?
+  // Received text: The most recent match between Portugal and Poland took place on November 15,
+  // Received text: 2024, where Portugal won 5-1. There was also a match
+  // Received text: on October 12, 2024, where Poland won 3-1.
+
   session.close();
   return turns;
 }
-// Example output:
-//> When did the last Poland vs. Portugal soccer match happen?
-// Received text: The most recent match between Portugal and Poland took place on November 15,
-// Received text: 2024, where Portugal won 5-1. There was also a match
-// Received text: on October 12, 2024, where Poland won 3-1.
-// // [END googlegenaisdk_live_ground_googsearch_with_txt]
+
+// [END googlegenaisdk_live_ground_googsearch_with_txt]
 
 module.exports = {
   generateContent,

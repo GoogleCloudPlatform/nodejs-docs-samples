@@ -109,13 +109,15 @@ async function generateContent(
     }
   }
 
+  // Example output:
+  //>> Turn on the lights please
+  // Model requested function call: turn_on_the_lights
+  // Sent tool response for turn_on_the_lights: { result: 'ok' }
+
   session.close();
   return turns;
 }
-// Example output:
-//>> Turn on the lights please
-// Model requested function call: turn_on_the_lights
-// Sent tool response for turn_on_the_lights: { result: 'ok' }
+
 // [END googlegenaisdk_live_func_call_with_txt]
 
 module.exports = {

@@ -78,14 +78,14 @@ async function generateContent(
       console.log('Received text:', turn.text);
     }
   }
-
+  // Example output:
+  //> Hello? Gemini, are you there?
+  // Received text: Yes
+  // Received text: I'm here. How can I help you today?
   session.close();
   return turns;
 }
-// Example output:
-//> Hello? Gemini, are you there?
-// Received text: Yes
-// Received text: I'm here. How can I help you today?
+
 // [END googlegenaisdk_live_with_txt]
 
 module.exports = {

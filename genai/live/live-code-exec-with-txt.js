@@ -86,12 +86,14 @@ async function generateContent(
     }
   }
 
+  // Example output:
+  // > Compute the largest prime palindrome under 10
+  // The largest prime palindrome under 10 is 7.
+
   session.close();
   return turns;
 }
-// Example output:
-// > Compute the largest prime palindrome under 10
-// The largest prime palindrome under 10 is 7.
+
 // [END googlegenaisdk_live_code_exec_with_txt]
 
 module.exports = {

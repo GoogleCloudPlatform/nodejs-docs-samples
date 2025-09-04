@@ -24,7 +24,7 @@ const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION,
-  cacheName
+  cacheName = 'example-cache'
 ) {
   const ai = new GoogleGenAI({
     vertexai: true,

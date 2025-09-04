@@ -49,12 +49,14 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example response:
+  // Okay, here's a short and engaging blog post based on the climbing video:
+  // **Title: Conquering the Wall: A Glimpse into the World of Indoor Climbing**
+  // ...
+
   return response.text;
 }
-// Example response:
-// Okay, here's a short and engaging blog post based on the climbing video:
-// **Title: Conquering the Wall: A Glimpse into the World of Indoor Climbing**
-// ...
+
 // [END googlegenaisdk_textgen_with_local_video]
 
 module.exports = {

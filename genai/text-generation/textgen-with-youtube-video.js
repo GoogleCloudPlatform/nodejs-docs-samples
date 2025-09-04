@@ -46,12 +46,14 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example response:
+  //  Here's a short blog post based on the video provided:
+  //  **Google Turns 25: A Quarter Century of Search!**
+  //  ...
+
   return response.text;
 }
-// Example response:
-//  Here's a short blog post based on the video provided:
-//  **Google Turns 25: A Quarter Century of Search!**
-//  ...
+
 // [END googlegenaisdk_textgen_with_youtube_video]
 
 module.exports = {

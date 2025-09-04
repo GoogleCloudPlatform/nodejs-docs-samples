@@ -25,7 +25,7 @@ const bucketName = `${bucketPrefix}-a`;
 const controlClient = new StorageControlClient();
 const storage = new Storage({projectId: 'storage-sdk-vendor'});
 const bucket = new Bucket(storage, bucketName);
-const zoneName = 'us-west1';
+const zoneName = 'us-west1-c';
 const cacheName = 'us-west1-c';
 let anywhereCachePath;
 
@@ -38,7 +38,7 @@ describe('Anywhere Cache', () => {
         },
       },
       hierarchicalNamespace: {enabled: true},
-      location: zoneName,
+      location: 'us-west1',
     });
 
     anywhereCachePath = controlClient.anywhereCachePath(
@@ -85,7 +85,7 @@ describe('Anywhere Cache', () => {
     // cache to be created, to prevent the test from failing due to a timeout.
     this.timeout(3600000);
     const output = execSync(
-      `node createAnywhereCache.js ${bucketName} ${cacheName} ${zoneName}`
+      `node createAnywhereCache.js ${bucketName} ${zoneName}`
     );
     assert.match(output, /Created anywhere cache:/);
     assert.match(output, new RegExp(anywhereCachePath));

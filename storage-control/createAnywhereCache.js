@@ -14,7 +14,7 @@
 
 'use strict';
 
-function main(bucketName, cacheName, zoneName) {
+function main(bucketName, zoneName) {
   // [START storage_control_create_anywhere_cache]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -22,9 +22,6 @@ function main(bucketName, cacheName, zoneName) {
 
   // The name of your GCS bucket
   // const bucketName = 'bucketName';
-
-  // The name of the cache to be created
-  // const cacheName = 'cacheName';
 
   // The zone that the cache instance will run in.
   // const zoneName = 'zoneName';
@@ -42,7 +39,6 @@ function main(bucketName, cacheName, zoneName) {
     const request = {
       parent: bucketPath,
       anywhereCache: {
-        name: cacheName,
         zone: zoneName,
       },
     };

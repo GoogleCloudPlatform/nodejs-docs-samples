@@ -29,7 +29,9 @@ const zoneName = 'us-west1-c';
 const cacheName = 'us-west1-c';
 let anywhereCachePath;
 
-describe('Anywhere Cache', () => {
+// Skipped to prevent CI timeouts caused by long-running operations.
+// Un-skip for deliberate, manual runs.
+describe.skip('Anywhere Cache', () => {
   before(async () => {
     await storage.createBucket(bucketName, {
       iamConfiguration: {

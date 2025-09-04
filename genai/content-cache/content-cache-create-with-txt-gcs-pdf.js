@@ -72,12 +72,13 @@ async function generateContent(
   console.log(contentCache);
   console.log(contentCache.name);
 
+  // Example response:
+  //  projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
+  //  CachedContentUsageMetadata(audio_duration_seconds=None, image_count=167,
+  //  text_count=153, total_token_count=43130, video_duration_seconds=None)
+
   return contentCache.name;
 }
-// Example response:
-//    projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
-//    CachedContentUsageMetadata(audio_duration_seconds=None, image_count=167,
-//    text_count=153, total_token_count=43130, video_duration_seconds=None)
 
 // [END googlegenaisdk_contentcache_create_with_txt_gcs_pdf]
 

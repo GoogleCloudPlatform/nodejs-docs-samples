@@ -81,11 +81,13 @@ async function generateContent(
   console.debug(response.executableCode);
   console.debug(response.codeExecutionResult);
 
+  // Example response:
+  //    Win percentage when switching: 65.50%
+  //    Win percentage when not switching: 34.50%
+
   return response.codeExecutionResult;
 }
-// Example response:
-//    Win percentage when switching: 65.50%
-//    Win percentage when not switching: 34.50%
+
 // [END googlegenaisdk_tools_code_exec_with_txt]
 
 module.exports = {

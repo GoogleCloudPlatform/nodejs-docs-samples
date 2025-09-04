@@ -44,10 +44,12 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example response:
+  //    'The next total solar eclipse in Poland will occur on ...'
+
   return response.text;
 }
-// Example response:
-//    'The next total solar eclipse in Poland will occur on ...'
+
 // [END googlegenaisdk_tools_google_search_with_txt]
 
 module.exports = {

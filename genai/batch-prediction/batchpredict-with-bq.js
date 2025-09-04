@@ -48,6 +48,7 @@ async function generateContent(
 
   console.log(`Job name: ${job.name}`);
   console.log(`Job state: ${job.state}`);
+
   // Example response:
   //  Job name: projects/%PROJECT_ID%/locations/us-central1/batchPredictionJobs/9876453210000000000
   //  Job state: JOB_STATE_PENDING
@@ -64,12 +65,14 @@ async function generateContent(
     job = await ai.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);
   }
+
   // Example response:
   //  Job state: JOB_STATE_PENDING
   //  Job state: JOB_STATE_RUNNING
   //  Job state: JOB_STATE_RUNNING
   //  ...
   //  Job state: JOB_STATE_SUCCEEDED
+
   return job.state;
 }
 // [END googlegenaisdk_batchpredict_with_gcs]

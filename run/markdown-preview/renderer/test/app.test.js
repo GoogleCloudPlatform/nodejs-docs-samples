@@ -14,17 +14,21 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const sinon = require('sinon');
-const supertest = require('supertest');
+import assert from 'assert';
+import path from 'path';
+import sinon from 'sinon';
+import supertest from 'supertest';
+import {fileURLToPath} from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let request;
 
 describe('Unit Tests', () => {
-  before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
-    request = supertest(app);
+  before(async () => {
+    const appModule = await import(path.join(__dirname, '..', 'app.js'));
+    request = supertest(appModule.default);
   });
 
   it('should return Bad Request with an invalid type', async () => {

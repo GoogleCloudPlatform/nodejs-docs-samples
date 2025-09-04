@@ -31,10 +31,11 @@ async function generateContent(apiKey = API_KEY) {
 
   console.log(response.text);
 
+  // Example response:
+  //  Bubble Sort is a simple sorting algorithm that repeatedly steps through the list
+
   return response;
 }
-// Example response:
-//  Bubble Sort is a simple sorting algorithm that repeatedly steps through the list
 // [END googlegenaisdk_vertexai_express_mode]
 
 module.exports = {

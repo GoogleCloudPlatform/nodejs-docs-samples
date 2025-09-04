@@ -52,6 +52,7 @@ async function generateContent(
       console.log(part.text);
     }
   }
+
   // Example Response:
   // **My Thought Process for Solving the Quadratic Equation**
   //
@@ -87,6 +88,7 @@ async function generateContent(
   // equation: (-2)² + 4(-2) + 4 = 0. That's 4 - 8 + 4 = 0. It checks out.
   //
   // Conclusion: the solution is x = -2. Confirmed.
+
   return response.text;
 }
 // [END googlegenaisdk_thinking_includethoughts_with_txt]

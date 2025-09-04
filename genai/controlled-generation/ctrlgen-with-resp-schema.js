@@ -58,25 +58,27 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example output:
+  // [
+  //     {
+  //         "ingredients": [
+  //             "2 1/4 cups all-purpose flour",
+  //             "1 teaspoon baking soda",
+  //             "1 teaspoon salt",
+  //             "1 cup (2 sticks) unsalted butter, softened",
+  //             "3/4 cup granulated sugar",
+  //             "3/4 cup packed brown sugar",
+  //             "1 teaspoon vanilla extract",
+  //             "2 large eggs",
+  //             "2 cups chocolate chips",
+  //         ],
+  //         "recipe_name": "Chocolate Chip Cookies",
+  //     }
+  // ]
+
   return response.text;
 }
-// Example output:
-// [
-//     {
-//         "ingredients": [
-//             "2 1/4 cups all-purpose flour",
-//             "1 teaspoon baking soda",
-//             "1 teaspoon salt",
-//             "1 cup (2 sticks) unsalted butter, softened",
-//             "3/4 cup granulated sugar",
-//             "3/4 cup packed brown sugar",
-//             "1 teaspoon vanilla extract",
-//             "2 large eggs",
-//             "2 cups chocolate chips",
-//         ],
-//         "recipe_name": "Chocolate Chip Cookies",
-//     }
-// ]
+
 // [END googlegenaisdk_ctrlgen_with_resp_schema]
 
 module.exports = {

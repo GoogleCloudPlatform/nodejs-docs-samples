@@ -45,11 +45,11 @@ async function generateContent(
   });
 
   console.log(response.text);
-
+  // Example output:
+  //  Woodwind
   return response.text;
 }
-// Example output:
-//  Woodwind
+
 // [END googlegenaisdk_ctrlgen_with_enum_schema]
 
 module.exports = {

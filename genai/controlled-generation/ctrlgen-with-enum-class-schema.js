@@ -64,10 +64,12 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example output:
+  //  String
+
   return response.text;
 }
-// Example output:
-//  String
+
 // [END googlegenaisdk_ctrlgen_with_enum_class_schema]
 
 module.exports = {

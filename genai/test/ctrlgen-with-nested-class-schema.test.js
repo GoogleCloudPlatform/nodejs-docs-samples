@@ -21,7 +21,6 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../controlled-generation/ctrlgen-with-nested-class-schema.js');
 const {delay} = require('./util');
 
-
 describe('ctrlgen-with-nested-class-schema', () => {
   it('should generate text content using nested schema', async function () {
     this.timeout(180000);

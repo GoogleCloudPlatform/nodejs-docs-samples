@@ -47,11 +47,13 @@ async function generateContent(
   const response = await chatSession.sendMessage({message: 'Tell me a story.'});
   console.log(response.text);
 
+  // Example response:
+  // Okay, here's a story for you:
+  // ...
+
   return response.text;
 }
-// Example response:
-// Okay, here's a story for you:
-// ...
+
 // [END googlegenaisdk_textgen_chat_with_txt]
 
 module.exports = {

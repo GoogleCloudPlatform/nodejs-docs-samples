@@ -53,10 +53,11 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example response:
+  // The video shows several people surfing in an ocean with a coastline in the background. The camera ...
+
   return response.text;
 }
-// Example response:
-// The video shows several people surfing in an ocean with a coastline in the background. The camera ...
 // [END googlegenaisdk_textgen_with_mute_video]
 
 module.exports = {

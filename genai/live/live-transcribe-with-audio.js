@@ -92,12 +92,14 @@ async function generateContent(
 
   const turns = await handleTurn(session);
 
+  // Example output:
+  //> Hello? Gemini, are you there?
+  // Yes, I'm here. What would you like to talk about?
+
   session.close();
   return turns;
 }
-// Example output:
-//> Hello? Gemini, are you there?
-// Yes, I'm here. What would you like to talk about?
+
 // [END googlegenaisdk_live_transcribe_with_audio]
 
 module.exports = {

@@ -108,13 +108,16 @@ async function generateContent(
   }
 
   console.log(response.join(''));
+
+  // Example output:
+  // > What year did Mariusz Pudzianowski win World's Strongest Man?
+  //  Mariusz Pudzianowski won World's Strongest Man in 2002, 2003, 2005, 2007, and 2008.
+
   session.close();
 
   return response;
 }
-// Example output:
-// > What year did Mariusz Pudzianowski win World's Strongest Man?
-//  Mariusz Pudzianowski won World's Strongest Man in 2002, 2003, 2005, 2007, and 2008.
+
 // [END googlegenaisdk_live_audio_with_txt]
 
 module.exports = {

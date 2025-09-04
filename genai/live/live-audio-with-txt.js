@@ -104,11 +104,13 @@ async function generateContent(
     console.log('Received audio answer (saved to response.raw)');
   }
 
+  // Example output:
+  //> Hello? Gemini, are you there?
+  // Received audio answer (saved to response.raw)
+
   return audioChunks;
 }
-// Example output:
-//> Hello? Gemini, are you there?
-// Received audio answer (saved to response.raw)
+
 // [END googlegenaisdk_live_audio_with_txt]
 
 module.exports = {

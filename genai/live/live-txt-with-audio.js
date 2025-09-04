@@ -95,14 +95,16 @@ async function generateContent(
   }
 
   console.log('Final response:', response.join(''));
+
+  // Example output:
+  //> Answer to this audio url https://storage.googleapis.com/generativeai-downloads/data/16000.wav
+  // Final response: Yes, I can hear you. How are you doing today?
+
   session.close();
 
   return response;
 }
 
-// Example output:
-//> Answer to this audio url https://storage.googleapis.com/generativeai-downloads/data/16000.wav
-// Final response: Yes, I can hear you. How are you doing today?
 // [END googlegenaisdk_live_txt_with_audio]
 
 module.exports = {

@@ -14,70 +14,51 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_multi_local_img]
+// [START googlegenaisdk_textgen_with_pdf]
 const {GoogleGenAI} = require('@google/genai');
-const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-function loadImageAsBase64(path) {
-  const bytes = fs.readFileSync(path);
-  return bytes.toString('base64');
-}
-
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION,
-  imagePath1,
-  imagePath2
+  location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  // TODO(Developer): Update the below file paths to your images
-  const image1 = loadImageAsBase64(imagePath1);
-  const image2 = loadImageAsBase64(imagePath2);
+  const prompt = `You are a highly skilled document summarization specialist.
+    Your task is to provide a concise executive summary of no more than 300 words.
+    Please summarize the given document for a general audience.`;
 
-  const response = await ai.models.generateContent({
+  const pdfFile = {
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/generative-ai/pdf/1706.03762v7.pdf',
+      mimeType: 'application/pdf',
+    },
+  };
+
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: 'Generate a list of all the objects contained in both images.',
-          },
-          {
-            inlineData: {
-              data: image1,
-              mimeType: 'image/jpeg',
-            },
-          },
-          {
-            inlineData: {
-              data: image2,
-              mimeType: 'image/jpeg',
-            },
-          },
-        ],
-      },
-    ],
+    contents: [pdfFile, prompt],
   });
 
   console.log(response.text);
 
   // Example response:
-  //  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
+  //  Here is a summary of the document in 300 words.
+  //  The paper introduces the Transformer, a novel neural network architecture for
+  //  sequence transduction tasks like machine translation. Unlike existing models that rely on recurrent or
+  //  convolutional layers, the Transformer is based entirely on attention mechanisms.
   //  ...
 
   return response.text;
 }
 
-// [END googlegenaisdk_textgen_with_multi_local_img]
+// [END googlegenaisdk_textgen_with_pdf]
 
 module.exports = {
   generateContent,

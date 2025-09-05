@@ -14,70 +14,47 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_multi_local_img]
+// [START googlegenaisdk_textgen_with_gcs_audio]
 const {GoogleGenAI} = require('@google/genai');
-const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-function loadImageAsBase64(path) {
-  const bytes = fs.readFileSync(path);
-  return bytes.toString('base64');
-}
-
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION,
-  imagePath1,
-  imagePath2
+  location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  // TODO(Developer): Update the below file paths to your images
-  const image1 = loadImageAsBase64(imagePath1);
-  const image2 = loadImageAsBase64(imagePath2);
+  const prompt =
+    'Provide a concise summary of the main points in the audio file.';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
       {
-        role: 'user',
-        parts: [
-          {
-            text: 'Generate a list of all the objects contained in both images.',
-          },
-          {
-            inlineData: {
-              data: image1,
-              mimeType: 'image/jpeg',
-            },
-          },
-          {
-            inlineData: {
-              data: image2,
-              mimeType: 'image/jpeg',
-            },
-          },
-        ],
+        fileData: {
+          fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
+          mimeType: 'audio/mpeg',
+        },
       },
+      {text: prompt},
     ],
   });
 
   console.log(response.text);
 
   // Example response:
-  //  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
-  //  ...
+  //  Here's a summary of the main points from the audio file:
+  //  The Made by Google podcast discusses the Pixel feature drops with product managers Aisha Sheriff and De Carlos Love.  The key idea is that devices should improve over time, with a connected experience across phones, watches, earbuds, and tablets.
 
   return response.text;
 }
-
-// [END googlegenaisdk_textgen_with_multi_local_img]
+// [END googlegenaisdk_textgen_with_gcs_audio]
 
 module.exports = {
   generateContent,

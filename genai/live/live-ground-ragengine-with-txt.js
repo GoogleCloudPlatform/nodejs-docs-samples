@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_live_audio_with_txt]
+// [START googlegenaisdk_live_ground_ragengine_with_txt]
 
 'use strict';
 
@@ -118,7 +118,7 @@ async function generateContent(
   return response;
 }
 
-// [END googlegenaisdk_live_audio_with_txt]
+// [END googlegenaisdk_live_ground_ragengine_with_txt]
 
 module.exports = {
   generateContent,

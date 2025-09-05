@@ -28,7 +28,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -37,7 +37,7 @@ async function generateContent(
     },
   });
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: "How do I make an appointment to renew my driver's license?",
     config: {
@@ -55,10 +55,12 @@ async function generateContent(
 
   console.debug(response.text);
 
+  // Example response:
+  //    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
+
   return response.text;
 }
-// Example response:
-//    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
+
 // [END googlegenaisdk_tools_vais_with_txt]
 
 module.exports = {

@@ -24,13 +24,13 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const chatSession = ai.chats.create({
+  const chatSession = client.chats.create({
     model: 'gemini-2.5-flash',
   });
 

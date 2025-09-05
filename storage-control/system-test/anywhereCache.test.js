@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const bucketPrefix = `storage-control-samples-${uuid.v4()}`;
 const bucketName = `${bucketPrefix}-a`;
 const controlClient = new StorageControlClient();
-const storage = new Storage({projectId: 'storage-sdk-vendor'});
+const storage = new Storage();
 const bucket = new Bucket(storage, bucketName);
 const zoneName = 'us-west1-c';
 const cacheName = 'us-west1-c';

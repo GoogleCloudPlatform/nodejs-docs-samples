@@ -24,7 +24,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -59,7 +59,7 @@ async function generateContent(
     },
   ];
 
-  const contentCache = await ai.caches.create({
+  const contentCache = await client.caches.create({
     model: 'gemini-2.5-flash',
     config: {
       contents: contents,

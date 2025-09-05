@@ -25,7 +25,7 @@ async function generateContent(
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = 'example-cache'
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -35,7 +35,7 @@ async function generateContent(
   });
 
   console.log('Removing cache');
-  const contentCache = await ai.caches.delete({
+  const contentCache = await client.caches.delete({
     name: cacheName,
   });
 

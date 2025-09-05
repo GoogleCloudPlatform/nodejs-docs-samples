@@ -26,7 +26,7 @@ async function generateContent(
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = 'example-cache'
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -35,13 +35,13 @@ async function generateContent(
     },
   });
 
-  let contentCache = await ai.caches.get({
+  let contentCache = await client.caches.get({
     name: cacheName,
   });
 
   console.log('Expire time', contentCache.expireTime);
 
-  contentCache = await ai.caches.update({
+  contentCache = await client.caches.update({
     name: cacheName,
     config: {
       ttl: '36000s',
@@ -58,7 +58,7 @@ async function generateContent(
   const nextWeekUtc = DateTime.utc().plus({days: 7});
   console.log('Next week (UTC):', nextWeekUtc.toISO());
 
-  contentCache = await ai.caches.update({
+  contentCache = await client.caches.update({
     name: cacheName,
     config: {
       expireTime: nextWeekUtc,

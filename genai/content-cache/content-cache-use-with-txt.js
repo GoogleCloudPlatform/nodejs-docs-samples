@@ -26,7 +26,7 @@ async function generateContent(
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = 'example-cache'
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -35,7 +35,7 @@ async function generateContent(
     },
   });
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'Summarize the pdfs',
     config: {

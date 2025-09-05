@@ -15,12 +15,12 @@
 // [START googlegenaisdk_live_structured_output_with_txt]
 
 'use strict';
-// todo not working
 const {OpenAI} = require('openai');
 const {GoogleAuth} = require('google-auth-library');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 const CalendarEventSchema = {
   type: 'object',
@@ -39,28 +39,23 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  console.log('[Init] Starting structured output sample...');
-  console.log(`[Init] Project: ${projectId}, Location: ${location}`);
-
   const auth = new GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/cloud-platform'],
   });
   const client = await auth.getClient();
-  const token = await client.getAccessToken();
+  const tokenResponse = await client.getAccessToken();
+
+  const token = tokenResponse.token;
 
   const ENDPOINT_ID = 'openapi';
   const baseURL = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/endpoints/${ENDPOINT_ID}`;
 
-  console.log('[Auth] Successfully retrieved access token');
-
-  const ai = new OpenAI({
+  const openAI = new OpenAI({
     apiKey: token,
     baseURL: baseURL,
   });
 
-  console.log('[Session] Sending structured output request...');
-
-  const completion = await ai.chat.completions.create({
+  const completion = await openAI.chat.completions.create({
     model: 'google/gemini-2.0-flash-001',
     messages: [
       {role: 'system', content: 'Extract the event information.'},
@@ -78,18 +73,8 @@ async function generateContent(
     },
   });
 
-  const response = completion.choices[0].message;
-  console.log('[Response] Raw structured output:', response);
-
-  let parsed;
-  try {
-    parsed = JSON.parse(response.content[0].text);
-  } catch (err) {
-    console.error('[Error] Failed to parse structured response:', err);
-    throw err;
-  }
-
-  console.log('[Parsed Response]', parsed);
+  const response = completion.choices[0].message.content;
+  console.log(response);
 
   // Example expected output:
   // {
@@ -98,7 +83,7 @@ async function generateContent(
   //   participants: ['Alice', 'Bob']
   // }
 
-  return parsed;
+  return response;
 }
 
 // [END googlegenaisdk_live_structured_output_with_txt]

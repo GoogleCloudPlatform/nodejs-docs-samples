@@ -30,7 +30,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -81,7 +81,7 @@ async function generateContent(
     return turns;
   }
 
-  const session = await ai.live.connect({
+  const session = await client.live.connect({
     model: modelId,
     config: config,
     callbacks: {

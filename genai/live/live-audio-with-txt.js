@@ -62,15 +62,15 @@ async function generateContent(
       const message = await waitMessage();
 
       const sc = message.serverContent;
-      if (sc.modelTurn.parts) {
+      if (sc && sc.modelTurn && sc.modelTurn.parts) {
         for (const part of sc.modelTurn.parts) {
-          if (part.inlineData.data) {
+          if (part && part.inlineData && part.inlineData.data) {
             audioChunks.push(Buffer.from(part.inlineData.data));
           }
         }
       }
 
-      if (sc.turnComplete) {
+      if (sc && sc.turnComplete) {
         done = true;
       }
     }

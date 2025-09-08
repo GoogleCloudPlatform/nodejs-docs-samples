@@ -56,17 +56,16 @@ async function generateContent(
       turns.push(message);
 
       const sc = message.serverContent;
-      if (sc.modelTurn) {
+      if (sc && sc.modelTurn) {
         console.log('Model turn:', sc.modelTurn);
       }
-      if (sc.inputTranscription) {
+      if (sc && sc.inputTranscription) {
         console.log('Input transcript:', sc.inputTranscription.text);
       }
-      if (sc.outputTranscription.text) {
+      if (sc && sc.outputTranscription && sc.outputTranscription.text) {
         outputMessage.push(sc.outputTranscription.text);
       }
-
-      if (sc.turnComplete) {
+      if (sc && sc.turnComplete) {
         done = true;
       }
     }

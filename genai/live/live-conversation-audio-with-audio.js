@@ -83,32 +83,33 @@ async function generateContent(
   async function handleTurn() {
     const audioFrames = [];
     let done = false;
-
+    //todo
     while (!done) {
       const message = await waitMessage();
       const sc = message.serverContent;
 
-      if (sc.inputTranscription) {
+      if (sc?.inputTranscription) {
         console.log('Input transcription', sc.inputTranscription);
       }
-      if (sc.outputTranscription) {
+      if (sc?.outputTranscription) {
         console.log('Output transcription', sc.outputTranscription);
       }
-      if (sc.modelTurn.parts) {
+      if (sc?.modelTurn?.parts) {
         for (const part of sc.modelTurn.parts) {
-          if (part.inlineData.data) {
+          if (part.inlineData?.data) {
             const audioData = Buffer.from(part.inlineData.data, 'base64');
             audioFrames.push(audioData);
           }
         }
       }
-      if (sc.turnComplete) {
+      if (sc?.turnComplete) {
         done = true;
       }
     }
 
     return audioFrames;
   }
+
 
   const session = await client.live.connect({
     model: MODEL,

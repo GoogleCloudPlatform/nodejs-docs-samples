@@ -18,7 +18,7 @@
 
 const {GoogleGenAI, Modality} = require('@google/genai');
 const fetch = require('node-fetch');
-
+//todo
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 

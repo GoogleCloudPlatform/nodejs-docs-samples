@@ -73,10 +73,17 @@ async function generateContent(
 
   const responseQueue = [];
 
-  async function waitMessage() {
+  async function waitMessage(timeoutMs = 60 * 1000) {
+    const startTime = Date.now();
+
     while (responseQueue.length === 0) {
+      if (Date.now() - startTime > timeoutMs) {
+        console.warn('No messages received within timeout. Exiting...');
+        return null; // timeout occurred
+      }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
+
     return responseQueue.shift();
   }
 

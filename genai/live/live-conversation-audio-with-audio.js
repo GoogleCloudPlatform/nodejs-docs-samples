@@ -154,7 +154,7 @@ async function generateContent(
       OUTPUT_RATE
     );
   }
-  //todo petla
+
   await session.close();
   return audioFrames;
 }

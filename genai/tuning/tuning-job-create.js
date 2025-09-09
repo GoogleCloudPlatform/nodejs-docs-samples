@@ -24,7 +24,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -34,7 +34,7 @@ async function generateContent(
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  let tuningJob = await ai.tunings.tune({
+  let tuningJob = await client.tunings.tune({
     baseModel: 'gemini-2.5-flash',
     trainingDataset: {
       gcsUri:
@@ -50,7 +50,7 @@ async function generateContent(
 
   while (runningStates.has(tuningJob.state)) {
     console.log(`Job state: ${tuningJob.state}`);
-    tuningJob = await ai.tunings.get({name: tuningJob.name});
+    tuningJob = await client.tunings.get({name: tuningJob.name});
     await sleep(60000);
   }
 

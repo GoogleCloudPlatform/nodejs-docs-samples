@@ -25,14 +25,14 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
   // Get the tuning job and the tuned model.
-  const tuningJob = await ai.tunings.get({name: tuningJobName});
+  const tuningJob = await client.tunings.get({name: tuningJobName});
 
   console.log(tuningJob.tunedModel.model);
   console.log(tuningJob.tunedModel.endpoint);

@@ -25,17 +25,17 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const tuningJob = await ai.tunings.get({name: tuningJobName});
+  const tuningJob = await client.tunings.get({name: tuningJobName});
 
   const content = 'Why lava is red?';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: tuningJob.tunedModel.endpoint,
     content: content,
   });

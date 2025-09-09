@@ -23,13 +23,13 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const responses = await ai.tunings.list();
+  const responses = await client.tunings.list();
 
   for await (const item of responses) {
     if (item.name && item.name.includes('/tuningJobs/')) {

@@ -14,6 +14,13 @@
 
 'use strict';
 
+/**
+ * This application demonstrates how to perform basic operations on an Anywhere Cache
+ * instance with the Google Cloud Storage API.
+ *
+ * For more information, see the documentation at https://cloud.google.com/storage/docs/anywhere-cache.
+ */
+
 function main(bucketName, cacheName, admissionPolicy) {
   // [START storage_control_update_anywhere_cache]
   /**
@@ -27,7 +34,7 @@ function main(bucketName, cacheName, admissionPolicy) {
   // const cacheName = 'cacheName';
 
   // The admission policy of the cache to be updated
-  // const admissionPolicy = 'admit-on-first-miss';
+  // const admissionPolicy = 'admit-on-second-miss';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;

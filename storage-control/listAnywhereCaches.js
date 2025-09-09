@@ -15,6 +15,13 @@
 
 'use strict';
 
+/**
+ * This application demonstrates how to perform basic operations on an Anywhere Cache
+ * instance with the Google Cloud Storage API.
+ *
+ * For more information, see the documentation at https://cloud.google.com/storage/docs/anywhere-cache.
+ */
+
 function main(bucketName) {
   // [START storage_control_list_anywhere_caches]
   /**

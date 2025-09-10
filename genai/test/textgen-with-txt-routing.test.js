@@ -14,17 +14,15 @@
 
 'use strict';
 
+const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../text-generation/textgen-with-txt-routing.js');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
-    this.timeout(180000);
-    this.retries(4);
-    await delay(this.test);
-    await sample.generateContent(projectId);
+describe('textgen-with-txt-routing', async () => {
+  it('should generate text content from a text prompt and with routing configuration', async () => {
+    const output = await sample.generateContent(projectId);
+    assert(output.length > 0 && output.includes('AI'));
   });
 });

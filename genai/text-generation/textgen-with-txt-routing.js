@@ -14,11 +14,12 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
-const {GoogleGenAI} = require('@google/genai');
+// [START googlegenaisdk_textgen_with_txt_routing]
+const {GoogleGenAI, FeatureSelectionPreference} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -30,22 +31,23 @@ async function generateContent(
     location: location,
   });
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
-    config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+  const generateContentConfig = {
+    modelSelectionConfig: {
+      featureSelectionPreference: FeatureSelectionPreference.PRIORITIZE_COST,
     },
+  };
+
+  const response = await ai.models.generateContent({
+    model: 'model-optimizer-exp-04-09',
+    contents: 'How does AI work?',
+    config: generateContentConfig,
   });
 
-  console.debug(response.executableCode);
-  console.debug(response.codeExecutionResult);
+  console.log(response.text);
 
-  return response.codeExecutionResult;
+  return response.text;
 }
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_textgen_with_txt_routing]
 
 module.exports = {
   generateContent,

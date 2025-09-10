@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_sys_instr_with_txt]
+// [START googlegenaisdk_textgen_code_with_pdf]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,27 +30,48 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `
-  User input: I like bagels.
-  Answer:
-  `;
+  const contents = [
+    {
+      role: 'user',
+      parts: [
+        {text: 'Convert this python code to use Google Python Style Guide.'},
+        {
+          fileData: {
+            fileUri:
+              'https://storage.googleapis.com/cloud-samples-data/generative-ai/text/inefficient_fibonacci_series_python_code.pdf',
+            mimeType: 'application/pdf',
+          },
+        },
+      ],
+    },
+  ];
 
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: prompt,
-    config: {
-      systemInstruction: [
-        'You are a language translator.',
-        'Your mission is to translate text in English to French.',
-      ],
-    },
+    contents: contents,
   });
 
   console.log(response.text);
 
   return response.text;
 }
-// [END googlegenaisdk_textgen_sys_instr_with_txt]
+// Example response:
+// Here's the Python code converted to adhere to the Google Python Style Guide, along with explanations for the changes:
+//
+// ```python
+// """Calculates the Fibonacci sequence up to n numbers.
+//
+// This module provides a function to generate a Fibonacci sequence,
+// demonstrating adherence to the Google Python Style Guide.
+// """
+//
+// def fibonacci(n: int) -> list[int]:
+//   """Calculates the Fibonacci sequence up to n numbers.
+//
+//   This function generates the first 'n' terms of the Fibonacci sequence,
+//   starting with 0, 1, 1, 2...
+// ...
+// [END googlegenaisdk_textgen_code_with_pdf]
 
 module.exports = {
   generateContent,

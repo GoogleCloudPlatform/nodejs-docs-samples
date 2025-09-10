@@ -23,7 +23,7 @@ const sample = require('../controlled-generation/ctrlgen-with-resp-schema.js');
 describe('ctrlgen-with-resp-schema', () => {
   it('should generate text content in given schema', async function () {
     this.timeout(10000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateResponseSchema(projectId);
     assert(output.length > 0 && output.includes('Cookies'));
   });
 });

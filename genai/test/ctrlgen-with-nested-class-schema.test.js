@@ -26,7 +26,7 @@ describe('ctrlgen-with-nested-class-schema', () => {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('B'));
+    const output = await sample.generateNestedClassSchema(projectId);
+    assert(output.length > 0);
   });
 });

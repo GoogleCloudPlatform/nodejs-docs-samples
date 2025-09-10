@@ -23,7 +23,7 @@ const sample = require('../controlled-generation/ctrlgen-with-enum-class-schema.
 describe('ctrlgen-with-enum-class-schema', () => {
   it('should generate text content matching enum schema', async function () {
     this.timeout(10000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateEnumClassSchema(projectId);
     assert(output.length > 0 && output.includes('String'));
   });
 });

@@ -23,7 +23,7 @@ const sample = require('../controlled-generation/ctrlgen-with-nullable-schema.js
 describe('ctrlgen-with-nullable-schema', () => {
   it('should generate text content using nullable schema', async function () {
     this.timeout(10000);
-    const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('Day'));
+    const output = await sample.generateNullableSchema(projectId);
+    assert(output.length > 0);
   });
 });

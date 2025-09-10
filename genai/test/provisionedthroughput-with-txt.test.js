@@ -23,7 +23,7 @@ const sample = require('../provisioned-throughput/provisionedthroughput-with-txt
 describe('provisionedthroughput-with-txt', () => {
   it('should return provisioned throughput result', async function () {
     this.timeout(50000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateWithProvisionedThroughput(projectId);
     assert(output.length > 0);
   });
 });

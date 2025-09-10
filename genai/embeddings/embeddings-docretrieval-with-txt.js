@@ -19,8 +19,10 @@ const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 
-async function generateContent(projectId = GOOGLE_CLOUD_PROJECT) {
-  const ai = new GoogleGenAI(projectId);
+async function generateEmbeddingsForRetrieval(
+  projectId = GOOGLE_CLOUD_PROJECT
+) {
+  const client = new GoogleGenAI(projectId);
 
   const prompt = [
     "How do I get a driver's license/learner's permit?",
@@ -28,7 +30,7 @@ async function generateContent(projectId = GOOGLE_CLOUD_PROJECT) {
     "Driver's knowledge test study guide",
   ];
 
-  const response = await ai.models.embedContent({
+  const response = await client.models.embedContent({
     model: 'gemini-embedding-001',
     contents: prompt,
     config: {
@@ -50,5 +52,5 @@ async function generateContent(projectId = GOOGLE_CLOUD_PROJECT) {
 // [END googlegenaisdk_embeddings_docretrieval_with_txt]
 
 module.exports = {
-  generateContent,
+  generateEmbeddingsForRetrieval,
 };

@@ -23,7 +23,7 @@ const sample = require('../bounding-box/boundingbox-with-txt-img');
 describe('boundingbox-with-txt-img', async () => {
   it('should return the bounding box', async function () {
     this.timeout(100000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.createBoundingBox(projectId);
     assert(output.length > 0);
   });
 });

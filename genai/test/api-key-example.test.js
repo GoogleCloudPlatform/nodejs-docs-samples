@@ -42,7 +42,7 @@ describe('vertexai-express-mode', () => {
       '@google/genai': {GoogleGenAI: MockGoogleGenAI},
     });
 
-    const response = await sample.generateContent('FAKE_API_KEY');
+    const response = await sample.generateWithApiKey('FAKE_API_KEY');
 
     assert.strictEqual(response.text, mockGenerateContentStreamResult.text);
   });

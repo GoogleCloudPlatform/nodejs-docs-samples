@@ -22,7 +22,8 @@ const sample = require('../embeddings/embeddings-docretrieval-with-txt.js');
 
 describe('embeddings-docretrieval-with-txt', async () => {
   it('should return an object containing embeddings and metadata', async () => {
-    const generatedFileNames = await sample.generateContent(projectId);
+    const generatedFileNames =
+      await sample.generateEmbeddingsForRetrieval(projectId);
     assert.containsAllKeys(generatedFileNames, ['embeddings', 'metadata']);
   });
 });

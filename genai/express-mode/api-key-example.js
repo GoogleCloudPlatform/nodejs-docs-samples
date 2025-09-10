@@ -18,13 +18,13 @@
 const {GoogleGenAI} = require('@google/genai');
 const API_KEY = 'PUT HERE YOUR API KEY';
 
-async function generateContent(apiKey = API_KEY) {
-  const ai = new GoogleGenAI({
+async function generateWithApiKey(apiKey = API_KEY) {
+  const client = new GoogleGenAI({
     vertexai: true,
     apiKey: apiKey,
   });
 
-  const response = await ai.models.generateContentStream({
+  const response = await client.models.generateContentStream({
     model: 'gemini-2.5-flash',
     contents: 'Explain bubble sort to me.',
   });
@@ -39,5 +39,5 @@ async function generateContent(apiKey = API_KEY) {
 // [END googlegenaisdk_vertexai_express_mode]
 
 module.exports = {
-  generateContent,
+  generateWithApiKey,
 };

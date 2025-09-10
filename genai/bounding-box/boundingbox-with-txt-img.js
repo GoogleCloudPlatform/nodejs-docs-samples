@@ -61,11 +61,11 @@ async function plotBoundingBoxes(imageUri, boundingBoxes) {
   console.log('Saved output to file: output.png');
 }
 
-async function generateContent(
+async function createBoundingBox(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -117,7 +117,7 @@ async function generateContent(
     },
   };
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
       {
@@ -154,4 +154,6 @@ async function generateContent(
 }
 // [END googlegenaisdk_boundingbox_with_txt_img]
 
-module.exports = {generateContent};
+module.exports = {
+  createBoundingBox,
+};

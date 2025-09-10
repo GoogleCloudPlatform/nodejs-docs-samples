@@ -23,7 +23,7 @@ const sample = require('../safety/safety-with-txt.js');
 describe('safety-with-txt', () => {
   it('should call generateContentStream with safety instructions', async function () {
     this.timeout(50000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateWithSafetySettings(projectId);
     assert(output.text.length > 0);
   });
 });

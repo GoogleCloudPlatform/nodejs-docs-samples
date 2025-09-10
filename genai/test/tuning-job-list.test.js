@@ -20,9 +20,9 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../tuning/tuning-job-list.js');
 
-describe('tuning-job-list', async () => {
-  it('should generate streaming text content from a text prompt', async () => {
-    const output = await sample.generateContent(projectId);
-    assert.isTrue(output);
+describe('tuning-job-list', () => {
+  it('should return tuning job list', async () => {
+    const output = await sample.generateContent('TestJobName', projectId);
+    assert(output);
   });
 });

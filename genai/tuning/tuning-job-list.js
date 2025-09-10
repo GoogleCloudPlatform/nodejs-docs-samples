@@ -39,7 +39,7 @@ async function generateContent(
     }
   }
 
-  return true;
+  return responses;
 }
 // [END googlegenaisdk_tuning_job_list]
 

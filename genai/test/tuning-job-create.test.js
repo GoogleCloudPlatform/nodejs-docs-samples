@@ -49,7 +49,7 @@ describe('tuning-job-create', () => {
       '@google/genai': {GoogleGenAI: MockGoogleGenAI},
     });
 
-    const response = await sample.generateContent(projectId);
+    const response = await sample.createTuningJob(projectId);
 
     assert.strictEqual(response, 'test-tuning-job');
   });

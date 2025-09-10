@@ -22,7 +22,7 @@ const sample = require('../tuning/tuning-job-list.js');
 
 describe('tuning-job-list', () => {
   it('should return tuning job list', async () => {
-    const output = await sample.generateContent('TestJobName', projectId);
+    const output = await sample.listTuningJobs(projectId);
     assert(output);
   });
 });

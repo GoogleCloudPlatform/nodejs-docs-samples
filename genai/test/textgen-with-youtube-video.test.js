@@ -23,7 +23,7 @@ const sample = require('../text-generation/textgen-with-youtube-video');
 describe('textgen-with-youtube-video', async () => {
   it('should generate text content from yt video', async function () {
     this.timeout(300000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateText(projectId);
     assert(output.length > 0);
   });
 });

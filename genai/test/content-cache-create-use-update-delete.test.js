@@ -39,7 +39,7 @@ describe('content-cache-create-use-update-delete', async function () {
   });
 
   it('should update content cache', async () => {
-    await updateSample.generateContent(projectId, undefined, contentCacheName);
+    await updateSample.updateContentCache(projectId, undefined, contentCacheName);
   });
 
   it('should use content cache', async () => {
@@ -52,6 +52,6 @@ describe('content-cache-create-use-update-delete', async function () {
   });
 
   it('should delete content cache', async () => {
-    await deleteSample.generateContent(projectId, undefined, contentCacheName);
+    await deleteSample.deleteContentCache(projectId, undefined, contentCacheName);
   });
 });

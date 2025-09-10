@@ -21,9 +21,9 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../live/live-transcribe-with-audio');
 
 describe('live-transcribe-with-audio', () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
+  it('should transcribe audio input into text using the live model', async function () {
     this.timeout(180000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateLiveAudioTranscription(projectId);
     console.log('Generated output:', output);
     assert(output.length > 0);
   });

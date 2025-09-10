@@ -25,7 +25,7 @@ const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const MEMORY_CORPUS =
   'projects/cloud-ai-devrel-softserve/locations/us-central1/ragCorpora/2305843009213693952';
 
-async function generateContent(
+async function generateLiveRagTextResponse(
   memoryCorpus = MEMORY_CORPUS,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
@@ -121,5 +121,5 @@ async function generateContent(
 // [END googlegenaisdk_live_ground_ragengine_with_txt]
 
 module.exports = {
-  generateContent,
+  generateLiveRagTextResponse,
 };

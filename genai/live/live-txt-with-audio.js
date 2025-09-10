@@ -17,12 +17,12 @@
 'use strict';
 
 const {GoogleGenAI, Modality} = require('@google/genai');
-const fetch = require('node-fetch');
-//todo
+// const fetch = require('node-fetch');
+//todo try unittest and uncomment it if its needed
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateLiveConversation(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -108,5 +108,5 @@ async function generateContent(
 // [END googlegenaisdk_live_txt_with_audio]
 
 module.exports = {
-  generateContent,
+  generateLiveConversation,
 };

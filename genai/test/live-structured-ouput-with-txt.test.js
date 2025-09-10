@@ -21,9 +21,9 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../live/live-structured-ouput-with-txt');
 
 describe('live-structured-ouput-with-txt', () => {
-  it('should generate audio content from a text prompt', async function () {
+  it('should extract structured information from text input using the model', async function () {
     this.timeout(18000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateStructuredTextResponse(projectId);
     console.log('Generated output:', output);
     assert(output.length > 0);
   });

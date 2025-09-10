@@ -52,7 +52,7 @@ describe('live-ground-ragengine-with-txt', () => {
   it('should return text from mocked RAG session', async function () {
     this.timeout(5000);
 
-    const output = await sample.generateContent();
+    const output = await sample.generateLiveRagTextResponse();
 
     console.log('Generated output:', output);
 

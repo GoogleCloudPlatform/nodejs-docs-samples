@@ -35,7 +35,7 @@ const CalendarEventSchema = {
   required: ['name', 'date', 'participants'],
 };
 
-async function generateContent(
+async function generateStructuredTextResponse(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -89,5 +89,5 @@ async function generateContent(
 // [END googlegenaisdk_live_structured_output_with_txt]
 
 module.exports = {
-  generateContent,
+  generateStructuredTextResponse,
 };

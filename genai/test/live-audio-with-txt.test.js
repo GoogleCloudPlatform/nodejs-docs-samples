@@ -21,9 +21,9 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../live/live-audio-with-txt');
 
 describe('live-audio-with-txt', () => {
-  it('should generate audio content from a text prompt', async function () {
+  it('should generate audio content in a live session conversation from a text prompt', async function () {
     this.timeout(180000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateLiveConversation(projectId);
     console.log('Generated output:', output);
     assert(output.length > 0);
   });

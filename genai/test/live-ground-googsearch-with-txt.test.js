@@ -21,9 +21,9 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../live/live-ground-googsearch-with-txt.js');
 
 describe('live-ground-googsearch-with-txt', () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
+  it('should generate Google Search in a live session from a text prompt', async function () {
     this.timeout(180000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateLiveGoogleSearch(projectId);
     console.log('Generated output:', output);
     assert(output.length > 0);
   });

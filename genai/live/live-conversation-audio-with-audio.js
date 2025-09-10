@@ -58,7 +58,7 @@ function writeWavefile(filepath, audioFrames, rate = OUTPUT_RATE) {
   console.log(`Model response saved to ${filepath}`);
 }
 
-async function generateContent(
+async function generateLiveConversation(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -162,5 +162,5 @@ async function generateContent(
 // [END googlegenaisdk_live_conversation_audio_with_audio]
 
 module.exports = {
-  generateContent,
+  generateLiveConversation,
 };

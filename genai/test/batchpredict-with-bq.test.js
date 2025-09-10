@@ -47,7 +47,11 @@ describe('batchpredict-with-bq', () => {
     this.timeout(50000);
     const bqOutput = bq_output_uri();
     const bqUri = (await bqOutput).uri;
-    const output = await sample.generateContent(bqUri, projectId, location);
+    const output = await sample.runBatchPredictionJob(
+      bqUri,
+      projectId,
+      location
+    );
     assert.notEqual(output, undefined);
   });
 });

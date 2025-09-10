@@ -21,12 +21,12 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const OUTPUT_URI = 'gs://your-bucket/your-prefix';
 
-async function generateContent(
+async function runBatchPredictionJob(
   outputUri = OUTPUT_URI,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -36,7 +36,7 @@ async function generateContent(
   });
 
   // See the documentation: https://googleapis.github.io/python-genai/genai.html#genai.batches.Batches.create
-  let job = await ai.batches.create({
+  let job = await client.batches.create({
     model: 'text-embedding-005',
     // Source link: https://storage.cloud.google.com/cloud-samples-data/batch/prompt_for_batch_gemini_predict.jsonl
     src: 'gs://cloud-samples-data/generative-ai/embeddings/embeddings_input.jsonl',
@@ -61,7 +61,7 @@ async function generateContent(
 
   while (completedStates.has(job.state)) {
     await new Promise(resolve => setTimeout(resolve, 30000));
-    job = await ai.batches.get({name: job.name});
+    job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);
     if (job.state === 'JOB_STATE_FAILED') {
       console.log(`Job state: ${job.state}`);
@@ -81,5 +81,5 @@ async function generateContent(
 // [END googlegenaisdk_batchpredict_embeddings_with_gcs]
 
 module.exports = {
-  generateContent,
+  runBatchPredictionJob,
 };

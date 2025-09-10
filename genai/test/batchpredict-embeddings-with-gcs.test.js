@@ -49,7 +49,11 @@ describe('batchpredict-embeddings-with-gcs', () => {
     this.timeout(50000);
     const gscOutput = gcs_output_uri();
     const gscUri = (await gscOutput).uri;
-    const output = await sample.generateContent(gscUri, projectId, location);
+    const output = await sample.runBatchPredictionJob(
+      gscUri,
+      projectId,
+      location
+    );
     assert.notEqual(output, undefined);
   });
 });

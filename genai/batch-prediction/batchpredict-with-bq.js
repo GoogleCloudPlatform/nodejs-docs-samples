@@ -21,12 +21,12 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const OUTPUT_URI = 'bq://your-project.your_dataset.your_table';
 
-async function generateContent(
+async function runBatchPredictionJob(
   outputUri = OUTPUT_URI,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -36,7 +36,7 @@ async function generateContent(
   });
 
   // See the documentation: https://googleapis.github.io/python-genai/genai.html#genai.batches.Batches.create
-  let job = await ai.batches.create({
+  let job = await client.batches.create({
     // To use a tuned model, set the model param to your tuned model using the following format:
     // model="projects/{PROJECT_ID}/locations/{LOCATION}/models/{MODEL_ID}"
     model: 'gemini-2.5-flash',
@@ -62,7 +62,7 @@ async function generateContent(
 
   while (completedStates.has(job.state)) {
     await new Promise(resolve => setTimeout(resolve, 30000));
-    job = await ai.batches.get({name: job.name});
+    job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);
   }
 
@@ -78,5 +78,5 @@ async function generateContent(
 // [END googlegenaisdk_batchpredict_with_gcs]
 
 module.exports = {
-  generateContent,
+  runBatchPredictionJob,
 };

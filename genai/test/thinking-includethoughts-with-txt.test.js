@@ -23,7 +23,7 @@ const sample = require('../thinking/thinking-includethoughts-with-txt.js');
 describe('thinking-includethoughts-with-txt', () => {
   it('should return Thought Process', async function () {
     this.timeout(50000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateWithThoughts(projectId);
     assert(output.length > 0);
   });
 });

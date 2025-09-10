@@ -25,6 +25,6 @@ describe('tools-func-desc-with-txt', async () => {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    await sample.generateContent(projectId);
+    await sample.generateFunctionDesc(projectId);
   });
 });

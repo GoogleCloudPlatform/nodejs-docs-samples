@@ -23,7 +23,7 @@ const sample = require('../tools/tools-google-search-with-txt.js');
 describe('tools-google-search-with-txt', () => {
   it('should generate answer to a question in prompt using google search', async function () {
     this.timeout(10000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateGoogleSearch(projectId);
     assert(output.length > 0);
   });
 });

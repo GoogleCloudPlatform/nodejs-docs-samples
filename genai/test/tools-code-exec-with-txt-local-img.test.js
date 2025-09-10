@@ -23,7 +23,7 @@ const sample = require('../tools/tools-code-exec-with-txt-local-img.js');
 describe('tools-code-exec-with-txt-local-img', () => {
   it('should generate a function definition', async function () {
     this.timeout(100000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateAndExecuteMultimodalCode(projectId);
     assert(output.length > 0);
   });
 });

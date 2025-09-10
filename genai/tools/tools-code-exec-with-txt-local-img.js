@@ -23,7 +23,7 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateAndExecuteMultimodalCode(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -35,7 +35,7 @@ async function generateContent(
 
   const imagePath = path.join(
     __dirname,
-    '../test-data/640px-Monty_open_door.svg.png'
+    '../test/test-data/640px-Monty_open_door.svg.png'
   );
   const imageBuffer = await fs.readFile(imagePath);
   const imageBase64 = imageBuffer.toString('base64');
@@ -91,5 +91,5 @@ async function generateContent(
 // [END googlegenaisdk_tools_code_exec_with_txt]
 
 module.exports = {
-  generateContent,
+  generateAndExecuteMultimodalCode,
 };

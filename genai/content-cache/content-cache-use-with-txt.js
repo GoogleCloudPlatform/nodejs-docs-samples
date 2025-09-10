@@ -21,7 +21,7 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function useContentCache(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION,
   cacheName = 'example-cache'
@@ -53,5 +53,5 @@ async function generateContent(
 // [END googlegenaisdk_contentcache_use_with_txt]
 
 module.exports = {
-  generateContent,
+  useContentCache,
 };

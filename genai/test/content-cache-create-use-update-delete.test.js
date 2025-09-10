@@ -33,17 +33,21 @@ describe('content-cache-create-use-update-delete', async function () {
   let contentCacheName;
 
   it('should create content cache', async () => {
-    contentCacheName = await createSample.generateContent(projectId);
+    contentCacheName = await createSample.generateContentCache(projectId);
     assert.isString(contentCacheName);
     assert.isAbove(contentCacheName.length, 0);
   });
 
   it('should update content cache', async () => {
-    await updateSample.updateContentCache(projectId, undefined, contentCacheName);
+    await updateSample.updateContentCache(
+      projectId,
+      undefined,
+      contentCacheName
+    );
   });
 
   it('should use content cache', async () => {
-    const response = await useSample.generateContent(
+    const response = await useSample.useContentCache(
       projectId,
       undefined,
       contentCacheName
@@ -52,6 +56,10 @@ describe('content-cache-create-use-update-delete', async function () {
   });
 
   it('should delete content cache', async () => {
-    await deleteSample.deleteContentCache(projectId, undefined, contentCacheName);
+    await deleteSample.deleteContentCache(
+      projectId,
+      undefined,
+      contentCacheName
+    );
   });
 });

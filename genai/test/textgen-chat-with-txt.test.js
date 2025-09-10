@@ -23,7 +23,7 @@ const sample = require('../text-generation/textgen-chat-with-txt.js');
 describe('textgen-chat-with-txt', () => {
   it('should generate chat content from a text prompt', async function () {
     this.timeout(100000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateText(projectId);
     assert(output.length > 0);
   });
 });

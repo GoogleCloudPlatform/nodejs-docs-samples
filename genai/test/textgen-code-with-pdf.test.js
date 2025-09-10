@@ -23,7 +23,7 @@ const sample = require('../text-generation/textgen-code-with-pdf.js');
 describe('textgen-code-with-pdf', () => {
   it('should generate text content from a pdf', async function () {
     this.timeout(100000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateText(projectId);
     assert(output.length > 0);
   });
 });

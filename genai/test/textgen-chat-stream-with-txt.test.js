@@ -23,7 +23,7 @@ const sample = require('../text-generation/textgen-chat-stream-with-txt.js');
 describe('textgen-chat-stream-with-txt', () => {
   it('should generate text content from a mute video', async function () {
     this.timeout(100000);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateText(projectId);
     assert.isTrue(output);
   });
 });

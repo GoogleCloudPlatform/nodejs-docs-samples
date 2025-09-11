@@ -18,16 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-mmflash-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../controlled-generation/ctrlgen-with-class-schema.js');
 
-describe('imggen-mmflash-with-txt', async () => {
-  it('should generate images from a text prompt', async function () {
-    this.timeout(180000);
-    this.retries(10);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateContent(projectId);
-    assert(Array.isArray(generatedFileNames));
-    assert(generatedFileNames.length > 0);
+describe('ctrlgen-with-class-schema', () => {
+  it('should generate text content in Json', async function () {
+    this.timeout(10000);
+    const output = await sample.generateClassSchema(projectId);
+    assert(output.length > 0 && output.includes('Cookies'));
   });
 });

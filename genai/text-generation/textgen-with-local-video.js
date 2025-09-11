@@ -14,71 +14,51 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_multi_local_img]
+// [START googlegenaisdk_textgen_with_local_video]
 const {GoogleGenAI} = require('@google/genai');
 const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-function loadImageAsBase64(path) {
-  const bytes = fs.readFileSync(path);
-  return bytes.toString('base64');
-}
-
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION,
-  imagePath1,
-  imagePath2
+  location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  // TODO(Developer): Update the below file paths to your images
-  const image1 = loadImageAsBase64(imagePath1);
-  const image2 = loadImageAsBase64(imagePath2);
+  const videoContent = fs.readFileSync('test-data/describe_video_content.mp4');
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
+      {text: 'hello-world'},
       {
-        role: 'user',
-        parts: [
-          {
-            text: 'Generate a list of all the objects contained in both images.',
-          },
-          {
-            inlineData: {
-              data: image1,
-              mimeType: 'image/jpeg',
-            },
-          },
-          {
-            inlineData: {
-              data: image2,
-              mimeType: 'image/jpeg',
-            },
-          },
-        ],
+        inlineData: {
+          data: videoContent.toString('base64'),
+          mimeType: 'video/mp4',
+        },
       },
+      {text: 'Write a short and engaging blog post based on this video.'},
     ],
   });
 
   console.log(response.text);
 
   // Example response:
-  //  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
-  //  ...
+  // Okay, here's a short and engaging blog post based on the climbing video:
+  // **Title: Conquering the Wall: A Glimpse into the World of Indoor Climbing**
+  // ...
 
   return response.text;
 }
 
-// [END googlegenaisdk_textgen_with_multi_local_img]
+// [END googlegenaisdk_textgen_with_local_video]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_async_with_txt]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,28 +30,27 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
-
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents:
+      'Compose a song about the adventures of a time-traveling squirrel.',
     config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+      responseMimeType: 'text/plain',
     },
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
+  // Example response:
+  // (Verse 1)
+  // Sammy the nugget, a furry little friend
+  // Had a knack for adventure, beyond all comprehend
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_async_with_txt]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

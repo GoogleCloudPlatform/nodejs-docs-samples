@@ -20,7 +20,7 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -76,5 +76,5 @@ async function generateContent(
 // [END googlegenaisdk_textgen_code_with_pdf]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

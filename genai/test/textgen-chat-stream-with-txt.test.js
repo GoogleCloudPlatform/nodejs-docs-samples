@@ -18,12 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-code-with-pdf.js');
+const sample = require('../text-generation/textgen-chat-stream-with-txt.js');
 
-describe('textgen-code-with-pdf', () => {
-  it('should generate text content from a pdf', async function () {
+describe('textgen-chat-stream-with-txt', () => {
+  it('should generate text content from a mute video', async function () {
     this.timeout(100000);
     const output = await sample.generateText(projectId);
-    assert(output.length > 0);
+    assert.isTrue(output);
   });
 });

@@ -18,12 +18,15 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-code-with-pdf.js');
+const sample = require('../controlled-generation/ctrlgen-with-nested-class-schema.js');
+const {delay} = require('./util');
 
-describe('textgen-code-with-pdf', () => {
-  it('should generate text content from a pdf', async function () {
-    this.timeout(100000);
-    const output = await sample.generateText(projectId);
+describe('ctrlgen-with-nested-class-schema', () => {
+  it('should generate text content using nested schema', async function () {
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
+    const output = await sample.generateNestedClassSchema(projectId);
     assert(output.length > 0);
   });
 });

@@ -14,44 +14,44 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_contentcache_use_with_txt]
+
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function useContentCache(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  cacheName = 'example-cache'
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
+    httpOptions: {
+      apiVersion: 'v1',
+    },
   });
-
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents: 'Summarize the pdfs',
     config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+      cachedContent: cacheName,
     },
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
   return response.text;
 }
-
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// Example response
+//    The Gemini family of multimodal models from Google DeepMind demonstrates remarkable capabilities across various
+//    modalities, including image, audio, video, and text....
+// [END googlegenaisdk_contentcache_use_with_txt]
 
 module.exports = {
-  generateContent,
+  useContentCache,
 };

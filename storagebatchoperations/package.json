@@ -1,0 +1,23 @@
+{
+    "name": "storage-batch-operations-samples",
+    "version": "0.0.1",
+    "author": "Google Inc.",
+    "license": "Apache-2.0",
+    "description": "Examples of how to utilize the @google-cloud/storagebatchoperations library.",
+    "scripts": {
+      "test": "c8 mocha -p -j 2 system-test --timeout 600000"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    },    
+    "devDependencies": {
+      "@google-cloud/storage": "^7.17.1",
+      "@google-cloud/storagebatchoperations": "^0.1.0",
+      "c8": "^10.0.0",
+      "chai": "^4.5.0",
+      "mocha": "^10.7.0",
+      "uuid": "^10.0.0"
+    }
+  }
+  

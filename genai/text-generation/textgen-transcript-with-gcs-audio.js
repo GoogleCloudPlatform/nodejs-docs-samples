@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_transcript_with_gcs_audio]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,28 +30,40 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
+  const prompt = `Transcribe the interview, in the format of timecode, speaker, caption.
+    Use speaker A, speaker B, etc. to identify speakers.`;
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents: [
+      {text: prompt},
+      {
+        fileData: {
+          fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
+          mimeType: 'audio/mpeg',
+        },
+      },
+    ],
+    // Required to enable timestamp understanding for audio-only files
     config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+      audioTimestamp: true,
     },
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
+  // Example response:
+  // [00:00:00] **Speaker A:** your devices are getting better over time. And so ...
+  // [00:00:14] **Speaker B:** Welcome to the Made by Google podcast where we meet ...
+  // [00:00:20] **Speaker B:** Here's your host, Rasheed Finch.
+  // [00:00:23] **Speaker C:** Today we're talking to Aisha Sharif and DeCarlos Love. ...
+  // ...
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_transcript_with_gcs_audio]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

@@ -14,13 +14,17 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_tools_vais_with_txt]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+// (Developer) put your path Data Store
+const DATASTORE =
+  'projects/cloud-ai-devrel-softserve/locations/global/collections/default_collection/dataStores/example-adk-website-datastore_1755611010401';
 
 async function generateContent(
+  datastore = DATASTORE,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -28,29 +32,36 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
-  });
-
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
-
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+    httpOptions: {
+      apiVersion: 'v1',
     },
   });
 
-  console.log(response.text);
-  // Example output:
-  //  Woodwind
+  const response = await client.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: "How do I make an appointment to renew my driver's license?",
+    config: {
+      tools: [
+        {
+          retrieval: {
+            vertexAiSearch: {
+              datastore: datastore,
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  console.debug(response.text);
+
+  // Example response:
+  //    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_tools_vais_with_txt]
 
 module.exports = {
   generateContent,

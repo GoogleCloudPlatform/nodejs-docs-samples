@@ -18,12 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-code-with-pdf.js');
+const sample = require('../controlled-generation/ctrlgen-with-nullable-schema.js');
 
-describe('textgen-code-with-pdf', () => {
-  it('should generate text content from a pdf', async function () {
-    this.timeout(100000);
-    const output = await sample.generateText(projectId);
+describe('ctrlgen-with-nullable-schema', () => {
+  it('should generate text content using nullable schema', async function () {
+    this.timeout(10000);
+    const output = await sample.generateNullableSchema(projectId);
     assert(output.length > 0);
   });
 });

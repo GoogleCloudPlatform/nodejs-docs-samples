@@ -70,11 +70,13 @@ async function generateContent(
 
   console.log(response.text);
 
+  // Example response:
+  //  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
+  //  ...
+
   return response.text;
 }
-// Example response:
-//  Okay, here's a jingle combining the elements of both sets of images, focusing on ...
-//  ...
+
 // [END googlegenaisdk_textgen_with_multi_local_img]
 
 module.exports = {

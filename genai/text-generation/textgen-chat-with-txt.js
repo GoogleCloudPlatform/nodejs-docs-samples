@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_chat_with_txt]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,28 +30,32 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
-
-  const response = await client.models.generateContent({
+  const chatSession = client.chats.create({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
-    },
+    history: [
+      {
+        role: 'user',
+        parts: [{text: 'Hello'}],
+      },
+      {
+        role: 'model',
+        parts: [{text: 'Great to meet you. What would you like to know?'}],
+      },
+    ],
   });
 
+  const response = await chatSession.sendMessage({message: 'Tell me a story.'});
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
+  // Example response:
+  // Okay, here's a story for you:
+  // ...
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_chat_with_txt]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

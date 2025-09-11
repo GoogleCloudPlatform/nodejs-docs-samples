@@ -18,12 +18,11 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-code-with-pdf.js');
+const sample = require('../content-cache/content-cache-list.js');
 
-describe('textgen-code-with-pdf', () => {
-  it('should generate text content from a pdf', async function () {
-    this.timeout(100000);
-    const output = await sample.generateText(projectId);
-    assert(output.length > 0);
+describe('contentcache-list', async () => {
+  it('should return object with names of catches', async () => {
+    const output = await sample.listContentCaches(projectId);
+    assert.isArray(output);
   });
 });

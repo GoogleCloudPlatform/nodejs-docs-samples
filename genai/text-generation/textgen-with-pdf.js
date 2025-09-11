@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_with_pdf]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateText(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,28 +30,36 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
+  const prompt = `You are a highly skilled document summarization specialist.
+    Your task is to provide a concise executive summary of no more than 300 words.
+    Please summarize the given document for a general audience.`;
+
+  const pdfFile = {
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/generative-ai/pdf/1706.03762v7.pdf',
+      mimeType: 'application/pdf',
+    },
   };
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
-    },
+    contents: [pdfFile, prompt],
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
+  // Example response:
+  //  Here is a summary of the document in 300 words.
+  //  The paper introduces the Transformer, a novel neural network architecture for
+  //  sequence transduction tasks like machine translation. Unlike existing models that rely on recurrent or
+  //  convolutional layers, the Transformer is based entirely on attention mechanisms.
+  //  ...
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_with_pdf]
 
 module.exports = {
-  generateContent,
+  generateText,
 };

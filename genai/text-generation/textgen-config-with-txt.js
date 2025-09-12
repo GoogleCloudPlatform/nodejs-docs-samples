@@ -14,8 +14,8 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_config_with_txt]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
@@ -30,27 +30,36 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
+  const config = {
+    temperature: 0,
+    candidateCount: 1,
+    responseMimeType: 'application/json',
+    topP: 0.95,
+    topK: 20,
+    seed: 5,
+    maxOutputTokens: 500,
+    stopSequences: ['STOP!'],
+    presencePenalty: 0.0,
+    frequencyPenalty: 0.0,
   };
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
-    },
+    contents: 'Why is the sky blue?',
+    config: config,
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
+  // Example response:
+  // {
+  //   "explanation": "The sky appears blue due to a phenomenon called Rayleigh scattering. When ...
+  // }
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_config_with_txt]
 
 module.exports = {
   generateContent,

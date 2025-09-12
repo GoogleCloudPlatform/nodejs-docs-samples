@@ -18,12 +18,15 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-code-with-pdf.js');
+const sample = require('../tools/tools-vais-with-txt.js');
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
-describe('textgen-code-with-pdf', () => {
-  it('should generate text content from a pdf', async function () {
-    this.timeout(100000);
-    const output = await sample.generateText(projectId);
+describe('tools-vais-with-txt', () => {
+  it('should generate a function call', async function () {
+    this.timeout(60000);
+    const output = await sample.generateContent(datastore, projectId, location);
     assert(output.length > 0);
   });
 });
+6;

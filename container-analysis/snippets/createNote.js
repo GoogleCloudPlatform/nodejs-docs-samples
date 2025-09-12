@@ -46,7 +46,7 @@ async function main(
     note: {
       attestation: {
         hint: {
-          humanReadableName: attestationAuthorityName,
+          humanReadableName: 'my-attestation-authority',
         },
       },
     },

@@ -47,8 +47,8 @@ function main(projectId) {
 
     // Run request
     const [response] = await client.listJobs(request);
-    for (const jobs of response) {
-      console.log(jobs.name);
+    for (const job of response) {
+      console.log(job.name);
     }
   }
 

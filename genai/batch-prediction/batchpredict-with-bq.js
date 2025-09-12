@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_batchpredict_with_gcs]
+// [START googlegenaisdk_batchpredict_with_bq]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;

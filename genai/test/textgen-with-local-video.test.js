@@ -18,16 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-mmflash-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../text-generation/textgen-with-local-video.js');
 
-describe('imggen-mmflash-with-txt', async () => {
-  it('should generate images from a text prompt', async function () {
-    this.timeout(180000);
-    this.retries(10);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateContent(projectId);
-    assert(Array.isArray(generatedFileNames));
-    assert(generatedFileNames.length > 0);
+describe('textgen-with-local-video', async () => {
+  it('should generate text content from local video', async function () {
+    this.timeout(30000);
+    const output = await sample.generateText(projectId);
+    assert(output.length > 0);
   });
 });

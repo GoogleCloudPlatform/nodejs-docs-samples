@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_ctrlgen_with_nested_class_schema]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateNestedClassSchema(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,28 +30,49 @@ async function generateContent(
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
+  const Grade = Object.freeze({
+    A_PLUS: 'a+',
+    A: 'a',
+    B: 'b',
+    C: 'c',
+    D: 'd',
+    F: 'f',
+  });
+
+  class Recipe {
+    /**
+     * @param {string} recipeName
+     * @param {string} rating - Must be one of Grade enum values
+     */
+    constructor(recipeName, rating) {
+      if (!Object.values(Grade).includes(rating)) {
+        throw new Error(`Invalid rating: ${rating}`);
+      }
+      this.recipeName = recipeName;
+      this.rating = rating;
+    }
+  }
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
+    contents:
+      'List about 10 home-baked cookies and give them grades based on tastiness.',
     config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+      responseMimeType: 'application/json',
+      responseSchema: Recipe,
     },
   });
 
   console.log(response.text);
+
   // Example output:
-  //  Woodwind
+  //  [{"rating": "a+", "recipe_name": "Classic Chocolate Chip Cookies"}, ...]
+
   return response.text;
 }
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_ctrlgen_with_nested_class_schema]
 
 module.exports = {
-  generateContent,
+  generateNestedClassSchema,
 };

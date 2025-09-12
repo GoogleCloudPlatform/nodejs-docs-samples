@@ -14,43 +14,40 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_textgen_with_txt_routing]
+const {GoogleGenAI, FeatureSelectionPreference} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const client = new GoogleGenAI({
+  const ai = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
+  const generateContentConfig = {
+    modelSelectionConfig: {
+      featureSelectionPreference: FeatureSelectionPreference.PRIORITIZE_COST,
+    },
   };
 
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
-    },
+  const response = await ai.models.generateContent({
+    model: 'model-optimizer-exp-04-09',
+    contents: 'How does AI work?',
+    config: generateContentConfig,
   });
 
   console.log(response.text);
-  // Example output:
-  //  Woodwind
+
   return response.text;
 }
-
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+// [END googlegenaisdk_textgen_with_txt_routing]
 
 module.exports = {
   generateContent,

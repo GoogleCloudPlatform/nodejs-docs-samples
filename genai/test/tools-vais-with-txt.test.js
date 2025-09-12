@@ -18,16 +18,15 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-mmflash-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../tools/tools-vais-with-txt.js');
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
-describe('imggen-mmflash-with-txt', async () => {
-  it('should generate images from a text prompt', async function () {
-    this.timeout(180000);
-    this.retries(10);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateContent(projectId);
-    assert(Array.isArray(generatedFileNames));
-    assert(generatedFileNames.length > 0);
+describe('tools-vais-with-txt', () => {
+  it('should generate a function call', async function () {
+    this.timeout(60000);
+    const output = await sample.generateContent(datastore, projectId, location);
+    assert(output.length > 0);
   });
 });
+6;

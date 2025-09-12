@@ -75,7 +75,7 @@ async function runBatchPredictionJob(
 
   return job.state;
 }
-// [END googlegenaisdk_batchpredict_with_gcs]
+// [END googlegenaisdk_batchpredict_with_bq]
 
 module.exports = {
   runBatchPredictionJob,

@@ -14,36 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_imggen_mmflash_txt_and_img_with_txt]
+// [START googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION =
   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
-
-async function savePaellaRecipe(response) {
-  const parts = response.candidates[0].content.parts;
-  const mdFile = 'paella-recipe.md';
-
-  let mdText = '';
-
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i];
-
-    if (part.text) {
-      mdText += part.text + '\n';
-    } else if (part.inlineData) {
-      const imageBytes = Buffer.from(part.inlineData.data, 'base64');
-      const imagePath = `example-image-${i + 1}.png`;
-      fs.writeFileSync(imagePath, imageBytes);
-      mdText += `![image](./${imagePath})\n`;
-    }
-  }
-
-  fs.writeFileSync(mdFile, mdText);
-  console.log(`Saved recepie to: ${mdFile}`);
-}
 
 async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -57,22 +34,30 @@ async function generateImage(
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image-preview',
-    contents:
-      'Generate an illustrated recipe for a paella. Create images to go alongside the text as you generate the recipe',
+    contents: 'Generate a photo of a breakfast meal.',
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },
   });
+
   console.log(response);
 
-  await savePaellaRecipe(response);
+  for (const part of response.candidates[0].content.parts) {
+    if (part.text) {
+      console.log(`${part.text}`);
+    } else if (part.inlineData) {
+      const imageBytes = Buffer.from(part.inlineData.data, 'base64');
+      fs.writeFileSync('example-breakfast-meal.png', imageBytes);
+    }
+  }
 
   return response;
 }
 // Example response:
-//  A markdown page for a Paella recipe(`paella-recipe.md`) has been generated.
-//  It includes detailed steps and several images illustrating the cooking process.
-// [END googlegenaisdk_imggen_mmflash_txt_and_img_with_txt]
+// Generates a photo of a vibrant and appetizing breakfast meal.
+// The scene will feature a white plate with golden-brown pancakes
+// stacked neatly, drizzled with rich maple syrup and ...
+// [END googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 
 module.exports = {
   generateImage,

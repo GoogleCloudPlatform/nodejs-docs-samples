@@ -16,11 +16,11 @@
 
 'use strict';
 
-const {expect} = require('chai');
-const {afterEach, describe, it} = require('mocha');
-const sinon = require('sinon');
-const gemma2PredictGpu = require('../gemma2PredictGpu.js');
-const gemma2PredictTpu = require('../gemma2PredictTpu.js');
+import {expect} from 'chai';
+import {afterEach, describe, it} from 'mocha';
+import sinon from 'sinon';
+import gemma2PredictGpu from '../gemma2PredictGpu.js';
+import gemma2PredictTpu from '../gemma2PredictTpu.js';
 
 const gpuResponse = `The sky appears blue due to a phenomenon called **Rayleigh scattering**.
 **Here's how it works:**

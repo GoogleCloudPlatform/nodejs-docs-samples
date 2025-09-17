@@ -26,7 +26,7 @@ describe('tools-code-exec-with-txt', async () => {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.generateContent(projectId);
+    const output = await sample.generateAndExecuteCode(projectId);
     assert(output.length > 0);
   });
 });

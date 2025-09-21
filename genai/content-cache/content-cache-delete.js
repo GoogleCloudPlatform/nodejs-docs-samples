@@ -14,44 +14,39 @@
 
 'use strict';
 
-// [START googlegenaisdk_ctrlgen_with_enum_schema]
-const {GoogleGenAI, Type} = require('@google/genai');
+// [START googlegenaisdk_contentcache_delete]
+const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function deleteContentCache(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  cacheName = 'example-cache'
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
-  });
-
-  const responseSchema = {
-    type: Type.STRING,
-    enum: ['Percussion', 'String', 'Woodwind', 'Brass', 'Keyboard'],
-  };
-
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: 'What type of instrument is an oboe?',
-    config: {
-      responseMimeType: 'text/x.enum',
-      responseSchema: responseSchema,
+    httpOptions: {
+      apiVersion: 'v1',
     },
   });
 
-  console.log(response.text);
-  // Example output:
-  //  Woodwind
-  return response.text;
-}
+  console.log('Removing cache');
+  const contentCache = await client.caches.delete({
+    name: cacheName,
+  });
 
-// [END googlegenaisdk_ctrlgen_with_enum_schema]
+  console.log(contentCache.text);
+
+  return contentCache;
+}
+// Example response
+//    Deleted Cache projects/111111111111/locations/us-central1/cachedContents/1111111111111111111
+// [END googlegenaisdk_contentcache_delete]
 
 module.exports = {
-  generateContent,
+  deleteContentCache,
 };

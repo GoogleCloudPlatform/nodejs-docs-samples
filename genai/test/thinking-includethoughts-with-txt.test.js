@@ -18,16 +18,12 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-mmflash-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../thinking/thinking-includethoughts-with-txt.js');
 
-describe('imggen-mmflash-with-txt', async () => {
-  it('should generate images from a text prompt', async function () {
-    this.timeout(180000);
-    this.retries(10);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateContent(projectId);
-    assert(Array.isArray(generatedFileNames));
-    assert(generatedFileNames.length > 0);
+describe('thinking-includethoughts-with-txt', () => {
+  it('should return Thought Process', async function () {
+    this.timeout(50000);
+    const output = await sample.generateWithThoughts(projectId);
+    assert(output.length > 0);
   });
 });

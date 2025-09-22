@@ -32,7 +32,7 @@ async function generateGoogleSearch(
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: 'When is the next total solar eclipse in Poland?',
+    contents: 'When is the next total solar eclipse in the United States?',
     config: {
       tools: [
         {
@@ -45,7 +45,7 @@ async function generateGoogleSearch(
   console.log(response.text);
 
   // Example response:
-  //    'The next total solar eclipse in Poland will occur on ...'
+  //    'The next total solar eclipse in United States will occur on ...'
 
   return response.text;
 }

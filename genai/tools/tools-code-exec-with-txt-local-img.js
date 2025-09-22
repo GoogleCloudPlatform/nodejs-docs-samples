@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_tools_exec_with_txt_local_img]
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -88,7 +88,7 @@ async function generateAndExecuteMultimodalCode(
   return response.codeExecutionResult;
 }
 
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_tools_exec_with_txt_local_img]
 
 module.exports = {
   generateAndExecuteMultimodalCode,

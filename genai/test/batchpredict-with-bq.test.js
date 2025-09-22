@@ -26,7 +26,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const sample = require('../batch-prediction/batchpredict-with-bq');
 
-async function bq_output_uri() {
+async function getBqOutputUri() {
   const dt = new Date();
   const tableName = `text_output_${dt.getFullYear()}_${dt.getMonth() + 1}_${dt.getDate()}_T${dt.getHours()}_${dt.getMinutes()}_${dt.getSeconds()}`;
   const tableUri = `${BQ_OUTPUT_DATASET}.${tableName}`;
@@ -45,13 +45,16 @@ async function bq_output_uri() {
 describe('batchpredict-with-bq', () => {
   it('should return the batch job state', async function () {
     this.timeout(50000);
-    const bqOutput = bq_output_uri();
-    const bqUri = (await bqOutput).uri;
-    const output = await sample.runBatchPredictionJob(
-      bqUri,
-      projectId,
-      location
-    );
-    assert.notEqual(output, undefined);
+    const bqOutput = await getBqOutputUri();
+    try {
+      const output = await sample.runBatchPredictionJob(
+        bqOutput.uri,
+        projectId,
+        location
+      );
+      assert.notEqual(output, undefined);
+    } finally {
+      await bqOutput.cleanup();
+    }
   });
 });

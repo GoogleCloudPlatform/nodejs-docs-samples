@@ -26,7 +26,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const sample = require('../batch-prediction/batchpredict-with-gcs');
 
-async function gcs_output_uri() {
+async function getGcsOutputUri() {
   const dt = new Date();
   const prefix = `text_output/${dt.toISOString()}`;
   const fullUri = `gs://${GCS_OUTPUT_BUCKET}/${prefix}`;
@@ -47,7 +47,7 @@ async function gcs_output_uri() {
 describe('batchpredict-with-gcs', () => {
   it('should return the batch job state', async function () {
     this.timeout(50000);
-    const gscOutput = gcs_output_uri();
+    const gscOutput = getGcsOutputUri();
     const gscUri = (await gscOutput).uri;
     const output = await sample.runBatchPredictionJob(
       gscUri,

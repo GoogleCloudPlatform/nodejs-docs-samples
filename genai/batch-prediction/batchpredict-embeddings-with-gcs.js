@@ -64,7 +64,7 @@ async function runBatchPredictionJob(
     job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);
     if (job.state === 'JOB_STATE_FAILED') {
-      console.log(`Job state: ${job.state}`);
+      console.log(`Error: ${job.state}`);
       break;
     }
   }

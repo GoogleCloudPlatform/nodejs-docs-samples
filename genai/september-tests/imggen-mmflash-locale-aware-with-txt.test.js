@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'global'
+const location = 'global';
 const sample = require('../september-samples/imggen-mmflash-locale-aware-with-txt');
 const {delay} = require('../test/util');
 

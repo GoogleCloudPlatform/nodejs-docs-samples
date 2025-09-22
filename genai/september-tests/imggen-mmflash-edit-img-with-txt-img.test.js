@@ -19,7 +19,6 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-mmflash-edit-img-with-txt-img');
-
 const {delay} = require('./util');
 
 describe('imggen-mmflash-edit-img-with-txt-img', async () => {

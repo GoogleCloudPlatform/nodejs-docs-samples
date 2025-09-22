@@ -23,7 +23,7 @@ const storage = new Storage();
 const GCS_OUTPUT_BUCKET = 'nodejs-docs-samples-tests';
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const location = 'us-central1';
 const sample = require('../batch-prediction/batchpredict-embeddings-with-gcs');
 
 async function getGcsOutputUri() {

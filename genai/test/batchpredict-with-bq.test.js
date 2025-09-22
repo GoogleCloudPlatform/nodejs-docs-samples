@@ -23,7 +23,7 @@ const bigquery = new BigQuery();
 const BQ_OUTPUT_DATASET = `${process.env.BQ_OUTPUT_DATASET}.gen_ai_batch_prediction`;
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const location = 'us-central1';
 const sample = require('../batch-prediction/batchpredict-with-bq');
 
 async function getBqOutputUri() {

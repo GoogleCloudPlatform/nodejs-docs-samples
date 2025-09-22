@@ -34,15 +34,13 @@ async function virtualTryOn(
 
   const source = {
     personImage: {
-      imageBytes: fs
-        .readFileSync('september-samples/man.png')
-        .toString('base64'),
+      imageBytes: fs.readFileSync('test-data/man.png').toString('base64'),
     },
     productImages: [
       {
         productImage: {
           imageBytes: fs
-            .readFileSync('september-samples/sweater.jpg')
+            .readFileSync('test-data/sweater.jpg')
             .toString('base64'),
         },
       },
@@ -55,9 +53,15 @@ async function virtualTryOn(
   });
 
   console.log('Created output image');
+  const outputDir = 'output-folder';
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  const outputPath = `${outputDir}/image.png`;
   const imageBytes = image.generatedImages[0].image.imageBytes;
   const buffer = Buffer.from(imageBytes, 'base64');
-  fs.writeFileSync('image.png', buffer);
+
+  fs.writeFileSync(outputPath, buffer);
 
   return image.generatedImages[0];
 }

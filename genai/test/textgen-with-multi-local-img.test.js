@@ -25,8 +25,8 @@ const sample = require('../text-generation/textgen-with-multi-local-img.js');
 describe('textgen-with-multi-local-img', () => {
   it('should generate text content from multiple images', async function () {
     this.timeout(100000);
-    const imagePath1 = './test/test-data/latte.jpg';
-    const imagePath2 = './test/test-data/scones.jpg';
+    const imagePath1 = './test-data/latte.jpg';
+    const imagePath2 = './test-data/scones.jpg';
     const output = await sample.generateContent(
       projectId,
       location,

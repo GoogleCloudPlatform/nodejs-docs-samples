@@ -22,17 +22,17 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION =
   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
-async function generateContent(
+async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const response = await ai.models.generateContentStream({
+  const response = await client.models.generateContentStream({
     model: 'gemini-2.0-flash-exp',
     contents:
       'Generate an image of the Eiffel tower with fireworks in the background.',
@@ -43,13 +43,18 @@ async function generateContent(
 
   const generatedFileNames = [];
   let imageIndex = 0;
+
   for await (const chunk of response) {
     const text = chunk.text;
     const data = chunk.data;
     if (text) {
       console.debug(text);
     } else if (data) {
-      const fileName = `generate_content_streaming_image_${imageIndex++}.png`;
+      const outputDir = 'output-folder';
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      const fileName = `${outputDir}/generate_content_streaming_image_${imageIndex++}.png`;
       console.debug(`Writing response image to file: ${fileName}.`);
       try {
         fs.writeFileSync(fileName, data);
@@ -65,5 +70,5 @@ async function generateContent(
 // [END googlegenaisdk_imggen_mmflash_with_txt]
 
 module.exports = {
-  generateContent,
+  generateImage,
 };

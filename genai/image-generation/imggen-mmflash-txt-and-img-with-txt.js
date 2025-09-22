@@ -19,14 +19,16 @@ const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION =
-  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+// const GOOGLE_CLOUD_LOCATION =
+//   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+
+const GOOGLE_CLOUD_LOCATION = 'global';
 
 async function savePaellaRecipe(response) {
   const parts = response.candidates[0].content.parts;
-  const mdFile = 'paella-recipe.md';
 
   let mdText = '';
+  const outputDir = 'output-folder';
 
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
@@ -34,12 +36,18 @@ async function savePaellaRecipe(response) {
     if (part.text) {
       mdText += part.text + '\n';
     } else if (part.inlineData) {
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
       const imagePath = `example-image-${i + 1}.png`;
-      fs.writeFileSync(imagePath, imageBytes);
+      const saveImagePath = `${outputDir}/${imagePath}`;
+
+      fs.writeFileSync(saveImagePath, imageBytes);
       mdText += `![image](./${imagePath})\n`;
     }
   }
+  const mdFile = `${outputDir}/paella-recipe.md`;
 
   fs.writeFileSync(mdFile, mdText);
   console.log(`Saved recepie to: ${mdFile}`);

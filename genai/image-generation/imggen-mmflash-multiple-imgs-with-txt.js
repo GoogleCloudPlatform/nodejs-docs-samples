@@ -51,13 +51,12 @@ async function generateImage(
     if (part.text) {
       console.log(part.text);
     } else if (part.inlineData) {
-      if (!fs.existsSync('output_folder')) {
-        fs.mkdirSync('output_folder', {recursive: true});
+      const outputDir = 'output-folder';
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
       }
-
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
-      const filename = `output_folder/example-cats-0${imageCounter}.png`;
-
+      const filename = `${outputDir}/example-cats-0${imageCounter}.png`;
       fs.writeFileSync(filename, imageBytes);
       generatedFileNames.push(filename);
       console.log(`Saved image: ${filename}`);

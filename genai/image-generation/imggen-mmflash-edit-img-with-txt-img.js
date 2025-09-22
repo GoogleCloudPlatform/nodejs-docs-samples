@@ -19,8 +19,11 @@ const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION =
-  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+// const GOOGLE_CLOUD_LOCATION =
+//   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+
+const GOOGLE_CLOUD_LOCATION = 'global';
+const FILE_NAME = 'test-data/example-image-eiffel-tower.png';
 
 async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -32,9 +35,11 @@ async function generateImage(
     location: location,
   });
 
+  const image = fs.readFileSync(FILE_NAME);
+
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image-preview',
-    contents: 'Generate a photo of a breakfast meal.',
+    contents: [image, 'Edit this image to make it look like a cartoon'],
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },
@@ -46,17 +51,20 @@ async function generateImage(
     if (part.text) {
       console.log(`${part.text}`);
     } else if (part.inlineData) {
+      const outputDir = 'output-folder';
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
-      fs.writeFileSync('example-breakfast-meal.png', imageBytes);
+      const filename = `${outputDir}/bw-example-image.png`;
+      fs.writeFileSync(filename, imageBytes);
     }
   }
 
   return response;
 }
 // Example response:
-// Generates a photo of a vibrant and appetizing breakfast meal.
-// The scene will feature a white plate with golden-brown pancakes
-// stacked neatly, drizzled with rich maple syrup and ...
+// Okay, I will edit this image to give it a cartoonish style, with bolder outlines, simplified details, and more vibrant colors.
 // [END googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 
 module.exports = {

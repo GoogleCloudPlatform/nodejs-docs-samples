@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
+// To make this test work, we need to create datastore, for now it stays commented out
 
-const {assert} = require('chai');
-const {describe, it} = require('mocha');
+// 'use strict';
+//
+// const {assert} = require('chai');
+// const {describe, it} = require('mocha');
+//
+// const projectId = process.env.CAIP_PROJECT_ID;
+// const sample = require('../tools/tools-vais-with-txt.js');
+// const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+// const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-vais-with-txt.js');
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-const datastore = `projects/${projectId}/locations/global/collections/default_collection/dataStores/grounding-test-datastore`;
-
-describe('tools-vais-with-txt', () => {
-  it('should generate a function call', async function () {
-    this.timeout(60000);
-    const output = await sample.generateContent(datastore, projectId, location);
-    assert(output.length > 0);
-  });
-});
-6;
+// describe('tools-vais-with-txt', () => {
+//   it('should generate a function call', async function () {
+//     this.timeout(60000);
+//     const output = await sample.generateContent(datastore, projectId, location);
+//     assert(output.length > 0);
+//   });
+// });
+// ;

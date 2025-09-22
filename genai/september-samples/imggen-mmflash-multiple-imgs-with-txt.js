@@ -22,8 +22,7 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 // const GOOGLE_CLOUD_LOCATION =
 //   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
-const GOOGLE_CLOUD_LOCATION =
-  process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const GOOGLE_CLOUD_LOCATION = 'global';
 
 async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -45,16 +44,29 @@ async function generateImage(
 
   console.log(response);
 
+  const generatedFileNames = [];
+  let imageCounter = 1;
+
   for (const part of response.candidates[0].content.parts) {
     if (part.text) {
-      console.log(`${part.text}`);
+      console.log(part.text);
     } else if (part.inlineData) {
+      if (!fs.existsSync('output_folder')) {
+        fs.mkdirSync('output_folder', {recursive: true});
+      }
+
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
-      fs.writeFileSync('bw-example-image.png', imageBytes);
+      const filename = `output_folder/example-cats-0${imageCounter}.png`;
+
+      fs.writeFileSync(filename, imageBytes);
+      generatedFileNames.push(filename);
+      console.log(`Saved image: ${filename}`);
+
+      imageCounter++;
     }
   }
 
-  return response;
+  return generatedFileNames;
 }
 // Example response:
 //  Image 1: A fluffy calico cat with striking green eyes is perched elegantly on a vintage wooden

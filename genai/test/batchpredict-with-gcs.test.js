@@ -47,13 +47,16 @@ async function getGcsOutputUri() {
 describe('batchpredict-with-gcs', () => {
   it('should return the batch job state', async function () {
     this.timeout(50000);
-    const gscOutput = getGcsOutputUri();
-    const gscUri = (await gscOutput).uri;
-    const output = await sample.runBatchPredictionJob(
-      gscUri,
-      projectId,
-      location
-    );
-    assert.notEqual(output, undefined);
+    const bqOutput = await getGcsOutputUri();
+    try {
+      const output = await sample.runBatchPredictionJob(
+        bqOutput.uri,
+        projectId,
+        location
+      );
+      assert.notEqual(output, undefined);
+    } finally {
+      await bqOutput.cleanup();
+    }
   });
 });

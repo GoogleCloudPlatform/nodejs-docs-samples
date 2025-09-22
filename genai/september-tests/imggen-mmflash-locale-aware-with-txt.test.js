@@ -18,15 +18,16 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'global'
 const sample = require('../september-samples/imggen-mmflash-locale-aware-with-txt');
 const {delay} = require('../test/util');
 
 describe('imggen-mmflash-locale-aware-with-txt', async () => {
   it('should generate a response with text and image parts', async function () {
     this.timeout(180000);
-    this.retries(4);
-    await delay(this.test);
-    const response = await sample.generateImage(projectId);
+    // this.retries(4);
+    // await delay(this.test);
+    const response = await sample.generateImage(projectId, location);
     assert(response.length > 0);
   });
 });

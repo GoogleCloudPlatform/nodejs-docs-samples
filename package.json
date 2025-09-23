@@ -31,7 +31,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^8.1.1",
     "commander": "^12.0.0",
     "eslint": "^8.57.0"
   }

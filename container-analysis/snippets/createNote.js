@@ -44,19 +44,10 @@ async function main(
     parent: formattedParent,
     noteId: noteId,
     note: {
-      vulnerability: {
-        details: [
-          {
-            affectedCpeUri: 'foo.uri',
-            affectedPackage: 'foo',
-            affectedVersionStart: {
-              kind: 'MINIMUM',
-            },
-            affectedVersionEnd: {
-              kind: 'MAXIMUM',
-            },
-          },
-        ],
+      attestation: {
+        hint: {
+          humanReadableName: 'my-attestation-authority',
+        },
       },
     },
   });

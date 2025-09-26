@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
+// [START googlegenaisdk_imggen_mmflash_locale_aware_with_txt]
 const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 

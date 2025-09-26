@@ -36,7 +36,7 @@ async function generateImage(
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image-preview',
-    contents: 'Generate 3 images a cat sitting on a chair.',
+    contents: 'Generate 3 images of a cat sitting on a chair.',
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },

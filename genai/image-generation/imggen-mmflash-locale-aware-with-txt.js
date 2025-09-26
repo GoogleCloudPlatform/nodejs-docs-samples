@@ -62,7 +62,7 @@ async function generateImage(
 // Generates a photo of a vibrant and appetizing breakfast meal.
 // The scene will feature a white plate with golden-brown pancakes
 // stacked neatly, drizzled with rich maple syrup and ...
-// [END googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
+// [END googlegenaisdk_imggen_mmflash_locale_aware_with_txt]
 
 module.exports = {
   generateImage,

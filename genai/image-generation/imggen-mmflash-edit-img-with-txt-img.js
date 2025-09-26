@@ -45,8 +45,6 @@ async function generateImage(
     },
   });
 
-  console.log(response);
-
   for (const part of response.candidates[0].content.parts) {
     if (part.text) {
       console.log(`${part.text}`);

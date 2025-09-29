@@ -13,7 +13,7 @@
     "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js test/**/*.test.js"
   },
   "dependencies": {
-    "@google/genai": "1.12.0",
+    "@google/genai": "1.20.0",
     "axios": "^1.6.2",
     "luxon": "^3.7.1",
     "supertest": "^7.0.0"

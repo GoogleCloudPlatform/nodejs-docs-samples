@@ -19,10 +19,9 @@ const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-// const GOOGLE_CLOUD_LOCATION =
-//   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
-const GOOGLE_CLOUD_LOCATION = 'global';
 const FILE_NAME = 'test-data/example-image-eiffel-tower.png';
 
 async function generateImage(
@@ -51,7 +50,7 @@ async function generateImage(
     } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {recursive: true});
       }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
       const filename = `${outputDir}/bw-example-image.png`;
@@ -59,10 +58,11 @@ async function generateImage(
     }
   }
 
+  // Example response:
+  // Okay, I will edit this image to give it a cartoonish style, with bolder outlines, simplified details, and more vibrant colors.
   return response;
 }
-// Example response:
-// Okay, I will edit this image to give it a cartoonish style, with bolder outlines, simplified details, and more vibrant colors.
+
 // [END googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 
 module.exports = {

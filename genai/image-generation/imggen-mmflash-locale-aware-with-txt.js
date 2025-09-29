@@ -48,7 +48,7 @@ async function generateImage(
     } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {recursive: true});
       }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
       const filename = `${outputDir}/example-breakfast-meal.png`;
@@ -56,12 +56,14 @@ async function generateImage(
     }
   }
 
+  // Example response:
+  // Generates a photo of a vibrant and appetizing breakfast meal.
+  // The scene will feature a white plate with golden-brown pancakes
+  // stacked neatly, drizzled with rich maple syrup and ...
+
   return response;
 }
-// Example response:
-// Generates a photo of a vibrant and appetizing breakfast meal.
-// The scene will feature a white plate with golden-brown pancakes
-// stacked neatly, drizzled with rich maple syrup and ...
+
 // [END googlegenaisdk_imggen_mmflash_locale_aware_with_txt]
 
 module.exports = {

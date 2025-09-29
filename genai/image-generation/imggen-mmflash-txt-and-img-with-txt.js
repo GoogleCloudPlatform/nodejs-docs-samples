@@ -19,10 +19,8 @@ const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-// const GOOGLE_CLOUD_LOCATION =
-//   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
-
-const GOOGLE_CLOUD_LOCATION = 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function savePaellaRecipe(response) {
   const parts = response.candidates[0].content.parts;
@@ -37,7 +35,7 @@ async function savePaellaRecipe(response) {
       mdText += part.text + '\n';
     } else if (part.inlineData) {
       if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {recursive: true});
       }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
       const imagePath = `example-image-${i + 1}.png`;

@@ -19,10 +19,8 @@ const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-// const GOOGLE_CLOUD_LOCATION =
-//   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
-
-const GOOGLE_CLOUD_LOCATION = 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -53,7 +51,7 @@ async function generateImage(
     } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {recursive: true});
       }
       const imageBytes = Buffer.from(part.inlineData.data, 'base64');
       const filename = `${outputDir}/example-cats-0${imageCounter}.png`;

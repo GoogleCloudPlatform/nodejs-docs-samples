@@ -55,7 +55,7 @@ async function virtualTryOn(
   console.log('Created output image');
   const outputDir = 'output-folder';
   if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
+    fs.mkdirSync(outputDir, {recursive: true});
   }
   const outputPath = `${outputDir}/image.png`;
   const imageBytes = image.generatedImages[0].image.imageBytes;
@@ -63,10 +63,11 @@ async function virtualTryOn(
 
   fs.writeFileSync(outputPath, buffer);
 
+  // Example response:
+  // Created output image using 1234567 bytes
+
   return image.generatedImages[0];
 }
-// Example response:
-// Created output image using 1234567 bytes
 
 // [END googlegenaisdk_imggen_virtual_try_on_with_txt_img]
 

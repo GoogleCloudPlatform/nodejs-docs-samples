@@ -52,7 +52,7 @@ async function generateImage(
     } else if (data) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true });
+        fs.mkdirSync(outputDir, {recursive: true});
       }
       const fileName = `${outputDir}/generate_content_streaming_image_${imageIndex++}.png`;
       console.debug(`Writing response image to file: ${fileName}.`);
@@ -64,6 +64,12 @@ async function generateImage(
       }
     }
   }
+
+  // Example response:
+  //  I will generate an image of the Eiffel Tower at night, with a vibrant display of
+  //  colorful fireworks exploding in the dark sky behind it. The tower will be
+  //  illuminated, standing tall as the focal point of the scene, with the bursts of
+  //  light from the fireworks creating a festive atmosphere.
 
   return generatedFileNames;
 }

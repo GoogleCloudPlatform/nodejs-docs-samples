@@ -19,7 +19,8 @@ const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-const OUTPUT_URI = 'bq://your-project.your_dataset.your_table';
+// const OUTPUT_URI = 'bq://your-project.your_dataset.your_table';
+const OUTPUT_URI = 'bq://cloud-ai-devrel-softserve.gen_ai_batch_prediction.tes'
 
 async function runBatchPredictionJob(
   outputUri = OUTPUT_URI,
@@ -60,7 +61,7 @@ async function runBatchPredictionJob(
     'JOB_STATE_PAUSED',
   ]);
 
-  while (completedStates.has(job.state)) {
+  while (!completedStates.has(job.state)) {
     await new Promise(resolve => setTimeout(resolve, 30000));
     job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);

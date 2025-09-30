@@ -61,7 +61,7 @@ async function runBatchPredictionJob(
     'JOB_STATE_PAUSED',
   ]);
 
-  while (completedStates.has(job.state)) {
+  while (!completedStates.has(job.state)) {
     await new Promise(resolve => setTimeout(resolve, 30000));
     job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);

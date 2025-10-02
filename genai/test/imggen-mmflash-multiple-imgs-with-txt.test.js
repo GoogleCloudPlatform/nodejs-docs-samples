@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const location = 'global';
 
 const sample = require('../image-generation/imggen-mmflash-multiple-imgs-with-txt');
 const {delay} = require('./util');
@@ -27,7 +28,7 @@ describe('imggen-mmflash-multiple-imgs-with-txt', async () => {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    const response = await sample.generateImage(projectId);
+    const response = await sample.generateImage(projectId, location);
     assert(response);
   });
 });

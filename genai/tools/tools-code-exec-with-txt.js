@@ -33,7 +33,7 @@ async function generateAndExecuteCode(
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+      'Calculate 20th fibonacci number. Then find the nearest palindrome to it.',
     config: {
       tools: [{codeExecution: {}}],
       temperature: 0,

@@ -48,7 +48,7 @@ async function savePaellaRecipe(response) {
   const mdFile = `${outputDir}/paella-recipe.md`;
 
   fs.writeFileSync(mdFile, mdText);
-  console.log(`Saved recepie to: ${mdFile}`);
+  console.log(`Saved recipe to: ${mdFile}`);
 }
 
 async function generateImage(

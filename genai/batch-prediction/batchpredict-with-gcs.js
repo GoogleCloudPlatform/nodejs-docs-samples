@@ -18,7 +18,8 @@
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 const OUTPUT_URI = 'gs://your-bucket/your-prefix';
 
 async function runBatchPredictionJob(
@@ -35,7 +36,7 @@ async function runBatchPredictionJob(
     },
   });
 
-  // See the documentation: https://googleapis.github.io/python-genai/genai.html#genai.batches.Batches.create
+  // See the documentation: https://googleapis.github.io/js-genai/release_docs/classes/batches.Batches.html
   let job = await client.batches.create({
     // To use a tuned model, set the model param to your tuned model using the following format:
     // model="projects/{PROJECT_ID}/locations/{LOCATION}/models/{MODEL_ID}"

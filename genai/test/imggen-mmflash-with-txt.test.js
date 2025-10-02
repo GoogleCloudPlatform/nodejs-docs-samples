@@ -24,7 +24,7 @@ const {delay} = require('./util');
 describe('imggen-mmflash-with-txt', async () => {
   it('should generate images from a text prompt', async function () {
     this.timeout(180000);
-    this.retries(10);
+    this.retries(15);
     await delay(this.test);
     const generatedFileNames = await sample.generateContent(projectId);
     assert(generatedFileNames.length > 0);

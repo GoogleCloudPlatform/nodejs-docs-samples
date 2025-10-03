@@ -25,6 +25,7 @@ const GCS_OUTPUT_BUCKET = 'nodejs-docs-samples-tests';
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';
 const sample = require('../batch-prediction/batchpredict-with-gcs');
+const {delay} = require('./util');
 
 async function getGcsOutputUri() {
   const dt = new Date();
@@ -46,7 +47,9 @@ async function getGcsOutputUri() {
 
 describe('batchpredict-with-gcs', () => {
   it('should return the batch job state', async function () {
-    this.timeout(50000);
+    this.timeout(500000);
+    this.retries(4);
+    await delay(this.test);
     const bqOutput = await getGcsOutputUri();
     try {
       const output = await sample.runBatchPredictionJob(

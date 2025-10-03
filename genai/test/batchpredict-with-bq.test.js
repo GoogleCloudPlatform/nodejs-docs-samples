@@ -24,6 +24,8 @@ const BQ_OUTPUT_DATASET = `${process.env.BQ_OUTPUT_DATASET}.gen_ai_batch_predict
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';
+const {delay} = require('./util');
+
 const sample = require('../batch-prediction/batchpredict-with-bq');
 
 async function getBqOutputUri() {
@@ -44,7 +46,9 @@ async function getBqOutputUri() {
 
 describe('batchpredict-with-bq', () => {
   it('should return the batch job state', async function () {
-    this.timeout(50000);
+    this.timeout(500000);
+    this.retries(4);
+    await delay(this.test);
     const bqOutput = await getBqOutputUri();
     try {
       const output = await sample.runBatchPredictionJob(

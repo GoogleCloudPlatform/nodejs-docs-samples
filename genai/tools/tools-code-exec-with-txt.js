@@ -24,13 +24,13 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents:
       'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',

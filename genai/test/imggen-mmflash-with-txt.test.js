@@ -28,10 +28,7 @@ describe('imggen-mmflash-with-txt', async () => {
     this.timeout(180000);
     this.retries(5);
     await delay(this.test);
-    const generatedFileNames = await sample.generateContent(
-      projectId,
-      location
-    );
+    const generatedFileNames = await sample.generateImage(projectId, location);
     assert(generatedFileNames.length > 0);
   });
 });

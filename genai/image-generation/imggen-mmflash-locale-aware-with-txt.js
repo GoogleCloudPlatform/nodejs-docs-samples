@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_imggen_mmflash_with_txt]
+// [START googlegenaisdk_imggen_mmflash_locale_aware_with_txt]
 const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
@@ -32,48 +32,39 @@ async function generateImage(
     location: location,
   });
 
-  const response = await client.models.generateContentStream({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image',
-    contents:
-      'Generate an image of the Eiffel tower with fireworks in the background.',
+    contents: 'Generate a photo of a breakfast meal.',
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },
   });
 
-  const generatedFileNames = [];
-  let imageIndex = 0;
+  console.log(response);
 
-  for await (const chunk of response) {
-    const text = chunk.text;
-    const data = chunk.data;
-    if (text) {
-      console.debug(text);
-    } else if (data) {
+  for (const part of response.candidates[0].content.parts) {
+    if (part.text) {
+      console.log(`${part.text}`);
+    } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, {recursive: true});
       }
-      const fileName = `${outputDir}/generate_content_streaming_image_${imageIndex++}.png`;
-      console.debug(`Writing response image to file: ${fileName}.`);
-      try {
-        fs.writeFileSync(fileName, data);
-        generatedFileNames.push(fileName);
-      } catch (error) {
-        console.error(`Failed to write image file ${fileName}:`, error);
-      }
+      const imageBytes = Buffer.from(part.inlineData.data, 'base64');
+      const filename = `${outputDir}/example-breakfast-meal.png`;
+      fs.writeFileSync(filename, imageBytes);
     }
   }
 
   // Example response:
-  //  I will generate an image of the Eiffel Tower at night, with a vibrant display of
-  //  colorful fireworks exploding in the dark sky behind it. The tower will be
-  //  illuminated, standing tall as the focal point of the scene, with the bursts of
-  //  light from the fireworks creating a festive atmosphere.
+  // Generates a photo of a vibrant and appetizing breakfast meal.
+  // The scene will feature a white plate with golden-brown pancakes
+  // stacked neatly, drizzled with rich maple syrup and ...
 
-  return generatedFileNames;
+  return response;
 }
-// [END googlegenaisdk_imggen_mmflash_with_txt]
+
+// [END googlegenaisdk_imggen_mmflash_locale_aware_with_txt]
 
 module.exports = {
   generateImage,

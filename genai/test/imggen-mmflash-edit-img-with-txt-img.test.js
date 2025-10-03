@@ -18,21 +18,16 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const location = 'global';
+const sample = require('../image-generation/imggen-mmflash-edit-img-with-txt-img');
+const {delay} = require('./util');
 
-const sample = require('../text-generation/textgen-with-multi-local-img.js');
-
-describe('textgen-with-multi-local-img', () => {
-  it('should generate text content from multiple images', async function () {
-    this.timeout(100000);
-    const imagePath1 = './test-data/latte.jpg';
-    const imagePath2 = './test-data/scones.jpg';
-    const output = await sample.generateContent(
-      projectId,
-      location,
-      imagePath1,
-      imagePath2
-    );
-    assert(output.length > 0);
+describe('imggen-mmflash-edit-img-with-txt-img', async () => {
+  it('should return a response object containing image parts', async function () {
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
+    const response = await sample.generateImage(projectId, location);
+    assert(response);
   });
 });

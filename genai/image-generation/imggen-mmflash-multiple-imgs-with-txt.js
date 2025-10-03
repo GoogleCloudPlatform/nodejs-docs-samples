@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_imggen_mmflash_with_txt]
+// [START googlegenaisdk_imggen_mmflash_multiple_imgs_with_txt]
 const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
@@ -32,48 +32,51 @@ async function generateImage(
     location: location,
   });
 
-  const response = await client.models.generateContentStream({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image',
-    contents:
-      'Generate an image of the Eiffel tower with fireworks in the background.',
+    contents: 'Generate 3 images of a cat sitting on a chair.',
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },
   });
 
-  const generatedFileNames = [];
-  let imageIndex = 0;
+  console.log(response);
 
-  for await (const chunk of response) {
-    const text = chunk.text;
-    const data = chunk.data;
-    if (text) {
-      console.debug(text);
-    } else if (data) {
+  const generatedFileNames = [];
+  let imageCounter = 1;
+
+  for (const part of response.candidates[0].content.parts) {
+    if (part.text) {
+      console.log(part.text);
+    } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, {recursive: true});
       }
-      const fileName = `${outputDir}/generate_content_streaming_image_${imageIndex++}.png`;
-      console.debug(`Writing response image to file: ${fileName}.`);
-      try {
-        fs.writeFileSync(fileName, data);
-        generatedFileNames.push(fileName);
-      } catch (error) {
-        console.error(`Failed to write image file ${fileName}:`, error);
-      }
+      const imageBytes = Buffer.from(part.inlineData.data, 'base64');
+      const filename = `${outputDir}/example-cats-0${imageCounter}.png`;
+      fs.writeFileSync(filename, imageBytes);
+      generatedFileNames.push(filename);
+      console.log(`Saved image: ${filename}`);
+
+      imageCounter++;
     }
   }
 
-  // Example response:
-  //  I will generate an image of the Eiffel Tower at night, with a vibrant display of
-  //  colorful fireworks exploding in the dark sky behind it. The tower will be
-  //  illuminated, standing tall as the focal point of the scene, with the bursts of
-  //  light from the fireworks creating a festive atmosphere.
-
   return generatedFileNames;
 }
-// [END googlegenaisdk_imggen_mmflash_with_txt]
+// Example response:
+//  Image 1: A fluffy calico cat with striking green eyes is perched elegantly on a vintage wooden
+//  chair with a woven seat. Sunlight streams through a nearby window, casting soft shadows and
+//  highlighting the cat's fur.
+//
+//  Image 2: A sleek black cat with intense yellow eyes is sitting upright on a modern, minimalist
+//  white chair. The background is a plain grey wall, putting the focus entirely on the feline's
+//  graceful posture.
+//
+//  Image 3: A ginger tabby cat with playful amber eyes is comfortably curled up asleep on a plush,
+//  oversized armchair upholstered in a soft, floral fabric. A corner of a cozy living room with a
+// [END googlegenaisdk_imggen_mmflash_multiple_imgs_with_txt]
 
 module.exports = {
   generateImage,

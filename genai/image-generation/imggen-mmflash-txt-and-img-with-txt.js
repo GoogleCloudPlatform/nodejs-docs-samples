@@ -62,7 +62,7 @@ async function generateImage(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash-image-preview',
+    model: 'gemini-2.5-flash-image',
     contents:
       'Generate an illustrated recipe for a paella. Create images to go alongside the text as you generate the recipe',
     config: {

@@ -33,7 +33,7 @@ async function generateImage(
   });
 
   const response = await client.models.generateContentStream({
-    model: 'gemini-2.0-flash-exp',
+    model: 'gemini-2.5-flash-image',
     contents:
       'Generate an image of the Eiffel tower with fireworks in the background.',
     config: {

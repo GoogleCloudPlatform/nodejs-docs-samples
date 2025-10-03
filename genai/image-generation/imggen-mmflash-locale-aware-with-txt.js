@@ -33,7 +33,7 @@ async function generateImage(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash-image-preview',
+    model: 'gemini-2.5-flash-image',
     contents: 'Generate a photo of a breakfast meal.',
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],

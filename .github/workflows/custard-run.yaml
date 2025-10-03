@@ -80,7 +80,7 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 20
       - run: npm install

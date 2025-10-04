@@ -17,7 +17,7 @@
 // [START functions_slack_setup]
 const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
-const {verifyRequestSignature} = require('@slack/events-api');
+const crypto = require('crypto');
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -86,22 +86,56 @@ const formatSlackMessage = (query, response) => {
 
 // [START functions_verify_webhook]
 /**
- * Verify that the webhook request came from Slack.
+ * Verify that the webhook request came from Slack by validating its signature.
+ *
+ * This function follows the official Slack verification process:
+ * https://api.slack.com/authentication/verifying-requests-from-slack
  *
  * @param {object} req Cloud Function request object.
  * @param {string} req.headers Headers Slack SDK uses to authenticate request.
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
 const verifyWebhook = req => {
-  const signature = {
-    signingSecret: process.env.SLACK_SECRET,
-    requestSignature: req.headers['x-slack-signature'],
-    requestTimestamp: req.headers['x-slack-request-timestamp'],
-    body: req.rawBody,
-  };
+  const slackSigningSecret = process.env.SLACK_SECRET;
+  const requestSignature = req.headers['x-slack-signature'];
+  const requestTimestamp = req.headers['x-slack-request-timestamp'];
 
-  // This method throws an exception if an incoming request is invalid.
-  verifyRequestSignature(signature);
+  if (!requestSignature || !requestTimestamp) {
+    const error = new Error('Missing Slack signature or timestamp headers');
+    error.code = 401;
+    throw error;
+  }
+
+  // Protect against replay sttacks by ensuring the request is recent (within 5 minutes)
+  const fiveMinutesAgo = Math.floor(Date.now() / 1000) - 300;
+  if (parseInt(requestTimestamp, 10) < fiveMinutesAgo) {
+    throw new Error('Slack request timestamp is too old');
+  }
+
+  // Create the base string as Slack expects: version + ':' timestamp + ':' + raw body
+  const basestring = `v0:${requestTimestamp}:${req.rawBody}`;
+
+  // Create a HMAC SHA256 hash using the Slack signing secret
+  const hmac = crypto.createHmac('sha256', slackSigningSecret);
+  hmac.update(basestring, 'utf-8');
+  const digest = `v0=${hmac.digest('hex')}`;
+
+  // Convert digest and signature to Buffers for secure comparison
+  const digestBuf = Buffer.from(digest, 'utf-8');
+  const sigBuf = Buffer.from(requestSignature, 'utf-8');
+
+  if (digestBuf.length !== sigBuf.length) {
+    const error = new Error('Invalid Slack signature (length mismatch)');
+    error.code = 401;
+    throw error;
+  }
+
+  // Perform a constant-time comparison to prevent timing attacks
+  if (!crypto.timingSafeEqual(digestBuf, sigBuf)) {
+    const error = new Error('Invalid Slack signature');
+    error.code = 401;
+    throw error;
+  }
 };
 // [END functions_verify_webhook]
 
@@ -147,7 +181,7 @@ const makeSearchRequest = query => {
  * @param {string} req.body.text The user's search query.
  * @param {object} res Cloud Function response object.
  */
-functions.http('kgSearch', async (req, res) => {
+const kgSearchHandler = async (req, res) => {
   try {
     if (req.method !== 'POST') {
       const error = new Error('Only POST requests are accepted');
@@ -176,5 +210,11 @@ functions.http('kgSearch', async (req, res) => {
     res.status(err.code || 500).send(err);
     return Promise.reject(err);
   }
-});
+};
+functions.http('kgsearch', kgSearchHandler);
 // [END functions_slack_search]
+
+module.exports = {
+  verifyWebhook,
+  kgSearchHandler,
+};

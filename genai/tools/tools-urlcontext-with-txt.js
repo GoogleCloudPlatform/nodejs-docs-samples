@@ -24,19 +24,19 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
   // TODO(developer): Here put your URLs!
-  const url1 = '';
-  const url2 = '';
+  const url1 = 'https://ai.google.dev/gemini-api/docs/models#gemini-2.5-pro';
+  const url2 = 'https://ai.google.dev/gemini-api/docs/models#gemini-2.5-flash';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: `Compare recipes from ${url1} and ${url2}`,
+    contents: `Compare model ${url1} and ${url2}`,
     config: {
       tools: [{urlContext: {}}],
       responseModalities: ['TEXT'],

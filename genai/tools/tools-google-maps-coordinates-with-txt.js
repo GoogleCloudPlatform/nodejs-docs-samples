@@ -24,21 +24,31 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  // TODO(developer): Here put your URLs!
-  const url = '';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: `Give me a three-day events schedule based on ${url}. Also, let me know what needs to be taken care of considering weather and commute.`,
+    contents: 'Where can I get the best espresso near me?',
     config: {
-      tools: [{googleSearch: {}}, {urlContext: {}}],
-      responseModalities: ['TEXT'],
+      tools: [
+        {
+          googleMaps: {},
+        },
+      ],
+      toolConfig: {
+        retrievalConfig: {
+          latLng: {
+            latitude: 40.7128,
+            longitude: -74.0060,
+          },
+          languageCode: 'en_US',
+        },
+      },
     },
   });
 

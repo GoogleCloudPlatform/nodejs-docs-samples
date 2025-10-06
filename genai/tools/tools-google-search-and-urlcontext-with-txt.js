@@ -24,8 +24,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  // Tworzymy klienta z API w wersji beta
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -33,9 +32,9 @@ async function generateContent(
   });
 
   // TODO(developer): Here put your URLs!
-  const url = '';
+  const url = 'https://www.google.com/search?q=events+in+New+York';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: `Give me a three-day events schedule based on ${url}. Also let me know what to take care of considering weather and commute.`,
     config: {

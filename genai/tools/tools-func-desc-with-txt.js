@@ -19,8 +19,7 @@ const {GoogleGenAI, Type} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-
-async function generateContent(
+async function generateFunctionDesc(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -71,23 +70,36 @@ async function generateContent(
     trends in music consumption.
   `;
 
-  const MODEL_NAME = 'gemini-2.5-flash';
-
   const response = await client.models.generateContent({
-    model: MODEL_NAME,
+    model: 'gemini-2.5-flash',
     contents: prompt,
     config: {
       tools: [sales_tool],
       temperature: 0,
     },
   });
+  const output = JSON.stringify(response.functionCalls, null, 2);
+  console.log(output);
 
-  console.log(response.functionCalls);
+  // Example response:
+  //    [FunctionCall(
+  //     id=None,
+  //     name="get_album_sales",
+  //     args={
+  //         "albums": [
+  //             {"album_name": "Echoes of the Night", "copies_sold": 350000},
+  //             {"copies_sold": 120000, "album_name": "Reckless Hearts"},
+  //             {"copies_sold": 75000, "album_name": "Whispers of Dawn"},
+  //             {"copies_sold": 100000, "album_name": "Street Symphony"},
+  //          ]
+  //      },
+  //     )]
 
-  return response.functionCalls;
+  return output;
 }
+
 // [END googlegenaisdk_tools_func_desc_with_txt]
 
 module.exports = {
-  generateContent,
+  generateFunctionDesc,
 };

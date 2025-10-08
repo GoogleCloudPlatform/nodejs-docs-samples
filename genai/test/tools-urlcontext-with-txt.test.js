@@ -21,7 +21,7 @@ const sample = require('../tools/tools-urlcontext-with-txt');
 const {delay} = require('./util');
 const {assert} = require('chai');
 
-describe('tools-urlcontext-with-txt', async () => {
+describe('tools-urlcontext-with-txt', () => {
   it('should create urlcontext with txt', async function () {
     this.timeout(180000);
     this.retries(4);

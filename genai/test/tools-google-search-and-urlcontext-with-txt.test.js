@@ -21,7 +21,7 @@ const sample = require('../tools/tools-google-search-and-urlcontext-with-txt');
 const {delay} = require('./util');
 const {assert} = require('chai');
 
-describe('tools-google-search-and-urlcontext-with-txt', async () => {
+describe('tools-google-search-and-urlcontext-with-txt', () => {
   it('should create urlcontext and google search', async function () {
     this.timeout(180000);
     this.retries(4);

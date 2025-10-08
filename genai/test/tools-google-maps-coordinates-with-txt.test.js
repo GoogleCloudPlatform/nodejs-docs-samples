@@ -21,7 +21,7 @@ const sample = require('../tools/tools-google-maps-coordinates-with-txt');
 const {delay} = require('./util');
 const {assert} = require('chai');
 
-describe('tools-google-maps-coordinates-with-txt', async () => {
+describe('tools-google-maps-coordinates-with-txt', () => {
   it('should use google maps coordinates', async function () {
     this.timeout(180000);
     this.retries(4);

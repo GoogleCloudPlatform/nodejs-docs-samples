@@ -28,6 +28,7 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
+    httpOptions: {apiVersion: 'v1beta1'},
   });
 
   // TODO(developer): Here put your URLs!

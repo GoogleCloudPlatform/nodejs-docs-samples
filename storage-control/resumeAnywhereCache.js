@@ -24,14 +24,16 @@
 function main(bucketName, cacheName) {
   // [START storage_control_resume_anywhere_cache]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Resumes a disabled Anywhere Cache instance.
+   *
+   * This action reverts a cache from a PAUSED state or a DISABLED state back to RUNNING,
+   * provided it is done within the 1-hour grace period before the cache is permanently deleted.
+   *
+   * @param {string} bucketName The name of the bucket where the cache resides.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} cacheName The unique identifier of the cache instance.
+   * Example: 'my-anywhere-cache-id'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // The name of the cache to be resumed
-  // const cacheName = 'cacheName';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;
@@ -51,9 +53,31 @@ function main(bucketName, cacheName) {
       name: anywhereCachePath,
     };
 
-    // Run request
-    const [response] = await controlClient.resumeAnywhereCache(request);
-    console.log(`Resumed anywhere cache: ${response.name}.`);
+    try {
+      // Run request
+      const [response] = await controlClient.resumeAnywhereCache(request);
+
+      console.log(`Successfully resumed anywhere cache: ${response.name}.`);
+      console.log(`  Current State: ${response.state}`);
+    } catch (error) {
+      // Catch and handle potential API errors.
+      console.error(
+        `Error resuming Anywhere Cache '${cacheName}': ${error.message}`
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5)
+        console.error(
+          `Please ensure the cache '${cacheName}' exists in bucket '${bucketName}'.`
+        );
+      } else if (error.code === 9) {
+        // FAILED_PRECONDITION (gRPC code 9)
+        console.error(
+          `Cache '${cacheName}' may not be in a state that allows resuming (e.g., already RUNNING or past the 1-hour deletion grace period).`
+        );
+      }
+      throw error;
+    }
   }
 
   callResumeAnywhereCache();

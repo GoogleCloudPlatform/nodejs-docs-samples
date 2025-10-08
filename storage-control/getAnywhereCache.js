@@ -53,18 +53,31 @@ function main(bucketName, cacheName) {
       name: anywhereCachePath,
     };
 
-    // Run request
-    const [response] = await controlClient.getAnywhereCache(request);
-    console.log(`Got anywhere cache: ${response.name}.`);
-    console.log(`Anywhere Cache details for '${cacheName}':`);
-    console.log(`  ID: ${response.id}`);
-    console.log(`  Zone: ${response.zone}`);
-    console.log(`  State: ${response.state}`);
-    console.log(`  TTL: ${response.ttl.seconds}s`);
-    console.log(`  Admission Policy: ${response.admissionPolicy}`);
-    console.log(
-      `  Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
-    );
+    try {
+      // Run request
+      const [response] = await controlClient.getAnywhereCache(request);
+      console.log(`Anywhere Cache details for '${cacheName}':`);
+      console.log(`  Name: ${response.name}`);
+      console.log(`  Zone: ${response.zone}`);
+      console.log(`  State: ${response.state}`);
+      console.log(`  TTL: ${response.ttl.seconds}s`);
+      console.log(`  Admission Policy: ${response.admissionPolicy}`);
+      console.log(
+        `  Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
+      );
+    } catch (error) {
+      // Handle errors (e.g., cache not found, permission denied).
+      console.error(
+        `Error retrieving Anywhere Cache '${cacheName}': ${error.message}`
+      );
+
+      if (error.code === 5) {
+        console.error(
+          `Ensure the cache '${cacheName}' exists in bucket '${bucketName}'.`
+        );
+      }
+      throw error;
+    }
   }
 
   callGetAnywhereCache();

@@ -44,6 +44,10 @@ function main(bucketName, cacheName) {
   const controlClient = new StorageControlClient();
 
   async function callDisableAnywhereCache() {
+    // You have a one-hour grace period after disabling a cache to resume it and prevent its deletion.
+    // If you don't resume the cache within that hour, it will be deleted, its data will be evicted,
+    // and the cache will be permanently removed from the bucket.
+
     const anywhereCachePath = controlClient.anywhereCachePath(
       '_',
       bucketName,
@@ -55,6 +59,35 @@ function main(bucketName, cacheName) {
       name: anywhereCachePath,
     };
 
+    try {
+      // Run request. This initiates the disablement process.
+      const [response] = await controlClient.disableAnywhereCache(request);
+
+      console.log(
+        `Successfully initiated disablement for Anywhere Cache '${cacheName}'.`
+      );
+      console.log(`  Current State: ${response.state}`);
+      console.log(`  Resource Name: ${response.name}`);
+    } catch (error) {
+      // Catch and handle potential API errors.
+      console.error(
+        `Error disabling Anywhere Cache '${cacheName}': ${error.message}`
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5) error can occur if the bucket or cache does not exist.
+        console.error(
+          `Please ensure the cache '${cacheName}' exists in bucket '${bucketName}'.`
+        );
+      } else if (error.code === 9) {
+        // FAILED_PRECONDITION (gRPC code 9) can occur if the cache is already being disabled
+        // or is not in a RUNNING state that allows the disable operation.
+        console.error(
+          `Cache '${cacheName}' may not be in a state that allows disabling (e.g., must be RUNNING).`
+        );
+      }
+      throw error;
+    }
     // Run request
     const [response] = await controlClient.disableAnywhereCache(request);
     console.log(`Disabled anywhere cache: ${response.name}.`);

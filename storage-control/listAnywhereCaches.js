@@ -47,10 +47,27 @@ function main(bucketName) {
       parent: bucketPath,
     };
 
-    // Run request
-    const [response] = await controlClient.listAnywhereCaches(request);
-    for (const anywhereCache of response) {
-      console.log(anywhereCache.name);
+    try {
+      // Run request. The response is an array where the first element is the list of caches.
+      const [response] = await controlClient.listAnywhereCaches(request);
+
+      if (response && response.length > 0) {
+        console.log(
+          `Found ${response.length} Anywhere Caches for bucket: ${bucketName}`
+        );
+        for (const anywhereCache of response) {
+          console.log(anywhereCache.name);
+        }
+      } else {
+        // Case: Successful but empty list (No Anywhere Caches found)
+        console.log(`No Anywhere Caches found for bucket: ${bucketName}.`);
+      }
+    } catch (error) {
+      console.error(
+        `Error listing Anywhere Caches for bucket ${bucketName}:`,
+        error.message
+      );
+      throw error;
     }
   }
 

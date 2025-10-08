@@ -14,13 +14,14 @@
 
 'use strict';
 
-// [START googlegenaisdk_counttoken_with_txt_vid]
+// [START googlegenaisdk_tuning_textgen_with_txt]
 const {GoogleGenAI} = require('@google/genai');
-
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const TUNING_JOB_NAME = 'TestJobName';
 
-async function countTokens(
+async function generateContent(
+  tuningJobName = TUNING_JOB_NAME,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,24 +31,22 @@ async function countTokens(
     location: location,
   });
 
-  const video = {
-    fileData: {
-      fileUri: 'gs://cloud-samples-data/generative-ai/video/pixel8.mp4',
-      mimeType: 'video/mp4',
-    },
-  };
+  const tuningJob = await client.tunings.get({name: tuningJobName});
 
-  const response = await client.models.countTokens({
-    model: 'gemini-2.5-flash',
-    contents: [video, 'Provide a description of the video.'],
+  const content = 'Why lava is red?';
+
+  const response = await client.models.generateContent({
+    model: tuningJob.tunedModel.endpoint,
+    content: content,
   });
 
-  console.log(response);
-
-  return response.totalTokens;
+  console.log(response.text);
+  // Example response:
+  //  The lava is red because ...
+  return response.text;
 }
-// [END googlegenaisdk_counttoken_with_txt_vid]
+// [END googlegenaisdk_tuning_textgen_with_txt]
 
 module.exports = {
-  countTokens,
+  generateContent,
 };

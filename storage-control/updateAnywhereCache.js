@@ -58,11 +58,35 @@ function main(bucketName, cacheName, admissionPolicy) {
       },
     };
 
-    // Run request
-    const [operation] = await controlClient.updateAnywhereCache(request);
-    const [response] = await operation.promise();
+    try {
+      // Run request
+      const [operation] = await controlClient.updateAnywhereCache(request);
+      console.log(
+        `Waiting for update operation ${operation.name} to complete...`
+      );
 
-    console.log(`Updated anywhere cache: ${response.name}.`);
+      const [response] = await operation.promise();
+
+      console.log(`Updated anywhere cache: ${response.name}.`);
+    } catch (error) {
+      // Handle errors during the initial request or during the LRO polling.
+      console.error(
+        `Error updating Anywhere Cache '${cacheName}': ${error.message}`
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5)
+        console.error(
+          `Ensure the cache '${cacheName}' exists in bucket '${bucketName}'.`
+        );
+      } else if (error.code === 3) {
+        // INVALID_ARGUMENT (gRPC code 3)
+        console.error(
+          `Ensure '${admissionPolicy}' is a valid Admission Policy.`
+        );
+      }
+      throw error;
+    }
   }
 
   callUpdateAnywhereCache();

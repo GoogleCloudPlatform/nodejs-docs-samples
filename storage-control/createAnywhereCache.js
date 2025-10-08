@@ -50,20 +50,28 @@ function main(bucketName, zoneName) {
       parent: bucketPath,
       anywhereCache: {
         zone: zoneName,
-        ttl: '70000s',
-        admissionPolicy: 'admit-on-first-miss',
+        ttl: {
+          seconds: '10000s',
+        }, // Optional. Default: '86400s'(1 day)
+        admissionPolicy: 'admit-on-first-miss', // Optional. Default: 'admit-on-first-miss'
       },
     };
 
-    // Run the request, which returns an Operation object
-    const [operation] = await controlClient.createAnywhereCache(request);
-    console.log(`Waiting for operation ${operation.name} to complete...`);
+    try {
+      // Run the request, which returns an Operation object
+      const [operation] = await controlClient.createAnywhereCache(request);
+      console.log(`Waiting for operation ${operation.name} to complete...`);
 
-    // Wait for the operation to complete and get the final resource
-    const anywhereCache = await checkCreateAnywhereCacheProgress(
-      operation.name
-    );
-    console.log(`Created anywhere cache: ${anywhereCache.result.name}.`);
+      // Wait for the operation to complete and get the final resource
+      const anywhereCache = await checkCreateAnywhereCacheProgress(
+        operation.name
+      );
+      console.log(`Created anywhere cache: ${anywhereCache.result.name}.`);
+    } catch (error) {
+      // Handle any error that occurred during the creation or polling process.
+      console.error('Failed to create Anywhere Cache:', error.message);
+      throw error;
+    }
   }
 
   // A custom function to check the operation's progress.

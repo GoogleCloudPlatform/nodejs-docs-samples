@@ -24,17 +24,15 @@
 function main(bucketName, cacheName, admissionPolicy) {
   // [START storage_control_update_anywhere_cache]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Updates the Admission Policy of an Anywhere Cache instance.
+   *
+   * @param {string} bucketName The name of the bucket where the cache resides.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} cacheName The unique identifier of the cache instance to update.
+   * Example: 'my-anywhere-cache-id'
+   * @param {string} admissionPolicy Determines when data is ingested into the cache
+   * Example: 'admit-on-second-miss'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // The name of the cache to be update
-  // const cacheName = 'cacheName';
-
-  // The admission policy of the cache to be updated
-  // const admissionPolicy = 'admit-on-second-miss';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;

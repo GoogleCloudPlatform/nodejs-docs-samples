@@ -23,15 +23,18 @@
 
 function main(bucketName, zoneName) {
   // [START storage_control_create_anywhere_cache]
+
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Creates an Anywhere Cache instance for a Cloud Storage bucket.
+   * Anywhere Cache is a feature that provides an SSD-backed zonal read cache.
+   * This can significantly improve read performance for frequently accessed data
+   * by caching it in the same zone as your compute resources.
+   *
+   * @param {string} bucketName The name of the bucket to create the cache for.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} zoneName The zone where the cache will be created.
+   * Example: 'us-central1-a'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // The zone that the cache instance will run in.
-  // const zoneName = 'zoneName';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;
@@ -47,6 +50,8 @@ function main(bucketName, zoneName) {
       parent: bucketPath,
       anywhereCache: {
         zone: zoneName,
+        ttl: '70000s',
+        admissionPolicy: 'admit-on-first-miss',
       },
     };
 

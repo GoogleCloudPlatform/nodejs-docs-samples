@@ -24,14 +24,16 @@
 function main(bucketName, cacheName) {
   // [START storage_control_get_anywhere_cache]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Retrieves details of a specific Anywhere Cache instance.
+   *
+   * This function is useful for checking the current state, configuration (like TTL),
+   * and other metadata of an existing cache.
+   *
+   * @param {string} bucketName The name of the bucket where the cache resides.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} cacheName The unique identifier of the cache instance.
+   * Example: 'my-anywhere-cache-id'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // The name of the cache to get
-  // const cacheName = 'cacheName';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;
@@ -54,6 +56,15 @@ function main(bucketName, cacheName) {
     // Run request
     const [response] = await controlClient.getAnywhereCache(request);
     console.log(`Got anywhere cache: ${response.name}.`);
+    console.log(`Anywhere Cache details for '${cacheName}':`);
+    console.log(`  ID: ${response.id}`);
+    console.log(`  Zone: ${response.zone}`);
+    console.log(`  State: ${response.state}`);
+    console.log(`  TTL: ${response.ttl.seconds}s`);
+    console.log(`  Admission Policy: ${response.admissionPolicy}`);
+    console.log(
+      `  Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
+    );
   }
 
   callGetAnywhereCache();

@@ -25,11 +25,13 @@
 function main(bucketName) {
   // [START storage_control_list_anywhere_caches]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Lists all Anywhere Cache instances for a Cloud Storage bucket.
+   * This function helps you discover all active and pending caches associated with
+   * a specific bucket, which is useful for auditing and management.
+   *
+   * @param {string} bucketName The name of the bucket to list caches for.
+   * Example: 'your-gcp-bucket-name'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;

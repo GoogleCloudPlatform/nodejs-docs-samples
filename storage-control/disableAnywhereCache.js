@@ -24,14 +24,18 @@
 function main(bucketName, cacheName) {
   // [START storage_control_disable_anywhere_cache]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Disables an Anywhere Cache instance.
+   *
+   * Disabling a cache is the first step to permanently removing it. Once disabled,
+   * the cache stops ingesting new data. After a grace period, the cache and its
+   * contents are deleted. This is useful for decommissioning caches that are no
+   * longer needed.
+   *
+   * @param {string} bucketName The name of the bucket where the cache resides.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} cacheName The unique identifier of the cache instance to disable.
+   * Example: 'cacheName'
    */
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // The name of the cache to be disabled
-  // const cacheName = 'cacheName';
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;

@@ -14,7 +14,7 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools-google-maps-coordinates-with-txt]
+// [START googlegenaisdk_tools_google_maps_coordinates_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
@@ -30,7 +30,6 @@ async function generateContent(
     location: location,
   });
 
-
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: 'Where can I get the best espresso near me?',
@@ -44,7 +43,7 @@ async function generateContent(
         retrievalConfig: {
           latLng: {
             latitude: 40.7128,
-            longitude: -74.0060,
+            longitude: -74.006,
           },
           languageCode: 'en_US',
         },
@@ -63,10 +62,12 @@ async function generateContent(
       }
     }
   }
+  // Example response:
+  // 'Here are some of the top-rated places to get espresso near you: ...'
 
   return output;
 }
-// [END googlegenaisdk_tools-google-maps-coordinates-with-txt]
+// [END googlegenaisdk_tools_google_maps_coordinates_with_txt]
 
 module.exports = {
   generateContent,

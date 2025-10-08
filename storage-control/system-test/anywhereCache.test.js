@@ -97,8 +97,15 @@ describe.skip('Anywhere Cache', () => {
     const output = execSync(
       `node getAnywhereCache.js ${bucketName} ${cacheName}`
     );
-    assert.match(output, /Got anywhere cache:/);
+    const detailsHeader = `Anywhere Cache details for '${cacheName}':`;
+    assert.match(output, new RegExp(detailsHeader));
+    assert.match(output, /Name:/);
     assert.match(output, new RegExp(anywhereCachePath));
+    assert.match(output, /Zone:/);
+    assert.match(output, /State:/);
+    assert.match(output, /TTL:/);
+    assert.match(output, /Admission Policy:/);
+    assert.match(output, /Create Time:/);
   });
 
   it('should list anywhere caches', async () => {
@@ -119,23 +126,39 @@ describe.skip('Anywhere Cache', () => {
     const output = execSync(
       `node pauseAnywhereCache.js ${bucketName} ${cacheName}`
     );
-    assert.match(output, /Paused anywhere cache:/);
+    assert.match(output, /Successfully paused anywhere cache:/);
     assert.match(output, new RegExp(anywhereCachePath));
+    assert.match(output, /Current State:/);
   });
 
   it('should resume an anywhere cache', async () => {
     const output = execSync(
       `node resumeAnywhereCache.js ${bucketName} ${cacheName}`
     );
-    assert.match(output, /Resumed anywhere cache:/);
+    assert.match(output, /Successfully resumed anywhere cache:/);
     assert.match(output, new RegExp(anywhereCachePath));
+    assert.match(output, /Current State:/);
   });
 
   it('should disable an anywhere cache', async () => {
-    const output = execSync(
-      `node disableAnywhereCache.js ${bucketName} ${cacheName}`
-    );
-    assert.match(output, /Disabled anywhere cache:/);
-    assert.match(output, new RegExp(anywhereCachePath));
+    try {
+      const output = execSync(
+        `node disableAnywhereCache.js ${bucketName} ${cacheName}`
+      );
+      assert.match(
+        output,
+        /Successfully initiated disablement for Anywhere Cache:/
+      );
+      assert.match(output, new RegExp(anywhereCachePath));
+      assert.match(output, /Current State:/);
+      assert.match(output, /Resource Name:/);
+    } catch (error) {
+      const errorMessage = error.stderr.toString();
+
+      assert.match(
+        errorMessage,
+        /9 FAILED_PRECONDITION: The requested DISABLE operation can't be applied on cache in DISABLED state./
+      );
+    }
   });
 });

@@ -64,7 +64,7 @@ function main(bucketName, cacheName) {
       const [response] = await controlClient.disableAnywhereCache(request);
 
       console.log(
-        `Successfully initiated disablement for Anywhere Cache '${cacheName}'.`
+        `Successfully initiated disablement for Anywhere Cache: '${cacheName}'.`
       );
       console.log(`  Current State: ${response.state}`);
       console.log(`  Resource Name: ${response.name}`);

@@ -26,14 +26,14 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const response = await ai.models.generateContentStream({
-    model: 'gemini-2.0-flash-exp',
+  const response = await client.models.generateContentStream({
+    model: 'gemini-2.5-flash-image',
     contents:
       'Generate an image of the Eiffel tower with fireworks in the background.',
     config: {

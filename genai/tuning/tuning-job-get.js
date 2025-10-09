@@ -14,13 +14,14 @@
 
 'use strict';
 
-// [START googlegenaisdk_counttoken_with_txt_vid]
+// [START googlegenaisdk_tuning_job_get]
 const {GoogleGenAI} = require('@google/genai');
-
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const TUNING_JOB_NAME = 'TestJobName';
 
-async function countTokens(
+async function getTuningJob(
+  tuningJobName = TUNING_JOB_NAME,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,24 +31,22 @@ async function countTokens(
     location: location,
   });
 
-  const video = {
-    fileData: {
-      fileUri: 'gs://cloud-samples-data/generative-ai/video/pixel8.mp4',
-      mimeType: 'video/mp4',
-    },
-  };
+  // Get the tuning job and the tuned model.
+  const tuningJob = await client.tunings.get({name: tuningJobName});
 
-  const response = await client.models.countTokens({
-    model: 'gemini-2.5-flash',
-    contents: [video, 'Provide a description of the video.'],
-  });
+  console.log(tuningJob.tunedModel.model);
+  console.log(tuningJob.tunedModel.endpoint);
+  console.log(tuningJob.experiment);
 
-  console.log(response);
+  // Example response:
+  //  projects/123456789012/locations/us-central1/models/1234567890@1
+  //  projects/123456789012/locations/us-central1/endpoints/123456789012345
+  //  projects/123456789012/locations/us-central1/metadataStores/default/contexts/tuning-experiment-2025010112345678
 
-  return response.totalTokens;
+  return tuningJob.name;
 }
-// [END googlegenaisdk_counttoken_with_txt_vid]
+// [END googlegenaisdk_tuning_job_get]
 
 module.exports = {
-  countTokens,
+  getTuningJob,
 };

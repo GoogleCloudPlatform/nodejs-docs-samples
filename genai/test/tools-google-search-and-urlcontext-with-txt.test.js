@@ -14,19 +14,19 @@
 
 'use strict';
 
-const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../controlled-generation/ctrlgen-with-enum-class-schema.js');
+const sample = require('../tools/tools-google-search-and-urlcontext-with-txt');
 const {delay} = require('./util');
+const {assert} = require('chai');
 
-describe('ctrlgen-with-enum-class-schema', () => {
-  it('should generate text content matching enum schema', async function () {
-    this.timeout(100000);
+describe('tools-google-search-and-urlcontext-with-txt', () => {
+  it('should create urlcontext and google search', async function () {
+    this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.generateEnumClassSchema(projectId);
+    const output = await sample.generateContent(projectId);
     assert(output.length > 0);
   });
 });

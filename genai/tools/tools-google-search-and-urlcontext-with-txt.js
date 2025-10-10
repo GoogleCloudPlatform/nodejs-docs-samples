@@ -43,18 +43,7 @@ async function generateContent(
     },
   });
 
-  const output = [];
-
-  console.log('\n--- Model Output ---');
-  for (const candidate of response.candidates || []) {
-    for (const part of candidate.content.parts || []) {
-      if (part.text) {
-        console.log(part.text);
-        output.push(part.text);
-      }
-    }
-  }
-
+  console.log(response.text);
   // Here is a possible three-day event schedule for New York City, focusing on the dates around October 7-9, 2025, along with weather and commute considerations.
   //
   // ### Three-Day Event Schedule: New York City (October 7-9, 2025)
@@ -100,7 +89,9 @@ async function generateContent(
   // *   **Taxis/Ride-sharing:** Uber, Lyft, and Curb (for NYC taxis) are available, but driving in the city is generally discouraged due to traffic and parking difficulties.
   // *   **Allow Extra Time:** Always factor in an additional 20-30 minutes for travel time, as delays can occur.
 
-  return output;
+  console.log(response.candidates[0].urlContextMetadata);
+
+  return response.text;
 }
 // [END googlegenaisdk_tools_google_search_and_urlcontext_with_txt]
 

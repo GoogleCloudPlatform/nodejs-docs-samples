@@ -51,21 +51,13 @@ async function generateContent(
     },
   });
 
-  const output = [];
-
-  console.log('\n--- Model Output ---');
-  for (const candidate of response.candidates || []) {
-    for (const part of candidate.content.parts || []) {
-      if (part.text) {
-        console.log(part.text);
-        output.push(part.text);
-      }
-    }
-  }
+  console.log(response.text);
   // Example response:
   // 'Here are some of the top-rated places to get espresso near you: ...'
 
-  return output;
+  console.log(response.candidates[0].urlContextMetadata);
+
+  return response.text;
 }
 // [END googlegenaisdk_tools_google_maps_coordinates_with_txt]
 

@@ -24,14 +24,14 @@ async function countTokens(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
     httpOptions: {apiVersion: 'v1'},
   });
 
-  const response = await ai.models.computeTokens({
+  const response = await client.models.computeTokens({
     model: 'gemini-2.5-flash',
     contents: "What's the longest word in the English language?",
   });

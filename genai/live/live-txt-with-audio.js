@@ -17,8 +17,7 @@
 'use strict';
 
 const {GoogleGenAI, Modality} = require('@google/genai');
-// const fetch = require('node-fetch');
-//todo try unittest and uncomment it if its needed
+const fetch = require('node-fetch');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 

@@ -94,7 +94,7 @@ async function generateLiveConversation(
     turns: [{role: 'user', parts: [{text: textInput}]}],
   });
 
-  const audioChunks = await handleTurn(session);
+  const audioChunks = await handleTurn();
 
   session.close();
 

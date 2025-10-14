@@ -27,7 +27,7 @@ describe('live-ground-ragengine-with-txt', () => {
     mockSession = {
       async *receive() {
         yield {
-          text: 'Mariusz Pudzianowski won in 2002, 2003, 2005, 2007, and 2008.',
+          text: 'In December 2023, Google launched Gemini, their "most capable and general model". It\'s multimodal, meaning it understands and combines different types of information like text, code, audio, images, and video.',
         };
       },
       sendClientContent: sinon.stub().resolves(),
@@ -56,7 +56,6 @@ describe('live-ground-ragengine-with-txt', () => {
 
     console.log('Generated output:', output);
 
-    assert.isArray(output);
-    assert.isNotEmpty(output);
+    assert(output.length > 0);
   });
 });

@@ -90,8 +90,7 @@ async function generateLiveRagTextResponse(
     },
   });
 
-  const textInput =
-    "What year did Mariusz Pudzianowski win World's Strongest Man?";
+  const textInput = 'What are newest gemini models?';
   console.log('> ', textInput, '\n');
 
   await session.sendClientContent({
@@ -110,8 +109,8 @@ async function generateLiveRagTextResponse(
   console.log(response.join(''));
 
   // Example output:
-  // > What year did Mariusz Pudzianowski win World's Strongest Man?
-  //  Mariusz Pudzianowski won World's Strongest Man in 2002, 2003, 2005, 2007, and 2008.
+  // > What are newest gemini models?
+  //  In December 2023, Google launched Gemini, their "most capable and general model". It's multimodal, meaning it understands and combines different types of information like text, code, audio, images, and video.
 
   session.close();
 

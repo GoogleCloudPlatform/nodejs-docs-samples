@@ -24,7 +24,7 @@ async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -73,7 +73,7 @@ async function generateContent(
 
   const MODEL_NAME = 'gemini-2.5-flash';
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: MODEL_NAME,
     contents: prompt,
     config: {

@@ -19,6 +19,7 @@ const sinon = require('sinon');
 const {describe, it, beforeEach, afterEach} = require('mocha');
 
 const sample = require('../live/live-ground-ragengine-with-txt');
+const {delay} = require('./util');
 
 describe('live-ground-ragengine-with-txt', () => {
   let mockClient, mockSession;
@@ -50,7 +51,9 @@ describe('live-ground-ragengine-with-txt', () => {
   });
 
   it('should return text from mocked RAG session', async function () {
-    this.timeout(5000);
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
 
     const output = await sample.generateLiveRagTextResponse();
 

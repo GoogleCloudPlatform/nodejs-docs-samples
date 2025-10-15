@@ -93,23 +93,27 @@ async function generateLiveConversation(
 
     while (!done) {
       const message = await waitMessage();
-      const sc = message.serverContent;
+      const serverContent = message.serverContent;
 
-      if (sc && sc.inputTranscription) {
-        console.log('Input transcription', sc.inputTranscription);
+      if (serverContent && serverContent.inputTranscription) {
+        console.log('Input transcription', serverContent.inputTranscription);
       }
-      if (sc && sc.outputTranscription) {
-        console.log('Output transcription', sc.outputTranscription);
+      if (serverContent && serverContent.outputTranscription) {
+        console.log('Output transcription', serverContent.outputTranscription);
       }
-      if (sc && sc.modelTurn && sc.modelTurn.parts) {
-        for (const part of sc.modelTurn.parts) {
+      if (
+        serverContent &&
+        serverContent.modelTurn &&
+        serverContent.modelTurn.parts
+      ) {
+        for (const part of serverContent.modelTurn.parts) {
           if (part && part.inlineData && part.inlineData.data) {
             const audioData = Buffer.from(part.inlineData.data, 'base64');
             audioFrames.push(audioData);
           }
         }
       }
-      if (sc && sc.turnComplete) {
+      if (serverContent && serverContent.turnComplete) {
         done = true;
       }
     }

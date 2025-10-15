@@ -55,17 +55,21 @@ async function generateLiveAudioTranscription(
       const message = await waitMessage();
       turns.push(message);
 
-      const sc = message.serverContent;
-      if (sc && sc.modelTurn) {
-        console.log('Model turn:', sc.modelTurn);
+      const serverContent = message.serverContent;
+      if (serverContent && serverContent.modelTurn) {
+        console.log('Model turn:', serverContent.modelTurn);
       }
-      if (sc && sc.inputTranscription) {
-        console.log('Input transcript:', sc.inputTranscription.text);
+      if (serverContent && serverContent.inputTranscription) {
+        console.log('Input transcript:', serverContent.inputTranscription.text);
       }
-      if (sc && sc.outputTranscription && sc.outputTranscription.text) {
-        outputMessage.push(sc.outputTranscription.text);
+      if (
+        serverContent &&
+        serverContent.outputTranscription &&
+        serverContent.outputTranscription.text
+      ) {
+        outputMessage.push(serverContent.outputTranscription.text);
       }
-      if (sc && sc.turnComplete) {
+      if (serverContent && serverContent.turnComplete) {
         done = true;
       }
     }

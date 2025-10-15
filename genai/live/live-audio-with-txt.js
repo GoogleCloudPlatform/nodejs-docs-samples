@@ -61,16 +61,20 @@ async function generateLiveConversation(
     while (!done) {
       const message = await waitMessage();
 
-      const sc = message.serverContent;
-      if (sc && sc.modelTurn && sc.modelTurn.parts) {
-        for (const part of sc.modelTurn.parts) {
+      const serverContent = message.serverContent;
+      if (
+        serverContent &&
+        serverContent.modelTurn &&
+        serverContent.modelTurn.parts
+      ) {
+        for (const part of serverContent.modelTurn.parts) {
           if (part && part.inlineData && part.inlineData.data) {
             audioChunks.push(Buffer.from(part.inlineData.data));
           }
         }
       }
 
-      if (sc && sc.turnComplete) {
+      if (serverContent && serverContent.turnComplete) {
         done = true;
       }
     }

@@ -55,8 +55,6 @@ async function generateContent(
   // Example response:
   // 'Here are some of the top-rated places to get espresso near you: ...'
 
-  console.log(response.candidates[0].urlContextMetadata);
-
   return response.text;
 }
 // [END googlegenaisdk_tools_google_maps_coordinates_with_txt]

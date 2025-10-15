@@ -32,7 +32,7 @@ async function generateContent(
   });
 
   // TODO(developer): Here put your URLs!
-  const url1 = 'https://cloud.google.com/vertex-ai/docs/generative-ai/start';
+  const url1 = 'https://cloud.google.com/vertex-ai/generative-ai/docs';
   const url2 = 'https://cloud.google.com/docs/overview';
 
   const response = await client.models.generateContent({
@@ -46,11 +46,7 @@ async function generateContent(
 
   const output = [];
 
-  if (
-    response.candidates &&
-    response.candidates[0] &&
-    response.candidates[0].content.parts
-  ) {
+  {
     for (const part of response.candidates[0].content.parts) {
       console.log(part.text);
       output.push(part.text);

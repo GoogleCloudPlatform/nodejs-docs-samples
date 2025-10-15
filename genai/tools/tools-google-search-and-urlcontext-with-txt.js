@@ -45,11 +45,7 @@ async function generateContent(
 
   const output = [];
 
-  if (
-    response.candidates &&
-    response.candidates[0] &&
-    response.candidates[0].content.parts
-  ) {
+  {
     for (const part of response.candidates[0].content.parts) {
       console.log(part.text);
       output.push(part.text);

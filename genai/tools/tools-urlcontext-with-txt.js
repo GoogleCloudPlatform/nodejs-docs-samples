@@ -44,7 +44,18 @@ async function generateContent(
     },
   });
 
-  console.log(response.text);
+  const output = [];
+
+  if (
+    response.candidates &&
+    response.candidates[0] &&
+    response.candidates[0].content.parts
+  ) {
+    for (const part of response.candidates[0].content.parts) {
+      console.log(part.text);
+      output.push(part.text);
+    }
+  }
 
   // Gemini 2.5 Pro and Gemini 2.5 Flash are both advanced models offered by Google AI, but they are optimized for different use cases.
   //
@@ -74,9 +85,7 @@ async function generateContent(
   // In essence, while both models are powerful and capable, Gemini 2.5 Pro is designed for maximum performance in complex reasoning tasks, whereas Gemini 2.5 Flash prioritizes cost-effectiveness and speed for broader, high-throughput applications.
   // get URLs retrieved for context
 
-  console.log(response.candidates[0].urlContextMetadata);
-
-  return response.text;
+  return output;
 }
 // [END googlegenaisdk_tools_urlcontext_with_txt]
 

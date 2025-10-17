@@ -23,21 +23,19 @@
 
 function main(projectId, jobId, bucketName, objectPrefix) {
   // [START storage_batch_create_job]
+
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Create a new batch job instance.
+   *
+   * @param {string} projectId Your Google Cloud project ID.
+   * Example: 'my-project-id'
+   * @param {string} bucketName The name of your GCS bucket.
+   * Example: 'your-gcp-bucket-name'
+   * @param {string} jobId A unique identifier for this job.
+   * Example: '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5'
+   * @param {string} objectPrefix The prefix of objects to include in the operation.
+   * Example: 'prefix1'
    */
-
-  // Your Google Cloud project ID.
-  // const projectId = 'my-project-id';
-
-  // The name of your GCS bucket
-  // const bucketName = 'bucketName';
-
-  // A unique identifier for this job.
-  // const jobId = '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5';
-
-  // The prefix of objects to include in the operation.
-  // const objectPrefix = 'prefix1';
 
   // Imports the Control library
   const {StorageBatchOperationsClient} =
@@ -70,10 +68,18 @@ function main(projectId, jobId, bucketName, objectPrefix) {
       },
     };
 
-    // Run request
-    const [operation] = await client.createJob(request);
-    const [response] = await operation.promise();
-    console.log(`Created job: ${response.name}`);
+    try {
+      // Run the request, which returns an Operation object
+      const [operation] = await client.createJob(request);
+      console.log(`Waiting for operation ${operation.name} to complete...`);
+
+      // Wait for the operation to complete and get the final resource
+      const [response] = await operation.promise();
+      console.log(`Created job: ${response.name}`);
+    } catch (error) {
+      console.error('Failed to create batch job:', error.message);
+      throw error;
+    }
   }
 
   createJob();

@@ -24,11 +24,15 @@
 function main(projectId) {
   // [START storage_batch_list_jobs]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Lists all Jobs operation is used to query the status and configuration of all
+   * Storage Batch Operations jobs within a specific Google Cloud project.
+   * This feature is essential for tasks that affect a large number of objects,
+   * such as changing storage classes, deleting objects, or running custom functions
+   * on object metadata.
+   *
+   * @param {string} projectId Your Google Cloud project ID.
+   * Example: 'my-project-id'
    */
-
-  // Your Google Cloud project ID.
-  // const projectId = 'my-project-id';
 
   // Imports the Control library
   const {StorageBatchOperationsClient} =
@@ -45,10 +49,26 @@ function main(projectId) {
       parent,
     };
 
-    // Run request
-    const [response] = await client.listJobs(request);
-    for (const job of response) {
-      console.log(job.name);
+    try {
+      // Run request. The response is an array where the first element is the list of jobs.
+      const [response] = await client.listJobs(request);
+      if (response && response.length > 0) {
+        console.log(
+          `Found ${response.length} batch jobs for project: ${projectId}`
+        );
+        for (const job of response) {
+          console.log(job.name);
+        }
+      } else {
+        // Case: Successful but empty list (No batch jobs found)
+        console.log(`No batch jobs found for project: ${projectId}.`);
+      }
+    } catch (error) {
+      console.error(
+        `Error listing batch jobs for project ${projectId}:`,
+        error.message
+      );
+      throw error;
     }
   }
 

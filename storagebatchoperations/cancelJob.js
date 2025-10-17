@@ -23,15 +23,18 @@
 
 function main(projectId, jobId) {
   // [START storage_batch_cancel_job]
+
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Cancel a batch job instance.
+   *
+   * The operation to cancel a batch job instance in Google Cloud Storage (GCS) is used to stop
+   * a running or queued asynchronous task that is currently processing a large number of GCS objects.
+   *
+   * @param {string} projectId The Google Cloud project ID.
+   * Example: 'my-project-id'
+   * @param {string} jobId A unique identifier for this job.
+   * Example: '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5'
    */
-
-  // Your Google Cloud project ID.
-  // const projectId = 'my-project-id';
-
-  // A unique identifier for this job.
-  // const jobId = '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5';
 
   // Imports the Control library
   const {StorageBatchOperationsClient} =
@@ -52,13 +55,30 @@ function main(projectId, jobId) {
     try {
       await client.cancelJob(request);
       console.log(`Cancelled job: ${name}`);
-    } catch (err) {
+    } catch (error) {
       // This might be expected if the job completed quickly or failed creation
-      console.log(`INFO: cancelJob threw: ${err.message}`);
+      console.error(
+        `Error canceling batch jobs for jobId ${jobId}:`,
+        error.message
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5) error can occur if the batch job does not exist.
+        console.error(
+          `Ensure the job '${jobId}' exists in project '${projectId}'.`
+        );
+      } else if (error.code === 9) {
+        // FAILED_PRECONDITION (gRPC code 9) can occur if the job is already being cancelled
+        // or is not in a RUNNING state that allows the cancel operation.
+        console.error(
+          `Batch job '${jobId}' may not be in a state that allows canceling (e.g., must be RUNNING).`
+        );
+      }
+      throw error;
     }
   }
 
-  cancelJob().catch(console.error);
+  cancelJob();
   // [END storage_batch_cancel_job]
 }
 

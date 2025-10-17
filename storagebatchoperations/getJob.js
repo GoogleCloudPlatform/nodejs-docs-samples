@@ -24,14 +24,17 @@
 function main(projectId, jobId) {
   // [START storage_batch_get_job]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Retrieves details of a specific batch job instance.
+   *
+   * This operation is used to retrieve the detailed current state, execution status,
+   * and original configuration of a specific Batch Operation job that was previously
+   * created for a Google Cloud Storage bucket.
+   *
+   * @param {string} projectId Your Google Cloud project ID.
+   * Example: 'my-project-id'
+   * @param {string} jobId A unique identifier for this job.
+   * Example: '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5'
    */
-
-  // Your Google Cloud project ID.
-  // const projectId = 'my-project-id';
-
-  // A unique identifier for this job.
-  // const jobId = '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5';
 
   // Imports the Control library
   const {StorageBatchOperationsClient} =
@@ -48,9 +51,29 @@ function main(projectId, jobId) {
       name,
     };
 
-    // Run request
-    const [response] = await client.getJob(request);
-    console.log(`Got job: ${response.name}`);
+    try {
+      // Run request
+      const [response] = await client.getJob(request);
+      console.log(`Batch job details for '${jobId}':`);
+      console.log(`  Name: ${response.name}`);
+      console.log(`  State: ${response.state}`);
+      console.log(
+        `  Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
+      );
+    } catch (error) {
+      console.error(
+        `Error retrieving batch jobs for jobId ${jobId}:`,
+        error.message
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5) error can occur if the batch job does not exist.
+        console.error(
+          `Ensure the job '${jobId}' exists in project '${projectId}'.`
+        );
+      }
+      throw error;
+    }
   }
 
   getJob();

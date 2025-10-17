@@ -24,14 +24,16 @@
 function main(projectId, jobId) {
   // [START storage_batch_delete_job]
   /**
-   * TODO(developer): Uncomment these variables before running the sample.
+   * Delete a batch job instance.
+   *
+   * This operation is used to remove a completed, failed, or cancelled Batch Operation
+   * job from the system's list. It is essentially a cleanup action.
+   *
+   * @param {string} projectId Your Google Cloud project ID.
+   * Example: 'my-project-id'
+   * @param {string} jobId A unique identifier for this job.
+   * Example: '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5'
    */
-
-  // Your Google Cloud project ID.
-  // const projectId = 'my-project-id';
-
-  // A unique identifier for this job.
-  // const jobId = '94d60cc1-2d95-41c5-b6e3-ff66cd3532d5';
 
   // Imports the Control library
   const {StorageBatchOperationsClient} =
@@ -48,9 +50,24 @@ function main(projectId, jobId) {
       name,
     };
 
-    // Run request
-    await client.deleteJob(request);
-    console.log(`Deleted job: ${name}`);
+    try {
+      // Run request
+      await client.deleteJob(request);
+      console.log(`Deleted job: ${name}`);
+    } catch (error) {
+      console.error(
+        `Error deleting batch jobs for jobId ${jobId}:`,
+        error.message
+      );
+
+      if (error.code === 5) {
+        // NOT_FOUND (gRPC code 5) error can occur if the batch job does not exist.
+        console.error(
+          `Ensure the job '${jobId}' exists in project '${projectId}'.`
+        );
+      }
+      throw error;
+    }
   }
 
   deleteJob();

@@ -22,7 +22,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const projectId = process.env.GCLOUD_PROJECT;
 const bucketPrefix = 'sbo-samples';
 const bucketName = `${bucketPrefix}-${uuid.v4()}`;
-const storage = new Storage();
+const storage = new Storage(projectId);
 const bucket = new Bucket(storage, bucketName);
 const jobId = uuid.v4();
 const jobName = `projects/${projectId}/locations/global/jobs/${jobId}`;
@@ -58,24 +58,36 @@ describe('Batch Operations', () => {
 
   it('should run quickstart', async () => {
     const output = execSync(`node quickstart.js ${projectId} ${jobId}`);
-    assert.match(output, /Got job:/);
+    const detailsHeader = `Batch job details for '${jobId}':`;
+    assert.match(output, new RegExp(detailsHeader));
+    assert.match(output, /Name:/);
     assert.match(output, new RegExp(jobName));
+    assert.match(output, /State:/);
+    assert.match(output, /Create Time:/);
   });
 
   it('should get a job', async () => {
     const output = execSync(`node getJob.js ${projectId} ${jobId}`);
-    assert.match(output, /Got job:/);
+    const detailsHeader = `Batch job details for '${jobId}':`;
+    assert.match(output, new RegExp(detailsHeader));
+    assert.match(output, /Name:/);
     assert.match(output, new RegExp(jobName));
+    assert.match(output, /State:/);
+    assert.match(output, /Create Time:/);
   });
 
-  it('should cancel a job', async () => {
+  it('should cancel a job (or gracefully handle terminal state)', async () => {
     try {
       const output = execSync(`node cancelJob.js ${projectId} ${jobId}`);
       assert.match(output, /Cancelled job:/);
       assert.match(output, new RegExp(jobName));
     } catch (error) {
       // This might be expected if the job completed quickly or failed creation
-      assert.match(error.message, /INFO: cancelJob threw: /);
+      const errorMessage = error.stderr.toString();
+      assert.match(
+        errorMessage,
+        /9 FAILED_PRECONDITION: Job run.* is in a terminal state and can not be changed./
+      );
     }
   });
 

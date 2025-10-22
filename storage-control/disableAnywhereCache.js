@@ -88,9 +88,6 @@ function main(bucketName, cacheName) {
       }
       throw error;
     }
-    // Run request
-    const [response] = await controlClient.disableAnywhereCache(request);
-    console.log(`Disabled anywhere cache: ${response.name}.`);
   }
 
   callDisableAnywhereCache();

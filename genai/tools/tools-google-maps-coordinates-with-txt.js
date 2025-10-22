@@ -14,13 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_code_exec_with_txt]
+// [START googlegenaisdk_tools_google_maps_coordinates_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateAndExecuteCode(
+async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -32,45 +32,33 @@ async function generateAndExecuteCode(
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents:
-      'Calculate 20th fibonacci number. Then find the nearest palindrome to it.',
+    contents: 'Where can I get the best espresso near me?',
     config: {
-      tools: [{codeExecution: {}}],
-      temperature: 0,
+      tools: [
+        {
+          googleMaps: {},
+        },
+      ],
+      toolConfig: {
+        retrievalConfig: {
+          latLng: {
+            latitude: 40.7128,
+            longitude: -74.006,
+          },
+          languageCode: 'en_US',
+        },
+      },
     },
   });
 
-  console.debug(response.executableCode);
-
+  console.log(response.text);
   // Example response:
-  // Code:
-  // function fibonacci(n) {
-  //   if (n <= 0) {
-  //     return 0;
-  //   } else if (n === 1) {
-  //     return 1;
-  //   } else {
-  //     let a = 0, b = 1;
-  //     for (let i = 2; i <= n; i++) {
-  //       [a, b] = [b, a + b];
-  //     }
-  //     return b;
-  //   }
-  // }
-  //
-  // const fib20 = fibonacci(20);
-  // console.log(`fib20=${fib20}`);
+  // 'Here are some of the top-rated places to get espresso near you: ...'
 
-  console.debug(response.codeExecutionResult);
-
-  // Outcome:
-  // fib20=6765
-
-  return response.codeExecutionResult;
+  return response.text;
 }
-
-// [END googlegenaisdk_tools_code_exec_with_txt]
+// [END googlegenaisdk_tools_google_maps_coordinates_with_txt]
 
 module.exports = {
-  generateAndExecuteCode,
+  generateContent,
 };

@@ -55,10 +55,10 @@ function main(projectId, jobId) {
       // Run request
       const [response] = await client.getJob(request);
       console.log(`Batch job details for '${jobId}':`);
-      console.log(`  Name: ${response.name}`);
-      console.log(`  State: ${response.state}`);
+      console.log(`Name: ${response.name}`);
+      console.log(`State: ${response.state}`);
       console.log(
-        `  Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
+        `Create Time: ${new Date(response.createTime.seconds * 1000).toISOString()}`
       );
     } catch (error) {
       console.error(

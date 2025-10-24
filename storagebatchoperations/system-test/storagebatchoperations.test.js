@@ -22,7 +22,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const projectId = process.env.GCLOUD_PROJECT;
 const bucketPrefix = 'sbo-samples';
 const bucketName = `${bucketPrefix}-${uuid.v4()}`;
-const storage = new Storage(projectId);
+const storage = new Storage({projectId: projectId});
 const bucket = new Bucket(storage, bucketName);
 const jobId = uuid.v4();
 const jobName = `projects/${projectId}/locations/global/jobs/${jobId}`;

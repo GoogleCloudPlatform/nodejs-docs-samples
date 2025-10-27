@@ -68,7 +68,7 @@ async function generateLiveGoogleSearch(
   });
 
   const textInput =
-    'When did the last Poland vs. Portugal soccer match happen?';
+    'When did the last Brazil vs. Argentina soccer match happen?';
   console.log('> ', textInput, '\n');
 
   await session.sendClientContent({

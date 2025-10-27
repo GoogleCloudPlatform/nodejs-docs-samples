@@ -22,20 +22,19 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 // (DEVELOPER) put here your memory corpus
-const MEMORY_CORPUS =
-  'projects/cloud-ai-devrel-softserve/locations/us-central1/ragCorpora/2305843009213693952';
+const RAG_CORPUS_ID = '';
 
 async function generateLiveRagTextResponse(
-  memoryCorpus = MEMORY_CORPUS,
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+  location = GOOGLE_CLOUD_LOCATION,
+  rag_corpus_id = RAG_CORPUS_ID
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
-
+  const memoryCorpus = `projects/${projectId}/locations/${location}/ragCorpora/${rag_corpus_id}`;
   const modelId = 'gemini-2.0-flash-live-preview-04-09';
 
   // RAG store config

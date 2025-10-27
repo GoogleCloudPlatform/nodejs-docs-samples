@@ -50,16 +50,16 @@ describe('batchpredict-with-gcs', () => {
     this.timeout(500000);
     this.retries(4);
     await delay(this.test);
-    const bqOutput = await getGcsOutputUri();
+    const gcsOutput = await getGcsOutputUri();
     try {
       const output = await sample.runBatchPredictionJob(
-        bqOutput.uri,
+        gcsOutput.uri,
         projectId,
         location
       );
       assert.notEqual(output, undefined);
     } finally {
-      await bqOutput.cleanup();
+      await gcsOutput.cleanup();
     }
   });
 });

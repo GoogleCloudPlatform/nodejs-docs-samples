@@ -64,10 +64,10 @@ async function runBatchPredictionJob(
     await new Promise(resolve => setTimeout(resolve, 30000));
     job = await client.batches.get({name: job.name});
     console.log(`Job state: ${job.state}`);
-    if (job.state === 'JOB_STATE_FAILED') {
-      console.log(`Error: ${job.state}`);
-      break;
-    }
+    // if (job.state === 'JOB_STATE_FAILED') {
+    //   console.log(`Error: ${job.state}`);
+    //   break;
+    // }
   }
 
   // Example response:

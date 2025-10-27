@@ -16,13 +16,69 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const sinon = require('sinon');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../live/live-conversation-audio-with-audio');
 const {delay} = require('./util');
+const proxyquire = require('proxyquire');
 
 describe('live-conversation-audio-with-audio', () => {
   it('should generate content in a live session conversation from a text prompt', async function () {
+    const mockClient = {
+      live: {
+        connect: async (opts = {}) => {
+          setImmediate(() =>
+            opts.callbacks.onmessage({
+              serverContent: {
+                inputTranscription: 'Hello Gemini',
+                outputTranscription: 'Hi Mocked Gemini there!',
+                modelTurn: {
+                  parts: [
+                    {
+                      inlineData: {
+                        data: Buffer.from('fake audio data').toString('base64'),
+                      },
+                    },
+                  ],
+                },
+                turnComplete: false,
+              },
+            })
+          );
+
+          setImmediate(() =>
+            opts.callbacks.onmessage({
+              serverContent: {
+                modelTurn: {parts: []},
+                turnComplete: true,
+              },
+            })
+          );
+
+          return {
+            sendRealtimeInput: async () => {},
+            close: async () => {},
+          };
+        },
+      },
+    };
+
+    const sample = proxyquire('../live/live-conversation-audio-with-audio', {
+      '@google/genai': {
+        GoogleGenAI: function () {
+          return mockClient;
+        },
+        Modality: {AUDIO: 'AUDIO'},
+      },
+      fs: {
+        readFileSync: sinon.stub().returns(Buffer.alloc(100, 0)),
+        writeFileSync: sinon.stub().returns(),
+      },
+      path: {
+        join: (...args) => args.join('/'),
+      },
+    });
+
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);

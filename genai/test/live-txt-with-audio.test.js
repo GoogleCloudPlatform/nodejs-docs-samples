@@ -32,7 +32,7 @@ describe('live-txt-with-audio', () => {
     const fakeClient = {
       live: {
         connect: async (opts = {}) => {
-          console.log('Mock is called'); // <--- 👈
+          console.log('Mock is called');
 
           if (
             opts &&

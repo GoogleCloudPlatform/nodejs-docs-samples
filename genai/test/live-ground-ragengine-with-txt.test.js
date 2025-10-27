@@ -15,50 +15,53 @@
 'use strict';
 
 const {assert} = require('chai');
-const sinon = require('sinon');
-const {describe, it, beforeEach, afterEach} = require('mocha');
+const {describe, it} = require('mocha');
+const proxyquire = require('proxyquire');
 
-const sample = require('../live/live-ground-ragengine-with-txt');
 const {delay} = require('./util');
 
 describe('live-ground-ragengine-with-txt', () => {
-  let mockClient, mockSession;
-
-  beforeEach(() => {
-    mockSession = {
-      async *receive() {
-        yield {
-          text: 'In December 2023, Google launched Gemini, their "most capable and general model". It\'s multimodal, meaning it understands and combines different types of information like text, code, audio, images, and video.',
-        };
-      },
-      sendClientContent: sinon.stub().resolves(),
-      close: sinon.stub().resolves(),
+  it('should return text from mocked RAG session', async function () {
+    const fakeSession = {
+      sendClientContent: async () => {},
+      close: async () => {},
     };
 
-    mockClient = {
-      aio: {
-        live: {
-          connect: sinon.stub().resolves(mockSession),
+    const mockClient = {
+      live: {
+        connect: async (opts = {}) => {
+          setImmediate(() =>
+            opts.callbacks.onmessage({
+              text: 'In December 2023, Google launched Gemini...',
+              serverContent: {turnComplete: false},
+            })
+          );
+          setImmediate(() =>
+            opts.callbacks.onmessage({
+              text: 'Mock final message.',
+              serverContent: {turnComplete: true},
+            })
+          );
+
+          return fakeSession;
         },
       },
     };
 
-    sinon.stub(require('@google/genai'), 'GoogleGenAI').returns(mockClient);
-  });
+    const sample = proxyquire('../live/live-ground-ragengine-with-txt', {
+      '@google/genai': {
+        GoogleGenAI: function () {
+          return mockClient;
+        },
+        Modality: {TEXT: 'TEXT'},
+      },
+    });
 
-  afterEach(() => {
-    sinon.restore();
-  });
-
-  it('should return text from mocked RAG session', async function () {
-    this.timeout(180000);
+    this.timeout(10000);
     this.retries(4);
     await delay(this.test);
-
     const output = await sample.generateLiveRagTextResponse();
-
     console.log('Generated output:', output);
-
     assert(output.length > 0);
   });
 });

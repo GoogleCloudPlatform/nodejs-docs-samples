@@ -18,11 +18,64 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../live/live-txt-with-audio');
 const {delay} = require('./util');
+
+const proxyquire = require('proxyquire');
 
 describe('live-txt-with-audio', () => {
   it('should generate txt content in a live session from an audio', async function () {
+    const fakeFetch = async () => ({
+      ok: true,
+      arrayBuffer: async () => Buffer.from('fake audio'),
+    });
+
+    const fakeClient = {
+      live: {
+        connect: async (opts = {}) => {
+          console.log('Mock is called'); // <--- 👈
+
+          if (
+            opts &&
+            opts.callbacks &&
+            typeof opts.callbacks.onmessage === 'function'
+          ) {
+            setImmediate(() =>
+              opts.callbacks.onmessage({
+                text: 'Yes, I can hear you.',
+                serverContent: {
+                  turnComplete: false,
+                },
+              })
+            );
+
+            setImmediate(() =>
+              opts.callbacks.onmessage({
+                text: 'Here is the final response.',
+                serverContent: {
+                  turnComplete: true,
+                },
+              })
+            );
+          }
+
+          return {
+            sendRealtimeInput: async () => {},
+            close: async () => {},
+          };
+        },
+      },
+    };
+
+    const sample = proxyquire('../live/live-txt-with-audio', {
+      'node-fetch': fakeFetch,
+      '@google/genai': {
+        GoogleGenAI: function () {
+          return fakeClient;
+        },
+        Modality: {TEXT: 'TEXT'},
+      },
+    });
+
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);

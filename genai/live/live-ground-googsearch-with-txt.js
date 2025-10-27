@@ -83,10 +83,11 @@ async function generateLiveGoogleSearch(
   }
 
   // Example output:
-  //> When did the last Poland vs. Portugal soccer match happen?
-  // Received text: The most recent match between Portugal and Poland took place on November 15,
-  // Received text: 2024, where Portugal won 5-1. There was also a match
-  // Received text: on October 12, 2024, where Poland won 3-1.
+  // > When did the last Brazil vs. Argentina soccer match happen?
+  // Received text: The last
+  // Received text: Brazil vs. Argentina soccer match was on March 25, 202
+  // Received text: 5.Argentina won 4-1 in the 2026 FIFA World Cup
+  // Received text: qualifier.
 
   session.close();
   return turns;

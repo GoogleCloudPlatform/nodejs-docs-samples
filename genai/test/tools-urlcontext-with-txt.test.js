@@ -17,14 +17,16 @@
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
+const sample = require('../tools/tools-urlcontext-with-txt');
 const {delay} = require('./util');
+const {assert} = require('chai');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
+describe('tools-urlcontext-with-txt', () => {
+  it('should create urlcontext with txt', async function () {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    await sample.generateFunctionDesc(projectId);
+    const output = await sample.generateContent(projectId);
+    assert(output.length > 0);
   });
 });

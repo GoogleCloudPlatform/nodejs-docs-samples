@@ -17,14 +17,16 @@
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../tools/tools-func-desc-with-txt.js');
+const sample = require('../tools/tools-google-maps-coordinates-with-txt');
 const {delay} = require('./util');
+const {assert} = require('chai');
 
-describe('tools-func-desc-with-txt', async () => {
-  it('should generate a function call', async function () {
+describe('tools-google-maps-coordinates-with-txt', () => {
+  it('should use google maps coordinates', async function () {
     this.timeout(180000);
     this.retries(4);
     await delay(this.test);
-    await sample.generateFunctionDesc(projectId);
+    const output = await sample.generateContent(projectId);
+    assert(output.length > 0);
   });
 });

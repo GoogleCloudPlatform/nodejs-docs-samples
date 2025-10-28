@@ -23,7 +23,7 @@ const {delay} = require('./util');
 
 describe('ctrlgen-with-enum-class-schema', () => {
   it('should generate text content matching enum schema', async function () {
-    this.timeout(100000);
+    this.timeout(180000);
     this.retries(4);
     await delay(this.test);
     const output = await sample.generateEnumClassSchema(projectId);

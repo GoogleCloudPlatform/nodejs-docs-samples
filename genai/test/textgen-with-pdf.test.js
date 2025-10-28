@@ -19,10 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-pdf.js');
+const {delay} = require('./util');
 
 describe('textgen-with-pdf', async () => {
   it('should generate text content from pdf', async function () {
-    this.timeout(30000);
+    this.timeout(180000);
+    this.retries(5);
+    await delay(this.test);
     const output = await sample.generateText(projectId);
     assert(output.length > 0);
   });

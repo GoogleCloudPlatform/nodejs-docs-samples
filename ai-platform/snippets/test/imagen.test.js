@@ -66,7 +66,8 @@ describe('AI platform edit image using Imagen inpainting and outpainting', () =>
   });
 });
 
-describe('AI platform get image captions and responses using Imagen', () => {
+// b/452720552
+describe.skip('AI platform get image captions and responses using Imagen', () => {
   it('should get short form captions for an image', async () => {
     const stdout = execSync('node ./imagen-get-short-form-image-captions.js', {
       cwd,

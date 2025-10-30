@@ -18,15 +18,13 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../thinking/thinking-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../live/live-func-call-with-txt');
 
-describe('thinking-with-txt', () => {
-  it('should return Thought Process', async function () {
-    this.timeout(50000);
-    this.retries(4);
-    await delay(this.test);
-    const output = await sample.generateWithThoughts(projectId);
+describe('live-func-call-with-txt', () => {
+  it('should generate function call in a live session from a text prompt', async function () {
+    this.timeout(180000);
+    const output = await sample.generateLiveFunctionCall(projectId);
+    console.log('Generated output:', output);
     assert(output.length > 0);
   });
 });

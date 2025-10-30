@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_live_ground_ragengine_with_txt]
+// [START googlegenaisdk_live_func_call_with_txt]
 
 'use strict';
 
@@ -21,39 +21,26 @@ const {GoogleGenAI, Modality} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-// (DEVELOPER) put here your memory corpus
-const RAG_CORPUS_ID = '';
-
-async function generateLiveRagTextResponse(
+async function generateLiveFunctionCall(
   projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION,
-  rag_corpus_id = RAG_CORPUS_ID
+  location = GOOGLE_CLOUD_LOCATION
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
-  const memoryCorpus = `projects/${projectId}/locations/${location}/ragCorpora/${rag_corpus_id}`;
-  const modelId = 'gemini-2.0-flash-live-preview-04-09';
 
-  // RAG store config
-  const ragStore = {
-    ragResources: [
-      {
-        ragCorpus: memoryCorpus, // Use memory corpus if you want to store context
-      },
-    ],
-    storeContext: true, // sink context into your memory corpus
-  };
+  const modelId = 'gemini-2.0-flash-live-preview-04-09';
 
   const config = {
     responseModalities: [Modality.TEXT],
     tools: [
       {
-        retrieval: {
-          vertexRagStore: ragStore,
-        },
+        functionDeclarations: [
+          {name: 'turn_on_the_lights'},
+          {name: 'turn_off_the_lights'},
+        ],
       },
     ],
   };
@@ -73,6 +60,24 @@ async function generateLiveRagTextResponse(
     while (!done) {
       const message = await waitMessage();
       turns.push(message);
+
+      if (message.toolCall) {
+        for (const fc of message.toolCall.functionCalls) {
+          console.log(`Model requested function call: ${fc.name}`);
+
+          await session.sendToolResponse({
+            functionResponses: [
+              {
+                id: fc.id,
+                name: fc.name,
+                response: {result: 'ok'},
+              },
+            ],
+          });
+          console.log(`Sent tool response for ${fc.name}:`, {result: 'ok'});
+        }
+      }
+
       if (message.serverContent && message.serverContent.turnComplete) {
         done = true;
       }
@@ -89,7 +94,7 @@ async function generateLiveRagTextResponse(
     },
   });
 
-  const textInput = 'What are newest gemini models?';
+  const textInput = 'Turn on the lights please';
   console.log('> ', textInput, '\n');
 
   await session.sendClientContent({
@@ -97,27 +102,24 @@ async function generateLiveRagTextResponse(
   });
 
   const turns = await handleTurn();
-  const response = [];
 
   for (const turn of turns) {
     if (turn.text) {
-      response.push(turn.text);
+      console.log('Received text:', turn.text);
     }
   }
 
-  console.log(response.join(''));
-
   // Example output:
-  // > What are newest gemini models?
-  //  In December 2023, Google launched Gemini, their "most capable and general model". It's multimodal, meaning it understands and combines different types of information like text, code, audio, images, and video.
+  //>> Turn on the lights please
+  // Model requested function call: turn_on_the_lights
+  // Sent tool response for turn_on_the_lights: { result: 'ok' }
 
   session.close();
-
-  return response;
+  return turns;
 }
 
-// [END googlegenaisdk_live_ground_ragengine_with_txt]
+// [END googlegenaisdk_live_func_call_with_txt]
 
 module.exports = {
-  generateLiveRagTextResponse,
+  generateLiveFunctionCall,
 };

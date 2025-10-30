@@ -19,10 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../thinking/thinking-with-txt.js');
+const {delay} = require('./util');
 
 describe('thinking-with-txt', () => {
   it('should return Thought Process', async function () {
     this.timeout(50000);
+    this.retries(4);
+    await delay(this.test);
     const output = await sample.generateWithThoughts(projectId);
     assert(output.length > 0);
   });

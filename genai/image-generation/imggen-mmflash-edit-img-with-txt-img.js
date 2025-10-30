@@ -14,13 +14,15 @@
 
 'use strict';
 
-// [START googlegenaisdk_imggen_mmflash_with_txt]
+// [START googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 const fs = require('fs');
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION =
   process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+
+const FILE_NAME = 'test-data/example-image-eiffel-tower.png';
 
 async function generateImage(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -32,48 +34,36 @@ async function generateImage(
     location: location,
   });
 
-  const response = await client.models.generateContentStream({
+  const image = fs.readFileSync(FILE_NAME);
+
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image',
-    contents:
-      'Generate an image of the Eiffel tower with fireworks in the background.',
+    contents: [image, 'Edit this image to make it look like a cartoon'],
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },
   });
 
-  const generatedFileNames = [];
-  let imageIndex = 0;
-
-  for await (const chunk of response) {
-    const text = chunk.text;
-    const data = chunk.data;
-    if (text) {
-      console.debug(text);
-    } else if (data) {
+  for (const part of response.candidates[0].content.parts) {
+    if (part.text) {
+      console.log(`${part.text}`);
+    } else if (part.inlineData) {
       const outputDir = 'output-folder';
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, {recursive: true});
       }
-      const fileName = `${outputDir}/generate_content_streaming_image_${imageIndex++}.png`;
-      console.debug(`Writing response image to file: ${fileName}.`);
-      try {
-        fs.writeFileSync(fileName, data);
-        generatedFileNames.push(fileName);
-      } catch (error) {
-        console.error(`Failed to write image file ${fileName}:`, error);
-      }
+      const imageBytes = Buffer.from(part.inlineData.data, 'base64');
+      const filename = `${outputDir}/bw-example-image.png`;
+      fs.writeFileSync(filename, imageBytes);
     }
   }
 
   // Example response:
-  //  I will generate an image of the Eiffel Tower at night, with a vibrant display of
-  //  colorful fireworks exploding in the dark sky behind it. The tower will be
-  //  illuminated, standing tall as the focal point of the scene, with the bursts of
-  //  light from the fireworks creating a festive atmosphere.
-
-  return generatedFileNames;
+  // Okay, I will edit this image to give it a cartoonish style, with bolder outlines, simplified details, and more vibrant colors.
+  return response;
 }
-// [END googlegenaisdk_imggen_mmflash_with_txt]
+
+// [END googlegenaisdk_imggen_mmflash_edit_img_with_txt_img]
 
 module.exports = {
   generateImage,

@@ -14,16 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_vais_with_txt]
+// [START googlegenaisdk_tools_google_search_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-// (Developer) put your path Data Store
-const DATASTORE = `projects/${GOOGLE_CLOUD_PROJECT}/locations/${GOOGLE_CLOUD_LOCATION}/collections/default_collection/dataStores/data-store-id `;
 
-async function generateContent(
-  datastore = DATASTORE,
+async function generateGoogleSearch(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -31,37 +28,30 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
-    httpOptions: {
-      apiVersion: 'v1',
-    },
   });
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: "How do I make an appointment to renew my driver's license?",
+    contents: 'When is the next total solar eclipse in the United States?',
     config: {
       tools: [
         {
-          retrieval: {
-            vertexAiSearch: {
-              datastore: datastore,
-            },
-          },
+          googleSearch: {},
         },
       ],
     },
   });
 
-  console.debug(response.text);
+  console.log(response.text);
 
   // Example response:
-  //    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
+  //    'The next total solar eclipse in United States will occur on ...'
 
   return response.text;
 }
 
-// [END googlegenaisdk_tools_vais_with_txt]
+// [END googlegenaisdk_tools_google_search_with_txt]
 
 module.exports = {
-  generateContent,
+  generateGoogleSearch,
 };

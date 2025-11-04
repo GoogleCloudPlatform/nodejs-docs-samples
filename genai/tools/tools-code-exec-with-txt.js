@@ -20,7 +20,7 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateAndExecuteCode(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -33,7 +33,7 @@ async function generateContent(
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents:
-      'What is the sum of the first 50 prime numbers? Generate and run code for the calculation, and make sure you get all 50.',
+      'Calculate 20th fibonacci number. Then find the nearest palindrome to it.',
     config: {
       tools: [{codeExecution: {}}],
       temperature: 0,
@@ -41,12 +41,36 @@ async function generateContent(
   });
 
   console.debug(response.executableCode);
+
+  // Example response:
+  // Code:
+  // function fibonacci(n) {
+  //   if (n <= 0) {
+  //     return 0;
+  //   } else if (n === 1) {
+  //     return 1;
+  //   } else {
+  //     let a = 0, b = 1;
+  //     for (let i = 2; i <= n; i++) {
+  //       [a, b] = [b, a + b];
+  //     }
+  //     return b;
+  //   }
+  // }
+  //
+  // const fib20 = fibonacci(20);
+  // console.log(`fib20=${fib20}`);
+
   console.debug(response.codeExecutionResult);
+
+  // Outcome:
+  // fib20=6765
 
   return response.codeExecutionResult;
 }
+
 // [END googlegenaisdk_tools_code_exec_with_txt]
 
 module.exports = {
-  generateContent,
+  generateAndExecuteCode,
 };

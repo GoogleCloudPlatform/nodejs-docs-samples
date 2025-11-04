@@ -14,16 +14,13 @@
 
 'use strict';
 
-// [START googlegenaisdk_tools_vais_with_txt]
+// [START googlegenaisdk_tools_google_maps_coordinates_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-// (Developer) put your path Data Store
-const DATASTORE = `projects/${GOOGLE_CLOUD_PROJECT}/locations/${GOOGLE_CLOUD_LOCATION}/collections/default_collection/dataStores/data-store-id `;
 
 async function generateContent(
-  datastore = DATASTORE,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -31,36 +28,36 @@ async function generateContent(
     vertexai: true,
     project: projectId,
     location: location,
-    httpOptions: {
-      apiVersion: 'v1',
-    },
   });
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
-    contents: "How do I make an appointment to renew my driver's license?",
+    contents: 'Where can I get the best espresso near me?',
     config: {
       tools: [
         {
-          retrieval: {
-            vertexAiSearch: {
-              datastore: datastore,
-            },
-          },
+          googleMaps: {},
         },
       ],
+      toolConfig: {
+        retrievalConfig: {
+          latLng: {
+            latitude: 40.7128,
+            longitude: -74.006,
+          },
+          languageCode: 'en_US',
+        },
+      },
     },
   });
 
-  console.debug(response.text);
-
+  console.log(response.text);
   // Example response:
-  //    'The process for making an appointment to renew your driver's license varies depending on your location. To provide you with the most accurate instructions...'
+  // 'Here are some of the top-rated places to get espresso near you: ...'
 
   return response.text;
 }
-
-// [END googlegenaisdk_tools_vais_with_txt]
+// [END googlegenaisdk_tools_google_maps_coordinates_with_txt]
 
 module.exports = {
   generateContent,

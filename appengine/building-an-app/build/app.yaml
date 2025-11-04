@@ -12,5 +12,5 @@
 # limitations under the License.
 
 # [START gae_build_app_yaml_node]
-runtime: nodejs20
+runtime: nodejs24
 # [END gae_build_app_yaml_node]

@@ -16,7 +16,7 @@
 runtime: nodejs
 env: flex
 runtime_config:
-  operating_system: ubuntu22
+  operating_system: ubuntu24
 # This sample incurs costs to run on the App Engine flexible environment.
 # The settings below are to reduce costs during testing and are not appropriate
 # for production use. For more information, see:

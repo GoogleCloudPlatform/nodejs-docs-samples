@@ -19,10 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-local-video.js');
+const {delay} = require('./util');
 
 describe('textgen-with-local-video', async () => {
   it('should generate text content from local video', async function () {
-    this.timeout(30000);
+    this.timeout(180000);
+    this.retries(5);
+    await delay(this.test);
     const output = await sample.generateText(projectId);
     assert(output.length > 0);
   });

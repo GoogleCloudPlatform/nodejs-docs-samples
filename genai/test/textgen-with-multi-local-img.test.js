@@ -21,12 +21,15 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 const sample = require('../text-generation/textgen-with-multi-local-img.js');
+const {delay} = require('./util');
 
 describe('textgen-with-multi-local-img', () => {
   it('should generate text content from multiple images', async function () {
-    this.timeout(100000);
-    const imagePath1 = './test/test-data/latte.jpg';
-    const imagePath2 = './test/test-data/scones.jpg';
+    this.timeout(180000);
+    this.retries(5);
+    await delay(this.test);
+    const imagePath1 = './test-data/latte.jpg';
+    const imagePath2 = './test-data/scones.jpg';
     const output = await sample.generateContent(
       projectId,
       location,

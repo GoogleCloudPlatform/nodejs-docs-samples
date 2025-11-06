@@ -18,18 +18,16 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-with-multi-img.js');
+
+const sample = require('../image-generation/imggen_virtual-try-on-with-txt-img');
 const {delay} = require('./util');
 
-describe('textgen-with-multi-img', () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
+describe('imggen_virtual-try-on-with-txt-img', async () => {
+  it('should return a response object containing image parts', async function () {
     this.timeout(180000);
-    this.retries(5);
+    this.retries(4);
     await delay(this.test);
-    const output = await sample.generateContent(projectId);
-    console.log('Generated output:', output);
-
-    assert.isString(output, 'Output should be a string');
-    assert.isAbove(output.length, 0, 'Output should not be empty');
+    const response = await sample.virtualTryOn(projectId);
+    assert(response);
   });
 });

@@ -23,7 +23,7 @@ const sample = require('../image-generation/imggen-raw-reference-with-txt-img');
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
 describe('imggen-raw-reference-with-txt-img', () => {
-  it('should return a GCS URI string', async function () {
+  it('should return an array of generated image URIs', async function () {
     this.timeout(180000);
     this.retries(4);
     const output = await createOutputGcsUri();

@@ -15,12 +15,7 @@
 const {Storage} = require('@google-cloud/storage');
 const {format} = require('date-fns');
 
-// local
-const gcsOutputBucket =
-  'example-cloud-bucket-5439474/nodejs-docs-samples-tests';
-
-//uncomment
-// const gcsOutputBucket = "nodejs-docs-samples-tests";
+const gcsOutputBucket = 'nodejs-docs-samples-tests';
 
 module.exports.createOutputGcsUri = async function () {
   const prefix = `text_output/${format(new Date(), 'yyyy-MM-dd-HH-mm-ss')}`;

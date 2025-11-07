@@ -28,6 +28,7 @@ async function generateImage(
   location = GOOGLE_CLOUD_LOCATION
 ) {
   const client = new GoogleGenAI({
+    vertexai: true,
     project: projectId,
     location: location,
   });

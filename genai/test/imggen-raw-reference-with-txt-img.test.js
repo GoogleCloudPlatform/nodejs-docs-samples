@@ -24,15 +24,24 @@ const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
 describe('imggen-raw-reference-with-txt-img', () => {
   it('should return an array of generated image URIs', async function () {
-    this.timeout(180000);
-    this.retries(4);
+    this.timeout(600000);
+    this.retries(3);
+
     const output = await createOutputGcsUri();
-    console.log(output.uri);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateImage(
-      output.uri,
-      projectId
-    );
-    assert(generatedFileNames.length > 0);
+    console.log('Output GCS URI:', output.uri);
+
+    try {
+      await delay(this.test);
+      const generatedFileNames = await sample.generateImage(
+        output.uri,
+        projectId
+      );
+      console.log('Generated files:', generatedFileNames);
+
+      assert(generatedFileNames.length > 0);
+    } catch (err) {
+      console.error('Image generation failed:', err);
+      throw err;
+    }
   });
 });

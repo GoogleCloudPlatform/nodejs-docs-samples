@@ -60,8 +60,7 @@ async function generateImage(
 
   const response = await client.models.editImage({
     model: 'imagen-3.0-capability-001',
-    prompt:
-      `a portrait of a woman[1] in the pose of the control image[2]in a watercolor style by a professional artist,
+    prompt: `a portrait of a woman[1] in the pose of the control image[2]in a watercolor style by a professional artist,
         light and low-contrast stokes, bright pastel colors, a warm atmosphere, clean background, grainy paper,
         bold visible brushstrokes, patchy details`,
     referenceImages: [subjectReferenceImage, controlReferenceImage],

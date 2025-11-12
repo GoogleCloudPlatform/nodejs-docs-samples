@@ -46,6 +46,7 @@ async function generateImage(
 
   const response = await client.models.editImage({
     model: 'imagen-3.0-capability-001',
+    // The '[1]' in the prompt corresponds to the controlReferenceImage.referenceId above.
     prompt: 'a watercolor painting of a red car[1] driving on a road',
     referenceImages: [controlReferenceImage],
     config: {

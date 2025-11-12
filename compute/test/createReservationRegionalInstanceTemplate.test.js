@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {getStaleReservations, deleteReservation} = require('./util');
 
@@ -31,7 +31,7 @@ describe('Create compute reservation using regional instance template', async ()
   const instanceTemplateName = 'pernament-region-template-name';
   const location = 'regions/us-central1';
 
-  before(async () => {
+  after(async () => {
     // Cleanup resources
     const reservations = await getStaleReservations(reservationPrefix);
     await Promise.all(
@@ -39,13 +39,6 @@ describe('Create compute reservation using regional instance template', async ()
         deleteReservation(reservation.zone, reservation.reservationName)
       )
     );
-  });
-
-  after(() => {
-    // Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
   });
 
   it('should create a new reservation', () => {

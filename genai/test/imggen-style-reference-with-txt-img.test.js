@@ -21,6 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-style-reference-with-txt-img');
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
+const location = 'us-central1';
 
 describe('imggen-style-reference-with-txt-img', async () => {
   it('should generate images from a text prompt with style reference', async function () {
@@ -31,7 +32,8 @@ describe('imggen-style-reference-with-txt-img', async () => {
     await delay(this.test);
     const generatedFileNames = await sample.generateImage(
       output.uri,
-      projectId
+      projectId,
+      location
     );
     assert(generatedFileNames.length > 0);
   });

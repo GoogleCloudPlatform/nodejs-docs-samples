@@ -21,6 +21,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-subj-refer-ctrl-refer-with-txt-imgs');
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
+const location = 'us-central1';
 
 describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', async () => {
   it('should generate images from a text prompt with subject reference image and control reference image', async function () {
@@ -31,7 +32,8 @@ describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', async () => {
     await delay(this.test);
     const generatedFileNames = await sample.generateImage(
       output.uri,
-      projectId
+      projectId,
+      location
     );
     assert(generatedFileNames.length > 0);
   });

@@ -20,6 +20,7 @@ const {describe, it} = require('mocha');
 const projectId = process.env.CAIP_PROJECT_ID;
 
 const sample = require('../image-generation/imggen-canny-ctrl-type-with-txt-img');
+const location = 'us-central1';
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
 
@@ -32,7 +33,8 @@ describe('imggen-canny-ctrl-type-with-txt-img', () => {
     await delay(this.test);
     const generatedFileNames = await sample.generateImage(
       output.uri,
-      projectId
+      projectId,
+      location
     );
     assert(generatedFileNames.length > 0);
   });

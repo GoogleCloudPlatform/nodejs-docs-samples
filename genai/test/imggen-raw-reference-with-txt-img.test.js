@@ -22,11 +22,12 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-raw-reference-with-txt-img');
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
+const location = 'us-central1';
 
 describe('imggen-raw-reference-with-txt-img', () => {
   it('should return an array of generated image URIs', async function () {
     this.timeout(600000);
-    // this.retries(3);
+    this.retries(3);
 
     const output = await createOutputGcsUri();
     console.log('Output GCS URI:', output.uri);
@@ -35,7 +36,8 @@ describe('imggen-raw-reference-with-txt-img', () => {
       await delay(this.test);
       const generatedFileNames = await sample.generateImage(
         output.uri,
-        projectId
+        projectId,
+        location
       );
       console.log('Generated files:', generatedFileNames);
 

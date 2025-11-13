@@ -22,6 +22,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../image-generation/imggen-canny-ctrl-type-with-txt-img');
 const {delay} = require('./util');
 const {createOutputGcsUri} = require('./imggen-util');
+
 describe('imggen-canny-ctrl-type-with-txt-img', () => {
   it('should return an array of generated image URIs', async function () {
     this.timeout(180000);

@@ -57,11 +57,11 @@ async function generateImage(
       outputGcsUri: outputGcsUri,
     },
   });
-  console.log(response.generatedImages);
 
+  console.log(response.generatedImages[0].image.gcsUri);
   // Example response:
   //  gs://your-bucket/your-prefix
-  return response.generatedImages;
+  return response.generatedImages[0].image.gcsUri;
 }
 // [END googlegenaisdk_imggen_canny_ctrl_type_with_txt_img]
 

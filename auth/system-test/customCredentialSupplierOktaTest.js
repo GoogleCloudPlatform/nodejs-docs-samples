@@ -17,7 +17,7 @@
 const assert = require('assert');
 const {
   authenticateWithOktaCredentials,
-} = require('../custom-credential-supplier-okta');
+} = require('../customCredentialSupplierOkta');
 
 describe('Custom Credential Supplier Okta', () => {
   const audience = process.env.GCP_WORKLOAD_AUDIENCE;
@@ -42,7 +42,7 @@ describe('Custom Credential Supplier Okta', () => {
       process.env.OKTA_DOMAIN,
       process.env.OKTA_CLIENT_ID,
       process.env.OKTA_CLIENT_SECRET,
-      impersonationUrl,
+      impersonationUrl
     );
 
     assert.strictEqual(metadata.name, bucketName);

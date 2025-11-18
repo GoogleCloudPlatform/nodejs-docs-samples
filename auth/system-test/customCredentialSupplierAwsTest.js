@@ -17,7 +17,7 @@
 const assert = require('assert');
 const {
   authenticateWithAwsCredentials,
-} = require('../custom-credential-supplier-aws');
+} = require('../customCredentialSupplierAws');
 
 describe('Custom Credential Supplier AWS', () => {
   const audience = process.env.GCP_WORKLOAD_AUDIENCE;
@@ -39,7 +39,7 @@ describe('Custom Credential Supplier AWS', () => {
     const metadata = await authenticateWithAwsCredentials(
       bucketName,
       audience,
-      impersonationUrl,
+      impersonationUrl
     );
 
     assert.strictEqual(metadata.name, bucketName);

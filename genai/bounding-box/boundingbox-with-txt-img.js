@@ -75,7 +75,7 @@ async function createBoundingBox(
     Return bounding boxes as an array with labels.
     Never return masks. Limit to 25 objects.
     If an object is present multiple times, give each object a unique label
-    according to its distinct characteristics (colors, size, position, etc.).
+    according to its distinct characteristics (colors, size, position, etc).
   `;
 
   const safetySettings = [

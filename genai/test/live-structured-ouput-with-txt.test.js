@@ -18,18 +18,13 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../text-generation/textgen-with-multi-img.js');
-const {delay} = require('./util');
+const sample = require('../live/live-structured-ouput-with-txt');
 
-describe('textgen-with-multi-img', () => {
-  it('should generate text content from a text prompt and multiple images', async function () {
-    this.timeout(180000);
-    this.retries(5);
-    await delay(this.test);
-    const output = await sample.generateContent(projectId);
+describe('live-structured-ouput-with-txt', () => {
+  it('should extract structured information from text input using the model', async function () {
+    this.timeout(18000);
+    const output = await sample.generateStructuredTextResponse(projectId);
     console.log('Generated output:', output);
-
-    assert.isString(output, 'Output should be a string');
-    assert.isAbove(output.length, 0, 'Output should not be empty');
+    assert(output.length > 0);
   });
 });

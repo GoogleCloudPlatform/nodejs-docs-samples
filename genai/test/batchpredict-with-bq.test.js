@@ -16,31 +16,24 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const {BigQuery} = require('@google-cloud/bigquery');
-
-const bigquery = new BigQuery();
-
-const BQ_OUTPUT_DATASET = `${process.env.BQ_OUTPUT_DATASET}.gen_ai_batch_prediction`;
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';
 const {delay} = require('./util');
 
-const sample = require('../batch-prediction/batchpredict-with-bq');
+const proxyquire = require('proxyquire');
+const {GoogleGenAI_Mock} = require('./batchprediction-utils');
+
+const sample = proxyquire('../batch-prediction/batchpredict-with-bq', {
+  '@google/genai': {
+    GoogleGenAI: GoogleGenAI_Mock,
+  },
+});
 
 async function getBqOutputUri() {
-  const dt = new Date();
-  const tableName = `text_output_${dt.getFullYear()}_${dt.getMonth() + 1}_${dt.getDate()}_T${dt.getHours()}_${dt.getMinutes()}_${dt.getSeconds()}`;
-  const tableUri = `${BQ_OUTPUT_DATASET}.${tableName}`;
-  const fullUri = `bq://${tableUri}`;
-
   return {
-    uri: fullUri,
-    async cleanup() {
-      await bigquery.dataset(BQ_OUTPUT_DATASET).table(tableName).delete({
-        ignoreNotFound: true,
-      });
-    },
+    uri: 'gs://mock/output',
+    async cleanup() {},
   };
 }
 

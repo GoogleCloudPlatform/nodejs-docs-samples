@@ -16,40 +16,34 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const {Storage} = require('@google-cloud/storage');
-
-const storage = new Storage();
-
-const GCS_OUTPUT_BUCKET = 'nodejs-docs-samples-tests';
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';
-const sample = require('../batch-prediction/batchpredict-embeddings-with-gcs');
 const {delay} = require('./util');
+const proxyquire = require('proxyquire');
+const {GoogleGenAI_Mock} = require('./batchprediction-utils');
+
+const sample = proxyquire(
+  '../batch-prediction/batchpredict-embeddings-with-gcs',
+  {
+    '@google/genai': {
+      GoogleGenAI: GoogleGenAI_Mock,
+    },
+  }
+);
 
 async function getGcsOutputUri() {
-  const dt = new Date();
-  const prefix = `text_output/${dt.toISOString()}`;
-  const fullUri = `gs://${GCS_OUTPUT_BUCKET}/${prefix}`;
-
   return {
-    uri: fullUri,
-    async cleanup() {
-      const [files] = await storage.bucket(GCS_OUTPUT_BUCKET).getFiles({
-        prefix,
-      });
-      for (const file of files) {
-        await file.delete();
-      }
-    },
+    uri: 'gs://mock/output',
+    async cleanup() {},
   };
 }
 
 describe('batchpredict-with-gcs', () => {
   it('should return the batch job state', async function () {
     this.timeout(500000);
-    // this.retries(4);
-    // await delay(this.test);
+    this.retries(4);
+    await delay(this.test);
     const gcsOutput = await getGcsOutputUri();
     try {
       const output = await sample.runBatchPredictionJob(

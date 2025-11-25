@@ -13,6 +13,9 @@
     "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js test/**/*.test.js"
   },
   "dependencies": {
+    "@google-cloud/bigquery": "^8.1.1",
+    "@google-cloud/storage": "^7.17.1",
+
     "@google/genai": "1.20.0",
     "axios": "^1.6.2",
     "google-auth-library": "^10.3.0",

@@ -52,16 +52,6 @@ async function generateVideo(
   return operation;
 }
 
-//todo
-// output GenerateVideosOperation {
-//   name: 'projects/cloud-ai-devrel-softserve/locations/us-central1/publishers/google/models/veo-3.0-generate-001/operations/33bcfb22-c402-4bae-80d8-e2f5b53e3be6',
-//   metadata: undefined,
-//   done: true,
-//   error: {
-//     code: 7,
-//     message: "service-448220130128@gcp-sa-aiplatform.iam.gserviceaccount.com does not have storage.objects.create access to the Google Cloud Storage object. Permission 'storage.objects.create' denied on resource (or it may not exist). service-448220130128@gcp-sa-aiplatform.iam.gserviceaccount.com does not have storage.objects.create access to the Google Cloud Storage object. Permission 'storage.objects.create' denied on resource (or it may not exist)."
-//   }
-// }
 
 // [END googlegenaisdk_videogen_with_txt]
 

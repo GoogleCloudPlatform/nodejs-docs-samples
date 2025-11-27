@@ -29,7 +29,7 @@ const GCS_OUTPUT_BUCKET = 'nodejs-docs-samples-tests';
 
 async function gcs_output_uri() {
   const dt = new Date();
-  const prefix = `text_output/${dt.toISOString()}`;
+  const prefix = `video_output/${dt.toISOString()}`;
   const fullUri = `gs://${GCS_OUTPUT_BUCKET}/${prefix}`;
 
   return {

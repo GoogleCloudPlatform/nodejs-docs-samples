@@ -54,7 +54,7 @@ async function generateVideo(
   if (operation.response) {
     console.log(operation.response.generatedVideos[0].video.uri);
   }
-  return operation;
+  return operation.response.generatedVideos[0].video.uri;
 }
 
 

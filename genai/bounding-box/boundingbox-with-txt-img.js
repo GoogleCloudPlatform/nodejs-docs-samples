@@ -105,8 +105,8 @@ async function createBoundingBox(
             type: 'INTEGER',
             format: 'int32',
           },
-          minItems: '4',
-          maxItems: '4',
+          minItems: 4,
+          maxItems: 4,
         },
         label: {
           type: 'STRING',

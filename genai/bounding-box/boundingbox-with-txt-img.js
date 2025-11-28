@@ -124,7 +124,7 @@ async function createBoundingBox(
         role: 'user',
         parts: [
           {
-            text: 'Output the positions of the socks with a face. Label according to position in the image.',
+            text: 'Output the positions of the socks with a face. Label according to position in the image',
           },
           {
             inlineData: {

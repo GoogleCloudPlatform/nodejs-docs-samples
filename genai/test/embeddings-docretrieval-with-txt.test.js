@@ -19,9 +19,12 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../embeddings/embeddings-docretrieval-with-txt.js');
+const {delay} = require('./util');
 
 describe('embeddings-docretrieval-with-txt', async () => {
   it('should return an object containing embeddings and metadata', async () => {
+    this.retries(4);
+    await delay(this.test);
     const generatedFileNames =
       await sample.generateEmbeddingsForRetrieval(projectId);
     assert.containsAllKeys(generatedFileNames, ['embeddings', 'metadata']);

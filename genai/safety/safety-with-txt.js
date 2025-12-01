@@ -63,17 +63,17 @@ async function generateWithSafetySettings(
     },
   });
 
-  console.log(response.text);
-  console.log(response.candidates[0].finishMessage);
-
-  for (const each of response.candidates[0].safetyRatings) {
-    console.log('\nCategory:', String(each.category));
-    console.log('Is Blocked:', each.blocked);
-    console.log('Probability:', each.probability);
-    console.log('Probability Score:', each.probabilityScore);
-    console.log('Severity:', each.severity);
-    console.log('Severity Score:', each.severityScore);
-  }
+  // console.log(response.text);
+  // console.log(response.candidates[0].finishMessage);
+  //
+  // for (const each of response.candidates[0].safetyRatings) {
+  //   console.log('\nCategory:', String(each.category));
+  //   console.log('Is Blocked:', each.blocked);
+  //   console.log('Probability:', each.probability);
+  //   console.log('Probability Score:', each.probabilityScore);
+  //   console.log('Severity:', each.severity);
+  //   console.log('Severity Score:', each.severityScore);
+  // }
 
   // Example response:
   //

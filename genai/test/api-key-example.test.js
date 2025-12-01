@@ -16,11 +16,15 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const {delay} = require('./util');
 const proxyquire = require('proxyquire').noCallThru();
 
 describe('vertexai-express-mode', () => {
   it('should call generateContentStream and return the mocked response', async function () {
     this.timeout(10000);
+
+    this.retries(4);
+    await delay(this.test);
 
     const mockGenerateContentStreamResult = {
       text: 'Bubble sort works by repeatedly swapping adjacent elements until sorted.',

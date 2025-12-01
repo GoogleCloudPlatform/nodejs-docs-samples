@@ -52,7 +52,6 @@ async function generateVideo(
   return operation.response.generatedVideos[0].video.uri;
 }
 
-
 // [END googlegenaisdk_videogen_with_txt]
 
 module.exports = {

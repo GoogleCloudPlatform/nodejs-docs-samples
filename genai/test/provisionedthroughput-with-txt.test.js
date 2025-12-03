@@ -21,8 +21,8 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../provisioned-throughput/provisionedthroughput-with-txt.js');
 const {delay} = require('./util');
 
-describe('provisionedthroughput-with-txt', () => {
-  it('should return provisioned throughput result', async function () {
+describe('provisioned-throughput-with-txt', () => {
+  it('should return provisioned throughput result', async () => {
     this.timeout(50000);
     this.retries(4);
     await delay(this.test);

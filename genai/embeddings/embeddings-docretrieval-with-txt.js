@@ -22,7 +22,10 @@ const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 async function generateEmbeddingsForRetrieval(
   projectId = GOOGLE_CLOUD_PROJECT
 ) {
-  const client = new GoogleGenAI(projectId);
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+  });
 
   const prompt = [
     "How do I get a driver's license/learner's permit?",

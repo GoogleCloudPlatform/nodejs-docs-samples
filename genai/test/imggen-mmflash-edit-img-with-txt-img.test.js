@@ -28,6 +28,7 @@ describe('imggen-mmflash-edit-img-with-txt-img', async () => {
     this.retries(4);
     await delay(this.test);
     const response = await sample.generateImage(projectId, location);
+    console.log(response);
     assert(response);
   });
 });

@@ -13,7 +13,7 @@
     "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js test/**/*.test.js"
   },
   "dependencies": {
-    "@google/genai": "^0.13.0",
+    "@google/genai": "1.30.0",
     "axios": "^1.6.2",
     "canvas": "^3.1.0",
     "google-auth-library": "^10.5.0",

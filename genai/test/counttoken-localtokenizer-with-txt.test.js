@@ -26,7 +26,7 @@ describe('counttoken-localtokenizer-with-txt', () => {
     this.timeout(18000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.counttokenLocalTokenizer(projectId);
+    const output = await sample.countTokenLocalTokenizer(projectId);
     assert(output > 0);
   });
 });

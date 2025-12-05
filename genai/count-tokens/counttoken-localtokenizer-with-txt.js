@@ -21,7 +21,7 @@ const {GoogleGenAI} = require('@google/genai');
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function counttokenLocalTokenizer() {
+async function countTokenLocalTokenizer() {
   const client = new GoogleGenAI({
     vertexai: true,
     project: GOOGLE_CLOUD_PROJECT,
@@ -44,5 +44,5 @@ async function counttokenLocalTokenizer() {
 // [END googlegenaisdk_counttoken_localtokenizer_with_txt]
 
 module.exports = {
-  counttokenLocalTokenizer,
+  countTokenLocalTokenizer,
 };

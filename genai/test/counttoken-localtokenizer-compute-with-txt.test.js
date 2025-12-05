@@ -22,7 +22,7 @@ const sample = require('../count-tokens/counttoken-localtokenizer-compute-with-t
 const {delay} = require('./util');
 
 describe('counttoken-localtokenizer-compute-with-txt', () => {
-  it('should return totalTokens from text prompt', async function () {
+  it('should return tokensInfo from text prompt', async function () {
     this.timeout(18000);
     this.retries(4);
     await delay(this.test);

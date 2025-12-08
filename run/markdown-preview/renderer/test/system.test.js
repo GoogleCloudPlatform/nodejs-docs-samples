@@ -74,7 +74,9 @@ describe('End-to-End Tests', () => {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
       method: 'POST',
-      retry: 3,
+      retry: {
+        limit: 3,
+      },
       throwHttpErrors: false,
     };
     const response = await got('', options);

@@ -88,7 +88,9 @@ describe('End-to-End Tests', () => {
       headers: {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
-      retry: 3,
+      retry: {
+        limit: 3,
+      },
     };
     const response = await got('', options);
     assert.strictEqual(response.statusCode, 200);

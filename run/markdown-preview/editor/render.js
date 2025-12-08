@@ -34,7 +34,7 @@ const renderRequest = async markdown => {
     },
     body: markdown,
     timeout: {
-      request:3000,
+      request: 3000,
     },
   };
 

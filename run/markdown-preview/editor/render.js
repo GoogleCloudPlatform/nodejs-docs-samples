@@ -13,8 +13,8 @@
 // limitations under the License.
 
 // [START cloudrun_secure_request]
-const {GoogleAuth} = require('google-auth-library');
-const got = require('got');
+import {GoogleAuth} from 'google-auth-library';
+import got from 'got';
 const auth = new GoogleAuth();
 
 let client, serviceUrl;
@@ -33,7 +33,9 @@ const renderRequest = async markdown => {
       'Content-Type': 'text/plain',
     },
     body: markdown,
-    timeout: 3000,
+    timeout: {
+      request:3000,
+    },
   };
 
   try {
@@ -69,4 +71,4 @@ const renderRequest = async markdown => {
 
 // [END cloudrun_secure_request]
 
-module.exports = renderRequest;
+export default renderRequest;

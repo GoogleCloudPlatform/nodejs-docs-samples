@@ -19,6 +19,10 @@
     "system-test": "c8 mocha -p -j 2 system-test/*.test.js --timeout=30000"
   },
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.58.0",
+    "@aws-sdk/credential-providers": "^3.0.0",
+    "dotenv": "^17.0.0",
+    "gaxios": "^6.0.0",
     "@google-cloud/storage": "^7.0.0",
     "fix": "0.0.6",
     "google-auth-library": "^9.0.0",

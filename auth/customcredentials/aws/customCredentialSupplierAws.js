@@ -15,7 +15,10 @@
 // [START auth_custom_credential_supplier_aws]
 const {AwsClient} = require('google-auth-library');
 const {fromNodeProviderChain} = require('@aws-sdk/credential-providers');
+const fs = require('fs');
+const path = require('path');
 const {STSClient} = require('@aws-sdk/client-sts');
+const {Storage} = require('@google-cloud/storage');
 
 /**
  * Custom AWS Security Credentials Supplier.
@@ -93,10 +96,8 @@ async function authenticateWithAwsCredentials(
   audience,
   impersonationUrl
 ) {
-  // 1. Instantiate the custom supplier.
   const customSupplier = new CustomAwsSupplier();
 
-  // 2. Configure the AwsClient options.
   const clientOptions = {
     audience: audience,
     subject_token_type: 'urn:ietf:params:aws:token-type:aws4_request',
@@ -104,25 +105,77 @@ async function authenticateWithAwsCredentials(
     aws_security_credentials_supplier: customSupplier,
   };
 
-  // 3. Create the auth client
-  const client = new AwsClient(clientOptions);
+  const authClient = new AwsClient(clientOptions);
 
-  // 4. Make an authenticated request to GCS.
-  const bucketUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}`;
-  const res = await client.request({url: bucketUrl});
-  return res.data;
+  const storage = new Storage({
+    authClient: authClient,
+  });
+
+  const [metadata] = await storage.bucket(bucketName).getMetadata();
+  return metadata;
 }
 // [END auth_custom_credential_supplier_aws]
 
+/**
+ * If a local secrets file is present, load it into the process environment.
+ * This is a "just-in-time" configuration for local development. These
+ * variables are only set for the current process.
+ */
+function loadConfigFromFile() {
+  const secretsFile = 'custom-credentials-aws-secrets.json';
+  const secretsPath = path.resolve(__dirname, secretsFile);
+
+  if (!fs.existsSync(secretsPath)) {
+    return;
+  }
+
+  try {
+    const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
+
+    if (!secrets) {
+      return;
+    }
+
+    // AWS SDK for Node.js looks for environment variables with specific names.
+    if (secrets.aws_access_key_id) {
+      process.env.AWS_ACCESS_KEY_ID = secrets.aws_access_key_id;
+    }
+    if (secrets.aws_secret_access_key) {
+      process.env.AWS_SECRET_ACCESS_KEY = secrets.aws_secret_access_key;
+    }
+    if (secrets.aws_region) {
+      process.env.AWS_REGION = secrets.aws_region;
+    }
+
+    // Set custom GCP variables so they can be retrieved from process.env.
+    if (secrets.gcp_workload_audience) {
+      process.env.GCP_WORKLOAD_AUDIENCE = secrets.gcp_workload_audience;
+    }
+    if (secrets.gcs_bucket_name) {
+      process.env.GCS_BUCKET_NAME = secrets.gcs_bucket_name;
+    }
+    if (secrets.gcp_service_account_impersonation_url) {
+      process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL =
+        secrets.gcp_service_account_impersonation_url;
+    }
+  } catch (error) {
+    console.error(`Error reading secrets file: ${error.message}`);
+  }
+}
+
 async function main() {
-  require('dotenv').config();
+  // Reads the secrets.json if running locally.
+  loadConfigFromFile();
+
   const gcpAudience = process.env.GCP_WORKLOAD_AUDIENCE;
   const saImpersonationUrl = process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL;
   const gcsBucketName = process.env.GCS_BUCKET_NAME;
 
   if (!gcpAudience || !gcsBucketName) {
     throw new Error(
-      'Missing required environment variables: GCP_WORKLOAD_AUDIENCE, GCS_BUCKET_NAME'
+      'Missing required configuration. Please provide it in a ' +
+        'secrets.json file or as environment variables: ' +
+        'GCP_WORKLOAD_AUDIENCE, GCS_BUCKET_NAME'
     );
   }
 
@@ -134,11 +187,10 @@ async function main() {
       saImpersonationUrl
     );
     console.log('\n--- SUCCESS! ---');
-    console.log('Bucket Name:', bucketMetadata.name);
-    console.log('Bucket Location:', bucketMetadata.location);
+    console.log('Bucket Metadata:', JSON.stringify(bucketMetadata, null, 2));
   } catch (error) {
     console.error('\n--- FAILED ---');
-    console.error(error.response?.data || error);
+    console.error(error.message || error);
     process.exitCode = 1;
   }
 }

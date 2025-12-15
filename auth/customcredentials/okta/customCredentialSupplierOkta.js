@@ -14,7 +14,10 @@
 
 // [START auth_custom_credential_supplier_okta]
 const {IdentityPoolClient} = require('google-auth-library');
+const {Storage} = require('@google-cloud/storage');
 const {Gaxios} = require('gaxios');
+const fs = require('fs');
+const path = require('path');
 
 /**
  * A custom SubjectTokenSupplier that authenticates with Okta using the
@@ -22,7 +25,10 @@ const {Gaxios} = require('gaxios');
  */
 class OktaClientCredentialsSupplier {
   constructor(domain, clientId, clientSecret) {
-    this.oktaTokenUrl = `${domain}/oauth2/default/v1/token`;
+    // Ensure domain URL is clean
+    const cleanDomain = domain.endsWith('/') ? domain.slice(0, -1) : domain;
+    this.oktaTokenUrl = `${cleanDomain}/oauth2/default/v1/token`;
+
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.accessToken = null;
@@ -107,15 +113,13 @@ async function authenticateWithOktaCredentials(
   clientSecret,
   impersonationUrl
 ) {
-  // 1. Instantiate the custom supplier.
   const oktaSupplier = new OktaClientCredentialsSupplier(
     domain,
     clientId,
     clientSecret
   );
 
-  // 2. Instantiate an IdentityPoolClient with the required configuration.
-  const client = new IdentityPoolClient({
+  const authClient = new IdentityPoolClient({
     audience: audience,
     subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
     token_url: 'https://sts.googleapis.com/v1/token',
@@ -123,15 +127,64 @@ async function authenticateWithOktaCredentials(
     service_account_impersonation_url: impersonationUrl,
   });
 
-  // 3. Make an authenticated request.
-  const bucketUrl = `https://storage.googleapis.com/storage/v1/b/${bucketName}`;
-  const res = await client.request({url: bucketUrl});
-  return res.data;
+  const storage = new Storage({
+    authClient: authClient,
+  });
+
+  const [metadata] = await storage.bucket(bucketName).getMetadata();
+  return metadata;
 }
 // [END auth_custom_credential_supplier_okta]
 
+/**
+ * If a local secrets file is present, load it into the process environment.
+ * This is a "just-in-time" configuration for local development. These
+ * variables are only set for the current process.
+ */
+function loadConfigFromFile() {
+  const secretsFile = 'custom-credentials-okta-secrets.json';
+  const secretsPath = path.resolve(__dirname, secretsFile);
+
+  if (!fs.existsSync(secretsPath)) {
+    return;
+  }
+
+  try {
+    const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
+
+    if (!secrets) {
+      return;
+    }
+
+    // Map JSON keys (snake_case) to Environment Variables (UPPER_CASE)
+    if (secrets.gcp_workload_audience) {
+      process.env.GCP_WORKLOAD_AUDIENCE = secrets.gcp_workload_audience;
+    }
+    if (secrets.gcs_bucket_name) {
+      process.env.GCS_BUCKET_NAME = secrets.gcs_bucket_name;
+    }
+    if (secrets.gcp_service_account_impersonation_url) {
+      process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL =
+        secrets.gcp_service_account_impersonation_url;
+    }
+    if (secrets.okta_domain) {
+      process.env.OKTA_DOMAIN = secrets.okta_domain;
+    }
+    if (secrets.okta_client_id) {
+      process.env.OKTA_CLIENT_ID = secrets.okta_client_id;
+    }
+    if (secrets.okta_client_secret) {
+      process.env.OKTA_CLIENT_SECRET = secrets.okta_client_secret;
+    }
+  } catch (error) {
+    console.error(`Error reading secrets file: ${error.message}`);
+  }
+}
+
+// Load the configuration from the file when the module is loaded.
+loadConfigFromFile();
+
 async function main() {
-  require('dotenv').config();
   const gcpAudience = process.env.GCP_WORKLOAD_AUDIENCE;
   const saImpersonationUrl = process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL;
   const gcsBucketName = process.env.GCS_BUCKET_NAME;
@@ -146,7 +199,10 @@ async function main() {
     !oktaClientId ||
     !oktaClientSecret
   ) {
-    throw new Error('Missing required environment variables for Okta/GCP.');
+    throw new Error(
+      'Missing required configuration. Please provide it in a ' +
+        'secrets.json file or as environment variables.'
+    );
   }
 
   try {
@@ -160,11 +216,10 @@ async function main() {
       saImpersonationUrl
     );
     console.log('\n--- SUCCESS! ---');
-    console.log('Bucket Name:', bucketMetadata.name);
-    console.log('Bucket Location:', bucketMetadata.location);
+    console.log('Bucket Metadata:', JSON.stringify(bucketMetadata, null, 2));
   } catch (error) {
     console.error('\n--- FAILED ---');
-    console.error(error.response?.data || error);
+    console.error(error.message || error);
     process.exitCode = 1;
   }
 }

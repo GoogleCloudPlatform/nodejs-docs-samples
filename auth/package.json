@@ -15,8 +15,9 @@
     "test:auth": "c8 mocha -p -j 2 system-test/auth.test.js --timeout=30000",
     "test:downscoping": "c8 mocha -p -j 2 system-test/downscoping.test.js --timeout=30000",
     "test:accessTokenFromImpersonatedCredentials": "c8 mocha -p -j 2 system-test/accessTokenFromImpersonatedCredentials.test.js --timeout=30000",
+    "test:customcredentials": "c8 mocha -p -j 2 \"system-test/customcredentials/**/*.test.js\" --timeout=30000",
     "test": "npm -- run system-test",
-    "system-test": "c8 mocha -p -j 2 system-test/*.test.js --timeout=30000"
+    "system-test": "c8 mocha -p -j 2 \"system-test/**/*.test.js\" --timeout=30000"
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.58.0",

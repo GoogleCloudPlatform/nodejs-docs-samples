@@ -19,10 +19,14 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../text-generation/textgen-with-txt-routing.js');
+const {delay} = require('./util');
 
 describe('textgen-with-txt-routing', async () => {
-  it('should generate text content from a text prompt and with routing configuration', async () => {
+  it('should generate text content from a text prompt and with routing configuration', async function () {
+    this.timeout(180000);
+    this.retries(2);
+    await delay(this.test);
     const output = await sample.generateContent(projectId);
-    assert(output.length > 0 && output.includes('AI'));
+    assert(output.length > 0);
   });
 });

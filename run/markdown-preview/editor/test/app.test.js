@@ -14,14 +14,13 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const supertest = require('supertest');
+import assert from 'assert';
+import supertest from 'supertest';
+import app, {buildRenderedHtml} from '../app.js';
 
 describe('Editor unit tests', () => {
   describe('Initialize app', () => {
     it('should successfully load the index page', async () => {
-      const {app} = require(path.join(__dirname, '..', 'app'));
       const request = supertest(app);
       await request.get('/').retry(3).expect(200);
     });
@@ -31,7 +30,6 @@ describe('Editor unit tests', () => {
     let template;
 
     before(async () => {
-      const {buildRenderedHtml} = require(path.join(__dirname, '..', 'app'));
       template = await buildRenderedHtml();
     });
 
@@ -48,7 +46,6 @@ describe('Integration tests', () => {
 
     before(async () => {
       process.env.EDITOR_UPSTREAM_RENDER_URL = 'https://www.example.com/';
-      const {app} = require(path.join(__dirname, '..', 'app'));
       request = supertest(app);
     });
 

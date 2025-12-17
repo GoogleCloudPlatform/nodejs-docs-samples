@@ -57,25 +57,14 @@ This command downloads all required Node.js libraries.
 npm install
 ```
 
-### 2. Configure Credentials
+### 2. Configure Credentials for Local Development
 
-For local development, this sample reads configuration from a JSON file.
+1.  Copy the example secrets file to a new file named `custom-credentials-okta-secrets.json` in the project root:
+    ```bash
+    cp custom-credentials-okta-secrets.json.example custom-credentials-okta-secrets.json
+    ```
+2.  Open `custom-credentials-okta-secrets.json` and fill in the required values for your AWS and Google Cloud configuration. Do not check your `custom-credentials-okta-secrets.json` file into version control.
 
-1.  Create a file named `custom-credentials-okta-secrets.json` in the project root.
-2.  Add the following content, replacing the placeholder values with your configuration:
-
-```json
-{
-  "gcp_workload_audience": "//iam.googleapis.com/projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/YOUR_POOL/providers/YOUR_PROVIDER",
-  "gcs_bucket_name": "your-bucket-name",
-  "okta_domain": "https://dev-123456.okta.com",
-  "okta_client_id": "your-okta-client-id",
-  "okta_client_secret": "your-okta-client-secret",
-  "gcp_service_account_impersonation_url": "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/your-sa@your-project.iam.gserviceaccount.com:generateAccessToken"
-}
-```
-
-**Note:** Do not check your secrets file into version control.
 
 ### 3. Run the Application
 

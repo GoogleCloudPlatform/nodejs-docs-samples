@@ -140,20 +140,17 @@ async function authenticateWithOktaCredentials(
  * variables are only set for the current process.
  */
 function loadConfigFromFile() {
-  const secretsFile = 'custom-credentials-okta-secrets.json';
-  const secretsPath = path.resolve(__dirname, secretsFile);
-
-  if (!fs.existsSync(secretsPath)) {
-    return;
-  }
+  const secretsPath = path.resolve(
+    __dirname,
+    'custom-credentials-okta-secrets.json'
+  );
+  if (!fs.existsSync(secretsPath)) return;
 
   try {
     const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
-    if (!secrets) {
-      return;
-    }
 
-    const configMapping = {
+    // Define the mapping: JSON Key -> Environment Variable
+    const envMap = {
       gcp_workload_audience: 'GCP_WORKLOAD_AUDIENCE',
       gcs_bucket_name: 'GCS_BUCKET_NAME',
       gcp_service_account_impersonation_url:
@@ -162,6 +159,13 @@ function loadConfigFromFile() {
       okta_client_id: 'OKTA_CLIENT_ID',
       okta_client_secret: 'OKTA_CLIENT_SECRET',
     };
+
+    // Iterate and assign
+    for (const [jsonKey, envKey] of Object.entries(envMap)) {
+      if (secrets[jsonKey]) {
+        process.env[envKey] = secrets[jsonKey];
+      }
+    }
   } catch (error) {
     console.error(`Error reading secrets file: ${error.message}`);
   }

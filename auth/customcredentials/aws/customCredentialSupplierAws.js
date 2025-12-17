@@ -117,20 +117,16 @@ async function authenticateWithAwsCredentials(
  * variables are only set for the current process.
  */
 function loadConfigFromFile() {
-  const secretsFile = 'custom-credentials-aws-secrets.json';
-  const secretsPath = path.resolve(__dirname, secretsFile);
-
-  if (!fs.existsSync(secretsPath)) {
-    return;
-  }
+  const secretsPath = path.resolve(
+    __dirname,
+    'custom-credentials-aws-secrets.json'
+  );
+  if (!fs.existsSync(secretsPath)) return;
 
   try {
     const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
-    if (!secrets) {
-      return;
-    }
 
-    const configMapping = {
+    const envMap = {
       aws_access_key_id: 'AWS_ACCESS_KEY_ID',
       aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY',
       aws_region: 'AWS_REGION',
@@ -139,6 +135,12 @@ function loadConfigFromFile() {
       gcp_service_account_impersonation_url:
         'GCP_SERVICE_ACCOUNT_IMPERSONATION_URL',
     };
+
+    for (const [jsonKey, envKey] of Object.entries(envMap)) {
+      if (secrets[jsonKey]) {
+        process.env[envKey] = secrets[jsonKey];
+      }
+    }
   } catch (error) {
     console.error(`Error reading secrets file: ${error.message}`);
   }

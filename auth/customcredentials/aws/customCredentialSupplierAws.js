@@ -30,11 +30,8 @@ const {Storage} = require('@google-cloud/storage');
  */
 class CustomAwsSupplier {
   constructor() {
-    // Will be cached upon first resolution.
     this.region = null;
 
-    // Initialize the AWS credential provider.
-    // The AWS SDK handles memoization (caching) and proactive refreshing internally.
     this.awsCredentialsProvider = fromNodeProviderChain();
   }
 
@@ -65,7 +62,6 @@ class CustomAwsSupplier {
    * Retrieves AWS security credentials using the AWS SDK's default provider chain.
    */
   async getAwsSecurityCredentials(_context) {
-    // Call the initialized provider. It will return cached creds or refresh if needed.
     const awsCredentials = await this.awsCredentialsProvider();
 
     if (!awsCredentials.accessKeyId || !awsCredentials.secretAccessKey) {
@@ -75,7 +71,6 @@ class CustomAwsSupplier {
       );
     }
 
-    // Map the AWS SDK format to the google-auth-library format.
     return {
       accessKeyId: awsCredentials.accessKeyId,
       secretAccessKey: awsCredentials.secretAccessKey,
@@ -131,40 +126,25 @@ function loadConfigFromFile() {
 
   try {
     const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
-
     if (!secrets) {
       return;
     }
 
-    // AWS SDK for Node.js looks for environment variables with specific names.
-    if (secrets.aws_access_key_id) {
-      process.env.AWS_ACCESS_KEY_ID = secrets.aws_access_key_id;
-    }
-    if (secrets.aws_secret_access_key) {
-      process.env.AWS_SECRET_ACCESS_KEY = secrets.aws_secret_access_key;
-    }
-    if (secrets.aws_region) {
-      process.env.AWS_REGION = secrets.aws_region;
-    }
-
-    // Set custom GCP variables so they can be retrieved from process.env.
-    if (secrets.gcp_workload_audience) {
-      process.env.GCP_WORKLOAD_AUDIENCE = secrets.gcp_workload_audience;
-    }
-    if (secrets.gcs_bucket_name) {
-      process.env.GCS_BUCKET_NAME = secrets.gcs_bucket_name;
-    }
-    if (secrets.gcp_service_account_impersonation_url) {
-      process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL =
-        secrets.gcp_service_account_impersonation_url;
-    }
+    const configMapping = {
+      aws_access_key_id: 'AWS_ACCESS_KEY_ID',
+      aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY',
+      aws_region: 'AWS_REGION',
+      gcp_workload_audience: 'GCP_WORKLOAD_AUDIENCE',
+      gcs_bucket_name: 'GCS_BUCKET_NAME',
+      gcp_service_account_impersonation_url:
+        'GCP_SERVICE_ACCOUNT_IMPERSONATION_URL',
+    };
   } catch (error) {
     console.error(`Error reading secrets file: ${error.message}`);
   }
 }
 
 async function main() {
-  // Reads the secrets.json if running locally.
   loadConfigFromFile();
 
   const gcpAudience = process.env.GCP_WORKLOAD_AUDIENCE;

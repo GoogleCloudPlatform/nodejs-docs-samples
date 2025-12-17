@@ -119,4 +119,3 @@ eksctl delete cluster --name your-cluster-name
 ## Testing
 
 This sample is not continuously tested. It is provided for instructional purposes and may require modifications to work in your environment.
-```

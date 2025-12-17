@@ -25,7 +25,6 @@ const path = require('path');
  */
 class OktaClientCredentialsSupplier {
   constructor(domain, clientId, clientSecret) {
-    // Ensure domain URL is clean
     const cleanDomain = domain.endsWith('/') ? domain.slice(0, -1) : domain;
     this.oktaTokenUrl = `${cleanDomain}/oauth2/default/v1/token`;
 
@@ -42,7 +41,6 @@ class OktaClientCredentialsSupplier {
    * @returns {Promise<string>} A promise that resolves with the Okta Access token.
    */
   async getSubjectToken() {
-    // Check if the current token is still valid (with a 60-second buffer).
     const isTokenValid =
       this.accessToken && Date.now() < this.expiryTime - 60 * 1000;
 
@@ -151,37 +149,24 @@ function loadConfigFromFile() {
 
   try {
     const secrets = JSON.parse(fs.readFileSync(secretsPath, 'utf8'));
-
     if (!secrets) {
       return;
     }
 
-    // Map JSON keys (snake_case) to Environment Variables (UPPER_CASE)
-    if (secrets.gcp_workload_audience) {
-      process.env.GCP_WORKLOAD_AUDIENCE = secrets.gcp_workload_audience;
-    }
-    if (secrets.gcs_bucket_name) {
-      process.env.GCS_BUCKET_NAME = secrets.gcs_bucket_name;
-    }
-    if (secrets.gcp_service_account_impersonation_url) {
-      process.env.GCP_SERVICE_ACCOUNT_IMPERSONATION_URL =
-        secrets.gcp_service_account_impersonation_url;
-    }
-    if (secrets.okta_domain) {
-      process.env.OKTA_DOMAIN = secrets.okta_domain;
-    }
-    if (secrets.okta_client_id) {
-      process.env.OKTA_CLIENT_ID = secrets.okta_client_id;
-    }
-    if (secrets.okta_client_secret) {
-      process.env.OKTA_CLIENT_SECRET = secrets.okta_client_secret;
-    }
+    const configMapping = {
+      gcp_workload_audience: 'GCP_WORKLOAD_AUDIENCE',
+      gcs_bucket_name: 'GCS_BUCKET_NAME',
+      gcp_service_account_impersonation_url:
+        'GCP_SERVICE_ACCOUNT_IMPERSONATION_URL',
+      okta_domain: 'OKTA_DOMAIN',
+      okta_client_id: 'OKTA_CLIENT_ID',
+      okta_client_secret: 'OKTA_CLIENT_SECRET',
+    };
   } catch (error) {
     console.error(`Error reading secrets file: ${error.message}`);
   }
 }
 
-// Load the configuration from the file when the module is loaded.
 loadConfigFromFile();
 
 async function main() {

@@ -47,8 +47,8 @@ async function generateContent(
     model: 'gemini-2.5-flash',
     contents: [video, prompt],
     config: {
-      mediaResolution: 'MEDIA_RESOLUTION_LOW'
-    }
+      mediaResolution: 'MEDIA_RESOLUTION_LOW',
+    },
   });
 
   console.log(response.text);

@@ -45,8 +45,8 @@ async function generateText(
       {text: 'Write a short and engaging blog post based on this video.'},
     ],
     config: {
-      mediaResolution: 'MEDIA_RESOLUTION_LOW'
-    }
+      mediaResolution: 'MEDIA_RESOLUTION_LOW',
+    },
   });
 
   console.log(response.text);

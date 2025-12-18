@@ -43,8 +43,8 @@ async function generateText(
     model: 'gemini-2.5-flash-lite',
     contents: [ytVideo, prompt],
     config: {
-      mediaResolution: 'MEDIA_RESOLUTION_LOW'
-    }
+      mediaResolution: 'MEDIA_RESOLUTION_LOW',
+    },
   });
 
   console.log(response.text);

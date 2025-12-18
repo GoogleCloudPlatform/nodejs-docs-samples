@@ -32,7 +32,7 @@ async function generateVideo(
   });
 
   let operation = await client.models.generateVideos({
-    model: 'veo-3.0-generate-preview',
+    model: 'veo-3.1-fast-generate-001',
     prompt:
       'Extreme close-up of a cluster of vibrant wildflowers swaying gently in a sun-drenched meadow',
     image: {

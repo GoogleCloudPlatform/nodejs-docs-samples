@@ -3,23 +3,24 @@
   "private": true,
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
   "files": [
     "*.js"
   ],
-  "scripts": {
-    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js test/**/*.test.js"
-  },
   "dependencies": {
     "@google-cloud/storage": "^7.17.3",
+    "@google/genai": "1.34.0",
     "axios": "^1.6.2",
     "date-fns": "^4.1.0",
     "google-auth-library": "^10.3.0",
     "luxon": "^3.7.1",
     "node-fetch": "^3.3.2",
-    "@google/genai": "1.30.0",
     "canvas": "^3.2.0",
     "openai": "^5.19.1",
     "proxyquire": "^2.1.3",

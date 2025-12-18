@@ -14,13 +14,14 @@
 
 'use strict';
 
-// [START googlegenaisdk_textgen_with_video]
+// [START googlegenaisdk_videogen_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
 const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
-async function generateContent(
+async function generateVideo(
+  outputGcsUri,
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
@@ -30,33 +31,29 @@ async function generateContent(
     location: location,
   });
 
-  const prompt = `
-  Analyze the provided video file, including its audio.
-  Summarize the main points of the video concisely.
-  Create a chapter breakdown with timestamps for key sections or topics discussed.
- `;
-
-  const video = {
-    fileData: {
-      fileUri: 'gs://cloud-samples-data/generative-ai/video/pixel8.mp4',
-      mimeType: 'video/mp4',
-    },
-  };
-
-  const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: [video, prompt],
+  let operation = await client.models.generateVideos({
+    model: 'veo-3.1-fast-generate-001',
+    prompt: 'a cat reading a book',
     config: {
-      mediaResolution: 'MEDIA_RESOLUTION_LOW',
+      aspectRatio: '16:9',
+      outputGcsUri: outputGcsUri,
     },
   });
 
-  console.log(response.text);
+  while (!operation.done) {
+    await new Promise(resolve => setTimeout(resolve, 15000));
+    operation = await client.operations.get({operation: operation});
+    console.log(operation);
+  }
 
-  return response.text;
+  if (operation.response) {
+    console.log(operation.response.generatedVideos[0].video.uri);
+  }
+  return operation;
 }
-// [END googlegenaisdk_textgen_with_video]
+
+// [END googlegenaisdk_videogen_with_txt]
 
 module.exports = {
-  generateContent,
+  generateVideo,
 };

@@ -185,6 +185,7 @@
     "functions/v2/tips/retry",
     "functions/v2/typed/googlechatbot",
     "functions/v2/typed/greeting",
+    "genai", // parent directory
     "generative-ai/snippets",
     "healthcare/consent",
     "healthcare/datasets",

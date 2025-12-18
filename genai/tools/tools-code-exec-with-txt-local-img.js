@@ -35,7 +35,7 @@ async function generateAndExecuteMultimodalCode(
 
   const imagePath = path.join(
     __dirname,
-    '../test/test-data/640px-Monty_open_door.svg.png'
+    'test-data/640px-Monty_open_door.svg.png'
   );
   const imageBuffer = await fs.readFile(imagePath);
   const imageBase64 = imageBuffer.toString('base64');

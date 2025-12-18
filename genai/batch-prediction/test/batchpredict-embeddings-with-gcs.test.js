@@ -19,39 +19,41 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = 'us-central1';
-const {delay} = require('./util');
-
+const {delay} = require('../../test/util');
 const proxyquire = require('proxyquire');
 const {GoogleGenAI_Mock} = require('./batchprediction-utils');
 
-const sample = proxyquire('../batch-prediction/batchpredict-with-bq', {
-  '@google/genai': {
-    GoogleGenAI: GoogleGenAI_Mock,
-  },
-});
+const sample = proxyquire(
+  '../batchpredict-embeddings-with-gcs',
+  {
+    '@google/genai': {
+      GoogleGenAI: GoogleGenAI_Mock,
+    },
+  }
+);
 
-async function getBqOutputUri() {
+async function getGcsOutputUri() {
   return {
     uri: 'gs://mock/output',
     async cleanup() {},
   };
 }
 
-describe('batchpredict-with-bq', () => {
+describe('batchpredict-with-gcs', () => {
   it('should return the batch job state', async function () {
     this.timeout(500000);
     this.retries(4);
     await delay(this.test);
-    const bqOutput = await getBqOutputUri();
+    const gcsOutput = await getGcsOutputUri();
     try {
       const output = await sample.runBatchPredictionJob(
-        bqOutput.uri,
+        gcsOutput.uri,
         projectId,
         location
       );
       assert.notEqual(output, undefined);
     } finally {
-      await bqOutput.cleanup();
+      await gcsOutput.cleanup();
     }
   });
 });

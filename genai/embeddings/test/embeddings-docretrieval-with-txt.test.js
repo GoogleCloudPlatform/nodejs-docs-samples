@@ -18,8 +18,8 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../embeddings/embeddings-docretrieval-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../embeddings-docretrieval-with-txt.js');
+const {delay} = require('../../test/util');
 
 describe('embeddings-docretrieval-with-txt', () => {
   it('should return an object containing embeddings and metadata', async function () {

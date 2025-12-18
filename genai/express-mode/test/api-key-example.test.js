@@ -16,7 +16,7 @@
 
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
-const {delay} = require('./util');
+const {delay} = require('../../test/util');
 const proxyquire = require('proxyquire').noCallThru();
 
 describe('vertexai-express-mode', () => {
@@ -42,7 +42,7 @@ describe('vertexai-express-mode', () => {
       }
     }
 
-    const sample = proxyquire('../express-mode/api-key-example.js', {
+    const sample = proxyquire('../api-key-example.js', {
       '@google/genai': {GoogleGenAI: MockGoogleGenAI},
     });
 

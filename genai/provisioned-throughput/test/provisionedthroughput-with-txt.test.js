@@ -18,16 +18,18 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../safety/safety-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../provisionedthroughput-with-txt.js');
+const {delay} = require('../../test/util');
 
-describe('safety-with-txt', () => {
-  it('should call generateContentStream with safety instructions', async function () {
+describe('provisioned-throughput-with-txt', () => {
+  it('should return provisioned throughput result', async function () {
     this.timeout(50000);
     this.retries(4);
+
     await delay(this.test);
-    const output = await sample.generateWithSafetySettings(projectId);
-    console.log('output', output);
-    assert.isObject(output);
+
+    const output = await sample.generateWithProvisionedThroughput(projectId);
+
+    assert(output.length > 0);
   });
 });

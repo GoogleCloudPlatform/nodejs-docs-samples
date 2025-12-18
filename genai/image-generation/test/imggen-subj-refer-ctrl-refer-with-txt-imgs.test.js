@@ -18,13 +18,13 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-style-reference-with-txt-img');
-const {delay} = require('./util');
+const sample = require('../imggen-subj-refer-ctrl-refer-with-txt-imgs');
+const {delay} = require('../../test/util');
 const {createOutputGcsUri} = require('./imggen-util');
 const location = 'us-central1';
 
-describe('imggen-style-reference-with-txt-img', async () => {
-  it('should generate images from a text prompt with style reference', async function () {
+describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', async () => {
+  it('should generate images from a text prompt with subject reference image and control reference image', async function () {
     this.timeout(180000);
     this.retries(4);
     const output = await createOutputGcsUri();

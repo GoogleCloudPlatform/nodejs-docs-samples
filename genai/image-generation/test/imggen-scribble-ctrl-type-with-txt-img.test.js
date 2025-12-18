@@ -18,23 +18,32 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../image-generation/imggen-subj-refer-ctrl-refer-with-txt-imgs');
-const {delay} = require('./util');
+const sample = require('../imggen-scribble-ctrl-type-with-txt-img');
+const {delay} = require('../../test/util');
 const {createOutputGcsUri} = require('./imggen-util');
 const location = 'us-central1';
 
-describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', async () => {
-  it('should generate images from a text prompt with subject reference image and control reference image', async function () {
-    this.timeout(180000);
-    this.retries(4);
+describe('imggen-scribble-ctrl-type-with-txt-img', async () => {
+  it('should generate images from a text prompt with control reference image', async function () {
+    this.timeout(600000);
+    this.retries(3);
+
     const output = await createOutputGcsUri();
-    console.log(output.uri);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateImage(
-      output.uri,
-      projectId,
-      location
-    );
-    assert(generatedFileNames.length > 0);
+    console.log('Output GCS URI:', output.uri);
+
+    try {
+      await delay(this.test);
+      const generatedFileNames = await sample.generateImage(
+        output.uri,
+        projectId,
+        location
+      );
+      console.log('Generated files:', generatedFileNames);
+
+      assert(generatedFileNames.length > 0);
+    } catch (err) {
+      console.error('Image generation failed:', err);
+      throw err;
+    }
   });
 });

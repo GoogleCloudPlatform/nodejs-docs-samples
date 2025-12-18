@@ -18,24 +18,15 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const sample = require('../imggen-with-txt.js');
+const {delay} = require('../../test/util');
 
-const sample = require('../image-generation/imggen-canny-ctrl-type-with-txt-img');
-const location = 'us-central1';
-const {delay} = require('./util');
-const {createOutputGcsUri} = require('./imggen-util');
-
-describe('imggen-canny-ctrl-type-with-txt-img', () => {
-  it('should return an array of generated image URIs', async function () {
+describe('imggen-with-txt', async () => {
+  it('should generate images from a text prompt', async function () {
     this.timeout(180000);
     this.retries(4);
-    const output = await createOutputGcsUri();
-    console.log(output.uri);
     await delay(this.test);
-    const generatedFileNames = await sample.generateImage(
-      output.uri,
-      projectId,
-      location
-    );
-    assert(generatedFileNames.length > 0);
+    const image = await sample.generateImage(projectId);
+    assert(image.length > 0);
   });
 });

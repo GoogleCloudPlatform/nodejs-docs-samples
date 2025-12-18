@@ -19,8 +19,8 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-const sample = require('../image-generation/imggen-raw-reference-with-txt-img');
-const {delay} = require('./util');
+const sample = require('../imggen-raw-reference-with-txt-img');
+const {delay} = require('../../test/util');
 const {createOutputGcsUri} = require('./imggen-util');
 const location = 'us-central1';
 

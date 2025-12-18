@@ -14,7 +14,6 @@
     "*.js"
   ],
   "dependencies": {
-    "@google-cloud/storage": "^7.17.3",
     "@google/genai": "1.34.0",
     "axios": "^1.6.2",
     "canvas": "^3.2.0",

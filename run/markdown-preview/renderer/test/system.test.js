@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const assert = require('assert');
-const got = require('got');
-const {execSync} = require('child_process');
+import assert from 'assert';
+import got from 'got';
+import {execSync} from 'child_process';
 
 describe('End-to-End Tests', () => {
   // Retrieve Cloud Run service test config
@@ -74,7 +74,9 @@ describe('End-to-End Tests', () => {
         Authorization: `Bearer ${ID_TOKEN.trim()}`,
       },
       method: 'POST',
-      retry: 3,
+      retry: {
+        limit: 3,
+      },
       throwHttpErrors: false,
     };
     const response = await got('', options);

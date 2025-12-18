@@ -8,8 +8,9 @@
     "type": "git",
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
+  "type": "module",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "main": "index.js",
   "scripts": {
@@ -26,8 +27,8 @@
   "devDependencies": {
     "c8": "^10.0.0",
     "google-auth-library": "^9.0.0",
-    "got": "^11.5.0",
-    "mocha": "^10.0.0",
+    "got": "^14.6.5",
+    "mocha": "^11.0.0",
     "sinon": "^18.0.0",
     "supertest": "^7.0.0"
   }

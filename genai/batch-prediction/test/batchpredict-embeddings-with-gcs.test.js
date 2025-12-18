@@ -23,14 +23,11 @@ const {delay} = require('../../test/util');
 const proxyquire = require('proxyquire');
 const {GoogleGenAI_Mock} = require('./batchprediction-utils');
 
-const sample = proxyquire(
-  '../batchpredict-embeddings-with-gcs',
-  {
-    '@google/genai': {
-      GoogleGenAI: GoogleGenAI_Mock,
-    },
-  }
-);
+const sample = proxyquire('../batchpredict-embeddings-with-gcs', {
+  '@google/genai': {
+    GoogleGenAI: GoogleGenAI_Mock,
+  },
+});
 
 async function getGcsOutputUri() {
   return {

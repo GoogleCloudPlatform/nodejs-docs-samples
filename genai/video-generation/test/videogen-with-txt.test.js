@@ -20,8 +20,8 @@ const {Storage} = require('@google-cloud/storage');
 
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../video-generation/videogen-with-txt.js');
-const {delay} = require('./util');
+const sample = require('../videogen-with-txt.js');
+const {delay} = require('../../test/util');
 
 const storage = new Storage();
 

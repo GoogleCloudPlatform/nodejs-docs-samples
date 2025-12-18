@@ -1,0 +1,32 @@
+name: genai
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'genai/**'
+    - '.github/workflows/genai.yaml'
+    - '.github/workflows/test.yaml'
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
+    - labeled
+    paths:
+    - 'genai/**'
+    - '.github/workflows/genai.yaml'
+    - '.github/workflows/test.yaml'
+  schedule:
+  - cron: '0 0 * * 0'
+
+jobs:
+  test:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    if: github.event.action != 'labeled' || github.event.label.name == 'actions:force-run'
+    uses: ./.github/workflows/test.yaml
+    with:
+      name: 'genai'
+      path: 'genai'

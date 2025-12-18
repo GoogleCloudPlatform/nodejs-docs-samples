@@ -34,11 +34,26 @@ async function generateImage(
     location: location,
   });
 
-  const image = fs.readFileSync(FILE_NAME);
+  const imageBytes = fs.readFileSync(FILE_NAME);
 
   const response = await client.models.generateContent({
     model: 'gemini-2.5-flash-image',
-    contents: [image, 'Edit this image to make it look like a cartoon'],
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            inlineData: {
+              mimeType: 'image/png',
+              data: imageBytes.toString('base64'),
+            },
+          },
+          {
+            text: 'Edit this image to make it look like a cartoon',
+          },
+        ],
+      },
+    ],
     config: {
       responseModalities: [Modality.TEXT, Modality.IMAGE],
     },

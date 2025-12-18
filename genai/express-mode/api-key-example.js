@@ -16,7 +16,7 @@
 
 // [START googlegenaisdk_vertexai_express_mode]
 const {GoogleGenAI} = require('@google/genai');
-const API_KEY = 'PUT HERE YOUR API KEY';
+const API_KEY = 'YOUR_EXPRESS_MODE_API_KEY';
 
 async function generateWithApiKey(apiKey = API_KEY) {
   const client = new GoogleGenAI({

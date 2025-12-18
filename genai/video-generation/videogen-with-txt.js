@@ -49,7 +49,7 @@ async function generateVideo(
   if (operation.response) {
     console.log(operation.response.generatedVideos[0].video.uri);
   }
-  return operation.response.generatedVideos[0].video.uri;
+  return operation;
 }
 
 // [END googlegenaisdk_videogen_with_txt]

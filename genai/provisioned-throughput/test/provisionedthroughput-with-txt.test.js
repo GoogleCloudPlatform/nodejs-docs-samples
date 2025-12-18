@@ -18,17 +18,18 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'global';
-const sample = require('../imggen-mmflash-edit-img-with-txt-img');
+const sample = require('../provisionedthroughput-with-txt.js');
 const {delay} = require('../../test/util');
 
-describe('imggen-mmflash-edit-img-with-txt-img', async () => {
-  it('should return a response object containing image parts', async function () {
-    this.timeout(180000);
+describe('provisioned-throughput-with-txt', () => {
+  it('should return provisioned throughput result', async function () {
+    this.timeout(50000);
     this.retries(4);
+
     await delay(this.test);
-    const response = await sample.generateImage(projectId, location);
-    console.log(response);
-    assert(response);
+
+    const output = await sample.generateWithProvisionedThroughput(projectId);
+
+    assert(output.length > 0);
   });
 });

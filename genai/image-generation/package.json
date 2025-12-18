@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@google/genai": "1.34.0",
-    "@google-cloud/storage": "^7.17.3"
+    "@google-cloud/storage": "^7.17.3",
+    "date-fns": "^4.1.0"
   },
   "devDependencies": {
     "c8": "^10.0.0",

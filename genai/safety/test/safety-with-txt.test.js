@@ -18,17 +18,16 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'global';
-const sample = require('../imggen-mmflash-edit-img-with-txt-img');
+const sample = require('../safety-with-txt.js');
 const {delay} = require('../../test/util');
 
-describe('imggen-mmflash-edit-img-with-txt-img', async () => {
-  it('should return a response object containing image parts', async function () {
-    this.timeout(180000);
+describe('safety-with-txt', () => {
+  it('should call generateContentStream with safety instructions', async function () {
+    this.timeout(50000);
     this.retries(4);
     await delay(this.test);
-    const response = await sample.generateImage(projectId, location);
-    console.log(response);
-    assert(response);
+    const output = await sample.generateWithSafetySettings(projectId);
+    console.log('output', output);
+    assert.isObject(output);
   });
 });

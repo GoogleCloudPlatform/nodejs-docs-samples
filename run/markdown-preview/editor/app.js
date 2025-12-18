@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const express = require('express');
-const handlebars = require('handlebars');
-const {readFile} = require('fs').promises;
-const renderRequest = require('./render.js');
+import express from 'express';
+import handlebars from 'handlebars';
+import fs from 'fs';
+import renderRequest from './render.js';
 
 const app = express();
 app.use(express.json());
@@ -23,11 +23,14 @@ app.use(express.json());
 let markdownDefault, compiledTemplate, renderedHtml;
 
 // Load the template files and serve them with the Editor service.
-const buildRenderedHtml = async () => {
+export const buildRenderedHtml = async () => {
+  const dirname = process.cwd();
   try {
-    markdownDefault = await readFile(__dirname + '/templates/markdown.md');
+    markdownDefault = await fs.promises.readFile(
+      dirname + '/templates/markdown.md'
+    );
     compiledTemplate = handlebars.compile(
-      await readFile(__dirname + '/templates/index.html', 'utf8')
+      await fs.promises.readFile(dirname + '/templates/index.html', 'utf8')
     );
     renderedHtml = compiledTemplate({default: markdownDefault});
     return renderedHtml;
@@ -62,7 +65,4 @@ app.post('/render', async (req, res) => {
 // [END cloudrun_secure_request_do]
 
 // Exports for testing purposes.
-module.exports = {
-  app,
-  buildRenderedHtml,
-};
+export default app;

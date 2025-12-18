@@ -18,15 +18,39 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../ctrlgen-with-enum-class-schema.js');
+const location = 'us-central1';
 const {delay} = require('../../test/util');
+const proxyquire = require('proxyquire');
+const {GoogleGenAI_Mock} = require('./batchprediction-utils');
 
-describe('ctrlgen-with-enum-class-schema', () => {
-  it('should generate text content matching enum schema', async function () {
-    this.timeout(180000);
+const sample = proxyquire('../batchpredict-embeddings-with-gcs', {
+  '@google/genai': {
+    GoogleGenAI: GoogleGenAI_Mock,
+  },
+});
+
+async function getGcsOutputUri() {
+  return {
+    uri: 'gs://mock/output',
+    async cleanup() {},
+  };
+}
+
+describe('batchpredict-with-gcs', () => {
+  it('should return the batch job state', async function () {
+    this.timeout(500000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.generateEnumClassSchema(projectId);
-    assert(output.length > 0);
+    const gcsOutput = await getGcsOutputUri();
+    try {
+      const output = await sample.runBatchPredictionJob(
+        gcsOutput.uri,
+        projectId,
+        location
+      );
+      assert.notEqual(output, undefined);
+    } finally {
+      await gcsOutput.cleanup();
+    }
   });
 });

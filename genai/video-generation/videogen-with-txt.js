@@ -32,7 +32,7 @@ async function generateVideo(
   });
 
   let operation = await client.models.generateVideos({
-    model: 'veo-3.0-generate-001',
+    model: 'veo-3.1-fast-generate-001',
     prompt: 'a cat reading a book',
     config: {
       aspectRatio: '16:9',

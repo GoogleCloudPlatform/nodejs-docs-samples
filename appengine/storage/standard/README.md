@@ -18,7 +18,7 @@ with the following command:
 directly from Cloud Storage. You can do this with the [Google Cloud SDK](https://cloud.google.com/sdk)
 with the following command:
 
-        gcloud storage buckets update --predefined-default-object-acl=public-read gs://<your-bucket-name>
+        gcloud storage buckets update --predefined-default-object-acl=publicRead gs://<your-bucket-name>
 
 1. Update the environment variables in `app.yaml`.
 

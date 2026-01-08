@@ -30,24 +30,24 @@ steps:
       --update-env-vars=BLURRED_BUCKET_NAME=${_SERVICE}_output"
 
 - id: 'Create GCS buckets with Pub/Sub notification'
-  name: 'gcr.io/cloud-builders/gsutil:latest'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
     # Create Buckets
-    ./test/retry.sh "gsutil mb -p ${PROJECT_ID} gs://${_SERVICE}_input"
-    ./test/retry.sh "gsutil mb -p ${PROJECT_ID} gs://${_SERVICE}_output"
+    ./test/retry.sh "gcloud storage buckets create --project=${PROJECT_ID} gs://${_SERVICE}_input"
+    ./test/retry.sh "gcloud storage buckets create --project=${PROJECT_ID} gs://${_SERVICE}_output"
 
     # Create Pub/Sub notification
-    ./test/retry.sh "gsutil notification create -t ${_SERVICE} -f json gs://${_SERVICE}_input"
+    ./test/retry.sh "gcloud storage buckets notifications create --topic=${_SERVICE} --payload-format=json gs://${_SERVICE}_input"
     ./test/retry.sh "gcloud pubsub subscriptions create ${_SERVICE}_sub \
       --topic ${_SERVICE} \
       --push-endpoint $(gcloud run services describe ${_SERVICE} --project=${PROJECT_ID} --platform=${_PLATFORM} --region=${_REGION} --format='value(status.url)') \
       --push-auth-service-account cloud-run-invoker@${PROJECT_ID}.iam.gserviceaccount.com"
     sleep 5
     # Upload photo
-    ./test/retry.sh "gsutil cp test/zombie.jpg gs://${_SERVICE}_input"
+    ./test/retry.sh "gcloud storage cp test/zombie.jpg gs://${_SERVICE}_input"
     sleep 30
 
 

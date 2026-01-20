@@ -819,4 +819,140 @@ describe('Secret Manager samples', () => {
     );
     assert.match(output, new RegExp('Created Tag Binding'));
   });
+
+  it('lists secrets with filter', async () => {
+    const output = execSync(`node listSecretsWithFilter.js ${projectId}`);
+    assert.match(output, new RegExp(`Found secret: ${secret.name}`));
+  });
+
+  it('lists regional secrets with filter', async () => {
+    const output = execSync(
+      `node regional_samples/listRegionalSecretsWithFilter.js ${projectId} ${locationId}`
+    );
+    assert.match(output, new RegExp(`Found secret: ${regionalSecret.name}`));
+  });
+
+  it('list secret versions with filter', async () => {
+    await client.disableSecretVersion({
+      name: version.name,
+    });
+    const output = execSync(
+      `node listSecretVersionsWithFilter.js ${secret.name}`
+    );
+    assert.match(output, new RegExp(`Found version: ${version.name}`));
+  });
+
+  it('list regional secret versions with filter', async () => {
+    await regionalClient.disableSecretVersion({
+      name: regionalVersion.name,
+    });
+    const output = execSync(
+      `node regional_samples/listRegionalSecretVersionsWithFilter.js ${projectId} ${locationId} ${secretId}`
+    );
+    assert.match(output, new RegExp(`Found version: ${regionalVersion.name}`));
+  });
+
+  it('lists tag bindings', async () => {
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-tag-binding`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node listTagBindings.js ${secret.name}-tag-binding`
+    );
+    assert.match(
+      output,
+      new RegExp(`Tag bindings for ${secret.name}-tag-binding:`)
+    );
+    assert.match(output, new RegExp(`- Tag Value: ${tagValue}`));
+    await client.deleteSecret({
+      name: `${secret.name}-tag-binding`,
+    });
+  });
+
+  it('lists regional tag bindings', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-tag-binding`,
+      secret: {
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/listRegionalTagBindings.js ${projectId} ${locationId} ${secretId}-regional-tag-binding`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Tag bindings for ${parent}/secrets/${secretId}-regional-tag-binding:`
+      )
+    );
+    assert.match(output, new RegExp(`- Tag Value: ${tagValue}`));
+    await regionalClient.deleteSecret({
+      name: `${parent}/secrets/${secretId}-regional-tag-binding`,
+    });
+  });
+
+  it('detach tag bindings', async () => {
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-detach-tag-binding`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node detachTagBinding.js ${secret.name}-detach-tag-binding ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Detached tag value ${tagValue} from ${secret.name}-detach-tag-binding`
+      )
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-detach-tag-binding`,
+    });
+  });
+
+  it('detach tags from regional secrets', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-detach-regional-tag-binding`,
+      secret: {
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/detachRegionalTag.js ${projectId} ${locationId} ${secretId}-detach-regional-tag-binding ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Detached tag value ${tagValue} from ${parent}/secrets/${secretId}-detach-regional-tag-binding`
+      )
+    );
+    await regionalClient.deleteSecret({
+      name: `${parent}/secrets/${secretId}-detach-regional-tag-binding`,
+    });
+  });
 });

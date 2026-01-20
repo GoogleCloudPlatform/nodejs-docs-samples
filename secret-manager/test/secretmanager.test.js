@@ -27,6 +27,8 @@ const resourcemanagerTagValueClient = new TagValuesClient();
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
+const kmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_NAME;
+const regionalKmsKeyName = process.env.GOOGLE_CLOUD_REGIONAL_KMS_KEY_NAME;
 const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
@@ -319,6 +321,37 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-ummr`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-cmek`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-regional-cmek`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
     // Wait for 20 seconds before deleting the tag value
     await new Promise(resolve => setTimeout(resolve, 20000));
     const [deleteValueOperation] =
@@ -970,5 +1003,30 @@ describe('Secret Manager samples', () => {
     await regionalClient.deleteSecret({
       name: `${parent}/secrets/${secretId}-detach-regional-tag-binding`,
     });
+  });
+
+  it('create secret with user managed replication policy', async () => {
+    const parent = `projects/${projectId}`;
+    const locations = ['us-east1', 'us-east5'];
+    const ttl = '900s';
+    const output = execSync(
+      `node createSecretWithUserManagedReplicationPolicy.js ${parent} ${secretId}-ummr ${locations} ${ttl}`
+    );
+    assert.match(output, new RegExp(`Created secret: ${secret.name}`));
+  });
+
+  it('create secret with customer managed enc key', async () => {
+    const parent = `projects/${projectId}`;
+    const output = execSync(
+      `node createSecretWithCmek.js ${parent} ${secretId}-cmek ${kmsKeyName}`
+    );
+    assert.match(output, new RegExp(`CMEK key ${kmsKeyName}`));
+  });
+
+  it('create regional secret with customer managed enc key', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithCmek.js ${projectId} ${locationId} ${secretId}-regional-cmek ${regionalKmsKeyName}`
+    );
+    assert.match(output, new RegExp(`CMEK key ${regionalKmsKeyName}`));
   });
 });

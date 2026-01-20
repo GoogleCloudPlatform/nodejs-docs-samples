@@ -833,23 +833,39 @@ describe('Secret Manager samples', () => {
   });
 
   it('list secret versions with filter', async () => {
+    const [versionForFilter] = await client.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+
     await client.disableSecretVersion({
-      name: version.name,
+      name: versionForFilter.name,
     });
     const output = execSync(
       `node listSecretVersionsWithFilter.js ${secret.name}`
     );
-    assert.match(output, new RegExp(`Found version: ${version.name}`));
+    assert.match(output, new RegExp(`Found version: ${versionForFilter.name}`));
   });
 
   it('list regional secret versions with filter', async () => {
+    const [regionalVersionForFilter] = await regionalClient.addSecretVersion({
+      parent: regionalSecret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
     await regionalClient.disableSecretVersion({
-      name: regionalVersion.name,
+      name: regionalVersionForFilter.name,
     });
     const output = execSync(
       `node regional_samples/listRegionalSecretVersionsWithFilter.js ${projectId} ${locationId} ${secretId}`
     );
-    assert.match(output, new RegExp(`Found version: ${regionalVersion.name}`));
+    assert.match(
+      output,
+      new RegExp(`Found version: ${regionalVersionForFilter.name}`)
+    );
   });
 
   it('lists tag bindings', async () => {

@@ -19,7 +19,7 @@ async function main(projectId, locationId, secretId, kmsKeyName) {
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
-  // const projectId = 'projects';
+  // const projectId = 'my-project';
   // const locationId = 'my-location';
   // const secretId = 'my-secret-with-cmek';
   // const kmsKeyName = 'projects/my-project/locations/global/keyRings/my-keyring/cryptoKeys/my-key';

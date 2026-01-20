@@ -14,7 +14,7 @@
 
 'use strict';
 
-async function main(parent, secretId, locations, ttl = null) {
+async function main(parent, secretId, locations, ttl) {
   // [START secretmanager_create_ummr_secret]
   /**
    * TODO(developer): Uncomment these variables before running the sample.

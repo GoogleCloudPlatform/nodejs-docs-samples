@@ -343,8 +343,8 @@ describe('Secret Manager samples', () => {
     }
 
     try {
-      await client.deleteSecret({
-        name: `${secret.name}-regional-cmek`,
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-regional-cmek`,
       });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
@@ -1020,13 +1020,23 @@ describe('Secret Manager samples', () => {
     const output = execSync(
       `node createSecretWithCmek.js ${parent} ${secretId}-cmek ${kmsKeyName}`
     );
-    assert.match(output, new RegExp(`CMEK key ${kmsKeyName}`));
+    assert.match(
+      output,
+      new RegExp(
+        `Created secret ${secret.name}-cmek with CMEK key ${kmsKeyName}`
+      )
+    );
   });
 
   it('create regional secret with customer managed enc key', async () => {
     const output = execSync(
       `node regional_samples/createRegionalSecretWithCmek.js ${projectId} ${locationId} ${secretId}-regional-cmek ${regionalKmsKeyName}`
     );
-    assert.match(output, new RegExp(`CMEK key ${regionalKmsKeyName}`));
+    assert.match(
+      output,
+      new RegExp(
+        `Created secret ${regionalSecret.name}-regional-cmek with CMEK key ${regionalKmsKeyName}`
+      )
+    );
   });
 });

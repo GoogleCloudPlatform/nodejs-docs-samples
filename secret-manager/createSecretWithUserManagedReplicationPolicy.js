@@ -22,7 +22,7 @@ async function main(parent, secretId, locations, ttl) {
   // const parent = 'projects/my-project';
   // const secretId = 'my-new-secret';
   // const locations = ['us-east1', 'europe-west1'];
-  // const ttl = '7776000s'; // Optional: 90 days in seconds
+  // const ttl = 7776000; // Optional: 90 days in seconds
 
   // Import the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');

@@ -29,6 +29,7 @@ let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
 const kmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_NAME;
 const regionalKmsKeyName = process.env.GOOGLE_CLOUD_REGIONAL_KMS_KEY_NAME;
+const topicName = process.env.GOOGLE_CLOUD_TOPIC_NAME;
 const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
@@ -365,6 +366,46 @@ describe('Secret Manager samples', () => {
     try {
       await regionalClient.deleteSecret({
         name: `${regionalSecret.name}-regional-expiry`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-rotation`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-regional-rotation`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-topic`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-regional-topic`,
       });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
@@ -1188,5 +1229,205 @@ describe('Secret Manager samples', () => {
     await regionalClient.deleteSecret({
       name: `${regionalSecret.name}-regional-delete-expiry`,
     });
+  });
+
+  it('create secret with rotation time set', async () => {
+    const parent = `projects/${projectId}`;
+    const output = execSync(
+      `node createSecretWithRotation.js ${parent} ${secretId}-rotation ${topicName}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-rotation`));
+  });
+
+  it('create regional secret with rotation time set', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithRotation.js ${projectId} ${secretId}-regional-rotation ${locationId} ${topicName}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-regional-rotation`)
+    );
+  });
+
+  it('update secret with new rotation time', async () => {
+    const parent = `projects/${projectId}`;
+    const rotationPeriodHours = 24;
+    const nextRotationTime = new Date();
+    nextRotationTime.setHours(nextRotationTime.getHours() + 24);
+    await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-update-rotation`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        topics: [
+          {
+            name: topicName,
+          },
+        ],
+        rotation: {
+          nextRotationTime: {
+            seconds: Math.floor(nextRotationTime.getTime() / 1000),
+            nanos: (nextRotationTime.getTime() % 1000) * 1000000,
+          },
+          rotationPeriod: {
+            seconds: rotationPeriodHours * 3600,
+            nanos: 0,
+          },
+        },
+      },
+    });
+    const output = execSync(
+      `node updateSecretRotation.js ${parent}/secrets/${secretId}-update-rotation`
+    );
+    assert.match(
+      output,
+      new RegExp(`Updated secret ${secret.name}-update-rotation`)
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-update-rotation`,
+    });
+  });
+
+  it('update regional secret with new rotation time', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    const rotationPeriodHours = 24;
+    const nextRotationTime = new Date();
+    nextRotationTime.setHours(nextRotationTime.getHours() + 24);
+
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-update-rotation`,
+      secret: {
+        topics: [
+          {
+            name: topicName,
+          },
+        ],
+        rotation: {
+          nextRotationTime: {
+            seconds: Math.floor(nextRotationTime.getTime() / 1000),
+            nanos: (nextRotationTime.getTime() % 1000) * 1000000,
+          },
+          rotationPeriod: {
+            seconds: rotationPeriodHours * 3600, // Convert hours to seconds
+            nanos: 0,
+          },
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/updateRegionalSecretRotation.js ${projectId} ${secretId}-regional-update-rotation ${locationId}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Updated secret ${regionalSecret.name}-regional-update-rotation`
+      )
+    );
+    await regionalClient.deleteSecret({
+      name: `${regionalSecret.name}-regional-update-rotation`,
+    });
+  });
+
+  it('delete secret rotation time', async () => {
+    const parent = `projects/${projectId}`;
+    const rotationPeriodHours = 24;
+    const nextRotationTime = new Date();
+    nextRotationTime.setHours(nextRotationTime.getHours() + 24);
+    await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-delete-rotation`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        topics: [
+          {
+            name: topicName,
+          },
+        ],
+        rotation: {
+          nextRotationTime: {
+            seconds: Math.floor(nextRotationTime.getTime() / 1000),
+            nanos: (nextRotationTime.getTime() % 1000) * 1000000,
+          },
+          rotationPeriod: {
+            seconds: rotationPeriodHours * 3600,
+            nanos: 0,
+          },
+        },
+      },
+    });
+    const output = execSync(
+      `node deleteSecretRotation.js ${parent}/secrets/${secretId}-delete-rotation`
+    );
+    assert.match(
+      output,
+      new RegExp(`Removed rotation from secret ${secret.name}`)
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-delete-rotation`,
+    });
+  });
+
+  it('delete regional secret rotation time', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    const rotationPeriodHours = 24;
+    const nextRotationTime = new Date();
+    nextRotationTime.setHours(nextRotationTime.getHours() + 24);
+
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-delete-rotation`,
+      secret: {
+        topics: [
+          {
+            name: topicName,
+          },
+        ],
+        rotation: {
+          nextRotationTime: {
+            seconds: Math.floor(nextRotationTime.getTime() / 1000),
+            nanos: (nextRotationTime.getTime() % 1000) * 1000000,
+          },
+          rotationPeriod: {
+            seconds: rotationPeriodHours * 3600, // Convert hours to seconds
+            nanos: 0,
+          },
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/deleteRegionalSecretRotation.js ${projectId} ${secretId}-regional-delete-rotation ${locationId}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Removed rotation from secret ${regionalSecret.name}-regional-delete-rotation`
+      )
+    );
+    await regionalClient.deleteSecret({
+      name: `${regionalSecret.name}-regional-delete-rotation`,
+    });
+  });
+
+  it('create secret with topic set', async () => {
+    const parent = `projects/${projectId}`;
+    const output = execSync(
+      `node createSecretWithTopic.js ${parent} ${secretId}-topic ${topicName}`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-topic`));
+  });
+
+  it('create regional secret with topic set', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithTopic.js ${projectId} ${secretId}-regional-topic ${locationId} ${topicName}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-regional-topic`)
+    );
   });
 });

@@ -1008,7 +1008,7 @@ describe('Secret Manager samples', () => {
   it('create secret with user managed replication policy', async () => {
     const parent = `projects/${projectId}`;
     const locations = ['us-east1', 'us-east5'];
-    const ttl = '900s';
+    const ttl = 900;
     const output = execSync(
       `node createSecretWithUserManagedReplicationPolicy.js ${parent} ${secretId}-ummr ${locations} ${ttl}`
     );

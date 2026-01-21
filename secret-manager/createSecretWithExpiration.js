@@ -54,8 +54,8 @@ async function main(parent, secretId) {
   }
 
   createSecretWithExpiration();
+  // [END secretmanager_create_secret_with_expiration]
 }
-// [END secretmanager_create_secret_with_expiration]
 
 const args = process.argv.slice(2);
 main(...args).catch(console.error);

@@ -57,8 +57,8 @@ async function main(projectId, locationId, secretId) {
   }
 
   createRegionalSecretWithExpiration();
+  // [END secretmanager_create_regional_secret_with_expire_time]
 }
-// [END secretmanager_create_regional_secret_with_expire_time]
 
 const args = process.argv.slice(2);
 main(...args).catch(console.error);

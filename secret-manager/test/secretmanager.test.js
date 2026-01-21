@@ -1430,4 +1430,170 @@ describe('Secret Manager samples', () => {
       new RegExp(`Created secret ${regionalSecret.name}-regional-topic`)
     );
   });
+
+  it('update secret using etag', async () => {
+    const parent = `projects/${projectId}`;
+    const [secretEtag] = await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-update-etag`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        labels: {
+          [labelKey]: labelValue,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node updateSecretWithEtag.js ${parent}/secrets/${secretId}-update-etag`
+    );
+    assert.match(output, new RegExp(`Updated secret: ${secretEtag.name}`));
+    await client.deleteSecret({
+      name: secretEtag.name,
+    });
+  });
+
+  it('update regional secret using etag', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    const [secretEtag] = await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-update-etag`,
+      secret: {
+        labels: {
+          [labelKey]: labelValue,
+        },
+      },
+    });
+
+    const output = execSync(
+      `node regional_samples/updateRegionalSecretWithEtag.js ${projectId} ${locationId} ${secretId}-regional-update-etag`
+    );
+    assert.match(output, new RegExp(`Updated secret: ${secretEtag.name}`));
+    await regionalClient.deleteSecret({
+      name: secretEtag.name,
+    });
+  });
+
+  it('delete secret using etag', async () => {
+    const parent = `projects/${projectId}`;
+    await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-delete-etag`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+      },
+    });
+
+    const output = execSync(
+      `node deleteSecretWithEtag.js ${parent}/secrets/${secretId}-delete-etag`
+    );
+    assert.match(
+      output,
+      new RegExp(`Deleted secret: ${parent}/secrets/${secretId}-delete-etag`)
+    );
+  });
+
+  it('delete regional secret using etag', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-delete-etag`,
+      secret: {},
+    });
+
+    const output = execSync(
+      `node regional_samples/deleteRegionalSecretWithEtag.js ${projectId} ${locationId} ${secretId}-regional-delete-etag`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Deleted secret: ${parent}/secrets/${secretId}-regional-delete-etag`
+      )
+    );
+  });
+
+  it('enable secret versions with etag', async () => {
+    const [newVersion] = await client.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const output = execSync(
+      `node enableSecretVersionWithEtag.js ${newVersion.name}`
+    );
+    assert.match(output, new RegExp(`Enabled ${newVersion.name}`));
+  });
+
+  it('disable secret versions with etag', async () => {
+    const [newVersion] = await client.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const output = execSync(
+      `node disableSecretVersionWithEtag.js ${newVersion.name}`
+    );
+    assert.match(output, new RegExp(`Disabled ${newVersion.name}`));
+  });
+
+  it('destroy secret versions with etag', async () => {
+    const [newVersion] = await client.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const output = execSync(
+      `node destroySecretVersionWithEtag.js ${newVersion.name}`
+    );
+    assert.match(output, new RegExp(`Destroyed ${newVersion.name}`));
+  });
+
+  it('enable regional secret versions with etag', async () => {
+    const [newVersion] = await regionalClient.addSecretVersion({
+      parent: regionalSecret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const versionNumber = newVersion.name.split('/').pop();
+    const output = execSync(
+      `node regional_samples/enableRegionalSecretVersionWithEtag.js ${projectId} ${locationId} ${secretId} ${versionNumber}`
+    );
+    assert.match(output, new RegExp(`Enabled ${newVersion.name}`));
+  });
+
+  it('disable regional secret versions with etag', async () => {
+    const [newVersion] = await regionalClient.addSecretVersion({
+      parent: regionalSecret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const versionNumber = newVersion.name.split('/').pop();
+    const output = execSync(
+      `node regional_samples/disableRegionalSecretVersionWithEtag.js ${projectId} ${locationId} ${secretId} ${versionNumber}`
+    );
+    assert.match(output, new RegExp(`Disabled ${newVersion.name}`));
+  });
+
+  it('destroy regional secret versions with etag', async () => {
+    const [newVersion] = await regionalClient.addSecretVersion({
+      parent: regionalSecret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    const versionNumber = newVersion.name.split('/').pop();
+    const output = execSync(
+      `node regional_samples/destroyRegionalSecretVersionWithEtag.js ${projectId} ${locationId} ${secretId} ${versionNumber}`
+    );
+    assert.match(output, new RegExp(`Destroyed ${newVersion.name}`));
+  });
 });

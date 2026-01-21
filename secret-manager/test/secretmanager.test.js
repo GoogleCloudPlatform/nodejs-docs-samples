@@ -352,6 +352,26 @@ describe('Secret Manager samples', () => {
       }
     }
 
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-expiry`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-regional-expiry`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
     // Wait for 20 seconds before deleting the tag value
     await new Promise(resolve => setTimeout(resolve, 20000));
     const [deleteValueOperation] =
@@ -1038,5 +1058,135 @@ describe('Secret Manager samples', () => {
         `Created secret ${regionalSecret.name}-regional-cmek with CMEK key ${regionalKmsKeyName}`
       )
     );
+  });
+
+  it('create secret with expiry time set', async () => {
+    const parent = `projects/${projectId}`;
+    const output = execSync(
+      `node createSecretWithExpiration.js ${parent} ${secretId}-expiry`
+    );
+    assert.match(output, new RegExp(`Created secret ${secret.name}-expiry`));
+  });
+
+  it('create regional secret with expiry time set', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithExpiration.js ${projectId} ${locationId} ${secretId}-regional-expiry`
+    );
+    assert.match(
+      output,
+      new RegExp(`Created secret ${regionalSecret.name}-regional-expiry`)
+    );
+  });
+
+  it('update secret with new expiry time', async () => {
+    const parent = `projects/${projectId}`;
+    const expireTime = new Date();
+    expireTime.setHours(expireTime.getHours() + 1);
+    await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-update-expiry`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        expireTime: {
+          seconds: Math.floor(expireTime.getTime() / 1000),
+          nanos: (expireTime.getTime() % 1000) * 1000000,
+        },
+      },
+    });
+    const output = execSync(
+      `node updateSecretExpiration.js ${parent}/secrets/${secretId}-update-expiry`
+    );
+    assert.match(
+      output,
+      new RegExp(`Updated secret ${secret.name}-update-expiry`)
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-update-expiry`,
+    });
+  });
+
+  it('update regional secret with new expiry time', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    const expireTime = new Date();
+    expireTime.setHours(expireTime.getHours() + 1);
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-update-expiry`,
+      secret: {
+        expireTime: {
+          seconds: Math.floor(expireTime.getTime() / 1000),
+          nanos: (expireTime.getTime() % 1000) * 1000000,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/updateRegionalSecretExpiration.js ${projectId} ${secretId}-regional-update-expiry ${locationId}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Updated secret ${regionalSecret.name}-regional-update-expiry`)
+    );
+    await regionalClient.deleteSecret({
+      name: `${regionalSecret.name}-regional-update-expiry`,
+    });
+  });
+
+  it('delete secret expiry time', async () => {
+    const parent = `projects/${projectId}`;
+    const expireTime = new Date();
+    expireTime.setHours(expireTime.getHours() + 1);
+    await client.createSecret({
+      parent: parent,
+      secretId: `${secretId}-delete-expiry`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        expireTime: {
+          seconds: Math.floor(expireTime.getTime() / 1000),
+          nanos: (expireTime.getTime() % 1000) * 1000000,
+        },
+      },
+    });
+    const output = execSync(
+      `node deleteSecretExpiration.js ${parent}/secrets/${secretId}-delete-expiry`
+    );
+    assert.match(
+      output,
+      new RegExp(`Removed expiration from secret ${secret.name}`)
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-delete-expiry`,
+    });
+  });
+
+  it('delete regional secret expiry time', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    const expireTime = new Date();
+    expireTime.setHours(expireTime.getHours() + 1);
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-delete-expiry`,
+      secret: {
+        expireTime: {
+          seconds: Math.floor(expireTime.getTime() / 1000),
+          nanos: (expireTime.getTime() % 1000) * 1000000,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/deleteRegionalSecretExpiration.js ${projectId} ${secretId}-regional-delete-expiry ${locationId}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Removed expiration from secret ${regionalSecret.name}-regional-delete-expiry`
+      )
+    );
+    await regionalClient.deleteSecret({
+      name: `${regionalSecret.name}-regional-delete-expiry`,
+    });
   });
 });

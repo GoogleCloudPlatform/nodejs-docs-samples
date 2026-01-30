@@ -1073,7 +1073,7 @@ describe('Secret Manager samples', () => {
     const output = execSync(
       `node createSecretWithUserManagedReplicationPolicy.js ${parent} ${secretId}-ummr ${locations} ${ttl}`
     );
-    assert.match(output, new RegExp(`Created secret: ${secret.name}`));
+    assert.match(output, new RegExp(`Created secret: ${secret.name}-ummr`));
   });
 
   it('create secret with customer managed enc key', async () => {

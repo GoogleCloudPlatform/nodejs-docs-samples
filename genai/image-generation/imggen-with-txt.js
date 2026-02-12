@@ -1,0 +1,63 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+'use strict';
+
+// [START googlegenaisdk_imggen_with_txt]
+const {GoogleGenAI} = require('@google/genai');
+const fs = require('fs');
+
+const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+
+async function generateImage(
+  projectId = GOOGLE_CLOUD_PROJECT,
+  location = GOOGLE_CLOUD_LOCATION
+) {
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
+  });
+
+  const image = await client.models.generateImages({
+    model: 'imagen-4.0-generate-001',
+    prompt: 'A dog reading a newspaper',
+    config: {
+      imageSize: '2K',
+    },
+  });
+  console.log(image.generatedImages[0].image);
+  console.log('Created output image');
+  const outputDir = 'output-folder';
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, {recursive: true});
+  }
+
+  const imageBytes = image.generatedImages[0].image.imageBytes;
+  const buffer = Buffer.from(imageBytes, 'base64');
+  const fileName = `${outputDir}/dog-image.png`;
+
+  fs.writeFileSync(fileName, buffer);
+
+  // Example response:
+  //  gs://your-bucket/your-prefix
+  return image.generatedImages;
+}
+// [END googlegenaisdk_imggen_with_txt]
+
+module.exports = {
+  generateImage,
+};

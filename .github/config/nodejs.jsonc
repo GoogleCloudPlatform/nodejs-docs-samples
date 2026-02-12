@@ -70,6 +70,7 @@
     "functions/http/uploadFile", // no tests exist
     "functions/log", // parent directory
     "functions/pubsub", // parent directory
+    "genai", // parent directory
     "memorystore/redis", // parent directory
     "recaptcha_enterprise/demosite/app", // no tests exist
 

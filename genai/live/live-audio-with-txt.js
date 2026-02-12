@@ -33,7 +33,7 @@ async function generateLiveConversation(
   });
 
   const voiceName = 'Aoede';
-  const modelId = 'gemini-2.0-flash-live-preview-04-09';
+  const modelId = 'gemini-live-2.5-flash-native-audio';
   const config = {
     responseModalities: [Modality.AUDIO],
     speechConfig: {

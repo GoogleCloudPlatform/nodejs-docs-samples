@@ -31,7 +31,7 @@ async function generateLiveAudioTranscription(
     location: location,
   });
 
-  const modelId = 'gemini-live-2.5-flash-preview-native-audio';
+  const modelId = 'gemini-live-2.5-flash-native-audio';
   const config = {
     responseModalities: [Modality.AUDIO],
     inputAudioTranscription: {},

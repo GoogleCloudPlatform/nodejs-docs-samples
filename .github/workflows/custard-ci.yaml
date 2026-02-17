@@ -38,10 +38,10 @@ jobs:
       nodejs-paths: ${{ steps.nodejs.outputs.paths }}
       nodejs-setups: ${{ steps.nodejs.outputs.setups }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: GoogleCloudPlatform/cloud-samples-tools
           ref: v0.3.2
@@ -49,7 +49,7 @@ jobs:
       - name: Create `bin` directory for cloud-samples-tools binaries
         run: mkdir bin
         working-directory: cloud-samples-tools
-      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Build Custard (from cloud-samples-tools)
@@ -70,14 +70,14 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version: 20
       - run: npm install
       - name: Run lint
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             const { execSync } = await import("node:child_process");
@@ -115,8 +115,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version: 20
       - run: ./.github/workflows/utils/region-tags-tests.sh
@@ -140,10 +140,10 @@ jobs:
     steps:
       - name: CI Setup
         run: echo "${{ env.CI_SETUP }}"
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
           node-version: ${{ fromJson(env.CI_SETUP).node-version }}
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
@@ -157,7 +157,7 @@ jobs:
           id_token_audience: 'https://action.test/' # service must have this custom audience
           id_token_include_email: true
       - name: Export environment variables
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         id: vars
         with:
           script: |
@@ -167,7 +167,7 @@ jobs:
             const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
             const idToken = '${{ steps.auth.outputs.id_token }}';
             return await setupVars({projectId, core, setup, serviceAccount, idToken})
-      - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
+      - uses: google-github-actions/get-secretmanager-secrets@bc9c54b29fdffb8a47776820a7d26e77b379d262 # v3
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
         with:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}

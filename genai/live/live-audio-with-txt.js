@@ -20,7 +20,8 @@ const {GoogleGenAI, Modality} = require('@google/genai');
 const fs = require('fs');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function generateLiveConversation(
   projectId = GOOGLE_CLOUD_PROJECT,

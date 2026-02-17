@@ -56,7 +56,7 @@ async function generateStructuredTextResponse(
   });
 
   const completion = await openAI.chat.completions.create({
-    model: 'google/gemini-2.0-flash-001',
+    model: 'google/gemini-2.5-flash',
     messages: [
       {role: 'system', content: 'Extract the event information.'},
       {

@@ -20,22 +20,34 @@ const redis = require('redis');
 const REDISHOST = process.env.REDISHOST || 'localhost';
 const REDISPORT = process.env.REDISPORT || 6379;
 
-const client = redis.createClient(REDISPORT, REDISHOST);
+const client = redis.createClient({
+  url: `redis://${REDISHOST}:${REDISPORT}`,
+});
+
 client.on('error', err => console.error('ERR:REDIS:', err));
 
-// create a server
-http
-  .createServer((req, res) => {
-    // increment the visit counter
-    client.incr('visits', (err, reply) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send(err.message);
-        return;
-      }
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end(`Visitor number: ${reply}\n`);
-    });
+client
+  .connect()
+  .then(() => {
+    console.log('Connected to Redis');
+    http
+      .createServer(async (req, res) => {
+        try {
+          const reply = await client.incr('visits');
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          res.end(`Visitor number: ${reply}\n`);
+        } catch (err) {
+          console.error(err);
+          res.statusCode = 500;
+          res.end(err.message);
+        }
+      })
+      .listen(8080, () => {
+        console.log('Server listening on port 8080');
+      });
   })
-  .listen(8080);
+  .catch(err => {
+    console.error('Failed to connect to Redis:', err);
+    throw err;
+  });
 // [END memorystore_server_js]

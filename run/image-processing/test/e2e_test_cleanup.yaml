@@ -24,13 +24,13 @@ steps:
       "gcloud pubsub subscriptions delete ${_SERVICE}_sub"
 
 - id: 'Delete GCS buckets'
-  name: 'gcr.io/cloud-builders/gsutil:latest'
+  name: 'gcr.io/cloud-builders/gcloud:latest'
   entrypoint: /bin/bash
   args:
   - '-c'
   - |
-    ./test/retry.sh "gsutil rm -r gs://${_SERVICE}_input"
-    ./test/retry.sh "gsutil rm -r gs://${_SERVICE}_output"
+    ./test/retry.sh "gcloud storage rm --recursive gs://${_SERVICE}_input"
+    ./test/retry.sh "gcloud storage rm --recursive gs://${_SERVICE}_output"
 
 substitutions:
   _SERVICE: image-processing

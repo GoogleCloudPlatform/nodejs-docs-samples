@@ -16,12 +16,12 @@
 
 'use strict';
 
-const {assert} = require('chai');
-const {after, describe, it} = require('mocha');
-const cp = require('child_process');
-const {JobServiceClient} = require('@google-cloud/aiplatform');
+import { assert } from 'chai';
+import { after, describe, it } from 'mocha';
+import { execSync as _execSync } from 'node:child_process';
+import { JobServiceClient } from '@google-cloud/aiplatform';
 
-const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+const execSync = cmd => _execSync(cmd, {encoding: 'utf-8'});
 
 describe('Batch predict with Gemini', async () => {
   const projectId = process.env.CAIP_PROJECT_ID;

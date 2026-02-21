@@ -36,13 +36,6 @@ describe('Create compute reservation using global instance template', async () =
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
-    // Cleanup resources
-    const reservations = await getStaleReservations(reservationPrefix);
-    await Promise.all(
-      reservations.map(reservation =>
-        deleteReservation(reservation.zone, reservation.reservationName)
-      )
-    );
     // Create template
     execSync(
       `node ./create-instance-templates/createTemplate.js ${projectId} ${instanceTemplateName}`,
@@ -52,11 +45,14 @@ describe('Create compute reservation using global instance template', async () =
     );
   });
 
-  after(() => {
-    // Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
+  after(async () => {
+    // Cleanup resources
+    const reservations = await getStaleReservations(reservationPrefix);
+    await Promise.all(
+      reservations.map(reservation =>
+        deleteReservation(reservation.zone, reservation.reservationName)
+      )
+    );
     // Delete template
     execSync(
       `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,

@@ -18,7 +18,7 @@
 
 const path = require('path');
 const assert = require('node:assert/strict');
-const {after, before, describe, it} = require('mocha');
+const {after, describe, it} = require('mocha');
 const cp = require('child_process');
 const {
   getStaleDisks,
@@ -37,7 +37,7 @@ describe('Create compute hyperdisk from pool', async () => {
   const storagePoolName = `${poolPrefix}${Math.floor(Math.random() * 1000 + 1)}5f`;
   const zone = 'us-central1-a';
 
-  before(async () => {
+  after(async () => {
     // Cleanup resources
     const disks = await getStaleDisks(diskPrefix);
     await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
@@ -47,12 +47,6 @@ describe('Create compute hyperdisk from pool', async () => {
         deleteStoragePool(pool.zone, pool.storagePoolName)
       )
     );
-  });
-
-  after(async () => {
-    // Cleanup resources
-    await deleteDisk(zone, diskName);
-    await deleteStoragePool(zone, storagePoolName);
   });
 
   it('should create a new storage pool', async () => {

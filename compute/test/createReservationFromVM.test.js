@@ -43,6 +43,16 @@ describe('Compute reservation from VM', async () => {
 
   before(async () => {
     projectId = await reservationsClient.getProjectId();
+    // Create VM
+    execSync(
+      `node ./createInstance.js ${projectId} ${zone} ${vmName} ${machineType}`,
+      {
+        cwd,
+      }
+    );
+  });
+
+  after(async () => {
     // Cleanup resources
     const instances = await getStaleVMInstances(instancePrefix);
     await Promise.all(
@@ -56,25 +66,6 @@ describe('Compute reservation from VM', async () => {
         deleteReservation(reservation.zone, reservation.reservationName)
       )
     );
-    // Create VM
-    execSync(
-      `node ./createInstance.js ${projectId} ${zone} ${vmName} ${machineType}`,
-      {
-        cwd,
-      }
-    );
-  });
-
-  after(() => {
-    //  Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
-
-    //  Delete VM
-    execSync(`node ./deleteInstance.js  ${projectId} ${zone} ${vmName}`, {
-      cwd,
-    });
   });
 
   it('should create a new reservation from vm', () => {

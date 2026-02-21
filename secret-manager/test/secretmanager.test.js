@@ -27,6 +27,8 @@ const resourcemanagerTagValueClient = new TagValuesClient();
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
+const kmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_NAME;
+const regionalKmsKeyName = process.env.GOOGLE_CLOUD_REGIONAL_KMS_KEY_NAME;
 const secretId = v4();
 const payload = 'my super secret data';
 const iamUser = 'user:sethvargo@google.com';
@@ -319,6 +321,37 @@ describe('Secret Manager samples', () => {
         throw err;
       }
     }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-ummr`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-cmek`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-regional-cmek`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
     // Wait for 20 seconds before deleting the tag value
     await new Promise(resolve => setTimeout(resolve, 20000));
     const [deleteValueOperation] =
@@ -818,5 +851,192 @@ describe('Secret Manager samples', () => {
       new RegExp(`Created secret ${regionalSecret.name}-bind-tags`)
     );
     assert.match(output, new RegExp('Created Tag Binding'));
+  });
+
+  it('lists secrets with filter', async () => {
+    const output = execSync(`node listSecretsWithFilter.js ${projectId}`);
+    assert.match(output, new RegExp(`Found secret: ${secret.name}`));
+  });
+
+  it('lists regional secrets with filter', async () => {
+    const output = execSync(
+      `node regional_samples/listRegionalSecretsWithFilter.js ${projectId} ${locationId}`
+    );
+    assert.match(output, new RegExp(`Found secret: ${regionalSecret.name}`));
+  });
+
+  it('list secret versions with filter', async () => {
+    const [versionForFilter] = await client.addSecretVersion({
+      parent: secret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+
+    await client.disableSecretVersion({
+      name: versionForFilter.name,
+    });
+    const output = execSync(
+      `node listSecretVersionsWithFilter.js ${secret.name}`
+    );
+    assert.match(output, new RegExp(`Found version: ${versionForFilter.name}`));
+  });
+
+  it('list regional secret versions with filter', async () => {
+    const [regionalVersionForFilter] = await regionalClient.addSecretVersion({
+      parent: regionalSecret.name,
+      payload: {
+        data: Buffer.from(payload),
+      },
+    });
+    await regionalClient.disableSecretVersion({
+      name: regionalVersionForFilter.name,
+    });
+    const output = execSync(
+      `node regional_samples/listRegionalSecretVersionsWithFilter.js ${projectId} ${locationId} ${secretId}`
+    );
+    assert.match(
+      output,
+      new RegExp(`Found version: ${regionalVersionForFilter.name}`)
+    );
+  });
+
+  it('lists tag bindings', async () => {
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-tag-binding`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node listTagBindings.js ${secret.name}-tag-binding`
+    );
+    assert.match(
+      output,
+      new RegExp(`Tag bindings for ${secret.name}-tag-binding:`)
+    );
+    assert.match(output, new RegExp(`- Tag Value: ${tagValue}`));
+    await client.deleteSecret({
+      name: `${secret.name}-tag-binding`,
+    });
+  });
+
+  it('lists regional tag bindings', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-regional-tag-binding`,
+      secret: {
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/listRegionalTagBindings.js ${projectId} ${locationId} ${secretId}-regional-tag-binding`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Tag bindings for ${parent}/secrets/${secretId}-regional-tag-binding:`
+      )
+    );
+    assert.match(output, new RegExp(`- Tag Value: ${tagValue}`));
+    await regionalClient.deleteSecret({
+      name: `${parent}/secrets/${secretId}-regional-tag-binding`,
+    });
+  });
+
+  it('detach tag bindings', async () => {
+    await client.createSecret({
+      parent: `projects/${projectId}`,
+      secretId: `${secretId}-detach-tag-binding`,
+      secret: {
+        replication: {
+          automatic: {},
+        },
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node detachTagBinding.js ${secret.name}-detach-tag-binding ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Detached tag value ${tagValue} from ${secret.name}-detach-tag-binding`
+      )
+    );
+    await client.deleteSecret({
+      name: `${secret.name}-detach-tag-binding`,
+    });
+  });
+
+  it('detach tags from regional secrets', async () => {
+    const parent = `projects/${projectId}/locations/${locationId}`;
+    await regionalClient.createSecret({
+      parent: parent,
+      secretId: `${secretId}-detach-regional-tag-binding`,
+      secret: {
+        tags: {
+          [tagKey]: tagValue,
+        },
+      },
+    });
+    const output = execSync(
+      `node regional_samples/detachRegionalTag.js ${projectId} ${locationId} ${secretId}-detach-regional-tag-binding ${tagValue}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Detached tag value ${tagValue} from ${parent}/secrets/${secretId}-detach-regional-tag-binding`
+      )
+    );
+    await regionalClient.deleteSecret({
+      name: `${parent}/secrets/${secretId}-detach-regional-tag-binding`,
+    });
+  });
+
+  it('create secret with user managed replication policy', async () => {
+    const parent = `projects/${projectId}`;
+    const locations = ['us-east1', 'us-east5'];
+    const ttl = 900;
+    const output = execSync(
+      `node createSecretWithUserManagedReplicationPolicy.js ${parent} ${secretId}-ummr ${locations} ${ttl}`
+    );
+    assert.match(output, new RegExp(`Created secret: ${secret.name}-ummr`));
+  });
+
+  it('create secret with customer managed enc key', async () => {
+    const parent = `projects/${projectId}`;
+    const output = execSync(
+      `node createSecretWithCmek.js ${parent} ${secretId}-cmek ${kmsKeyName}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Created secret ${secret.name}-cmek with CMEK key ${kmsKeyName}`
+      )
+    );
+  });
+
+  it('create regional secret with customer managed enc key', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithCmek.js ${projectId} ${locationId} ${secretId}-regional-cmek ${regionalKmsKeyName}`
+    );
+    assert.match(
+      output,
+      new RegExp(
+        `Created secret ${regionalSecret.name}-regional-cmek with CMEK key ${regionalKmsKeyName}`
+      )
+    );
   });
 });

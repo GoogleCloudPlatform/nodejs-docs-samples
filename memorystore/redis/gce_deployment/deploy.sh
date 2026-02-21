@@ -36,7 +36,7 @@ fi
 
 #Upload the tar to GCS
 tar -cvf app.tar -C .. package.json server.js
-gsutil cp app.tar gs://"$GCS_BUCKET_NAME"/gce/
+gcloud storage cp app.tar gs://"$GCS_BUCKET_NAME"/gce/
 
 # Create an instance
 gcloud compute instances create my-instance \

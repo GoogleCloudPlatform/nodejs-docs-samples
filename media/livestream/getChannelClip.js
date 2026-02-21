@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
 
 'use strict';
 
-function main(projectId, location, inputId) {
-  // [START livestream_create_input]
+function main(projectId, location, channelId, clipId) {
+  // [START livestream_get_channel_clip]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
   // projectId = 'my-project-id';
   // location = 'us-central1';
-  // inputId = 'my-input';
+  // channelId = 'my-channel';
+  // clipId = 'my-channel-clip';
 
   // Imports the Livestream library
   const {LivestreamServiceClient} = require('@google-cloud/livestream').v1;
@@ -31,29 +32,25 @@ function main(projectId, location, inputId) {
   // Instantiates a client
   const livestreamServiceClient = new LivestreamServiceClient();
 
-  async function createInput() {
+  async function getChannelClip() {
     // Construct request
     const request = {
-      parent: livestreamServiceClient.locationPath(projectId, location),
-      inputId: inputId,
-      input: {
-        type: 'RTMP_PUSH',
-      },
+      name: livestreamServiceClient.clipPath(
+        projectId,
+        location,
+        channelId,
+        clipId
+      ),
     };
-
-    // Run request
-    const [operation] = await livestreamServiceClient.createInput(request);
-    const response = await operation.promise();
-    const [input] = response;
-    console.log(`Input: ${input.name}`);
-    console.log(`Uri: ${input.uri}`);
+    const [clip] = await livestreamServiceClient.getClip(request);
+    console.log(`Channel clip: ${clip.name}`);
   }
 
-  createInput();
-  // [END livestream_create_input]
+  getChannelClip();
+  // [END livestream_get_channel_clip]
 }
 
-// node createInput.js <projectId> <location> <inputId>
+// node getChannelClip.js <projectId> <location> <channelId> <clipId>
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;

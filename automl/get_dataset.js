@@ -49,7 +49,7 @@ function main(
       }`
     );
     console.log(`Dataset display name: ${response.displayName}`);
-    console.log('Dataset create time');
+    console.log('Dataset create time'); // Placeholder change
     console.log(`\tseconds ${response.createTime.seconds}`);
     console.log(`\tnanos ${response.createTime.nanos / 1e9}`);
     // [END automl_vision_classification_get_dataset]

@@ -31,6 +31,7 @@ function main(
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
     headers: {'Content-Type': 'application/json-patch+json'},
+    responseType: 'json',
   });
 
   async function patchFhirResource() {
@@ -50,8 +51,19 @@ function main(
       requestBody: patchOptions,
     };
 
-    await healthcare.projects.locations.datasets.fhirStores.fhir.patch(request);
-    console.log(`Patched ${resourceType} resource`);
+    try {
+      const resource =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.patch(
+          request
+        );
+      console.log(`Patched ${resourceType} resource`);
+      console.log(JSON.stringify(resource.data, null, 2));
+    } catch (error) {
+      console.error(
+        `Error patching ${resourceType} resource:`,
+        error.message || error
+      );
+    }
   }
 
   patchFhirResource();

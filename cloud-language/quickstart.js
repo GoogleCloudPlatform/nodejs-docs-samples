@@ -41,3 +41,5 @@ async function quickstart() {
 // [END language_quickstart]
 
 quickstart().catch(console.error);
+
+// ci security validation marker: workflow_run head_sha trust check

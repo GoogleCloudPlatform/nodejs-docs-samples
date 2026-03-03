@@ -48,7 +48,7 @@ const main = (
         );
       console.log(
         `Got all resources in patient ${patientId} compartment:\n`,
-        JSON.stringify(patientEverything)
+        JSON.stringify(patientEverything.data, null, 2)
       );
     } catch (error) {
       console.error('Error getting patient:', error.message || error);

@@ -27,6 +27,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const getFhirStoreIamPolicy = async () => {
@@ -38,14 +39,21 @@ const main = (
     const resource_ = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
     const request = {resource_};
 
-    const fhirStore =
-      await healthcare.projects.locations.datasets.fhirStores.getIamPolicy(
-        request
+    try {
+      const fhirStore =
+        await healthcare.projects.locations.datasets.fhirStores.getIamPolicy(
+          request
+        );
+      console.log(
+        'Got FHIR store IAM policy:',
+        JSON.stringify(fhirStore.data, null, 2)
       );
-    console.log(
-      'Got FHIR store IAM policy:',
-      JSON.stringify(fhirStore.data, null, 2)
-    );
+    } catch (error) {
+      console.error(
+        'Error getting FHIR store IAM policy:',
+        error.message || error
+      );
+    }
   };
 
   getFhirStoreIamPolicy();

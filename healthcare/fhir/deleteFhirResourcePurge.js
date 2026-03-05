@@ -29,7 +29,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
-    responseType: 'blob',
+    responseType: 'json',
   });
 
   const deleteFhirResourcePurge = async () => {

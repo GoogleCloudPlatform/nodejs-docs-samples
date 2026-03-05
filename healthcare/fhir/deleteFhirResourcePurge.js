@@ -29,6 +29,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'blob',
   });
 
   const deleteFhirResourcePurge = async () => {
@@ -42,10 +43,14 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}`;
     const request = {name};
 
-    await healthcare.projects.locations.datasets.fhirStores.fhir.ResourcePurge(
-      request
-    );
-    console.log('Deleted all historical versions of resource');
+    try {
+      await healthcare.projects.locations.datasets.fhirStores.fhir.ResourcePurge(
+        request
+      );
+      console.log(`Purged all historical versions of resource: ${resourceId}`);
+    } catch (error) {
+      console.error('Error purging FHIR resource:', error.message || error);
+    }
   };
 
   deleteFhirResourcePurge();

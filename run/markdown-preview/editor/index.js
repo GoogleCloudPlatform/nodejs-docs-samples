@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const {app} = require('./app');
-const pkg = require('./package.json');
-const PORT = parseInt(process.env.PORT) || 8080;
+import app from './app.js';
+import fs from 'fs';
 
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
+const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => console.log(`${pkg.name} listening on port ${PORT}`));

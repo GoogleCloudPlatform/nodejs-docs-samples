@@ -32,7 +32,7 @@ async function generateContent(
   imagePath1,
   imagePath2
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
@@ -42,7 +42,7 @@ async function generateContent(
   const image1 = loadImageAsBase64(imagePath1);
   const image2 = loadImageAsBase64(imagePath2);
 
-  const response = await ai.models.generateContent({
+  const response = await client.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: [
       {

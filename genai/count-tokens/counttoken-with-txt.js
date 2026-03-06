@@ -24,13 +24,13 @@ async function countTokens(
   projectId = GOOGLE_CLOUD_PROJECT,
   location = GOOGLE_CLOUD_LOCATION
 ) {
-  const ai = new GoogleGenAI({
+  const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
     location: location,
   });
 
-  const response = await ai.models.countTokens({
+  const response = await client.models.countTokens({
     model: 'gemini-2.5-flash',
     contents: 'What is the highest mountain in Africa?',
   });

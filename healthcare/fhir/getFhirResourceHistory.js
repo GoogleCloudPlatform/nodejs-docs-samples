@@ -30,6 +30,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const getFhirResourceHistory = async () => {
@@ -44,11 +45,18 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/${resourceType}/${resourceId}/_history/${versionId}`;
     const request = {name};
 
-    const resource =
-      await healthcare.projects.locations.datasets.fhirStores.fhir.vread(
-        request
+    try {
+      const resource =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.vread(
+          request
+        );
+      console.log(JSON.stringify(resource.data, null, 2));
+    } catch (error) {
+      console.error(
+        'Error getting FHIR resource history:',
+        error.message || error
       );
-    console.log(JSON.stringify(resource.data, null, 2));
+    }
   };
 
   getFhirResourceHistory();

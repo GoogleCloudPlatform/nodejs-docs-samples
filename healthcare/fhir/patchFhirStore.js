@@ -28,6 +28,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const patchFhirStore = async () => {
@@ -50,10 +51,16 @@ const main = (
       },
     };
 
-    await healthcare.projects.locations.datasets.fhirStores.patch(request);
-    console.log(
-      `Patched FHIR store ${fhirStoreId} with Cloud Pub/Sub topic ${pubsubTopic}`
-    );
+    try {
+      const response =
+        await healthcare.projects.locations.datasets.fhirStores.patch(request);
+      console.log(
+        `Patched FHIR store ${fhirStoreId} with Cloud Pub/Sub topic ${pubsubTopic}`
+      );
+      console.log(JSON.stringify(response.data, null, 2));
+    } catch (error) {
+      console.error('Error patching FHIR store:', error.message || error);
+    }
   };
 
   patchFhirStore();

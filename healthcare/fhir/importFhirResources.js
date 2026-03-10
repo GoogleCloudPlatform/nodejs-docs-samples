@@ -81,7 +81,8 @@ const main = (
           operationStatus.data.error
         );
       } else if (done) {
-        const successCount = operationStatus.data.metadata.counter.success || 0;
+        const successCount =
+          operationStatus.data.metadata?.counter?.success || 0;
         console.log(
           `Import FHIR resources succeeded. ${successCount} resources imported.`
         );

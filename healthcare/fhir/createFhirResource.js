@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Google, LLC
+ * Copyright 2020 Google LLC
  * Licensed under the Apache License, Version 2.0 (the `License`);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,7 @@ function main(
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
     headers: {'Content-Type': 'application/fhir+json'},
+    responseType: 'json',
   });
 
   async function createFhirResource() {
@@ -50,13 +51,17 @@ function main(
     // const resourceType = 'Patient';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
 
-    const request = {parent, type: resourceType, requestBody: body};
-    const resource =
-      await healthcare.projects.locations.datasets.fhirStores.fhir.create(
-        request
-      );
-    console.log(`Created FHIR resource with ID ${resource.data.id}`);
-    console.log(resource.data);
+    try {
+      const request = {parent, type: resourceType, requestBody: body};
+      const resource =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.create(
+          request
+        );
+      console.log(`Created FHIR resource with ID ${resource.data.id}`);
+      console.log(resource.data);
+    } catch (error) {
+      console.error('Error creating FHIR resource:', error.message || error);
+    }
   }
 
   createFhirResource();

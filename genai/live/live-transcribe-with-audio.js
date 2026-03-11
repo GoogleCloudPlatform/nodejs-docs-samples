@@ -19,7 +19,8 @@
 const {GoogleGenAI, Modality} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const GOOGLE_CLOUD_LOCATION =
+  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 
 async function generateLiveAudioTranscription(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -31,7 +32,7 @@ async function generateLiveAudioTranscription(
     location: location,
   });
 
-  const modelId = 'gemini-live-2.5-flash-preview-native-audio';
+  const modelId = 'gemini-live-2.5-flash-native-audio';
   const config = {
     responseModalities: [Modality.AUDIO],
     inputAudioTranscription: {},

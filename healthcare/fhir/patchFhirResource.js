@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Google, LLC
+ * Copyright 2020 Google LLC
  * Licensed under the Apache License, Version 2.0 (the `License`);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,6 +31,7 @@ function main(
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
     headers: {'Content-Type': 'application/json-patch+json'},
+    responseType: 'json',
   });
 
   async function patchFhirResource() {
@@ -50,8 +51,19 @@ function main(
       requestBody: patchOptions,
     };
 
-    await healthcare.projects.locations.datasets.fhirStores.fhir.patch(request);
-    console.log(`Patched ${resourceType} resource`);
+    try {
+      const resource =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.patch(
+          request
+        );
+      console.log(`Patched ${resourceType} resource`);
+      console.log(JSON.stringify(resource.data, null, 2));
+    } catch (error) {
+      console.error(
+        `Error patching ${resourceType} resource:`,
+        error.message || error
+      );
+    }
   }
 
   patchFhirResource();

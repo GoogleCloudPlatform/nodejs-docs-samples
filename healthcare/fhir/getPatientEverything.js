@@ -28,6 +28,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const getPatientEverything = async () => {
@@ -40,14 +41,18 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}/fhir/Patient/${patientId}`;
     const request = {name};
 
-    const patientEverything =
-      await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
-        request
+    try {
+      const patientEverything =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.PatientEverything(
+          request
+        );
+      console.log(
+        `Got all resources in patient ${patientId} compartment:\n`,
+        JSON.stringify(patientEverything.data, null, 2)
       );
-    console.log(
-      `Got all resources in patient ${patientId} compartment:\n`,
-      JSON.stringify(patientEverything)
-    );
+    } catch (error) {
+      console.error('Error getting patient:', error.message || error);
+    }
   };
 
   getPatientEverything();

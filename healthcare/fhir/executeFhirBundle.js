@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Google, LLC
+ * Copyright 2020 Google LLC
  * Licensed under the Apache License, Version 2.0 (the `License`);
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,7 @@ function main(
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
     headers: {'Content-Type': 'application/fhir+json'},
+    responseType: 'json',
   });
   const fs = require('fs');
 
@@ -42,15 +43,19 @@ function main(
     // const bundleFile = 'bundle.json';
     const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
 
-    const bundle = JSON.parse(fs.readFileSync(bundleFile));
+    try {
+      const bundle = JSON.parse(fs.readFileSync(bundleFile));
 
-    const request = {parent, requestBody: bundle};
-    const resource =
-      await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(
-        request
-      );
-    console.log('FHIR bundle executed');
-    console.log(resource.data);
+      const request = {parent, requestBody: bundle};
+      const resource =
+        await healthcare.projects.locations.datasets.fhirStores.fhir.executeBundle(
+          request
+        );
+      console.log('FHIR bundle executed');
+      console.log(JSON.stringify(resource.data, null, 2));
+    } catch (error) {
+      console.error('Error executing FHIR bundle:', error.message || error);
+    }
   }
 
   executeFhirBundle();

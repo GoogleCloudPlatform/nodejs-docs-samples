@@ -77,7 +77,7 @@ describe('End-to-End Tests', () => {
     if (SAMPLE_VERSION) cleanUpCmd += `,_VERSION=${SAMPLE_VERSION}`;
     if (SERVICE_ACCOUNT) cleanUpCmd += `,_SERVICE_ACCOUNT=${SERVICE_ACCOUNT}`;
 
-    execSync(cleanUpCmd);
+    //execSync(cleanUpCmd);
   });
 
   it('Service uses the NAME override', async () => {

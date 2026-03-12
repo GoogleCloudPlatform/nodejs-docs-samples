@@ -38,7 +38,7 @@ async function generateContent(
   };
 
   const response = await client.models.generateContent({
-    model: 'model-optimizer-exp-04-09',
+    model: 'gemini-2.5-flash',
     contents: 'How does AI work?',
     config: generateContentConfig,
   });

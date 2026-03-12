@@ -27,6 +27,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const deleteFhirStore = async () => {
@@ -38,8 +39,12 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
     const request = {name};
 
-    await healthcare.projects.locations.datasets.fhirStores.delete(request);
-    console.log(`Deleted FHIR store: ${fhirStoreId}`);
+    try {
+      await healthcare.projects.locations.datasets.fhirStores.delete(request);
+      console.log(`Deleted FHIR store: ${fhirStoreId}`);
+    } catch (error) {
+      console.error('Error deleting FHIR store:', error.message || error);
+    }
   };
 
   deleteFhirStore();

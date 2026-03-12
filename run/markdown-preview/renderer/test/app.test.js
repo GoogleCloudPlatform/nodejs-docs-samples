@@ -14,16 +14,15 @@
 
 'use strict';
 
-const assert = require('assert');
-const path = require('path');
-const sinon = require('sinon');
-const supertest = require('supertest');
+import assert from 'assert';
+import sinon from 'sinon';
+import supertest from 'supertest';
+import app from '../app.js';
 
 let request;
 
 describe('Unit Tests', () => {
   before(() => {
-    const app = require(path.join(__dirname, '..', 'app'));
     request = supertest(app);
   });
 

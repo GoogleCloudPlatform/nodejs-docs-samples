@@ -34,9 +34,8 @@ async function generateText(
   const videoContent = fs.readFileSync('test-data/describe_video_content.mp4');
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-2.5-flash-lite',
     contents: [
-      {text: 'hello-world'},
       {
         inlineData: {
           data: videoContent.toString('base64'),
@@ -45,6 +44,9 @@ async function generateText(
       },
       {text: 'Write a short and engaging blog post based on this video.'},
     ],
+    config: {
+      mediaResolution: 'MEDIA_RESOLUTION_LOW',
+    },
   });
 
   console.log(response.text);

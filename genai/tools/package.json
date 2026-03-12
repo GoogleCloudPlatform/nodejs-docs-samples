@@ -1,0 +1,20 @@
+{
+  "name": "nodejs-genai-tools",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js"
+  },
+  "dependencies": {
+    "@google/genai": "1.30.0"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
+    "mocha": "^10.0.0"
+  }
+}

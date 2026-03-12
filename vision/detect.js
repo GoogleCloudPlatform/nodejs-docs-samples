@@ -202,6 +202,7 @@ async function detectTextGCS(bucketName, fileName) {
 async function detectLogos(fileName) {
   // [START vision_logo_detection]
   const vision = require('@google-cloud/vision');
+  const fs = require('fs');
 
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
@@ -211,17 +212,42 @@ async function detectLogos(fileName) {
    */
   // const fileName = 'Local image file, e.g. /path/to/image.png';
 
+  const imageBuffer = fs.readFileSync(fileName);
+  const base64Image = imageBuffer.toString('base64');
+
+  const request = {
+    requests: [
+      {
+        image: {
+          content: base64Image,
+        },
+        features: [
+          {
+            type: 'LOGO_DETECTION',
+          },
+        ],
+      },
+    ],
+  };
+
   // Performs logo detection on the local file
-  const [result] = await client.logoDetection(fileName);
-  const logos = result.logoAnnotations;
-  console.log('Logos:');
-  logos.forEach(logo => console.log(logo));
+  const [response] = await client.batchAnnotateImages(request);
+
+  response.responses.forEach(res => {
+    if (res.logoAnnotations) {
+      console.log('Logos:');
+      res.logoAnnotations.forEach(logo => console.log(logo));
+    }
+
+    if (res.error) {
+      console.error(` - Error: ${res.error.message}`);
+    }
+  });
   // [END vision_logo_detection]
 }
 
 async function detectLogosGCS(bucketName, fileName) {
   // [START vision_logo_detection_gcs]
-  // Imports the Google Cloud client libraries
   const vision = require('@google-cloud/vision');
 
   // Creates a client
@@ -233,11 +259,36 @@ async function detectLogosGCS(bucketName, fileName) {
   // const bucketName = 'Bucket where the file resides, e.g. my-bucket';
   // const fileName = 'Path to file within bucket, e.g. path/to/image.png';
 
+  const request = {
+    requests: [
+      {
+        image: {
+          source: {
+            imageUri: `gs://${bucketName}/${fileName}`,
+          },
+        },
+        features: [
+          {
+            type: 'LOGO_DETECTION',
+          },
+        ],
+      },
+    ],
+  };
+
   // Performs logo detection on the gcs file
-  const [result] = await client.logoDetection(`gs://${bucketName}/${fileName}`);
-  const logos = result.logoAnnotations;
-  console.log('Logos:');
-  logos.forEach(logo => console.log(logo));
+  const [response] = await client.batchAnnotateImages(request);
+
+  response.responses.forEach(res => {
+    if (res.logoAnnotations) {
+      console.log('Logos:');
+      res.logoAnnotations.forEach(logo => console.log(logo));
+    }
+
+    if (res.error) {
+      console.error(` - Error: ${res.error.message}`);
+    }
+  });
   // [END vision_logo_detection_gcs]
 }
 

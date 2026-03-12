@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-genai-live",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js"
+  },
+  "dependencies": {
+    "@google/genai": "1.30.0",
+    "google-auth-library": "^10.3.0",
+    "node-fetch": "^2.7.0",
+    "openai": "^5.19.1"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "chai": "^4.5.0",
+    "mocha": "^10.0.0",
+    "proxyquire": "^2.1.3",
+    "sinon": "^18.0.0"
+  }
+}

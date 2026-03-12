@@ -2,7 +2,7 @@
 
 # [Cloud Firestore: Node.js Samples](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/firestore)
 
-This collection of samples demonstrates how to perform various operations with Google Cloud Firestore using Node.js, including basic reads and writes, data pipelines, and distributed counters.
+This collection of samples demonstrates how to perform various operations with Google Cloud Firestore using Node.js, including basic reads and writes, data pipelines, and solution counters.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ This collection of samples demonstrates how to perform various operations with G
   * [Limit-to-last-query](#limit-to-last-query)
   * [Pipelines-quickstart](#pipelines-quickstart)
   * [Quickstart](#quickstart)
-  * [Distributed-counter](#distributed-counter)
+  * [Solution-counters](#solution-counters)
 * [Running the tests](#running-the-tests)
 
 ## Before you begin
@@ -53,13 +53,13 @@ __Usage:__
 
 -----
 
-### Distributed-counter
+### Solution-counters
 
-View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/firestore/distributed-counter.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/firestore/solution-counters.js).
 
 __Usage:__
 
-`node distributed-counter.js`
+`node solution-counters.js`
 
 -----
 

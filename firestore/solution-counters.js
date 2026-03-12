@@ -37,7 +37,7 @@ async function main() {
   // [START firestore_data_delete_doc]
   async function deleteDocs(docRef) {
     const shardsCollectionRef = docRef.collection('shards');
-    const shardDocs = await shardsCollectionRef.select('id').get();
+    const shardDocs = await shardsCollectionRef.get();
     const promises = shardDocs.docs.map(doc => doc.ref.delete());
     return Promise.all(promises);
   }

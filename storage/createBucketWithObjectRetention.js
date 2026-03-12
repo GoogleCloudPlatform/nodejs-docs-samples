@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Create a Bucket with object retention enabled.
 //   description: Create a Bucket with object retention enabled.
@@ -36,16 +38,23 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function createBucketWithObjectRetention() {
-    const [bucket] = await storage.createBucket(bucketName, {
-      enableObjectRetention: true,
-    });
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        enableObjectRetention: true,
+      });
 
-    console.log(
-      `Created '${bucket.name}' with object retention enabled setting: ${bucket.metadata.objectRetention.mode}`
-    );
+      console.log(
+        `Created '${bucket.name}' with object retention enabled setting: ${bucket.metadata.objectRetention.mode}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing create bucket with object retention:',
+        error.message || error
+      );
+    }
   }
 
-  createBucketWithObjectRetention().catch(console.error);
+  createBucketWithObjectRetention();
   // [END storage_create_bucket_with_object_retention]
 }
 

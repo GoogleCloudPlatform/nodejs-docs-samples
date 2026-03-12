@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_set_public_access_prevention_inherited]
   /**
@@ -34,13 +36,20 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
   async function setPublicAccessPreventionInherited() {
     // Sets public access prevention to 'inherited' for the bucket
-    await storage.bucket(bucketName).setMetadata({
-      iamConfiguration: {
-        publicAccessPrevention: 'inherited',
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        iamConfiguration: {
+          publicAccessPrevention: 'inherited',
+        },
+      });
 
-    console.log(`Public access prevention is 'inherited' for ${bucketName}.`);
+      console.log(`Public access prevention is 'inherited' for ${bucketName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing set public access prevention inherited:',
+        error.message || error
+      );
+    }
   }
 
   setPublicAccessPreventionInherited();

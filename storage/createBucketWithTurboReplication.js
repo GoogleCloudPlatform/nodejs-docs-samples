@@ -22,6 +22,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket', location = 'NAM4') {
   // [START storage_create_bucket_turbo_replication]
   /**
@@ -49,14 +51,21 @@ function main(bucketName = 'my-bucket', location = 'NAM4') {
   async function createBucketWithTurboReplication() {
     // For default values see: https://cloud.google.com/storage/docs/locations and
     // https://cloud.google.com/storage/docs/storage-classes
-    const [bucket] = await storage.createBucket(bucketName, {
-      location,
-      rpo,
-    });
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        location,
+        rpo,
+      });
 
-    console.log(
-      `${bucket.name} created with the recovery point objective (RPO) set to ${rpo} in ${location}.`
-    );
+      console.log(
+        `${bucket.name} created with the recovery point objective (RPO) set to ${rpo} in ${location}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing create bucket with turbo replication:',
+        error.message || error
+      );
+    }
   }
 
   createBucketWithTurboReplication();

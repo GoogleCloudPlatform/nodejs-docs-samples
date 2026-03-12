@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_create_bucket]
   /**
@@ -37,15 +39,19 @@ function main(bucketName = 'my-bucket') {
     // For default values see: https://cloud.google.com/storage/docs/locations and
     // https://cloud.google.com/storage/docs/storage-classes
 
-    const [bucket] = await storage.createBucket(bucketName, {
-      location: 'ASIA',
-      storageClass: 'COLDLINE',
-    });
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        location: 'ASIA',
+        storageClass: 'COLDLINE',
+      });
 
-    console.log(`Bucket ${bucket.name} created.`);
+      console.log(`Bucket ${bucket.name} created.`);
+    } catch (error) {
+      console.error('Error executing create bucket:', error.message || error);
+    }
   }
 
-  createBucket().catch(console.error);
+  createBucket();
   // [END storage_create_bucket]
 }
 

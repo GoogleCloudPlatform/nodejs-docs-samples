@@ -55,21 +55,28 @@ function main(
   // const method = 'GET';
 
   async function configureBucketCors() {
-    await storage.bucket(bucketName).setCorsConfiguration([
-      {
-        maxAgeSeconds,
-        method: [method],
-        origin: [origin],
-        responseHeader: [responseHeader],
-      },
-    ]);
+    try {
+      await storage.bucket(bucketName).setCorsConfiguration([
+        {
+          maxAgeSeconds,
+          method: [method],
+          origin: [origin],
+          responseHeader: [responseHeader],
+        },
+      ]);
 
-    console.log(`Bucket ${bucketName} was updated with a CORS config
+      console.log(`Bucket ${bucketName} was updated with a CORS config
         to allow ${method} requests from ${origin} sharing 
         ${responseHeader} responses across origins`);
+    } catch (error) {
+      console.error(
+        'Error executing configure bucket cors:',
+        error.message || error
+      );
+    }
   }
 
-  configureBucketCors().catch(console.error);
+  configureBucketCors();
   // [END storage_cors_configuration]
 }
 

@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_get_public_access_prevention]
   /**
@@ -36,10 +38,17 @@ function main(bucketName = 'my-bucket') {
 
   async function getPublicAccessPrevention() {
     // Gets Bucket Metadata and prints publicAccessPrevention value (either 'inherited' or 'enforced').
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
-    console.log(
-      `Public access prevention is ${metadata.iamConfiguration.publicAccessPrevention} for ${bucketName}.`
-    );
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
+      console.log(
+        `Public access prevention is ${metadata.iamConfiguration.publicAccessPrevention} for ${bucketName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing get public access prevention:',
+        error.message || error
+      );
+    }
   }
 
   getPublicAccessPrevention();

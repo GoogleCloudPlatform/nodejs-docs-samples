@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_disable_soft_delete]
   /**
@@ -29,18 +31,25 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function disableSoftDelete() {
-    const options = {
-      softDeletePolicy: {
-        retentionDurationSeconds: 0,
-      },
-    };
+    try {
+      const options = {
+        softDeletePolicy: {
+          retentionDurationSeconds: 0,
+        },
+      };
 
-    const [metadata] = await storage.bucket(bucketName).setMetadata(options);
+      const [metadata] = await storage.bucket(bucketName).setMetadata(options);
 
-    console.log(`Bucket ${metadata.name} soft delete policy was disabled`);
+      console.log(`Bucket ${metadata.name} soft delete policy was disabled`);
+    } catch (error) {
+      console.error(
+        'Error executing disable soft delete:',
+        error.message || error
+      );
+    }
   }
 
-  disableSoftDelete().catch(console.error);
+  disableSoftDelete();
   // [END storage_disable_soft_delete]
 }
 

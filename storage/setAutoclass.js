@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   toggle = true,
@@ -39,19 +41,23 @@ function main(
     // Configure the Autoclass setting for a bucket.
     // terminalStorageClass field is optional and defaults to NEARLINE if not otherwise specified.
     // Valid terminalStorageClass values are NEARLINE and ARCHIVE.
-    const [metadata] = await storage.bucket(bucketName).setMetadata({
-      autoclass: {
-        enabled: toggle,
-        terminalStorageClass,
-      },
-    });
+    try {
+      const [metadata] = await storage.bucket(bucketName).setMetadata({
+        autoclass: {
+          enabled: toggle,
+          terminalStorageClass,
+        },
+      });
 
-    console.log(
-      `Autoclass terminal storage class is ${metadata.autoclass.terminalStorageClass}.`
-    );
+      console.log(
+        `Autoclass terminal storage class is ${metadata.autoclass.terminalStorageClass}.`
+      );
+    } catch (error) {
+      console.error('Error executing set autoclass:', error.message || error);
+    }
   }
 
-  setAutoclass().catch(console.error);
+  setAutoclass();
   // [END storage_set_autoclass]
 }
 

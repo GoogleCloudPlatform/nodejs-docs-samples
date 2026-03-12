@@ -38,23 +38,30 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function createBucketWithHierarchicalNamespace() {
-    const [bucket] = await storage.createBucket(bucketName, {
-      iamConfiguration: {
-        uniformBucketLevelAccess: {
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        iamConfiguration: {
+          uniformBucketLevelAccess: {
+            enabled: true,
+          },
+        },
+        hierarchicalNamespace: {
           enabled: true,
         },
-      },
-      hierarchicalNamespace: {
-        enabled: true,
-      },
-    });
+      });
 
-    console.log(
-      `Created '${bucket.name}' with hierarchical namespace enabled.`
-    );
+      console.log(
+        `Created '${bucket.name}' with hierarchical namespace enabled.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing create bucket with hierarchical namespace:',
+        error.message || error
+      );
+    }
   }
 
-  createBucketWithHierarchicalNamespace().catch(console.error);
+  createBucketWithHierarchicalNamespace();
   // [END storage_create_bucket_hierarchical_namespace]
 }
 

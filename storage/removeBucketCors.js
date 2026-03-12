@@ -34,12 +34,19 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function removeBucketCors() {
-    await storage.bucket(bucketName).setCorsConfiguration([]);
+    try {
+      await storage.bucket(bucketName).setCorsConfiguration([]);
 
-    console.log(`Removed CORS configuration from bucket ${bucketName}`);
+      console.log(`Removed CORS configuration from bucket ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing remove bucket cors:',
+        error.message || error
+      );
+    }
   }
 
-  removeBucketCors().catch(console.error);
+  removeBucketCors();
   // [END storage_remove_cors_configuration]
 }
 

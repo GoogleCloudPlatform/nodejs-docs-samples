@@ -54,17 +54,24 @@ function main(
   async function createBucketWithStorageClassAndLocation() {
     // For default values see: https://cloud.google.com/storage/docs/locations and
     // https://cloud.google.com/storage/docs/storage-classes
-    const [bucket] = await storage.createBucket(bucketName, {
-      location,
-      [storageClass]: true,
-    });
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        location,
+        [storageClass]: true,
+      });
 
-    console.log(
-      `${bucket.name} created with ${storageClass} class in ${location}`
-    );
+      console.log(
+        `${bucket.name} created with ${storageClass} class in ${location}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing create bucket with storage class and location:',
+        error.message || error
+      );
+    }
   }
 
-  createBucketWithStorageClassAndLocation().catch(console.error);
+  createBucketWithStorageClassAndLocation();
   // [END storage_create_bucket_class_location]
 }
 

@@ -35,12 +35,19 @@ function main(bucketName = 'my-bucket') {
     // const bucketName = 'your-unique-bucket-name';
 
     // Get Bucket Metadata
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
 
-    console.log(JSON.stringify(metadata, null, 2));
+      console.log(JSON.stringify(metadata, null, 2));
+    } catch (error) {
+      console.error(
+        'Error executing get bucket metadata:',
+        error.message || error
+      );
+    }
   }
   // [END storage_get_bucket_metadata]
-  getBucketMetadata().catch(console.error);
+  getBucketMetadata();
 }
 
 main(...process.argv.slice(2));

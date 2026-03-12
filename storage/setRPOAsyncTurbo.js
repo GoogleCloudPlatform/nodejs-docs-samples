@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_set_rpo_async_turbo]
   /**
@@ -37,11 +39,18 @@ function main(bucketName = 'my-bucket') {
   // Enable turbo replication for the bucket by setting rpo to ASYNC_TURBO.
   // The bucket must be a dual-region bucket.
   async function setRPOAsyncTurbo() {
-    await storage.bucket(bucketName).setMetadata({
-      rpo: 'ASYNC_TURBO',
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        rpo: 'ASYNC_TURBO',
+      });
 
-    console.log(`Turbo replication enabled for ${bucketName}.`);
+      console.log(`Turbo replication enabled for ${bucketName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing set RPO async turbo:',
+        error.message || error
+      );
+    }
   }
 
   setRPOAsyncTurbo();

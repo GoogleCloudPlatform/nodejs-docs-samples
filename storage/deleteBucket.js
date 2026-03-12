@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on buckets with
  * the Google Cloud Storage API.
@@ -35,11 +37,15 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function deleteBucket() {
-    await storage.bucket(bucketName).delete();
-    console.log(`Bucket ${bucketName} deleted`);
+    try {
+      await storage.bucket(bucketName).delete();
+      console.log(`Bucket ${bucketName} deleted`);
+    } catch (error) {
+      console.error('Error executing delete bucket:', error.message || error);
+    }
   }
 
-  deleteBucket().catch(console.error);
+  deleteBucket();
   // [END storage_delete_bucket]
 }
 

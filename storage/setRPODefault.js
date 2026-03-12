@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_set_rpo_default]
   /**
@@ -37,11 +39,15 @@ function main(bucketName = 'my-bucket') {
   // Disable turbo replication for the bucket by setting RPO to default.
   // The bucket must be a dual-region bucket.
   async function setRPODefault() {
-    await storage.bucket(bucketName).setMetadata({
-      rpo: 'DEFAULT',
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        rpo: 'DEFAULT',
+      });
 
-    console.log(`Turbo replication disabled for ${bucketName}.`);
+      console.log(`Turbo replication disabled for ${bucketName}.`);
+    } catch (error) {
+      console.error('Error executing set RPO default:', error.message || error);
+    }
   }
 
   setRPODefault();

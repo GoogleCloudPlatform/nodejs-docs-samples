@@ -44,19 +44,26 @@ function main(
   const storage = new Storage();
 
   async function addBucketWebsiteConfiguration() {
-    await storage.bucket(bucketName).setMetadata({
-      website: {
-        mainPageSuffix,
-        notFoundPage,
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        website: {
+          mainPageSuffix,
+          notFoundPage,
+        },
+      });
 
-    console.log(
-      `Static website bucket ${bucketName} is set up to use ${mainPageSuffix} as the index page and ${notFoundPage} as the 404 page`
-    );
+      console.log(
+        `Static website bucket ${bucketName} is set up to use ${mainPageSuffix} as the index page and ${notFoundPage} as the 404 page`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing add bucket website configuration:',
+        error.message || error
+      );
+    }
   }
 
-  addBucketWebsiteConfiguration().catch(console.error);
+  addBucketWebsiteConfiguration();
   // [END storage_define_bucket_website_configuration]
 }
 process.on('unhandledRejection', err => {

@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_get_uniform_bucket_level_access]
   /**
@@ -36,23 +38,32 @@ function main(bucketName = 'my-bucket') {
 
   async function getUniformBucketLevelAccess() {
     // Gets Bucket Metadata and checks if uniform bucket-level access is enabled.
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
 
-    if (metadata.iamConfiguration) {
-      const uniformBucketLevelAccess =
-        metadata.iamConfiguration.uniformBucketLevelAccess;
-      console.log(`Uniform bucket-level access is enabled for ${bucketName}.`);
-      console.log(
-        `Bucket will be locked on ${uniformBucketLevelAccess.lockedTime}.`
-      );
-    } else {
-      console.log(
-        `Uniform bucket-level access is not enabled for ${bucketName}.`
+      if (metadata.iamConfiguration) {
+        const uniformBucketLevelAccess =
+          metadata.iamConfiguration.uniformBucketLevelAccess;
+        console.log(
+          `Uniform bucket-level access is enabled for ${bucketName}.`
+        );
+        console.log(
+          `Bucket will be locked on ${uniformBucketLevelAccess.lockedTime}.`
+        );
+      } else {
+        console.log(
+          `Uniform bucket-level access is not enabled for ${bucketName}.`
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Error executing get uniform bucket-level access:',
+        error.message || error
       );
     }
   }
 
-  getUniformBucketLevelAccess().catch(console.error);
+  getUniformBucketLevelAccess();
 
   // [END storage_get_uniform_bucket_level_access]
 }

@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   defaultKmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_ASIA
@@ -41,18 +43,25 @@ function main(
   const storage = new Storage();
 
   async function enableDefaultKMSKey() {
-    await storage.bucket(bucketName).setMetadata({
-      encryption: {
-        defaultKmsKeyName,
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        encryption: {
+          defaultKmsKeyName,
+        },
+      });
 
-    console.log(
-      `Default KMS key for ${bucketName} was set to ${defaultKmsKeyName}.`
-    );
+      console.log(
+        `Default KMS key for ${bucketName} was set to ${defaultKmsKeyName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing enable default KMS key:',
+        error.message || error
+      );
+    }
   }
 
-  enableDefaultKMSKey().catch(console.error);
+  enableDefaultKMSKey();
   // [END storage_set_bucket_default_kms_key]
 }
 

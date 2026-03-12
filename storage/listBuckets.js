@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main() {
   // [START storage_list_buckets]
   // Imports the Google Cloud client library
@@ -23,15 +25,19 @@ function main() {
   const storage = new Storage();
 
   async function listBuckets() {
-    const [buckets] = await storage.getBuckets();
+    try {
+      const [buckets] = await storage.getBuckets();
 
-    console.log('Buckets:');
-    buckets.forEach(bucket => {
-      console.log(bucket.name);
-    });
+      console.log('Buckets:');
+      buckets.forEach(bucket => {
+        console.log(bucket.name);
+      });
+    } catch (error) {
+      console.error('Error executing list buckets:', error.message || error);
+    }
   }
 
-  listBuckets().catch(console.error);
+  listBuckets();
   // [END storage_list_buckets]
 }
 

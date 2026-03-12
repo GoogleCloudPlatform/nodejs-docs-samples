@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_get_autoclass]
   /**
@@ -35,18 +37,22 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function getAutoclass() {
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
-    console.log(
-      `Autoclass is ${
-        metadata.autoclass.enabled ? 'enabled' : 'disabled'
-      } for ${metadata.name} at ${metadata.autoclass.toggleTime}.
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
+      console.log(
+        `Autoclass is ${
+          metadata.autoclass.enabled ? 'enabled' : 'disabled'
+        } for ${metadata.name} at ${metadata.autoclass.toggleTime}.
    Autoclass terminal storage class is last updated to ${
      metadata.autoclass.terminalStorageClass
    } at ${metadata.autoclass.terminalStorageClassUpdateTime}.`
-    );
+      );
+    } catch (error) {
+      console.error('Error executing get autoclass:', error.message || error);
+    }
   }
 
-  getAutoclass().catch(console.error);
+  getAutoclass();
   // [END storage_get_autoclass]
 }
 main(...process.argv.slice(2));

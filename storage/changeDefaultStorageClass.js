@@ -39,12 +39,19 @@ function main(bucketName = 'my-bucket', storageClass = 'standard') {
   const storage = new Storage();
 
   async function changeDefaultStorageClass() {
-    await storage.bucket(bucketName).setStorageClass(storageClass);
+    try {
+      await storage.bucket(bucketName).setStorageClass(storageClass);
 
-    console.log(`${bucketName} has been set to ${storageClass}`);
+      console.log(`${bucketName} has been set to ${storageClass}`);
+    } catch (error) {
+      console.error(
+        'Error executing change default storage class:',
+        error.message || error
+      );
+    }
   }
 
-  changeDefaultStorageClass().catch(console.error);
+  changeDefaultStorageClass();
   // [END storage_change_default_storage_class]
 }
 process.on('unhandledRejection', err => {

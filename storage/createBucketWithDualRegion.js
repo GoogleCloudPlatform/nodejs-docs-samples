@@ -51,24 +51,31 @@ function main(
 
   async function createDualRegionBucket() {
     // For regions supporting dual-regions see: https://cloud.google.com/storage/docs/locations
-    const [bucket] = await storage.createBucket(bucketName, {
-      location,
-      customPlacementConfig: {
-        dataLocations: [region1, region2],
-      },
-    });
+    try {
+      const [bucket] = await storage.createBucket(bucketName, {
+        location,
+        customPlacementConfig: {
+          dataLocations: [region1, region2],
+        },
+      });
 
-    console.log(`Created '${bucket.name}'`);
-    console.log(`- location: '${bucket.metadata.location}'`);
-    console.log(`- locationType: '${bucket.metadata.locationType}'`);
-    console.log(
-      `- customPlacementConfig: '${JSON.stringify(
-        bucket.metadata.customPlacementConfig
-      )}'`
-    );
+      console.log(`Created '${bucket.name}'`);
+      console.log(`- location: '${bucket.metadata.location}'`);
+      console.log(`- locationType: '${bucket.metadata.locationType}'`);
+      console.log(
+        `- customPlacementConfig: '${JSON.stringify(
+          bucket.metadata.customPlacementConfig
+        )}'`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing create dual region bucket:',
+        error.message || error
+      );
+    }
   }
 
-  createDualRegionBucket().catch(console.error);
+  createDualRegionBucket();
   // [END storage_create_bucket_dual_region]
 }
 

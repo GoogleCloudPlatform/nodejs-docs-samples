@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_get_soft_delete_policy]
   /**
@@ -29,27 +31,34 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function getSoftDeletePolicy() {
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
 
-    const softDelete = metadata.softDeletePolicy;
-    if (
-      !softDelete ||
-      !softDelete.retentionDurationSeconds ||
-      softDelete.retentionDurationSeconds === '0'
-    ) {
-      console.log(`Bucket ${metadata.name} soft delete policy was disabled`);
-    } else {
-      console.log(`Soft delete policy for ${metadata.name}`);
-      console.log(
-        `Soft delete Period: ${softDelete.retentionDurationSeconds} seconds`
-      );
-      if (softDelete.effectiveTime) {
-        console.log(`Effective Time: ${softDelete.effectiveTime}`);
+      const softDelete = metadata.softDeletePolicy;
+      if (
+        !softDelete ||
+        !softDelete.retentionDurationSeconds ||
+        softDelete.retentionDurationSeconds === '0'
+      ) {
+        console.log(`Bucket ${metadata.name} soft delete policy was disabled`);
+      } else {
+        console.log(`Soft delete policy for ${metadata.name}`);
+        console.log(
+          `Soft delete Period: ${softDelete.retentionDurationSeconds} seconds`
+        );
+        if (softDelete.effectiveTime) {
+          console.log(`Effective Time: ${softDelete.effectiveTime}`);
+        }
       }
+    } catch (error) {
+      console.error(
+        'Error executing get soft delete policy:',
+        error.message || error
+      );
     }
   }
 
-  getSoftDeletePolicy().catch(console.error);
+  getSoftDeletePolicy();
   // [END storage_get_soft_delete_policy]
 }
 

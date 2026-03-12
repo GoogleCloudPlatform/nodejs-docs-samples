@@ -34,16 +34,23 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function removeDefaultKMSKey() {
-    await storage.bucket(bucketName).setMetadata({
-      encryption: {
-        defaultKmsKeyName: null,
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        encryption: {
+          defaultKmsKeyName: null,
+        },
+      });
 
-    console.log(`Default KMS key was removed from ${bucketName}`);
+      console.log(`Default KMS key was removed from ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing remove default KMS key:',
+        error.message || error
+      );
+    }
   }
 
-  removeDefaultKMSKey().catch(console.error);
+  removeDefaultKMSKey();
   // [END storage_bucket_delete_default_kms_key]
 }
 

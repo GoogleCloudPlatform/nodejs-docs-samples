@@ -34,12 +34,19 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function makeBucketPublic() {
-    await storage.bucket(bucketName).makePublic();
+    try {
+      await storage.bucket(bucketName).makePublic();
 
-    console.log(`Bucket ${bucketName} is now publicly readable`);
+      console.log(`Bucket ${bucketName} is now publicly readable`);
+    } catch (error) {
+      console.error(
+        'Error executing make bucket public:',
+        error.message || error
+      );
+    }
   }
 
-  makeBucketPublic().catch(console.error);
+  makeBucketPublic();
   // [END storage_set_bucket_public_iam]
 }
 process.on('unhandledRejection', err => {

@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_disable_uniform_bucket_level_access]
   /**
@@ -35,18 +37,27 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
   async function disableUniformBucketLevelAccess() {
     // Disables uniform bucket-level access for the bucket
-    await storage.bucket(bucketName).setMetadata({
-      iamConfiguration: {
-        uniformBucketLevelAccess: {
-          enabled: false,
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        iamConfiguration: {
+          uniformBucketLevelAccess: {
+            enabled: false,
+          },
         },
-      },
-    });
+      });
 
-    console.log(`Uniform bucket-level access was disabled for ${bucketName}.`);
+      console.log(
+        `Uniform bucket-level access was disabled for ${bucketName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing disable uniform bucket-level access:',
+        error.message || error
+      );
+    }
   }
 
-  disableUniformBucketLevelAccess().catch(console.error);
+  disableUniformBucketLevelAccess();
   // [END storage_disable_uniform_bucket_level_access]
 }
 main(...process.argv.slice(2));

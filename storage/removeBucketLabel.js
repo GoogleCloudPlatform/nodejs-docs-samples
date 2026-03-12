@@ -37,14 +37,21 @@ function main(bucketName = 'my-bucket', labelKey = 'labelone') {
   const storage = new Storage();
 
   async function removeBucketLabel() {
-    const labels = {};
-    // To remove a label set the value of the key to null.
-    labels[labelKey] = null;
-    await storage.bucket(bucketName).setMetadata({labels});
-    console.log(`Removed labels from bucket ${bucketName}`);
+    try {
+      const labels = {};
+      // To remove a label set the value of the key to null.
+      labels[labelKey] = null;
+      await storage.bucket(bucketName).setMetadata({labels});
+      console.log(`Removed labels from bucket ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing remove bucket label:',
+        error.message || error
+      );
+    }
   }
 
-  removeBucketLabel().catch(console.error);
+  removeBucketLabel();
   // [END storage_remove_bucket_label]
 }
 process.on('unhandledRejection', err => {

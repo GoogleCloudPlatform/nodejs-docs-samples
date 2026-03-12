@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_set_public_access_prevention_enforced]
   /**
@@ -36,15 +38,22 @@ function main(bucketName = 'my-bucket') {
 
   // Enforces public access prevention for the bucket
   async function setPublicAccessPreventionEnforced() {
-    await storage.bucket(bucketName).setMetadata({
-      iamConfiguration: {
-        publicAccessPrevention: 'enforced',
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        iamConfiguration: {
+          publicAccessPrevention: 'enforced',
+        },
+      });
 
-    console.log(
-      `Public access prevention is set to enforced for ${bucketName}.`
-    );
+      console.log(
+        `Public access prevention is set to enforced for ${bucketName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing set public access prevention enforced:',
+        error.message || error
+      );
+    }
   }
 
   setPublicAccessPreventionEnforced();

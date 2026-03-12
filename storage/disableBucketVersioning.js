@@ -34,16 +34,23 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function disableBucketVersioning() {
-    await storage.bucket(bucketName).setMetadata({
-      versioning: {
-        enabled: false,
-      },
-    });
+    try {
+      await storage.bucket(bucketName).setMetadata({
+        versioning: {
+          enabled: false,
+        },
+      });
 
-    console.log(`Versioning is disabled for bucket ${bucketName}`);
+      console.log(`Versioning is disabled for bucket ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing disable bucket versioning:',
+        error.message || error
+      );
+    }
   }
 
-  disableBucketVersioning().catch(console.error);
+  disableBucketVersioning();
   // [END storage_disable_versioning]
 }
 

@@ -48,11 +48,18 @@ function main(
   };
 
   async function addBucketLabel() {
-    await storage.bucket(bucketName).setMetadata({labels});
-    console.log(`Added label to bucket ${bucketName}`);
+    try {
+      await storage.bucket(bucketName).setMetadata({labels});
+      console.log(`Added label to bucket ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing add bucket label:',
+        error.message || error
+      );
+    }
   }
 
-  addBucketLabel().catch(console.error);
+  addBucketLabel();
   // [END storage_add_bucket_label]
 }
 process.on('unhandledRejection', err => {

@@ -20,6 +20,8 @@
  * at https://cloud.google.com/storage/docs.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_get_rpo]
   /**
@@ -37,8 +39,12 @@ function main(bucketName = 'my-bucket') {
   async function getRPO() {
     // Gets Bucket Metadata and prints RPO value (either 'default' or 'async_turbo').
     // If RPO is undefined, the bucket is a single region bucket
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
-    console.log(`RPO is ${metadata.rpo} for ${bucketName}.`);
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
+      console.log(`RPO is ${metadata.rpo} for ${bucketName}.`);
+    } catch (error) {
+      console.error('Error executing get RPO:', error.message || error);
+    }
   }
 
   getRPO();

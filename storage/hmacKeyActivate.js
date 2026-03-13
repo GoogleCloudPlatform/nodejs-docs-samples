@@ -41,17 +41,25 @@ function main(
 
   // Activate HMAC SA Key
   async function activateHmacKey() {
-    const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
-    const [hmacKeyMetadata] = await hmacKey.setMetadata({state: 'ACTIVE'});
+    try {
+      const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
+      const [hmacKeyMetadata] = await hmacKey.setMetadata({state: 'ACTIVE'});
 
-    console.log('The HMAC key is now active.');
-    console.log('The HMAC key metadata is:');
-    for (const [key, value] of Object.entries(hmacKeyMetadata)) {
-      console.log(`${key}: ${value}`);
+      console.log('The HMAC key is now active.');
+      console.log('The HMAC key metadata is:');
+      for (const [key, value] of Object.entries(hmacKeyMetadata)) {
+        console.log(`${key}: ${value}`);
+      }
+    } catch (error) {
+      console.error(
+        'Error executing activate hmac key:',
+        error.message || error
+      );
     }
   }
+
+  activateHmacKey();
   // [END storage_activate_hmac_key]
-  activateHmacKey().catch(console.error);
 }
 
 main(...process.argv.slice(2));

@@ -41,18 +41,23 @@ function main(
 
   // Get HMAC SA Key Metadata
   async function getHmacKey() {
-    const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
+    try {
+      const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
 
-    // Populate the hmacKey object with metadata from server.
-    await hmacKey.getMetadata();
+      // Populate the hmacKey object with metadata from server.
+      await hmacKey.getMetadata();
 
-    console.log('The HMAC key metadata is:');
-    for (const [key, value] of Object.entries(hmacKey.metadata)) {
-      console.log(`${key}: ${value}`);
+      console.log('The HMAC key metadata is:');
+      for (const [key, value] of Object.entries(hmacKey.metadata)) {
+        console.log(`${key}: ${value}`);
+      }
+    } catch (error) {
+      console.error('Error executing get hmac key:', error.message || error);
     }
   }
+
+  getHmacKey();
   // [END storage_get_hmac_key]
-  getHmacKey().catch(console.error);
 }
 
 main(...process.argv.slice(2));

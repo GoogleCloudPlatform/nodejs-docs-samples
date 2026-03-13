@@ -41,17 +41,25 @@ function main(
 
   // Deactivate HMAC SA Key
   async function deactivateHmacKey() {
-    const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
-    const [hmacKeyMetadata] = await hmacKey.setMetadata({state: 'INACTIVE'});
+    try {
+      const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
+      const [hmacKeyMetadata] = await hmacKey.setMetadata({state: 'INACTIVE'});
 
-    console.log('The HMAC key is now inactive.');
-    console.log('The HMAC key metadata is:');
-    for (const [key, value] of Object.entries(hmacKeyMetadata)) {
-      console.log(`${key}: ${value}`);
+      console.log('The HMAC key is now inactive.');
+      console.log('The HMAC key metadata is:');
+      for (const [key, value] of Object.entries(hmacKeyMetadata)) {
+        console.log(`${key}: ${value}`);
+      }
+    } catch (error) {
+      console.error(
+        'Error executing deactivate hmac key:',
+        error.message || error
+      );
     }
   }
+
+  deactivateHmacKey();
   // [END storage_deactivate_hmac_key]
-  deactivateHmacKey().catch(console.error);
 }
 
 main(...process.argv.slice(2));

@@ -41,15 +41,20 @@ function main(
 
   // Delete HMAC SA Key
   async function deleteHmacKey() {
-    const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
-    await hmacKey.delete();
+    try {
+      const hmacKey = storage.hmacKey(hmacKeyAccessId, {projectId});
+      await hmacKey.delete();
 
-    console.log(
-      'The key is deleted, though it may still appear in getHmacKeys() results.'
-    );
+      console.log(
+        'The key is deleted, though it may still appear in getHmacKeys() results.'
+      );
+    } catch (error) {
+      console.error('Error executing delete hmac key:', error.message || error);
+    }
   }
+
+  deleteHmacKey();
   // [END storage_delete_hmac_key]
-  deleteHmacKey().catch(console.error);
 }
 
 main(...process.argv.slice(2));

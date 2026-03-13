@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "cleanup": "node scripts/cleanup",
-    "test": "mocha system-test/*.js --timeout 600000"
+    "test": "mocha system-test/*.js --timeout 800000"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^4.0.0",

@@ -41,19 +41,26 @@ function main(
 
   // Create HMAC SA Key
   async function createHmacKey() {
-    const [hmacKey, secret] = await storage.createHmacKey(serviceAccountEmail, {
-      projectId,
-    });
+    try {
+      const [hmacKey, secret] = await storage.createHmacKey(
+        serviceAccountEmail,
+        {
+          projectId,
+        }
+      );
 
-    console.log(`The base64 encoded secret is: ${secret}`);
-    console.log('Do not miss that secret, there is no API to recover it.');
-    console.log('The HMAC key metadata is:');
-    for (const [key, value] of Object.entries(hmacKey.metadata)) {
-      console.log(`${key}: ${value}`);
+      console.log(`The base64 encoded secret is: ${secret}`);
+      console.log('Do not miss that secret, there is no API to recover it.');
+      console.log('The HMAC key metadata is:');
+      for (const [key, value] of Object.entries(hmacKey.metadata)) {
+        console.log(`${key}: ${value}`);
+      }
+    } catch (error) {
+      console.error('Error executing create hmac key:', error.message || error);
     }
   }
   // [END storage_create_hmac_key]
-  createHmacKey().catch(console.error);
+  createHmacKey();
 }
 
 main(...process.argv.slice(2));

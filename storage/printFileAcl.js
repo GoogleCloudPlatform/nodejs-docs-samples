@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -38,15 +40,19 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   const storage = new Storage();
 
   async function printFileAcl() {
-    // Gets the ACL for the file
-    const [acls] = await storage.bucket(bucketName).file(fileName).acl.get();
+    try {
+      // Gets the ACL for the file
+      const [acls] = await storage.bucket(bucketName).file(fileName).acl.get();
 
-    acls.forEach(acl => {
-      console.log(`${acl.role}: ${acl.entity}`);
-    });
+      acls.forEach(acl => {
+        console.log(`${acl.role}: ${acl.entity}`);
+      });
+    } catch (error) {
+      console.error('Error executing print file ACL:', error.message || error);
+    }
   }
 
-  printFileAcl().catch(console.error);
+  printFileAcl();
   // [END storage_print_file_acl]
 }
 main(...process.argv.slice(2));

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -38,16 +40,25 @@ function main(bucketName = 'my-bucket', userEmail = 'jdobry@google.com') {
   const storage = new Storage();
 
   async function addBucketOwner() {
-    // Makes the user an owner of the bucket. You can use addAllUsers(),
-    // addDomain(), addProject(), addGroup(), and addAllAuthenticatedUsers()
-    // to grant access to different types of entities. You can also use "readers"
-    // and "writers" to grant different roles.
-    await storage.bucket(bucketName).acl.owners.addUser(userEmail);
+    try {
+      // Makes the user an owner of the bucket. You can use addAllUsers(),
+      // addDomain(), addProject(), addGroup(), and addAllAuthenticatedUsers()
+      // to grant access to different types of entities. You can also use "readers"
+      // and "writers" to grant different roles.
+      await storage.bucket(bucketName).acl.owners.addUser(userEmail);
 
-    console.log(`Added user ${userEmail} as an owner on bucket ${bucketName}.`);
+      console.log(
+        `Added user ${userEmail} as an owner on bucket ${bucketName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing add bucket owner ACL:',
+        error.message || error
+      );
+    }
   }
 
-  addBucketOwner().catch(console.error);
+  addBucketOwner();
   // [END storage_add_bucket_owner]
 }
 main(...process.argv.slice(2));

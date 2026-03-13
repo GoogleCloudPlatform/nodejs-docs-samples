@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -45,18 +47,25 @@ function main(
   const storage = new Storage();
 
   async function removeFileOwner() {
-    // Removes the user from the access control list of the file. You can use
-    // deleteAllUsers(), deleteDomain(), deleteProject(), deleteGroup(), and
-    // deleteAllAuthenticatedUsers() to remove access for different types of entities.
-    await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .acl.owners.deleteUser(userEmail);
+    try {
+      // Removes the user from the access control list of the file. You can use
+      // deleteAllUsers(), deleteDomain(), deleteProject(), deleteGroup(), and
+      // deleteAllAuthenticatedUsers() to remove access for different types of entities.
+      await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .acl.owners.deleteUser(userEmail);
 
-    console.log(`Removed user ${userEmail} from file ${fileName}.`);
+      console.log(`Removed user ${userEmail} from file ${fileName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing remove file owner ACL:',
+        error.message || error
+      );
+    }
   }
 
-  removeFileOwner().catch(console.error);
+  removeFileOwner();
   // [END storage_remove_file_owner]
 }
 

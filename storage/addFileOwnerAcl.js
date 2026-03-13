@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -45,15 +47,22 @@ function main(
   const storage = new Storage();
 
   async function addFileOwner() {
-    await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .acl.owners.addUser(userEmail);
+    try {
+      await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .acl.owners.addUser(userEmail);
 
-    console.log(`Added user ${userEmail} as an owner on file ${fileName}.`);
+      console.log(`Added user ${userEmail} as an owner on file ${fileName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing add file owner ACL:',
+        error.message || error
+      );
+    }
   }
 
-  addFileOwner().catch(console.error);
+  addFileOwner();
   // [END storage_add_file_owner]
 }
 main(...process.argv.slice(2));

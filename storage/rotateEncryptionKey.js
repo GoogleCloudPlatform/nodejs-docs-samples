@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on encrypted
  * files with the Google Cloud Storage API.
@@ -54,29 +56,36 @@ function main(
   const storage = new Storage();
 
   async function rotateEncryptionKey() {
-    const rotateEncryptionKeyOptions = {
-      encryptionKey: Buffer.from(newKey, 'base64'),
+    try {
+      const rotateEncryptionKeyOptions = {
+        encryptionKey: Buffer.from(newKey, 'base64'),
 
-      // Optional: set a generation-match precondition to avoid potential race
-      // conditions and data corruptions. The request to copy is aborted if the
-      // object's generation number does not match your precondition.
-      preconditionOpts: {
-        ifGenerationMatch: generationMatchPrecondition,
-      },
-    };
-    await storage
-      .bucket(bucketName)
-      .file(fileName, {
-        encryptionKey: Buffer.from(oldKey, 'base64'),
-      })
-      .rotateEncryptionKey({
-        rotateEncryptionKeyOptions,
-      });
+        // Optional: set a generation-match precondition to avoid potential race
+        // conditions and data corruptions. The request to copy is aborted if the
+        // object's generation number does not match your precondition.
+        preconditionOpts: {
+          ifGenerationMatch: generationMatchPrecondition,
+        },
+      };
+      await storage
+        .bucket(bucketName)
+        .file(fileName, {
+          encryptionKey: Buffer.from(oldKey, 'base64'),
+        })
+        .rotateEncryptionKey({
+          rotateEncryptionKeyOptions,
+        });
 
-    console.log('Encryption key rotated successfully');
+      console.log('Encryption key rotated successfully');
+    } catch (error) {
+      console.error(
+        'Error executing rotate encryption key:',
+        error.message || error
+      );
+    }
   }
 
-  rotateEncryptionKey().catch(console.error);
+  rotateEncryptionKey();
   // [END storage_rotate_encryption_key]
 }
 main(...process.argv.slice(2));

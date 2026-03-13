@@ -50,37 +50,40 @@ function main(
   const storage = new Storage();
 
   async function changeFileCSEKToCMEK() {
-    const rotateEncryptionKeyOptions = {
-      kmsKeyName,
-      // Optional: set a generation-match precondition to avoid potential race
-      // conditions and data corruptions. The request to copy is aborted if the
-      // object's generation number does not match your precondition.
-      preconditionOpts: {
-        ifGenerationMatch: generationMatchPrecondition,
-      },
-    };
+    try {
+      const rotateEncryptionKeyOptions = {
+        kmsKeyName,
+        // Optional: set a generation-match precondition to avoid potential race
+        // conditions and data corruptions. The request to copy is aborted if the
+        // object's generation number does not match your precondition.
+        preconditionOpts: {
+          ifGenerationMatch: generationMatchPrecondition,
+        },
+      };
 
-    console.log(rotateEncryptionKeyOptions);
+      console.log(rotateEncryptionKeyOptions);
 
-    await storage
-      .bucket(bucketName)
-      .file(fileName, {
-        encryptionKey: Buffer.from(encryptionKey, 'base64'),
-      })
-      .rotateEncryptionKey({
-        rotateEncryptionKeyOptions,
-      });
+      await storage
+        .bucket(bucketName)
+        .file(fileName, {
+          encryptionKey: Buffer.from(encryptionKey, 'base64'),
+        })
+        .rotateEncryptionKey({
+          rotateEncryptionKeyOptions,
+        });
 
-    console.log(
-      `file ${fileName} in bucket ${bucketName} is now managed by KMS key ${kmsKeyName} instead of customer-supplied encryption key`
-    );
+      console.log(
+        `file ${fileName} in bucket ${bucketName} is now managed by KMS key ${kmsKeyName} instead of customer-supplied encryption key`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing change file CSEK to CMEK:',
+        error.message || error
+      );
+    }
   }
 
-  changeFileCSEKToCMEK().catch(console.error);
+  changeFileCSEKToCMEK();
   // [END storage_object_csek_to_cmek]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

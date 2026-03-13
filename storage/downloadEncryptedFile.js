@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on encrypted
  * files with the Google Cloud Storage API.
@@ -52,22 +54,29 @@ function main(
   const storage = new Storage();
 
   async function downloadEncryptedFile() {
-    const options = {
-      destination: destFileName,
-    };
+    try {
+      const options = {
+        destination: destFileName,
+      };
 
-    // Decrypts and downloads the file. This can only be done with the key used
-    // to encrypt and upload the file.
-    await storage
-      .bucket(bucketName)
-      .file(srcFileName)
-      .setEncryptionKey(Buffer.from(encryptionKey, 'base64'))
-      .download(options);
+      // Decrypts and downloads the file. This can only be done with the key used
+      // to encrypt and upload the file.
+      await storage
+        .bucket(bucketName)
+        .file(srcFileName)
+        .setEncryptionKey(Buffer.from(encryptionKey, 'base64'))
+        .download(options);
 
-    console.log(`File ${srcFileName} downloaded to ${destFileName}`);
+      console.log(`File ${srcFileName} downloaded to ${destFileName}`);
+    } catch (error) {
+      console.error(
+        'Error executing download encrypted file:',
+        error.message || error
+      );
+    }
   }
 
-  downloadEncryptedFile().catch(console.error);
+  downloadEncryptedFile();
   // [END storage_download_encrypted_file]
 }
 main(...process.argv.slice(2));

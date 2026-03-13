@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to enable Object Lifecycle Management for
  * a bucket.
@@ -34,21 +36,28 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function enableBucketLifecycleManagement() {
-    const [metadata] = await storage.bucket(bucketName).addLifecycleRule({
-      action: {
-        type: 'Delete',
-      },
-      condition: {age: 100},
-    });
+    try {
+      const [metadata] = await storage.bucket(bucketName).addLifecycleRule({
+        action: {
+          type: 'Delete',
+        },
+        condition: {age: 100},
+      });
 
-    console.log(
-      `Lifecycle management is enabled for bucket ${bucketName} and the rules are:`
-    );
+      console.log(
+        `Lifecycle management is enabled for bucket ${bucketName} and the rules are:`
+      );
 
-    console.log(metadata.lifecycle.rule);
+      console.log(metadata.lifecycle.rule);
+    } catch (error) {
+      console.error(
+        'Error executing enable bucket lifecycle management:',
+        error.message || error
+      );
+    }
   }
 
-  enableBucketLifecycleManagement().catch(console.error);
+  enableBucketLifecycleManagement();
   // [END storage_enable_bucket_lifecycle_management]
 }
 

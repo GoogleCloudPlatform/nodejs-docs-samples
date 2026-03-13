@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to disable Object Lifecycle Management for
  * a bucket.
@@ -34,12 +36,19 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function disableBucketLifecycleManagement() {
-    await storage.bucket(bucketName).setMetadata({lifecycle: null});
+    try {
+      await storage.bucket(bucketName).setMetadata({lifecycle: null});
 
-    console.log(`Lifecycle management is disabled for bucket ${bucketName}`);
+      console.log(`Lifecycle management is disabled for bucket ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing disable bucket lifecycle management:',
+        error.message || error
+      );
+    }
   }
 
-  disableBucketLifecycleManagement().catch(console.error);
+  disableBucketLifecycleManagement();
   // [END storage_disable_bucket_lifecycle_management]
 }
 

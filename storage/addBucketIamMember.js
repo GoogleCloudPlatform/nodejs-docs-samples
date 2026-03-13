@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   roleName = 'roles/storage.objectViewer',
@@ -42,32 +44,39 @@ function main(
   const storage = new Storage();
 
   async function addBucketIamMember() {
-    // Get a reference to a Google Cloud Storage bucket
-    const bucket = storage.bucket(bucketName);
+    try {
+      // Get a reference to a Google Cloud Storage bucket
+      const bucket = storage.bucket(bucketName);
 
-    // For more information please read:
-    // https://cloud.google.com/storage/docs/access-control/iam
-    const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
+      // For more information please read:
+      // https://cloud.google.com/storage/docs/access-control/iam
+      const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
 
-    // Adds the new roles to the bucket's IAM policy
-    policy.bindings.push({
-      role: roleName,
-      members: members,
-    });
+      // Adds the new roles to the bucket's IAM policy
+      policy.bindings.push({
+        role: roleName,
+        members: members,
+      });
 
-    // Updates the bucket's IAM policy
-    await bucket.iam.setPolicy(policy);
+      // Updates the bucket's IAM policy
+      await bucket.iam.setPolicy(policy);
 
-    console.log(
-      `Added the following member(s) with role ${roleName} to ${bucketName}:`
-    );
+      console.log(
+        `Added the following member(s) with role ${roleName} to ${bucketName}:`
+      );
 
-    members.forEach(member => {
-      console.log(`  ${member}`);
-    });
+      members.forEach(member => {
+        console.log(`  ${member}`);
+      });
+    } catch (error) {
+      console.error(
+        'Error executing add bucket iam member:',
+        error.message || error
+      );
+    }
   }
 
-  addBucketIamMember().catch(console.error);
+  addBucketIamMember();
   // [END storage_add_bucket_iam_member]
 }
 main(...process.argv.slice(2));

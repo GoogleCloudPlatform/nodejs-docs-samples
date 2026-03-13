@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_view_bucket_iam_members]
   /**
@@ -27,6 +29,7 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function viewBucketIamMembers() {
+    try{
     // For more information please read:
     // https://cloud.google.com/storage/docs/access-control/iam
     const results = await storage
@@ -53,9 +56,12 @@ function main(bucketName = 'my-bucket') {
         console.log(`    Expression: ${condition.expression}`);
       }
     }
+  }catch(error){
+
+  }
   }
 
-  viewBucketIamMembers().catch(console.error);
+  viewBucketIamMembers();
   // [END storage_view_bucket_iam_members]
 }
 main(...process.argv.slice(2));

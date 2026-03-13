@@ -59,8 +59,9 @@ function main(
       console.error('Error executing create hmac key:', error.message || error);
     }
   }
-  // [END storage_create_hmac_key]
+
   createHmacKey();
+  // [END storage_create_hmac_key]
 }
 
 main(...process.argv.slice(2));

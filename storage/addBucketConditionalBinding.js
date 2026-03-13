@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -57,44 +59,51 @@ function main(
   const storage = new Storage();
 
   async function addBucketConditionalBinding() {
-    // Get a reference to a Google Cloud Storage bucket
-    const bucket = storage.bucket(bucketName);
+    try {
+      // Get a reference to a Google Cloud Storage bucket
+      const bucket = storage.bucket(bucketName);
 
-    // Gets and updates the bucket's IAM policy
-    const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
+      // Gets and updates the bucket's IAM policy
+      const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
 
-    // Set the policy's version to 3 to use condition in bindings.
-    policy.version = 3;
+      // Set the policy's version to 3 to use condition in bindings.
+      policy.version = 3;
 
-    // Adds the new roles to the bucket's IAM policy
-    policy.bindings.push({
-      role: roleName,
-      members: members,
-      condition: {
-        title: title,
-        description: description,
-        expression: expression,
-      },
-    });
+      // Adds the new roles to the bucket's IAM policy
+      policy.bindings.push({
+        role: roleName,
+        members: members,
+        condition: {
+          title: title,
+          description: description,
+          expression: expression,
+        },
+      });
 
-    // Updates the bucket's IAM policy
-    await bucket.iam.setPolicy(policy);
+      // Updates the bucket's IAM policy
+      await bucket.iam.setPolicy(policy);
 
-    console.log(
-      `Added the following member(s) with role ${roleName} to ${bucketName}:`
-    );
+      console.log(
+        `Added the following member(s) with role ${roleName} to ${bucketName}:`
+      );
 
-    members.forEach(member => {
-      console.log(`  ${member}`);
-    });
+      members.forEach(member => {
+        console.log(`  ${member}`);
+      });
 
-    console.log('with condition:');
-    console.log(`  Title: ${title}`);
-    console.log(`  Description: ${description}`);
-    console.log(`  Expression: ${expression}`);
+      console.log('with condition:');
+      console.log(`  Title: ${title}`);
+      console.log(`  Description: ${description}`);
+      console.log(`  Expression: ${expression}`);
+    } catch (error) {
+      console.error(
+        'Error executing add bucket conditional binding:',
+        error.message || error
+      );
+    }
   }
 
-  addBucketConditionalBinding().catch(console.error);
+  addBucketConditionalBinding();
   // [END storage_add_bucket_conditional_iam_binding]
 }
 main(...process.argv.slice(2));

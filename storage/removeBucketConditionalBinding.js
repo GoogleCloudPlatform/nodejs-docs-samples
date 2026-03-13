@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on bucket and
  * file Access Control Lists with the Google Cloud Storage API.
@@ -55,40 +57,47 @@ function main(
   const storage = new Storage();
 
   async function removeBucketConditionalBinding() {
-    // Get a reference to a Google Cloud Storage bucket
-    const bucket = storage.bucket(bucketName);
+    try {
+      // Get a reference to a Google Cloud Storage bucket
+      const bucket = storage.bucket(bucketName);
 
-    // Gets and updates the bucket's IAM policy
-    const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
+      // Gets and updates the bucket's IAM policy
+      const [policy] = await bucket.iam.getPolicy({requestedPolicyVersion: 3});
 
-    // Set the policy's version to 3 to use condition in bindings.
-    policy.version = 3;
+      // Set the policy's version to 3 to use condition in bindings.
+      policy.version = 3;
 
-    // Finds and removes the appropriate role-member group with specific condition.
-    const index = policy.bindings.findIndex(
-      binding =>
-        binding.role === roleName &&
-        binding.condition &&
-        binding.condition.title === title &&
-        binding.condition.description === description &&
-        binding.condition.expression === expression
-    );
+      // Finds and removes the appropriate role-member group with specific condition.
+      const index = policy.bindings.findIndex(
+        binding =>
+          binding.role === roleName &&
+          binding.condition &&
+          binding.condition.title === title &&
+          binding.condition.description === description &&
+          binding.condition.expression === expression
+      );
 
-    const binding = policy.bindings[index];
-    if (binding) {
-      policy.bindings.splice(index, 1);
+      const binding = policy.bindings[index];
+      if (binding) {
+        policy.bindings.splice(index, 1);
 
-      // Updates the bucket's IAM policy
-      await bucket.iam.setPolicy(policy);
+        // Updates the bucket's IAM policy
+        await bucket.iam.setPolicy(policy);
 
-      console.log('Conditional Binding was removed.');
-    } else {
-      // No matching role-member group with specific condition were found
-      throw new Error('No matching binding group found.');
+        console.log('Conditional Binding was removed.');
+      } else {
+        // No matching role-member group with specific condition were found
+        throw new Error('No matching binding group found.');
+      }
+    } catch (error) {
+      console.error(
+        'Error executing remove bucket conditional binding:',
+        error.message || error
+      );
     }
   }
 
-  removeBucketConditionalBinding().catch(console.error);
+  removeBucketConditionalBinding();
   // [END storage_remove_bucket_conditional_iam_binding]
 }
 main(...process.argv.slice(2));

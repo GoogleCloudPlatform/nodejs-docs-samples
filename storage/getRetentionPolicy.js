@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to use Bucket Lock operations on buckets
  * and objects using the Google Cloud Storage API.
@@ -35,21 +37,28 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function getRetentionPolicy() {
-    const [metadata] = await storage.bucket(bucketName).getMetadata();
-    if (metadata.retentionPolicy) {
-      const retentionPolicy = metadata.retentionPolicy;
-      console.log('A retention policy exists!');
-      console.log(`Period: ${retentionPolicy.retentionPeriod}`);
-      console.log(`Effective time: ${retentionPolicy.effectiveTime}`);
-      if (retentionPolicy.isLocked) {
-        console.log('Policy is locked');
-      } else {
-        console.log('Policy is unlocked');
+    try {
+      const [metadata] = await storage.bucket(bucketName).getMetadata();
+      if (metadata.retentionPolicy) {
+        const retentionPolicy = metadata.retentionPolicy;
+        console.log('A retention policy exists!');
+        console.log(`Period: ${retentionPolicy.retentionPeriod}`);
+        console.log(`Effective time: ${retentionPolicy.effectiveTime}`);
+        if (retentionPolicy.isLocked) {
+          console.log('Policy is locked');
+        } else {
+          console.log('Policy is unlocked');
+        }
       }
+    } catch (error) {
+      console.error(
+        'Error executing get bucket retention policy:',
+        error.message || error
+      );
     }
   }
 
-  getRetentionPolicy().catch(console.error);
+  getRetentionPolicy();
   // [END storage_get_retention_policy]
 }
 main(...process.argv.slice(2));

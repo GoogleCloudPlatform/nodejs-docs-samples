@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to use Bucket Lock operations on buckets
  * and objects using the Google Cloud Storage API.
@@ -35,24 +37,29 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function lockRetentionPolicy() {
-    // Gets the current metageneration value for the bucket, required by
-    // lock_retention_policy
-    const [unlockedMetadata] = await storage.bucket(bucketName).getMetadata();
+    try {
+      // Gets the current metageneration value for the bucket, required by
+      // lock_retention_policy
+      const [unlockedMetadata] = await storage.bucket(bucketName).getMetadata();
 
-    // Warning: Once a retention policy is locked, it cannot be unlocked. The
-    // retention period can only be increased
-    const [lockedMetadata] = await storage
-      .bucket(bucketName)
-      .lock(unlockedMetadata.metageneration);
-    console.log(`Retention policy for ${bucketName} is now locked`);
-    console.log(
-      `Retention policy effective as of ${lockedMetadata.retentionPolicy.effectiveTime}`
-    );
-
-    return lockedMetadata;
+      // Warning: Once a retention policy is locked, it cannot be unlocked. The
+      // retention period can only be increased
+      const [lockedMetadata] = await storage
+        .bucket(bucketName)
+        .lock(unlockedMetadata.metageneration);
+      console.log(`Retention policy for ${bucketName} is now locked`);
+      console.log(
+        `Retention policy effective as of ${lockedMetadata.retentionPolicy.effectiveTime}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing lock bucket retention policy:',
+        error.message || error
+      );
+    }
   }
 
-  lockRetentionPolicy().catch(console.error);
+  lockRetentionPolicy();
   // [END storage_lock_retention_policy]
 }
 main(...process.argv.slice(2));

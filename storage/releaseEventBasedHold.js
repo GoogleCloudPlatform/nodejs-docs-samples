@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to use Bucket Lock operations on buckets
  * and objects using the Google Cloud Storage API.
@@ -42,23 +44,30 @@ function main(
   const storage = new Storage();
 
   async function releaseEventBasedHold() {
-    // Optional: set a meta-generation-match precondition to avoid potential race
-    // conditions and data corruptions. The request to set metadata is aborted if the
-    // object's metageneration number does not match your precondition.
-    const options = {
-      ifMetagenerationMatch: metagenerationMatchPrecondition,
-    };
+    try {
+      // Optional: set a meta-generation-match precondition to avoid potential race
+      // conditions and data corruptions. The request to set metadata is aborted if the
+      // object's metageneration number does not match your precondition.
+      const options = {
+        ifMetagenerationMatch: metagenerationMatchPrecondition,
+      };
 
-    await storage.bucket(bucketName).file(fileName).setMetadata(
-      {
-        eventBasedHold: false,
-      },
-      options
-    );
-    console.log(`Event-based hold was released for ${fileName}.`);
+      await storage.bucket(bucketName).file(fileName).setMetadata(
+        {
+          eventBasedHold: false,
+        },
+        options
+      );
+      console.log(`Event-based hold was released for ${fileName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing release event-based hold:',
+        error.message || error
+      );
+    }
   }
 
-  releaseEventBasedHold().catch(console.error);
+  releaseEventBasedHold();
   // [END storage_release_event_based_hold]
 }
 main(...process.argv.slice(2));

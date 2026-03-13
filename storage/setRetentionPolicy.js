@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to use Bucket Lock operations on buckets
  * and objects using the Google Cloud Storage API.
@@ -38,15 +40,22 @@ function main(bucketName = 'my-bucket', retentionPeriod = 5) {
   const storage = new Storage();
 
   async function setRetentionPolicy() {
-    const [metadata] = await storage
-      .bucket(bucketName)
-      .setRetentionPeriod(retentionPeriod);
-    console.log(
-      `Bucket ${bucketName} retention period set for ${metadata.retentionPolicy.retentionPeriod} seconds.`
-    );
+    try {
+      const [metadata] = await storage
+        .bucket(bucketName)
+        .setRetentionPeriod(retentionPeriod);
+      console.log(
+        `Bucket ${bucketName} retention period set for ${metadata.retentionPolicy.retentionPeriod} seconds.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing set bucket retention policy:',
+        error.message || error
+      );
+    }
   }
 
-  setRetentionPolicy().catch(console.error);
+  setRetentionPolicy();
   // [END storage_set_retention_policy]
 }
 main(...process.argv.slice(2));

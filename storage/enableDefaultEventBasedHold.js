@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to use Bucket Lock operations on buckets
  * and objects using the Google Cloud Storage API.
@@ -36,15 +38,22 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function enableDefaultEventBasedHold() {
-    // Enables a default event-based hold for the bucket.
-    await storage.bucket(bucketName).setMetadata({
-      defaultEventBasedHold: true,
-    });
+    try {
+      // Enables a default event-based hold for the bucket.
+      await storage.bucket(bucketName).setMetadata({
+        defaultEventBasedHold: true,
+      });
 
-    console.log(`Default event-based hold was enabled for ${bucketName}.`);
+      console.log(`Default event-based hold was enabled for ${bucketName}.`);
+    } catch (error) {
+      console.error(
+        'Error executing enable default event-based hold:',
+        error.message || error
+      );
+    }
   }
 
-  enableDefaultEventBasedHold().catch(console.error);
+  enableDefaultEventBasedHold();
   // [END storage_enable_default_event_based_hold]
 }
 main(...process.argv.slice(2));

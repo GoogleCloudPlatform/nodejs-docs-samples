@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on buckets with
  * the Google Cloud Storage API.
@@ -35,14 +37,21 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function enableRequesterPays() {
-    await storage.bucket(bucketName).enableRequesterPays();
+    try {
+      await storage.bucket(bucketName).enableRequesterPays();
 
-    console.log(
-      `Requester-pays requests have been enabled for bucket ${bucketName}`
-    );
+      console.log(
+        `Requester-pays requests have been enabled for bucket ${bucketName}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing enable requester pays:',
+        error.message || error
+      );
+    }
   }
 
-  enableRequesterPays().catch(console.error);
+  enableRequesterPays();
   // [END storage_enable_requester_pays]
 }
 main(...process.argv.slice(2));

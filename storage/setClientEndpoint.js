@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates set a custom endpoint with
  * the Google Cloud Storage API.
@@ -30,19 +32,22 @@ function main(apiEndpoint = 'https://storage.googleapis.com') {
 
   // Imports the Google Cloud client library
   const {Storage} = require('@google-cloud/storage');
+  try {
+    // Creates a client
+    const storage = new Storage({
+      apiEndpoint: apiEndpoint,
+      useAuthWithCustomEndpoint: true,
+    });
 
-  // Creates a client
-  const storage = new Storage({
-    apiEndpoint: apiEndpoint,
-    useAuthWithCustomEndpoint: true,
-  });
-
-  console.log(`Client initiated with endpoint: ${storage.apiEndpoint}.`);
+    console.log(`Client initiated with endpoint: ${storage.apiEndpoint}.`);
+  } catch (error) {
+    console.error(
+      'Error executing set client endpoint:',
+      error.message || error
+    );
+  }
 
   // [END storage_set_client_endpoint]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

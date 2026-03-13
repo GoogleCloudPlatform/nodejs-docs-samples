@@ -35,12 +35,16 @@ function main(bucketName = 'my-new-bucket') {
   // const bucketName = 'your-unique-bucket-name';
 
   async function createBucket() {
-    // Creates the new bucket
-    await storage.createBucket(bucketName);
-    console.log(`Bucket ${bucketName} created.`);
+    try {
+      // Creates the new bucket
+      await storage.createBucket(bucketName);
+      console.log(`Bucket ${bucketName} created.`);
+    } catch (error) {
+      console.error('Error executing create bucket:', error.message || error);
+    }
   }
 
-  createBucket().catch(console.error);
+  createBucket();
   // [END storage_quickstart]
 }
 

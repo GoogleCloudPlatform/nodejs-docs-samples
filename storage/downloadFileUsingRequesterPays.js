@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on buckets with
  * the Google Cloud Storage API.
@@ -53,20 +55,27 @@ function main(
   const storage = new Storage();
 
   async function downloadFileUsingRequesterPays() {
-    const options = {
-      destination: destFileName,
-      userProject: projectId,
-    };
+    try {
+      const options = {
+        destination: destFileName,
+        userProject: projectId,
+      };
 
-    // Downloads the file
-    await storage.bucket(bucketName).file(srcFileName).download(options);
+      // Downloads the file
+      await storage.bucket(bucketName).file(srcFileName).download(options);
 
-    console.log(
-      `gs://${bucketName}/${srcFileName} downloaded to ${destFileName} using requester-pays requests`
-    );
+      console.log(
+        `gs://${bucketName}/${srcFileName} downloaded to ${destFileName} using requester-pays requests`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing download file using requester pays:',
+        error.message || error
+      );
+    }
   }
 
-  downloadFileUsingRequesterPays().catch(console.error);
+  downloadFileUsingRequesterPays();
   // [END storage_download_file_requester_pays]
 }
 main(...process.argv.slice(2));

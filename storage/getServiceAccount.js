@@ -36,17 +36,20 @@ function main(projectId = 'serviceAccountProjectId') {
   });
 
   async function getServiceAccount() {
-    const [serviceAccount] = await storage.getServiceAccount();
-    console.log(
-      `The GCS service account for project ${projectId} is: ${serviceAccount.emailAddress}`
-    );
+    try {
+      const [serviceAccount] = await storage.getServiceAccount();
+      console.log(
+        `The GCS service account for project ${projectId} is: ${serviceAccount.emailAddress}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing get service account:',
+        error.message || error
+      );
+    }
   }
 
-  getServiceAccount().catch(console.error);
+  getServiceAccount();
   // [END storage_get_service_account]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

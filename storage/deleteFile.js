@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -52,12 +54,16 @@ function main(
     ifGenerationMatch: generationMatchPrecondition,
   };
   async function deleteFile() {
-    await storage.bucket(bucketName).file(fileName).delete(deleteOptions);
+    try {
+      await storage.bucket(bucketName).file(fileName).delete(deleteOptions);
 
-    console.log(`gs://${bucketName}/${fileName} deleted`);
+      console.log(`gs://${bucketName}/${fileName} deleted`);
+    } catch (error) {
+      console.error('Error executing delete file:', error.message || error);
+    }
   }
 
-  deleteFile().catch(console.error);
+  deleteFile();
   // [END storage_delete_file]
 }
 main(...process.argv.slice(2));

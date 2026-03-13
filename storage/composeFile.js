@@ -49,31 +49,31 @@ function main(
   const storage = new Storage();
 
   async function composeFile() {
-    const bucket = storage.bucket(bucketName);
-    const sources = [firstFileName, secondFileName];
+    try {
+      const bucket = storage.bucket(bucketName);
+      const sources = [firstFileName, secondFileName];
 
-    // Optional:
-    // Set a generation-match precondition to avoid potential race conditions
-    // and data corruptions. The request to compose is aborted if the object's
-    // generation number does not match your precondition. For a destination
-    // object that does not yet exist, set the ifGenerationMatch precondition to 0
-    // If the destination object already exists in your bucket, set instead a
-    // generation-match precondition using its generation number.
-    const combineOptions = {
-      ifGenerationMatch: destinationGenerationMatchPrecondition,
-    };
-    await bucket.combine(sources, destinationFileName, combineOptions);
+      // Optional:
+      // Set a generation-match precondition to avoid potential race conditions
+      // and data corruptions. The request to compose is aborted if the object's
+      // generation number does not match your precondition. For a destination
+      // object that does not yet exist, set the ifGenerationMatch precondition to 0
+      // If the destination object already exists in your bucket, set instead a
+      // generation-match precondition using its generation number.
+      const combineOptions = {
+        ifGenerationMatch: destinationGenerationMatchPrecondition,
+      };
+      await bucket.combine(sources, destinationFileName, combineOptions);
 
-    console.log(
-      `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
-    );
+      console.log(
+        `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+      );
+    } catch (error) {
+      console.error('Error executing compose file:', error.message || error);
+    }
   }
 
-  composeFile().catch(console.error);
+  composeFile();
   // [END storage_compose_file]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

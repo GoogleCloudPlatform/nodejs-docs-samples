@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket') {
   // [START storage_list_soft_deleted_objects]
   /**
@@ -29,19 +31,26 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function listSoftDeletedObjects() {
-    const options = {
-      softDeleted: true,
-    };
+    try {
+      const options = {
+        softDeleted: true,
+      };
 
-    const [files] = await storage.bucket(bucketName).getFiles(options);
+      const [files] = await storage.bucket(bucketName).getFiles(options);
 
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name);
-    });
+      console.log('Files:');
+      files.forEach(file => {
+        console.log(file.name);
+      });
+    } catch (error) {
+      console.error(
+        'Error executing list soft deleted objects:',
+        error.message || error
+      );
+    }
   }
 
-  listSoftDeletedObjects().catch(console.error);
+  listSoftDeletedObjects();
   // [END storage_list_soft_deleted_objects]
 }
 

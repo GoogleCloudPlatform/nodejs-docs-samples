@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   contents = 'these are my file contents',
@@ -37,18 +39,22 @@ function main(
   const storage = new Storage();
 
   async function uploadFromMemory() {
-    await storage.bucket(bucketName).file(destFileName).save(contents);
+    try {
+      await storage.bucket(bucketName).file(destFileName).save(contents);
 
-    console.log(
-      `${destFileName} with contents ${contents} uploaded to ${bucketName}.`
-    );
+      console.log(
+        `${destFileName} with contents ${contents} uploaded to ${bucketName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing file upload from memory:',
+        error.message || error
+      );
+    }
   }
 
-  uploadFromMemory().catch(console.error);
+  uploadFromMemory();
   // [END storage_file_upload_from_memory]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

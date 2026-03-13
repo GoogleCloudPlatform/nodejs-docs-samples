@@ -11,7 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-/* eslint-disable no-unused-vars */
+
+'use strict';
 
 function main(bucketName = 'my-bucket') {
   // [START storage_list_files_paginated]
@@ -28,28 +29,39 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function listFilesPaginated() {
-    const bucket = storage.bucket(bucketName);
-    const [files, queryForPage2] = await bucket.getFiles({autoPaginate: false});
-
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name);
-    });
-
-    // Page through the next set of results using "queryForPage2"
-    if (queryForPage2 !== null) {
-      const [files, queryForPage3] = await bucket.getFiles(queryForPage2);
+    try {
+      const bucket = storage.bucket(bucketName);
+      const [files, queryForPage2] = await bucket.getFiles({
+        autoPaginate: false,
+      });
 
       console.log('Files:');
       files.forEach(file => {
         console.log(file.name);
       });
 
-      // If necessary, continue cursoring using "queryForPage3"
+      // Page through the next set of results using "queryForPage2"
+      if (queryForPage2 !== null) {
+        // We only extract the files, but you could also extract the next query object
+        // const [files, queryForPage3] = await bucket.getFiles(queryForPage2);
+        const [files] = await bucket.getFiles(queryForPage2);
+
+        console.log('Files:');
+        files.forEach(file => {
+          console.log(file.name);
+        });
+
+        // If necessary, continue cursoring to subsequent pages
+      }
+    } catch (error) {
+      console.error(
+        'Error executing list files paginated:',
+        error.message || error
+      );
     }
   }
 
-  listFilesPaginated().catch(console.error);
+  listFilesPaginated();
   // [END storage_list_files_paginated]
 }
 main(...process.argv.slice(2));

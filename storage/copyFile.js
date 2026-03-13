@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -50,33 +52,37 @@ function main(
   const storage = new Storage();
 
   async function copyFile() {
-    const copyDestination = storage.bucket(destBucketName).file(destFileName);
+    try {
+      const copyDestination = storage.bucket(destBucketName).file(destFileName);
 
-    // Optional:
-    // Set a generation-match precondition to avoid potential race conditions
-    // and data corruptions. The request to copy is aborted if the object's
-    // generation number does not match your precondition. For a destination
-    // object that does not yet exist, set the ifGenerationMatch precondition to 0
-    // If the destination object already exists in your bucket, set instead a
-    // generation-match precondition using its generation number.
-    const copyOptions = {
-      preconditionOpts: {
-        ifGenerationMatch: destinationGenerationMatchPrecondition,
-      },
-    };
+      // Optional:
+      // Set a generation-match precondition to avoid potential race conditions
+      // and data corruptions. The request to copy is aborted if the object's
+      // generation number does not match your precondition. For a destination
+      // object that does not yet exist, set the ifGenerationMatch precondition to 0
+      // If the destination object already exists in your bucket, set instead a
+      // generation-match precondition using its generation number.
+      const copyOptions = {
+        preconditionOpts: {
+          ifGenerationMatch: destinationGenerationMatchPrecondition,
+        },
+      };
 
-    // Copies the file to the other bucket
-    await storage
-      .bucket(srcBucketName)
-      .file(srcFilename)
-      .copy(copyDestination, copyOptions);
+      // Copies the file to the other bucket
+      await storage
+        .bucket(srcBucketName)
+        .file(srcFilename)
+        .copy(copyDestination, copyOptions);
 
-    console.log(
-      `gs://${srcBucketName}/${srcFilename} copied to gs://${destBucketName}/${destFileName}`
-    );
+      console.log(
+        `gs://${srcBucketName}/${srcFilename} copied to gs://${destBucketName}/${destFileName}`
+      );
+    } catch (error) {
+      console.error('Error executing copy file:', error.message || error);
+    }
   }
 
-  copyFile().catch(console.error);
+  copyFile();
   // [END storage_copy_file]
 }
 main(...process.argv.slice(2));

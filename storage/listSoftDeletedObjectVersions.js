@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   // [START storage_list_soft_deleted_object_versions]
   /**
@@ -32,22 +34,29 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   const storage = new Storage();
 
   async function listSoftDeletedObjectVersions() {
-    const options = {
-      softDeleted: true,
-      matchGlob: fileName,
-    };
+    try {
+      const options = {
+        softDeleted: true,
+        matchGlob: fileName,
+      };
 
-    const [files] = await storage.bucket(bucketName).getFiles(options);
+      const [files] = await storage.bucket(bucketName).getFiles(options);
 
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(
-        `Name: ${file.name}, Generation: ${file.metadata.generation}`
+      console.log('Files:');
+      files.forEach(file => {
+        console.log(
+          `Name: ${file.name}, Generation: ${file.metadata.generation}`
+        );
+      });
+    } catch (error) {
+      console.error(
+        'Error executing list soft deleted object versions:',
+        error.message || error
       );
-    });
+    }
   }
 
-  listSoftDeletedObjectVersions().catch(console.error);
+  listSoftDeletedObjectVersions();
   // [END storage_list_soft_deleted_object_versions]
 }
 

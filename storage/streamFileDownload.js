@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -48,24 +50,31 @@ function main(
   const storage = new Storage();
 
   async function streamFileDownload() {
-    // The example below demonstrates how we can reference a remote file, then
-    // pipe its contents to a local file.
-    // Once the stream is created, the data can be piped anywhere (process, sdout, etc)
-    await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .createReadStream() //stream is created
-      .pipe(fs.createWriteStream(destFileName))
-      .on('finish', () => {
-        // The file download is complete
-      });
+    try {
+      // The example below demonstrates how we can reference a remote file, then
+      // pipe its contents to a local file.
+      // Once the stream is created, the data can be piped anywhere (process, sdout, etc)
+      await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .createReadStream() //stream is created
+        .pipe(fs.createWriteStream(destFileName))
+        .on('finish', () => {
+          // The file download is complete
+        });
 
-    console.log(
-      `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
-    );
+      console.log(
+        `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing stream file download:',
+        error.message || error
+      );
+    }
   }
 
-  streamFileDownload().catch(console.error);
+  streamFileDownload();
   // [END storage_stream_file_download]
 }
 main(...process.argv.slice(2));

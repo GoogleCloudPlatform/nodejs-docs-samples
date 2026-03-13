@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -35,16 +37,20 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function listFiles() {
-    // Lists files in the bucket
-    const [files] = await storage.bucket(bucketName).getFiles();
+    try {
+      // Lists files in the bucket
+      const [files] = await storage.bucket(bucketName).getFiles();
 
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name);
-    });
+      console.log('Files:');
+      files.forEach(file => {
+        console.log(file.name);
+      });
+    } catch (error) {
+      console.error('Error executing list files:', error.message || error);
+    }
   }
 
-  listFiles().catch(console.error);
+  listFiles();
   // [END storage_list_files]
 }
 main(...process.argv.slice(2));

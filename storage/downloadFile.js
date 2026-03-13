@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -47,16 +49,20 @@ function main(
   const storage = new Storage();
 
   async function downloadFile() {
-    const options = {
-      destination: destFileName,
-    };
+    try {
+      const options = {
+        destination: destFileName,
+      };
 
-    // Downloads the file
-    await storage.bucket(bucketName).file(fileName).download(options);
+      // Downloads the file
+      await storage.bucket(bucketName).file(fileName).download(options);
 
-    console.log(
-      `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
-    );
+      console.log(
+        `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
+      );
+    } catch (error) {
+      console.error('Error executing download file:', error.message || error);
+    }
   }
 
   downloadFile().catch(console.error);

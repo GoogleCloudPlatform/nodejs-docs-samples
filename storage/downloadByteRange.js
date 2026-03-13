@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on buckets with
  * the Google Cloud Storage API.
@@ -57,25 +59,29 @@ function main(
   const storage = new Storage();
 
   async function downloadByteRange() {
-    const options = {
-      destination: destFileName,
-      start: startByte,
-      end: endByte,
-    };
+    try {
+      const options = {
+        destination: destFileName,
+        start: startByte,
+        end: endByte,
+      };
 
-    // Downloads the file from the starting byte to the ending byte specified in options
-    await storage.bucket(bucketName).file(fileName).download(options);
+      // Downloads the file from the starting byte to the ending byte specified in options
+      await storage.bucket(bucketName).file(fileName).download(options);
 
-    console.log(
-      `gs://${bucketName}/${fileName} downloaded to ${destFileName} from byte ${startByte} to byte ${endByte}.`
-    );
+      console.log(
+        `gs://${bucketName}/${fileName} downloaded to ${destFileName} from byte ${startByte} to byte ${endByte}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing download byte range:',
+        error.message || error
+      );
+    }
   }
 
   downloadByteRange();
   // [END storage_download_byte_range]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Set the object retention policy of a File.
 //   description: Set the object retention policy of a File.
@@ -46,51 +48,53 @@ function main(
   const storage = new Storage();
 
   async function setObjectRetentionPolicy() {
-    // Get a reference to the bucket
-    const myBucket = storage.bucket(bucketName);
+    try {
+      // Get a reference to the bucket
+      const myBucket = storage.bucket(bucketName);
 
-    // Create a reference to a file object
-    const file = myBucket.file(destFileName);
+      // Create a reference to a file object
+      const file = myBucket.file(destFileName);
 
-    // Save the file data
-    await file.save(contents);
+      // Save the file data
+      await file.save(contents);
 
-    // Set the retention policy for the file
-    const retentionDate = new Date();
-    retentionDate.setDate(retentionDate.getDate() + 10);
-    const [metadata] = await file.setMetadata({
-      retention: {
-        mode: 'Unlocked',
-        retainUntilTime: retentionDate.toISOString(),
-      },
-    });
+      // Set the retention policy for the file
+      const retentionDate = new Date();
+      retentionDate.setDate(retentionDate.getDate() + 10);
+      const [metadata] = await file.setMetadata({
+        retention: {
+          mode: 'Unlocked',
+          retainUntilTime: retentionDate.toISOString(),
+        },
+      });
 
-    console.log(
-      `Retention policy for file ${file.name} was set to: ${metadata.retention.mode}`
-    );
+      console.log(
+        `Retention policy for file ${file.name} was set to: ${metadata.retention.mode}`
+      );
 
-    // To modify an existing policy on an unlocked file object, pass in the override parameter
-    const newRetentionDate = new Date(retentionDate.getDate());
-    newRetentionDate.setDate(newRetentionDate.getDate() + 9);
-    const [newMetadata] = await file.setMetadata({
-      retention: {
-        mode: 'Unlocked',
-        retainUntilTime: newRetentionDate,
-      },
-      overrideUnlockedRetention: true,
-    });
+      // To modify an existing policy on an unlocked file object, pass in the override parameter
+      const newRetentionDate = new Date(retentionDate.getDate());
+      newRetentionDate.setDate(newRetentionDate.getDate() + 9);
+      const [newMetadata] = await file.setMetadata({
+        retention: {
+          mode: 'Unlocked',
+          retainUntilTime: newRetentionDate,
+        },
+        overrideUnlockedRetention: true,
+      });
 
-    console.log(
-      `Retention policy for file ${file.name} was updated to: ${newMetadata.retention.retainUntilTime}`
-    );
+      console.log(
+        `Retention policy for file ${file.name} was updated to: ${newMetadata.retention.retainUntilTime}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing set object retention policy:',
+        error.message || error
+      );
+    }
   }
 
-  setObjectRetentionPolicy().catch(console.error);
+  setObjectRetentionPolicy();
   // [END storage_set_object_retention_policy]
 }
-
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

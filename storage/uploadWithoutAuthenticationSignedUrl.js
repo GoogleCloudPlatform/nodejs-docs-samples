@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   contents = 'these are my file contents',
@@ -39,46 +41,50 @@ function main(
   const storage = new Storage();
 
   async function uploadWithoutAuthenticationSignedUrlStrategy() {
-    const file = storage.bucket(bucketName).file(destFileName);
+    try {
+      const file = storage.bucket(bucketName).file(destFileName);
 
-    // Use signed URLs to manually start resumable uploads.
-    // Authenticating is required to get the signed URL, but isn't
-    // required to start the resumable upload
-    const options = {
-      version: 'v4',
-      action: 'resumable',
-      expires: Date.now() + 30 * 60 * 1000, // 30 mins
-    };
-    //auth required
-    const [signedUrl] = await file.getSignedUrl(options);
+      // Use signed URLs to manually start resumable uploads.
+      // Authenticating is required to get the signed URL, but isn't
+      // required to start the resumable upload
+      const options = {
+        version: 'v4',
+        action: 'resumable',
+        expires: Date.now() + 30 * 60 * 1000, // 30 mins
+      };
+      //auth required
+      const [signedUrl] = await file.getSignedUrl(options);
 
-    // no auth required
-    const resumableSession = await fetch(signedUrl, {
-      method: 'POST',
-      headers: {
-        'x-goog-resumable': 'start',
-      },
-    });
+      // no auth required
+      const resumableSession = await fetch(signedUrl, {
+        method: 'POST',
+        headers: {
+          'x-goog-resumable': 'start',
+        },
+      });
 
-    // Endpoint to which we should upload the file
-    const location = resumableSession.headers.location;
+      // Endpoint to which we should upload the file
+      const location = resumableSession.headers.location;
 
-    // Passes the location to file.save so you don't need to
-    // authenticate this call
-    await file.save(contents, {
-      uri: location,
-      resumable: true,
-      validation: false,
-    });
+      // Passes the location to file.save so you don't need to
+      // authenticate this call
+      await file.save(contents, {
+        uri: location,
+        resumable: true,
+        validation: false,
+      });
 
-    console.log(`${destFileName} uploaded to ${bucketName}`);
+      console.log(`${destFileName} uploaded to ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing upload without authentication signed url strategy:',
+        error.message || error
+      );
+    }
   }
 
-  uploadWithoutAuthenticationSignedUrlStrategy().catch(console.error);
+  uploadWithoutAuthenticationSignedUrlStrategy();
   // [END storage_upload_without_authentication_signed_url]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

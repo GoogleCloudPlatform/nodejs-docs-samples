@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -59,11 +61,18 @@ function main(
   passthroughStream.end();
 
   async function streamFileUpload() {
-    passthroughStream.pipe(file.createWriteStream()).on('finish', () => {
-      // The file upload is complete
-    });
+    try {
+      passthroughStream.pipe(file.createWriteStream()).on('finish', () => {
+        // The file upload is complete
+      });
 
-    console.log(`${destFileName} uploaded to ${bucketName}`);
+      console.log(`${destFileName} uploaded to ${bucketName}`);
+    } catch (error) {
+      console.error(
+        'Error executing stream file upload:',
+        error.message || error
+      );
+    }
   }
 
   streamFileUpload().catch(console.error);

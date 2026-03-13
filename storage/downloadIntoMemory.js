@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -38,19 +40,26 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   const storage = new Storage();
 
   async function downloadIntoMemory() {
-    // Downloads the file into a buffer in memory.
-    const contents = await storage.bucket(bucketName).file(fileName).download();
+    try {
+      // Downloads the file into a buffer in memory.
+      const contents = await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .download();
 
-    console.log(
-      `Contents of gs://${bucketName}/${fileName} are ${contents.toString()}.`
-    );
+      console.log(
+        `Contents of gs://${bucketName}/${fileName} are ${contents.toString()}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing file download into memory:',
+        error.message || error
+      );
+    }
   }
 
-  downloadIntoMemory().catch(console.error);
+  downloadIntoMemory();
   // [END storage_file_download_into_memory]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

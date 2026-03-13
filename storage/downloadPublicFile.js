@@ -47,19 +47,26 @@ function main(
   const storage = new Storage();
 
   async function downloadPublicFile() {
-    const options = {
-      destination: destFileName,
-    };
+    try {
+      const options = {
+        destination: destFileName,
+      };
 
-    // Download public file.
-    await storage.bucket(bucketName).file(srcFileName).download(options);
+      // Download public file.
+      await storage.bucket(bucketName).file(srcFileName).download(options);
 
-    console.log(
-      `Downloaded public file ${srcFileName} from bucket name ${bucketName} to ${destFileName}`
-    );
+      console.log(
+        `Downloaded public file ${srcFileName} from bucket name ${bucketName} to ${destFileName}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing download public file:',
+        error.message || error
+      );
+    }
   }
 
-  downloadPublicFile().catch(console.error);
+  downloadPublicFile();
   // [END storage_download_public_file]
 }
 main(...process.argv.slice(2));

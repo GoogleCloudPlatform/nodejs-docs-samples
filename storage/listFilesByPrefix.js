@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -41,43 +43,50 @@ function main(bucketName = 'my-bucket', prefix = 'test', delimiter = '/') {
   const storage = new Storage();
 
   async function listFilesByPrefix() {
-    /**
-     * This can be used to list all blobs in a "folder", e.g. "public/".
-     *
-     * The delimiter argument can be used to restrict the results to only the
-     * "files" in the given "folder". Without the delimiter, the entire tree under
-     * the prefix is returned. For example, given these blobs:
-     *
-     *   /a/1.txt
-     *   /a/b/2.txt
-     *
-     * If you just specify prefix = 'a/', you'll get back:
-     *
-     *   /a/1.txt
-     *   /a/b/2.txt
-     *
-     * However, if you specify prefix='a/' and delimiter='/', you'll get back:
-     *
-     *   /a/1.txt
-     */
-    const options = {
-      prefix: prefix,
-    };
+    try {
+      /**
+       * This can be used to list all blobs in a "folder", e.g. "public/".
+       *
+       * The delimiter argument can be used to restrict the results to only the
+       * "files" in the given "folder". Without the delimiter, the entire tree under
+       * the prefix is returned. For example, given these blobs:
+       *
+       *   /a/1.txt
+       *   /a/b/2.txt
+       *
+       * If you just specify prefix = 'a/', you'll get back:
+       *
+       *   /a/1.txt
+       *   /a/b/2.txt
+       *
+       * However, if you specify prefix='a/' and delimiter='/', you'll get back:
+       *
+       *   /a/1.txt
+       */
+      const options = {
+        prefix: prefix,
+      };
 
-    if (delimiter) {
-      options.delimiter = delimiter;
+      if (delimiter) {
+        options.delimiter = delimiter;
+      }
+
+      // Lists files in the bucket, filtered by a prefix
+      const [files] = await storage.bucket(bucketName).getFiles(options);
+
+      console.log('Files:');
+      files.forEach(file => {
+        console.log(file.name);
+      });
+    } catch (error) {
+      console.error(
+        'Error executing list files by prefix:',
+        error.message || error
+      );
     }
-
-    // Lists files in the bucket, filtered by a prefix
-    const [files] = await storage.bucket(bucketName).getFiles(options);
-
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name);
-    });
   }
 
-  listFilesByPrefix().catch(console.error);
+  listFilesByPrefix();
   // [END storage_list_files_with_prefix]
 }
 main(...process.argv.slice(2));

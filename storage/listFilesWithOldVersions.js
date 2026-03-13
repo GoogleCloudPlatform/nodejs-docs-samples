@@ -34,17 +34,24 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function listFilesWithOldVersions() {
-    const [files] = await storage.bucket(bucketName).getFiles({
-      versions: true,
-    });
+    try {
+      const [files] = await storage.bucket(bucketName).getFiles({
+        versions: true,
+      });
 
-    console.log('Files:');
-    files.forEach(file => {
-      console.log(file.name, file.generation);
-    });
+      console.log('Files:');
+      files.forEach(file => {
+        console.log(file.name, file.generation);
+      });
+    } catch (error) {
+      console.error(
+        'Error executing list files with old versions:',
+        error.message || error
+      );
+    }
   }
 
-  listFilesWithOldVersions().catch(console.error);
+  listFilesWithOldVersions();
   // [END storage_list_file_archived_generations]
 }
 main(...process.argv.slice(2));

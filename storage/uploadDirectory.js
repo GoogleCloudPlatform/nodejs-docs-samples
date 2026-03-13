@@ -62,29 +62,36 @@ function main(
   }
 
   async function uploadDirectory() {
-    const bucket = storage.bucket(bucketName);
-    let successfulUploads = 0;
+    try {
+      const bucket = storage.bucket(bucketName);
+      let successfulUploads = 0;
 
-    for await (const filePath of getFiles(directoryPath)) {
-      try {
-        const dirname = path.dirname(directoryPath);
-        const destination = path.relative(dirname, filePath);
+      for await (const filePath of getFiles(directoryPath)) {
+        try {
+          const dirname = path.dirname(directoryPath);
+          const destination = path.relative(dirname, filePath);
 
-        await bucket.upload(filePath, {destination});
+          await bucket.upload(filePath, {destination});
 
-        console.log(`Successfully uploaded: ${filePath}`);
-        successfulUploads++;
-      } catch (e) {
-        console.error(`Error uploading ${filePath}:`, e);
+          console.log(`Successfully uploaded: ${filePath}`);
+          successfulUploads++;
+        } catch (e) {
+          console.error(`Error uploading ${filePath}:`, e);
+        }
       }
-    }
 
-    console.log(
-      `${successfulUploads} files uploaded to ${bucketName} successfully.`
-    );
+      console.log(
+        `${successfulUploads} files uploaded to ${bucketName} successfully.`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing upload directory:',
+        error.message || error
+      );
+    }
   }
 
-  uploadDirectory().catch(console.error);
+  uploadDirectory();
   // [END upload_directory]
 }
 

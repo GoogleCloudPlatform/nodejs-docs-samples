@@ -41,45 +41,52 @@ function main(
   // const fileName = 'your-file-name';
 
   async function setFileMetadata() {
-    // Optional: set a meta-generation-match precondition to avoid potential race
-    // conditions and data corruptions. The request to set metadata is aborted if the
-    // object's metageneration number does not match your precondition.
-    const options = {
-      ifMetagenerationMatch: metagenerationMatchPrecondition,
-    };
+    try {
+      // Optional: set a meta-generation-match precondition to avoid potential race
+      // conditions and data corruptions. The request to set metadata is aborted if the
+      // object's metageneration number does not match your precondition.
+      const options = {
+        ifMetagenerationMatch: metagenerationMatchPrecondition,
+      };
 
-    // Set file metadata.
-    const [metadata] = await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .setMetadata(
-        {
-          // Predefined metadata for server e.g. 'cacheControl', 'contentDisposition',
-          // 'contentEncoding', 'contentLanguage', 'contentType'
-          contentDisposition:
-            'attachment; filename*=utf-8\'\'"anotherImage.jpg"',
-          contentType: 'image/jpeg',
+      // Set file metadata.
+      const [metadata] = await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .setMetadata(
+          {
+            // Predefined metadata for server e.g. 'cacheControl', 'contentDisposition',
+            // 'contentEncoding', 'contentLanguage', 'contentType'
+            contentDisposition:
+              'attachment; filename*=utf-8\'\'"anotherImage.jpg"',
+            contentType: 'image/jpeg',
 
-          // A note or actionable items for user e.g. uniqueId, object description,
-          // or other useful information.
-          metadata: {
-            description: 'file description...',
-            modified: '1900-01-01',
+            // A note or actionable items for user e.g. uniqueId, object description,
+            // or other useful information.
+            metadata: {
+              description: 'file description...',
+              modified: '1900-01-01',
+            },
           },
-        },
-        options
-      );
+          options
+        );
 
-    console.log(
-      'Updated metadata for object',
-      fileName,
-      'in bucket ',
-      bucketName
-    );
-    console.log(metadata);
+      console.log(
+        'Updated metadata for object',
+        fileName,
+        'in bucket ',
+        bucketName
+      );
+      console.log(metadata);
+    } catch (error) {
+      console.error(
+        'Error executing set file metadata:',
+        error.message || error
+      );
+    }
   }
 
-  setFileMetadata().catch(console.error);
+  setFileMetadata();
   // [END storage_set_metadata]
 }
 

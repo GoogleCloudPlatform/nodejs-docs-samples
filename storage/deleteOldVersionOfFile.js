@@ -40,20 +40,27 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt', generation = 1) {
   const storage = new Storage();
 
   async function deleteOldVersionOfFile() {
-    // Deletes the file from the bucket with given version
-    await storage
-      .bucket(bucketName)
-      .file(fileName, {
-        generation,
-      })
-      .delete();
+    try {
+      // Deletes the file from the bucket with given version
+      await storage
+        .bucket(bucketName)
+        .file(fileName, {
+          generation,
+        })
+        .delete();
 
-    console.log(
-      `Generation ${generation} of file ${fileName} was deleted from ${bucketName}`
-    );
+      console.log(
+        `Generation ${generation} of file ${fileName} was deleted from ${bucketName}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing delete old version of file:',
+        error.message || error
+      );
+    }
   }
 
-  deleteOldVersionOfFile().catch(console.error);
+  deleteOldVersionOfFile();
   // [END storage_delete_file_archived_generation]
 }
 main(...process.argv.slice(2));

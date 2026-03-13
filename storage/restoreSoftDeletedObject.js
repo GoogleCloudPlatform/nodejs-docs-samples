@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 function main(
   bucketName = 'my-bucket',
   fileName = 'test.txt',
@@ -39,19 +41,26 @@ function main(
   const storage = new Storage();
 
   async function restoreSoftDeletedObject() {
-    const options = {
-      generation: generation,
-    };
+    try {
+      const options = {
+        generation: generation,
+      };
 
-    const restoredFile = await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .restore(options);
+      const restoredFile = await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .restore(options);
 
-    console.log(`Soft deleted object ${restoredFile.name} was restored`);
+      console.log(`Soft deleted object ${restoredFile.name} was restored`);
+    } catch (error) {
+      console.error(
+        'Error executing restore soft deleted object:',
+        error.message || error
+      );
+    }
   }
 
-  restoreSoftDeletedObject().catch(console.error);
+  restoreSoftDeletedObject();
   // [END storage_restore_object]
 }
 

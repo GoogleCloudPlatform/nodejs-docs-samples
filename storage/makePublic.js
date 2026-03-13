@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -38,12 +40,16 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   const storage = new Storage();
 
   async function makePublic() {
-    await storage.bucket(bucketName).file(fileName).makePublic();
+    try {
+      await storage.bucket(bucketName).file(fileName).makePublic();
 
-    console.log(`gs://${bucketName}/${fileName} is now public.`);
+      console.log(`gs://${bucketName}/${fileName} is now public.`);
+    } catch (error) {
+      console.error('Error executing make public:', error.message || error);
+    }
   }
 
-  makePublic().catch(console.error);
+  makePublic();
   // [END storage_make_public]
 }
 main(...process.argv.slice(2));

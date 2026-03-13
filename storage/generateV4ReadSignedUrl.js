@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -40,26 +42,33 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   const storage = new Storage();
 
   async function generateV4ReadSignedUrl() {
-    // These options will allow temporary read access to the file
-    const options = {
-      version: 'v4',
-      action: 'read',
-      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-    };
+    try {
+      // These options will allow temporary read access to the file
+      const options = {
+        version: 'v4',
+        action: 'read',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+      };
 
-    // Get a v4 signed URL for reading the file
-    const [url] = await storage
-      .bucket(bucketName)
-      .file(fileName)
-      .getSignedUrl(options);
+      // Get a v4 signed URL for reading the file
+      const [url] = await storage
+        .bucket(bucketName)
+        .file(fileName)
+        .getSignedUrl(options);
 
-    console.log('Generated GET signed URL:');
-    console.log(url);
-    console.log('You can use this URL with any user agent, for example:');
-    console.log(`curl '${url}'`);
+      console.log('Generated GET signed URL:');
+      console.log(url);
+      console.log('You can use this URL with any user agent, for example:');
+      console.log(`curl '${url}'`);
+    } catch (error) {
+      console.error(
+        'Error executing generate v4 read signed url:',
+        error.message || error
+      );
+    }
   }
 
-  generateV4ReadSignedUrl().catch(console.error);
+  generateV4ReadSignedUrl();
   // [END storage_generate_signed_url_v4]
 }
 main(...process.argv.slice(2));

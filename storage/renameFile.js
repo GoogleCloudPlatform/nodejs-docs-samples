@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -45,15 +47,22 @@ function main(
   const storage = new Storage();
 
   async function renameFile() {
-    // renames the file
-    await storage.bucket(srcBucketName).file(srcFileName).rename(destFileName);
+    try {
+      // renames the file
+      await storage
+        .bucket(srcBucketName)
+        .file(srcFileName)
+        .rename(destFileName);
 
-    console.log(
-      `gs://${srcBucketName}/${srcFileName} renamed to gs://${srcBucketName}/${destFileName}.`
-    );
+      console.log(
+        `gs://${srcBucketName}/${srcFileName} renamed to gs://${srcBucketName}/${destFileName}.`
+      );
+    } catch (error) {
+      console.error('Error executing rename file:', error.message || error);
+    }
   }
 
-  renameFile().catch(console.error);
+  renameFile();
   // [END storage_rename_file]
 }
 main(...process.argv.slice(2));

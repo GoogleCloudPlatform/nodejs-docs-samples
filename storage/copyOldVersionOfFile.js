@@ -53,34 +53,41 @@ function main(
   const storage = new Storage();
 
   async function copyOldVersionOfFile() {
-    // Copies the file to the other bucket
+    try {
+      // Copies the file to the other bucket
 
-    // Optional:
-    // Set a generation-match precondition to avoid potential race conditions
-    // and data corruptions. The request to copy is aborted if the object's
-    // generation number does not match your precondition. For a destination
-    // object that does not yet exist, set the ifGenerationMatch precondition to 0
-    // If the destination object already exists in your bucket, set instead a
-    // generation-match precondition using its generation number.
-    const copyOptions = {
-      preconditionOpts: {
-        ifGenerationMatch: destinationGenerationMatchPrecondition,
-      },
-    };
+      // Optional:
+      // Set a generation-match precondition to avoid potential race conditions
+      // and data corruptions. The request to copy is aborted if the object's
+      // generation number does not match your precondition. For a destination
+      // object that does not yet exist, set the ifGenerationMatch precondition to 0
+      // If the destination object already exists in your bucket, set instead a
+      // generation-match precondition using its generation number.
+      const copyOptions = {
+        preconditionOpts: {
+          ifGenerationMatch: destinationGenerationMatchPrecondition,
+        },
+      };
 
-    await storage
-      .bucket(srcBucketName)
-      .file(srcFilename, {
-        generation,
-      })
-      .copy(storage.bucket(destBucketName).file(destFileName), copyOptions);
+      await storage
+        .bucket(srcBucketName)
+        .file(srcFilename, {
+          generation,
+        })
+        .copy(storage.bucket(destBucketName).file(destFileName), copyOptions);
 
-    console.log(
-      `Generation ${generation} of file ${srcFilename} in bucket ${srcBucketName} was copied to ${destFileName} in bucket ${destBucketName}`
-    );
+      console.log(
+        `Generation ${generation} of file ${srcFilename} in bucket ${srcBucketName} was copied to ${destFileName} in bucket ${destBucketName}`
+      );
+    } catch (error) {
+      console.error(
+        'Error executing copy old version of file:',
+        error.message || error
+      );
+    }
   }
 
-  copyOldVersionOfFile().catch(console.error);
+  copyOldVersionOfFile();
   // [END storage_copy_file_archived_generation]
 }
 main(...process.argv.slice(2));

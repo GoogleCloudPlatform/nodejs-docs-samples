@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 const {IdempotencyStrategy} = require('@google-cloud/storage');
 
 /**
@@ -76,15 +78,18 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
   );
 
   async function deleteFileWithCustomizedRetrySetting() {
-    await storage.bucket(bucketName).file(fileName).delete();
-    console.log(`File ${fileName} deleted with a customized retry strategy.`);
+    try {
+      await storage.bucket(bucketName).file(fileName).delete();
+      console.log(`File ${fileName} deleted with a customized retry strategy.`);
+    } catch (error) {
+      console.error(
+        'Error executing delete file with customized retry setting:',
+        error.message || error
+      );
+    }
   }
 
   deleteFileWithCustomizedRetrySetting();
   // [END storage_configure_retries]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -38,24 +40,28 @@ function main(bucketName = 'my-bucket', notificationId = '1') {
   const storage = new Storage();
 
   async function getMetadata() {
-    // Get the notification metadata
-    const [metadata] = await storage
-      .bucket(bucketName)
-      .notification(notificationId)
-      .getMetadata();
+    try {
+      // Get the notification metadata
+      const [metadata] = await storage
+        .bucket(bucketName)
+        .notification(notificationId)
+        .getMetadata();
 
-    console.log(`ID: ${metadata.id}`);
-    console.log(`Topic: ${metadata.topic}`);
-    console.log(`Event Types: ${metadata.event_types}`);
-    console.log(`Custom Attributes: ${metadata.custom_attributes}`);
-    console.log(`Payload Format: ${metadata.payload_format}`);
-    console.log(`Object Name Prefix: ${metadata.object_name_prefix}`);
-    console.log(`Etag: ${metadata.etag}`);
-    console.log(`Self Link: ${metadata.selfLink}`);
-    console.log(`Kind: ${metadata.kind}`);
+      console.log(`ID: ${metadata.id}`);
+      console.log(`Topic: ${metadata.topic}`);
+      console.log(`Event Types: ${metadata.event_types}`);
+      console.log(`Custom Attributes: ${metadata.custom_attributes}`);
+      console.log(`Payload Format: ${metadata.payload_format}`);
+      console.log(`Object Name Prefix: ${metadata.object_name_prefix}`);
+      console.log(`Etag: ${metadata.etag}`);
+      console.log(`Self Link: ${metadata.selfLink}`);
+      console.log(`Kind: ${metadata.kind}`);
+    } catch (error) {
+      console.error('Error executing get metadata:', error.message || error);
+    }
   }
 
-  getMetadata().catch(console.error);
+  getMetadata();
   // [END storage_print_pubsub_bucket_notification]
 }
 main(...process.argv.slice(2));

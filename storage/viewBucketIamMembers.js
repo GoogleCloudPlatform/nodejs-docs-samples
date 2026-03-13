@@ -29,36 +29,39 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function viewBucketIamMembers() {
-    try{
-    // For more information please read:
-    // https://cloud.google.com/storage/docs/access-control/iam
-    const results = await storage
-      .bucket(bucketName)
-      .iam.getPolicy({requestedPolicyVersion: 3});
+    try {
+      // For more information please read:
+      // https://cloud.google.com/storage/docs/access-control/iam
+      const results = await storage
+        .bucket(bucketName)
+        .iam.getPolicy({requestedPolicyVersion: 3});
 
-    const bindings = results[0].bindings;
+      const bindings = results[0].bindings;
 
-    console.log(`Bindings for bucket ${bucketName}:`);
-    for (const binding of bindings) {
-      console.log(`  Role: ${binding.role}`);
-      console.log('  Members:');
+      console.log(`Bindings for bucket ${bucketName}:`);
+      for (const binding of bindings) {
+        console.log(`  Role: ${binding.role}`);
+        console.log('  Members:');
 
-      const members = binding.members;
-      for (const member of members) {
-        console.log(`    ${member}`);
+        const members = binding.members;
+        for (const member of members) {
+          console.log(`    ${member}`);
+        }
+
+        const condition = binding.condition;
+        if (condition) {
+          console.log('  Condition:');
+          console.log(`    Title: ${condition.title}`);
+          console.log(`    Description: ${condition.description}`);
+          console.log(`    Expression: ${condition.expression}`);
+        }
       }
-
-      const condition = binding.condition;
-      if (condition) {
-        console.log('  Condition:');
-        console.log(`    Title: ${condition.title}`);
-        console.log(`    Description: ${condition.description}`);
-        console.log(`    Expression: ${condition.expression}`);
-      }
+    } catch (error) {
+      console.error(
+        'Error executing view bucket iam members:',
+        error.message || error
+      );
     }
-  }catch(error){
-
-  }
   }
 
   viewBucketIamMembers();

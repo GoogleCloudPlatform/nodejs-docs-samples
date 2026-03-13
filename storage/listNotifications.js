@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -35,16 +37,25 @@ function main(bucketName = 'my-bucket') {
   const storage = new Storage();
 
   async function listNotifications() {
-    // Lists notifications in the bucket
-    const [notifications] = await storage.bucket(bucketName).getNotifications();
+    try {
+      // Lists notifications in the bucket
+      const [notifications] = await storage
+        .bucket(bucketName)
+        .getNotifications();
 
-    console.log('Notifications:');
-    notifications.forEach(notification => {
-      console.log(notification.id);
-    });
+      console.log('Notifications:');
+      notifications.forEach(notification => {
+        console.log(notification.id);
+      });
+    } catch (error) {
+      console.error(
+        'Error executing list notifications:',
+        error.message || error
+      );
+    }
   }
 
-  listNotifications().catch(console.error);
+  listNotifications();
   // [END storage_list_bucket_notifications]
 }
 main(...process.argv.slice(2));

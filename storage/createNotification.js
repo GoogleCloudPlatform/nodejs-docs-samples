@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -42,13 +44,20 @@ function main(
   const storage = new Storage();
 
   async function createNotification() {
-    // Creates a notification
-    await storage.bucket(bucketName).createNotification(topic);
+    try {
+      // Creates a notification
+      await storage.bucket(bucketName).createNotification(topic);
 
-    console.log('Notification subscription created.');
+      console.log('Notification subscription created.');
+    } catch (error) {
+      console.error(
+        'Error executing create notification:',
+        error.message || error
+      );
+    }
   }
 
-  createNotification().catch(console.error);
+  createNotification();
   // [END storage_create_bucket_notifications]
 }
 main(...process.argv.slice(2));

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 /**
  * This application demonstrates how to perform basic operations on files with
  * the Google Cloud Storage API.
@@ -38,13 +40,20 @@ function main(bucketName = 'my-bucket', notificationId = '1') {
   const storage = new Storage();
 
   async function deleteNotification() {
-    // Deletes the notification from the bucket
-    await storage.bucket(bucketName).notification(notificationId).delete();
+    try {
+      // Deletes the notification from the bucket
+      await storage.bucket(bucketName).notification(notificationId).delete();
 
-    console.log(`Notification ${notificationId} deleted.`);
+      console.log(`Notification ${notificationId} deleted.`);
+    } catch (error) {
+      console.error(
+        'Error executing delete notification:',
+        error.message || error
+      );
+    }
   }
 
-  deleteNotification().catch(console.error);
+  deleteNotification();
   // [END storage_delete_bucket_notification]
 }
 main(...process.argv.slice(2));

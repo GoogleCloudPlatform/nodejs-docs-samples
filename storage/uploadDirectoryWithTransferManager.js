@@ -51,8 +51,4 @@ function main(bucketName = 'my-bucket', directoryName = 'my-directory') {
   // [END storage_transfer_manager_upload_directory]
 }
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

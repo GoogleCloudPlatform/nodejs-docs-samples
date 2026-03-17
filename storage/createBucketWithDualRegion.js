@@ -79,8 +79,4 @@ function main(
   // [END storage_create_bucket_dual_region]
 }
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

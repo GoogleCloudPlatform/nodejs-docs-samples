@@ -50,8 +50,4 @@ function main(bucketName = 'my-bucket') {
   // [END storage_remove_cors_configuration]
 }
 
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
 main(...process.argv.slice(2));

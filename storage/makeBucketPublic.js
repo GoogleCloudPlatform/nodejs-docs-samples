@@ -49,8 +49,5 @@ function main(bucketName = 'my-bucket') {
   makeBucketPublic();
   // [END storage_set_bucket_public_iam]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

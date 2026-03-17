@@ -54,8 +54,5 @@ function main(bucketName = 'my-bucket', labelKey = 'labelone') {
   removeBucketLabel();
   // [END storage_remove_bucket_label]
 }
-process.on('unhandledRejection', err => {
-  console.error(err.message);
-  process.exitCode = 1;
-});
+
 main(...process.argv.slice(2));

@@ -2,7 +2,7 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Google Cloud Storage: Node.js Samples](https://github.com/googleapis/nodejs-storage)
+# [Google Cloud Storage: Node.js Samples](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/storage)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -153,9 +153,9 @@ objects to users via direct download.
 ## Before you begin
 
 Before running the samples, make sure you've followed the steps outlined in
-[Using the client library](https://github.com/googleapis/nodejs-storage#using-the-client-library).
+[Using the client library](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/storage#using-the-client-library).
 
-`cd samples`
+`cd storage`
 
 `npm install`
 
@@ -167,14 +167,14 @@ Before running the samples, make sure you've followed the steps outlined in
 
 ### Add Bucket Conditional Binding
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketConditionalBinding.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketConditionalBinding.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketConditionalBinding.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketConditionalBinding.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/addBucketConditionalBinding.js`
+`node addBucketConditionalBinding.js`
 
 
 -----
@@ -184,14 +184,14 @@ __Usage:__
 
 ### Add Bucket Default Owner Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketDefaultOwnerAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketDefaultOwnerAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketDefaultOwnerAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketDefaultOwnerAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/addBucketDefaultOwnerAcl.js`
+`node addBucketDefaultOwnerAcl.js`
 
 
 -----
@@ -201,14 +201,14 @@ __Usage:__
 
 ### Add Bucket Iam Member
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketIamMember.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketIamMember.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketIamMember.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketIamMember.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/addBucketIamMember.js`
+`node addBucketIamMember.js`
 
 
 -----
@@ -220,9 +220,9 @@ __Usage:__
 
 Adds bucket label.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketLabel.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketLabel.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketLabel.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketLabel.js,storage/README.md)
 
 __Usage:__
 
@@ -237,14 +237,14 @@ __Usage:__
 
 ### Add Bucket Owner Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketOwnerAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketOwnerAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketOwnerAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketOwnerAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/addBucketOwnerAcl.js`
+`node addBucketOwnerAcl.js`
 
 
 -----
@@ -256,9 +256,9 @@ __Usage:__
 
 Bucket Website Configuration.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addBucketWebsiteConfiguration.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addBucketWebsiteConfiguration.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addBucketWebsiteConfiguration.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addBucketWebsiteConfiguration.js,storage/README.md)
 
 __Usage:__
 
@@ -273,14 +273,14 @@ __Usage:__
 
 ### Add File Owner Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/addFileOwnerAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/addFileOwnerAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/addFileOwnerAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/addFileOwnerAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/addFileOwnerAcl.js`
+`node addFileOwnerAcl.js`
 
 
 -----
@@ -292,9 +292,9 @@ __Usage:__
 
 Get bucket metadata.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/bucketMetadata.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/bucketMetadata.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/bucketMetadata.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/bucketMetadata.js,storage/README.md)
 
 __Usage:__
 
@@ -311,9 +311,9 @@ __Usage:__
 
 Change Bucket's Default Storage Class.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/changeDefaultStorageClass.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/changeDefaultStorageClass.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/changeDefaultStorageClass.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/changeDefaultStorageClass.js,storage/README.md)
 
 __Usage:__
 
@@ -330,9 +330,9 @@ __Usage:__
 
 Storage File Convert CSEK to CMEK.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/changeFileCSEKToCMEK.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/changeFileCSEKToCMEK.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/changeFileCSEKToCMEK.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/changeFileCSEKToCMEK.js,storage/README.md)
 
 __Usage:__
 
@@ -349,9 +349,9 @@ __Usage:__
 
 Combine multiple files into one new file.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/composeFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/composeFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/composeFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/composeFile.js,storage/README.md)
 
 __Usage:__
 
@@ -368,9 +368,9 @@ __Usage:__
 
 Configures bucket cors.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/configureBucketCors.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/configureBucketCors.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/configureBucketCors.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/configureBucketCors.js,storage/README.md)
 
 __Usage:__
 
@@ -385,14 +385,14 @@ __Usage:__
 
 ### Configure Retries
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/configureRetries.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/configureRetries.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/configureRetries.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/configureRetries.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/configureRetries.js`
+`node configureRetries.js`
 
 
 -----
@@ -402,14 +402,14 @@ __Usage:__
 
 ### Copy File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/copyFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/copyFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/copyFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/copyFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/copyFile.js`
+`node copyFile.js`
 
 
 -----
@@ -421,9 +421,9 @@ __Usage:__
 
 Copy Old Version Of File.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/copyOldVersionOfFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/copyOldVersionOfFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/copyOldVersionOfFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/copyOldVersionOfFile.js,storage/README.md)
 
 __Usage:__
 
@@ -440,9 +440,9 @@ __Usage:__
 
 Create a Dual-Region Bucket with provided location and regions.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createBucketWithDualRegion.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createBucketWithDualRegion.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createBucketWithDualRegion.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createBucketWithDualRegion.js,storage/README.md)
 
 __Usage:__
 
@@ -459,9 +459,9 @@ __Usage:__
 
 Create a hierarchical namespace enabled bucket.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createBucketWithHierarchicalNamespace.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createBucketWithHierarchicalNamespace.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createBucketWithHierarchicalNamespace.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createBucketWithHierarchicalNamespace.js,storage/README.md)
 
 __Usage:__
 
@@ -478,9 +478,9 @@ __Usage:__
 
 Create a Bucket with object retention enabled.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createBucketWithObjectRetention.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createBucketWithObjectRetention.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createBucketWithObjectRetention.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createBucketWithObjectRetention.js,storage/README.md)
 
 __Usage:__
 
@@ -497,9 +497,9 @@ __Usage:__
 
 Create Bucket With Storage Class and Location.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createBucketWithStorageClassAndLocation.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createBucketWithStorageClassAndLocation.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createBucketWithStorageClassAndLocation.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createBucketWithStorageClassAndLocation.js,storage/README.md)
 
 __Usage:__
 
@@ -514,14 +514,14 @@ __Usage:__
 
 ### Create Bucket With Turbo Replication
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createBucketWithTurboReplication.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createBucketWithTurboReplication.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createBucketWithTurboReplication.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createBucketWithTurboReplication.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/createBucketWithTurboReplication.js`
+`node createBucketWithTurboReplication.js`
 
 
 -----
@@ -531,14 +531,14 @@ __Usage:__
 
 ### Create New Bucket
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createNewBucket.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createNewBucket.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createNewBucket.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createNewBucket.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/createNewBucket.js`
+`node createNewBucket.js`
 
 
 -----
@@ -548,14 +548,14 @@ __Usage:__
 
 ### Create Notification
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/createNotification.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/createNotification.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/createNotification.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/createNotification.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/createNotification.js`
+`node createNotification.js`
 
 
 -----
@@ -565,14 +565,14 @@ __Usage:__
 
 ### Delete Bucket
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/deleteBucket.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/deleteBucket.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/deleteBucket.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/deleteBucket.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/deleteBucket.js`
+`node deleteBucket.js`
 
 
 -----
@@ -582,14 +582,14 @@ __Usage:__
 
 ### Delete File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/deleteFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/deleteFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/deleteFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/deleteFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/deleteFile.js`
+`node deleteFile.js`
 
 
 -----
@@ -599,14 +599,14 @@ __Usage:__
 
 ### Delete Notification
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/deleteNotification.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/deleteNotification.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/deleteNotification.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/deleteNotification.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/deleteNotification.js`
+`node deleteNotification.js`
 
 
 -----
@@ -618,9 +618,9 @@ __Usage:__
 
 Delete Old Version Of File.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/deleteOldVersionOfFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/deleteOldVersionOfFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/deleteOldVersionOfFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/deleteOldVersionOfFile.js,storage/README.md)
 
 __Usage:__
 
@@ -635,14 +635,14 @@ __Usage:__
 
 ### Disable Bucket Lifecycle Management
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableBucketLifecycleManagement.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableBucketLifecycleManagement.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableBucketLifecycleManagement.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableBucketLifecycleManagement.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/disableBucketLifecycleManagement.js`
+`node disableBucketLifecycleManagement.js`
 
 
 -----
@@ -654,9 +654,9 @@ __Usage:__
 
 Disables bucket versioning.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableBucketVersioning.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableBucketVersioning.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableBucketVersioning.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableBucketVersioning.js,storage/README.md)
 
 __Usage:__
 
@@ -671,14 +671,14 @@ __Usage:__
 
 ### Disable Default Event Based Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableDefaultEventBasedHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableDefaultEventBasedHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableDefaultEventBasedHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableDefaultEventBasedHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/disableDefaultEventBasedHold.js`
+`node disableDefaultEventBasedHold.js`
 
 
 -----
@@ -688,14 +688,14 @@ __Usage:__
 
 ### Disable Requester Pays
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableRequesterPays.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableRequesterPays.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableRequesterPays.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableRequesterPays.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/disableRequesterPays.js`
+`node disableRequesterPays.js`
 
 
 -----
@@ -705,14 +705,14 @@ __Usage:__
 
 ### Disable Soft Delete
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableSoftDelete.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableSoftDelete.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableSoftDelete.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableSoftDelete.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/disableSoftDelete.js`
+`node disableSoftDelete.js`
 
 
 -----
@@ -722,14 +722,14 @@ __Usage:__
 
 ### Disable Uniform Bucket Level Access
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/disableUniformBucketLevelAccess.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/disableUniformBucketLevelAccess.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/disableUniformBucketLevelAccess.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/disableUniformBucketLevelAccess.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/disableUniformBucketLevelAccess.js`
+`node disableUniformBucketLevelAccess.js`
 
 
 -----
@@ -739,14 +739,14 @@ __Usage:__
 
 ### Download Byte Range
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadByteRange.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadByteRange.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadByteRange.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadByteRange.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/downloadByteRange.js`
+`node downloadByteRange.js`
 
 
 -----
@@ -756,14 +756,14 @@ __Usage:__
 
 ### Download Encrypted File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadEncryptedFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadEncryptedFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadEncryptedFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadEncryptedFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/downloadEncryptedFile.js`
+`node downloadEncryptedFile.js`
 
 
 -----
@@ -773,14 +773,14 @@ __Usage:__
 
 ### Download File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/downloadFile.js`
+`node downloadFile.js`
 
 
 -----
@@ -792,9 +792,9 @@ __Usage:__
 
 Downloads a single file in in chunks in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadFileInChunksWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadFileInChunksWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadFileInChunksWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadFileInChunksWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
@@ -809,14 +809,14 @@ __Usage:__
 
 ### Download File Using Requester Pays
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadFileUsingRequesterPays.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadFileUsingRequesterPays.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadFileUsingRequesterPays.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadFileUsingRequesterPays.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/downloadFileUsingRequesterPays.js`
+`node downloadFileUsingRequesterPays.js`
 
 
 -----
@@ -828,9 +828,9 @@ __Usage:__
 
 Downloads a folder in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadFolderWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadFolderWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadFolderWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadFolderWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
@@ -845,14 +845,14 @@ __Usage:__
 
 ### Download Into Memory
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadIntoMemory.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadIntoMemory.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadIntoMemory.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadIntoMemory.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/downloadIntoMemory.js`
+`node downloadIntoMemory.js`
 
 
 -----
@@ -864,9 +864,9 @@ __Usage:__
 
 Downloads many files in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadManyFilesWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadManyFilesWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadManyFilesWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadManyFilesWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
@@ -883,9 +883,9 @@ __Usage:__
 
 Download Public File.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/downloadPublicFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/downloadPublicFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/downloadPublicFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/downloadPublicFile.js,storage/README.md)
 
 __Usage:__
 
@@ -900,14 +900,14 @@ __Usage:__
 
 ### Enable Bucket Lifecycle Management
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableBucketLifecycleManagement.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableBucketLifecycleManagement.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableBucketLifecycleManagement.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableBucketLifecycleManagement.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/enableBucketLifecycleManagement.js`
+`node enableBucketLifecycleManagement.js`
 
 
 -----
@@ -919,9 +919,9 @@ __Usage:__
 
 Enables bucket versioning.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableBucketVersioning.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableBucketVersioning.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableBucketVersioning.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableBucketVersioning.js,storage/README.md)
 
 __Usage:__
 
@@ -936,14 +936,14 @@ __Usage:__
 
 ### Enable Default Event Based Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableDefaultEventBasedHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableDefaultEventBasedHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableDefaultEventBasedHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableDefaultEventBasedHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/enableDefaultEventBasedHold.js`
+`node enableDefaultEventBasedHold.js`
 
 
 -----
@@ -953,14 +953,14 @@ __Usage:__
 
 ### Enable Default KMS Key
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableDefaultKMSKey.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableDefaultKMSKey.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableDefaultKMSKey.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableDefaultKMSKey.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/enableDefaultKMSKey.js`
+`node enableDefaultKMSKey.js`
 
 
 -----
@@ -970,14 +970,14 @@ __Usage:__
 
 ### Enable Requester Pays
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableRequesterPays.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableRequesterPays.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableRequesterPays.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableRequesterPays.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/enableRequesterPays.js`
+`node enableRequesterPays.js`
 
 
 -----
@@ -987,14 +987,14 @@ __Usage:__
 
 ### Enable Uniform Bucket Level Access
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/enableUniformBucketLevelAccess.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/enableUniformBucketLevelAccess.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/enableUniformBucketLevelAccess.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/enableUniformBucketLevelAccess.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/enableUniformBucketLevelAccess.js`
+`node enableUniformBucketLevelAccess.js`
 
 
 -----
@@ -1006,9 +1006,9 @@ __Usage:__
 
 Change File's Storage Class.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/fileChangeStorageClass.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/fileChangeStorageClass.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/fileChangeStorageClass.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/fileChangeStorageClass.js,storage/README.md)
 
 __Usage:__
 
@@ -1025,9 +1025,9 @@ __Usage:__
 
 Set file metadata.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/fileSetMetadata.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/fileSetMetadata.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/fileSetMetadata.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/fileSetMetadata.js,storage/README.md)
 
 __Usage:__
 
@@ -1042,14 +1042,14 @@ __Usage:__
 
 ### Generate Encryption Key
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/generateEncryptionKey.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/generateEncryptionKey.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/generateEncryptionKey.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/generateEncryptionKey.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/generateEncryptionKey.js`
+`node generateEncryptionKey.js`
 
 
 -----
@@ -1059,14 +1059,14 @@ __Usage:__
 
 ### Generate Signed Url
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/generateSignedUrl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/generateSignedUrl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/generateSignedUrl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/generateSignedUrl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/generateSignedUrl.js`
+`node generateSignedUrl.js`
 
 
 -----
@@ -1076,14 +1076,14 @@ __Usage:__
 
 ### Generate V4 Read Signed Url
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/generateV4ReadSignedUrl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/generateV4ReadSignedUrl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/generateV4ReadSignedUrl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/generateV4ReadSignedUrl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/generateV4ReadSignedUrl.js`
+`node generateV4ReadSignedUrl.js`
 
 
 -----
@@ -1093,14 +1093,14 @@ __Usage:__
 
 ### Generate V4 Signed Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/generateV4SignedPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/generateV4SignedPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/generateV4SignedPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/generateV4SignedPolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/generateV4SignedPolicy.js`
+`node generateV4SignedPolicy.js`
 
 
 -----
@@ -1110,14 +1110,14 @@ __Usage:__
 
 ### Generate V4 Upload Signed Url
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/generateV4UploadSignedUrl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/generateV4UploadSignedUrl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/generateV4UploadSignedUrl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/generateV4UploadSignedUrl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/generateV4UploadSignedUrl.js`
+`node generateV4UploadSignedUrl.js`
 
 
 -----
@@ -1127,14 +1127,14 @@ __Usage:__
 
 ### Get Autoclass
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getAutoclass.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getAutoclass.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getAutoclass.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getAutoclass.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getAutoclass.js`
+`node getAutoclass.js`
 
 
 -----
@@ -1144,14 +1144,14 @@ __Usage:__
 
 ### Get Default Event Based Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getDefaultEventBasedHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getDefaultEventBasedHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getDefaultEventBasedHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getDefaultEventBasedHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getDefaultEventBasedHold.js`
+`node getDefaultEventBasedHold.js`
 
 
 -----
@@ -1161,14 +1161,14 @@ __Usage:__
 
 ### Get Metadata
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getMetadata.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getMetadata.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getMetadata.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getMetadata.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getMetadata.js`
+`node getMetadata.js`
 
 
 -----
@@ -1178,14 +1178,14 @@ __Usage:__
 
 ### Get Metadata Notifications
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getMetadataNotifications.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getMetadataNotifications.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getMetadataNotifications.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getMetadataNotifications.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getMetadataNotifications.js`
+`node getMetadataNotifications.js`
 
 
 -----
@@ -1195,14 +1195,14 @@ __Usage:__
 
 ### Get Public Access Prevention
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getPublicAccessPrevention.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getPublicAccessPrevention.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getPublicAccessPrevention.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getPublicAccessPrevention.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getPublicAccessPrevention.js`
+`node getPublicAccessPrevention.js`
 
 
 -----
@@ -1212,14 +1212,14 @@ __Usage:__
 
 ### Get RPO
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getRPO.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getRPO.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getRPO.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getRPO.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getRPO.js`
+`node getRPO.js`
 
 
 -----
@@ -1229,14 +1229,14 @@ __Usage:__
 
 ### Get Requester Pays Status
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getRequesterPaysStatus.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getRequesterPaysStatus.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getRequesterPaysStatus.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getRequesterPaysStatus.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getRequesterPaysStatus.js`
+`node getRequesterPaysStatus.js`
 
 
 -----
@@ -1246,14 +1246,14 @@ __Usage:__
 
 ### Get Retention Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getRetentionPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getRetentionPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getRetentionPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getRetentionPolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getRetentionPolicy.js`
+`node getRetentionPolicy.js`
 
 
 -----
@@ -1265,9 +1265,9 @@ __Usage:__
 
 Get Service Account.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getServiceAccount.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getServiceAccount.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getServiceAccount.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getServiceAccount.js,storage/README.md)
 
 __Usage:__
 
@@ -1282,14 +1282,14 @@ __Usage:__
 
 ### Get Soft Delete Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getSoftDeletePolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getSoftDeletePolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getSoftDeletePolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getSoftDeletePolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getSoftDeletePolicy.js`
+`node getSoftDeletePolicy.js`
 
 
 -----
@@ -1299,14 +1299,14 @@ __Usage:__
 
 ### Get Soft Deleted Bucket
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getSoftDeletedBucket.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getSoftDeletedBucket.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getSoftDeletedBucket.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getSoftDeletedBucket.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getSoftDeletedBucket.js`
+`node getSoftDeletedBucket.js`
 
 
 -----
@@ -1316,14 +1316,14 @@ __Usage:__
 
 ### Get Uniform Bucket Level Access
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/getUniformBucketLevelAccess.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/getUniformBucketLevelAccess.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/getUniformBucketLevelAccess.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/getUniformBucketLevelAccess.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/getUniformBucketLevelAccess.js`
+`node getUniformBucketLevelAccess.js`
 
 
 -----
@@ -1335,9 +1335,9 @@ __Usage:__
 
 Activate HMAC SA Key.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeyActivate.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeyActivate.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeyActivate.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeyActivate.js,storage/README.md)
 
 __Usage:__
 
@@ -1354,9 +1354,9 @@ __Usage:__
 
 Create HMAC SA Key.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeyCreate.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeyCreate.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeyCreate.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeyCreate.js,storage/README.md)
 
 __Usage:__
 
@@ -1373,9 +1373,9 @@ __Usage:__
 
 Deactivate HMAC SA Key.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeyDeactivate.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeyDeactivate.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeyDeactivate.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeyDeactivate.js,storage/README.md)
 
 __Usage:__
 
@@ -1392,9 +1392,9 @@ __Usage:__
 
 Delete HMAC SA Key.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeyDelete.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeyDelete.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeyDelete.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeyDelete.js,storage/README.md)
 
 __Usage:__
 
@@ -1411,9 +1411,9 @@ __Usage:__
 
 Get HMAC SA Key Metadata.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeyGet.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeyGet.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeyGet.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeyGet.js,storage/README.md)
 
 __Usage:__
 
@@ -1430,14 +1430,14 @@ __Usage:__
 
 List HMAC SA Keys Metadata.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/hmacKeysList.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/hmacKeysList.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/hmacKeysList.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/hmacKeysList.js,storage/README.md)
 
 __Usage:__
 
 
-`node hmacKeyList.js [projectId]`
+`node hmacKeysList.js [projectId]`
 
 
 -----
@@ -1447,14 +1447,14 @@ __Usage:__
 
 ### List Buckets
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listBuckets.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listBuckets.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listBuckets.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listBuckets.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listBuckets.js`
+`node listBuckets.js`
 
 
 -----
@@ -1464,14 +1464,14 @@ __Usage:__
 
 ### List Buckets Partial Success
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listBucketsPartialSuccess.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listBucketsPartialSuccess.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listBucketsPartialSuccess.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listBucketsPartialSuccess.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listBucketsPartialSuccess.js`
+`node listBucketsPartialSuccess.js`
 
 
 -----
@@ -1481,14 +1481,14 @@ __Usage:__
 
 ### List Files
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listFiles.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listFiles.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listFiles.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listFiles.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listFiles.js`
+`node listFiles.js`
 
 
 -----
@@ -1498,14 +1498,14 @@ __Usage:__
 
 ### List Files By Prefix
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listFilesByPrefix.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listFilesByPrefix.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listFilesByPrefix.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listFilesByPrefix.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listFilesByPrefix.js`
+`node listFilesByPrefix.js`
 
 
 -----
@@ -1515,14 +1515,14 @@ __Usage:__
 
 ### List Files Paginate
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listFilesPaginate.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listFilesPaginate.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listFilesPaginate.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listFilesPaginate.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listFilesPaginate.js`
+`node listFilesPaginate.js`
 
 
 -----
@@ -1534,9 +1534,9 @@ __Usage:__
 
 List Files with Old Versions.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listFilesWithOldVersions.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listFilesWithOldVersions.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listFilesWithOldVersions.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listFilesWithOldVersions.js,storage/README.md)
 
 __Usage:__
 
@@ -1551,14 +1551,14 @@ __Usage:__
 
 ### List Notifications
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listNotifications.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listNotifications.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listNotifications.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listNotifications.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listNotifications.js`
+`node listNotifications.js`
 
 
 -----
@@ -1568,14 +1568,14 @@ __Usage:__
 
 ### List Soft Deleted Bucket
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listSoftDeletedBucket.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listSoftDeletedBucket.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listSoftDeletedBucket.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listSoftDeletedBucket.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listSoftDeletedBucket.js`
+`node listSoftDeletedBucket.js`
 
 
 -----
@@ -1585,14 +1585,14 @@ __Usage:__
 
 ### List Soft Deleted Object Versions
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listSoftDeletedObjectVersions.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listSoftDeletedObjectVersions.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listSoftDeletedObjectVersions.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listSoftDeletedObjectVersions.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listSoftDeletedObjectVersions.js`
+`node listSoftDeletedObjectVersions.js`
 
 
 -----
@@ -1602,14 +1602,14 @@ __Usage:__
 
 ### List Soft Deleted Objects
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/listSoftDeletedObjects.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/listSoftDeletedObjects.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/listSoftDeletedObjects.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/listSoftDeletedObjects.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/listSoftDeletedObjects.js`
+`node listSoftDeletedObjects.js`
 
 
 -----
@@ -1619,14 +1619,14 @@ __Usage:__
 
 ### Lock Retention Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/lockRetentionPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/lockRetentionPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/lockRetentionPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/lockRetentionPolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/lockRetentionPolicy.js`
+`node lockRetentionPolicy.js`
 
 
 -----
@@ -1638,9 +1638,9 @@ __Usage:__
 
 Storage Make Bucket Public.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/makeBucketPublic.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/makeBucketPublic.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/makeBucketPublic.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/makeBucketPublic.js,storage/README.md)
 
 __Usage:__
 
@@ -1655,14 +1655,14 @@ __Usage:__
 
 ### Make Public
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/makePublic.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/makePublic.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/makePublic.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/makePublic.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/makePublic.js`
+`node makePublic.js`
 
 
 -----
@@ -1672,14 +1672,14 @@ __Usage:__
 
 ### Move File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/moveFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/moveFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/moveFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/moveFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/moveFile.js`
+`node moveFile.js`
 
 
 -----
@@ -1689,14 +1689,14 @@ __Usage:__
 
 ### Move File Atomic
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/moveFileAtomic.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/moveFileAtomic.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/moveFileAtomic.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/moveFileAtomic.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/moveFileAtomic.js`
+`node moveFileAtomic.js`
 
 
 -----
@@ -1706,14 +1706,14 @@ __Usage:__
 
 ### Print Bucket Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/printBucketAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/printBucketAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/printBucketAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/printBucketAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/printBucketAcl.js`
+`node printBucketAcl.js`
 
 
 -----
@@ -1723,14 +1723,14 @@ __Usage:__
 
 ### Print Bucket Acl For User
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/printBucketAclForUser.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/printBucketAclForUser.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/printBucketAclForUser.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/printBucketAclForUser.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/printBucketAclForUser.js`
+`node printBucketAclForUser.js`
 
 
 -----
@@ -1740,14 +1740,14 @@ __Usage:__
 
 ### Print File Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/printFileAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/printFileAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/printFileAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/printFileAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/printFileAcl.js`
+`node printFileAcl.js`
 
 
 -----
@@ -1757,14 +1757,14 @@ __Usage:__
 
 ### Print File Acl For User
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/printFileAclForUser.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/printFileAclForUser.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/printFileAclForUser.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/printFileAclForUser.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/printFileAclForUser.js`
+`node printFileAclForUser.js`
 
 
 -----
@@ -1774,14 +1774,14 @@ __Usage:__
 
 ### Quickstart
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/quickstart.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/quickstart.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/quickstart.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/quickstart.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/quickstart.js`
+`node quickstart.js`
 
 
 -----
@@ -1791,14 +1791,14 @@ __Usage:__
 
 ### Release Event Based Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/releaseEventBasedHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/releaseEventBasedHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/releaseEventBasedHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/releaseEventBasedHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/releaseEventBasedHold.js`
+`node releaseEventBasedHold.js`
 
 
 -----
@@ -1808,14 +1808,14 @@ __Usage:__
 
 ### Release Temporary Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/releaseTemporaryHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/releaseTemporaryHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/releaseTemporaryHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/releaseTemporaryHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/releaseTemporaryHold.js`
+`node releaseTemporaryHold.js`
 
 
 -----
@@ -1825,14 +1825,14 @@ __Usage:__
 
 ### Remove Bucket Conditional Binding
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketConditionalBinding.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketConditionalBinding.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketConditionalBinding.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketConditionalBinding.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeBucketConditionalBinding.js`
+`node removeBucketConditionalBinding.js`
 
 
 -----
@@ -1844,9 +1844,9 @@ __Usage:__
 
 Removes bucket cors configuration.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketCors.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketCors.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketCors.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketCors.js,storage/README.md)
 
 __Usage:__
 
@@ -1861,14 +1861,14 @@ __Usage:__
 
 ### Remove Bucket Default Owner
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketDefaultOwner.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketDefaultOwner.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketDefaultOwner.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketDefaultOwner.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeBucketDefaultOwner.js`
+`node removeBucketDefaultOwner.js`
 
 
 -----
@@ -1878,14 +1878,14 @@ __Usage:__
 
 ### Remove Bucket Iam Member
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketIamMember.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketIamMember.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketIamMember.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketIamMember.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeBucketIamMember.js`
+`node removeBucketIamMember.js`
 
 
 -----
@@ -1897,14 +1897,14 @@ __Usage:__
 
 Removes bucket label.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketLabel.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketLabel.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketLabel.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketLabel.js,storage/README.md)
 
 __Usage:__
 
 
-`node removeBucketLabel.js <BUCKET_NAME> labelone)`
+`node removeBucketLabel.js <BUCKET_NAME> <LABEL_KEY>)`
 
 
 -----
@@ -1914,14 +1914,14 @@ __Usage:__
 
 ### Remove Bucket Owner Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeBucketOwnerAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeBucketOwnerAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeBucketOwnerAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeBucketOwnerAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeBucketOwnerAcl.js`
+`node removeBucketOwnerAcl.js`
 
 
 -----
@@ -1933,9 +1933,9 @@ __Usage:__
 
 Remove Default KMS Key.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeDefaultKMSKey.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeDefaultKMSKey.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeDefaultKMSKey.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeDefaultKMSKey.js,storage/README.md)
 
 __Usage:__
 
@@ -1950,14 +1950,14 @@ __Usage:__
 
 ### Remove File Owner Acl
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeFileOwnerAcl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeFileOwnerAcl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeFileOwnerAcl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeFileOwnerAcl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeFileOwnerAcl.js`
+`node removeFileOwnerAcl.js`
 
 
 -----
@@ -1967,14 +1967,14 @@ __Usage:__
 
 ### Remove Retention Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/removeRetentionPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/removeRetentionPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/removeRetentionPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/removeRetentionPolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/removeRetentionPolicy.js`
+`node removeRetentionPolicy.js`
 
 
 -----
@@ -1984,14 +1984,14 @@ __Usage:__
 
 ### Rename File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/renameFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/renameFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/renameFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/renameFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/renameFile.js`
+`node renameFile.js`
 
 
 -----
@@ -2001,14 +2001,14 @@ __Usage:__
 
 ### Restore Soft Deleted Bucket
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/restoreSoftDeletedBucket.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/restoreSoftDeletedBucket.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/restoreSoftDeletedBucket.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/restoreSoftDeletedBucket.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/restoreSoftDeletedBucket.js`
+`node restoreSoftDeletedBucket.js`
 
 
 -----
@@ -2018,14 +2018,14 @@ __Usage:__
 
 ### Restore Soft Deleted Object
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/restoreSoftDeletedObject.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/restoreSoftDeletedObject.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/restoreSoftDeletedObject.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/restoreSoftDeletedObject.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/restoreSoftDeletedObject.js`
+`node restoreSoftDeletedObject.js`
 
 
 -----
@@ -2035,14 +2035,14 @@ __Usage:__
 
 ### Rotate Encryption Key
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/rotateEncryptionKey.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/rotateEncryptionKey.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/rotateEncryptionKey.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/rotateEncryptionKey.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/rotateEncryptionKey.js`
+`node rotateEncryptionKey.js`
 
 
 -----
@@ -2052,14 +2052,14 @@ __Usage:__
 
 ### Set Autoclass
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setAutoclass.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setAutoclass.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setAutoclass.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setAutoclass.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setAutoclass.js`
+`node setAutoclass.js`
 
 
 -----
@@ -2069,14 +2069,14 @@ __Usage:__
 
 ### Set Client Endpoint
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setClientEndpoint.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setClientEndpoint.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setClientEndpoint.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setClientEndpoint.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setClientEndpoint.js`
+`node setClientEndpoint.js`
 
 
 -----
@@ -2086,14 +2086,14 @@ __Usage:__
 
 ### Set Event Based Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setEventBasedHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setEventBasedHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setEventBasedHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setEventBasedHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setEventBasedHold.js`
+`node setEventBasedHold.js`
 
 
 -----
@@ -2105,9 +2105,9 @@ __Usage:__
 
 Set the object retention policy of a File.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setObjectRetentionPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setObjectRetentionPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setObjectRetentionPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setObjectRetentionPolicy.js,storage/README.md)
 
 __Usage:__
 
@@ -2122,14 +2122,14 @@ __Usage:__
 
 ### Set Public Access Prevention Enforced
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setPublicAccessPreventionEnforced.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setPublicAccessPreventionEnforced.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setPublicAccessPreventionEnforced.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setPublicAccessPreventionEnforced.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setPublicAccessPreventionEnforced.js`
+`node setPublicAccessPreventionEnforced.js`
 
 
 -----
@@ -2139,14 +2139,14 @@ __Usage:__
 
 ### Set Public Access Prevention Inherited
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setPublicAccessPreventionInherited.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setPublicAccessPreventionInherited.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setPublicAccessPreventionInherited.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setPublicAccessPreventionInherited.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setPublicAccessPreventionInherited.js`
+`node setPublicAccessPreventionInherited.js`
 
 
 -----
@@ -2156,14 +2156,14 @@ __Usage:__
 
 ### Set RPO Async Turbo
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setRPOAsyncTurbo.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setRPOAsyncTurbo.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setRPOAsyncTurbo.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setRPOAsyncTurbo.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setRPOAsyncTurbo.js`
+`node setRPOAsyncTurbo.js`
 
 
 -----
@@ -2173,14 +2173,14 @@ __Usage:__
 
 ### Set RPO Default
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setRPODefault.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setRPODefault.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setRPODefault.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setRPODefault.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setRPODefault.js`
+`node setRPODefault.js`
 
 
 -----
@@ -2190,14 +2190,14 @@ __Usage:__
 
 ### Set Retention Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setRetentionPolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setRetentionPolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setRetentionPolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setRetentionPolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setRetentionPolicy.js`
+`node setRetentionPolicy.js`
 
 
 -----
@@ -2207,14 +2207,14 @@ __Usage:__
 
 ### Set Soft Delete Policy
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setSoftDeletePolicy.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setSoftDeletePolicy.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setSoftDeletePolicy.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setSoftDeletePolicy.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setSoftDeletePolicy.js`
+`node setSoftDeletePolicy.js`
 
 
 -----
@@ -2224,14 +2224,14 @@ __Usage:__
 
 ### Set Temporary Hold
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/setTemporaryHold.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/setTemporaryHold.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/setTemporaryHold.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/setTemporaryHold.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/setTemporaryHold.js`
+`node setTemporaryHold.js`
 
 
 -----
@@ -2241,14 +2241,14 @@ __Usage:__
 
 ### Stream File Download
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/streamFileDownload.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/streamFileDownload.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/streamFileDownload.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/streamFileDownload.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/streamFileDownload.js`
+`node streamFileDownload.js`
 
 
 -----
@@ -2258,14 +2258,14 @@ __Usage:__
 
 ### Stream File Upload
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/streamFileUpload.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/streamFileUpload.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/streamFileUpload.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/streamFileUpload.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/streamFileUpload.js`
+`node streamFileUpload.js`
 
 
 -----
@@ -2277,14 +2277,14 @@ __Usage:__
 
 Uploads full hierarchy of a local directory to a bucket.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadDirectory.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadDirectory.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadDirectory.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadDirectory.js,storage/README.md)
 
 __Usage:__
 
 
-`node files.js upload-directory <bucketName> <directoryPath>`
+`node uploadDirectory.js <bucketName> <directoryPath>`
 
 
 -----
@@ -2296,14 +2296,14 @@ __Usage:__
 
 Uploads a directory in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadDirectoryWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadDirectoryWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadDirectoryWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadDirectoryWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
 
-`node uploadFolderWithTransferManager.js <BUCKET_NAME> <DIRECTORY_NAME>`
+`node uploadDirectoryWithTransferManager.js <BUCKET_NAME> <DIRECTORY_NAME>`
 
 
 -----
@@ -2313,14 +2313,14 @@ __Usage:__
 
 ### Upload Encrypted File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadEncryptedFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadEncryptedFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadEncryptedFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadEncryptedFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadEncryptedFile.js`
+`node uploadEncryptedFile.js`
 
 
 -----
@@ -2330,14 +2330,14 @@ __Usage:__
 
 ### Upload File
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFile.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadFile.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadFile.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadFile.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadFile.js`
+`node uploadFile.js`
 
 
 -----
@@ -2349,9 +2349,9 @@ __Usage:__
 
 Uploads a single file in in chunks in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFileInChunksWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadFileInChunksWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadFileInChunksWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadFileInChunksWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
@@ -2366,14 +2366,14 @@ __Usage:__
 
 ### Upload File With Kms Key
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFileWithKmsKey.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadFileWithKmsKey.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadFileWithKmsKey.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadFileWithKmsKey.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadFileWithKmsKey.js`
+`node uploadFileWithKmsKey.js`
 
 
 -----
@@ -2383,14 +2383,14 @@ __Usage:__
 
 ### Upload From Memory
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFromMemory.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadFromMemory.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadFromMemory.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadFromMemory.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadFromMemory.js`
+`node uploadFromMemory.js`
 
 
 -----
@@ -2402,9 +2402,9 @@ __Usage:__
 
 Uploads many files in parallel utilizing transfer manager.
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadManyFilesWithTransferManager.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadManyFilesWithTransferManager.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadManyFilesWithTransferManager.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadManyFilesWithTransferManager.js,storage/README.md)
 
 __Usage:__
 
@@ -2419,14 +2419,14 @@ __Usage:__
 
 ### Upload Without Authentication
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadWithoutAuthentication.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadWithoutAuthentication.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadWithoutAuthentication.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadWithoutAuthentication.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadWithoutAuthentication.js`
+`node uploadWithoutAuthentication.js`
 
 
 -----
@@ -2436,14 +2436,14 @@ __Usage:__
 
 ### Upload Without Authentication Signed Url
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadWithoutAuthenticationSignedUrl.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/uploadWithoutAuthenticationSignedUrl.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/uploadWithoutAuthenticationSignedUrl.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/uploadWithoutAuthenticationSignedUrl.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/uploadWithoutAuthenticationSignedUrl.js`
+`node uploadWithoutAuthenticationSignedUrl.js`
 
 
 -----
@@ -2453,14 +2453,14 @@ __Usage:__
 
 ### View Bucket Iam Members
 
-View the [source code](https://github.com/googleapis/nodejs-storage/blob/main/samples/viewBucketIamMembers.js).
+View the [source code](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/main/storage/viewBucketIamMembers.js).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/viewBucketIamMembers.js,samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/viewBucketIamMembers.js,storage/README.md)
 
 __Usage:__
 
 
-`node samples/viewBucketIamMembers.js`
+`node viewBucketIamMembers.js`
 
 
 
@@ -2468,5 +2468,5 @@ __Usage:__
 
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/nodejs-storage&page=editor&open_in_editor=samples/README.md
+[shell_link]: https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&page=editor&open_in_editor=storage/README.md
 [product-docs]: https://cloud.google.com/storage

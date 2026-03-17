@@ -17,7 +17,7 @@
 // sample-metadata:
 //   title: Upload a directory to a bucket.
 //   description: Uploads full hierarchy of a local directory to a bucket.
-//   usage: node files.js upload-directory <bucketName> <directoryPath>
+//   usage: node uploadDirectory.js <bucketName> <directoryPath>
 
 function main(
   bucketName = 'your-unique-bucket-name',

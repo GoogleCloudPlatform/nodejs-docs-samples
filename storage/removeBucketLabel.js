@@ -17,7 +17,7 @@
 // sample-metadata:
 //   title: Storage Remove Bucket Label.
 //   description: Removes bucket label.
-//   usage: node removeBucketLabel.js <BUCKET_NAME> labelone)
+//   usage: node removeBucketLabel.js <BUCKET_NAME> <LABEL_KEY>)
 
 function main(bucketName = 'my-bucket', labelKey = 'labelone') {
   // [START storage_remove_bucket_label]

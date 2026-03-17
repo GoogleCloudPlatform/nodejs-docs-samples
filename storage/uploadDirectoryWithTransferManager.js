@@ -18,7 +18,7 @@
 // sample-metadata:
 //   title: Upload Directory With Transfer Manager
 //   description: Uploads a directory in parallel utilizing transfer manager.
-//   usage: node uploadFolderWithTransferManager.js <BUCKET_NAME> <DIRECTORY_NAME>
+//   usage: node uploadDirectoryWithTransferManager.js <BUCKET_NAME> <DIRECTORY_NAME>
 
 function main(bucketName = 'my-bucket', directoryName = 'my-directory') {
   // [START storage_transfer_manager_upload_directory]

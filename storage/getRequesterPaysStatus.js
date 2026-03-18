@@ -22,11 +22,14 @@
  * at https://cloud.google.com/storage/docs.
  */
 
-function main(bucketName = 'my-bucket') {
+function main(projectId, bucketName = 'my-bucket') {
   // [START storage_get_requester_pays_status]
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
+  // The ID of your Google Cloud project
+  // const projectId = 'your-project-id';
+
   // The ID of your GCS bucket
   // const bucketName = 'your-unique-bucket-name';
 
@@ -39,7 +42,9 @@ function main(bucketName = 'my-bucket') {
   async function getRequesterPaysStatus() {
     try {
       // Gets the requester-pays status of a bucket
-      const [metadata] = await storage.bucket(bucketName).getMetadata();
+      const [metadata] = await storage
+        .bucket(bucketName)
+        .getMetadata({userProject: projectId});
 
       let status;
       if (metadata && metadata.billing && metadata.billing.requesterPays) {

@@ -22,12 +22,15 @@
  * at https://cloud.google.com/storage/docs.
  */
 
-function main(bucketName = 'my-bucket') {
+function main(projectId, bucketName = 'my-bucket') {
   // [START storage_disable_requester_pays]
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
+  // The ID of your Google Cloud project
+  // const projectId = 'your-project-id';
+
   // The ID of your GCS bucket
   // const bucketName = 'your-unique-bucket-name';
 
@@ -40,7 +43,9 @@ function main(bucketName = 'my-bucket') {
   async function disableRequesterPays() {
     try {
       // Disables requester-pays requests
-      await storage.bucket(bucketName).disableRequesterPays();
+      await storage
+        .bucket(bucketName)
+        .disableRequesterPays({userProject: projectId});
 
       console.log(
         `Requester-pays requests have been disabled for bucket ${bucketName}`

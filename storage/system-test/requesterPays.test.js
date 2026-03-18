@@ -61,7 +61,9 @@ it.skip('should error on requester-pays requests if they are disabled', () => {
 });
 
 it('should fetch requester-pays status on a default bucket', () => {
-  const out = execSync(`node getRequesterPaysStatus.js ${bucketName}`);
+  const out = execSync(
+    `node getRequesterPaysStatus.js ${projectId} ${bucketName}`
+  );
   assert.include(
     out,
     `Requester-pays requests are disabled for bucket ${bucketName}`
@@ -77,7 +79,9 @@ it('should enable requester-pays requests', () => {
 });
 
 it('should fetch requester-pays status on a modified bucket', () => {
-  const out = execSync(`node getRequesterPaysStatus.js ${bucketName}`);
+  const out = execSync(
+    `node getRequesterPaysStatus.js ${projectId} ${bucketName}`
+  );
   assert.include(
     out,
     `Requester-pays requests are enabled for bucket ${bucketName}.`
@@ -96,7 +100,9 @@ it('should download a file using requester-pays requests', () => {
 });
 
 it('should disable requester-pays requests', () => {
-  const out = execSync(`node disableRequesterPays.js ${bucketName}`);
+  const out = execSync(
+    `node disableRequesterPays.js ${projectId} ${bucketName}`
+  );
   assert.include(
     out,
     `Requester-pays requests have been disabled for bucket ${bucketName}`

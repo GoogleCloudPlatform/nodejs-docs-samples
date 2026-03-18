@@ -73,7 +73,7 @@ function main(
       );
 
       // To modify an existing policy on an unlocked file object, pass in the override parameter
-      const newRetentionDate = new Date(retentionDate.getDate());
+      const newRetentionDate = new Date(retentionDate);
       newRetentionDate.setDate(newRetentionDate.getDate() + 9);
       const [newMetadata] = await file.setMetadata({
         retention: {

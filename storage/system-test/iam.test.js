@@ -31,8 +31,7 @@ const roleName = 'roles/storage.objectViewer';
 // Condition
 const title = 'match-prefix';
 const description = 'Applies to objects matching a prefix';
-const expression =
-  'resource.name.startsWith("projects/_/buckets/bucket-name/objects/prefix-a-")';
+const expression = `resource.name.startsWith("projects/_/buckets/${bucketName}/objects/prefix-a-")`;
 
 before(async () => {
   await bucket.create();

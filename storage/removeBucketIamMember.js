@@ -66,7 +66,7 @@ function main(
         if (role.members.length === 0) {
           policy.bindings.splice(index, 1);
         } else {
-          policy.bindings.index = role;
+          policy.bindings[index] = role;
         }
 
         // Updates the bucket's IAM policy

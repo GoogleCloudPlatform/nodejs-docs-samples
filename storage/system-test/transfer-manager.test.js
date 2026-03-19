@@ -56,7 +56,7 @@ describe('transfer manager', () => {
     );
   });
 
-  it('should download mulitple files', async () => {
+  it('should download multiple files', async () => {
     const output = execSync(
       `node downloadManyFilesWithTransferManager.js ${bucketName} ${firstFilePath} ${secondFilePath}`
     );

@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 const path = require('path');
 const cwd = path.join(__dirname, '..');
 
@@ -55,18 +57,25 @@ function main(
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function downloadFileInChunksWithTransferManager() {
-    // Downloads the files
-    await transferManager.downloadFileInChunks(fileName, {
-      destination: destFileName,
-      chunkSizeBytes: chunkSize,
-    });
+    try {
+      // Downloads the files
+      await transferManager.downloadFileInChunks(fileName, {
+        destination: destFileName,
+        chunkSizeBytes: chunkSize,
+      });
 
-    console.log(
-      `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
-    );
+      console.log(
+        `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error downloading file in chunks with Transfer Manager:',
+        error.message || error
+      );
+    }
   }
 
-  downloadFileInChunksWithTransferManager().catch(console.error);
+  downloadFileInChunksWithTransferManager();
   // [END storage_transfer_manager_download_chunks_concurrently]
 }
 

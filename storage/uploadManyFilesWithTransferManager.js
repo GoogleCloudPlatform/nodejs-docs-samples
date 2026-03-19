@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Upload Many Files With Transfer Manager
 //   description: Uploads many files in parallel utilizing transfer manager.
@@ -48,15 +50,22 @@ function main(
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function uploadManyFilesWithTransferManager() {
-    // Uploads the files
-    await transferManager.uploadManyFiles([firstFilePath, secondFilePath]);
+    try {
+      // Uploads the files
+      await transferManager.uploadManyFiles([firstFilePath, secondFilePath]);
 
-    for (const filePath of [firstFilePath, secondFilePath]) {
-      console.log(`${filePath} uploaded to ${bucketName}.`);
+      for (const filePath of [firstFilePath, secondFilePath]) {
+        console.log(`${filePath} uploaded to ${bucketName}.`);
+      }
+    } catch (error) {
+      console.error(
+        'Error uploading files with Transfer Manager:',
+        error.message || error
+      );
     }
   }
 
-  uploadManyFilesWithTransferManager().catch(console.error);
+  uploadManyFilesWithTransferManager();
   // [END storage_transfer_manager_upload_many]
 }
 

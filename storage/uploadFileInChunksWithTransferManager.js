@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Upload a File in Chunks With Transfer Manager
 //   description: Uploads a single file in in chunks in parallel utilizing transfer manager.
@@ -48,15 +50,22 @@ function main(
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function uploadFileInChunksWithTransferManager() {
-    // Uploads the files
-    await transferManager.uploadFileInChunks(filePath, {
-      chunkSizeBytes: chunkSize,
-    });
+    try {
+      // Uploads the files
+      await transferManager.uploadFileInChunks(filePath, {
+        chunkSizeBytes: chunkSize,
+      });
 
-    console.log(`${filePath} uploaded to ${bucketName}.`);
+      console.log(`${filePath} uploaded to ${bucketName}.`);
+    } catch (error) {
+      console.error(
+        'Error uploading file in chunks with Transfer Manager:',
+        error.message || error
+      );
+    }
   }
 
-  uploadFileInChunksWithTransferManager().catch(console.error);
+  uploadFileInChunksWithTransferManager();
   // [END storage_transfer_manager_upload_chunks_concurrently]
 }
 

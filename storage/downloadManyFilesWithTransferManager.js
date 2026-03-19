@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Download Many Files With Transfer Manager
 //   description: Downloads many files in parallel utilizing transfer manager.
@@ -48,15 +50,24 @@ function main(
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function downloadManyFilesWithTransferManager() {
-    // Downloads the files
-    await transferManager.downloadManyFiles([firstFileName, secondFileName]);
+    try {
+      // Downloads the files
+      await transferManager.downloadManyFiles([firstFileName, secondFileName]);
 
-    for (const fileName of [firstFileName, secondFileName]) {
-      console.log(`gs://${bucketName}/${fileName} downloaded to ${fileName}.`);
+      for (const fileName of [firstFileName, secondFileName]) {
+        console.log(
+          `gs://${bucketName}/${fileName} downloaded to ${fileName}.`
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Error downloading files with Transfer Manager:',
+        error.message || error
+      );
     }
   }
 
-  downloadManyFilesWithTransferManager().catch(console.error);
+  downloadManyFilesWithTransferManager();
   // [END storage_transfer_manager_download_many]
 }
 

@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Download Folder With Transfer Manager
 //   description: Downloads a folder in parallel utilizing transfer manager.
@@ -41,15 +43,22 @@ function main(bucketName = 'my-bucket', folderName = 'my-folder') {
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function downloadFolderWithTransferManager() {
-    // Downloads the folder
-    await transferManager.downloadManyFiles(folderName);
+    try {
+      // Downloads the folder
+      await transferManager.downloadManyFiles(folderName);
 
-    console.log(
-      `gs://${bucketName}/${folderName} downloaded to ${folderName}.`
-    );
+      console.log(
+        `gs://${bucketName}/${folderName} downloaded to ${folderName}.`
+      );
+    } catch (error) {
+      console.error(
+        'Error downloading folder with Transfer Manager:',
+        error.message || error
+      );
+    }
   }
 
-  downloadFolderWithTransferManager().catch(console.error);
+  downloadFolderWithTransferManager();
   // [END storage_transfer_manager_download_folder]
 }
 

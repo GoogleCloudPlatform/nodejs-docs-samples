@@ -15,6 +15,8 @@
  *
  */
 
+'use strict';
+
 // sample-metadata:
 //   title: Upload Directory With Transfer Manager
 //   description: Uploads a directory in parallel utilizing transfer manager.
@@ -41,13 +43,20 @@ function main(bucketName = 'my-bucket', directoryName = 'my-directory') {
   const transferManager = new TransferManager(storage.bucket(bucketName));
 
   async function uploadDirectoryWithTransferManager() {
-    // Uploads the directory
-    await transferManager.uploadManyFiles(directoryName);
+    try {
+      // Uploads the directory
+      await transferManager.uploadManyFiles(directoryName);
 
-    console.log(`${directoryName} uploaded to ${bucketName}.`);
+      console.log(`${directoryName} uploaded to ${bucketName}.`);
+    } catch (error) {
+      console.error(
+        'Error uploading directory with Transfer Manager:',
+        error.message || error
+      );
+    }
   }
 
-  uploadDirectoryWithTransferManager().catch(console.error);
+  uploadDirectoryWithTransferManager();
   // [END storage_transfer_manager_upload_directory]
 }
 

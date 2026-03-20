@@ -42,11 +42,6 @@ after(async () => {
     // ignore error
   }
   try {
-    await bucket.deleteFiles({force: true});
-  } catch (err) {
-    // ignore error
-  }
-  try {
     await bucket.delete();
   } catch (err) {
     // ignore error
@@ -123,7 +118,7 @@ it('should print a users acl for a file', async () => {
   await bucket.file(fileName).acl.readers.deleteUser(userEmail);
 });
 
-it('should add a user as an owner on a bucket', () => {
+it('should add a user as an owner on a file', () => {
   const out = execSync(
     `node addFileOwnerAcl.js ${bucketName} ${fileName} ${userEmail}`
   );
@@ -133,7 +128,7 @@ it('should add a user as an owner on a bucket', () => {
   );
 });
 
-it('should remove a user from a bucket', () => {
+it('should remove a user from a file', () => {
   const out = execSync(
     `node removeFileOwnerAcl.js ${bucketName} ${fileName} ${userEmail}`
   );

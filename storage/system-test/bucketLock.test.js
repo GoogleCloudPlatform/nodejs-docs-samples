@@ -37,15 +37,20 @@ before(async () => {
 });
 
 after(async () => {
+  // The last test locks a retention policy. Wait for the retention
+  // period (5s) to pass before attempting to delete objects and the bucket.
+  // A small buffer is added to account for timing inaccuracies.
+  await new Promise(resolve => setTimeout(resolve, 6000));
+
   try {
     await bucket.deleteFiles({force: true});
   } catch (err) {
-    // ignore error
+    console.error('Failed to delete files during cleanup:', err);
   }
   try {
     await bucket.delete();
   } catch (err) {
-    // ignore error
+    console.error('Failed to delete bucket during cleanup:', err);
   }
 });
 

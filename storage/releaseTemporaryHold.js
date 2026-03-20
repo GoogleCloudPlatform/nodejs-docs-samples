@@ -25,7 +25,7 @@
 function main(
   bucketName = 'my-bucket',
   fileName = 'test.txt',
-  metagenerationMatchPrecondition = 0
+  metagenerationMatchPrecondition = null
 ) {
   // [START storage_release_temporary_hold]
   /**

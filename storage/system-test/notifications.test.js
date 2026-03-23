@@ -35,11 +35,12 @@ const topic = pubsub.topic(topicName);
 before(async () => {
   await bucket.create();
   await topic.create();
+  const [gcsServiceAccount] = await storage.getServiceAccount();
   await topic.iam.setPolicy({
     bindings: [
       {
         role: 'roles/pubsub.editor',
-        members: ['allUsers'],
+        members: [`serviceAccount:${gcsServiceAccount.emailAddress}`],
       },
     ],
   });

@@ -27,7 +27,7 @@ const bucketName = `nodejs-storage-samples-${uuid.v4()}`;
 
 after(async () => {
   const bucket = storage.bucket(bucketName);
-  await bucket.delete().catch(console.error);
+  await bucket.delete({force: true}).catch(console.error);
 });
 
 it('should run the quickstart', async () => {

@@ -53,11 +53,7 @@ it.skip('should error on requester-pays requests if they are disabled', () => {
   const result = execSync(
     `node downloadFileUsingRequesterPays.js ${projectId} ${bucketName} ${fileName} ${downloadFilePath}`
   );
-  assert.ok(result.stderr);
-  assert.match(
-    result.stderr,
-    /User project prohibited for non requester pays bucket/
-  );
+  assert.match(result, /User project prohibited for non requester pays bucket/);
 });
 
 it('should fetch requester-pays status on a default bucket', () => {

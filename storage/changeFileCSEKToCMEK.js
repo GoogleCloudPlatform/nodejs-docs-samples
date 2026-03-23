@@ -22,7 +22,7 @@
 function main(
   bucketName = 'my-bucket',
   fileName = 'test.txt',
-  encryptionKey = 'my-encription-key',
+  encryptionKey = 'my-encryption-key',
   kmsKeyName = 'my-kms-key',
   generationMatchPrecondition = 0
 ) {
@@ -68,9 +68,7 @@ function main(
         .file(fileName, {
           encryptionKey: Buffer.from(encryptionKey, 'base64'),
         })
-        .rotateEncryptionKey({
-          rotateEncryptionKeyOptions,
-        });
+        .rotateEncryptionKey(rotateEncryptionKeyOptions);
 
       console.log(
         `file ${fileName} in bucket ${bucketName} is now managed by KMS key ${kmsKeyName} instead of customer-supplied encryption key`

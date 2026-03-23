@@ -95,11 +95,8 @@ it('should convert CSEK to KMS key', async () => {
   const file = bucket.file(encryptedFileName, {
     encryptionKey: Buffer.from(key, 'base64'),
   });
-  const [metadata] = await storage
-    .bucket(bucketName)
-    .file(fileName)
-    .getMetadata();
   await file.save('secret data', {resumable: false});
+  const [metadata] = await file.getMetadata();
   const output = execSync(
     `node changeFileCSEKToCMEK.js ${bucketName} ${encryptedFileName} ${key} ${kmsKeyName} ${metadata.generation}`
   );

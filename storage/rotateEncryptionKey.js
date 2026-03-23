@@ -25,8 +25,8 @@
 function main(
   bucketName = 'my-bucket',
   fileName = 'test.txt',
-  oldKey = process.env.GOOGLE_CLOUD_KMS_KEY_US,
-  newKey = process.env.GOOGLE_CLOUD_KMS_KEY_ASIA,
+  oldKey = 'your-old-base64-encoded-csek',
+  newKey = 'your-new-base64-encoded-csek',
   generationMatchPrecondition = 0
 ) {
   // [START storage_rotate_encryption_key]
@@ -43,7 +43,6 @@ function main(
   // object. See the documentation on Customer-Supplied Encryption keys for
   // more info:
   // https://cloud.google.com/storage/docs/encryption/using-customer-supplied-keys
-  // The Base64 encoded AES-256 encryption key originally used to encrypt the
   // const oldKey = 'TIbv/fjexq+VmtXzAlc63J4z5kFmWJ6NdAPQulQBT7g=';
 
   // The new encryption key to use
@@ -72,9 +71,7 @@ function main(
         .file(fileName, {
           encryptionKey: Buffer.from(oldKey, 'base64'),
         })
-        .rotateEncryptionKey({
-          rotateEncryptionKeyOptions,
-        });
+        .rotateEncryptionKey(rotateEncryptionKeyOptions);
 
       console.log('Encryption key rotated successfully');
     } catch (error) {

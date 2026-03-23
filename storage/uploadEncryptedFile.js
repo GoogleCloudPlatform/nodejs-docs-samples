@@ -20,7 +20,7 @@ function main(
   bucketName = 'my-bucket',
   filePath = path.join(__dirname, '../resources', 'test.txt'),
   destFileName = 'test.txt',
-  key = process.env.GOOGLE_CLOUD_KMS_KEY_US,
+  key = 'your-base64-encoded-csek',
   generationMatchPrecondition = 0
 ) {
   // [START storage_upload_encrypted_file]

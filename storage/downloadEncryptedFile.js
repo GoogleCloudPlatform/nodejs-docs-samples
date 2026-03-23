@@ -26,9 +26,9 @@ const path = require('path');
 
 function main(
   bucketName = 'my-bucket',
-  srcFileName = path.join(__dirname, '../resources', 'test.txt'),
-  destFileName = 'test.txt',
-  encryptionKey = process.env.GOOGLE_CLOUD_KMS_KEY_US
+  srcFileName = 'test.txt',
+  destFileName = path.join(__dirname, '../resources', 'downloaded.txt'),
+  encryptionKey = 'your-base64-encoded-csek'
 ) {
   // [START storage_download_encrypted_file]
   /**

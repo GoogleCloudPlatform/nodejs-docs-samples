@@ -345,8 +345,14 @@ it('should create a hierarchical namespace enabled bucket', async () => {
     )
   );
 
-  const metadata = await dualRegionBucketTurbo.getMetadata();
-  assert.strictEqual(metadata[0].rpo, RPO_DEFAULT);
+  const [metadata] = await storage
+    .bucket(bucketNameHierarchicalNamespace)
+    .getMetadata();
+  assert.deepStrictEqual(metadata.hierarchicalNamespace, {enabled: true});
+  assert.strictEqual(
+    metadata.iamConfiguration.uniformBucketLevelAccess.enabled,
+    true
+  );
 });
 
 it("should add a bucket's website configuration", async () => {

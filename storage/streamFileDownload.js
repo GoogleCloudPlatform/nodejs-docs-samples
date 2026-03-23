@@ -54,14 +54,16 @@ function main(
       // The example below demonstrates how we can reference a remote file, then
       // pipe its contents to a local file.
       // Once the stream is created, the data can be piped anywhere (process, sdout, etc)
-      await storage
-        .bucket(bucketName)
-        .file(fileName)
-        .createReadStream() //stream is created
-        .pipe(fs.createWriteStream(destFileName))
-        .on('finish', () => {
-          // The file download is complete
-        });
+      await new Promise((resolve, reject) => {
+        storage
+          .bucket(bucketName)
+          .file(fileName)
+          .createReadStream() //stream is created
+          .on('error', reject)
+          .pipe(fs.createWriteStream(destFileName))
+          .on('error', reject)
+          .on('finish', resolve);
+      });
 
       console.log(
         `gs://${bucketName}/${fileName} downloaded to ${destFileName}.`

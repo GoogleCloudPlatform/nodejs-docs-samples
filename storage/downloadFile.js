@@ -65,7 +65,7 @@ function main(
     }
   }
 
-  downloadFile().catch(console.error);
+  downloadFile();
   // [END storage_download_file]
 }
 main(...process.argv.slice(2));

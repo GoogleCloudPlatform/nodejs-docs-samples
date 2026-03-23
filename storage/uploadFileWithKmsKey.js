@@ -72,7 +72,7 @@ function main(
     }
   }
 
-  uploadFileWithKmsKey().catch(console.error);
+  uploadFileWithKmsKey();
   // [END storage_upload_with_kms_key]
 }
 main(...process.argv.slice(2));

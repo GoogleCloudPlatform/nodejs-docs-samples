@@ -62,8 +62,11 @@ function main(
 
   async function streamFileUpload() {
     try {
-      passthroughStream.pipe(file.createWriteStream()).on('finish', () => {
-        // The file upload is complete
+      await new Promise((resolve, reject) => {
+        passthroughStream
+          .pipe(file.createWriteStream())
+          .on('error', reject)
+          .on('finish', resolve);
       });
 
       console.log(`${destFileName} uploaded to ${bucketName}`);

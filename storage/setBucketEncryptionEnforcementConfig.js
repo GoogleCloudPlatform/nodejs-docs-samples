@@ -42,7 +42,7 @@ function main(
   async function setBucketEncryptionEnforcementConfig() {
     const options = {
       encryption: {
-        defaultKmsKeyName: defaultKmsKeyName,
+        defaultKmsKeyName,
         googleManagedEncryptionEnforcementConfig: {
           restrictionMode: 'FullyRestricted',
         },

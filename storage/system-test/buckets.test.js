@@ -16,7 +16,7 @@
 
 const {Storage} = require('@google-cloud/storage');
 const {assert} = require('chai');
-const {after, it} = require('mocha');
+const {before, after, afterEach, it} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid');
 
@@ -27,6 +27,10 @@ const samplesTestBucketPrefix = `nodejs-storage-samples-${uuid.v4()}`;
 const bucketName = `${samplesTestBucketPrefix}-a`;
 const defaultKmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_ASIA;
 const bucket = storage.bucket(bucketName);
+
+before(async () => {
+  await storage.createBucket(bucketName);
+});
 
 async function deleteAllBucketsAsync() {
   const [buckets] = await storage.getBuckets({prefix: samplesTestBucketPrefix});

@@ -32,7 +32,7 @@ const Label = {
 // Parse config file and read available reCAPTCHA actions. All reCAPTCHA actions registered in the client
 // should be mapped in the config file. This will be used to verify if the token obtained during assessment
 // corresponds to the claimed action.
-const propertiesReader = require('properties-reader');
+const {propertiesReader} = require('properties-reader');
 const PROPERTIES = propertiesReader('config.properties');
 
 const context = {

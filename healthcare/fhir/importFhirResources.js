@@ -28,6 +28,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
   const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -50,32 +51,48 @@ const main = (
         },
       },
     };
+    try {
+      const operation =
+        await healthcare.projects.locations.datasets.fhirStores.import(request);
+      const operationName = operation.data.name;
 
-    const operation =
-      await healthcare.projects.locations.datasets.fhirStores.import(request);
-    const operationName = operation.data.name;
+      console.log(`Import operation started: ${operationName}`);
 
-    const operationRequest = {name: operationName};
+      let done = false;
+      let operationStatus;
+      let attempts = 0;
 
-    // Wait twenty seconds for the LRO to finish.
-    await sleep(20000);
+      while (!done && attempts < 100) {
+        console.log('Waiting for import operation to complete...');
+        attempts++;
+        await sleep(5000); // Wait 5 seconds between polls
 
-    // Check the LRO's status
-    const operationStatus =
-      await healthcare.projects.locations.datasets.operations.get(
-        operationRequest
-      );
+        operationStatus =
+          await healthcare.projects.locations.datasets.operations.get({
+            name: operationName,
+          });
 
-    const success = operationStatus.data.metadata.counter.success;
+        done = operationStatus.data.done;
+      }
 
-    if (typeof success !== 'undefined') {
-      console.log(
-        `Import FHIR resources succeeded. ${success} resources imported.`
-      );
-    } else {
-      console.log(
-        'Imported FHIR resources failed. Details available in Cloud Logging at the following URL:\n',
-        operationStatus.data.metadata.logsUrl
+      if (operationStatus.data.error) {
+        console.error(
+          'Import FHIR resources failed:',
+          operationStatus.data.error
+        );
+      } else if (done) {
+        const successCount =
+          operationStatus.data.metadata?.counter?.success || 0;
+        console.log(
+          `Import FHIR resources succeeded. ${successCount} resources imported.`
+        );
+      } else {
+        console.error('Import operation timed out in the sample.');
+      }
+    } catch (error) {
+      console.error(
+        'An error occurred during the import process:',
+        error.message || error
       );
     }
   };

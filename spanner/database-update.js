@@ -32,7 +32,7 @@ function main(
   // const projectId = 'my-project-id';
 
   // Imports the Google Cloud client library
-  const {Spanner, protos} = require('@google-cloud/spanner');
+  const {Spanner} = require('@google-cloud/spanner');
 
   // creates a client
   const spanner = new Spanner({
@@ -61,9 +61,9 @@ function main(
           enableDropProtection: true,
         },
         // updateMask contains the fields to be updated in database
-        updateMask: (protos.google.protobuf.FieldMask = {
+        updateMask: {
           paths: ['enable_drop_protection'],
-        }),
+        },
       });
       console.log(
         `Waiting for update operation for ${databaseId} to complete...`

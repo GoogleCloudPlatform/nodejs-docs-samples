@@ -23,7 +23,7 @@ async function createDatabaseWithEncryptionKey(
   // [START spanner_create_database_with_encryption_key]
 
   // Imports the Google Cloud client library
-  const {Spanner, protos} = require('@google-cloud/spanner');
+  const {Spanner} = require('@google-cloud/spanner');
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -46,10 +46,9 @@ async function createDatabaseWithEncryptionKey(
     const [operation] = await databaseAdminClient.createDatabase({
       createStatement: 'CREATE DATABASE `' + databaseId + '`',
       parent: databaseAdminClient.instancePath(projectId, instanceId),
-      encryptionConfig:
-        (protos.google.spanner.admin.database.v1.EncryptionConfig = {
-          kmsKeyName: keyName,
-        }),
+      encryptionConfig: {
+        kmsKeyName: keyName,
+      },
     });
 
     console.log(`Waiting for operation on ${databaseId} to complete...`);

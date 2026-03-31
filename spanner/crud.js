@@ -53,7 +53,7 @@ async function updateData(instanceId, databaseId, projectId) {
     console.error('ERROR:', err);
   } finally {
     // Close the database when finished.
-    database.close();
+    await database.close();
   }
   // [END spanner_update_data]
 }
@@ -139,8 +139,8 @@ async function deleteData(instanceId, databaseId, projectId) {
   // Deletes individual rows from the Albums table.
   try {
     const keys = [
-      [2, 1],
-      [2, 3],
+      ['2', '1'],
+      ['2', '3'],
     ];
     await albumsTable.deleteRows(keys);
     console.log('Deleted individual rows in Albums.');

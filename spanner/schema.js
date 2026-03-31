@@ -154,7 +154,7 @@ async function queryDataWithNewColumn(instanceId, databaseId, projectId) {
   try {
     const [rows] = await database.run(query);
 
-    rows.forEach(async row => {
+    rows.forEach(row => {
       const json = row.toJSON();
 
       console.log(

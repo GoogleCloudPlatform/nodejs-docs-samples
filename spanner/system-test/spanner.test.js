@@ -158,9 +158,7 @@ async function deleteStaleInstances() {
   });
   const limit = pLimit(5);
   await Promise.all(
-    instances.map(instance =>
-      limit(() => setTimeout(deleteInstance, delay, instance))
-    )
+    instances.map(instance => limit(() => deleteInstance(instance)))
   );
 }
 

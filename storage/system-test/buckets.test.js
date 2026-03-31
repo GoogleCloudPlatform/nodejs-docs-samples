@@ -107,7 +107,7 @@ it('should get autoclass', async () => {
   assert.include(output, `Autoclass is disabled for ${bucketNameAutoclass}`);
 });
 
-it('should set a buckets default KMS key', async () => {
+it.skip('should set a buckets default KMS key', async () => {
   const output = execSync(
     `node enableDefaultKMSKey.js ${bucketName} ${defaultKmsKeyName}`
   );

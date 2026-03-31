@@ -165,6 +165,29 @@ async function deleteStaleInstances() {
 async function deleteInstance(instance) {
   const [backups] = await instance.getBackups();
   await Promise.all(backups.map(backup => backup.delete(GAX_OPTIONS)));
+  try {
+    const [databases] = await instance.getDatabases();
+    await Promise.all(
+      databases.map(async database => {
+        try {
+          const [operation] = await database.setMetadata({
+            enableDropProtection: false,
+          });
+          await operation.promise();
+        } catch (err) {
+          console.warn(
+            `[Cleanup] Could not disable drop protection for ${database.id}:`,
+            err.message
+          );
+        }
+      })
+    );
+  } catch (err) {
+    console.warn(
+      `[Cleanup] Could not list databases for instance ${instance.id}:`,
+      err.message
+    );
+  }
   return instance.delete(GAX_OPTIONS);
 }
 

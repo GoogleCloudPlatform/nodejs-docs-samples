@@ -92,9 +92,9 @@ async function insertData(instanceId, databaseId, projectId) {
 
   // Instantiate Spanner table objects.
   const venuesTable = database.table('Venues');
-  const exampleBytes1 = new Buffer.from('Hello World 1');
-  const exampleBytes2 = new Buffer.from('Hello World 2');
-  const exampleBytes3 = new Buffer.from('Hello World 3');
+  const exampleBytes1 = Buffer.from('Hello World 1');
+  const exampleBytes2 = Buffer.from('Hello World 2');
+  const exampleBytes3 = Buffer.from('Hello World 3');
   const availableDates1 = ['2020-12-01', '2020-12-02', '2020-12-03'];
   const availableDates2 = ['2020-11-01', '2020-11-05', '2020-11-15'];
   const availableDates3 = ['2020-10-01', '2020-10-07'];
@@ -198,12 +198,10 @@ async function queryWithArray(instanceId, databaseId, projectId) {
   try {
     const [rows] = await database.run(query);
     rows.forEach(row => {
-      const availableDate = row[2]['value'];
       const json = row.toJSON();
+      const dateStr = JSON.stringify(json.AvailableDate).substring(1, 11);
       console.log(
-        `VenueId: ${json.VenueId}, VenueName: ${
-          json.VenueName
-        }, AvailableDate: ${JSON.stringify(availableDate).substring(1, 11)}`
+        `VenueId: ${json.VenueId}, VenueName: ${json.VenueName}, AvailableDate: ${dateStr}`
       );
     });
   } catch (err) {
@@ -371,11 +369,10 @@ async function queryWithDate(instanceId, databaseId, projectId) {
     const [rows] = await database.run(query);
 
     rows.forEach(row => {
-      const date = row[2]['value'];
       const json = row.toJSON();
+      const dateStr = JSON.stringify(json.LastContactDate).substring(1, 11);
       console.log(
-        `VenueId: ${json.VenueId}, VenueName: ${json.VenueName},` +
-          ` LastContactDate: ${JSON.stringify(date).substring(1, 11)}`
+        `VenueId: ${json.VenueId}, VenueName: ${json.VenueName}, LastContactDate: ${dateStr}`
       );
     });
   } catch (err) {

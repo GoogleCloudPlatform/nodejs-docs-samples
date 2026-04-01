@@ -46,7 +46,7 @@ async function main(instanceId, databaseId, projectId) {
           sql: 'UPDATE Albums SET MarketingBudget = 2000000 WHERE SingerId = 1 and AlbumId = 1 THEN RETURN MarketingBudget',
         });
 
-        const rowCount = Math.floor(stats[stats.rowCount]);
+        const rowCount = Number(stats.rowCountExact);
         console.log(
           `Successfully updated ${rowCount} record into the Albums table.`
         );

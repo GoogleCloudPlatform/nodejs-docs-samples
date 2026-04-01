@@ -45,7 +45,7 @@ async function main(instanceId, databaseId, projectId) {
           sql: 'DELETE FROM Singers WHERE SingerId = 18 THEN RETURN FullName',
         });
 
-        const rowCount = Math.floor(stats[stats.rowCount]);
+        const rowCount = Number(stats.rowCountExact);
         console.log(
           `Successfully deleted ${rowCount} record from the Singers table.`
         );

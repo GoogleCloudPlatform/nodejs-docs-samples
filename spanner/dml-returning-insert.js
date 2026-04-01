@@ -50,7 +50,7 @@ async function main(instanceId, databaseId, projectId) {
           },
         });
 
-        const rowCount = Math.floor(stats[stats.rowCount]);
+        const rowCount = Number(stats.rowCountExact);
         console.log(
           `Successfully inserted ${rowCount} record into the Singers table.`
         );

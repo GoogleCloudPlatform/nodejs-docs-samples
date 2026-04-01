@@ -579,7 +579,7 @@ async function updateUsingBatchDml(instanceId, databaseId, projectId) {
     throw err;
   } finally {
     // Close the database when finished.
-    database.close();
+    await database.close();
   }
   // [END spanner_dml_batch_update]
 }

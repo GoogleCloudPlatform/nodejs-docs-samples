@@ -43,26 +43,21 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
 
   async function setObjectContexts() {
     const file = storage.bucket(bucketName).file(fileName);
-    try {
-      // Create/Update Object Contexts
-      // Object Contexts live in the 'contexts' field, not the 'metadata' field.
-      const [metadata] = await file.setMetadata({
-        contexts: {
-          custom: {
-            'team-owner': {value: 'storage-team'},
-            priority: {value: 'high'},
-          },
-        },
-      });
 
-      console.log(`Updated Object Contexts for ${fileName}:`);
-      console.log(JSON.stringify(metadata.contexts, null, 2));
-    } catch (error) {
-      console.error(
-        'Error executing set object contexts:',
-        error.message || error
-      );
-    }
+    // Create/Update Object Contexts
+    // Object Contexts live in the 'contexts' field, not the 'metadata' field.
+    const [metadata] = await file.setMetadata({
+      contexts: {
+        custom: {
+          'team-owner': {value: 'storage-team'},
+          priority: {value: 'high'},
+        },
+      },
+    });
+
+    console.log(`Updated Object Contexts for ${fileName}:`);
+    console.log(JSON.stringify(metadata.contexts, null, 2));
+
     // Delete a specific key from the context:
     // We send 'null' for the specific key we want to remove.
     await file.setMetadata({

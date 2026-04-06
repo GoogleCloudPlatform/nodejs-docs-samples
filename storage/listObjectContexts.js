@@ -17,7 +17,7 @@
 // sample-metadata:
 //   title: List Objects with Context Filter
 //   description: Lists objects in a bucket that match specific custom contexts.
-//   usage: node listObjectsWithContextFilter.js <BUCKET_NAME>
+//   usage: node listObjectContexts.js <BUCKET_NAME>
 
 /**
  * This application demonstrates how to list objects in a bucket while filtering

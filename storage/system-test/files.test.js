@@ -114,10 +114,6 @@ describe('file', () => {
         'Files matching filter [contexts."priority"="high"]'
       );
       assert.include(output, ` - ${fileName}`);
-      assert.include(
-        output,
-        'Files matching filter [contexts."priority"="high"]'
-      );
 
       // Testing Existence of Key (contexts."key":*)
       assert.include(output, 'Files with the "team-owner" context key');

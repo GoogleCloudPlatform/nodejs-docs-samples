@@ -43,7 +43,7 @@ function main(bucketName = 'my-bucket') {
     const bucket = storage.bucket(bucketName);
 
     /**
-     * List any object that has a context with the specified key attached.
+     * List any object that has a context with the specified key and value.
      * Syntax: contexts."<key>"="<value>"
      */
     const filterByValue = 'contexts."priority"="high"';
@@ -83,7 +83,7 @@ function main(bucketName = 'my-bucket') {
     filesNoHighPriority.forEach(file => console.log(` - ${file.name}`));
 
     /**
-     * List any object that that does not have a context with the specified key attached.
+     * List any object that does not have a context with the specified key attached.
      * Syntax: -contexts."<key>":*
      */
     const absenceOfKey = '-contexts."team-owner":*';

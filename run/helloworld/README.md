@@ -2,7 +2,7 @@
 
 This sample shows how to deploy a Hello World application to Cloud Run.
 
-<a href="https://deploy.cloud.run"><img src="https://deploy.cloud.run/button.svg" alt="Run on Google Cloud" height="40"/></a>
+<a href="https://deploy.cloud.run?git_repo=https://github.com/GoogleCloudPlatform/nodejs-docs-samples&dir=run/helloworld"><img src="https://deploy.cloud.run/button.svg" alt="Run on Google Cloud" height="40"/></a>
 
 For more details on how to work with this sample read the [Google Cloud Run Node.js Samples README](https://github.com/GoogleCloudPlatform/nodejs-docs-samples/tree/main/run).
 

@@ -137,7 +137,7 @@ jobs:
           project_id: ${{ env.GOOGLE_SAMPLES_PROJECT }}
           workload_identity_provider: projects/1046198160504/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
           service_account: ${{ env.SERVICE_ACCOUNT }}
-          access_token_lifetime: 600s # 10 minutes
+          access_token_lifetime: 3600s # 1 hour
           token_format: id_token
           id_token_audience: https://action.test/ # service must have this custom audience
           id_token_include_email: true

@@ -23,12 +23,13 @@ const PROJECT_NAME = `projects/${PROJECT_ID}`;
 // [END functions_billing_limit]
 
 // [START functions_billing_slack]
-const slack = require('slack');
+const {WebClient} = require('@slack/web-api');
 
 // TODO(developer) replace these with your own values
 const BOT_ACCESS_TOKEN =
   process.env.BOT_ACCESS_TOKEN || 'xxxx-111111111111-abcdefghidklmnopq';
 const CHANNEL = process.env.SLACK_CHANNEL || 'general';
+const web = new WebClient(BOT_ACCESS_TOKEN);
 
 exports.notifySlack = async pubsubEvent => {
   const pubsubAttrs = pubsubEvent.attributes;
@@ -37,8 +38,7 @@ exports.notifySlack = async pubsubEvent => {
     pubsubAttrs
   )}, ${pubsubData}`;
 
-  await slack.chat.postMessage({
-    token: BOT_ACCESS_TOKEN,
+  await web.chat.postMessage({
     channel: CHANNEL,
     text: budgetNotificationText,
   });

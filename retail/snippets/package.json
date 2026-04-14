@@ -1,0 +1,22 @@
+{
+  "name": "node-snippets",
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "test": "c8 mocha test/*.test.js --timeout 180000"
+  },
+  "devDependencies": {
+    "c8": "^10.1.3",
+    "chai": "^4.5.0",
+    "mocha": "^10.8.2"
+  },
+  "dependencies": {
+    "@google-cloud/retail": "^4.3.0"
+  }
+}

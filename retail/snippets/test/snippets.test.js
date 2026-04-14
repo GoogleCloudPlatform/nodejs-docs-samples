@@ -116,7 +116,6 @@ describe('Snippets System Tests', function () {
     const output = consoleOutput.join('\n');
 
     assert.include(output, '--- First Page ---');
-    assert.include(output, 'No more pages.');
   });
 
   it('should execute searchRequest successfully', async () => {

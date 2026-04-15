@@ -49,7 +49,7 @@ async function searchPagination(projectId, placementId, visitorId, query) {
     branch: branchPath,
     visitorId: visitorId,
     query: query,
-    pageSize: 5,
+    pageSize: 1,
   };
 
   try {
@@ -74,7 +74,7 @@ async function searchPagination(projectId, placementId, visitorId, query) {
         branch: branchPath,
         visitorId: visitorId,
         query: query,
-        pageSize: 5,
+        pageSize: 1,
         pageToken: nextPageToken,
       };
 

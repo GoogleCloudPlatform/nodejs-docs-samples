@@ -19,6 +19,7 @@ const {ProductServiceClient} = require('@google-cloud/retail');
 const {searchOffset} = require('../searchOffset');
 const {searchPagination} = require('../searchPagination');
 const {searchRequest} = require('../searchRequest');
+const {setTimeout} = require('timers/promises');
 
 describe('Snippets System Tests', function () {
   this.timeout(180000);
@@ -66,6 +67,8 @@ describe('Snippets System Tests', function () {
       product: product,
       productId: productId,
     });
+    console.log('Waiting 30 seconds for search indexes to be created...');
+    await setTimeout(30000);
   });
 
   after(async () => {
@@ -108,6 +111,7 @@ describe('Snippets System Tests', function () {
 
     const output = consoleOutput.join('\n');
     assert.include(output, `--- Results for offset: ${offset} ---`);
+    assert.include(output, `Product ID: ${productId}`);
   });
 
   it('should execute searchPagination and handle pages', async () => {
@@ -116,6 +120,7 @@ describe('Snippets System Tests', function () {
     const output = consoleOutput.join('\n');
 
     assert.include(output, '--- First Page ---');
+    assert.include(output, '--- Second Page ---');
   });
 
   it('should execute searchRequest successfully', async () => {
@@ -131,5 +136,6 @@ describe('Snippets System Tests', function () {
 
     const output = consoleOutput.join('\n');
     assert.include(output, '--- Search Results ---');
+    assert.include(output, `Product ID: ${productId}`);
   });
 });

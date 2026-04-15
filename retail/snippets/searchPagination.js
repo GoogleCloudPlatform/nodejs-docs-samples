@@ -90,7 +90,10 @@ async function searchPagination(projectId, placementId, visitorId, query) {
       console.log('No more pages.');
     }
   } catch (error) {
-    console.error('Failed to complete paginated search:', error);
+    console.error(
+      'Failed to complete paginated search:',
+      error.message || error
+    );
   }
 }
 // [END retail_v2_search_pagination]

@@ -63,7 +63,7 @@ async function searchOffset(projectId, placementId, visitorId, query, offset) {
       console.log(`Scores: ${JSON.stringify(result.modelScores || {})}`);
     }
   } catch (error) {
-    console.error(`Error searching using offset: ${error.message}`);
+    console.error('Error searching using offset:', error.message || error);
   }
 }
 

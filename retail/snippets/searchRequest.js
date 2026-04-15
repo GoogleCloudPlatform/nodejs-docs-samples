@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+'use strict';
+
 // [START retail_v2_search_request]
 const {SearchServiceClient} = require('@google-cloud/retail');
 
@@ -65,11 +67,11 @@ async function searchRequest(
     console.log('--- Search Results ---');
     for (const result of results) {
       console.log(`Product ID: ${result.id}`);
-      console.log(`  Name: ${result.product.name}`);
-      console.log(`  Scores: ${JSON.stringify(result.modelScores || {})}`);
+      console.log(`Title: ${result.product.title}`);
+      console.log(`Scores: ${JSON.stringify(result.modelScores || {})}`);
     }
   } catch (error) {
-    console.error(`Operation failed: ${error.message}`);
+    console.error('Error executing search request:', error.message || error);
   }
 }
 

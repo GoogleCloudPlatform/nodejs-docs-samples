@@ -22,7 +22,7 @@
  * @param {string} projectId - The Google Cloud project ID where the parameter is located.
  * @param {string} locationId - The ID of the region where parameter is located.
  * @param {string} parameterId - The ID of the parameter for which version details are to be rendered.
- * @param {string} parameterVersionId - The ID of the parameter version to be rendered.
+ * @param {string} parameterVersionId - The ID of the parameter version to be rendered or an alias (e.g. "latest").
  */
 async function main(projectId, locationId, parameterId, parameterVersionId) {
   // [START parametermanager_render_regional_param_version]

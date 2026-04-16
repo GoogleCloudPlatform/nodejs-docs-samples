@@ -63,7 +63,7 @@ exports.blurOffensiveImages = async event => {
 // Blurs the given file using ImageMagick, and uploads it to another bucket.
 const blurImage = async (file, blurredBucketName) => {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
-  const tempLocalBlurredPath = `/tmp/blurred-${path.parse(file.name).base}`; // 1. Declarar la variable
+  const tempLocalBlurredPath = `/tmp/blurred-${path.parse(file.name).base}`;
 
   // Download file from bucket.
   try {
@@ -98,6 +98,6 @@ const blurImage = async (file, blurredBucketName) => {
 
   // Delete the temporary file.
   await fs.unlink(tempLocalPath);
-  return fs.unlink(tempLocalBlurredPath);
+  return await fs.unlink(tempLocalBlurredPath);
 };
 // [END functions_imagemagick_blur]

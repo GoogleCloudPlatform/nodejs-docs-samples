@@ -32,8 +32,9 @@ async function main(projectId, locationId, parameterId, parameterVersionId) {
   // const projectId = 'YOUR_PROJECT_ID';
   // const locationId = 'us-central1';
   // const parameterId = 'YOUR_PARAMETER_ID';
-  // const parameterVersionId = 'YOUR_PARAMETER_VERSION_ID' or alias (e.g. "latest");
-
+  // const parameterVersionId = 'YOUR_PARAMETER_VERSION_ID';
+  // const parameterVersionId = 'latest';
+  
   // Imports the Parameter Manager library
   const {ParameterManagerClient} = require('@google-cloud/parametermanager');
 

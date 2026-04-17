@@ -74,9 +74,7 @@ const blurImage = async (file, blurredBucketName) => {
     throw new Error(`File download failed: ${err}`);
   }
   try {
-    await sharp(tempLocalPath)
-      .blur(16) // A sigma of 16 provides a strong blur equivalent to the old gm settings
-      .toFile(tempLocalBlurredPath);
+    await sharp(tempLocalPath).blur(16).toFile(tempLocalBlurredPath);
 
     console.log(`Blurred image: ${file.name}`);
   } catch (err) {

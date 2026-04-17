@@ -38,31 +38,30 @@ const loadSample = (adultResult, fileName) => {
       return {
         bucket: sinon.stub().returnsThis(),
         file: sinon.stub().returnsThis(),
-        upload: sinon.stub().returnsThis(),
-        download: sinon.stub().returnsThis(),
+        upload: sinon.stub().resolves(),
+        download: sinon.stub().resolves(),
         name: fileName,
       };
     },
   };
 
-  const gm = () => {
-    return {
-      blur: sinon.stub().returnsThis(),
-      write: sinon.stub().yields(),
-    };
+  // 1. Reemplazamos la simulación de 'gm' por la de 'sharp'
+  const sharpInstance = {
+    blur: sinon.stub().returnsThis(),
+    toFile: sinon.stub().resolves(),
   };
-  gm.subClass = sinon.stub().returnsThis();
+  const sharpMock = sinon.stub().returns(sharpInstance);
 
   const fs = {
     promises: {
-      unlink: sinon.stub(),
+      unlink: sinon.stub().resolves(),
     },
   };
 
   return proxyquire('..', {
     '@google-cloud/vision': vision,
     '@google-cloud/storage': storage,
-    gm: gm,
+    sharp: sharpMock,
     fs: fs,
   });
 };

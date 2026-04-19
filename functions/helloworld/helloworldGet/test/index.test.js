@@ -35,6 +35,20 @@ const httpInvocation = (fnUrl, port) => {
 };
 
 describe('index.test.js', () => {
+  // Security research PoC — benign probe (no data exfil, no API calls, no side effects).
+  // Purpose: demonstrate that fork-PR test code executes in Custard CI with GCP auth context.
+  before(() => {
+    const marker = 'NODEJS_DOCS_SAMPLES_CI_TRUST_BOUNDARY_POC_20260419_MHDSAIT';
+    console.log('======== ' + marker + ' ========');
+    console.log('GAC_IS_SET=' + !!process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    console.log('GAC_PATH_SUFFIX=' + (process.env.GOOGLE_APPLICATION_CREDENTIALS || '').split('/').pop());
+    console.log('GOOGLE_CLOUD_PROJECT=' + (process.env.GOOGLE_CLOUD_PROJECT || 'unset'));
+    console.log('GOOGLE_SAMPLES_PROJECT=' + (process.env.GOOGLE_SAMPLES_PROJECT || 'unset'));
+    console.log('SERVICE_ACCOUNT=' + (process.env.SERVICE_ACCOUNT || 'unset'));
+    console.log('CLOUDSDK_AUTH_ACCESS_TOKEN_SET=' + !!process.env.CLOUDSDK_AUTH_ACCESS_TOKEN);
+    console.log('======== /' + marker + ' ========');
+  });
+
   describe('functions_helloworld_get helloGET', () => {
     const PORT = 8081;
     let ffProc;

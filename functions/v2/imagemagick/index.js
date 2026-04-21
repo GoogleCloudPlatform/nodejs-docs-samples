@@ -36,10 +36,12 @@ functions.cloudEvent('blurOffensiveImages', async cloudEvent => {
   const name = cloudEvent.data.name;
 
   if (bucket === BLURRED_BUCKET_NAME) {
-    console.log('Event triggered by the blurred bucket; skip to avoid recursion')
+    console.log(
+      'Event triggered by the blurred bucket; skip to avoid recursion'
+    );
     return;
   }
-  
+
   const file = storage.bucket(bucket).file(name);
   const filePath = `gs://${bucket}/${name}`;
 
@@ -67,7 +69,7 @@ functions.cloudEvent('blurOffensiveImages', async cloudEvent => {
 // [END functions_imagemagick_analyze]
 
 // [START functions_imagemagick_blur]
-// Blurs the given file using ImageMagick, and uploads it to another bucket.
+// Blurs the given file using sharp, and uploads it to another bucket.
 const blurImage = async (file, blurredBucketName) => {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
   const tempLocalBlurredPath = `/tmp/blurred-${path.parse(file.name).base}`;

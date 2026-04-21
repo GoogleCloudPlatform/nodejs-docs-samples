@@ -34,6 +34,12 @@ functions.cloudEvent('blurOffensiveImages', async cloudEvent => {
   // This event represents the triggering Cloud Storage object.
   const bucket = cloudEvent.data.bucket;
   const name = cloudEvent.data.name;
+
+  if (bucket === BLURRED_BUCKET_NAME) {
+    console.log('Event triggered by the blurred bucket; skip to avoid recursion')
+    return;
+  }
+  
   const file = storage.bucket(bucket).file(name);
   const filePath = `gs://${bucket}/${name}`;
 

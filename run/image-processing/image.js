@@ -15,7 +15,7 @@
 'use strict';
 
 // [START cloudrun_imageproc_handler_setup]
-const fs = require('fs');
+const fs = require('fs').promises;
 const sharp = require('sharp');
 const path = require('path');
 const vision = require('@google-cloud/vision');

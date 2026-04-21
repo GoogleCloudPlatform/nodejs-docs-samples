@@ -2,7 +2,7 @@
 
 # Google Cloud Functions ImageMagick sample
 
-This sample shows you how to blur an image using ImageMagick in a
+This sample shows you how to blur an image using sharp in a
 Storage-triggered Cloud Function.
 
 View the [source code][code].

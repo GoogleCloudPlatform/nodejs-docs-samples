@@ -32,6 +32,12 @@ const {BLURRED_BUCKET_NAME} = process.env;
 exports.blurOffensiveImages = async event => {
   // This event represents the triggering Cloud Storage object.
   const object = event;
+  if (object.bucket === BLURRED_BUCKET_NAME) {
+    console.log(
+      'Event triggered by the blurred bucket; skip to avoid recursion'
+    );
+    return;
+  }
 
   const file = storage.bucket(object.bucket).file(object.name);
   const filePath = `gs://${object.bucket}/${object.name}`;
@@ -60,7 +66,7 @@ exports.blurOffensiveImages = async event => {
 // [END functions_imagemagick_analyze]
 
 // [START functions_imagemagick_blur]
-// Blurs the given file using ImageMagick, and uploads it to another bucket.
+// Blurs the given file using sharp, and uploads it to another bucket.
 const blurImage = async (file, blurredBucketName) => {
   const tempLocalPath = `/tmp/${path.parse(file.name).base}`;
   const tempLocalBlurredPath = `/tmp/blurred-${path.parse(file.name).base}`;
@@ -92,10 +98,12 @@ const blurImage = async (file, blurredBucketName) => {
     console.log(`Uploaded blurred image to: ${gcsPath}`);
   } catch (err) {
     throw new Error(`Unable to upload blurred image to ${gcsPath}: ${err}`);
+  } finally {
+    // Delete the temporary file.
+    await Promise.allSettled([
+      fs.unlink(tempLocalPath),
+      fs.unlink(tempLocalBlurredPath),
+    ]);
   }
-
-  // Delete the temporary file.
-  await fs.unlink(tempLocalPath);
-  return await fs.unlink(tempLocalBlurredPath);
 };
 // [END functions_imagemagick_blur]

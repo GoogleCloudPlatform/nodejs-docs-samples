@@ -22,7 +22,7 @@
     "@google-cloud/storage": "^7.0.0",
     "@google-cloud/vision": "^4.0.0",
     "express": "^4.16.4",
-    "gm": "^1.23.1"
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "c8": "^10.0.0",

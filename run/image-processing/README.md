@@ -1,6 +1,6 @@
 # Cloud Run Image Processing Sample
 
-This sample service applies [Cloud Storage](https://cloud.google.com/storage/docs)-triggered image processing with [Cloud Vision API](https://cloud.google.com/vision/docs) analysis and ImageMagick transformation.
+This sample service applies [Cloud Storage](https://cloud.google.com/storage/docs)-triggered image processing with [Cloud Vision API](https://cloud.google.com/vision/docs) analysis and sharp transformation.
 
 Use it with the [Image Processing with Cloud Run tutorial](http://cloud.google.com/run/docs/tutorials/image-processing).
 
@@ -9,7 +9,7 @@ For more details on how to work with this sample read the [Google Cloud Run Node
 ## Dependencies
 
 * **express**: Web server framework
-* **[gm](https://github.com/aheckmann/gm#readme)**: ImageMagick integration library.
+* **[sharp](https://sharp.pixelplumbing.com/)**: High-performance Node.js image processing library.
 * **@google-cloud/storage**: Google Cloud Storage client library.
 * **@google-cloud/vision**: Cloud Vision API client library.
 

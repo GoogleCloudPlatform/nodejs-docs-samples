@@ -92,8 +92,11 @@ describe('Cloud Workflows JavaScript Execution Samples', () => {
       `node --require ts-node/register ./executeWithoutArguments.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
-    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
-  }).timeout(5000);
+    assert.ok(
+      result.length > 0,
+      'executeWithoutArguments must return non-empty result'
+    );
+  }).timeout(60000);
 
   it('should execute the workflow using the executeWithArguments sample', async () => {
     // Execute workflow, with long test timeout
@@ -105,5 +108,5 @@ describe('Cloud Workflows JavaScript Execution Samples', () => {
       result.length > 0,
       'executeWithArguments must return non-empty result'
     );
-  }).timeout(5000);
+  }).timeout(60000);
 });

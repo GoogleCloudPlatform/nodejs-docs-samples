@@ -92,7 +92,7 @@ describe('Cloud Workflows TypeScript Execution Samples', () => {
       result.length > 0,
       'executeWithoutArguments must return non-empty result'
     );
-  }).timeout(5000);
+  }).timeout(60000);
 
   it('should execute the workflow using the executeWithArguments sample', async () => {
     // Execute workflow, with long test timeout
@@ -104,5 +104,5 @@ describe('Cloud Workflows TypeScript Execution Samples', () => {
       result.length > 0,
       'executeWithArguments must return non-empty result'
     );
-  }).timeout(5000);
+  }).timeout(60000);
 });

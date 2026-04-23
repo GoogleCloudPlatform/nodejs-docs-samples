@@ -4,7 +4,7 @@
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "moduleResolution": "node",
-    "module": "commonjs"
+    "moduleResolution": "node16",
+    "module": "node16"
   }
 }

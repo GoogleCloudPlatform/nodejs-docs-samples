@@ -50,8 +50,11 @@ describe('Cloud Workflows JavaScript Quickstart Tests', () => {
         });
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
-        // If there is an error getting the workflow, it probably doesn't exist.
-        return false;
+        if (e.code === 5) {
+          // NOT_FOUND
+          return false;
+        }
+        throw e;
       }
     }
 
@@ -88,9 +91,9 @@ describe('Cloud Workflows JavaScript Quickstart Tests', () => {
   it('should execute the quickstart', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --require ts-node/register ./index.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+      `node ./index.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
     assert.ok(result.length > 0, 'Quickstart must return non-empty result');
-  }).timeout(5000);
+  }).timeout(60000);
 });

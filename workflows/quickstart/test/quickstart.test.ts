@@ -46,9 +46,12 @@ describe('Cloud Workflows TypeScript Quickstart Tests', () => {
           name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
         });
         return workflowGet.state === 'ACTIVE';
-      } catch {
-        // If there is an error getting the workflow, it probably doesn't exist.
-        return false;
+      } catch (e) {
+        if ((e as {code?: number})?.code === 5) {
+          // If there is an error getting the workflow, it probably doesn't exist.
+          return false;
+        }
+        throw e;
       }
     }
 
@@ -89,7 +92,7 @@ describe('Cloud Workflows TypeScript Quickstart Tests', () => {
     );
 
     assert.ok(result.length > 0, 'Quickstart must return non-empty result');
-  }).timeout(5000);
+  }).timeout(60000);
 
   it('should execute the quickstart with optional search term', async () => {
     // Execute workflow, with long test timeout
@@ -98,5 +101,5 @@ describe('Cloud Workflows TypeScript Quickstart Tests', () => {
     );
 
     assert.ok(result.length > 0, 'Quickstart must return non-empty result');
-  }).timeout(5000);
+  }).timeout(60000);
 });

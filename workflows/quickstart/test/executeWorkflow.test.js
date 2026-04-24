@@ -51,8 +51,11 @@ describe('Cloud Workflows JavaScript Execution Samples', () => {
         });
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
-        // If there is an error getting the workflow, it probably doesn't exist.
-        return false;
+        if (e.code === 5) {
+          // NOT_FOUND
+          return false;
+        }
+        throw e;
       }
     }
 
@@ -89,7 +92,7 @@ describe('Cloud Workflows JavaScript Execution Samples', () => {
   it('should execute the workflow using the executeWithoutArguments sample', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --require ts-node/register ./executeWithoutArguments.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+      `node ./executeWithoutArguments.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
     assert.ok(
@@ -101,7 +104,7 @@ describe('Cloud Workflows JavaScript Execution Samples', () => {
   it('should execute the workflow using the executeWithArguments sample', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --require ts-node/register ./executeWithArguments.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
+      `node ./executeWithArguments.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
     );
 
     assert.ok(

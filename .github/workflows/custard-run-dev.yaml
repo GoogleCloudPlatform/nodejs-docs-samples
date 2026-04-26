@@ -56,7 +56,11 @@ jobs:
       create-check-if: ${{ !!github.event.workflow_run }}
 
   test:
-    if: needs.affected.outputs.paths != '[]'
+    # Guard: workflow_run fires for fork PRs but executes with repository secrets
+    # (id-token: write / GCP WIF). Restrict credential use to same-repo runs.
+    if: |
+      needs.affected.outputs.paths != '[]' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.head_repository.full_name == github.repository)
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

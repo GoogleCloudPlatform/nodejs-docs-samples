@@ -96,11 +96,7 @@ describe('Search with filtering', () => {
       const searchResult = response[IResponseParams.ISearchResult];
       if (searchResult.length) {
         searchResult.forEach(item => {
-          if (
-            item.product &&
-            item.product.colorInfo &&
-            item.product.colorInfo.colorFamilies
-          ) {
+          if (item.product?.colorInfo?.colorFamilies) {
             expect(
               item.product.colorInfo.colorFamilies,
               '"colorFamilies" field does not contain filter condition value'

@@ -98,11 +98,7 @@ describe('Search with ordering', () => {
         const prices = [];
 
         searchResult.forEach(item => {
-          if (
-            item.product &&
-            item.product.priceInfo &&
-            item.product.priceInfo.price !== undefined
-          ) {
+          if (item.product?.priceInfo?.price !== undefined) {
             prices.push(item.product.priceInfo.price);
           }
         });

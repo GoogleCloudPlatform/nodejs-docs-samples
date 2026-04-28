@@ -102,7 +102,15 @@ jobs:
           status: failure
 
   test:
-    if: needs.affected.outputs.paths != '[]'
+    # Guard: when triggered by workflow_run (fork PR), only run for PRs from
+    # the same repository. Without this, any GitHub user who opens a fork PR
+    # can execute arbitrary code on the CI runner with live GCP credentials
+    # (kokoro-system-test@long-door-651) because workflow_run inherits the
+    # base repo's secrets regardless of the fork source.
+    if: |
+      needs.affected.outputs.paths != '[]' &&
+      (github.event_name != 'workflow_run' ||
+       github.event.workflow_run.head_repository.full_name == github.repository)
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

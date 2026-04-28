@@ -56,7 +56,13 @@ jobs:
       create-check-if: ${{ !!github.event.workflow_run }}
 
   test:
-    if: needs.affected.outputs.paths != '[]'
+    # Guard: when triggered by workflow_run (fork PR), only run for PRs from
+    # the same repository. Without this, fork PRs can execute arbitrary code
+    # on the CI runner with live GCP credentials.
+    if: |
+      needs.affected.outputs.paths != '[]' &&
+      (github.event_name != 'workflow_run' ||
+       github.event.workflow_run.head_repository.full_name == github.repository)
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

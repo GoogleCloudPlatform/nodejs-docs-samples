@@ -181,7 +181,10 @@ it('should delete a FHIR resource', () => {
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(new RegExp('Deleted FHIR resource').test(output), true);
+  assert.strictEqual(
+    new RegExp(`Deleted FHIR resource: ${resourceId}`).test(output),
+    true
+  );
 
   // Clean up
   execSync(

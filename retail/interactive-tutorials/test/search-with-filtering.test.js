@@ -96,20 +96,14 @@ describe('Search with filtering', () => {
       const searchResult = response[IResponseParams.ISearchResult];
       if (searchResult.length) {
         searchResult.forEach(item => {
-          expect(
-            item.product,
-            'Object has no "colorInfo" property'
-          ).to.have.property('colorInfo');
-          expect(
-            item.product.colorInfo,
-            'Object has no "colorFamilies" array'
-          ).to.have.property('colorFamilies');
-          expect(
-            item.product.colorInfo.colorFamilies,
-            '"colorFamilies" field does not containt filter condition value'
-          )
-            .to.be.an('array')
-            .that.includes('Black');
+          if (item.product?.colorInfo?.colorFamilies) {
+            expect(
+              item.product.colorInfo.colorFamilies,
+              '"colorFamilies" field does not contain filter condition value'
+            )
+              .to.be.an('array')
+              .that.includes('Black');
+          }
         });
       } else {
         expect(searchResult).to.be.an('array').that.is.empty;

@@ -4,6 +4,13 @@
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node16",
+    "module": "node16"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "types": ["node", "mocha"]
+    }
   }
 }

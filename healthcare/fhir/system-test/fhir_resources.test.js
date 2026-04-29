@@ -163,7 +163,9 @@ it('should purge all historical versions of a FHIR resource', () => {
     {cwd}
   );
   assert.strictEqual(
-    new RegExp('Deleted all historical versions of resource').test(output),
+    new RegExp(
+      `Purged all historical versions of resource: ${resourceId}`
+    ).test(output),
     true
   );
 });

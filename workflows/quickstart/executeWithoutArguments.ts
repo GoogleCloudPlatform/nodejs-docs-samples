@@ -79,6 +79,7 @@ async function executeWorkflow(
     }
   } catch (e) {
     console.error(`Error executing workflow: ${e}`);
+    throw e;
   }
 }
 

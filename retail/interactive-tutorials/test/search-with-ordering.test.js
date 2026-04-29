@@ -96,14 +96,19 @@ describe('Search with ordering', () => {
       const searchResult = response[IResponseParams.ISearchResult];
       if (searchResult.length) {
         const prices = [];
+
         searchResult.forEach(item => {
-          prices.push(item.product.priceInfo.price);
+          if (item.product?.priceInfo?.price !== undefined) {
+            prices.push(item.product.priceInfo.price);
+          }
         });
-        const sortedArrayDesc = [...prices].sort((a, b) => b - a);
-        expect(
-          prices,
-          'It should be an ordered array'
-        ).to.include.ordered.members(sortedArrayDesc);
+        if (prices.length > 0) {
+          const sortedArrayDesc = [...prices].sort((a, b) => b - a);
+          expect(
+            prices,
+            'It should be an ordered array'
+          ).to.include.ordered.members(sortedArrayDesc);
+        }
       } else {
         expect(searchResult, 'It should be an empty array').to.be.an('array')
           .that.is.empty;

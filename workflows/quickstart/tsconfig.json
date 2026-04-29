@@ -6,5 +6,11 @@
     "esModuleInterop": true,
     "moduleResolution": "node16",
     "module": "node16"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "types": ["node", "mocha"]
+    }
   }
 }

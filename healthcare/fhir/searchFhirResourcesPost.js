@@ -54,8 +54,8 @@ const main = (
         params,
         responseType: 'json',
       });
-      const resources = response.data.entry;
-      console.log(`Resources found: ${resources.length}`);
+      const resources = response.data.entry || [];
+      console.log('Resources found: ' + resources.length);
       console.log(JSON.stringify(resources, null, 2));
     } catch (error) {
       console.error(

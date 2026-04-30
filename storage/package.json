@@ -19,7 +19,7 @@
     "@google-cloud/pubsub": "^4.0.0",
     "@google-cloud/storage": "^7.19.0",
     "node-fetch": "^2.6.7",
-    "uuid": "^8.0.0",
+    "uuid": "^14.0.0",
     "yargs": "^16.0.0"
   },
   "devDependencies": {

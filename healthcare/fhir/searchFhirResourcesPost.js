@@ -28,8 +28,6 @@ const main = (
   const searchFhirResourcesPost = async () => {
     const auth = new GoogleAuth({
       scopes: 'https://www.googleapis.com/auth/cloud-platform',
-      // Set application/fhir+json header because this is a POST request.
-      headers: {'Content-Type': 'application/fhir+json'},
     });
     // TODO(developer): uncomment these lines before running the sample
     // const cloudRegion = 'us-central1';
@@ -50,6 +48,9 @@ const main = (
       const response = await client.request({
         url,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/fhir+json',
+        },
         params,
         responseType: 'json',
       });

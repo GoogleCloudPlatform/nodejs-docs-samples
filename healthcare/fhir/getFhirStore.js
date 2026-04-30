@@ -27,6 +27,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const getFhirStore = async () => {
@@ -38,9 +39,13 @@ const main = (
     const name = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/fhirStores/${fhirStoreId}`;
     const request = {name};
 
-    const fhirStore =
-      await healthcare.projects.locations.datasets.fhirStores.get(request);
-    console.log(fhirStore.data);
+    try {
+      const fhirStore =
+        await healthcare.projects.locations.datasets.fhirStores.get(request);
+      console.log(fhirStore.data);
+    } catch (error) {
+      console.error('Error getting FHIR store:', error.message || error);
+    }
   };
 
   getFhirStore();

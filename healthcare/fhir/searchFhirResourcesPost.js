@@ -44,11 +44,24 @@ const main = (
     // Patient with the last name "Smith", set resourceType to "Patient" and
     // specify the following params:
     // params = {'family:exact' : 'Smith'};
-    const client = await auth.getClient();
-    const response = await client.request({url, method: 'POST', params});
-    const resources = response.data.entry;
-    console.log(`Resources found: ${resources.length}`);
-    console.log(JSON.stringify(resources, null, 2));
+
+    try {
+      const client = await auth.getClient();
+      const response = await client.request({
+        url,
+        method: 'POST',
+        params,
+        responseType: 'json',
+      });
+      const resources = response.data.entry;
+      console.log(`Resources found: ${resources.length}`);
+      console.log(JSON.stringify(resources, null, 2));
+    } catch (error) {
+      console.error(
+        `Error searching ${resourceType} resources:`,
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   searchFhirResourcesPost();

@@ -163,7 +163,9 @@ it('should purge all historical versions of a FHIR resource', () => {
     {cwd}
   );
   assert.strictEqual(
-    new RegExp('Deleted all historical versions of resource').test(output),
+    new RegExp(
+      `Purged all historical versions of resource: ${resourceId}`
+    ).test(output),
     true
   );
 });
@@ -181,7 +183,10 @@ it('should delete a FHIR resource', () => {
     `node deleteFhirResource.js ${projectId} ${cloudRegion} ${datasetId} ${fhirStoreId} ${resourceType} ${resourceId}`,
     {cwd}
   );
-  assert.strictEqual(new RegExp('Deleted FHIR resource').test(output), true);
+  assert.strictEqual(
+    new RegExp(`Deleted FHIR resource: ${resourceId}`).test(output),
+    true
+  );
 
   // Clean up
   execSync(

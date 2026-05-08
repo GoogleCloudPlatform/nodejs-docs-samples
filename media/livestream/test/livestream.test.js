@@ -53,32 +53,36 @@ before(async () => {
     parent: livestreamServiceClient.locationPath(projectId, location),
   });
   for (const channel of channels) {
-    const request = {
-      name: channel.name,
-    };
-
-    try {
-      const [operation] = await livestreamServiceClient.stopChannel(request);
-      await operation.promise();
-    } catch (err) {
-      //Ignore error when channel is not started.
-      console.log(
-        'Existing channel already stopped. Ignore the following error.'
-      );
-      console.log(err);
-    }
-
-    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
-      const [events] = await livestreamServiceClient.listEvents({
-        parent: channel.name,
-      });
-
-      for (const event of events) {
-        await livestreamServiceClient.deleteEvent({
-          name: event.name,
-        });
+    const isTestChannel = channel.name.includes(
+      'nodejs-test-livestream-channel'
+    );
+    if (isTestChannel) {
+      const request = {
+        name: channel.name,
+      };
+      try {
+        const [operation] = await livestreamServiceClient.stopChannel(request);
+        await operation.promise();
+      } catch (err) {
+        //Ignore error when channel is not started.
+        console.log(
+          'Existing channel already stopped. Ignore the following error.'
+        );
+        console.log(err);
       }
-      await livestreamServiceClient.deleteChannel(request);
+
+      if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
+        const [events] = await livestreamServiceClient.listEvents({
+          parent: channel.name,
+        });
+
+        for (const event of events) {
+          await livestreamServiceClient.deleteEvent({
+            name: event.name,
+          });
+        }
+        await livestreamServiceClient.deleteChannel(request);
+      }
     }
   }
 

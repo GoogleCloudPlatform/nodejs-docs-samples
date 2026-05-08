@@ -53,21 +53,22 @@ before(async () => {
     parent: livestreamServiceClient.locationPath(projectId, location),
   });
   for (const channel of channels) {
-    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
-      const request = {
-        name: channel.name,
-      };
-      try {
-        const [operation] = await livestreamServiceClient.stopChannel(request);
-        await operation.promise();
-      } catch (err) {
-        //Ignore error when channel is not started.
-        console.log(
-          'Existing channel already stopped. Ignore the following error.'
-        );
-        console.log(err);
-      }
+    const request = {
+      name: channel.name,
+    };
 
+    try {
+      const [operation] = await livestreamServiceClient.stopChannel(request);
+      await operation.promise();
+    } catch (err) {
+      //Ignore error when channel is not started.
+      console.log(
+        'Existing channel already stopped. Ignore the following error.'
+      );
+      console.log(err);
+    }
+
+    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
       const [events] = await livestreamServiceClient.listEvents({
         parent: channel.name,
       });

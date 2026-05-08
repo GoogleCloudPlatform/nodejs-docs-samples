@@ -15,33 +15,60 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
-
-const projectId = process.env.CAIP_PROJECT_ID;
-
-const sample = require('../imggen-raw-reference-with-txt-img');
-const {delay} = require('../../test/util');
-const {createOutputGcsUri} = require('./imggen-util');
-const location = 'us-central1';
+const {describe, it, beforeEach} = require('mocha');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
 describe('imggen-raw-reference-with-txt-img', () => {
-  it('should return an array of generated image URIs', async function () {
-    this.timeout(600000);
-    this.retries(3);
+  const projectId = process.env.CAIP_PROJECT_ID || 'mock-project-id';
+  const location = 'us-central1';
+  const MOCK_IMAGE_URI = 'gs://mock-bucket/mock-image.png';
 
-    const output = await createOutputGcsUri();
-    console.log('Output GCS URI:', output.uri);
+  let sample;
+  let editImageStub;
+
+  beforeEach(() => {
+    editImageStub = sinon.stub().resolves({
+      generatedImages: [
+        {
+          image: {
+            gcsUri: MOCK_IMAGE_URI,
+          },
+        },
+      ],
+    });
+
+    sample = proxyquire('../imggen-raw-reference-with-txt-img', {
+      '@google/genai': {
+        GoogleGenAI: class MockGoogleGenAI {
+          constructor() {
+            this.models = {
+              editImage: editImageStub,
+            };
+          }
+        },
+        RawReferenceImage: class MockRawReferenceImage {},
+      },
+    });
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should return a generated image URI', async () => {
+    const mockOutputUri = 'gs://test-bucket/test';
 
     try {
-      await delay(this.test);
-      const generatedFileNames = await sample.generateImage(
-        output.uri,
+      const generatedUri = await sample.generateImage(
+        mockOutputUri,
         projectId,
         location
       );
-      console.log('Generated files:', generatedFileNames);
-
-      assert(generatedFileNames.length > 0);
+      const apiCallArgs = editImageStub.firstCall.args[0];
+      assert.strictEqual(apiCallArgs.model, 'imagen-3.0-capability-001');
+      assert.isString(generatedUri);
+      assert.strictEqual(generatedUri, MOCK_IMAGE_URI);
     } catch (err) {
       console.error('Image generation failed:', err);
       throw err;

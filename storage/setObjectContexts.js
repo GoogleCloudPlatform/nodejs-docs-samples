@@ -57,26 +57,6 @@ function main(bucketName = 'my-bucket', fileName = 'test.txt') {
 
     console.log(`Updated Object Contexts for ${fileName}:`);
     console.log(JSON.stringify(metadata.contexts, null, 2));
-
-    // Delete a specific key from the context:
-    // We send 'null' for the specific key we want to remove.
-    await file.setMetadata({
-      contexts: {
-        custom: {
-          'team-owner': null,
-        },
-      },
-    });
-    console.log(`Deleted 'team-owner' key from contexts for ${fileName}.`);
-
-    // Delete all keys from the context:
-    // We set the 'custom' property to null to wipe the entire map.
-    await file.setMetadata({
-      contexts: {
-        custom: null,
-      },
-    });
-    console.log(`Cleared all custom contexts for ${fileName}.`);
   }
 
   setObjectContexts().catch(console.error);

@@ -20,7 +20,7 @@ const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
 const {SLACK_SECRET} = process.env;
-const SLACK_TIMESTAMP = Date.now();
+const SLACK_TIMESTAMP = Math.floor(Date.now() / 1000).toString();
 
 require('../index');
 
@@ -101,6 +101,6 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const query = 'kolach';
 
     const server = functionsFramework.getTestServer('kgSearch');
-    await supertest(server).post('/').send({text: query}).expect(500);
+    await supertest(server).post('/').send({text: query}).expect(400);
   });
 });

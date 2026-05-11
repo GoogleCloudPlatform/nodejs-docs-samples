@@ -17,17 +17,40 @@
 const sinon = require('sinon');
 const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
+const crypto = require('crypto');
 
 const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const method = 'POST';
 const query = 'giraffe';
-const SLACK_TOKEN = 'slack-token';
+const SLACK_SECRET = process.env.SLACK_SECRET || 'slack-token';
 const KG_API_KEY = 'kg-api-key';
+
+const signMockRequest = (req, bodyText, isValid = true) => {
+  req.body = {text: bodyText};
+  req.rawBody = JSON.stringify(req.body);
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+
+  let signature;
+  if (!isValid) {
+    signature = 'v0=invalid_signature_hash_for_testing';
+  } else {
+    const baseString = `v0:${timestamp}:${req.rawBody}`;
+    signature =
+      'v0=' +
+      crypto
+        .createHmac('sha256', SLACK_SECRET)
+        .update(baseString, 'utf8')
+        .digest('hex');
+  }
+
+  req.headers['x-slack-request-timestamp'] = timestamp;
+  req.headers['x-slack-signature'] = signature;
+};
 
 const getSample = () => {
   const config = {
-    SLACK_TOKEN: SLACK_TOKEN,
+    SLACK_SECRET: SLACK_SECRET,
     KG_API_KEY: KG_API_KEY,
   };
   const kgsearch = {
@@ -38,21 +61,16 @@ const getSample = () => {
   const googleapis = {
     kgsearch: sinon.stub().returns(kgsearch),
   };
-  const eventsApi = {
-    verifyRequestSignature: sinon.stub().returns(true),
-  };
 
   return {
     program: proxyquire('../', {
       '@googleapis/kgsearch': googleapis,
       process: {env: config},
-      '@slack/events-api': eventsApi,
     }),
     mocks: {
       googleapis: googleapis,
       kgsearch: kgsearch,
       config: config,
-      eventsApi: eventsApi,
     },
   };
 };
@@ -129,14 +147,13 @@ describe('functions_slack_search', () => {
 
 describe('functions_slack_search functions_verify_webhook', () => {
   it('Throws if invalid slack token', async () => {
-    const error = new Error('Invalid credentials');
+    const error = new Error('Invalid Slack signature.');
     error.code = 401;
     const mocks = getMocks();
-    const sample = getSample();
+    getSample();
 
     mocks.req.method = method;
-    mocks.req.body.text = 'not empty';
-    sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
+    signMockRequest(mocks.req, 'not empty', false);
 
     const kgSearch = getFunction('kgSearch');
 
@@ -161,8 +178,7 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
+    signMockRequest(mocks.req, query, true);
     sample.mocks.kgsearch.entities.search.yields(error);
 
     const kgSearch = getFunction('kgSearch');
@@ -187,8 +203,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
+    signMockRequest(mocks.req, query, true);
     sample.mocks.kgsearch.entities.search.yields(null, {
       data: {itemListElement: []},
     });
@@ -215,8 +230,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
+    signMockRequest(mocks.req, query, true);
     sample.mocks.kgsearch.entities.search.yields(null, {
       data: {
         itemListElement: [
@@ -263,8 +277,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
     const sample = getSample();
 
     mocks.req.method = method;
-    mocks.req.body.token = SLACK_TOKEN;
-    mocks.req.body.text = query;
+    signMockRequest(mocks.req, query, true);
     sample.mocks.kgsearch.entities.search.yields(null, {
       data: {
         itemListElement: [

@@ -70,9 +70,17 @@ it('should set bucket encryption enforcement configuration', async () => {
   assert.match(output, new RegExp('Effective:'));
 
   const [metadata] = await bucket.getMetadata();
+  const encryption = metadata.encryption || {};
   assert.strictEqual(
-    metadata.encryption.googleManagedEncryptionEnforcementConfig
-      .restrictionMode,
+    encryption.googleManagedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerManagedEncryptionEnforcementConfig?.restrictionMode,
+    'NotRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerSuppliedEncryptionEnforcementConfig?.restrictionMode,
     'FullyRestricted'
   );
 });
@@ -91,6 +99,23 @@ it('should get bucket encryption enforcement configuration', async () => {
   assert.include(output, 'Google Managed (GMEK) Enforcement:');
   assert.include(output, 'Mode: FullyRestricted');
   assert.match(output, /Effective:/);
+
+  const [metadata] = await bucket.getMetadata();
+  const encryption = metadata.encryption || {};
+
+  assert.strictEqual(encryption.defaultKmsKeyName, defaultKmsKeyName);
+  assert.strictEqual(
+    encryption.googleManagedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerManagedEncryptionEnforcementConfig?.restrictionMode,
+    'NotRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerSuppliedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
 });
 
 it('should update and then remove bucket encryption enforcement configuration', async () => {

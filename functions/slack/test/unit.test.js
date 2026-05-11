@@ -23,8 +23,11 @@ const {getFunction} = require('@google-cloud/functions-framework/testing');
 
 const method = 'POST';
 const query = 'giraffe';
-const SLACK_SECRET = process.env.SLACK_SECRET || 'slack-token';
-const KG_API_KEY = 'kg-api-key';
+process.env.SLACK_SECRET = process.env.SLACK_SECRET || 'slack-token';
+process.env.KG_API_KEY = process.env.KG_API_KEY || 'test-kg-api-key';
+
+const SLACK_SECRET = process.env.SLACK_SECRET;
+const KG_API_KEY = process.env.KG_API_KEY;
 
 const signMockRequest = (req, bodyText, isValid = true) => {
   req.body = {text: bodyText};

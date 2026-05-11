@@ -104,6 +104,14 @@ const verifyWebhook = req => {
     throw err;
   }
 
+  if (!signingSecret) {
+    const err = new Error(
+      'Server configuration error: SLACK_SECRET is missing.'
+    );
+    err.code = 500;
+    throw err;
+  }
+
   const baseString = `v0:${requestTimestamp}:${requestBody}`;
   const expectedSignature =
     'v0=' +

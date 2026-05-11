@@ -18,8 +18,8 @@ const assert = require('assert');
 const crypto = require('crypto');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
-
-const {SLACK_SECRET} = process.env;
+process.env.SLACK_SECRET = process.env.SLACK_SECRET || 'test-slack-secret';
+const SLACK_SECRET = process.env.SLACK_SECRET;
 const SLACK_TIMESTAMP = Math.floor(Date.now() / 1000).toString();
 
 require('../index');

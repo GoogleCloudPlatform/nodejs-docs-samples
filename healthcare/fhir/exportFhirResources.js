@@ -28,6 +28,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
   const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -51,23 +52,33 @@ const main = (
       },
     };
 
-    const operation =
-      await healthcare.projects.locations.datasets.fhirStores.export(request);
-    const operationName = operation.data.name;
+    try {
+      const operation =
+        await healthcare.projects.locations.datasets.fhirStores.export(request);
+      const operationName = operation.data.name;
 
-    // Wait ten seconds for the LRO to finish
-    await sleep(10000);
+      let done = false;
+      let operationStatus;
 
-    // Check the LRO's status
-    const operationStatus =
-      await healthcare.projects.locations.datasets.operations.get({
-        name: operationName,
-      });
+      while (!done) {
+        console.log('Waiting for operation to complete...');
+        await sleep(5000);
 
-    if (typeof operationStatus.data.metadata.counter !== 'undefined') {
-      console.log('Exported FHIR resources successfully');
-    } else {
-      console.log('Export failed');
+        operationStatus =
+          await healthcare.projects.locations.datasets.operations.get({
+            name: operationName,
+          });
+
+        done = operationStatus.data.done;
+      }
+
+      if (operationStatus.data.error) {
+        console.log('Export failed with error:', operationStatus.data.error);
+      } else {
+        console.log('Exported FHIR resources successfully');
+      }
+    } catch (error) {
+      console.error('Error exporting FHIR resources:', error.message || error);
     }
   };
 

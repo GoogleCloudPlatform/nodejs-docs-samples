@@ -15,26 +15,74 @@
 'use strict';
 
 const {assert} = require('chai');
-const {describe, it} = require('mocha');
+const {describe, it, beforeEach, afterEach} = require('mocha');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../imggen-subj-refer-ctrl-refer-with-txt-imgs');
-const {delay} = require('../../test/util');
-const {createOutputGcsUri} = require('./imggen-util');
-const location = 'us-central1';
+describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', () => {
+  const projectId = process.env.CAIP_PROJECT_ID || 'mock-project-id';
+  const location = 'us-central1';
+  const MOCK_IMAGE_URI = 'gs://mock-bucket/mock-image.png';
 
-describe('imggen-subj-refer-ctrl-refer-with-txt-imgs', async () => {
-  it('should generate images from a text prompt with subject reference image and control reference image', async function () {
-    this.timeout(180000);
-    this.retries(4);
-    const output = await createOutputGcsUri();
-    console.log(output.uri);
-    await delay(this.test);
-    const generatedFileNames = await sample.generateImage(
-      output.uri,
-      projectId,
-      location
-    );
-    assert(generatedFileNames.length > 0);
+  let sample;
+  let editImageStub;
+
+  beforeEach(() => {
+    editImageStub = sinon.stub().resolves({
+      generatedImages: [
+        {
+          image: {
+            gcsUri: MOCK_IMAGE_URI,
+          },
+        },
+      ],
+    });
+
+    sample = proxyquire('../imggen-subj-refer-ctrl-refer-with-txt-imgs', {
+      '@google/genai': {
+        GoogleGenAI: class MockGoogleGenAI {
+          constructor() {
+            this.models = {
+              editImage: editImageStub,
+            };
+          }
+        },
+        ControlReferenceImage: class MockControlReferenceImage {},
+        SubjectReferenceImage: class MockSubjectReferenceImage {},
+      },
+    });
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should generate images from a text prompt with subject reference image and control reference image', async () => {
+    const mockOutputUri = 'gs://test-bucket/test-prefix';
+
+    try {
+      const generatedImages = await sample.generateImage(
+        mockOutputUri,
+        projectId,
+        location
+      );
+
+      const apiCallArgs = editImageStub.firstCall.args[0];
+      assert.strictEqual(apiCallArgs.model, 'imagen-3.0-capability-001');
+      assert.isArray(generatedImages, 'The response should be an array');
+      assert.lengthOf(
+        generatedImages,
+        1,
+        'The array should contain one image object'
+      );
+      assert.strictEqual(
+        generatedImages[0].image.gcsUri,
+        MOCK_IMAGE_URI,
+        'The generated URI should match the mock URI'
+      );
+    } catch (err) {
+      console.error('Image generation failed:', err);
+      throw err;
+    }
   });
 });

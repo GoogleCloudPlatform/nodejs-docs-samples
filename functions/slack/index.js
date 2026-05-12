@@ -112,13 +112,18 @@ const verifyWebhook = req => {
     throw err;
   }
 
-  const baseString = `v0:${requestTimestamp}:${requestBody}`;
-  const expectedSignature =
-    'v0=' +
-    crypto
-      .createHmac('sha256', signingSecret)
-      .update(baseString, 'utf8')
-      .digest('hex');
+  // Prevent replay attacks by verifying the timestamp is recent
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - Number(requestTimestamp)) > 60 * 5) {
+    const err = new Error('Slack request timestamp is too old.');
+    err.code = 401;
+    throw err;
+  }
+
+  const hmac = crypto.createHmac('sha256', signingSecret);
+  hmac.update('v0:' + requestTimestamp + ':', 'utf8');
+  hmac.update(requestBody || '');
+  const expectedSignature = 'v0=' + hmac.digest('hex');
 
   const sigBuffer = Buffer.from(requestSignature, 'utf8');
   const expBuffer = Buffer.from(expectedSignature, 'utf8');

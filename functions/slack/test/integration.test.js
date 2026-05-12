@@ -18,6 +18,8 @@ const assert = require('assert');
 const crypto = require('crypto');
 const supertest = require('supertest');
 const functionsFramework = require('@google-cloud/functions-framework/testing');
+const nock = require('nock');
+
 process.env.SLACK_SECRET = process.env.SLACK_SECRET || 'test-slack-secret';
 const SLACK_SECRET = process.env.SLACK_SECRET;
 const SLACK_TIMESTAMP = Math.floor(Date.now() / 1000).toString();
@@ -38,8 +40,33 @@ const generateSignature = query => {
 };
 
 describe('functions_slack_format functions_slack_request functions_slack_search functions_verify_webhook', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('returns search results', async () => {
     const query = 'kolach';
+
+    // Mock: Intercept the Google API request and return the expected data
+    nock('https://kgsearch.googleapis.com')
+      .get('/v1/entities:search')
+      .query(true)
+      .reply(200, {
+        itemListElement: [
+          {
+            result: {
+              name: 'Kolach',
+              description: 'Pastry',
+              detailedDescription: {
+                articleBody:
+                  'A kolach is a pastry that holds a portion of fruit surrounded by puffy dough.',
+                url: 'http://domain.com/kolach',
+              },
+            },
+          },
+        ],
+      });
+
     const server = functionsFramework.getTestServer('kgSearch');
     const response = await supertest(server)
       .post('/')
@@ -63,6 +90,13 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
 
   it('handles non-existent query', async () => {
     const query = 'g1bb3r1shhhhhhh';
+
+    nock('https://kgsearch.googleapis.com')
+      .get('/v1/entities:search')
+      .query(true)
+      .reply(200, {
+        itemListElement: [],
+      });
 
     const server = functionsFramework.getTestServer('kgSearch');
     const response = await supertest(server)

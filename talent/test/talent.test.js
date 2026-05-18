@@ -102,6 +102,7 @@ describe('Talent Solution Jobs API v4 samples', () => {
     });
     console.log(`created job: ${job.name}`);
     jobId = job.name.split('/').slice(-1)[0];
+    await delay(10000);
   });
 
   after(async () => {
@@ -142,7 +143,6 @@ describe('Talent Solution Jobs API v4 samples', () => {
   it(
     'Searches for a job with custom ranking search',
     eventually(async () => {
-      await delay(10000);
       console.log(
         `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
       );

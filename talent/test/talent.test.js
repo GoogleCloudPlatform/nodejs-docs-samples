@@ -47,6 +47,7 @@ describe('Talent Solution Jobs API v4 samples', () => {
   const tenantService = new talent.TenantServiceClient();
   const companyService = new talent.CompanyServiceClient();
   const jobService = new talent.JobServiceClient();
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   let tenant;
   let company;
@@ -141,6 +142,7 @@ describe('Talent Solution Jobs API v4 samples', () => {
   it(
     'Searches for a job with custom ranking search',
     eventually(async () => {
+      await delay(10000);
       console.log(
         `node snippet/job_search_custom_ranking_search.js --project_id=${projectId} --tenant_id=${tenantId}`
       );

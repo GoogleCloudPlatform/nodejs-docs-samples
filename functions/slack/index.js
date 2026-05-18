@@ -145,26 +145,13 @@ const verifyWebhook = req => {
  *
  * @param {string} query The user's search query.
  */
-const makeSearchRequest = query => {
-  return new Promise((resolve, reject) => {
-    kgsearch.entities.search(
-      {
-        auth: process.env.KG_API_KEY,
-        query: query,
-        limit: 1,
-      },
-      (err, response) => {
-        console.log(err);
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        // Return a formatted message
-        resolve(formatSlackMessage(query, response));
-      }
-    );
+const makeSearchRequest = async query => {
+  const response = await kgsearch.entities.search({
+    auth: process.env.KG_API_KEY,
+    query,
+    limit: 1,
   });
+  return formatSlackMessage(query, response);
 };
 // [END functions_slack_request]
 
@@ -203,12 +190,9 @@ functions.http('kgSearch', async (req, res) => {
 
     // Send the formatted message back to Slack
     res.json(response);
-
-    return Promise.resolve();
   } catch (err) {
     console.error(err);
-    res.status(err.code || 500).send(err);
-    return Promise.reject(err);
+    res.status(err.code || 500).send(err.message || 'Internal Server Error');
   }
 });
 // [END functions_slack_search]

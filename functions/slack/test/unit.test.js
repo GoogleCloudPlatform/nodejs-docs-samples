@@ -58,7 +58,7 @@ const getSample = () => {
   };
   const kgsearch = {
     entities: {
-      search: sinon.stub().yields(),
+      search: sinon.stub().resolves(),
     },
   };
   const googleapis = {
@@ -134,17 +134,11 @@ describe('functions_slack_search', () => {
 
     const kgSearch = getFunction('kgSearch');
 
-    try {
-      await kgSearch(mocks.req, mocks.res);
-    } catch (err) {
-      assert.deepStrictEqual(err, error);
-      assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-      assert.strictEqual(mocks.res.send.callCount, 1);
-      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-      assert.strictEqual(console.error.callCount, 1);
-      assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    }
+    await kgSearch(mocks.req, mocks.res);
+    assert.strictEqual(mocks.res.status.callCount, 1);
+    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+    assert.strictEqual(mocks.res.send.callCount, 1);
+    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error.message]);
   });
 });
 
@@ -157,20 +151,13 @@ describe('functions_slack_search functions_verify_webhook', () => {
 
     mocks.req.method = method;
     signMockRequest(mocks.req, 'not empty', false);
-
     const kgSearch = getFunction('kgSearch');
+    await kgSearch(mocks.req, mocks.res);
 
-    try {
-      await kgSearch(mocks.req, mocks.res);
-    } catch (err) {
-      assert.deepStrictEqual(err, error);
-      assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-      assert.strictEqual(mocks.res.send.callCount, 1);
-      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-      assert.strictEqual(console.error.callCount, 1);
-      assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    }
+    assert.strictEqual(mocks.res.status.callCount, 1);
+    assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
+    assert.strictEqual(mocks.res.send.callCount, 1);
+    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error.message]);
   });
 });
 
@@ -182,21 +169,15 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
 
     mocks.req.method = method;
     signMockRequest(mocks.req, query, true);
-    sample.mocks.kgsearch.entities.search.yields(error);
+    sample.mocks.kgsearch.entities.search.rejects(error);
 
     const kgSearch = getFunction('kgSearch');
+    await kgSearch(mocks.req, mocks.res);
 
-    try {
-      await kgSearch(mocks.req, mocks.res);
-    } catch (err) {
-      assert.deepStrictEqual(err, error);
-      assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
-      assert.strictEqual(mocks.res.send.callCount, 1);
-      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-      assert.strictEqual(console.error.callCount, 1);
-      assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    }
+    assert.strictEqual(mocks.res.status.callCount, 1);
+    assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
+    assert.strictEqual(mocks.res.send.callCount, 1);
+    assert.deepStrictEqual(mocks.res.send.firstCall.args, [error.message]);
   });
 });
 
@@ -207,13 +188,13 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
 
     mocks.req.method = method;
     signMockRequest(mocks.req, query, true);
-    sample.mocks.kgsearch.entities.search.yields(null, {
+    sample.mocks.kgsearch.entities.search.resolves({
       data: {itemListElement: []},
     });
 
     const kgSearch = getFunction('kgSearch');
-
     await kgSearch(mocks.req, mocks.res);
+
     assert.strictEqual(mocks.res.json.callCount, 1);
     assert.deepStrictEqual(mocks.res.json.firstCall.args, [
       {
@@ -234,7 +215,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
 
     mocks.req.method = method;
     signMockRequest(mocks.req, query, true);
-    sample.mocks.kgsearch.entities.search.yields(null, {
+    sample.mocks.kgsearch.entities.search.resolves({
       data: {
         itemListElement: [
           {
@@ -281,7 +262,7 @@ describe('functions_slack_format functions_slack_request functions_slack_search 
 
     mocks.req.method = method;
     signMockRequest(mocks.req, query, true);
-    sample.mocks.kgsearch.entities.search.yields(null, {
+    sample.mocks.kgsearch.entities.search.resolves({
       data: {
         itemListElement: [
           {

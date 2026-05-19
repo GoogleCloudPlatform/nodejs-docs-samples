@@ -46,7 +46,10 @@ afterEach(async () => {
   await new Promise(res => setTimeout(res, 1000));
 });
 
-it('should set bucket encryption enforcement configuration', async () => {
+it('should set bucket encryption enforcement configuration', async function () {
+  if (!defaultKmsKeyName) {
+    this.skip();
+  }
   const output = execSync(
     `node setBucketEncryptionEnforcementConfig.js ${bucketName} ${defaultKmsKeyName}`
   );
@@ -85,7 +88,10 @@ it('should set bucket encryption enforcement configuration', async () => {
   );
 });
 
-it('should get bucket encryption enforcement configuration', async () => {
+it('should get bucket encryption enforcement configuration', async function () {
+  if (!defaultKmsKeyName) {
+    this.skip();
+  }
   const output = execSync(
     `node getBucketEncryptionEnforcementConfig.js ${bucketName}`
   );

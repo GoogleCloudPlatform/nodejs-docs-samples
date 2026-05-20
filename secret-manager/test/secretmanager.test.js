@@ -687,9 +687,12 @@ describe('Secret Manager samples', () => {
   });
 
   it('disables a secret delayed destroy', async () => {
+    const customSecretId = `${secretId}-${v4()}`;
+    const fullSecretName = `projects/${projectId}/secrets/${customSecretId}`;
+
     await client.createSecret({
       parent: `projects/${projectId}`,
-      secretId: `${secretId}-delayedDestroy`,
+      secretId: customSecretId,
       secret: {
         replication: {
           automatic: {},
@@ -701,20 +704,22 @@ describe('Secret Manager samples', () => {
     });
 
     const output = execSync(
-      `node disableSecretDelayedDestroy.js ${secret.name}-delayedDestroy`
+      `node disableSecretDelayedDestroy.js ${fullSecretName}`
     );
     assert.match(output, new RegExp('Disabled delayed destroy'));
 
     await client.deleteSecret({
-      name: `${secret.name}-delayedDestroy`,
+      name: fullSecretName,
     });
   });
 
   it('updates a secret delayed destroy', async () => {
+    const customSecretId = `${secretId}-${v4()}`;
+    const fullSecretName = `projects/${projectId}/secrets/${customSecretId}`;
     const updatedTimeToLive = 24 * 60 * 60 * 2;
     await client.createSecret({
       parent: `projects/${projectId}`,
-      secretId: `${secretId}-delayedDestroy`,
+      secretId: customSecretId,
       secret: {
         replication: {
           automatic: {},
@@ -726,11 +731,11 @@ describe('Secret Manager samples', () => {
     });
 
     const output = execSync(
-      `node updateSecretWithDelayedDestroy.js ${secret.name}-delayedDestroy ${updatedTimeToLive}`
+      `node updateSecretWithDelayedDestroy.js ${fullSecretName} ${updatedTimeToLive}`
     );
     assert.match(output, new RegExp('Updated secret'));
     await client.deleteSecret({
-      name: `${secret.name}-delayedDestroy`,
+      name: fullSecretName,
     });
   });
 
@@ -743,9 +748,12 @@ describe('Secret Manager samples', () => {
   });
 
   it('disables a regional secret delayed destroy', async () => {
+    const customSecretId = `${secretId}-${v4()}`;
+    const fullSecretName = `projects/${projectId}/locations/${locationId}/secrets/${customSecretId}`;
+
     await regionalClient.createSecret({
       parent: `projects/${projectId}/locations/${locationId}`,
-      secretId: `${secretId}-delayedDestroy`,
+      secretId: customSecretId,
       secret: {
         version_destroy_ttl: {
           seconds: 24 * 60 * 60,
@@ -754,20 +762,23 @@ describe('Secret Manager samples', () => {
     });
 
     const output = execSync(
-      `node regional_samples/disableRegionalSecretDelayedDestroy.js ${projectId} ${locationId} ${secretId}-delayedDestroy`
+      `node regional_samples/disableRegionalSecretDelayedDestroy.js ${projectId} ${locationId} ${customSecretId}`
     );
     assert.match(output, new RegExp('Disabled delayed destroy'));
 
     await regionalClient.deleteSecret({
-      name: `projects/${projectId}/locations/${locationId}/secrets/${secretId}-delayedDestroy`,
+      name: fullSecretName,
     });
   });
 
   it('updates a regional secret delayed destroy', async () => {
+    const customSecretId = `${secretId}-${v4()}`;
+    const fullSecretName = `projects/${projectId}/locations/${locationId}/secrets/${customSecretId}`;
+
     const updatedTimeToLive = 24 * 60 * 60 * 2;
     await regionalClient.createSecret({
       parent: `projects/${projectId}/locations/${locationId}`,
-      secretId: `${secretId}-delayedDestroy`,
+      secretId: customSecretId,
       secret: {
         version_destroy_ttl: {
           seconds: 24 * 60 * 60,
@@ -776,11 +787,11 @@ describe('Secret Manager samples', () => {
     });
 
     const output = execSync(
-      `node regional_samples/updateRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${secretId}-delayedDestroy ${updatedTimeToLive}`
+      `node regional_samples/updateRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${customSecretId} ${updatedTimeToLive}`
     );
     assert.match(output, new RegExp('Updated regional secret'));
     await regionalClient.deleteSecret({
-      name: `projects/${projectId}/locations/${locationId}/secrets/${secretId}-delayedDestroy`,
+      name: fullSecretName,
     });
   });
 

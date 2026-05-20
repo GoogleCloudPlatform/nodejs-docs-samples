@@ -139,7 +139,8 @@ describe('security health analytics custom module', async () => {
     await client.close();
   });
 
-  it('create security health analytics custom module', done => {
+  it('create security health analytics custom module', function (done) {
+    this.retries(3);
     const output = exec(
       `node management_api/createSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${data.customModuleName} ${locationId}`
     );

@@ -703,20 +703,23 @@ describe('Secret Manager samples', () => {
       },
     });
 
-    const output = execSync(
-      `node disableSecretDelayedDestroy.js ${fullSecretName}`
-    );
-    assert.match(output, new RegExp('Disabled delayed destroy'));
-
-    await client.deleteSecret({
-      name: fullSecretName,
-    });
+    try {
+      const output = execSync(
+        `node disableSecretDelayedDestroy.js ${fullSecretName}`
+      );
+      assert.match(output, new RegExp('Disabled delayed destroy'));
+    } finally {
+      await client.deleteSecret({
+        name: fullSecretName,
+      });
+    }
   });
 
   it('updates a secret delayed destroy', async () => {
     const customSecretId = `${secretId}-${v4()}`;
     const fullSecretName = `projects/${projectId}/secrets/${customSecretId}`;
     const updatedTimeToLive = 24 * 60 * 60 * 2;
+
     await client.createSecret({
       parent: `projects/${projectId}`,
       secretId: customSecretId,
@@ -730,13 +733,16 @@ describe('Secret Manager samples', () => {
       },
     });
 
-    const output = execSync(
-      `node updateSecretWithDelayedDestroy.js ${fullSecretName} ${updatedTimeToLive}`
-    );
-    assert.match(output, new RegExp('Updated secret'));
-    await client.deleteSecret({
-      name: fullSecretName,
-    });
+    try {
+      const output = execSync(
+        `node updateSecretWithDelayedDestroy.js ${fullSecretName} ${updatedTimeToLive}`
+      );
+      assert.match(output, new RegExp('Updated secret'));
+    } finally {
+      await client.deleteSecret({
+        name: fullSecretName,
+      });
+    }
   });
 
   it('creates a regional secret with delayed destroy', async () => {
@@ -761,14 +767,16 @@ describe('Secret Manager samples', () => {
       },
     });
 
-    const output = execSync(
-      `node regional_samples/disableRegionalSecretDelayedDestroy.js ${projectId} ${locationId} ${customSecretId}`
-    );
-    assert.match(output, new RegExp('Disabled delayed destroy'));
-
-    await regionalClient.deleteSecret({
-      name: fullSecretName,
-    });
+    try {
+      const output = execSync(
+        `node regional_samples/disableRegionalSecretDelayedDestroy.js ${projectId} ${locationId} ${customSecretId}`
+      );
+      assert.match(output, new RegExp('Disabled delayed destroy'));
+    } finally {
+      await regionalClient.deleteSecret({
+        name: fullSecretName,
+      });
+    }
   });
 
   it('updates a regional secret delayed destroy', async () => {
@@ -786,13 +794,16 @@ describe('Secret Manager samples', () => {
       },
     });
 
-    const output = execSync(
-      `node regional_samples/updateRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${customSecretId} ${updatedTimeToLive}`
-    );
-    assert.match(output, new RegExp('Updated regional secret'));
-    await regionalClient.deleteSecret({
-      name: fullSecretName,
-    });
+    try {
+      const output = execSync(
+        `node regional_samples/updateRegionalSecretWithDelayedDestroy.js ${projectId} ${locationId} ${customSecretId} ${updatedTimeToLive}`
+      );
+      assert.match(output, new RegExp('Updated regional secret'));
+    } finally {
+      await regionalClient.deleteSecret({
+        name: fullSecretName,
+      });
+    }
   });
 
   it('creates secret with tags', async () => {

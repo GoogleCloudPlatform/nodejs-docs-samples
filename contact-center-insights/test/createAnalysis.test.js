@@ -74,7 +74,7 @@ describe('CreateAnalysis', () => {
       );
 
       console.info('Waiting for conversation to be ready for analysis...');
-      await delay(this.test, 10000);
+      await delay(this.test, 15000);
 
       const stdoutCreateAnalysis = execSync(
         `node ./createAnalysis.js ${conversationName}`

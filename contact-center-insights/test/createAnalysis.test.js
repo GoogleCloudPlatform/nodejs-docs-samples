@@ -72,6 +72,9 @@ describe('CreateAnalysis', () => {
       )
     );
 
+    console.info('Waiting for conversation to be ready for analysis...');
+    await new Promise(resolve => setTimeout(resolve, 10000));
+
     const stdoutCreateAnalysis = execSync(
       `node ./createAnalysis.js ${conversationName}`
     );

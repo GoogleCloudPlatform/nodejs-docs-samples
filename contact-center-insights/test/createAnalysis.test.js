@@ -61,28 +61,33 @@ describe('CreateAnalysis', () => {
   it('should create a conversation and an analysis', async function () {
     this.retries(2);
     await delay(this.test, 4000);
-    const stdoutCreateConversation = execSync(
-      `node ./createConversation.js ${projectId}`
-    );
-    conversationName = stdoutCreateConversation.slice(8);
-    assert.match(
-      stdoutCreateConversation,
-      new RegExp(
-        'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+'
-      )
-    );
+    try {
+      const stdoutCreateConversation = execSync(
+        `node ./createConversation.js ${projectId}`
+      );
+      conversationName = stdoutCreateConversation.slice(8).trim();
+      assert.match(
+        stdoutCreateConversation,
+        new RegExp(
+          'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+'
+        )
+      );
 
-    console.info('Waiting for conversation to be ready for analysis...');
-    await new Promise(resolve => setTimeout(resolve, 10000));
+      console.info('Waiting for conversation to be ready for analysis...');
+      await delay(this.test, 10000);
 
-    const stdoutCreateAnalysis = execSync(
-      `node ./createAnalysis.js ${conversationName}`
-    );
-    assert.match(
-      stdoutCreateAnalysis,
-      new RegExp(
-        'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+/analyses/[0-9]+'
-      )
-    );
+      const stdoutCreateAnalysis = execSync(
+        `node ./createAnalysis.js ${conversationName}`
+      );
+      assert.match(
+        stdoutCreateAnalysis,
+        new RegExp(
+          'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+/analyses/[0-9]+'
+        )
+      );
+    } catch (err) {
+      console.error('CreateAnalysis failed', err);
+      throw err;
+    }
   });
 });

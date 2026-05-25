@@ -31,11 +31,14 @@ const delay = async (test, addMs) => {
     return;
   }
   const retries = test.currentRetry();
-  await new Promise(r => setTimeout(r, addMs));
-  // No retry on the first failure.
+  if (addMs) {
+    await new Promise(r => setTimeout(r, addMs));
+  } // No retry on the first failure.
   if (retries === 0) return;
   // See: https://cloud.google.com/storage/docs/exponential-backoff
-  const ms = Math.pow(2, retries) + Math.random() * 1000;
+  const backoffBase = Math.pow(2, retries) * 1000;
+  const jitter = Math.random() * 1000;
+  const ms = backoffBase + jitter;
   return new Promise(done => {
     console.info(`retrying "${test.title}" in ${ms}ms`);
     setTimeout(done, ms);

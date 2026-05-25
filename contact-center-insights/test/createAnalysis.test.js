@@ -36,8 +36,8 @@ const delay = async (test, addMs) => {
   } // No retry on the first failure.
   if (retries === 0) return;
   // See: https://cloud.google.com/storage/docs/exponential-backoff
-  const backoffBase = Math.pow(2, retries) * 1000;
-  const jitter = Math.random() * 1000;
+  const backoffBase = Math.pow(2, retries) * 5000;
+  const jitter = Math.random() * 2000;
   const ms = backoffBase + jitter;
   return new Promise(done => {
     console.info(`retrying "${test.title}" in ${ms}ms`);
@@ -64,7 +64,7 @@ describe('CreateAnalysis', () => {
     );
 
     console.info('Waiting for conversation to be ready for analysis...');
-    await new Promise(resolve => setTimeout(resolve, 15000));
+    await new Promise(resolve => setTimeout(resolve, 45000));
   });
 
   after(() => {

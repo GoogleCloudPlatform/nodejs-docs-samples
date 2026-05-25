@@ -48,6 +48,20 @@ describe('CreateAnalysis', () => {
 
   before(async () => {
     projectId = await client.getProjectId();
+
+    const stdoutCreateConversation = execSync(
+      `node ./createConversation.js ${projectId}`
+    );
+    conversationName = stdoutCreateConversation.slice(8).trim();
+    assert.match(
+      stdoutCreateConversation,
+      new RegExp(
+        'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+'
+      )
+    );
+
+    console.info('Waiting for conversation to be ready for analysis...');
+    await new Promise(resolve => setTimeout(resolve, 15000));
   });
 
   after(() => {
@@ -62,20 +76,6 @@ describe('CreateAnalysis', () => {
     this.retries(2);
     await delay(this.test, 4000);
     try {
-      const stdoutCreateConversation = execSync(
-        `node ./createConversation.js ${projectId}`
-      );
-      conversationName = stdoutCreateConversation.slice(8).trim();
-      assert.match(
-        stdoutCreateConversation,
-        new RegExp(
-          'Created projects/[0-9]+/locations/us-central1/conversations/[0-9]+'
-        )
-      );
-
-      console.info('Waiting for conversation to be ready for analysis...');
-      await delay(this.test, 15000);
-
       const stdoutCreateAnalysis = execSync(
         `node ./createAnalysis.js ${conversationName}`
       );

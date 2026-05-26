@@ -23,7 +23,7 @@ function main(
   bucketName = 'my-bucket',
   defaultKmsKeyName = process.env.GOOGLE_CLOUD_KMS_KEY_ASIA
 ) {
-  // [START storage_set_encryption_enforcement_config]
+  // [START storage_set_bucket_encryption_enforcement_config]
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
@@ -88,6 +88,6 @@ function main(
   }
 
   setBucketEncryptionEnforcementConfig().catch(console.error);
-  // [END storage_set_encryption_enforcement_config]
+  // [END storage_set_bucket_encryption_enforcement_config]
 }
 main(...process.argv.slice(2));

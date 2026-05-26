@@ -40,9 +40,7 @@ function main(conversationName) {
       const [analysis] = await operation.promise();
       console.info(`Created ${analysis.name}`);
     } catch (err) {
-      console.error(
-        `createAnalysis failed: ${JSON.stringify(err.details || err, null, 2)}`
-      );
+      console.error(`createAnalysis failed: ${JSON.stringify(err, null, 2)}`);
       process.exitCode = 1;
     }
   }

@@ -23,16 +23,17 @@ describe('tasks/function', () => {
   let key;
 
   const getSample = function () {
-    const requestPromise = sinon
-      .stub()
-      .returns(new Promise(resolve => resolve('test')));
+    const sendGridStub = {
+      setApiKey: sinon.stub(),
+      send: sinon.stub().resolves([{statusCode: 200}]),
+    };
 
     return {
       program: proxyquire('../', {
-        'request-promise': requestPromise,
+        '@sendgrid/mail': sendGridStub,
       }),
       mocks: {
-        requestPromise: requestPromise,
+        sendGridStub: sendGridStub,
       },
     };
   };

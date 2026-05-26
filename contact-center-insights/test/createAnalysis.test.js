@@ -92,6 +92,9 @@ describe('CreateAnalysis', () => {
         )
       );
     } catch (err) {
+      if (err && err.stderr) {
+        console.error(err.stderr);
+      }
       console.error('CreateAnalysis failed', err);
       throw err;
     }

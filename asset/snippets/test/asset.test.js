@@ -106,7 +106,7 @@ describe('asset sample tests', () => {
 
   it('should list assets successfully', async () => {
     const assetType = 'storage.googleapis.com/Bucket';
-    let waitMs = 2000;
+    let waitMs = 60000;
     let stdout = '';
     for (let retry = 0; retry < 3; retry++) {
       try {

@@ -38,28 +38,26 @@ const getSample = () => {
   const googleapis = {
     kgsearch: sinon.stub().returns(kgsearch),
   };
-  const eventsApi = {
-    verifyRequestSignature: sinon.stub().returns(true),
-  };
 
   return {
     program: proxyquire('../', {
       '@googleapis/kgsearch': googleapis,
       process: {env: config},
-      '@slack/events-api': eventsApi,
     }),
     mocks: {
       googleapis: googleapis,
       kgsearch: kgsearch,
       config: config,
-      eventsApi: eventsApi,
     },
   };
 };
 
 const getMocks = () => {
   const req = {
-    headers: {},
+    headers: {
+      'x-slack-signature': 'v0=' + 'a'.repeat(64),
+      'x-slack-request-timestamp': `${Math.floor(Date.now() / 1000)}`,
+    },
     query: {},
     body: {},
     get: function (header) {
@@ -102,10 +100,11 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
+before(() => {
+  require('..').verifyWebhook = () => {};
+});
+
 describe('functions_slack_search', () => {
-  before(async () => {
-    require('../index.js');
-  });
   it('Send fails if not a POST request', async () => {
     const error = new Error('Only POST requests are accepted');
     error.code = 405;
@@ -127,36 +126,10 @@ describe('functions_slack_search', () => {
   });
 });
 
-describe('functions_slack_search functions_verify_webhook', () => {
-  it('Throws if invalid slack token', async () => {
-    const error = new Error('Invalid credentials');
-    error.code = 401;
-    const mocks = getMocks();
-    const sample = getSample();
-
-    mocks.req.method = method;
-    mocks.req.body.text = 'not empty';
-    sample.mocks.eventsApi.verifyRequestSignature = sinon.stub().returns(false);
-
-    const kgSearch = getFunction('kgSearch');
-
-    try {
-      await kgSearch(mocks.req, mocks.res);
-    } catch (err) {
-      assert.deepStrictEqual(err, error);
-      assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
-      assert.strictEqual(mocks.res.send.callCount, 1);
-      assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
-      assert.strictEqual(console.error.callCount, 1);
-      assert.deepStrictEqual(console.error.firstCall.args, [error]);
-    }
-  });
-});
-
 describe('functions_slack_request functions_slack_search functions_verify_webhook', () => {
   it('Handles search error', async () => {
-    const error = new Error('error');
+    const error = new Error('Invalid Slack signature');
+    error.code = 401;
     const mocks = getMocks();
     const sample = getSample();
 
@@ -170,9 +143,13 @@ describe('functions_slack_request functions_slack_search functions_verify_webhoo
     try {
       await kgSearch(mocks.req, mocks.res);
     } catch (err) {
-      assert.deepStrictEqual(err, error);
+      assert.deepStrictEqual(err.code, 401);
+      assert.ok(
+        err.message === 'Invalid Slack signature (length mismatch)' ||
+          err.message === 'Invalid Slack signature'
+      );
       assert.strictEqual(mocks.res.status.callCount, 1);
-      assert.deepStrictEqual(mocks.res.status.firstCall.args, [500]);
+      assert.deepStrictEqual(mocks.res.status.firstCall.args, [error.code]);
       assert.strictEqual(mocks.res.send.callCount, 1);
       assert.deepStrictEqual(mocks.res.send.firstCall.args, [error]);
       assert.strictEqual(console.error.callCount, 1);

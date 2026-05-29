@@ -13,39 +13,24 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_function_calling_chat]
-const {
-  VertexAI,
-  FunctionDeclarationSchemaType,
-} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
-const functionDeclarations = [
+const tools = [
   {
-    function_declarations: [
+    functionDeclarations: [
       {
         name: 'get_current_weather',
         description: 'get weather in a given location',
         parameters: {
-          type: FunctionDeclarationSchemaType.OBJECT,
+          type: 'OBJECT',
           properties: {
-            location: {type: FunctionDeclarationSchemaType.STRING},
-            unit: {
-              type: FunctionDeclarationSchemaType.STRING,
-              enum: ['celsius', 'fahrenheit'],
-            },
+            location: {type: 'STRING'},
+            unit: {type: 'STRING', enum: ['celsius', 'fahrenheit']},
           },
           required: ['location'],
         },
       },
     ],
-  },
-];
-
-const functionResponseParts = [
-  {
-    functionResponse: {
-      name: 'get_current_weather',
-      response: {name: 'get_current_weather', content: {weather: 'super nice'}},
-    },
   },
 ];
 
@@ -57,38 +42,43 @@ async function functionCallingStreamChat(
   location = 'us-central1',
   model = 'gemini-2.0-flash-001'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   // Create a chat session and pass your function declarations
-  const chat = generativeModel.startChat({
-    tools: functionDeclarations,
+  const chat = client.chats.create({
+    model: model,
+    config: {tools: tools},
   });
 
-  const chatInput1 = 'What is the weather in Boston?';
-
   // This should include a functionCall response from the model
-  const result1 = await chat.sendMessageStream(chatInput1);
-  for await (const item of result1.stream) {
-    console.log(item.candidates[0]);
-  }
-  await result1.response;
+  const result1 = await chat.sendMessage({
+    message: 'What is the weather in Boston?',
+  });
+  console.log(
+    'Function call requested:',
+    JSON.stringify(result1.functionCalls, null, 2)
+  );
 
   // Send a follow up message with a FunctionResponse
-  const result2 = await chat.sendMessageStream(functionResponseParts);
-  for await (const item of result2.stream) {
-    console.log(item.candidates[0]);
-  }
+  const result2 = await chat.sendMessage({
+    message: [
+      {
+        functionResponse: {
+          name: 'get_current_weather',
+          response: {result: {weather: 'super nice'}},
+        },
+      },
+    ],
+  });
 
   // This should include a text response from the model using the response content
   // provided above
-  const response2 = await result2.response;
-  console.log(response2.candidates[0].content.parts[0].text);
+  console.log(result2.text);
 }
 // [END generativeaionvertexai_gemini_function_calling_chat]
 

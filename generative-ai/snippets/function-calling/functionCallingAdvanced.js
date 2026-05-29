@@ -13,22 +13,18 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_function_calling_advanced]
-const {
-  VertexAI,
-  FunctionDeclarationSchemaType,
-} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
-const functionDeclarations = [
+const tools = [
   {
-    function_declarations: [
+    functionDeclarations: [
       {
         name: 'get_product_sku',
-        description:
-          'Get the available inventory for a Google products, e.g: Pixel phones, Pixel Watches, Google Home etc',
+        description: 'Get the available inventory for Google products',
         parameters: {
-          type: FunctionDeclarationSchemaType.OBJECT,
+          type: 'OBJECT',
           properties: {
-            productName: {type: FunctionDeclarationSchemaType.STRING},
+            productName: {type: 'STRING'},
           },
         },
       },
@@ -36,9 +32,9 @@ const functionDeclarations = [
         name: 'get_store_location',
         description: 'Get the location of the closest store',
         parameters: {
-          type: FunctionDeclarationSchemaType.OBJECT,
+          type: 'OBJECT',
           properties: {
-            location: {type: FunctionDeclarationSchemaType.STRING},
+            location: {type: 'STRING'},
           },
         },
       },
@@ -47,16 +43,10 @@ const functionDeclarations = [
 ];
 
 const toolConfig = {
-  function_calling_config: {
+  functionCallingConfig: {
     mode: 'ANY',
-    allowed_function_names: ['get_product_sku'],
+    allowedFunctionNames: ['get_product_sku'],
   },
-};
-
-const generationConfig = {
-  temperature: 0.95,
-  topP: 1.0,
-  maxOutputTokens: 8192,
 };
 
 /**
@@ -67,29 +57,25 @@ async function functionCallingAdvanced(
   location = 'us-central1',
   model = 'gemini-2.0-flash-001'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const request = {
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {text: 'Do you have the White Pixel 8 Pro 128GB in stock in the US?'},
-        ],
-      },
-    ],
-    tools: functionDeclarations,
-    tool_config: toolConfig,
-    generation_config: generationConfig,
-  };
-  const result = await generativeModel.generateContent(request);
-  console.log(JSON.stringify(result.response.candidates[0].content));
+  const result = await client.models.generateContent({
+    model: model,
+    contents: 'Do you have the White Pixel 8 Pro 128GB in stock in the US?',
+    config: {
+      tools: tools,
+      toolConfig: toolConfig,
+      temperature: 0.95,
+      topP: 1.0,
+      maxOutputTokens: 8192,
+    },
+  });
+  console.log(JSON.stringify(result.functionCalls));
 }
 // [END generativeaionvertexai_function_calling_advanced]
 

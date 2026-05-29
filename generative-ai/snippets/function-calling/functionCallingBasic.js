@@ -13,23 +13,20 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_function_calling_basic]
-const {
-  VertexAI,
-  FunctionDeclarationSchemaType,
-} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
-const functionDeclarations = [
+const tools = [
   {
-    function_declarations: [
+    functionDeclarations: [
       {
         name: 'get_current_weather',
         description: 'get weather in a given location',
         parameters: {
-          type: FunctionDeclarationSchemaType.OBJECT,
+          type: 'OBJECT',
           properties: {
-            location: {type: FunctionDeclarationSchemaType.STRING},
+            location: {type: 'STRING'},
             unit: {
-              type: FunctionDeclarationSchemaType.STRING,
+              type: 'STRING',
               enum: ['celsius', 'fahrenheit'],
             },
           },
@@ -48,22 +45,21 @@ async function functionCallingBasic(
   location = 'us-central1',
   model = 'gemini-2.0-flash-001'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.preview.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const request = {
-    contents: [
-      {role: 'user', parts: [{text: 'What is the weather in Boston?'}]},
-    ],
-    tools: functionDeclarations,
-  };
-  const result = await generativeModel.generateContent(request);
-  console.log(JSON.stringify(result.response.candidates[0].content));
+  const result = await client.models.generateContent({
+    model: model,
+    contents: 'What is the weather in Boston?',
+    config: {
+      tools: tools,
+    },
+  });
+  console.log(JSON.stringify(result.functionCalls));
 }
 // [END generativeaionvertexai_function_calling_basic]
 

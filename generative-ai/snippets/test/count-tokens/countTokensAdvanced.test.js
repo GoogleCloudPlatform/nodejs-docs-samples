@@ -38,6 +38,6 @@ describe('Count tokens advanced', async () => {
     );
 
     assert(output.match(/Prompt Token Count: \d+/));
-    assert(output.match(/Prompt Character Count: \d+/));
+    assert(output.match(/Total Token Count: \d+/));
   });
 });

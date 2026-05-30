@@ -25,7 +25,7 @@ const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
 const SEARCH_TERM = 'cloud';
 
-describe('Cloud Workflows TypeScript Quickstart Tests', () => {
+describe('Cloud Workflows TypeScript Execution Samples', () => {
   before(async () => {
     // Ensure project is configured
     assert.notStrictEqual(
@@ -48,6 +48,7 @@ describe('Cloud Workflows TypeScript Quickstart Tests', () => {
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
         if ((e as {code?: number})?.code === 5) {
+          // NOT_FOUND
           // If there is an error getting the workflow, it probably doesn't exist.
           return false;
         }
@@ -85,21 +86,27 @@ describe('Cloud Workflows TypeScript Quickstart Tests', () => {
     }
   });
 
-  it('should execute the quickstart without optional search term', async () => {
+  it('should execute the workflow using the executeWithoutArguments sample', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --require ts-node/register ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+      `node --require ts-node/register ./executeWithoutArguments.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
-    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
+    assert.ok(
+      result.length > 0,
+      'executeWithoutArguments must return non-empty result'
+    );
   }).timeout(60000);
 
-  it('should execute the quickstart with optional search term', async () => {
+  it('should execute the workflow using the executeWithArguments sample', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --require ts-node/register ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
+      `node --require ts-node/register ./executeWithArguments.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
     );
 
-    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
+    assert.ok(
+      result.length > 0,
+      'executeWithArguments must return non-empty result'
+    );
   }).timeout(60000);
 });

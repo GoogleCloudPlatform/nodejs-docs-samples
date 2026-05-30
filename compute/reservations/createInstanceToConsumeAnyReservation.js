@@ -18,17 +18,14 @@
 
 async function main(instanceName) {
   // [START compute_consume_any_matching_reservation]
-  // Import the Compute library
   const computeLib = require('@google-cloud/compute');
   const compute = computeLib.protos.google.cloud.compute.v1;
 
-  // Instantiate a reservationsClient
   const instancesClient = new computeLib.InstancesClient();
-  // Instantiate a zoneOperationsClient
   const zoneOperationsClient = new computeLib.ZoneOperationsClient();
 
   /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
+   * TODO(developer): Customize the following variables before running the sample.
    */
   // The ID of the project where you want to create instance.
   const projectId = await instancesClient.getProjectId();
@@ -39,9 +36,10 @@ async function main(instanceName) {
   // Machine type to use for VM.
   const machineType = 'n1-standard-4';
 
-  // Create instance to consume reservation if their properties match the VM properties
   async function callCreateInstanceToConsumeAnyReservation() {
     // Describe the size and source image of the boot disk to attach to the instance.
+    // Uses a persistent disk so that data is preserved even if the VM is
+    // stopped or restarted.
     const disk = new compute.Disk({
       boot: true,
       autoDelete: true,
@@ -52,17 +50,24 @@ async function main(instanceName) {
       },
     });
 
-    //  Define networkInterface
+    // Use the default network for simplicity. In production environments,
+    // you may want to specify a custom network with specific firewall rules
+    // and security configurations.
     const networkInterface = new compute.NetworkInterface({
       name: 'global/networks/default',
     });
 
-    // Define reservationAffinity
+    // Configure the instance to consume any available reservation that matches
+    // its requirements (CPU, memory, etc.). This is a reasonable default for cost
+    // optimization for long-running workloads. Consider changing depending on your
+    // specific needs or workloads.
     const reservationAffinity = new compute.ReservationAffinity({
       consumeReservationType: 'ANY_RESERVATION',
     });
 
-    // Create an instance
+    // Set the minimum CPU platform to ensure compatibility with
+    // machine type and to take advantage of specific CPU features.
+    // Change this based on performance and workload needs
     const instance = new compute.Instance({
       name: instanceName,
       machineType: `zones/${zone}/machineTypes/${machineType}`,
@@ -80,7 +85,6 @@ async function main(instanceName) {
 
     let operation = response.latestResponse;
 
-    // Wait for the create instance operation to complete.
     while (operation.status !== 'DONE') {
       [operation] = await zoneOperationsClient.wait({
         operation: operation.name,

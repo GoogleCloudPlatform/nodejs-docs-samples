@@ -40,20 +40,16 @@ describe('Client with Notifications v2', async () => {
   let data;
 
   before(async () => {
-    const configId = 'notif-config-test-node-create-' + uuidv1();
-    topicName = 'notifications-sample-topic';
+    const uuidSuffix = uuidv1();
+    const configId = 'notif-config-test-node-create-' + uuidSuffix;
+    topicName = 'notifications-sample-topic' + uuidSuffix;
     parent = `projects/${projectId}/locations/${location}`;
     pubsubTopic = `projects/${projectId}/topics/${topicName}`;
 
     client = new SecurityCenterClient();
 
     pubSubClient = new PubSub();
-    // A previous test failure can result the topic hanging around
-    try {
-      await pubSubClient.topic(topicName).delete();
-    } catch {
-      // Ignore if the topic doesn't already exist
-    }
+
     await pubSubClient.createTopic(topicName);
 
     const notificationConfig = {
@@ -80,10 +76,24 @@ describe('Client with Notifications v2', async () => {
   });
 
   after(async () => {
+    // Delete notification config to prevent resource leaks
+    if (data && data.notificationName) {
+      try {
+        await client.deleteNotificationConfig({
+          name: data.notificationName,
+        });
+      } catch (error) {
+        console.warn(
+          `Could not delete Notification Config: ${data.notificationName}`,
+          error
+        );
+      }
+    }
+    // Delete topic during cleanup
     try {
       await pubSubClient.topic(topicName).delete();
-    } catch {
-      // Ignore if the topic doesn't exist
+    } catch (error) {
+      console.warn(`Could not delete PubSub topic: ${topicName}`, error);
     }
   });
 

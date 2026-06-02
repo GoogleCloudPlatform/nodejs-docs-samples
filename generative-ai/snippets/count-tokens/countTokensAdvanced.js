@@ -20,7 +20,7 @@ const {GoogleGenAI} = require('@google/genai');
 async function countTokens(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({
@@ -51,7 +51,7 @@ async function countTokens(
 
   console.log('Prompt Token Count:', countTokensResp.totalTokens);
 
-  // Sent text to Gemini
+  // Send text to Gemini
   const result = await client.models.generateContent({
     model: model,
     contents: contents,

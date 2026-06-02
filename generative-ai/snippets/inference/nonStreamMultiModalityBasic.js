@@ -18,9 +18,9 @@ const {GoogleGenAI} = require('@google/genai');
  * TODO(developer): Update these variables before running the sample.
  */
 async function generateContent(
-  projectId,
+  projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
   // Initialize client
   const client = new GoogleGenAI({

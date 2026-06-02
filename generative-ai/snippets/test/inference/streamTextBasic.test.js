@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
 const location = process.env.LOCATION;
-const model = 'gemini-2.0-flash-001';
+const model = 'gemini-2.5-flash';
 
 describe('Generative AI Basic Text Inference Streaming', () => {
   it('should create a generative text model and infer text from a prompt, streaming the results', async () => {

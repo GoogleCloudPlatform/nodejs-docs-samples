@@ -21,7 +21,7 @@ const {GoogleGenAI} = require('@google/genai');
 async function generateContentWithGoogleSearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({
@@ -42,7 +42,7 @@ async function generateContentWithGoogleSearchGrounding(
       maxOutputTokens: 256,
     },
   });
-  console.log('Response: ', JSON.stringify(result.text));
+  console.log('Response: ', result.text);
   console.log(
     'GroundingMetadata is: ',
     JSON.stringify(result.candidates[0].groundingMetadata)

@@ -50,7 +50,7 @@ const functionResponseParts = [
 async function functionCallingStreamContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({
@@ -72,7 +72,7 @@ async function functionCallingStreamContent(
         },
       ],
     },
-    {role: 'USER', parts: functionResponseParts},
+    {role: 'user', parts: functionResponseParts},
   ];
 
   const streamingResp = await client.models.generateContentStream({
@@ -80,11 +80,14 @@ async function functionCallingStreamContent(
     contents: request,
     config: {tools: tools},
   });
+
+  let completeResponseText = '';
   for await (const chunk of streamingResp) {
     if (chunk.text) {
-      console.log(chunk.text);
+      completeResponseText += chunk.text;
     }
   }
+  console.log(completeResponseText);
 }
 // [END aiplatform_gemini_function_calling_content]
 // [END generativeaionvertexai_gemini_function_calling_content]

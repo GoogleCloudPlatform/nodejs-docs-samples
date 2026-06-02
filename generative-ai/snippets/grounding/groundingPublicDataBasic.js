@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_grounding_public_data_basic]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -23,31 +23,30 @@ async function generateContentWithGoogleSearchGrounding(
   location = 'us-central1',
   model = 'gemini-2.0-flash-001'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  const generativeModelPreview = vertexAI.preview.getGenerativeModel({
-    model: model,
-    generationConfig: {maxOutputTokens: 256},
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   const googleSearchTool = {
     googleSearch: {},
   };
 
-  const request = {
+  const result = await client.models.generateContent({
+    model: model,
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [googleSearchTool],
-  };
-
-  const result = await generativeModelPreview.generateContent(request);
-  const response = await result.response;
-  const groundingMetadata = response.candidates[0].groundingMetadata;
+    config: {
+      tools: [googleSearchTool],
+      maxOutputTokens: 256,
+    },
+  });
+  console.log('Response: ', JSON.stringify(result.text));
   console.log(
-    'Response: ',
-    JSON.stringify(response.candidates[0].content.parts[0].text)
+    'GroundingMetadata is: ',
+    JSON.stringify(result.candidates[0].groundingMetadata)
   );
-  console.log('GroundingMetadata is: ', JSON.stringify(groundingMetadata));
 }
 // [END generativeaionvertexai_grounding_public_data_basic]
 

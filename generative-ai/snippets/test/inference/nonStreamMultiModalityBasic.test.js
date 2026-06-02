@@ -19,9 +19,15 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
+const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
+const location = process.env.LOCATION;
+const model = 'gemini-2.0-flash-001';
+
 describe('Generative AI Multimodal Text Inference', () => {
   it('should generate text based on a prompt containing text, a video, and an image', async () => {
-    const output = execSync('node ./inference/nonStreamMultiModalityBasic.js');
+    const output = execSync(
+      `node ./inference/nonStreamMultiModalityBasic.js ${projectId} ${location} ${model}`
+    );
     assert(output.length > 0);
   });
 });

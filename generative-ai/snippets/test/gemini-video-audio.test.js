@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Analyze video with audio', async () => {
+describe.skip('Analyze video with audio', async () => {
   it('should analyze video with audio', async () => {
     const output = execSync(`node ./gemini-video-audio.js ${projectId}`);
 

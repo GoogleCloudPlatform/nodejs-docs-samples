@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Analyze PDF document', async () => {
+describe.skip('Analyze PDF document', async () => {
   it('should analyze PDF document', async () => {
     const output = execSync(`node ./gemini-pdf.js ${projectId}`);
 

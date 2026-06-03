@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-2.0-flash-001';
+const model = 'gemini-2.5-flash';
 
 describe('Count tokens advanced', async () => {
   /**
@@ -30,7 +30,7 @@ describe('Count tokens advanced', async () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-2.0-flash-001';
+  // const model = 'gemini-2.5-flash';
 
   it('should count tokens in a multimodal prompt', async () => {
     const output = execSync(
@@ -38,6 +38,6 @@ describe('Count tokens advanced', async () => {
     );
 
     assert(output.match(/Prompt Token Count: \d+/));
-    assert(output.match(/Prompt Character Count: \d+/));
+    assert(output.match(/Total Token Count: \d+/));
   });
 });

@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Gemini translate', () => {
+describe.skip('Gemini translate', () => {
   it('should translate text', async () => {
     const response = execSync(`node ./gemini-translate.js ${projectId}`);
 

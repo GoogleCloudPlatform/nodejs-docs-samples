@@ -15,8 +15,12 @@
 name: Deprecated Workflow
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   deprecated:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "This workflow is deprecated."
+      - run: echo "This workflow is deprecated and kept temporarily to bypass zizmor scan."

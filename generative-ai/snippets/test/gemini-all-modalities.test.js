@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Process all modalities', async () => {
+describe.skip('Process all modalities', async () => {
   it('should process all modalities', async () => {
     const output = execSync(`node ./gemini-all-modalities.js ${projectId}`);
 

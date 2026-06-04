@@ -31,13 +31,18 @@ function main(conversationName) {
   const client = new ContactCenterInsightsClient();
 
   async function createAnalysis() {
-    const [operation] = await client.createAnalysis({
-      parent: conversationName,
-    });
+    try {
+      const [operation] = await client.createAnalysis({
+        parent: conversationName,
+      });
 
-    // Wait for the operation to complete.
-    const [analysis] = await operation.promise();
-    console.info(`Created ${analysis.name}`);
+      // Wait for the operation to complete.
+      const [analysis] = await operation.promise();
+      console.info(`Created ${analysis.name}`);
+    } catch (err) {
+      console.error(`createAnalysis failed: ${JSON.stringify(err, null, 2)}`);
+      process.exitCode = 1;
+    }
   }
   createAnalysis();
   // [END contactcenterinsights_create_analysis]

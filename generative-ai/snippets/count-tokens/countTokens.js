@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_token_count]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -21,29 +21,34 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function countTokens(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize the client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const req = {
-    contents: [{role: 'user', parts: [{text: 'How are you doing today?'}]}],
-  };
+  const contents = [
+    {role: 'user', parts: [{text: 'How are you doing today?'}]},
+  ];
 
   // Prompt tokens count
-  const countTokensResp = await generativeModel.countTokens(req);
+  const countTokensResp = await client.models.countTokens({
+    model: model,
+    contents: contents,
+  });
   console.log('Prompt tokens count: ', countTokensResp);
 
   // Send text to gemini
-  const result = await generativeModel.generateContent(req);
+  const result = await client.models.generateContent({
+    model: model,
+    contents: contents,
+  });
 
   // Response tokens count
-  const usageMetadata = result.response.usageMetadata;
+  const usageMetadata = result.usageMetadata;
   console.log('Response tokens count: ', usageMetadata);
 }
 // [END generativeaionvertexai_gemini_token_count]

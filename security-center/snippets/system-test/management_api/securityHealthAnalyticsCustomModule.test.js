@@ -33,9 +33,9 @@ const customModuleDisplayName =
 describe('security health analytics custom module', async () => {
   let data;
   const sharedModuleIds = [];
+  const client = new SecurityCenterManagementClient();
 
   before(async () => {
-    const client = new SecurityCenterManagementClient();
     const EnablementState =
       protos.google.cloud.securitycentermanagement.v1
         .SecurityHealthAnalyticsCustomModule.EnablementState;
@@ -44,7 +44,8 @@ describe('security health analytics custom module', async () => {
     const parent = `organizations/${organizationId}/locations/${locationId}`;
     const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/custom_module`;
     const expr = {
-      expression: `has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))`,
+      expression:
+        "has(resource.rotationPeriod) && (resource.rotationPeriod > duration('2592000s'))",
     };
     const resourceSelector = {
       resourceTypes: ['cloudkms.googleapis.com/CryptoKey'],
@@ -63,36 +64,59 @@ describe('security health analytics custom module', async () => {
       customConfig: customConfig,
     };
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      const [createResponse] =
-        await client.createSecurityHealthAnalyticsCustomModule({
-          parent: parent,
-          securityHealthAnalyticsCustomModule:
-            securityHealthAnalyticsCustomModule,
-        });
-      // extracts the custom module ID from the full name
-      const customModuleId = createResponse.name.split('/').pop();
-      data = {
-        orgId: organizationId,
-        customModuleId: customModuleId,
-        customModuleName: createResponse.displayName,
-      };
-      console.log(
-        'SecurityHealthAnalyticsCustomModule created : %j',
-        createResponse
-      );
-    } catch (error) {
-      console.error(
-        'Error creating SecurityHealthAnalyticsCustomModule:',
-        error
+    let createResponse;
+    const maxAttempts = 5;
+    let attempt = 0;
+    while (attempt < maxAttempts) {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        const [createSecurityResponse] =
+          await client.createSecurityHealthAnalyticsCustomModule({
+            parent: parent,
+            securityHealthAnalyticsCustomModule:
+              securityHealthAnalyticsCustomModule,
+          });
+        createResponse = createSecurityResponse;
+        break;
+      } catch (error) {
+        if (error.code === 10) {
+          attempt++;
+          console.log(
+            `Concurrent modification detected. Retrying creation (attempt ${attempt}/${maxAttempts})...`
+          );
+          await new Promise(resolve =>
+            setTimeout(resolve, Math.pow(2, attempt) * 1000)
+          );
+        } else {
+          console.error(
+            'Fatal error creating SecurityHealthAnalyticsCustomModule:',
+            error
+          );
+          throw error;
+        }
+      }
+    }
+
+    if (!createResponse) {
+      throw new Error(
+        `Timeout: Failed to create custom module after ${maxAttempts} attempts due to concurrent modifications.`
       );
     }
+
+    // extracts the custom module ID from the full name
+    const customModuleId = createResponse.name.split('/').pop();
+    data = {
+      orgId: organizationId,
+      customModuleId: customModuleId,
+      customModuleName: createResponse.displayName,
+    };
+    console.log(
+      'SecurityHealthAnalyticsCustomModule created : %j',
+      createResponse
+    );
   });
 
   after(async () => {
-    const client = new SecurityCenterManagementClient();
-
     if (sharedModuleIds.length > 0) {
       for (const moduleId of sharedModuleIds) {
         const name = `organizations/${organizationId}/locations/${locationId}/securityHealthAnalyticsCustomModules/${moduleId}`;
@@ -112,9 +136,11 @@ describe('security health analytics custom module', async () => {
         }
       }
     }
+    await client.close();
   });
 
-  it('create security health analytics custom module', done => {
+  it('create security health analytics custom module', function (done) {
+    this.retries(3);
     const output = exec(
       `node management_api/createSecurityHealthAnalyticsCustomModule.js ${data.orgId} ${data.customModuleName} ${locationId}`
     );

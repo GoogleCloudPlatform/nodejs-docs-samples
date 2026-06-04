@@ -20,7 +20,7 @@
 //   usage: node getBucketEncryptionEnforcementConfig.js <BUCKET_NAME>
 
 function main(bucketName = 'my-bucket') {
-  // [START storage_get_encryption_enforcement_config]
+  // [START storage_get_bucket_encryption_enforcement_config]
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
@@ -71,6 +71,6 @@ function main(bucketName = 'my-bucket') {
   }
 
   getBucketEncryptionEnforcementConfig().catch(console.error);
-  // [END storage_get_encryption_enforcement_config]
+  // [END storage_get_bucket_encryption_enforcement_config]
 }
 main(...process.argv.slice(2));

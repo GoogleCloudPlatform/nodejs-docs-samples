@@ -13,22 +13,25 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_audio_transcription]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function transcript_audio(projectId = 'PROJECT_ID') {
-  const vertexAI = new VertexAI({project: projectId, location: 'us-central1'});
-
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: 'gemini-2.0-flash-001',
+async function transcript_audio(
+  projectId = 'PROJECT_ID',
+  model = 'gemini-2.5-flash'
+) {
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: 'us-central1',
   });
 
   const filePart = {
-    file_data: {
-      file_uri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
-      mime_type: 'audio/mpeg',
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
+      mimeType: 'audio/mpeg',
     },
   };
   const textPart = {
@@ -37,13 +40,12 @@ async function transcript_audio(projectId = 'PROJECT_ID') {
     Use speaker A, speaker B, etc. to identify speakers.`,
   };
 
-  const request = {
-    contents: [{role: 'user', parts: [filePart, textPart]}],
-  };
+  const response = await client.models.generateContent({
+    model: model,
+    contents: [filePart, textPart],
+  });
 
-  const resp = await generativeModel.generateContent(request);
-  const contentResponse = await resp.response;
-  console.log(JSON.stringify(contentResponse));
+  console.log(response.text);
 }
 // [END generativeaionvertexai_gemini_audio_transcription]
 

@@ -20,7 +20,7 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const location = process.env.LOCATION || 'us-central1';
 const model = 'gemini-2.5-flash';
 
 describe('Gemini translate', () => {

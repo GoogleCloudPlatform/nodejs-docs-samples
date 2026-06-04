@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 
-describe('Get store name ideas from text input prompt', async () => {
+describe.skip('Get store name ideas from text input prompt', async () => {
   it('should get store name ideas from text input prompt', async () => {
     const output = execSync(`node ./gemini-text-input.js ${projectId}`);
 

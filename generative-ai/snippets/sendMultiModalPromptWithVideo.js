@@ -13,52 +13,39 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_single_turn_video]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function sendMultiModalPromptWithVideo(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  const generativeVisionModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   // Pass multimodal prompt
-  const request = {
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            fileData: {
-              fileUri: 'gs://cloud-samples-data/video/animals.mp4',
-              mimeType: 'video/mp4',
-            },
-          },
-          {
-            text: 'What is in the video?',
-          },
-        ],
-      },
-    ],
+  const filePart = {
+    fileData: {
+      fileUri: 'gs://cloud-samples-data/video/animals.mp4',
+      mimeType: 'video/mp4',
+    },
   };
 
-  // Create the response
-  const response = await generativeVisionModel.generateContent(request);
-  // Wait for the response to complete
-  const aggregatedResponse = await response.response;
-  // Select the text from the response
-  const fullTextResponse =
-    aggregatedResponse.candidates[0].content.parts[0].text;
+  const textPart = 'What is in the video?';
 
-  console.log(fullTextResponse);
+  // Create the response
+  const response = await client.models.generateContent({
+    model: model,
+    contents: [filePart, textPart],
+  });
+
+  console.log(response.text);
 }
 // [END generativeaionvertexai_gemini_single_turn_video]
 

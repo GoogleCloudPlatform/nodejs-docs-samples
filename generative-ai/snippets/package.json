@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^3.12.0",
-    "@google-cloud/vertexai": "github:googleapis/nodejs-vertexai",
     "@google/genai": "^2.7.0",
     "axios": "^1.6.2",
     "supertest": "^7.0.0"

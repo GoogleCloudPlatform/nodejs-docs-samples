@@ -13,33 +13,42 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_multiturn_chat_stream]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function createStreamChat(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
+  });
 
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
+  const chat = client.chats.create({
     model: model,
   });
 
-  const chat = generativeModel.startChat({});
   const chatInput1 = 'How can I learn more about that?';
 
   console.log(`User: ${chatInput1}`);
 
-  const result1 = await chat.sendMessageStream(chatInput1);
-  for await (const item of result1.stream) {
-    console.log(item.candidates[0].content.parts[0].text);
+  const responseStream = await chat.sendMessageStream({
+    message: chatInput1,
+  });
+
+  let fullResponseText = '';
+
+  for await (const chunk of responseStream) {
+    if (chunk.text) {
+      fullResponseText += chunk.text;
+    }
   }
+  console.log(fullResponseText);
 }
 
 // [END generativeaionvertexai_gemini_multiturn_chat_stream]

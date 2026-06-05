@@ -13,24 +13,22 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_get_started]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function createNonStreamingMultipartContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001',
+  model = 'gemini-2.5-flash',
   image = 'gs://generativeai-downloads/images/scones.jpg',
   mimeType = 'image/jpeg'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeVisionModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   // For images, the SDK supports both Google Cloud Storage URI and base64 strings
@@ -41,27 +39,20 @@ async function createNonStreamingMultipartContent(
     },
   };
 
-  const textPart = {
-    text: 'what is shown in this image?',
-  };
-
-  const request = {
-    contents: [{role: 'user', parts: [filePart, textPart]}],
-  };
+  const textPart = 'what is shown in this image?';
 
   console.log('Prompt Text:');
-  console.log(request.contents[0].parts[1].text);
+  console.log(textPart);
 
   console.log('Non-Streaming Response Text:');
 
   // Generate a response
-  const response = await generativeVisionModel.generateContent(request);
+  const response = await client.models.generateContent({
+    model: model,
+    contents: [filePart, textPart],
+  });
 
-  // Select the text from the response
-  const fullTextResponse =
-    response.response.candidates[0].content.parts[0].text;
-
-  console.log(fullTextResponse);
+  console.log(response.text);
 }
 // [END generativeaionvertexai_gemini_get_started]
 

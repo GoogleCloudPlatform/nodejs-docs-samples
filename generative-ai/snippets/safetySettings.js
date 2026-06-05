@@ -13,58 +13,58 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_safety_settings]
-const {
-  VertexAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 const PROJECT_ID = process.env.CAIP_PROJECT_ID;
 const LOCATION = 'us-central1';
-const MODEL = 'gemini-2.0-flash-001';
+const MODEL = 'gemini-2.5-flash';
 
 async function setSafetySettings() {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: PROJECT_ID, location: LOCATION});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: MODEL,
-    // The following parameters are optional
-    // They can also be passed to individual content generation requests
-    safetySettings: [
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-      },
-      {
-        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-      },
-    ],
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: PROJECT_ID,
+    location: LOCATION,
   });
 
-  const request = {
-    contents: [{role: 'user', parts: [{text: 'Tell me something dangerous.'}]}],
-  };
+  const prompt = 'Tell me something dangerous.';
 
   console.log('Prompt:');
-  console.log(request.contents[0].parts[0].text);
+  console.log(prompt);
   console.log('Streaming Response Text:');
 
   // Create the response stream
-  const responseStream = await generativeModel.generateContentStream(request);
+  const responseStream = await client.models.generateContentStream({
+    model: MODEL,
+    contents: prompt,
+    config: {
+      safetySettings: [
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_HARASSMENT',
+          threshold: 'BLOCK_LOW_AND_ABOVE',
+        },
+      ],
+    },
+  });
 
   // Log the text response as it streams
-  for await (const item of responseStream.stream) {
-    if (item.candidates[0].finishReason === 'SAFETY') {
-      console.log('This response stream terminated due to safety concerns.');
-      break;
-    } else {
-      process.stdout.write(item.candidates[0].content.parts[0].text);
+  for await (const chunk of responseStream) {
+    const candidate = chunk.candidates?.[0];
+
+    if (candidate?.finishReason === 'SAFETY') {
+      console.log('\nThis response stream terminated due to safety concerns.');
+      return;
+    }
+
+    if (chunk.text) {
+      process.stdout.write(chunk.text);
     }
   }
   console.log('This response stream terminated due to safety concerns.');

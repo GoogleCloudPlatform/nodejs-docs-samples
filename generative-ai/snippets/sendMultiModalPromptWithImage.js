@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_gemini_single_turn_multi_image]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 const axios = require('axios');
 
 async function getBase64(url) {
@@ -27,7 +27,7 @@ async function getBase64(url) {
 async function sendMultiModalPromptWithImage(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
   // For images, the SDK supports base64 strings
   const landmarkImage1 = await getBase64(
@@ -40,58 +40,44 @@ async function sendMultiModalPromptWithImage(
     'https://storage.googleapis.com/cloud-samples-data/vertex-ai/llm/prompts/landmark3.png'
   );
 
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  const generativeVisionModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   // Pass multimodal prompt
-  const request = {
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            inlineData: {
-              data: landmarkImage1,
-              mimeType: 'image/png',
-            },
-          },
-          {
-            text: 'city: Rome, Landmark: the Colosseum',
-          },
-
-          {
-            inlineData: {
-              data: landmarkImage2,
-              mimeType: 'image/png',
-            },
-          },
-          {
-            text: 'city: Beijing, Landmark: Forbidden City',
-          },
-          {
-            inlineData: {
-              data: landmarkImage3,
-              mimeType: 'image/png',
-            },
-          },
-        ],
+  const contents = [
+    {
+      inlineData: {
+        data: landmarkImage1,
+        mimeType: 'image/png',
       },
-    ],
-  };
+    },
+    'city: Rome, Landmark: the Colosseum',
+    {
+      inlineData: {
+        data: landmarkImage2,
+        mimeType: 'image/png',
+      },
+    },
+    'city: Beijing, Landmark: Forbidden City',
+    {
+      inlineData: {
+        data: landmarkImage3,
+        mimeType: 'image/png',
+      },
+    },
+  ];
 
   // Create the response
-  const response = await generativeVisionModel.generateContent(request);
-  // Wait for the response to complete
-  const aggregatedResponse = await response.response;
-  // Select the text from the response
-  const fullTextResponse =
-    aggregatedResponse.candidates[0].content.parts[0].text;
+  const response = await client.models.generateContent({
+    model: model,
+    contents: contents,
+  });
 
-  console.log(fullTextResponse);
+  console.log(response.text);
 }
 // [END generativeaionvertexai_gemini_single_turn_multi_image]
 

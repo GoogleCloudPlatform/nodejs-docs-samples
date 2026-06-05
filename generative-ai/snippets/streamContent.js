@@ -14,38 +14,38 @@
 
 // [START generativeaionvertexai_gemini_content]
 // [START aiplatform_gemini_content]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function createStreamContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const request = {
-    contents: [{role: 'user', parts: [{text: 'What is Node.js?'}]}],
-  };
+  const promptText = 'What is Node.js?';
 
   console.log('Prompt:');
-  console.log(request.contents[0].parts[0].text);
+  console.log(promptText);
   console.log('Streaming Response Text:');
 
-  // Create the response stream
-  const responseStream = await generativeModel.generateContentStream(request);
+  const responseStream = await client.models.generateContentStream({
+    model: model,
+    contents: promptText,
+  });
 
   // Log the text response as it streams
-  for await (const item of responseStream.stream) {
-    process.stdout.write(item.candidates[0].content.parts[0].text);
+  for await (const chunk of responseStream) {
+    if (chunk.text) {
+      process.stdout.write(chunk.text);
+    }
   }
 }
 // [END aiplatform_gemini_content]

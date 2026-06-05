@@ -21,16 +21,16 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-2.0-flash-001';
+const model = 'gemini-2.5-flash';
 
-describe.skip('Safety settings', async () => {
+describe('Safety settings', async () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-2.0-flash-001';
+  // const model = 'gemini-2.5-flash';
 
   it('should reject a dangerous request', async () => {
     const output = execSync(

@@ -14,7 +14,7 @@
 
 // [START generativeaionvertexai_gemini_content_nonstreaming]
 // [START aiplatform_gemini_content_nonstreaming]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -22,34 +22,21 @@ const {VertexAI} = require('@google-cloud/vertexai');
 async function createNonStreamingContent(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: model,
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const request = {
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: 'Write a story about a magic backpack.',
-          },
-        ],
-      },
-    ],
-  };
+  const response = await client.models.generateContent({
+    model: model,
+    contents: 'Write a story about a magic backpack.',
+  });
 
-  console.log(JSON.stringify(request));
-
-  const result = await generativeModel.generateContent(request);
-
-  console.log(result.response.text);
+  console.log(response.text);
 }
 // [END aiplatform_gemini_content_nonstreaming]
 // [END generativeaionvertexai_gemini_content_nonstreaming]

@@ -37,7 +37,7 @@ describe('Generative AI NonStreaming Content', () => {
       `node ./nonStreamingContent.js ${projectId} ${location} ${model}`
     );
 
-    // Assert that the correct prompt was issued
+    // Assert that the model returned a response
     assert.isString(output);
     assert.isAtLeast(
       output.trim().length,

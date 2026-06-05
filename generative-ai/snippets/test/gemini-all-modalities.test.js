@@ -20,10 +20,13 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const model = 'gemini-2.5-flash';
 
-describe.skip('Process all modalities', async () => {
+describe('Process all modalities', async () => {
   it('should process all modalities', async () => {
-    const output = execSync(`node ./gemini-all-modalities.js ${projectId}`);
+    const output = execSync(
+      `node ./gemini-all-modalities.js ${projectId} ${model}`
+    );
 
     assert(output.length > 0);
   });

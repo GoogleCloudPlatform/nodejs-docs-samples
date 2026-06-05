@@ -163,9 +163,7 @@ describe('Client with SourcesAndFindings', async () => {
     const output = exec(`node v1/listFindingsAtTime.js ${data.sourceName}`);
     // Nothing was created for the source more then a few minutes ago, so
     // days ago should return nothing.
-    //commented below assert and added new assert as source is created in before block
-    // assert.equal(output, '');
-    assert.include(output, data.sourceName);
+    assert.equal(output, '');
   });
 
   it('client can add security marks to finding', () => {

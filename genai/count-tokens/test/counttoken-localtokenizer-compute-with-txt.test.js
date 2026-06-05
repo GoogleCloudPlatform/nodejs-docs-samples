@@ -18,7 +18,7 @@ const {assert} = require('chai');
 const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const sample = require('../counttoken-localtokenizer-compute-with-txt.js');
+const sample = require('../counttoken-compute-with-txt.js');
 const {delay} = require('../../test/util');
 
 describe('counttoken-localtokenizer-compute-with-txt', () => {
@@ -26,7 +26,7 @@ describe('counttoken-localtokenizer-compute-with-txt', () => {
     this.timeout(18000);
     this.retries(4);
     await delay(this.test);
-    const output = await sample.countTokenLocalTokenizerCompute(projectId);
+    const output = await sample.countTokens(projectId);
     assert(output.length > 0);
   });
 });

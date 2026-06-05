@@ -21,7 +21,7 @@
  *
  * @param {string} projectId - The Google Cloud project ID where the parameter is located.
  * @param {string} parameterId - The ID of the parameter for which version details are to be rendered.
- * @param {string} parameterVersionId - The ID of the parameter version to be rendered.
+ * @param {string} parameterVersionId - The ID of the parameter version to be rendered or an alias (e.g. 'latest').
  */
 async function main(projectId, parameterId, parameterVersionId) {
   // [START parametermanager_render_param_version]
@@ -31,6 +31,7 @@ async function main(projectId, parameterId, parameterVersionId) {
   // const projectId = 'YOUR_PROJECT_ID';
   // const parameterId = 'YOUR_PARAMETER_ID';
   // const parameterVersionId = 'YOUR_PARAMETER_VERSION_ID';
+  // const parameterVersionId = 'latest';
 
   // Imports the Parameter Manager library
   const {ParameterManagerClient} = require('@google-cloud/parametermanager');

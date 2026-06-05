@@ -17,22 +17,22 @@
 const proxyquire = require('proxyquire').noCallThru();
 const sinon = require('sinon');
 const assert = require('assert');
-const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
 describe('tasks/function', () => {
   let key;
 
   const getSample = function () {
-    const requestPromise = sinon
-      .stub()
-      .returns(new Promise(resolve => resolve('test')));
+    const sendGridStub = {
+      setApiKey: sinon.stub(),
+      send: sinon.stub().resolves([{statusCode: 200}]),
+    };
 
     return {
       program: proxyquire('../', {
-        'request-promise': requestPromise,
+        '@sendgrid/mail': sendGridStub,
       }),
       mocks: {
-        requestPromise: requestPromise,
+        sendGridStub: sendGridStub,
       },
     };
   };
@@ -54,14 +54,7 @@ describe('tasks/function', () => {
   };
 
   before(async () => {
-    const secrets = new SecretManagerServiceClient();
-    const projectId = await secrets.getProjectId();
-    const secretName = 'sendgrid-api-key';
-    const secretVersion = 1;
-    const [version] = await secrets.accessSecretVersion({
-      name: secrets.secretVersionPath(projectId, secretName, secretVersion),
-    });
-    key = version.payload.data.toString();
+    key = 'SG.dummy_key_for_testing';
     process.env.SENDGRID_API_KEY = key;
   });
 
@@ -167,5 +160,11 @@ describe('tasks/function', () => {
     assert.strictEqual(mocks.res.status.callCount, 1);
     assert.deepStrictEqual(mocks.res.status.firstCall.args, [200]);
     assert.strictEqual(mocks.res.send.callCount, 1);
+    sinon.assert.calledOnceWithExactly(sample.mocks.sendGridStub.send, {
+      to: 'to@gmail.com',
+      from: 'postcard@example.com',
+      subject: 'A Postcard Just for You!',
+      html: sinon.match.string,
+    });
   });
 });

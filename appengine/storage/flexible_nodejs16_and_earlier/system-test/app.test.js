@@ -32,12 +32,7 @@ const requestObj = supertest(proxyquire(path.join(cwd, 'app'), {process}));
 
 before(async () => {
   try {
-    await bucket.create(bucket).then(() => {
-      return bucket.acl.add({
-        entity: 'allUsers',
-        role: Storage.acl.READER_ROLE,
-      });
-    });
+    await bucket.create();
   } catch (err) {
     if (
       !err.message.match(

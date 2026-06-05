@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
-const model = 'gemini-2.0-flash-001';
+const model = 'gemini-2.5-flash';
 
 describe('Generative AI Function Calling Stream Content', () => {
   /**
@@ -30,7 +30,7 @@ describe('Generative AI Function Calling Stream Content', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-2.0-flash-001';
+  // const model = 'gemini-2.5-flash';
 
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(

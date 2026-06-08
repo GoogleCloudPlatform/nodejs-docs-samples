@@ -14,6 +14,8 @@
 
 'use strict';
 
+// [START generativeaionvertexai_gemini_translate]
+// [START generativeaionvertexai_gemini_system_instruction]
 // [START googlegenaisdk_textgen_sys_instr_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -51,6 +53,8 @@ async function generateContent(
   return response.text;
 }
 // [END googlegenaisdk_textgen_sys_instr_with_txt]
+// [END generativeaionvertexai_gemini_system_instruction]
+// [END generativeaionvertexai_gemini_translate]
 
 module.exports = {
   generateContent,

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-
+// [START generativeaionvertexai_gemini_audio_transcription]
 // [START googlegenaisdk_textgen_transcript_with_gcs_audio]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -63,6 +63,7 @@ async function generateText(
 }
 
 // [END googlegenaisdk_textgen_transcript_with_gcs_audio]
+// [END generativeaionvertexai_gemini_audio_transcription]
 
 module.exports = {
   generateText,

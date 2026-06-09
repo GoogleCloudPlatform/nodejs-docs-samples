@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-
+// [START generativeaionvertexai_gemini_token_count]
 // [START googlegenaisdk_counttoken_resp_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -41,6 +41,7 @@ async function countTokens(
   return response.usageMetadata;
 }
 // [END googlegenaisdk_counttoken_resp_with_txt]
+// [END generativeaionvertexai_gemini_token_count]
 
 module.exports = {
   countTokens,

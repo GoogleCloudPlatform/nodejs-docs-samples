@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START generativeaionvertexai_gemini_multiturn_chat_stream]
 // [START googlegenaisdk_textgen_chat_stream_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -48,6 +49,7 @@ async function generateText(
 }
 
 // [END googlegenaisdk_textgen_chat_stream_with_txt]
+// [END generativeaionvertexai_gemini_multiturn_chat_stream]
 
 module.exports = {
   generateText,

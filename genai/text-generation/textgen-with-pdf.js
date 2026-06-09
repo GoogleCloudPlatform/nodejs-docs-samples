@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-
+// [START generativeaionvertexai_gemini_pdf]
 // [START googlegenaisdk_textgen_with_pdf]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -59,6 +59,7 @@ async function generateText(
 }
 
 // [END googlegenaisdk_textgen_with_pdf]
+// [END generativeaionvertexai_gemini_pdf]
 
 module.exports = {
   generateText,

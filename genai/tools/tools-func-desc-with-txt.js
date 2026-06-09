@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START generativeaionvertexai_function_calling_advanced]
 // [START googlegenaisdk_tools_func_desc_with_txt]
 const {GoogleGenAI, Type} = require('@google/genai');
 
@@ -99,6 +100,7 @@ async function generateFunctionDesc(
 }
 
 // [END googlegenaisdk_tools_func_desc_with_txt]
+// [END generativeaionvertexai_function_calling_advanced]
 
 module.exports = {
   generateFunctionDesc,

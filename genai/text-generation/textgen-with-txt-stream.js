@@ -13,7 +13,7 @@
 // limitations under the License.
 
 'use strict';
-// [START generativeaionvertexai_stream_text_basic]
+
 // [START googlegenaisdk_textgen_with_txt_stream]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -43,7 +43,6 @@ async function generateContent(
   return response_text;
 }
 // [END googlegenaisdk_textgen_with_txt_stream]
-// [END generativeaionvertexai_stream_text_basic]
 
 module.exports = {
   generateContent,

@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,46 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-// [START googlegenaisdk_textgen_sys_instr_with_txt]
+// [START generativeaionvertexai_gemini_system_instruction]
 const {GoogleGenAI} = require('@google/genai');
 
-const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-
-async function generateContent(
-  projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
+async function set_system_instruction(
+  projectId = 'PROJECT_ID',
+  model = 'gemini-2.5-flash'
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
-    location: location,
+    location: 'us-central1',
   });
 
-  const prompt = `
-  User input: I like bagels.
-  Answer:
-  `;
+  const textPart = {
+    text: `
+    User input: I like bagels.
+    Answer:`,
+  };
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: prompt,
+    model: model,
+    contents: [textPart],
     config: {
-      systemInstruction: [
-        'You are a language translator.',
-        'Your mission is to translate text in English to French.',
-      ],
+      systemInstruction: {
+        parts: [
+          {text: 'You are a helpful language translator.'},
+          {text: 'Your mission is to translate text in English to French.'},
+        ],
+      },
     },
   });
 
   console.log(response.text);
-
-  return response.text;
 }
-// [END googlegenaisdk_textgen_sys_instr_with_txt]
+// [END generativeaionvertexai_gemini_system_instruction]
 
-module.exports = {
-  generateContent,
-};
+set_system_instruction(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

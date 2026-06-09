@@ -1,4 +1,4 @@
-// Copyright 2025 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,36 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-'use strict';
-
-// [START googlegenaisdk_counttoken_resp_with_txt]
+// [START generativeaionvertexai_gemini_generate_from_text_input]
 const {GoogleGenAI} = require('@google/genai');
-
-const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-
-async function countTokens(
-  projectId = GOOGLE_CLOUD_PROJECT,
-  location = GOOGLE_CLOUD_LOCATION
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
+async function generate_from_text_input(
+  projectId = 'PROJECT_ID',
+  model = 'gemini-2.5-flash'
 ) {
   const client = new GoogleGenAI({
     vertexai: true,
     project: projectId,
-    location: location,
-    httpOptions: {apiVersion: 'v1'},
+    location: 'us-central1',
   });
+
+  const prompt =
+    "What's a good name for a flower shop that specializes in selling bouquets of dried flowers?";
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: 'Why is the sky blue?',
+    model: model,
+    contents: prompt,
   });
 
-  console.log(response.usageMetadata);
-
-  return response.usageMetadata;
+  console.log(response.text);
 }
-// [END googlegenaisdk_counttoken_resp_with_txt]
+// [END generativeaionvertexai_gemini_generate_from_text_input]
 
-module.exports = {
-  countTokens,
-};
+generate_from_text_input(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

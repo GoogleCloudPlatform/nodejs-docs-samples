@@ -14,7 +14,6 @@
 
 'use strict';
 
-// [START generativeaionvertexai_gemini_video_with_audio]
 // [START googlegenaisdk_textgen_with_video]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -57,7 +56,6 @@ async function generateContent(
   return response.text;
 }
 // [END googlegenaisdk_textgen_with_video]
-// [END generativeaionvertexai_gemini_video_with_audio]
 
 module.exports = {
   generateContent,

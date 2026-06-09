@@ -14,6 +14,7 @@
 
 'use strict';
 
+// [START generativeaionvertexai_gemini_safety_settings]
 // [START googlegenaisdk_safety_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -109,6 +110,7 @@ async function generateWithSafetySettings(
 }
 
 // [END googlegenaisdk_safety_with_txt]
+// [END generativeaionvertexai_gemini_safety_settings]
 
 module.exports = {
   generateWithSafetySettings,

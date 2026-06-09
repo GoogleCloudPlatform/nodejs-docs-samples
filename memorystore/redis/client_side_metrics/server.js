@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+// [START memorystore_redis_client_side_metrics]
+
 'use strict';
 
 const { trace, metrics } = require('@opentelemetry/api');
@@ -112,3 +114,4 @@ async function main() {
 }
 
 main().catch(console.error);
+// [END memorystore_redis_client_side_metrics]

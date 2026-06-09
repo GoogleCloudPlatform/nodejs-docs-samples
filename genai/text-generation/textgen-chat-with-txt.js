@@ -14,8 +14,6 @@
 
 'use strict';
 
-// [START generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
-// [START aiplatform_gemini_multiturn_chat_nonstreaming]
 // [START googlegenaisdk_textgen_chat_with_txt]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -57,8 +55,7 @@ async function generateText(
 }
 
 // [END googlegenaisdk_textgen_chat_with_txt]
-// [END aiplatform_gemini_multiturn_chat_nonstreaming]
-// [END generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
+
 module.exports = {
   generateText,
 };

@@ -14,7 +14,6 @@
 
 'use strict';
 
-// [START generativeaionvertexai_gemini_token_count_advanced]
 // [START googlegenaisdk_counttoken_with_txt_vid]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -48,7 +47,6 @@ async function countTokens(
   return response.totalTokens;
 }
 // [END googlegenaisdk_counttoken_with_txt_vid]
-// [END generativeaionvertexai_gemini_token_count_advanced]
 
 module.exports = {
   countTokens,

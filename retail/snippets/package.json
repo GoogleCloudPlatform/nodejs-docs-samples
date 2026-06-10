@@ -2,6 +2,11 @@
   "name": "node-snippets",
   "license": "Apache-2.0",
   "author": "Google LLC",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  },
   "engines": {
     "node": ">=18.0.0"
   },

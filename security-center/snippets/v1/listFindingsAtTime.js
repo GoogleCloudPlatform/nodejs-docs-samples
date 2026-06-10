@@ -37,14 +37,8 @@ function main(sourceName = 'FULL RESOURCE PATH TO PARENT SOURCE') {
 
   async function listFindingsAtTime() {
     const [response] = await client.listFindings({
-      // List findings across all sources.
       parent: sourceName,
-      //commented readTime as it is not supported, refer below link
-      //https://cloud.google.com/security-command-center/docs/release-notes#April_15_2024
-      // readTime: {
-      //   seconds: Math.floor(fiveDaysAgo.getTime() / 1000),
-      //   nanos: (fiveDaysAgo.getTime() % 1000) * 1e6,
-      // },
+      filter: `event_time < "${fiveDaysAgo.toISOString()}"`,
     });
     let count = 0;
     Array.from(response).forEach(result =>

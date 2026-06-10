@@ -16,7 +16,7 @@
 
 const {Storage} = require('@google-cloud/storage');
 const {assert} = require('chai');
-const {after, it} = require('mocha');
+const {before, after, afterEach, it} = require('mocha');
 const cp = require('child_process');
 const uuid = require('uuid');
 
@@ -49,6 +49,10 @@ const DUAL_REGION = {
 };
 const RPO_ASYNC_TURBO = 'ASYNC_TURBO';
 const RPO_DEFAULT = 'DEFAULT';
+
+before(async () => {
+  await storage.createBucket(bucketName);
+});
 
 async function deleteAllBucketsAsync() {
   const [buckets] = await storage.getBuckets({prefix: samplesTestBucketPrefix});
@@ -488,4 +492,100 @@ it('should create a bucket with object retention enabled', async () => {
   );
   const [metadata] = await objectRetentionBucket.getMetadata();
   assert.strictEqual(metadata.objectRetention.mode, 'Enabled');
+});
+
+it('should set bucket encryption enforcement configuration', async function () {
+  if (!defaultKmsKeyName) {
+    this.skip();
+  }
+  const output = execSync(
+    `node setBucketEncryptionEnforcementConfig.js ${bucketName} ${defaultKmsKeyName}`
+  );
+
+  assert.include(
+    output,
+    `Encryption enforcement configuration updated for bucket ${bucketName}.`
+  );
+
+  assert.include(output, `Default KMS Key: ${defaultKmsKeyName}`);
+
+  assert.include(output, 'Google Managed (GMEK) Enforcement:');
+  assert.include(output, 'Mode: FullyRestricted');
+
+  assert.include(output, 'Customer Managed (CMEK) Enforcement:');
+  assert.include(output, 'Mode: NotRestricted');
+
+  assert.include(output, 'Customer Supplied (CSEK) Enforcement:');
+  assert.include(output, 'Mode: FullyRestricted');
+
+  assert.match(output, new RegExp('Effective:'));
+
+  const [metadata] = await bucket.getMetadata();
+  const encryption = metadata.encryption || {};
+  assert.strictEqual(
+    encryption.googleManagedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerManagedEncryptionEnforcementConfig?.restrictionMode,
+    'NotRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerSuppliedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+});
+
+it('should get bucket encryption enforcement configuration', async function () {
+  if (!defaultKmsKeyName) {
+    this.skip();
+  }
+  const output = execSync(
+    `node getBucketEncryptionEnforcementConfig.js ${bucketName}`
+  );
+
+  assert.include(
+    output,
+    `Encryption enforcement configuration for bucket ${bucketName}.`
+  );
+  assert.include(output, `Default KMS Key: ${defaultKmsKeyName}`);
+
+  assert.include(output, 'Google Managed (GMEK) Enforcement:');
+  assert.include(output, 'Mode: FullyRestricted');
+  assert.match(output, /Effective:/);
+
+  const [metadata] = await bucket.getMetadata();
+  const encryption = metadata.encryption || {};
+
+  assert.strictEqual(encryption.defaultKmsKeyName, defaultKmsKeyName);
+  assert.strictEqual(
+    encryption.googleManagedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerManagedEncryptionEnforcementConfig?.restrictionMode,
+    'NotRestricted'
+  );
+  assert.strictEqual(
+    encryption.customerSuppliedEncryptionEnforcementConfig?.restrictionMode,
+    'FullyRestricted'
+  );
+});
+
+it('should update and then remove bucket encryption enforcement configuration', async () => {
+  const output = execSync(
+    `node updateBucketEncryptionEnforcementConfig.js ${bucketName}`
+  );
+
+  assert.include(
+    output,
+    `Google-managed encryption enforcement set to FullyRestricted for ${bucketName}.`
+  );
+  assert.include(
+    output,
+    `All encryption enforcement configurations removed from bucket ${bucketName}.`
+  );
+
+  const [metadata] = await bucket.getMetadata();
+  assert.ok(!metadata.encryption);
 });

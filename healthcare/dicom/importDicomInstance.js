@@ -73,7 +73,7 @@ const main = (
     } else {
       console.log('Encountered errors. Sample error:');
       console.log(
-        'Resource on which error occured:',
+        'Resource on which error occurred:',
         data.error.details[0]['sampleErrors'][0]['resource']
       );
       console.log(

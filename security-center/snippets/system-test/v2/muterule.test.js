@@ -46,9 +46,15 @@ describe('Client with mute rule V2', async () => {
       },
     };
 
-    const [muteConfigResponse] = await client
-      .createMuteConfig(createMuteRuleRequest)
-      .catch(error => console.error(error));
+    let muteConfigResponse;
+    try {
+      [muteConfigResponse] = await client.createMuteConfig(
+        createMuteRuleRequest
+      );
+    } catch (error) {
+      console.error('API Error during createMuteConfig:', error);
+      throw error;
+    }
 
     const muteConfigId = muteConfigResponse.name.split('/')[5];
 

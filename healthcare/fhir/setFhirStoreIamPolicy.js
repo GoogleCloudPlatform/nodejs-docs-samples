@@ -46,7 +46,7 @@ const main = (
         policy: {
           bindings: [
             {
-              members: member,
+              members: [member],
               role: role,
             },
           ],

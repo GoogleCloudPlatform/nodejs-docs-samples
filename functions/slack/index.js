@@ -17,7 +17,7 @@
 // [START functions_slack_setup]
 const functions = require('@google-cloud/functions-framework');
 const google = require('@googleapis/kgsearch');
-const {verifyRequestSignature} = require('@slack/events-api');
+const crypto = require('crypto');
 
 // Get a reference to the Knowledge Graph Search component
 const kgsearch = google.kgsearch('v1');
@@ -93,15 +93,49 @@ const formatSlackMessage = (query, response) => {
  * @param {string} req.rawBody Raw body of webhook request to check signature against.
  */
 const verifyWebhook = req => {
-  const signature = {
-    signingSecret: process.env.SLACK_SECRET,
-    requestSignature: req.headers['x-slack-signature'],
-    requestTimestamp: req.headers['x-slack-request-timestamp'],
-    body: req.rawBody,
-  };
+  const signingSecret = process.env.SLACK_SECRET;
+  const requestSignature = req.headers['x-slack-signature'];
+  const requestTimestamp = req.headers['x-slack-request-timestamp'];
+  const requestBody = req.rawBody;
 
-  // This method throws an exception if an incoming request is invalid.
-  verifyRequestSignature(signature);
+  if (!requestSignature || !requestTimestamp) {
+    const err = new Error('Missing Slack validation headers.');
+    err.code = 400;
+    throw err;
+  }
+
+  if (!signingSecret) {
+    const err = new Error(
+      'Server configuration error: SLACK_SECRET is missing.'
+    );
+    err.code = 500;
+    throw err;
+  }
+
+  // Prevent replay attacks by verifying the timestamp is recent
+  const now = Math.floor(Date.now() / 1000);
+  if (Math.abs(now - Number(requestTimestamp)) > 60 * 5) {
+    const err = new Error('Slack request timestamp is too old.');
+    err.code = 401;
+    throw err;
+  }
+
+  const hmac = crypto.createHmac('sha256', signingSecret);
+  hmac.update('v0:' + requestTimestamp + ':', 'utf8');
+  hmac.update(requestBody || '');
+  const expectedSignature = 'v0=' + hmac.digest('hex');
+
+  const sigBuffer = Buffer.from(requestSignature, 'utf8');
+  const expBuffer = Buffer.from(expectedSignature, 'utf8');
+
+  if (
+    sigBuffer.length !== expBuffer.length ||
+    !crypto.timingSafeEqual(sigBuffer, expBuffer)
+  ) {
+    const err = new Error('Invalid Slack signature.');
+    err.code = 401;
+    throw err;
+  }
 };
 // [END functions_verify_webhook]
 
@@ -111,26 +145,13 @@ const verifyWebhook = req => {
  *
  * @param {string} query The user's search query.
  */
-const makeSearchRequest = query => {
-  return new Promise((resolve, reject) => {
-    kgsearch.entities.search(
-      {
-        auth: process.env.KG_API_KEY,
-        query: query,
-        limit: 1,
-      },
-      (err, response) => {
-        console.log(err);
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        // Return a formatted message
-        resolve(formatSlackMessage(query, response));
-      }
-    );
+const makeSearchRequest = async query => {
+  const response = await kgsearch.entities.search({
+    auth: process.env.KG_API_KEY,
+    query,
+    limit: 1,
   });
+  return formatSlackMessage(query, response);
 };
 // [END functions_slack_request]
 
@@ -169,12 +190,9 @@ functions.http('kgSearch', async (req, res) => {
 
     // Send the formatted message back to Slack
     res.json(response);
-
-    return Promise.resolve();
   } catch (err) {
     console.error(err);
-    res.status(err.code || 500).send(err);
-    return Promise.reject(err);
+    res.status(err.code || 500).send(err.message || 'Internal Server Error');
   }
 });
 // [END functions_slack_search]

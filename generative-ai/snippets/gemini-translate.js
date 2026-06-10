@@ -13,20 +13,23 @@
 // limitations under the License.
 
 'use strict';
+// [START generativeaionvertexai_gemini_translate]
+const {GoogleGenAI} = require('@google/genai');
 
-async function geminiTranslation(projectId) {
-  // [START generativeaionvertexai_gemini_translate]
-  const {
-    VertexAI,
-    HarmCategory,
-    HarmBlockThreshold,
-  } = require('@google-cloud/vertexai');
-  /**
-   * TODO(developer): Update/uncomment these variables before running the sample.
-   */
-  // projectId = 'your-project-id';
-  const location = 'us-central1';
-  const modelName = 'gemini-2.0-flash-001';
+/**
+ * TODO(developer): Update these variables before running the sample.
+ */
+async function geminiTranslation(
+  projectId = 'PROJECT_ID',
+  location = 'us-central1',
+  model = 'gemini-2.5-flash'
+) {
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location,
+  });
+
   // The text to be translated.
   const text = 'Hello! How are you doing today?';
   // The language code of the target language. Defaults to "fr" (*French).
@@ -34,59 +37,48 @@ async function geminiTranslation(projectId) {
   // https://cloud.google.com/translate/docs/languages#neural_machine_translation_model
   const targetLanguageCode = 'fr';
 
-  const generationConfig = {
-    maxOutputTokens: 2048,
-    temperature: 0.4,
-    topP: 1,
-    topK: 32,
-  };
-
-  const safetySettings = [
-    {
-      category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
-  ];
-
-  const content = `Your mission is to translate text in English to ${targetLanguageCode}`;
-
-  const vertexAI = new VertexAI({project: projectId, location});
-  // Instantiate models
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: modelName,
-    safetySettings,
-    generationConfig,
-    systemInstruction: {
-      parts: [{text: content}],
-    },
-  });
-
   const textPart = {
     text: `
     User input:${text}
     Answer:`,
   };
 
-  const request = {
-    contents: [{role: 'user', parts: [textPart]}],
-  };
+  const content = `Your mission is to translate text in English to ${targetLanguageCode}`;
 
-  const result = await generativeModel.generateContent(request);
-  const contentResponse = await result.response;
-  console.log(JSON.stringify(contentResponse));
-  return contentResponse;
+  const response = await client.models.generateContent({
+    model: model,
+    contents: [textPart],
+    config: {
+      maxOutputTokens: 2048,
+      temperature: 0.4,
+      topP: 1,
+      topK: 32,
+      systemInstruction: {
+        parts: [{text: content}],
+      },
+      safetySettings: [
+        {
+          category: 'HARM_CATEGORY_HATE_SPEECH',
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+        {
+          category: 'HARM_CATEGORY_HARASSMENT',
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+      ],
+    },
+  });
+
+  console.log(response.text);
+  return response;
   // [END generativeaionvertexai_gemini_translate]
 }
 

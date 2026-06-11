@@ -80,6 +80,7 @@ describe('Folders', () => {
   it('should delete a folder recursively', async () => {
     const recursiveFolderName = uuid.v4();
     execSync(`node createFolder.js ${bucketName} ${recursiveFolderName}`);
+    await bucket.file(`${recursiveFolderName}/test.txt`).save('hello');
     const output = execSync(
       `node deleteFolderRecursive.js ${bucketName} ${recursiveFolderName}`
     );

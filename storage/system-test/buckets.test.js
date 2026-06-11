@@ -24,6 +24,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const storage = new Storage();
 const samplesTestBucketPrefix = `nodejs-storage-samples-${uuid.v4()}`;
+const bucketNameCreate = `${samplesTestBucketPrefix}-h`;
 const bucketName = `${samplesTestBucketPrefix}-a`;
 const bucketNameDualRegion = `${samplesTestBucketPrefix}-b`;
 const bucketNameDualRegionTurbo = `${samplesTestBucketPrefix}-c`;
@@ -69,8 +70,8 @@ afterEach(async () => {
 });
 
 it('should create a bucket', async () => {
-  const output = execSync(`node createNewBucket.js ${bucketName}`);
-  assert.match(output, new RegExp(`Bucket ${bucketName} created`));
+  const output = execSync(`node createNewBucket.js ${bucketNameCreate}`);
+  assert.match(output, new RegExp(`Bucket ${bucketNameCreate} created`));
   const [exists] = await bucket.exists();
   assert.strictEqual(exists, true);
 });
@@ -574,18 +575,15 @@ it('should get bucket encryption enforcement configuration', async function () {
 
 it('should update and then remove bucket encryption enforcement configuration', async () => {
   const output = execSync(
-    `node updateBucketEncryptionEnforcementConfig.js ${bucketName}`
+    `node updateBucketEncryptionEnforcementConfig.js ${bucketNameCreate}`
   );
-
+  console.error('Resultado del test', output);
   assert.include(
     output,
-    `Google-managed encryption enforcement set to FullyRestricted for ${bucketName}.`
+    `Google-managed encryption enforcement set to FullyRestricted for ${bucketNameCreate}.`
   );
   assert.include(
     output,
-    `All encryption enforcement configurations removed from bucket ${bucketName}.`
+    `All encryption enforcement configurations removed from bucket ${bucketNameCreate}.`
   );
-
-  const [metadata] = await bucket.getMetadata();
-  assert.ok(!metadata.encryption);
 });

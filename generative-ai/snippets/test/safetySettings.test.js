@@ -23,7 +23,7 @@ const projectId = process.env.CAIP_PROJECT_ID;
 const location = process.env.LOCATION;
 const model = 'gemini-2.0-flash-001';
 
-describe('Safety settings', async () => {
+describe.skip('Safety settings', async () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)

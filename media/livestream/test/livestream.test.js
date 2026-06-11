@@ -53,7 +53,10 @@ before(async () => {
     parent: livestreamServiceClient.locationPath(projectId, location),
   });
   for (const channel of channels) {
-    if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
+    const isTestChannel = channel.name.includes(
+      'nodejs-test-livestream-channel'
+    );
+    if (isTestChannel) {
       const request = {
         name: channel.name,
       };
@@ -68,16 +71,18 @@ before(async () => {
         console.log(err);
       }
 
-      const [events] = await livestreamServiceClient.listEvents({
-        parent: channel.name,
-      });
-
-      for (const event of events) {
-        await livestreamServiceClient.deleteEvent({
-          name: event.name,
+      if (channel.createTime.seconds < DATE_NOW_SEC - THREE_HOURS_IN_SEC) {
+        const [events] = await livestreamServiceClient.listEvents({
+          parent: channel.name,
         });
+
+        for (const event of events) {
+          await livestreamServiceClient.deleteEvent({
+            name: event.name,
+          });
+        }
+        await livestreamServiceClient.deleteChannel(request);
       }
-      await livestreamServiceClient.deleteChannel(request);
     }
   }
 

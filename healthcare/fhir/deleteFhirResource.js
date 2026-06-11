@@ -29,6 +29,7 @@ const main = (
     auth: new google.auth.GoogleAuth({
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
+    responseType: 'json',
   });
 
   const deleteFhirResource = async () => {
@@ -46,10 +47,14 @@ const main = (
     // fails, the server returns a 200 OK HTTP status code. To check that the
     // resource was successfully deleted, search for or get the resource and
     // see if it exists.
-    await healthcare.projects.locations.datasets.fhirStores.fhir.delete(
-      request
-    );
-    console.log('Deleted FHIR resource');
+    try {
+      await healthcare.projects.locations.datasets.fhirStores.fhir.delete(
+        request
+      );
+      console.log(`Deleted FHIR resource: ${resourceId}`);
+    } catch (error) {
+      console.error('Error deleting FHIR resource:', error.message || error);
+    }
   };
 
   deleteFhirResource();

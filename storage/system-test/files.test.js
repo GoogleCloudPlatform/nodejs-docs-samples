@@ -57,27 +57,31 @@ describe('file', () => {
   });
 
   after(async () => {
+    // Clean up local temporary download file
     await promisify(fs.unlink)(downloadFilePath).catch(console.error);
-    // Try deleting all files twice, just to make sure
-    await bucket.deleteFiles({force: true}).catch(console.error);
-    await bucket.deleteFiles({force: true}).catch(console.error);
-    await bucket.delete().catch(console.error);
-    await softDeleteBucket
-      .deleteFiles({force: true, versions: true})
-      .catch(() => {});
-    await softDeleteBucket.delete({ignoreNotFound: true}).catch(console.error);
 
-    await objectRetentionBucket.deleteFiles({force: true}).catch(() => {});
-    await objectRetentionBucket
-      .delete({ignoreNotFound: true})
-      .catch(console.error);
+    const targetBuckets = [bucket, softDeleteBucket, objectRetentionBucket];
 
-    await objectRetentionBucket
-      .deleteFiles({force: true, versions: true})
-      .catch(() => {});
-    await objectRetentionBucket
-      .delete({ignoreNotFound: true})
-      .catch(console.error);
+    for (const bucket of targetBuckets) {
+      try {
+        // Disable soft delete retention policy to allow immediate object purging
+        await bucket
+          .setMetadata({
+            softDeletePolicy: {
+              retentionDurationSeconds: 0,
+            },
+          })
+          .catch(() => {});
+
+        // Force delete all objects, including archived generations and soft-deleted files
+        await bucket.deleteFiles({force: true, versions: true}).catch(() => {});
+
+        // Remove the empty bucket from Google Cloud Storage
+        await bucket.delete({ignoreNotFound: true});
+      } catch (error) {
+        console.error(`Failed to delete bucket ${bucket.name}:`, error.message);
+      }
+    }
   });
 
   it('should upload a file', async () => {

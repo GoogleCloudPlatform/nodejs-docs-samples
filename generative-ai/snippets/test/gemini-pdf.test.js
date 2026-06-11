@@ -20,10 +20,11 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const model = 'gemini-2.5-flash';
 
 describe('Analyze PDF document', async () => {
   it('should analyze PDF document', async () => {
-    const output = execSync(`node ./gemini-pdf.js ${projectId}`);
+    const output = execSync(`node ./gemini-pdf.js ${projectId} ${model}`);
 
     assert(output.length > 0);
   });

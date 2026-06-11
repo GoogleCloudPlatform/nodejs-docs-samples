@@ -48,7 +48,7 @@ async function virtualTryOn(
   };
 
   const image = await client.models.recontextImage({
-    model: 'virtual-try-on-preview-08-04',
+    model: 'virtual-try-on-001',
     source: source,
   });
 

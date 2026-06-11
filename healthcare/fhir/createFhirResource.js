@@ -30,6 +30,7 @@ function main(
       scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     }),
     headers: {'Content-Type': 'application/fhir+json'},
+    responseType: 'json',
   });
 
   async function createFhirResource() {

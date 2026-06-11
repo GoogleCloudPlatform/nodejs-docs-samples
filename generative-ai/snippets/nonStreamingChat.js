@@ -14,39 +14,38 @@
 
 // [START generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
 // [START aiplatform_gemini_multiturn_chat_nonstreaming]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
 async function createNonStreamingChat(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001'
+  model = 'gemini-2.5-flash'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
+  });
 
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
+  const chat = client.chats.create({
     model: model,
   });
 
-  const chat = generativeModel.startChat({});
+  const response1 = await chat.sendMessage({message: 'Hello'});
+  console.log('Chat response 1: ', response1.text);
 
-  const result1 = await chat.sendMessage('Hello');
-  const response1 = await result1.response;
-  console.log('Chat response 1: ', JSON.stringify(response1));
+  const response2 = await chat.sendMessage({
+    message: 'Can you tell me a scientific fun fact?',
+  });
+  console.log('Chat response 2: ', response2.text);
 
-  const result2 = await chat.sendMessage(
-    'Can you tell me a scientific fun fact?'
-  );
-  const response2 = await result2.response;
-  console.log('Chat response 2: ', JSON.stringify(response2));
-
-  const result3 = await chat.sendMessage('How can I learn more about that?');
-  const response3 = await result3.response;
-  console.log('Chat response 3: ', JSON.stringify(response3));
+  const response3 = await chat.sendMessage({
+    message: 'How can I learn more about that?',
+  });
+  console.log('Chat response 3: ', response3.text);
 }
 // [END aiplatform_gemini_multiturn_chat_nonstreaming]
 // [END generativeaionvertexai_gemini_multiturn_chat_nonstreaming]

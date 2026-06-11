@@ -13,36 +13,41 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_stream_multimodality_basic]
-const {VertexAI} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-const PROJECT_ID = process.env.CAIP_PROJECT_ID;
-const LOCATION = process.env.LOCATION;
-const MODEL = 'gemini-2.0-flash-001';
 
-async function generateContent() {
-  // Initialize Vertex AI
-  const vertexAI = new VertexAI({project: PROJECT_ID, location: LOCATION});
-  const generativeModel = vertexAI.getGenerativeModel({model: MODEL});
+async function generateContent(
+  projectId = 'PROJECT_ID',
+  location = 'us-central1',
+  model = 'gemini-2.5-flash'
+) {
+  // Initialize client
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
+  });
 
   const request = {
+    model: model,
     contents: [
       {
         role: 'user',
         parts: [
           {
-            file_data: {
-              file_uri: 'gs://cloud-samples-data/video/animals.mp4',
-              mime_type: 'video/mp4',
+            fileData: {
+              fileUri: 'gs://cloud-samples-data/video/animals.mp4',
+              mimeType: 'video/mp4',
             },
           },
           {
-            file_data: {
-              file_uri:
+            fileData: {
+              fileUri:
                 'gs://cloud-samples-data/generative-ai/image/character.jpg',
-              mime_type: 'image/jpeg',
+              mimeType: 'image/jpeg',
             },
           },
           {text: 'Are this video and image correlated?'},
@@ -51,15 +56,15 @@ async function generateContent() {
     ],
   };
 
-  const result = await generativeModel.generateContentStream(request);
+  const responseStream = await client.models.generateContentStream(request);
 
-  for await (const item of result.stream) {
-    console.log(item.candidates[0].content.parts[0].text);
+  for await (const chunk of responseStream) {
+    console.log(chunk.text);
   }
 }
 // [END generativeaionvertexai_stream_multimodality_basic]
 
-generateContent().catch(err => {
+generateContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

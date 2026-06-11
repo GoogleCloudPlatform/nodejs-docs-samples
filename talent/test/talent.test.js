@@ -47,6 +47,7 @@ describe('Talent Solution Jobs API v4 samples', () => {
   const tenantService = new talent.TenantServiceClient();
   const companyService = new talent.CompanyServiceClient();
   const jobService = new talent.JobServiceClient();
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   let tenant;
   let company;
@@ -101,6 +102,7 @@ describe('Talent Solution Jobs API v4 samples', () => {
     });
     console.log(`created job: ${job.name}`);
     jobId = job.name.split('/').slice(-1)[0];
+    await delay(10000);
   });
 
   after(async () => {

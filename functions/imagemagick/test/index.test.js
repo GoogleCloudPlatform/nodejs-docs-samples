@@ -15,7 +15,7 @@
 'use strict';
 
 const assert = require('assert');
-const {execSync, spawn} = require('child_process');
+const {spawn} = require('child_process');
 const {Storage} = require('@google-cloud/storage');
 const sinon = require('sinon');
 const {request} = require('gaxios');
@@ -62,11 +62,6 @@ async function startFF(port) {
   return {ffProc, ffProcHandler};
 }
 
-// ImageMagick is available by default in Cloud Run Functions environments
-// https://cloud.google.com/functions/1stgendocs/tutorials/imagemagick-1st-gen.md#importing_dependencies
-// Manually install it for testing only.
-execSync('sudo apt-get install imagemagick -y');
-
 describe('functions/imagemagick tests', () => {
   before(async () => {
     let exists;
@@ -92,40 +87,54 @@ describe('functions/imagemagick tests', () => {
     it('blurOffensiveImages detects safe images using Cloud Vision', async () => {
       const PORT = 8080;
       const {ffProc, ffProcHandler} = await startFF(PORT);
-
-      await request({
-        url: `http://localhost:${PORT}/blurOffensiveImages`,
-        method: 'POST',
-        data: {
+      let stdout;
+      try {
+        await request({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          method: 'POST',
           data: {
-            bucket: BUCKET_NAME,
-            name: testFiles.safe,
+            data: {
+              bucket: BUCKET_NAME,
+              name: testFiles.safe,
+            },
           },
-        },
-      });
-      ffProc.kill();
-      const stdout = await ffProcHandler;
+        });
+      } catch (err) {
+        console.error(
+          `Cloud Function Error: ${err.response?.data || err.message}`
+        );
+        throw err;
+      } finally {
+        ffProc.kill();
+        stdout = await ffProcHandler;
+      }
       assert.ok(stdout.includes(`Detected ${testFiles.safe} as OK.`));
     });
 
     it('blurOffensiveImages successfully blurs offensive images', async () => {
       const PORT = 8081;
       const {ffProc, ffProcHandler} = await startFF(PORT);
-
-      await request({
-        url: `http://localhost:${PORT}/blurOffensiveImages`,
-        method: 'POST',
-        data: {
+      let stdout;
+      try {
+        await request({
+          url: `http://localhost:${PORT}/blurOffensiveImages`,
+          method: 'POST',
           data: {
-            bucket: BUCKET_NAME,
-            name: testFiles.offensive,
+            data: {
+              bucket: BUCKET_NAME,
+              name: testFiles.offensive,
+            },
           },
-        },
-      });
-
-      ffProc.kill();
-      const stdout = await ffProcHandler;
-
+        });
+      } catch (err) {
+        console.error(
+          `Cloud Function Error: ${err.response?.data || err.message}`
+        );
+        throw err;
+      } finally {
+        ffProc.kill();
+        stdout = await ffProcHandler;
+      }
       assert.ok(stdout.includes(`Blurred image: ${testFiles.offensive}`));
       assert.ok(
         stdout.includes(

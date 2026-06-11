@@ -18,7 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const {Storage} = require('@google-cloud/storage');
 const {assert} = require('chai');
-const {before, after, it, describe} = require('mocha');
+const {before, beforeEach, after, it, describe} = require('mocha');
 const cp = require('child_process');
 const fetch = require('node-fetch');
 const uuid = require('uuid');
@@ -62,6 +62,22 @@ describe('file', () => {
     await bucket.deleteFiles({force: true}).catch(console.error);
     await bucket.deleteFiles({force: true}).catch(console.error);
     await bucket.delete().catch(console.error);
+    await softDeleteBucket
+      .deleteFiles({force: true, versions: true})
+      .catch(() => {});
+    await softDeleteBucket.delete({ignoreNotFound: true}).catch(console.error);
+
+    await objectRetentionBucket.deleteFiles({force: true}).catch(() => {});
+    await objectRetentionBucket
+      .delete({ignoreNotFound: true})
+      .catch(console.error);
+
+    await objectRetentionBucket
+      .deleteFiles({force: true, versions: true})
+      .catch(() => {});
+    await objectRetentionBucket
+      .delete({ignoreNotFound: true})
+      .catch(console.error);
   });
 
   it('should upload a file', async () => {
@@ -116,7 +132,10 @@ describe('file', () => {
     assert.strictEqual(response[0].toString(), fileContents);
   });
 
-  it('should upload a file with a kms key', async () => {
+  it('should upload a file with a kms key', async function () {
+    if (!kmsKeyName) {
+      this.skip();
+    }
     const [metadata] = await bucket.file(fileName).getMetadata();
     const output = execSync(
       `node uploadFileWithKmsKey.js ${bucketName} ${filePath} ${kmsKeyName} ${metadata.generation}`
@@ -372,6 +391,8 @@ describe('file', () => {
   });
 
   it('should generate a v4 signed URL and read a file', async () => {
+    await bucket.file(copiedFileName).save(fileContent);
+
     const output = await execSync(
       `node generateV4ReadSignedUrl.js ${bucketName} ${copiedFileName}`
     );
@@ -670,6 +691,107 @@ describe('file', () => {
       assert.include(output, `Soft deleted object ${fileName} was restored`);
       const [exists] = await softDeleteBucket.file(fileName).exists();
       assert.strictEqual(exists, true);
+    });
+  });
+
+  describe('Object Contexts', () => {
+    const contextFile = bucket.file(fileName);
+
+    beforeEach(async () => {
+      await bucket.upload(filePath, {destination: fileName});
+
+      await contextFile.setMetadata({
+        contexts: {
+          custom: {
+            'team-owner': {value: 'storage-team'},
+            priority: {value: 'high'},
+          },
+        },
+      });
+    });
+
+    it('should set object contexts', async () => {
+      const output = execSync(
+        `node setObjectContexts.js ${bucketName} ${fileName}`
+      );
+      // Verify Initial Creation
+      assert.include(output, `Updated Object Contexts for ${fileName}:`);
+      assert.include(output, '"team-owner":');
+      assert.include(output, '"value": "storage-team"');
+      assert.include(output, '"priority":');
+      assert.include(output, '"value": "high"');
+      assert.include(output, '"createTime":');
+      assert.include(output, '"updateTime":');
+
+      const [metadata] = await contextFile.getMetadata();
+      const customContexts = metadata.contexts?.custom || {};
+
+      assert.strictEqual(customContexts['priority']?.value, 'high');
+      assert.strictEqual(customContexts['team-owner']?.value, 'storage-team');
+    });
+
+    it('should get object contexts', async () => {
+      const output = execSync(
+        `node getObjectContexts.js ${bucketName} ${fileName}`
+      );
+      assert.include(output, `Object Contexts for ${fileName}:`);
+      assert.include(output, 'Key: priority');
+      assert.include(output, 'Value: high');
+      assert.include(output, 'Key: team-owner');
+      assert.include(output, 'Value: storage-team');
+
+      const [metadata] = await contextFile.getMetadata();
+      const customContexts = metadata.contexts?.custom || {};
+
+      assert.strictEqual(customContexts['priority'].value, 'high');
+      assert.strictEqual(customContexts['team-owner'].value, 'storage-team');
+    });
+
+    it('should list objects with context filters', async () => {
+      const noContextFileName = `no-context-${fileName}`;
+      await bucket.upload(filePath, {destination: noContextFileName});
+      // Ensure it has no contexts
+      await bucket
+        .file(noContextFileName)
+        .setMetadata({contexts: {custom: null}});
+
+      const output = execSync(`node listObjectContexts.js ${bucketName}`);
+
+      // Testing Existence of Value Pair (contexts."key"="val")
+      assert.include(
+        output,
+        'Files matching filter [contexts."priority"="high"]'
+      );
+      assert.include(output, ` - ${fileName}`);
+
+      // Testing Existence of Key (contexts."key":*)
+      assert.include(output, 'Files with the "team-owner" context key');
+      assert.include(output, ` - ${fileName}`);
+
+      // Testing Absence of Value Pair (-contexts."key"="val")
+      assert.include(
+        output,
+        'Files matching absence of value pair [-contexts."priority"="high"]'
+      );
+      assert.include(output, ` - ${noContextFileName}`);
+
+      // Testing Absence of Key (-contexts."key":*)
+      assert.include(
+        output,
+        'Files matching absence of key regardless of value [-contexts."team-owner":*]'
+      );
+      assert.include(output, ` - ${noContextFileName}`);
+
+      const [files] = await bucket.getFiles();
+      const targetFile = files.find(f => f.name === fileName);
+
+      assert.exists(targetFile);
+      const [metadata] = await targetFile.getMetadata();
+
+      // Verify the state that the list filter is supposed to find
+      assert.strictEqual(metadata.contexts?.custom?.priority?.value, 'high');
+
+      await bucket.file(noContextFileName).delete();
     });
   });
 });

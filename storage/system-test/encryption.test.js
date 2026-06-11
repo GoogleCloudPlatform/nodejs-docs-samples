@@ -90,7 +90,10 @@ it('should rotate keys', async () => {
   assert.include(output, 'Encryption key rotated successfully');
 });
 
-it('should convert CSEK to KMS key', async () => {
+it('should convert CSEK to KMS key', async function () {
+  if (!kmsKeyName) {
+    this.skip();
+  }
   const encryptedFileName = 'encrypted-file';
   const file = bucket.file(encryptedFileName, {
     encryptionKey: Buffer.from(key, 'base64'),

@@ -40,8 +40,9 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
     };
 
     // Add a new IP range to publicNetworkSource
-    const updatedIpRanges =
-      existingIpFilter.publicNetworkSource?.allowedIpCidrRanges || [];
+    const updatedIpRanges = [
+      ...(existingIpFilter.publicNetworkSource?.allowedIpCidrRanges || []),
+    ];
     if (!updatedIpRanges.includes('8.8.8.8/32')) {
       updatedIpRanges.push('8.8.8.8/32');
     }
@@ -59,7 +60,7 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
       ipFilter: updatedIpFilter,
     });
 
-    console.log(`IP Filter enabled for bucket ${bucketName}.`);
+    console.log(`IP Filter mode set to ${updatedMetadata.ipFilter.mode} for bucket ${bucketName}.`);
     console.log(JSON.stringify(updatedMetadata.ipFilter, null, 2));
   }
 

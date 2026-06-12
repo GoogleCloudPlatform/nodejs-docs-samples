@@ -141,3 +141,39 @@ it('should update and then remove bucket encryption enforcement configuration', 
   const [metadata] = await bucket.getMetadata();
   assert.ok(!metadata.encryption);
 });
+
+it('should enable the bucket IP filter', () => {
+  const output = execSync(
+    `node enableBucketIpFilter.js ${bucketName} Disabled`
+  );
+  assert.include(output, `IP Filter mode set to Disabled for bucket ${bucketName}.`);
+  assert.include(output, '8.8.8.8/32');
+});
+
+it('should get the bucket IP filter', () => {
+  const output = execSync(`node getBucketIpFilter.js ${bucketName}`);
+  assert.include(output, 'IP Filter Mode: Disabled');
+  assert.include(output, '8.8.8.8/32');
+});
+
+it('should list the bucket IP filters', () => {
+  const projectId = process.env.GCLOUD_PROJECT;
+  const output = execSync(`node listBucketIpFilters.js ${projectId}`);
+  assert.include(output, `${bucketName}: IP Filter Mode - Disabled`);
+  assert.include(output, 'Public Network Allowed IP Ranges:');
+  assert.include(output, '- 8.8.8.8/32');
+});
+
+it('should delete specific bucket IP filter rules', () => {
+  const output = execSync(`node deleteBucketIpFilterRules.js ${bucketName}`);
+  assert.include(
+    output,
+    `Specific IP Filter rules deleted for bucket ${bucketName}.`
+  );
+});
+
+it('should disable the bucket IP filter', () => {
+  const output = execSync(`node disableBucketIpFilter.js ${bucketName}`);
+  assert.include(output, `IP Filter disabled for bucket ${bucketName}.`);
+  assert.include(output, '"mode": "Disabled"');
+});

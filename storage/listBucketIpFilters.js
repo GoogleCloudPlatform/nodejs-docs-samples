@@ -32,36 +32,29 @@ function main(projectId = 'my-project-id') {
     const [buckets] = await storage.getBuckets();
 
     for (const bucket of buckets) {
-      if (bucket.metadata.ipFilter) {
-        try {
-          const [metadata] = await storage.bucket(bucket.name).getMetadata();
-          const ipFilter = metadata.ipFilter;
-          console.log(`${bucket.name}: IP Filter Mode - ${ipFilter.mode}`);
+      const ipFilter = bucket.metadata?.ipFilter;
+      if (ipFilter) {
+        console.log(`${bucket.name}: IP Filter Mode - ${ipFilter.mode}`);
 
-          const publicNetworkSource = ipFilter.publicNetworkSource;
-          if (publicNetworkSource && publicNetworkSource.allowedIpCidrRanges) {
-            console.log('  Public Network Allowed IP Ranges:');
-            publicNetworkSource.allowedIpCidrRanges.forEach(range => {
-              console.log(`  - ${range}`);
-            });
-          }
+        const publicNetworkSource = ipFilter.publicNetworkSource;
+        if (publicNetworkSource && publicNetworkSource.allowedIpCidrRanges) {
+          console.log('  Public Network Allowed IP Ranges:');
+          publicNetworkSource.allowedIpCidrRanges.forEach(range => {
+            console.log(`  - ${range}`);
+          });
+        }
 
-          const vpcNetworkSources = ipFilter.vpcNetworkSources;
-          if (vpcNetworkSources && vpcNetworkSources.length > 0) {
-            console.log('  VPC Network Sources:');
-            vpcNetworkSources.forEach(source => {
-              console.log(`  - Network: ${source.network}`);
-              if (source.allowedIpCidrRanges) {
-                source.allowedIpCidrRanges.forEach(range => {
-                  console.log(`    - ${range}`);
-                });
-              }
-            });
-          }
-        } catch (err) {
-          console.log(
-            `${bucket.name}: Error fetching IP filter - ${err.message}`
-          );
+        const vpcNetworkSources = ipFilter.vpcNetworkSources;
+        if (vpcNetworkSources && vpcNetworkSources.length > 0) {
+          console.log('  VPC Network Sources:');
+          vpcNetworkSources.forEach(source => {
+            console.log(`  - Network: ${source.network}`);
+            if (source.allowedIpCidrRanges) {
+              source.allowedIpCidrRanges.forEach(range => {
+                console.log(`    - ${range}`);
+              });
+            }
+          });
         }
       }
     }

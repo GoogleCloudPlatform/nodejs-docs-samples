@@ -48,7 +48,9 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
 
     const updatedIpFilter = {
       ...existingIpFilter,
+      mode: filterMode,
       publicNetworkSource: {
+        ...existingIpFilter.publicNetworkSource,
         allowedIpCidrRanges: updatedIpRanges,
       },
     };

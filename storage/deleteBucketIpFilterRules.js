@@ -44,6 +44,7 @@ function main(bucketName = 'my-bucket') {
     const updatedIpFilter = {
       ...metadata.ipFilter,
       publicNetworkSource: {
+        ...metadata.ipFilter.publicNetworkSource,
         allowedIpCidrRanges: updatedIpRanges,
       },
     };

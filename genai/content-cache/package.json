@@ -10,12 +10,12 @@
     "test": "c8 mocha -p -j 2 --timeout 2400000 test/*.test.js"
   },
   "dependencies": {
-    "@google/genai": "1.30.0",
+    "@google/genai": "2.7.0",
     "luxon": "^3.7.1"
   },
   "devDependencies": {
-    "c8": "^10.0.0",
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0"
+    "c8": "^11.0.0",
+    "chai": "^6.0.0",
+    "mocha": "^11.0.0"
   }
 }

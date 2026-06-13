@@ -19,11 +19,11 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
     "@grpc/proto-loader": "^0.7.15",
-    "yargs": "^17.0.0"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
-    "chai": "^4.5.0",
-    "mocha": "^10.0.0",
+    "chai": "^6.0.0",
+    "mocha": "^11.0.0",
     "wait-port": "^1.0.4"
   }
 }

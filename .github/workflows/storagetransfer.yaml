@@ -58,7 +58,7 @@ jobs:
         secrets: |-
           sts_aws_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-aws
           sts_azure_secret:nodejs-docs-samples-tests/nodejs-docs-samples-storagetransfer-azure
-    - uses: actions/setup-node@3922553a89c75c0d9114c18c359a59e535240318 # v4.1.0
+    - uses: actions/setup-node@f4a67bbeca970f103397d3d2b9462cf787cd2980 # v6
       with:
         node-version: 24
     - name: Get npm cache directory

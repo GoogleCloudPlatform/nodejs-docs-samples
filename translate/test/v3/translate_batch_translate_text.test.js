@@ -46,7 +46,7 @@ describe(REGION_TAG, () => {
   const bucketName = `translation-${bucketUuid}/BATCH_TRANSLATE_OUTPUT/`;
   const storage = new Storage();
 
-  before(async () => {
+  (before(async () => {
     const projectId = await translationClient.getProjectId();
 
     //Create bucket if needed
@@ -88,5 +88,5 @@ describe(REGION_TAG, () => {
       if (length > 0) {
         await Promise.all(files.map(file => file.delete()));
       }
-    });
+    }));
 });

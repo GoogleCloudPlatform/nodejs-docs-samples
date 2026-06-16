@@ -40,7 +40,7 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+    - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
       with:
         ref: ${{github.event.pull_request.head.sha}}
     - uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
@@ -55,14 +55,14 @@ jobs:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
-    - uses: actions/setup-node@f4a67bbeca970f103397d3d2b9462cf787cd2980 # v6
+    - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
       with:
         node-version: 24
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash
       run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-    - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+    - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
       id: npm-cache
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}

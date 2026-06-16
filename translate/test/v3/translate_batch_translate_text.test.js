@@ -84,10 +84,6 @@ describe(REGION_TAG, () => {
     };
 
     const bucket = await storage.bucket(projectId);
-    const [files] = await bucket.getFiles(options);
-    const length = files.length;
-    if (length > 0) {
-      await Promise.all(files.map(file => file.delete()));
-    }
+    await bucket.deleteFiles(options);
   });
 });

@@ -29,7 +29,7 @@ describe('detect intent with sentiment analysis', () => {
 
   it('should detect negative sentiment score of user query', async () => {
     const output = exec(
-      `${cmd} ${projectId} ${location} ${agentId} 'I am not happy' ${languageCode}`
+      `${cmd} ${projectId} ${location} ${agentId} 'I had an accident and I lost my new car' ${languageCode}`
     );
     assert.include(output, 'negative');
   });

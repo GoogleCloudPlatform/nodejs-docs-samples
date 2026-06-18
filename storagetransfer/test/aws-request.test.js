@@ -30,13 +30,25 @@ describe('aws-request', () => {
   let awsSourceBucket;
   let gcsSinkBucket;
 
-  before(async () => {
-    testBucketManager.setupS3();
+  before(async function () {
+    try {
+      testBucketManager.setupS3();
 
-    projectId = await testBucketManager.getProjectId();
-    awsSourceBucket = await testBucketManager.generateS3Bucket();
-    gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
-    description = `My transfer job from '${awsSourceBucket}' -> '${gcsSinkBucket}'`;
+      projectId = await testBucketManager.getProjectId();
+      awsSourceBucket = await testBucketManager.generateS3Bucket();
+      gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
+      description = `My transfer job from '${awsSourceBucket}' -> '${gcsSinkBucket}'`;
+    } catch (err) {
+      if (
+        err?.code === 'InvalidAccessKeyId' ||
+        err?.message?.includes('Missing credentials in config')
+      ) {
+        console.warn('AWS credentials are missing or invalid.');
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   after(async () => {

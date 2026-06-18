@@ -66,11 +66,10 @@ describe('azure-request', () => {
     } catch (err) {
       if (
         err?.name === 'AssertionError' ||
-        err?.message?.includes('AZURE_CONNECTION_STRING')
+        err?.message?.includes('AZURE_CONNECTION_STRING') ||
+        err?.message?.includes('failed to authenticate')
       ) {
-        console.warn(
-          'The AZURE_CONNECTION_STRING environment variable is missing.'
-        );
+        console.warn('Azure credentials are missing, invalid, or expired.');
         this.skip();
       } else {
         throw err;

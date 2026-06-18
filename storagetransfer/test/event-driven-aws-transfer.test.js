@@ -36,13 +36,25 @@ describe('event-driven-aws-transfer', () => {
   let gcsSinkBucket;
   let sqsQueueArn;
 
-  before(async () => {
-    testBucketManager.setupS3();
-    projectId = await testBucketManager.getProjectId();
-    s3SourceBucket = await testBucketManager.generateS3Bucket();
-    gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
-    sqsQueueArn = await testQueueManager.generateSqsQueueArn();
-    console.log('Arn: ' + sqsQueueArn);
+  before(async function () {
+    try {
+      testBucketManager.setupS3();
+      projectId = await testBucketManager.getProjectId();
+      s3SourceBucket = await testBucketManager.generateS3Bucket();
+      gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
+      sqsQueueArn = await testQueueManager.generateSqsQueueArn();
+      console.log('Arn: ' + sqsQueueArn);
+    } catch (err) {
+      if (
+        err.code === 'InvalidAccessKeyId' ||
+        err.message.includes('Missing credentials in config')
+      ) {
+        console.warn('AWS credentials are missing or invalid.');
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   after(async () => {

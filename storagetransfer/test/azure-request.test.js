@@ -16,6 +16,11 @@
 
 'use strict';
 
+// Since we are running on Node.js 16, crypto is not available globally.
+if (!globalThis.crypto) {
+  globalThis.crypto = require('node:crypto').webcrypto;
+}
+
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 

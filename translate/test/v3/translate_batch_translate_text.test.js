@@ -61,32 +61,29 @@ describe(REGION_TAG, () => {
           console.error(error);
         }
       });
-  }),
-    it('should batch translate the input text', async function () {
-      this.retries(3);
-      const projectId = await translationClient.getProjectId();
-      await clearBucket(projectId, storage, bucketUuid);
-      const inputUri = 'gs://cloud-samples-data/translation/text.txt';
+  });
 
-      const outputUri = `gs://${projectId}/${bucketName}`;
-      const output = execSync(
-        `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri}`
-      );
-      assert.match(output, /Total Characters: 13/);
-      assert.match(output, /Translated Characters: 13/);
-    }),
-    // Delete the folder from GCS for cleanup
-    after(async () => {
-      const projectId = await translationClient.getProjectId();
-      const options = {
-        prefix: `translation-${bucketUuid}`,
-      };
+  it('should batch translate the input text', async function () {
+    this.retries(3);
+    const projectId = await translationClient.getProjectId();
+    await clearBucket(projectId, storage, bucketUuid);
+    const inputUri = 'gs://cloud-samples-data/translation/text.txt';
 
-      const bucket = await storage.bucket(projectId);
-      const [files] = await bucket.getFiles(options);
-      const length = files.length;
-      if (length > 0) {
-        await Promise.all(files.map(file => file.delete()));
-      }
-    });
+    const outputUri = `gs://${projectId}/${bucketName}`;
+    const output = execSync(
+      `node v3/${REGION_TAG}.js ${projectId} ${location} ${inputUri} ${outputUri}`
+    );
+    assert.match(output, /Total Characters: 13/);
+    assert.match(output, /Translated Characters: 13/);
+  });
+  // Delete the folder from GCS for cleanup
+  after(async () => {
+    const projectId = await translationClient.getProjectId();
+    const options = {
+      prefix: `translation-${bucketUuid}`,
+    };
+
+    const bucket = await storage.bucket(projectId);
+    await bucket.deleteFiles(options);
+  });
 });

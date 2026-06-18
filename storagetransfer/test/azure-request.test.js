@@ -36,31 +36,45 @@ describe('azure-request', () => {
   let azureSourceContainer;
   let gcsSinkBucket;
 
-  before(async () => {
-    assert(
-      process.env.AZURE_CONNECTION_STRING,
-      'environment variable AZURE_CONNECTION_STRING is required'
-    );
+  before(async function () {
+    try {
+      assert(
+        process.env.AZURE_CONNECTION_STRING,
+        'environment variable AZURE_CONNECTION_STRING is required'
+      );
 
-    testBucketManager.setupBlobStorageFromConnectionString(
-      process.env.AZURE_CONNECTION_STRING
-    );
+      testBucketManager.setupBlobStorageFromConnectionString(
+        process.env.AZURE_CONNECTION_STRING
+      );
 
-    azureStorageAccount =
-      process.env.AZURE_STORAGE_ACCOUNT ||
-      testBucketManager.blobStorage.accountName;
+      azureStorageAccount =
+        process.env.AZURE_STORAGE_ACCOUNT ||
+        testBucketManager.blobStorage.accountName;
 
-    projectId = await testBucketManager.getProjectId();
-    azureSourceContainer =
-      await testBucketManager.generateBlobStorageContainer();
-    gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
-    description = `My transfer job from '${azureSourceContainer}' -> '${gcsSinkBucket}'`;
+      projectId = await testBucketManager.getProjectId();
+      azureSourceContainer =
+        await testBucketManager.generateBlobStorageContainer();
+      gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
+      description = `My transfer job from '${azureSourceContainer}' -> '${gcsSinkBucket}'`;
 
-    if (!process.env.AZURE_SAS_TOKEN) {
-      // For security purposes we only want to pass this value via environment, not cli
-      process.env.AZURE_SAS_TOKEN = new URL(
-        testBucketManager.blobStorage.storageClientContext.url
-      ).search;
+      if (!process.env.AZURE_SAS_TOKEN) {
+        // For security purposes we only want to pass this value via environment, not cli
+        process.env.AZURE_SAS_TOKEN = new URL(
+          testBucketManager.blobStorage.storageClientContext.url
+        ).search;
+      }
+    } catch (err) {
+      if (
+        err?.name === 'AssertionError' ||
+        err?.message?.includes('AZURE_CONNECTION_STRING')
+      ) {
+        console.warn(
+          'The AZURE_CONNECTION_STRING environment variable is missing.'
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
     }
   });
 

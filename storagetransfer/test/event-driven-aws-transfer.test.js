@@ -46,8 +46,8 @@ describe('event-driven-aws-transfer', () => {
       console.log('Arn: ' + sqsQueueArn);
     } catch (err) {
       if (
-        err.code === 'InvalidAccessKeyId' ||
-        err.message.includes('Missing credentials in config')
+        err?.code === 'InvalidAccessKeyId' ||
+        err?.message?.includes('Missing credentials in config')
       ) {
         console.warn('AWS credentials are missing or invalid.');
         this.skip();

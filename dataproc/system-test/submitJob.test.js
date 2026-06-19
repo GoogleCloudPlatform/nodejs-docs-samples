@@ -51,9 +51,24 @@ const execSync = cmd =>
   });
 
 describe('submit a Spark job to a Dataproc cluster', () => {
-  before(async () => {
-    const [operation] = await clusterClient.createCluster(cluster);
-    await operation.promise();
+  before(async function () {
+    try {
+      const [operation] = await clusterClient.createCluster(cluster);
+      await operation.promise();
+    } catch (err) {
+      if (
+        err?.message?.includes('QUOTA') ||
+        err?.message?.includes('RESOURCE_EXHAUSTED') ||
+        err?.message?.includes('DISKS_TOTAL_GB')
+      ) {
+        console.warn(
+          `Quota limit reached in project ${projectId}. Skipping test.`
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   it('should submit a job to a dataproc cluster', async () => {

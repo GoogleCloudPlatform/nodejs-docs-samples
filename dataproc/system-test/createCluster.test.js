@@ -35,11 +35,26 @@ const execSync = cmd =>
   });
 
 describe('create a dataproc cluster', () => {
-  it('should create a dataproc cluster', async () => {
-    const stdout = execSync(
-      `node createCluster.js "${projectId}" "${region}" "${clusterName}"`
-    );
-    assert.match(stdout, new RegExp(`${clusterName}`));
+  it('should create a dataproc cluster', async function () {
+    try {
+      const stdout = execSync(
+        `node createCluster.js "${projectId}" "${region}" "${clusterName}"`
+      );
+      assert.match(stdout, new RegExp(`${clusterName}`));
+    } catch (err) {
+      if (
+        err?.message?.includes('QUOTA') ||
+        err?.message?.includes('RESOURCE_EXHAUSTED') ||
+        err?.message?.includes('DISKS_TOTAL_GB')
+      ) {
+        console.warn(
+          `Quota limit reached in project ${projectId}. Skipping test.`
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   after(async () => {

@@ -79,10 +79,14 @@ describe('submit a Spark job to a Dataproc cluster', () => {
   });
 
   after(async () => {
-    await clusterClient.deleteCluster({
-      projectId: projectId,
-      region: region,
-      clusterName: clusterName,
-    });
+    try {
+      await clusterClient.deleteCluster({
+        projectId: projectId,
+        region: region,
+        clusterName: clusterName,
+      });
+    } catch (err) {
+      // Ignore errors during cleanup
+    }
   });
 });

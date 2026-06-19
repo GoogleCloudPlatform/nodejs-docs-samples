@@ -58,10 +58,14 @@ describe('create a dataproc cluster', () => {
   });
 
   after(async () => {
-    await clusterClient.deleteCluster({
-      projectId: projectId,
-      region: region,
-      clusterName: clusterName,
-    });
+    try {
+      await clusterClient.deleteCluster({
+        projectId: projectId,
+        region: region,
+        clusterName: clusterName,
+      });
+    } catch (err) {
+      // Ignore errors during cleanup
+    }
   });
 });

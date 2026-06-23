@@ -146,6 +146,82 @@ describe('file', () => {
       await bucket.file(noContextFileName).delete();
     });
   });
+
+  describe('compose file', () => {
+    let firstFile;
+    let secondFile;
+    let destinationFile;
+
+    const firstContent = 'Hello ';
+    const secondContent = 'World!';
+    const compositeContent = 'Hello World!';
+
+    beforeEach(async () => {
+      firstFile = `first-${uuid.v4()}.txt`;
+      secondFile = `second-${uuid.v4()}.txt`;
+      destinationFile = `composite-${uuid.v4()}.txt`;
+
+      await bucket.file(firstFile).save(firstContent);
+      await bucket.file(secondFile).save(secondContent);
+    });
+
+    afterEach(async () => {
+      await bucket
+        .file(firstFile)
+        .delete()
+        .catch(() => {});
+      await bucket
+        .file(secondFile)
+        .delete()
+        .catch(() => {});
+      await bucket
+        .file(destinationFile)
+        .delete()
+        .catch(() => {});
+    });
+
+    it('should compose files without deleting sources', async () => {
+      const output = execSync(
+        `node composeFile.js ${bucketName} ${firstFile} ${secondFile} ${destinationFile} false`
+      );
+
+      assert.include(
+        output,
+        `New composite file ${destinationFile} was created in bucket ${bucketName} by combining ${firstFile} and ${secondFile}.`
+      );
+
+      // Verify destination content
+      const [contents] = await bucket.file(destinationFile).download();
+      assert.strictEqual(contents.toString(), compositeContent);
+
+      // Verify sources still exist
+      const [firstExists] = await bucket.file(firstFile).exists();
+      const [secondExists] = await bucket.file(secondFile).exists();
+      assert.isTrue(firstExists);
+      assert.isTrue(secondExists);
+    });
+
+    it('should compose files and delete sources', async () => {
+      const output = execSync(
+        `node composeFile.js ${bucketName} ${firstFile} ${secondFile} ${destinationFile} true`
+      );
+
+      assert.include(
+        output,
+        `New composite file ${destinationFile} was created in bucket ${bucketName} by combining ${firstFile} and ${secondFile} and deleting source files.`
+      );
+
+      // Verify destination content
+      const [contents] = await bucket.file(destinationFile).download();
+      assert.strictEqual(contents.toString(), compositeContent);
+
+      // Verify sources are deleted
+      const [firstExists] = await bucket.file(firstFile).exists();
+      const [secondExists] = await bucket.file(secondFile).exists();
+      assert.isFalse(firstExists);
+      assert.isFalse(secondExists);
+    });
+  });
 });
 
 function generateName() {

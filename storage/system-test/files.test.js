@@ -163,7 +163,7 @@ describe('file', () => {
       );
       assert.include(
         output,
-        `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+        `New composite file ${destinationFileName} was created by combining ${firstFileName}, ${secondFileName}`
       );
       assert.notInclude(output, 'Deleted source objects');
 
@@ -182,7 +182,7 @@ describe('file', () => {
       );
       assert.include(
         output,
-        `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+        `New composite file ${destinationFileName} was created by combining ${firstFileName}, ${secondFileName}`
       );
       assert.include(
         output,

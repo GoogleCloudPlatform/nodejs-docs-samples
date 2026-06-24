@@ -15,8 +15,8 @@
 'use strict';
 
 /**
- * This application demonstrates how to perform basic operations on bucket and
- * file Access Control Lists with the Google Cloud Storage API.
+ * This application demonstrates how to compose/combine multiple files into a
+ * single destination file with the Google Cloud Storage API.
  *
  * For more information, see the README.md under /storage and the documentation
  * at https://cloud.google.com/storage/docs.
@@ -52,7 +52,7 @@ function main(
     await bucket.combine(sources, destinationFileName);
 
     console.log(
-      `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+      `New composite file ${destinationFileName} was created by combining ${sources.join(', ')}`
     );
 
     if (String(deleteSourceObjects) === 'true') {
@@ -61,9 +61,7 @@ function main(
           await bucket.file(source).delete();
         })
       );
-      console.log(
-        `Deleted source objects: ${firstFileName}, ${secondFileName}`
-      );
+      console.log(`Deleted source objects: ${sources.join(', ')}`);
     }
   }
 

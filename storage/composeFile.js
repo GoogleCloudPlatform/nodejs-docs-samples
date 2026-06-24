@@ -61,7 +61,9 @@ function main(
           await bucket.file(source).delete();
         })
       );
-      console.log(`Deleted source objects: ${firstFileName}, ${secondFileName}`);
+      console.log(
+        `Deleted source objects: ${firstFileName}, ${secondFileName}`
+      );
     }
   }
 

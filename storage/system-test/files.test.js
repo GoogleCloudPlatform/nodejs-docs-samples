@@ -184,7 +184,10 @@ describe('file', () => {
         output,
         `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
       );
-      assert.include(output, `Deleted source objects: ${firstFileName}, ${secondFileName}`);
+      assert.include(
+        output,
+        `Deleted source objects: ${firstFileName}, ${secondFileName}`
+      );
 
       [destExists] = await bucket.file(destinationFileName).exists();
       assert.strictEqual(destExists, true);

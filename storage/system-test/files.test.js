@@ -146,6 +146,54 @@ describe('file', () => {
       await bucket.file(noContextFileName).delete();
     });
   });
+
+  describe('compose file', () => {
+    it('should combine multiple files into one new file and optionally delete source objects', async () => {
+      const firstFileName = 'first.txt';
+      const secondFileName = 'second.txt';
+      const destinationFileName = 'destination.txt';
+
+      // upload test.txt twice
+      await bucket.upload(filePath, {destination: firstFileName});
+      await bucket.upload(filePath, {destination: secondFileName});
+
+      // Test with deleteSourceObjects = false
+      let output = execSync(
+        `node composeFile.js ${bucketName} ${firstFileName} ${secondFileName} ${destinationFileName} false`
+      );
+      assert.include(
+        output,
+        `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+      );
+      assert.notInclude(output, 'Deleted source objects');
+
+      let [destExists] = await bucket.file(destinationFileName).exists();
+      assert.strictEqual(destExists, true);
+      let [firstExists] = await bucket.file(firstFileName).exists();
+      assert.strictEqual(firstExists, true);
+      let [secondExists] = await bucket.file(secondFileName).exists();
+      assert.strictEqual(secondExists, true);
+
+      await bucket.file(destinationFileName).delete();
+
+      // Test with deleteSourceObjects = true
+      output = execSync(
+        `node composeFile.js ${bucketName} ${firstFileName} ${secondFileName} ${destinationFileName} true`
+      );
+      assert.include(
+        output,
+        `New composite file ${destinationFileName} was created by combining ${firstFileName} and ${secondFileName}`
+      );
+      assert.include(output, `Deleted source objects: ${firstFileName}, ${secondFileName}`);
+
+      [destExists] = await bucket.file(destinationFileName).exists();
+      assert.strictEqual(destExists, true);
+      [firstExists] = await bucket.file(firstFileName).exists();
+      assert.strictEqual(firstExists, false);
+      [secondExists] = await bucket.file(secondFileName).exists();
+      assert.strictEqual(secondExists, false);
+    });
+  });
 });
 
 function generateName() {

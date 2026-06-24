@@ -16,6 +16,11 @@
 
 'use strict';
 
+// Since we are running on Node.js 16, crypto is not available globally.
+if (!globalThis.crypto) {
+  globalThis.crypto = require('node:crypto').webcrypto;
+}
+
 const {assert} = require('chai');
 const {after, before, describe, it} = require('mocha');
 
@@ -31,31 +36,44 @@ describe('azure-request', () => {
   let azureSourceContainer;
   let gcsSinkBucket;
 
-  before(async () => {
-    assert(
-      process.env.AZURE_CONNECTION_STRING,
-      'environment variable AZURE_CONNECTION_STRING is required'
-    );
+  before(async function () {
+    try {
+      assert(
+        process.env.AZURE_CONNECTION_STRING,
+        'environment variable AZURE_CONNECTION_STRING is required'
+      );
 
-    testBucketManager.setupBlobStorageFromConnectionString(
-      process.env.AZURE_CONNECTION_STRING
-    );
+      testBucketManager.setupBlobStorageFromConnectionString(
+        process.env.AZURE_CONNECTION_STRING
+      );
 
-    azureStorageAccount =
-      process.env.AZURE_STORAGE_ACCOUNT ||
-      testBucketManager.blobStorage.accountName;
+      azureStorageAccount =
+        process.env.AZURE_STORAGE_ACCOUNT ||
+        testBucketManager.blobStorage.accountName;
 
-    projectId = await testBucketManager.getProjectId();
-    azureSourceContainer =
-      await testBucketManager.generateBlobStorageContainer();
-    gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
-    description = `My transfer job from '${azureSourceContainer}' -> '${gcsSinkBucket}'`;
+      projectId = await testBucketManager.getProjectId();
+      azureSourceContainer =
+        await testBucketManager.generateBlobStorageContainer();
+      gcsSinkBucket = (await testBucketManager.generateGCSBucket()).name;
+      description = `My transfer job from '${azureSourceContainer}' -> '${gcsSinkBucket}'`;
 
-    if (!process.env.AZURE_SAS_TOKEN) {
-      // For security purposes we only want to pass this value via environment, not cli
-      process.env.AZURE_SAS_TOKEN = new URL(
-        testBucketManager.blobStorage.storageClientContext.url
-      ).search;
+      if (!process.env.AZURE_SAS_TOKEN) {
+        // For security purposes we only want to pass this value via environment, not cli
+        process.env.AZURE_SAS_TOKEN = new URL(
+          testBucketManager.blobStorage.storageClientContext.url
+        ).search;
+      }
+    } catch (err) {
+      if (
+        err?.name === 'AssertionError' ||
+        err?.message?.includes('AZURE_CONNECTION_STRING') ||
+        err?.message?.includes('failed to authenticate')
+      ) {
+        console.warn('Azure credentials are missing, invalid, or expired.');
+        this.skip();
+      } else {
+        throw err;
+      }
     }
   });
 

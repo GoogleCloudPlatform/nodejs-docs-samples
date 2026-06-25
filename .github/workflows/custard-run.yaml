@@ -76,11 +76,11 @@ jobs:
           name: Custard CI / ${{ github.job }}
           if: ${{ !!github.event.workflow_run }}
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           ref: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: 20
       - run: npm install
@@ -127,7 +127,7 @@ jobs:
           job-name: ${{ github.job }} (${{ matrix.path }})
           if: ${{ !!github.event.workflow_run }}
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
         with:
           ref: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
       - name: Authenticate

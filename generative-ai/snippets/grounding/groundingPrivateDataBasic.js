@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_grounding_private_data_basic]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -62,7 +61,6 @@ async function generateContentWithVertexAISearchGrounding(
     JSON.stringify(result.candidates[0].groundingMetadata)
   );
 }
-// [END generativeaionvertexai_grounding_private_data_basic]
 
 generateContentWithVertexAISearchGrounding(...process.argv.slice(2)).catch(
   err => {

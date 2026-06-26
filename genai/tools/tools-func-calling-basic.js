@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START googlegenaisdk_function_calling_basic]
+// [START aiplatform_genai_function_calling_basic]
 const {GoogleGenAI} = require('@google/genai');
 
 const tools = [
@@ -61,7 +61,7 @@ async function functionCallingBasic(
   });
   console.log(JSON.stringify(result.functionCalls));
 }
-// [END googlegenaisdk_function_calling_basic]
+// [END aiplatform_genai_function_calling_basic]
 
 functionCallingBasic(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

@@ -34,7 +34,7 @@ describe('tools-func-calling-basic', () => {
 
   it('should define a function and have the model invoke it', async () => {
     const output = execSync(
-      `node ./tools/tools-func-calling-basic.js ${projectId} ${location} ${model}`
+      `node ./tools-func-calling-basic.js ${projectId} ${location} ${model}`
     );
 
     // Assert that the response is what we expect

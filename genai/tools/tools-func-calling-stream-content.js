@@ -38,7 +38,7 @@ const functionResponseParts = [
   {
     functionResponse: {
       name: 'get_current_weather',
-      response: {name: 'get_current_weather', content: {weather: 'super nice'}},
+      response: {weather: 'super nice'},
     },
   },
 ];

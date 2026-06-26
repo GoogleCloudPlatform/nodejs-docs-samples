@@ -39,5 +39,6 @@ describe('tools-func-calling-basic', () => {
 
     // Assert that the response is what we expect
     assert(output.length > 0);
+    assert.include(output, 'get_current_weather');
   });
 });

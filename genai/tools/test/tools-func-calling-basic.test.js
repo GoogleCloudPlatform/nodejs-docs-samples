@@ -19,8 +19,8 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.GOOGLE_CLOUD_LOCATION;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const model = 'gemini-2.5-flash';
 
 describe('tools-func-calling-basic', () => {

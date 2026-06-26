@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START aiplatform_genai_function_calling_content]
+// [START aiplatform_genai_function_calling_stream_content]
 const {GoogleGenAI} = require('@google/genai');
 
 const tools = [
@@ -88,7 +88,7 @@ async function functionCallingStreamContent(
   }
   console.log(completeResponseText);
 }
-// [END aiplatform_genai_function_calling_content]
+// [END aiplatform_genai_function_calling_stream_content]
 
 functionCallingStreamContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

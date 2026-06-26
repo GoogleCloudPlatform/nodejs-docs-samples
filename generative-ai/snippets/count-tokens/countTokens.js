@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_token_count]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -51,7 +50,6 @@ async function countTokens(
   const usageMetadata = result.usageMetadata;
   console.log('Response tokens count: ', usageMetadata);
 }
-// [END generativeaionvertexai_gemini_token_count]
 
 countTokens(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

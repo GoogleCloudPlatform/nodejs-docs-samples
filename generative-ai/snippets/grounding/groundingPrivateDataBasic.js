@@ -12,12 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_grounding_private_data_basic]
-const {
-  VertexAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} = require('@google-cloud/vertexai');
+const {GoogleGenAI} = require('@google/genai');
 
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -25,46 +20,47 @@ const {
 async function generateContentWithVertexAISearchGrounding(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.0-flash-001',
+  model = 'gemini-2.5-flash',
   dataStoreId = 'DATASTORE_ID'
 ) {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: projectId, location: location});
-
-  const generativeModelPreview = vertexAI.preview.getGenerativeModel({
-    model: model,
-    // The following parameters are optional
-    // They can also be passed to individual content generation requests
-    safetySettings: [
-      {
-        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-      },
-    ],
-    generationConfig: {maxOutputTokens: 256},
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
-  const vertexAIRetrievalTool = {
-    retrieval: {
-      vertexAiSearch: {
-        datastore: `projects/${projectId}/locations/global/collections/default_collection/dataStores/${dataStoreId}`,
+  const tools = [
+    {
+      retrieval: {
+        vertexAiSearch: {
+          datastore: `projects/${projectId}/locations/global/collections/default_collection/dataStores/${dataStoreId}`,
+        },
       },
-      disableAttribution: false,
     },
-  };
+  ];
 
-  const request = {
+  const result = await client.models.generateContent({
+    model: model,
     contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
-    tools: [vertexAIRetrievalTool],
-  };
+    config: {
+      tools: tools,
+      maxOutputTokens: 256,
+      safetySettings: [
+        {
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+        },
+      ],
+    },
+  });
 
-  const result = await generativeModelPreview.generateContent(request);
-  const response = result.response;
-  const groundingMetadata = response.candidates[0];
-  console.log('Response: ', JSON.stringify(response.candidates[0]));
-  console.log('GroundingMetadata is: ', JSON.stringify(groundingMetadata));
+  console.log('Response: ', result.text);
+  console.log(
+    'GroundingMetadata: ',
+    JSON.stringify(result.candidates[0].groundingMetadata)
+  );
 }
-// [END generativeaionvertexai_grounding_private_data_basic]
 
 generateContentWithVertexAISearchGrounding(...process.argv.slice(2)).catch(
   err => {

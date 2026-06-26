@@ -20,11 +20,12 @@ const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.CAIP_PROJECT_ID;
+const model = 'gemini-2.5-flash';
 
 describe('Transcript audio', async () => {
   it('should transcript audio', async () => {
     const output = execSync(
-      `node ./gemini-audio-transcription.js ${projectId}`
+      `node ./gemini-audio-transcription.js ${projectId} ${model}`
     );
 
     assert(output.length > 0);

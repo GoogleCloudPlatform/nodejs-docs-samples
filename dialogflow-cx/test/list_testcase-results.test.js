@@ -29,7 +29,10 @@ describe('Test filtering results', async () => {
   const projectId =
     process.env.AGENT_PROJECT_ID || (await agentClient.getProjectId());
 
-  it('should return filtered test results', async () => {
+  it('should return filtered test results', function () {
+    if (!agentId || !testId) {
+      this.skip();
+    }
     const output = exec(`${cmd} ${projectId} ${agentId} ${testId} ${location}`);
     assert.include(output, testId);
   });

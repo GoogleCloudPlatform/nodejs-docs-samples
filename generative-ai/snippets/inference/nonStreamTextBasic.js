@@ -13,25 +13,25 @@
 // limitations under the License.
 
 // [START generativeaionvertexai_non_stream_text_basic]
-const {VertexAI} = require('@google-cloud/vertexai');
-
+const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-const PROJECT_ID = process.env.CAIP_PROJECT_ID;
-const LOCATION = process.env.LOCATION;
-const MODEL = 'gemini-2.0-flash-001';
 
-async function generateContent() {
-  // Initialize Vertex with your Cloud project and location
-  const vertexAI = new VertexAI({project: PROJECT_ID, location: LOCATION});
-
-  // Instantiate the model
-  const generativeModel = vertexAI.getGenerativeModel({
-    model: MODEL,
+async function generateContent(
+  projectId = 'PROJECT_ID',
+  location = 'us-central1',
+  model = 'gemini-2.5-flash'
+) {
+  // Initialize client with your Cloud project and location
+  const client = new GoogleGenAI({
+    vertexai: true,
+    project: projectId,
+    location: location,
   });
 
   const request = {
+    model: model,
     contents: [
       {
         role: 'user',
@@ -46,13 +46,13 @@ async function generateContent() {
 
   console.log(JSON.stringify(request));
 
-  const result = await generativeModel.generateContent(request);
+  const response = await client.models.generateContent(request);
 
-  console.log(result.response.candidates[0].content.parts[0].text);
+  console.log(response.text);
 }
 // [END generativeaionvertexai_non_stream_text_basic]
 
-generateContent().catch(err => {
+generateContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);
   process.exitCode = 1;
 });

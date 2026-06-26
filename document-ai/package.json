@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Google LLC",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "*.js"
@@ -15,12 +15,12 @@
   "dependencies": {
     "@google-cloud/documentai": "^8.0.0",
     "@google-cloud/storage": "^7.0.0",
-    "p-queue": "^8.0.0"
+    "p-queue": "^6.6.2"
   },
   "devDependencies": {
     "c8": "^10.0.0",
     "chai": "^4.5.0",
     "mocha": "^10.0.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.1.1"
   }
 }

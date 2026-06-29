@@ -49,20 +49,18 @@ function main(
     const bucket = storage.bucket(bucketName);
     const sources = [firstFileName, secondFileName];
 
-    await bucket.combine(sources, destinationFileName);
+    const options = {
+      deleteSourceObjects: String(deleteSourceObjects) === 'true',
+    };
 
+    await bucket.combine(sources, destinationFileName, options);
+
+    const deletionMessage = options.deleteSourceObjects
+      ? ' and the source objects were deleted.'
+      : '.';
     console.log(
-      `New composite file ${destinationFileName} was created by combining ${sources.join(', ')}`
+      `New composite file ${destinationFileName} was created by combining ${sources.join(', ')}${deletionMessage}`
     );
-
-    if (String(deleteSourceObjects) === 'true') {
-      await Promise.all(
-        sources.map(async source => {
-          await bucket.file(source).delete();
-        })
-      );
-      console.log(`Deleted source objects: ${sources.join(', ')}`);
-    }
   }
 
   composeFile().catch(console.error);

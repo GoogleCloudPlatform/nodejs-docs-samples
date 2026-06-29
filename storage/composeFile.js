@@ -22,7 +22,7 @@
  * at https://cloud.google.com/storage/docs.
  */
 
-function main(
+async function main(
   bucketName = 'my-bucket',
   firstFileName = 'first.txt',
   secondFileName = 'second.txt',
@@ -63,8 +63,11 @@ function main(
     );
   }
 
-  composeFile().catch(console.error);
+  await composeFile();
   // [END storage_compose_file]
 }
 
-main(...process.argv.slice(2));
+main(...process.argv.slice(2)).catch(err => {
+  console.error(err);
+  process.exitCode = 1;
+});

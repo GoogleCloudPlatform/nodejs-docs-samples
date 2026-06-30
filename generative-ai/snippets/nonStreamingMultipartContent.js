@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_get_started]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -63,7 +62,6 @@ async function createNonStreamingMultipartContent(
 
   console.log(fullTextResponse);
 }
-// [END generativeaionvertexai_gemini_get_started]
 
 createNonStreamingMultipartContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

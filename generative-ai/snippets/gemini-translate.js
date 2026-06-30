@@ -13,7 +13,6 @@
 // limitations under the License.
 
 'use strict';
-// [START generativeaionvertexai_gemini_translate]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -79,7 +78,6 @@ async function geminiTranslation(
 
   console.log(response.text);
   return response;
-  // [END generativeaionvertexai_gemini_translate]
 }
 
 geminiTranslation(...process.argv.slice(2)).catch(err => {

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_single_turn_multi_image]
 const {VertexAI} = require('@google-cloud/vertexai');
 const axios = require('axios');
 
@@ -93,7 +92,6 @@ async function sendMultiModalPromptWithImage(
 
   console.log(fullTextResponse);
 }
-// [END generativeaionvertexai_gemini_single_turn_multi_image]
 
 sendMultiModalPromptWithImage(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

@@ -16,7 +16,7 @@
 
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
-const { assert } = require('chai');
+const {assert} = require('chai');
 
 describe('Memorystore Redis Client-Side Metrics Sample', () => {
   it('should run successfully with mocked Redis and GCP exporters', async () => {
@@ -36,18 +36,26 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
     // Mocks for GCP Exporters to avoid needing live GCP credentials in tests
     class MockTraceExporter {
       export(spans, resultCallback) {
-        if (resultCallback) resultCallback({ code: 0 });
+        if (resultCallback) resultCallback({code: 0});
       }
-      shutdown() { return Promise.resolve(); }
-      forceFlush() { return Promise.resolve(); }
+      shutdown() {
+        return Promise.resolve();
+      }
+      forceFlush() {
+        return Promise.resolve();
+      }
     }
 
     class MockMetricExporter {
       export(metrics, resultCallback) {
-        if (resultCallback) resultCallback({ code: 0 });
+        if (resultCallback) resultCallback({code: 0});
       }
-      shutdown() { return Promise.resolve(); }
-      forceFlush() { return Promise.resolve(); }
+      shutdown() {
+        return Promise.resolve();
+      }
+      forceFlush() {
+        return Promise.resolve();
+      }
     }
 
     const traceExporterMock = {
@@ -64,10 +72,16 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
       disable() {}
       setTracerProvider() {}
       setMeterProvider() {}
-      getConfig() { return {}; }
+      getConfig() {
+        return {};
+      }
       setConfig() {}
-      getInstrumentationName() { return 'mock-redis'; }
-      getInstrumentationVersion() { return '0.0.0'; }
+      getInstrumentationName() {
+        return 'mock-redis';
+      }
+      getInstrumentationVersion() {
+        return '0.0.0';
+      }
       init() {}
     }
 
@@ -76,26 +90,51 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
     };
 
     // Load the sample with proxyquire, substituting our mocks for its top-level requires
-    const { main } = proxyquire('../server.js', {
-      'redis': redisMock,
+    const {main} = proxyquire('../server.js', {
+      redis: redisMock,
       '@google-cloud/opentelemetry-cloud-trace-exporter': traceExporterMock,
-      '@google-cloud/opentelemetry-cloud-monitoring-exporter': metricExporterMock,
+      '@google-cloud/opentelemetry-cloud-monitoring-exporter':
+        metricExporterMock,
       '@opentelemetry/instrumentation-redis': redisInstrumentationMock,
     });
 
     // Verify top-level code executed as expected during the initial load phase
-    assert.isTrue(redisMock.createClient.calledOnce, 'redis.createClient should be called during load');
-    assert.isTrue(clientStub.on.calledWith('error', sinon.match.func), 'client.on("error", ...) should be called during load');
-    assert.isTrue(traceExporterMock.TraceExporter.calledOnce, 'TraceExporter should be instantiated during load');
-    assert.isTrue(metricExporterMock.MetricExporter.calledOnce, 'MetricExporter should be instantiated during load');
+    assert.isTrue(
+      redisMock.createClient.calledOnce,
+      'redis.createClient should be called during load'
+    );
+    assert.isTrue(
+      clientStub.on.calledWith('error', sinon.match.func),
+      'client.on("error", ...) should be called during load'
+    );
+    assert.isTrue(
+      traceExporterMock.TraceExporter.calledOnce,
+      'TraceExporter should be instantiated during load'
+    );
+    assert.isTrue(
+      metricExporterMock.MetricExporter.calledOnce,
+      'MetricExporter should be instantiated during load'
+    );
 
     // Run the main function and await its completion
     await main();
 
     // Verify main() interactions
-    assert.isTrue(clientStub.connect.calledOnce, 'client.connect should be called in main()');
-    assert.isTrue(clientStub.set.calledOnce, 'client.set should be called in main() (via smartRedisCall)');
-    assert.isTrue(clientStub.get.calledOnce, 'client.get should be called in main() (via smartRedisCall)');
-    assert.isTrue(clientStub.quit.calledOnce, 'client.quit should be called in main()');
+    assert.isTrue(
+      clientStub.connect.calledOnce,
+      'client.connect should be called in main()'
+    );
+    assert.isTrue(
+      clientStub.set.calledOnce,
+      'client.set should be called in main() (via smartRedisCall)'
+    );
+    assert.isTrue(
+      clientStub.get.calledOnce,
+      'client.get should be called in main() (via smartRedisCall)'
+    );
+    assert.isTrue(
+      clientStub.quit.calledOnce,
+      'client.quit should be called in main()'
+    );
   });
 });

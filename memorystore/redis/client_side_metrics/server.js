@@ -23,12 +23,14 @@ const { BatchSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { TraceExporter } = require('@google-cloud/opentelemetry-cloud-trace-exporter');
 const { MeterProvider, PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
 const { MetricExporter } = require('@google-cloud/opentelemetry-cloud-monitoring-exporter');
-const { RedisInstrumentation } = require('@opentelemetry/instrumentation-redis-4');
+const { RedisInstrumentation } = require('@opentelemetry/instrumentation-redis');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 const { performance } = require('perf_hooks');
 
-const provider = new NodeTracerProvider();
-provider.addSpanProcessor(new BatchSpanProcessor(new TraceExporter()));
+// FIX: Pass spanProcessors in the constructor options for NodeTracerProvider in SDK 2.x
+const provider = new NodeTracerProvider({
+  spanProcessors: [new BatchSpanProcessor(new TraceExporter())]
+});
 provider.register();
 
 registerInstrumentations({
@@ -113,5 +115,15 @@ async function main() {
   await meterProvider.forceFlush();
 }
 
-main().catch(console.error);
+// Only run the script automatically if it is executed directly (e.g. `node server.js`)
+if (require.main === module) {
+  main().catch(console.error);
+}
+
+// Export for testability
+module.exports = {
+  main,
+  smartRedisCall
+};
+
 // [END memorystore_redis_client_side_metrics]

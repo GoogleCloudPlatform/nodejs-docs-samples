@@ -20,8 +20,8 @@ const assert = require('assert');
 
 const getSample = () => {
   const getProjectIdStub = sinon.stub().resolves('test-project');
-  const listStub = sinon.stub().resolves([{ items: [{ name: 'test-instance' }] }]);
-  const patchStub = sinon.stub().resolves([{ name: 'test-operation' }]);
+  const listStub = sinon.stub().resolves([{items: [{name: 'test-instance'}]}]);
+  const patchStub = sinon.stub().resolves([{name: 'test-operation'}]);
   const registeredFunctions = {};
 
   proxyquire('../index', {
@@ -38,7 +38,7 @@ const getSample = () => {
       },
     },
   });
-
+cd 
   return {
     registeredFunctions,
     mocks: {
@@ -49,7 +49,7 @@ const getSample = () => {
   };
 };
 
-const getCloudEvent = (data) => ({
+const getCloudEvent = data => ({
   data: {
     message: {
       data: Buffer.from(JSON.stringify(data)).toString('base64'),
@@ -73,7 +73,7 @@ afterEach(restoreConsole);
 describe('functions_start_instance_event', () => {
   it('startInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
-    const cloudEvent = getCloudEvent({ label: 'env=dev' });
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.startInstanceEvent(cloudEvent);
 
@@ -97,7 +97,7 @@ describe('functions_start_instance_event', () => {
 
   it("startInstanceEvent: should fail with missing 'label' attribute", async () => {
     const sample = getSample();
-    const cloudEvent = getCloudEvent({ other: 'value' });
+    const cloudEvent = getCloudEvent({other: 'value'});
 
     await assert.rejects(
       sample.registeredFunctions.startInstanceEvent(cloudEvent),
@@ -108,7 +108,7 @@ describe('functions_start_instance_event', () => {
   it('startInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
     sample.mocks.listStub.resolves([{}]); // Empty object missing 'items' property
-    const cloudEvent = getCloudEvent({ label: 'env=dev' });
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.startInstanceEvent(cloudEvent);
 
@@ -135,7 +135,7 @@ describe('functions_start_instance_event', () => {
 describe('functions_stop_instance_event', () => {
   it('stopInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
-    const cloudEvent = getCloudEvent({ label: 'env=dev' });
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.stopInstanceEvent(cloudEvent);
 
@@ -159,7 +159,7 @@ describe('functions_stop_instance_event', () => {
 
   it("stopInstanceEvent: should fail with missing 'label' attribute", async () => {
     const sample = getSample();
-    const cloudEvent = getCloudEvent({ other: 'value' });
+    const cloudEvent = getCloudEvent({other: 'value'});
 
     await assert.rejects(
       sample.registeredFunctions.stopInstanceEvent(cloudEvent),
@@ -169,8 +169,8 @@ describe('functions_stop_instance_event', () => {
 
   it('stopInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
-    sample.mocks.listStub.resolves([{ items: [] }]); // Empty items array
-    const cloudEvent = getCloudEvent({ label: 'env=dev' });
+    sample.mocks.listStub.resolves([{items: []}]); // Empty items array
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.stopInstanceEvent(cloudEvent);
 

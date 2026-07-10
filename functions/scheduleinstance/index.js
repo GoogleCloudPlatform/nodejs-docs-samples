@@ -16,7 +16,7 @@
 // [START functions_stop_instance_pubsub]
 const functions = require('@google-cloud/functions-framework');
 const {SqlInstancesServiceClient} = require('@google-cloud/sql');
-const sqlInstancesClient = new SqlInstancesServiceClient({ fallback: true });
+const sqlInstancesClient = new SqlInstancesServiceClient({fallback: true});
 // [END functions_stop_instance_pubsub]
 
 /**
@@ -27,50 +27,58 @@ const sqlInstancesClient = new SqlInstancesServiceClient({ fallback: true });
  *
  */
 functions.cloudEvent('startInstanceEvent', async cloudEvent => {
-try {
-  const payload = _validatePayload(cloudEvent);
-  const project = await sqlInstancesClient.getProjectId();
-  const [labelKey, labelValue] = payload.label.split('=');
-  const filter = `settings.userLabels.${labelKey}:${labelValue}`;
+  try {
+    const payload = _validatePayload(cloudEvent);
+    const project = await sqlInstancesClient.getProjectId();
+    const [labelKey, labelValue] = payload.label.split('=');
+    const filter = `settings.userLabels.${labelKey}:${labelValue}`;
 
-  console.log(`Attempting to start instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`);
+    console.log(
+      `Attempting to start instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
+    );
 
-  // Fetch the response object
-  const [response] = await sqlInstancesClient.list({
-    project,
-    filter,
-  });
+    // Fetch the response object
+    const [response] = await sqlInstancesClient.list({
+      project,
+      filter,
+    });
 
-  // Extract the array from the 'items' property (default to empty array if undefined)
-  const instances = response.items || [];
+    // Extract the array from the 'items' property (default to empty array if undefined)
+    const instances = response.items || [];
 
-  console.log(`Raw instances array retrieved. Found ${instances.length} matching instances.`);
+    console.log(
+      `Raw instances array retrieved. Found ${instances.length} matching instances.`
+    );
 
-  if (instances.length === 0) {
-    console.log(`No SQL instances found in project '${project}' matching filter '${filter}'.`);
-    return;
-  }
+    if (instances.length === 0) {
+      console.log(
+        `No SQL instances found in project '${project}' matching filter '${filter}'.`
+      );
+      return;
+    }
 
-  await Promise.all(
-    instances.map(async instance => {
-      console.log(`Starting Cloud SQL instance: ${instance.name}`);
-      const request = {
-        project,
-        instance: instance.name,
-        body: {
-          settings: {
-            activationPolicy: 'ALWAYS',
+    await Promise.all(
+      instances.map(async instance => {
+        console.log(`Starting Cloud SQL instance: ${instance.name}`);
+        const request = {
+          project,
+          instance: instance.name,
+          body: {
+            settings: {
+              activationPolicy: 'ALWAYS',
+            },
           },
-        },
-      };
-      const [operation] = await sqlInstancesClient.patch(request);
-      console.log(`Patch operation started for ${instance.name}: ${operation.name}`);
-    })
-  );
-} catch (err) {
-  console.error(err);
-  throw err;
-}
+        };
+        const [operation] = await sqlInstancesClient.patch(request);
+        console.log(
+          `Patch operation started for ${instance.name}: ${operation.name}`
+        );
+      })
+    );
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 });
 // [END functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
@@ -83,50 +91,57 @@ try {
  *
  */
 functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
-try {
-  const payload = _validatePayload(cloudEvent);
-  const project = await sqlInstancesClient.getProjectId();
-  const [labelKey, labelValue] = payload.label.split('=');
-  const filter = `settings.userLabels.${labelKey}:${labelValue}`;
+  try {
+    const payload = _validatePayload(cloudEvent);
+    const project = await sqlInstancesClient.getProjectId();
+    const [labelKey, labelValue] = payload.label.split('=');
+    const filter = `settings.userLabels.${labelKey}:${labelValue}`;
 
-  console.log(`Attempting to stop instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`);
+    console.log(
+      `Attempting to stop instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
+    );
 
-  // Fetch the response object
-  const [response] = await sqlInstancesClient.list({
-    project,
-    filter,
-  });
+    // Fetch the response object
+    const [response] = await sqlInstancesClient.list({
+      project,
+      filter,
+    });
 
-  // Extract the array from the 'items' property (default to empty array if undefined)
-  const instances = response.items || [];
+    // Extract the array from the 'items' property (default to empty array if undefined)
+    const instances = response.items || [];
 
-  console.log(`Raw instances array retrieved. Found ${instances.length} matching instances.`);
+    console.log(
+      `Raw instances array retrieved. Found ${instances.length} matching instances.`
+    );
 
-  if (instances.length === 0) {
-    console.log(`No SQL instances found in project '${project}' matching filter '${filter}'.`);
-    return;
-  }
+    if (instances.length === 0) {
+      console.log(`
+      No SQL instances found in project '${project}' matching filter '${filter}'.`);
+      return;
+    }
 
-  await Promise.all(
-    instances.map(async instance => {
-      console.log(`Stopping Cloud SQL instance: ${instance.name}`);
-      const request = {
-        project,
-        instance: instance.name,
-        body: {
-          settings: {
-            activationPolicy: 'NEVER',
+    await Promise.all(
+      instances.map(async instance => {
+        console.log(`Stopping Cloud SQL instance: ${instance.name}`);
+        const request = {
+          project,
+          instance: instance.name,
+          body: {
+            settings: {
+              activationPolicy: 'NEVER',
+            },
           },
-        },
-      };
-      const [operation] = await sqlInstancesClient.patch(request);
-      console.log(`Patch operation started for ${instance.name}: ${operation.name}`);
-    })
-  );
-} catch (err) {
-  console.error(err);
-  throw err;
-}
+        };
+        const [operation] = await sqlInstancesClient.patch(request);
+        console.log(
+          `Patch operation started for ${instance.name}: ${operation.name}`
+        );
+      })
+    );
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 });
 // [START functions_start_instance_pubsub]
 
@@ -134,17 +149,17 @@ try {
  * Validates that a request payload contains the expected fields.
  */
 const _validatePayload = cloudEvent => {
-let payload;
-try {
-  const base64Data = cloudEvent.data.message.data;
-  payload = JSON.parse(Buffer.from(base64Data, 'base64').toString());
-} catch (err) {
-  throw new Error('Invalid CloudEvent / Pub/Sub message: ' + err);
-}
-if (!payload.label) {
-  throw new Error("Attribute 'label' missing from payload");
-}
-return payload;
+  let payload;
+  try {
+    const base64Data = cloudEvent.data.message.data;
+    payload = JSON.parse(Buffer.from(base64Data, 'base64').toString());
+  } catch (err) {
+    throw new Error('Invalid CloudEvent / Pub/Sub message: ' + err);
+  }
+  if (!payload.label) {
+    throw new Error("Attribute 'label' missing from payload");
+  }
+  return payload;
 };
 // [END functions_start_instance_pubsub]
 // [END functions_stop_instance_pubsub]

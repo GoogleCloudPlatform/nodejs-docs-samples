@@ -4,7 +4,7 @@
 
 ## Deploy and run the sample
 
-See the [Schedule a Cloud SQL instance to start or stop tutorial][tutorial].
+See the [Schedule a Cloud SQL instance to start or stop][tutorial] tutorial.
 
 [tutorial]: https://docs.cloud.google.com/scheduler/docs/start-and-stop-sql-server-instances-on-a-schedule
 

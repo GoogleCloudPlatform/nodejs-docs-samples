@@ -115,8 +115,9 @@ functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
     );
 
     if (instances.length === 0) {
-      console.log(`
-      No SQL instances found in project '${project}' matching filter '${filter}'.`);
+      console.log(
+        `No SQL instances found in project '${project}' matching filter '${filter}'.`
+      );
       return;
     }
 
@@ -158,6 +159,9 @@ const _validatePayload = cloudEvent => {
   }
   if (!payload.label) {
     throw new Error("Attribute 'label' missing from payload");
+  }
+  if (typeof payload.label !== 'string' || !payload.label.includes('=')) {
+    throw new Error("Attribute 'label' must be in the format 'key=value'");
   }
   return payload;
 };

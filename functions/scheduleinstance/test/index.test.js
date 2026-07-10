@@ -38,7 +38,7 @@ const getSample = () => {
       },
     },
   });
-cd 
+
   return {
     registeredFunctions,
     mocks: {

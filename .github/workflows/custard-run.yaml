@@ -102,7 +102,19 @@ jobs:
           status: failure
 
   test:
-    if: needs.affected.outputs.paths != '[]'
+    # These tests authenticate to Google Cloud as the
+    # kokoro-system-test@long-door-651 service account and run repository code
+    # (make test -> npm install -> npm test), so they must only run on trusted
+    # refs. For workflow_run triggers, limit execution to same-repo branches.
+    # Pull requests from forks do not reach the service account credentials or
+    # execute their code in this privileged context; push (post-merge) and
+    # workflow_dispatch runs are unaffected. The legacy test job in
+    # custard-ci.yaml enforces the same boundary with
+    # `github.event.pull_request.head.repo.fork == false`.
+    if: >-
+      needs.affected.outputs.paths != '[]' &&
+      (github.event_name != 'workflow_run' ||
+      github.event.workflow_run.head_repository.full_name == github.repository)
     needs: affected
     runs-on: ubuntu-latest
     timeout-minutes: 120 # 2 hours hard limit

@@ -41,6 +41,7 @@ function main(bucketName, folderName) {
     };
 
     // Run request
+    console.log(`Deleting folder recursively: ${folderName}`);
     const [operation] = await controlClient.deleteFolderRecursive(request);
     await operation.promise();
     console.log(`Deleted folder: ${folderName}.`);

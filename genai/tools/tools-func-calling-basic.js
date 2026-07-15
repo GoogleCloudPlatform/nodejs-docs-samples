@@ -12,17 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_grounding_private_data_basic]
+// [START aiplatform_genai_function_calling_basic]
 const {GoogleGenAI} = require('@google/genai');
+
+const tools = [
+  {
+    functionDeclarations: [
+      {
+        name: 'get_current_weather',
+        description: 'get weather in a given location',
+        parameters: {
+          type: 'OBJECT',
+          properties: {
+            location: {type: 'STRING'},
+            unit: {
+              type: 'STRING',
+              enum: ['celsius', 'fahrenheit'],
+            },
+          },
+          required: ['location'],
+        },
+      },
+    ],
+  },
+];
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function generateContentWithVertexAISearchGrounding(
+async function functionCallingBasic(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
-  model = 'gemini-2.5-flash',
-  dataStoreId = 'DATASTORE_ID'
+  model = 'gemini-2.5-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({
@@ -31,42 +52,18 @@ async function generateContentWithVertexAISearchGrounding(
     location: location,
   });
 
-  const tools = [
-    {
-      retrieval: {
-        vertexAiSearch: {
-          datastore: `projects/${projectId}/locations/global/collections/default_collection/dataStores/${dataStoreId}`,
-        },
-      },
-    },
-  ];
-
   const result = await client.models.generateContent({
     model: model,
-    contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
+    contents: 'What is the weather in Boston?',
     config: {
       tools: tools,
-      maxOutputTokens: 256,
-      safetySettings: [
-        {
-          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE',
-        },
-      ],
     },
   });
-
-  console.log('Response: ', result.text);
-  console.log(
-    'GroundingMetadata: ',
-    JSON.stringify(result.candidates[0].groundingMetadata)
-  );
+  console.log(JSON.stringify(result.functionCalls));
 }
-// [END generativeaionvertexai_grounding_private_data_basic]
+// [END aiplatform_genai_function_calling_basic]
 
-generateContentWithVertexAISearchGrounding(...process.argv.slice(2)).catch(
-  err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  }
-);
+functionCallingBasic(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

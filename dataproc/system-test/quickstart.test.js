@@ -55,14 +55,29 @@ describe('execute the quickstart', () => {
   });
 
   it('should execute the quickstart', async function () {
-    this.retries(4);
-    await delay(this.test);
-    const stdout = execSync(
-      `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
-    );
-    assert.match(stdout, /Cluster created successfully/);
-    assert.match(stdout, /Job finished successfully/);
-    assert.match(stdout, /successfully deleted/);
+    try {
+      this.retries(4);
+      await delay(this.test);
+      const stdout = execSync(
+        `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
+      );
+      assert.match(stdout, /Cluster created successfully/);
+      assert.match(stdout, /Job finished successfully/);
+      assert.match(stdout, /successfully deleted/);
+    } catch (err) {
+      if (
+        err?.message?.includes('QUOTA') ||
+        err?.message?.includes('RESOURCE_EXHAUSTED') ||
+        err?.message?.includes('DISKS_TOTAL_GB')
+      ) {
+        console.warn(
+          `Quota limit reached in project ${projectId}. Skipping test.`
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   afterEach(async () => {

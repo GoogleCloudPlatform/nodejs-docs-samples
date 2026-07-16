@@ -12,12 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// [START aiplatform_genai_function_calling_basic]
 const {GoogleGenAI} = require('@google/genai');
+
+const tools = [
+  {
+    functionDeclarations: [
+      {
+        name: 'get_current_weather',
+        description: 'get weather in a given location',
+        parameters: {
+          type: 'OBJECT',
+          properties: {
+            location: {type: 'STRING'},
+            unit: {
+              type: 'STRING',
+              enum: ['celsius', 'fahrenheit'],
+            },
+          },
+          required: ['location'],
+        },
+      },
+    ],
+  },
+];
 
 /**
  * TODO(developer): Update these variables before running the sample.
  */
-async function generateContentWithGoogleSearchGrounding(
+async function functionCallingBasic(
   projectId = 'PROJECT_ID',
   location = 'us-central1',
   model = 'gemini-2.5-flash'
@@ -29,28 +52,18 @@ async function generateContentWithGoogleSearchGrounding(
     location: location,
   });
 
-  const googleSearchTool = {
-    googleSearch: {},
-  };
-
   const result = await client.models.generateContent({
     model: model,
-    contents: [{role: 'user', parts: [{text: 'Why is the sky blue?'}]}],
+    contents: 'What is the weather in Boston?',
     config: {
-      tools: [googleSearchTool],
-      maxOutputTokens: 256,
+      tools: tools,
     },
   });
-  console.log('Response: ', result.text);
-  console.log(
-    'GroundingMetadata is: ',
-    JSON.stringify(result.candidates[0].groundingMetadata)
-  );
+  console.log(JSON.stringify(result.functionCalls));
 }
+// [END aiplatform_genai_function_calling_basic]
 
-generateContentWithGoogleSearchGrounding(...process.argv.slice(2)).catch(
-  err => {
-    console.error(err.message);
-    process.exitCode = 1;
-  }
-);
+functionCallingBasic(...process.argv.slice(2)).catch(err => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

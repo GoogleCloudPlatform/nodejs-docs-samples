@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START aiplatform_gemini_function_calling_content]
 // [START generativeaionvertexai_gemini_function_calling_content]
 const {GoogleGenAI} = require('@google/genai');
 
@@ -89,7 +88,6 @@ async function functionCallingStreamContent(
   }
   console.log(completeResponseText);
 }
-// [END aiplatform_gemini_function_calling_content]
 // [END generativeaionvertexai_gemini_function_calling_content]
 
 functionCallingStreamContent(...process.argv.slice(2)).catch(err => {

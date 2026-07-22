@@ -20,19 +20,15 @@
 
 // [START compute_send]
 const mailer = require('nodemailer');
-const smtp = require('nodemailer-smtp-transport');
-
 async function mailjet() {
-  const transport = mailer.createTransport(
-    smtp({
-      host: 'in.mailjet.com',
-      port: 2525,
-      auth: {
-        user: process.env.MAILJET_API_KEY || '<your-mailjet-api-key',
-        pass: process.env.MAILJET_API_SECRET || '<your-mailjet-api-secret>',
-      },
-    })
-  );
+  const transport = mailer.createTransport({
+    host: 'in.mailjet.com',
+    port: 2525,
+    auth: {
+      user: process.env.MAILJET_API_KEY || '<your-mailjet-api-key',
+      pass: process.env.MAILJET_API_SECRET || '<your-mailjet-api-secret>',
+    },
+  });
 
   const json = await transport.sendMail({
     from: 'ANOTHER_EMAIL@ANOTHER_EXAMPLE.COM', // From address

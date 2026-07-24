@@ -19,210 +19,161 @@ const proxyquire = require('proxyquire').noCallThru();
 const assert = require('assert');
 
 const getSample = () => {
-  const requestPromise = sinon
-    .stub()
-    .returns(new Promise(resolve => resolve('request sent')));
+  const getProjectIdStub = sinon.stub().resolves('test-project');
+  const listStub = sinon.stub().resolves([{items: [{name: 'test-instance'}]}]);
+  const patchStub = sinon.stub().resolves([{name: 'test-operation'}]);
+  const registeredFunctions = {};
+
+  proxyquire('../index', {
+    '@google-cloud/functions-framework': {
+      cloudEvent: (name, handler) => {
+        registeredFunctions[name] = handler;
+      },
+    },
+    '@google-cloud/sql': {
+      SqlInstancesServiceClient: function () {
+        this.getProjectId = getProjectIdStub;
+        this.list = listStub;
+        this.patch = patchStub;
+      },
+    },
+  });
 
   return {
-    program: proxyquire('../', {
-      '@google-cloud/compute': {
-        InstancesClient: function client() {
-          this.list = () => new Promise(resolve => resolve([[]]));
-          this.start = () => new Promise(resolve => resolve('request sent'));
-          this.getProjectId = () => 'project';
-        },
-        ZoneOperationsClient: function client() {
-          this.wait = () => new Promise(resolve => resolve('request sent'));
-        },
-      },
-    }),
+    registeredFunctions,
     mocks: {
-      requestPromise: requestPromise,
+      getProjectIdStub,
+      listStub,
+      patchStub,
     },
   };
 };
 
-const getMocks = () => {
-  const event = {
-    data: {},
-  };
-
-  const callback = sinon.spy();
-
-  return {
-    event: event,
-    context: {},
-    callback: callback,
-  };
-};
+const getCloudEvent = data => ({
+  data: {
+    message: {
+      data: Buffer.from(JSON.stringify(data)).toString('base64'),
+    },
+  },
+});
 
 const stubConsole = function () {
   sinon.stub(console, 'error');
   sinon.stub(console, 'log');
 };
 
-//Restore console
 const restoreConsole = function () {
   console.log.restore();
   console.error.restore();
 };
+
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-/** Tests for startInstancePubSub */
-describe('functions_start_instance_pubsub', () => {
-  it('startInstancePubSub: should accept JSON-formatted event payload with label', async () => {
-    const mocks = getMocks();
+describe('functions_start_instance_event', () => {
+  it('startInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
-    const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.startInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[1],
-      'Successfully started instance(s)'
+    await sample.registeredFunctions.startInstanceEvent(cloudEvent);
+
+    assert.strictEqual(sample.mocks.getProjectIdStub.calledOnce, true);
+    assert.strictEqual(sample.mocks.listStub.calledOnce, true);
+    assert.deepStrictEqual(sample.mocks.listStub.firstCall.args[0], {
+      project: 'test-project',
+      filter: 'settings.userLabels.env:dev',
+    });
+    assert.strictEqual(sample.mocks.patchStub.calledOnce, true);
+    assert.deepStrictEqual(sample.mocks.patchStub.firstCall.args[0], {
+      project: 'test-project',
+      instance: 'test-instance',
+      body: {
+        settings: {
+          activationPolicy: 'ALWAYS',
+        },
+      },
+    });
+  });
+
+  it("startInstanceEvent: should fail with missing 'label' attribute", async () => {
+    const sample = getSample();
+    const cloudEvent = getCloudEvent({other: 'value'});
+
+    await assert.rejects(
+      sample.registeredFunctions.startInstanceEvent(cloudEvent),
+      /Attribute 'label' missing from payload/
     );
   });
 
-  it("startInstancePubSub: should fail with missing 'zone' attribute", async () => {
-    const mocks = getMocks();
+  it('startInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
-    const pubsubData = {label: 'testkey=value'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.startInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
+    sample.mocks.listStub.resolves([{}]); // Empty object missing 'items' property
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'zone' missing from payload")
-    );
+    await sample.registeredFunctions.startInstanceEvent(cloudEvent);
+
+    assert.strictEqual(sample.mocks.patchStub.called, false);
   });
 
-  it("startInstancePubSub: should fail with missing 'label' attribute", async () => {
-    const mocks = getMocks();
+  it('startInstanceEvent: should fail with invalid CloudEvent payload', async () => {
     const sample = getSample();
-    const pubsubData = {zone: 'test-zone'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.startInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
+    const cloudEvent = {
+      data: {
+        message: {
+          data: 'invalid-base64-payload',
+        },
+      },
+    };
 
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'label' missing from payload")
-    );
-  });
-
-  it('startInstancePubSub: should fail with empty event payload', async () => {
-    const mocks = getMocks();
-    const sample = getSample();
-    const pubsubData = {};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.startInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
-
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'zone' missing from payload")
+    await assert.rejects(
+      sample.registeredFunctions.startInstanceEvent(cloudEvent),
+      /Invalid CloudEvent \/ Pub\/Sub message/
     );
   });
 });
 
-/** Tests for stopInstancePubSub */
-describe('functions_stop_instance_pubsub', () => {
-  it('stopInstancePubSub: should accept JSON-formatted event payload with label', async () => {
-    const mocks = getMocks();
+describe('functions_stop_instance_event', () => {
+  it('stopInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
-    const pubsubData = {zone: 'test-zone', label: 'testkey=value'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.stopInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[1],
-      'Successfully stopped instance(s)'
+    await sample.registeredFunctions.stopInstanceEvent(cloudEvent);
+
+    assert.strictEqual(sample.mocks.getProjectIdStub.calledOnce, true);
+    assert.strictEqual(sample.mocks.listStub.calledOnce, true);
+    assert.deepStrictEqual(sample.mocks.listStub.firstCall.args[0], {
+      project: 'test-project',
+      filter: 'settings.userLabels.env:dev',
+    });
+    assert.strictEqual(sample.mocks.patchStub.calledOnce, true);
+    assert.deepStrictEqual(sample.mocks.patchStub.firstCall.args[0], {
+      project: 'test-project',
+      instance: 'test-instance',
+      body: {
+        settings: {
+          activationPolicy: 'NEVER',
+        },
+      },
+    });
+  });
+
+  it("stopInstanceEvent: should fail with missing 'label' attribute", async () => {
+    const sample = getSample();
+    const cloudEvent = getCloudEvent({other: 'value'});
+
+    await assert.rejects(
+      sample.registeredFunctions.stopInstanceEvent(cloudEvent),
+      /Attribute 'label' missing from payload/
     );
   });
 
-  it("stopInstancePubSub: should fail with missing 'zone' attribute", async () => {
-    const mocks = getMocks();
+  it('stopInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
-    const pubsubData = {label: 'testkey=value'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.stopInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
+    sample.mocks.listStub.resolves([{items: []}]); // Empty items array
+    const cloudEvent = getCloudEvent({label: 'env=dev'});
 
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'zone' missing from payload")
-    );
-  });
+    await sample.registeredFunctions.stopInstanceEvent(cloudEvent);
 
-  it("stopInstancePubSub: should fail with missing 'label' attribute", async () => {
-    const mocks = getMocks();
-    const sample = getSample();
-    const pubsubData = {zone: 'test-zone'};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.stopInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
-
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'label' missing from payload")
-    );
-  });
-
-  it('stopInstancePubSub: should fail with empty event payload', async () => {
-    const mocks = getMocks();
-    const sample = getSample();
-    const pubsubData = {};
-    mocks.event.data = Buffer.from(JSON.stringify(pubsubData)).toString(
-      'base64'
-    );
-    await sample.program.stopInstancePubSub(
-      mocks.event,
-      mocks.context,
-      mocks.callback
-    );
-
-    assert.deepStrictEqual(
-      mocks.callback.firstCall.args[0],
-      new Error("Attribute 'zone' missing from payload")
-    );
+    assert.strictEqual(sample.mocks.patchStub.called, false);
   });
 });

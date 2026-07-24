@@ -25,12 +25,12 @@
     "@opentelemetry/sdk-metrics": "^2.1.0",
     "@opentelemetry/sdk-trace-base": "^2.1.0",
     "@opentelemetry/sdk-trace-node": "^2.1.0",
-    "redis": "^4.6.0"
+    "redis": "^6.0.0"
   },
   "devDependencies": {
-    "mocha": "^10.0.0",
-    "chai": "^4.3.0",
+    "mocha": "^11.0.0",
+    "chai": "^6.0.0",
     "proxyquire": "^2.1.0",
-    "sinon": "^15.0.0"
+    "sinon": "^22.0.0"
   }
 }

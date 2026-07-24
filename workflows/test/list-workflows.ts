@@ -23,7 +23,7 @@ const location = 'us-central1';
 describe('list-workflows', () => {
   it('should run list-workflows', async () => {
     const output = execSync(
-      `node --loader ts-node/esm ./list-workflows.ts ${project} ${location}`
+      `node --require ts-node/register ./list-workflows.ts ${project} ${location}`
     );
     assert(output.match(/name: projects.*/));
   });

@@ -19,12 +19,11 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
-const location = process.env.LOCATION;
-const datastore_id = process.env.DATASTORE_ID;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const model = 'gemini-2.5-flash';
 
-describe('Private data grounding', async () => {
+describe('tools-func-calling-basic', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -33,10 +32,13 @@ describe('Private data grounding', async () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-2.5-flash';
 
-  it('should ground results in private VertexAI search data', async () => {
+  it('should define a function and have the model invoke it', async () => {
     const output = execSync(
-      `node ./grounding/groundingPrivateDataBasic.js ${projectId} ${location} ${model} ${datastore_id}`
+      `node ./tools-func-calling-basic.js ${projectId} ${location} ${model}`
     );
-    assert(output.match(/GroundingMetadata/));
+
+    // Assert that the response is what we expect
+    assert(output.length > 0);
+    assert.include(output, 'get_current_weather');
   });
 });

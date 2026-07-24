@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START aiplatform_gemini_function_calling_content]
-// [START generativeaionvertexai_gemini_function_calling_content]
+// [START aiplatform_genai_function_calling_stream_content]
 const {GoogleGenAI} = require('@google/genai');
 
 const tools = [
@@ -39,7 +38,7 @@ const functionResponseParts = [
   {
     functionResponse: {
       name: 'get_current_weather',
-      response: {name: 'get_current_weather', content: {weather: 'super nice'}},
+      response: {weather: 'super nice'},
     },
   },
 ];
@@ -89,8 +88,7 @@ async function functionCallingStreamContent(
   }
   console.log(completeResponseText);
 }
-// [END aiplatform_gemini_function_calling_content]
-// [END generativeaionvertexai_gemini_function_calling_content]
+// [END aiplatform_genai_function_calling_stream_content]
 
 functionCallingStreamContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

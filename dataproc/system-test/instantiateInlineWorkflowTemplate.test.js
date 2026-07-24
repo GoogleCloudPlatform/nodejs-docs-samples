@@ -30,11 +30,26 @@ const {delay} = require('./util');
 
 describe('instantiate an inline workflow template', () => {
   it('should instantiate an inline workflow template', async function () {
-    this.retries(4);
-    await delay(this.test);
-    const stdout = execSync(
-      `node instantiateInlineWorkflowTemplate.js "${projectId}" "${region}"`
-    );
-    assert.match(stdout, /successfully/);
+    try {
+      this.retries(4);
+      await delay(this.test);
+      const stdout = execSync(
+        `node instantiateInlineWorkflowTemplate.js "${projectId}" "${region}"`
+      );
+      assert.match(stdout, /successfully/);
+    } catch (err) {
+      if (
+        err?.message?.includes('QUOTA') ||
+        err?.message?.includes('RESOURCE_EXHAUSTED') ||
+        err?.message?.includes('DISKS_TOTAL_GB')
+      ) {
+        console.warn(
+          `Quota limit reached in project ${projectId}. Skipping test.`
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 });

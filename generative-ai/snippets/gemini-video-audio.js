@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_video_with_audio]
 const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -47,7 +46,6 @@ async function analyze_video_with_audio(
 
   console.log(response.text);
 }
-// [END generativeaionvertexai_gemini_video_with_audio]
 
 analyze_video_with_audio(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_safety_settings]
 const {
   VertexAI,
   HarmCategory,
@@ -69,7 +68,6 @@ async function setSafetySettings() {
   }
   console.log('This response stream terminated due to safety concerns.');
 }
-// [END generativeaionvertexai_gemini_safety_settings]
 
 setSafetySettings().catch(err => {
   console.error(err.message);

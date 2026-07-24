@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
-// [START aiplatform_gemini_multiturn_chat_nonstreaming]
 const {GoogleGenAI} = require('@google/genai');
 /**
  * TODO(developer): Update these variables before running the sample.
@@ -47,8 +45,6 @@ async function createNonStreamingChat(
   });
   console.log('Chat response 3: ', response3.text);
 }
-// [END aiplatform_gemini_multiturn_chat_nonstreaming]
-// [END generativeaionvertexai_gemini_multiturn_chat_nonstreaming]
 
 createNonStreamingChat(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

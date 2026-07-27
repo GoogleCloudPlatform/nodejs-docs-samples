@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_function_calling_advanced]
 const {GoogleGenAI} = require('@google/genai');
 
 const tools = [
@@ -77,7 +76,6 @@ async function functionCallingAdvanced(
   });
   console.log(JSON.stringify(result.functionCalls));
 }
-// [END generativeaionvertexai_function_calling_advanced]
 
 functionCallingAdvanced(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

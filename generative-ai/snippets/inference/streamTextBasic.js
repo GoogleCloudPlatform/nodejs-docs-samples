@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_stream_text_basic]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -52,7 +51,6 @@ async function generateContent(
     console.log(chunk.text);
   }
 }
-// [END generativeaionvertexai_stream_text_basic]
 
 generateContent(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

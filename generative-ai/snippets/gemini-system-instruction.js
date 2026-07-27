@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_system_instruction]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -49,7 +48,6 @@ async function set_system_instruction(
 
   console.log(response.text);
 }
-// [END generativeaionvertexai_gemini_system_instruction]
 
 set_system_instruction(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

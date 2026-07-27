@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_function_calling_chat]
 const {GoogleGenAI} = require('@google/genai');
 
 const tools = [
@@ -80,7 +79,6 @@ async function functionCallingStreamChat(
   // provided above
   console.log(result2.text);
 }
-// [END generativeaionvertexai_gemini_function_calling_chat]
 
 functionCallingStreamChat(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

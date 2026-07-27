@@ -1,4 +1,4 @@
-// Copyright 2024 Google LLC
+// Copyright 2023 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const model = 'gemini-2.5-flash';
 
-describe('Generative AI Function Calling', () => {
+describe('tools-func-calling-stream-content', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
@@ -32,12 +32,12 @@ describe('Generative AI Function Calling', () => {
   // const location = 'YOUR_LOCATION';
   // const model = 'gemini-2.5-flash';
 
-  it('should define a function and have the model invoke it', async () => {
+  it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(
-      `node ./function-calling/functionCallingBasic.js ${projectId} ${location} ${model}`
+      `node ./tools-func-calling-stream-content.js ${projectId} ${location} ${model}`
     );
 
     // Assert that the response is what we expect
-    assert(output.length > 0);
+    assert(output.match(/super nice/), output);
   });
 });

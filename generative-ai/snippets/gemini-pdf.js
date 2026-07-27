@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_pdf]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -48,7 +47,6 @@ async function analyze_pdf(
 
   console.log(response.text);
 }
-// [END generativeaionvertexai_gemini_pdf]
 
 analyze_pdf(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

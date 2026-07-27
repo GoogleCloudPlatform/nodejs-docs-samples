@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_audio_transcription]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -47,7 +46,6 @@ async function transcript_audio(
 
   console.log(response.text);
 }
-// [END generativeaionvertexai_gemini_audio_transcription]
 
 transcript_audio(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

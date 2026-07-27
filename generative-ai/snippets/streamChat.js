@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_multiturn_chat_stream]
 const {VertexAI} = require('@google-cloud/vertexai');
 
 /**
@@ -41,8 +40,6 @@ async function createStreamChat(
     console.log(item.candidates[0].content.parts[0].text);
   }
 }
-
-// [END generativeaionvertexai_gemini_multiturn_chat_stream]
 
 createStreamChat(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

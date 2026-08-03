@@ -49,13 +49,14 @@ async function main(
     const bucket = storage.bucket(bucketName);
     const sources = [firstFileName, secondFileName];
 
-    const options = {
-      deleteSourceObjects: String(deleteSourceObjects) === 'true',
-    };
+    await bucket.combine(sources, destinationFileName);
 
-    await bucket.combine(sources, destinationFileName, options);
+    const deleteSources = String(deleteSourceObjects) === 'true';
+    if (deleteSources) {
+      await Promise.all(sources.map(name => bucket.file(name).delete()));
+    }
 
-    const deletionMessage = options.deleteSourceObjects
+    const deletionMessage = deleteSources
       ? ' and the source objects were deleted.'
       : '.';
     console.log(

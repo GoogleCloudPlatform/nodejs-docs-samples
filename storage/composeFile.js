@@ -68,6 +68,6 @@ async function main(
 }
 
 main(...process.argv.slice(2)).catch(err => {
-  console.error(err);
-  process.exitCode = 1;
+  console.error('ERROR:', err);
+  process.exit(1);
 });

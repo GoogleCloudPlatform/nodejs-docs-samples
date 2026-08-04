@@ -51,7 +51,7 @@ async function main(
 
     await bucket.combine(sources, destinationFileName);
 
-    const deleteSources = String(deleteSourceObjects) === 'true';
+    const deleteSources = String(deleteSourceObjects).toLowerCase() === 'true';
     if (deleteSources) {
       await Promise.all(sources.map(name => bucket.file(name).delete()));
     }

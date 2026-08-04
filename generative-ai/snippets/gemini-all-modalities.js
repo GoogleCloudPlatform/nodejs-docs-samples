@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START generativeaionvertexai_gemini_all_modalities]
 const {GoogleGenAI} = require('@google/genai');
 
 /**
@@ -62,7 +61,6 @@ async function analyze_all_modalities(
 
   console.log(response.text);
 }
-// [END generativeaionvertexai_gemini_all_modalities]
 
 analyze_all_modalities(...process.argv.slice(2)).catch(err => {
   console.error(err.message);

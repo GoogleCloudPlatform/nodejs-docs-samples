@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,29 +19,26 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-const projectId = process.env.CAIP_PROJECT_ID;
-const location = process.env.LOCATION;
-const model = 'gemini-2.0-flash-001';
+const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+const model = 'gemini-2.5-flash';
 
-describe.skip('Generative AI NonStreaming Multipart Content', () => {
+describe('tools-func-calling-basic', () => {
   /**
    * TODO(developer): Uncomment these variables before running the sample.\
    * (Not necessary if passing values as arguments)
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-2.0-flash-001';
+  // const model = 'gemini-2.5-flash';
 
-  const image = 'gs://generativeai-downloads/images/scones.jpg';
-
-  it('should create nonstreaming multipart content and begin the conversation the same in each instance', async () => {
+  it('should define a function and have the model invoke it', async () => {
     const output = execSync(
-      `node ./nonStreamingMultipartContent.js ${projectId} ${location} ${model} ${image}`
+      `node ./tools-func-calling-basic.js ${projectId} ${location} ${model}`
     );
 
-    // Ensure that the conversation is what we expect for this scone image
-    assert(output.match(/Prompt Text:/));
-    assert(output.match(/what is shown in this image/));
-    assert(output.match(/Non-Streaming Response Text:/));
+    // Assert that the response is what we expect
+    assert(output.length > 0);
+    assert.include(output, 'get_current_weather');
   });
 });

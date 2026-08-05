@@ -70,7 +70,7 @@ const restoreConsole = function () {
 beforeEach(stubConsole);
 afterEach(restoreConsole);
 
-describe('functions_start_instance_event', () => {
+describe('functions_start_instance_pubsub', () => {
   it('startInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
     const cloudEvent = getCloudEvent({label: 'env=dev'});
@@ -132,7 +132,7 @@ describe('functions_start_instance_event', () => {
   });
 });
 
-describe('functions_stop_instance_event', () => {
+describe('functions_stop_instance_pubsub', () => {
   it('stopInstanceEvent: should accept CloudEvent payload with label', async () => {
     const sample = getSample();
     const cloudEvent = getCloudEvent({label: 'env=dev'});

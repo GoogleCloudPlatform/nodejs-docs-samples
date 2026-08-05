@@ -14,132 +14,154 @@
 
 // [START functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
-const compute = require('@google-cloud/compute');
-const instancesClient = new compute.InstancesClient();
-const operationsClient = new compute.ZoneOperationsClient();
-
-async function waitForOperation(projectId, operation) {
-  while (operation.status !== 'DONE') {
-    [operation] = await operationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-      zone: operation.zone.split('/').pop(),
-    });
-  }
-}
+const functions = require('@google-cloud/functions-framework');
+const {SqlInstancesServiceClient} = require('@google-cloud/sql');
+const sqlInstancesClient = new SqlInstancesServiceClient({fallback: true});
 // [END functions_stop_instance_pubsub]
 
 /**
- * Starts Compute Engine instances.
+ * Starts Cloud SQL instances.
  *
- * Expects a PubSub message with JSON-formatted event data containing the
- * following attributes:
- *  zone - the GCP zone the instances are located in.
- *  label - the label of instances to start.
+ * Expects a PubSub message with JSON-formatted event data containing
+ * the label of instances to start.
  *
- * @param {!object} event Cloud Function PubSub message event.
- * @param {!object} callback Cloud Function PubSub callback indicating
- *  completion.
  */
-exports.startInstancePubSub = async (event, context, callback) => {
+functions.cloudEvent('startInstanceEvent', async cloudEvent => {
   try {
-    const project = await instancesClient.getProjectId();
-    const payload = _validatePayload(event);
-    const options = {
-      filter: `labels.${payload.label}`,
-      project,
-      zone: payload.zone,
-    };
+    const payload = _validatePayload(cloudEvent);
+    const project = await sqlInstancesClient.getProjectId();
+    const [labelKey, labelValue] = payload.label.split('=');
+    const filter = `settings.userLabels.${labelKey}:${labelValue}`;
 
-    const [instances] = await instancesClient.list(options);
+    console.log(
+      `Attempting to start instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
+    );
+
+    // Fetch the response object
+    const [response] = await sqlInstancesClient.list({
+      project,
+      filter,
+    });
+
+    // Extract the array from the 'items' property (default to empty array if undefined)
+    const instances = response.items || [];
+
+    console.log(
+      `Raw instances array retrieved. Found ${instances.length} matching instances.`
+    );
+
+    if (instances.length === 0) {
+      console.log(
+        `No SQL instances found in project '${project}' matching filter '${filter}'.`
+      );
+      return;
+    }
 
     await Promise.all(
       instances.map(async instance => {
-        const [response] = await instancesClient.start({
+        console.log(`Starting Cloud SQL instance: ${instance.name}`);
+        const request = {
           project,
-          zone: payload.zone,
           instance: instance.name,
-        });
-
-        return waitForOperation(project, response.latestResponse);
+          body: {
+            settings: {
+              activationPolicy: 'ALWAYS',
+            },
+          },
+        };
+        const [operation] = await sqlInstancesClient.patch(request);
+        console.log(
+          `Patch operation started for ${instance.name}: ${operation.name}`
+        );
       })
     );
-
-    // Operation complete. Instance successfully started.
-    const message = 'Successfully started instance(s)';
-    console.log(message);
-    callback(null, message);
   } catch (err) {
-    console.log(err);
-    callback(err);
+    console.error(err);
+    throw err;
   }
-};
+});
 // [END functions_start_instance_pubsub]
 // [START functions_stop_instance_pubsub]
 
 /**
- * Stops Compute Engine instances.
+ * Stops Cloud SQL instances.
  *
- * Expects a PubSub message with JSON-formatted event data containing the
- * following attributes:
- *  zone - the GCP zone the instances are located in.
- *  label - the label of instances to stop.
+ * Expects a PubSub message with JSON-formatted event data containing
+ * the label of instances to stop.
  *
- * @param {!object} event Cloud Function PubSub message event.
- * @param {!object} callback Cloud Function PubSub callback indicating completion.
  */
-exports.stopInstancePubSub = async (event, context, callback) => {
+functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
   try {
-    const project = await instancesClient.getProjectId();
-    const payload = _validatePayload(event);
-    const options = {
-      filter: `labels.${payload.label}`,
-      project,
-      zone: payload.zone,
-    };
+    const payload = _validatePayload(cloudEvent);
+    const project = await sqlInstancesClient.getProjectId();
+    const [labelKey, labelValue] = payload.label.split('=');
+    const filter = `settings.userLabels.${labelKey}:${labelValue}`;
 
-    const [instances] = await instancesClient.list(options);
+    console.log(
+      `Attempting to stop instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
+    );
+
+    // Fetch the response object
+    const [response] = await sqlInstancesClient.list({
+      project,
+      filter,
+    });
+
+    // Extract the array from the 'items' property (default to empty array if undefined)
+    const instances = response.items || [];
+
+    console.log(
+      `Raw instances array retrieved. Found ${instances.length} matching instances.`
+    );
+
+    if (instances.length === 0) {
+      console.log(
+        `No SQL instances found in project '${project}' matching filter '${filter}'.`
+      );
+      return;
+    }
 
     await Promise.all(
       instances.map(async instance => {
-        const [response] = await instancesClient.stop({
+        console.log(`Stopping Cloud SQL instance: ${instance.name}`);
+        const request = {
           project,
-          zone: payload.zone,
           instance: instance.name,
-        });
-
-        return waitForOperation(project, response.latestResponse);
+          body: {
+            settings: {
+              activationPolicy: 'NEVER',
+            },
+          },
+        };
+        const [operation] = await sqlInstancesClient.patch(request);
+        console.log(
+          `Patch operation started for ${instance.name}: ${operation.name}`
+        );
       })
     );
-
-    // Operation complete. Instance successfully stopped.
-    const message = 'Successfully stopped instance(s)';
-    console.log(message);
-    callback(null, message);
   } catch (err) {
-    console.log(err);
-    callback(err);
+    console.error(err);
+    throw err;
   }
-};
+});
 // [START functions_start_instance_pubsub]
 
 /**
  * Validates that a request payload contains the expected fields.
- *
- * @param {!object} payload the request payload to validate.
- * @return {!object} the payload object.
  */
-const _validatePayload = event => {
+const _validatePayload = cloudEvent => {
   let payload;
   try {
-    payload = JSON.parse(Buffer.from(event.data, 'base64').toString());
+    const base64Data = cloudEvent.data.message.data;
+    payload = JSON.parse(Buffer.from(base64Data, 'base64').toString());
   } catch (err) {
-    throw new Error('Invalid Pub/Sub message: ' + err);
+    throw new Error('Invalid CloudEvent / Pub/Sub message: ' + err);
   }
-  if (!payload.zone) {
-    throw new Error("Attribute 'zone' missing from payload");
-  } else if (!payload.label) {
+  if (!payload.label) {
     throw new Error("Attribute 'label' missing from payload");
+  }
+  if (typeof payload.label !== 'string' || !payload.label.includes('=')) {
+    throw new Error("Attribute 'label' must be in the format 'key=value'");
   }
   return payload;
 };

@@ -42,7 +42,7 @@ functions.cloudEvent('startInstanceEvent', async cloudEvent => {
       project,
       filter,
     });
-    
+
     // Extract the items array, falling back to an empty array if undefined
     const instances = response.items || [];
 
@@ -106,7 +106,7 @@ functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
       project,
       filter,
     });
-    
+
     // Extract the items array, falling back to an empty array if undefined
     const instances = response.items || [];
 

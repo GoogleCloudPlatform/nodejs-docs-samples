@@ -1,5 +1,5 @@
 {
-  "name": "cloud-functions-schedule-instance",
+  "name": "cloud-functions-schedule-sql",
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
@@ -21,6 +21,7 @@
     "sinon": "^18.0.0"
   },
   "dependencies": {
-    "@google-cloud/compute": "^4.0.0"
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/sql": "^0.20.1"
   }
 }

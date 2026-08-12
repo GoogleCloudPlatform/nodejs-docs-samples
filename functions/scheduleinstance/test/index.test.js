@@ -20,7 +20,7 @@ const assert = require('assert');
 
 const getSample = () => {
   const getProjectIdStub = sinon.stub().resolves('test-project');
-  const listStub = sinon.stub().resolves([[{name: 'test-instance'}]]);
+  const listStub = sinon.stub().resolves([{ items: [{name: 'test-instance'}] }]);
   const patchStub = sinon.stub().resolves([{name: 'test-operation'}]);
   const registeredFunctions = {};
 
@@ -107,7 +107,7 @@ describe('functions_start_instance_pubsub', () => {
 
   it('startInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
-    sample.mocks.listStub.resolves([[]]); // Empty instances array
+    sample.mocks.listStub.resolves([{ items: [] }]); // Empty instances array
     const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.startInstanceEvent(cloudEvent);
@@ -169,7 +169,7 @@ describe('functions_stop_instance_pubsub', () => {
 
   it('stopInstanceEvent: should handle zero instances gracefully', async () => {
     const sample = getSample();
-    sample.mocks.listStub.resolves([[]]); // Empty instances array
+    sample.mocks.listStub.resolves([{ items: [] }]); // Empty instances array
     const cloudEvent = getCloudEvent({label: 'env=dev'});
 
     await sample.registeredFunctions.stopInstanceEvent(cloudEvent);

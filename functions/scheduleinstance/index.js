@@ -37,14 +37,11 @@ functions.cloudEvent('startInstanceEvent', async cloudEvent => {
       `Attempting to start instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
     );
 
-    // Fetch the response object
-    const [response] = await sqlInstancesClient.list({
+    // Fetch the instances array
+    const [instances] = await sqlInstancesClient.list({
       project,
       filter,
     });
-
-    // Extract the array from the 'items' property (default to empty array if undefined)
-    const instances = response.items || [];
 
     console.log(
       `Raw instances array retrieved. Found ${instances.length} matching instances.`
@@ -101,14 +98,11 @@ functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
       `Attempting to stop instances. Project ID resolved to: '${project}'. Filter applied: '${filter}'`
     );
 
-    // Fetch the response object
-    const [response] = await sqlInstancesClient.list({
+    // Fetch the instances array
+    const [instances] = await sqlInstancesClient.list({
       project,
       filter,
     });
-
-    // Extract the array from the 'items' property (default to empty array if undefined)
-    const instances = response.items || [];
 
     console.log(
       `Raw instances array retrieved. Found ${instances.length} matching instances.`

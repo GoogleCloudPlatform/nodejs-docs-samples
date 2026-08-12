@@ -108,7 +108,7 @@ functions.cloudEvent('stopInstanceEvent', async cloudEvent => {
     });
 
     // Extract the items array, falling back to an empty array if undefined
-    const instances = response.items || [];
+    const instances = response?.items || [];
 
     console.log(
       `Raw instances array retrieved. Found ${instances.length} matching instances.`

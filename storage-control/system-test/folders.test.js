@@ -21,7 +21,7 @@ const uuid = require('uuid');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const bucketPrefix = `storage-control-samples-${uuid.v4()}`;
 const bucketName = `${bucketPrefix}-a`;
-const storage = new Storage();
+const storage = new Storage({projectId: process.env.GOOGLE_CLOUD_PROJECT});
 const bucket = new Bucket(storage, bucketName);
 const folderName = uuid.v4();
 const renamedFolderName = uuid.v4();
@@ -78,7 +78,7 @@ describe('Folders', () => {
   });
 
   // Skipping for now due to feature being allowlisted on project level.
-  it.skip('should delete a folder recursively', async () => {
+  it('should delete a folder recursively', async () => {
     const parentFolder = uuid.v4();
     const childFolder = `${parentFolder}/${uuid.v4()}`;
 

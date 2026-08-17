@@ -59,25 +59,22 @@ describe('Folders', () => {
     assert.match(output, new RegExp(folderName));
   });
 
-  // Skipping for now due to operation not supporting custom billing projects.
-  it.skip('should rename a folder', async () => {
+  it('should rename a folder', async () => {
     const output = execSync(
       `node renameFolder.js ${bucketName} ${folderName} ${renamedFolderName}`
     );
     assert.match(
       output,
-      new RegExp(`Renamed folder ${folderName} ${renamedFolderName}.`)
+      new RegExp(`Renamed folder ${folderName} to ${renamedFolderName}.`)
     );
   });
 
   it('should delete a folder', async () => {
-    // Change folderName to renamedFolderName once the previous test is enabled.
-    const output = execSync(`node deleteFolder.js ${bucketName} ${folderName}`);
+    const output = execSync(`node deleteFolder.js ${bucketName} ${renamedFolderName}`);
     assert.match(output, /Deleted folder:/);
-    assert.match(output, new RegExp(folderName));
+    assert.match(output, new RegExp(renamedFolderName));
   });
 
-  // Skipping for now due to feature being allowlisted on project level.
   it('should delete a folder recursively', async () => {
     const parentFolder = uuid.v4();
     const childFolder = `${parentFolder}/${uuid.v4()}`;

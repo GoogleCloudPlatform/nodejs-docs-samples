@@ -30,8 +30,8 @@ describe('content-cache-create-use-update-delete', function () {
   this.retries(5);
   let contentCacheName;
 
-  before(async function () {
-    await delay(this.test);
+  beforeEach(async function () {
+    await delay(this.currentTest);
   });
 
   after(async () => {

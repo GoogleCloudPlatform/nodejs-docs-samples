@@ -25,12 +25,31 @@ const updateSample = require('../content-cache-update.js');
 const deleteSample = require('../content-cache-delete.js');
 const {delay} = require('../../test/util');
 
-describe('content-cache-create-use-update-delete', async function () {
+describe('content-cache-create-use-update-delete', function () {
   this.timeout(600000);
   this.retries(5);
-  await delay(this.test);
-
   let contentCacheName;
+
+  beforeEach(async function () {
+    await delay(this.currentTest);
+  });
+
+  after(async () => {
+    if (contentCacheName) {
+      try {
+        await deleteSample.deleteContentCache(
+          projectId,
+          undefined,
+          contentCacheName
+        );
+      } catch (err) {
+        console.error(
+          `Failed to delete content cache ${contentCacheName}:`,
+          err
+        );
+      }
+    }
+  });
 
   it('should create content cache', async () => {
     contentCacheName = await createSample.generateContentCache(projectId);
@@ -61,5 +80,6 @@ describe('content-cache-create-use-update-delete', async function () {
       undefined,
       contentCacheName
     );
+    contentCacheName = undefined;
   });
 });

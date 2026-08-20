@@ -32,29 +32,28 @@ async function generateImage(
     location: location,
   });
 
-  const image = await client.models.generateImages({
-    model: 'imagen-4.0-generate-001',
-    prompt: 'A dog reading a newspaper',
-    config: {
-      imageSize: '2K',
-    },
+  const response = await client.models.generateContent({
+    model: 'gemini-2.5-flash-image',
+    contents: 'A dog reading a newspaper',
   });
-  console.log(image.generatedImages[0].image);
+
+  const generatedImagePart = response.candidates[0].content.parts[0];
+
+  console.log(generatedImagePart);
   console.log('Created output image');
+
   const outputDir = 'output-folder';
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, {recursive: true});
   }
 
-  const imageBytes = image.generatedImages[0].image.imageBytes;
+  const imageBytes = generatedImagePart.inlineData.data;
   const buffer = Buffer.from(imageBytes, 'base64');
   const fileName = `${outputDir}/dog-image.png`;
 
   fs.writeFileSync(fileName, buffer);
 
-  // Example response:
-  //  gs://your-bucket/your-prefix
-  return image.generatedImages;
+  return response.candidates[0].content.parts;
 }
 // [END googlegenaisdk_imggen_with_txt]
 

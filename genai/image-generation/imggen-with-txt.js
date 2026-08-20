@@ -37,7 +37,7 @@ async function generateImage(
     contents: 'A dog reading a newspaper',
   });
 
-  const generatedImagePart = response.candidates[0].content.parts[0];
+  const generatedImagePart = response.candidates?.[0]?.content?.parts?.[0];
 
   console.log(generatedImagePart);
   console.log('Created output image');
@@ -47,13 +47,17 @@ async function generateImage(
     fs.mkdirSync(outputDir, {recursive: true});
   }
 
-  const imageBytes = generatedImagePart.inlineData.data;
+  const imageBytes = generatedImagePart?.inlineData?.data;
+  if (!imageBytes) {
+    throw new Error('No image data returned from the model.');
+  }
+
   const buffer = Buffer.from(imageBytes, 'base64');
   const fileName = `${outputDir}/dog-image.png`;
 
   fs.writeFileSync(fileName, buffer);
 
-  return response.candidates[0].content.parts;
+  return response.candidates?.[0]?.content?.parts;
 }
 // [END googlegenaisdk_imggen_with_txt]
 

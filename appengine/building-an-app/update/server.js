@@ -16,13 +16,16 @@
 
 // [START gae_update_web_server_app]
 const express = require('express');
-const path = require('path');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 
 const app = express();
 
 // [START gae_enable_parser]
 // This middleware is available in Express v4.16.0 onwards
+app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
+app.use(csrf({cookie: true}));
 // [END gae_enable_parser]
 
 app.get('/', (req, res) => {
@@ -31,7 +34,8 @@ app.get('/', (req, res) => {
 
 // [START gae_add_display_form]
 app.get('/submit', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/form.html'));
+  const token = req.csrfToken();
+  res.send(`<!DOCTYPE html><html><head><title>My App Engine App</title></head><body><h2>Create a new post</h2><form method="POST" action="/submit"><input type="hidden" name="_csrf" value="${token}"><div><input type="text" name="name" placeholder="Name"></div><div><textarea name="message" placeholder="Message"></textarea></div><div><button type="submit">Submit</button></div></form></body></html>`);
 });
 // [END gae_add_display_form]
 

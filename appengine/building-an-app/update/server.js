@@ -18,6 +18,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
+const fs = require('fs').promises;
+const path = require('path');
 
 const app = express();
 
@@ -33,9 +35,18 @@ app.get('/', (req, res) => {
 });
 
 // [START gae_add_display_form]
-app.get('/submit', (req, res) => {
-  const token = req.csrfToken();
-  res.send(`<!DOCTYPE html><html><head><title>My App Engine App</title></head><body><h2>Create a new post</h2><form method="POST" action="/submit"><input type="hidden" name="_csrf" value="${token}"><div><input type="text" name="name" placeholder="Name"></div><div><textarea name="message" placeholder="Message"></textarea></div><div><button type="submit">Submit</button></div></form></body></html>`);
+app.get('/submit', async (req, res, next) => {
+  try {
+    const token = req.csrfToken();
+    const template = await fs.readFile(path.join(__dirname, '/views/form.html'), 'utf-8');
+    const html = template.replace(
+      '<form method="POST" action="/submit">',
+      `<form method="POST" action="/submit"><input type="hidden" name="_csrf" value="${token}">`
+    );
+    res.send(html);
+  } catch (err) {
+    next(err);
+  }
 });
 // [END gae_add_display_form]
 

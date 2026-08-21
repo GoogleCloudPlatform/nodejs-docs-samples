@@ -39,9 +39,6 @@ async function generateImage(
 
   const generatedImagePart = response.candidates?.[0]?.content?.parts?.[0];
 
-  console.log(generatedImagePart);
-  console.log('Created output image');
-
   const outputDir = 'output-folder';
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, {recursive: true});

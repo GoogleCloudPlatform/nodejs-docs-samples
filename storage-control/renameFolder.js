@@ -35,13 +35,19 @@ function main(bucketName, sourceFolderName, destinationFolderName) {
 
   // Instantiates a client
   const controlClient = new StorageControlClient();
-  if (controlClient.auth && typeof controlClient.auth.getClient === 'function') {
-    const originalGetClient = controlClient.auth.getClient.bind(controlClient.auth);
+  if (
+    controlClient.auth &&
+    typeof controlClient.auth.getClient === 'function'
+  ) {
+    const originalGetClient = controlClient.auth.getClient.bind(
+      controlClient.auth
+    );
     controlClient.auth.getClient = async (...args) => {
       const client = await originalGetClient(...args);
       if (client) {
         if (typeof client.getRequestHeaders === 'function') {
-          const originalGetRequestHeaders = client.getRequestHeaders.bind(client);
+          const originalGetRequestHeaders =
+            client.getRequestHeaders.bind(client);
           client.getRequestHeaders = async (...a) => {
             const headers = await originalGetRequestHeaders(...a);
             if (headers) {
@@ -57,7 +63,8 @@ function main(bucketName, sourceFolderName, destinationFolderName) {
           };
         }
         if (typeof client.getRequestMetadata === 'function') {
-          const originalGetRequestMetadata = client.getRequestMetadata.bind(client);
+          const originalGetRequestMetadata =
+            client.getRequestMetadata.bind(client);
           client.getRequestMetadata = async (...a) => {
             const metadata = await originalGetRequestMetadata(...a);
             if (metadata) {

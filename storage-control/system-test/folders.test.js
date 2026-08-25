@@ -70,7 +70,9 @@ describe('Folders', () => {
   });
 
   it('should delete a folder', async () => {
-    const output = execSync(`node deleteFolder.js ${bucketName} ${renamedFolderName}`);
+    const output = execSync(
+      `node deleteFolder.js ${bucketName} ${renamedFolderName}`
+    );
     assert.match(output, /Deleted folder:/);
     assert.match(output, new RegExp(renamedFolderName));
   });

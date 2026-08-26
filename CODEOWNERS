@@ -54,3 +54,5 @@ media @GoogleCloudPlatform/cloud-media-team @GoogleCloudPlatform/nodejs-samples-
 healthcare @GoogleCloudPlatform/healthcare-life-sciences @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 routeoptimization @GoogleCloudPlatform/geo-routeoptimization @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 translate @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers @GoogleCloudPlatform/cloud-ml-translate-dev
+developer-knowledge @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+

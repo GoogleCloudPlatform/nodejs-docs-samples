@@ -111,6 +111,11 @@ describe('CRUD product', () => {
 
   after(async () => {
     try {
+      // Allow brief propagation time for product deletion
+      const API_PROPAGATION_DELAY_MS = 30000; // 30 seconds
+      await new Promise(resolve =>
+        setTimeout(resolve, API_PROPAGATION_DELAY_MS)
+      );
       const product = await retailClient.getProduct({name: name});
       expect(product, 'The product not deleted').to.be.undefined;
     } catch (err) {

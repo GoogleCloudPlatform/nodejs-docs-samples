@@ -32,6 +32,22 @@ function main(bucketName, folderName) {
   // Instantiates a client
   const controlClient = new StorageControlClient();
 
+  if (
+    controlClient.auth &&
+    typeof controlClient.auth.getClient === 'function'
+  ) {
+    const originalGetClient = controlClient.auth.getClient.bind(
+      controlClient.auth
+    );
+    controlClient.auth.getClient = async (...args) => {
+      const client = await originalGetClient(...args);
+      if (client) {
+        client.quotaProjectId = undefined;
+      }
+      return client;
+    };
+  }
+
   async function callDeleteFolderRecursive() {
     const folderPath = controlClient.folderPath('_', bucketName, folderName);
 
@@ -43,7 +59,29 @@ function main(bucketName, folderName) {
     // Run request
     console.log(`Deleting folder recursively: ${folderName}`);
     const [operation] = await controlClient.deleteFolderRecursive(request);
-    await operation.promise();
+
+    let op = operation.latestResponse;
+    while (!op.done) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const [latestOp] = await controlClient.operationsClient.getOperation(
+        {name: op.name},
+        {
+          otherArgs: {
+            headers: {
+              'x-goog-request-params': `name=${encodeURIComponent(op.name)}`,
+            },
+          },
+        }
+      );
+      op = latestOp;
+    }
+
+    if (op.error) {
+      throw new Error(
+        `Failed to delete folder recursively: ${op.error.message}`
+      );
+    }
+
     console.log(`Deleted folder: ${folderName}.`);
   }
 

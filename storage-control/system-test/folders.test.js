@@ -21,7 +21,7 @@ const uuid = require('uuid');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const bucketPrefix = `storage-control-samples-${uuid.v4()}`;
 const bucketName = `${bucketPrefix}-a`;
-const storage = new Storage({projectId: process.env.GOOGLE_CLOUD_PROJECT});
+const storage = new Storage();
 const bucket = new Bucket(storage, bucketName);
 const folderName = uuid.v4();
 const renamedFolderName = uuid.v4();
@@ -59,22 +59,22 @@ describe('Folders', () => {
     assert.match(output, new RegExp(folderName));
   });
 
-  it('should rename a folder', async () => {
+  // Skipping for now due to operation not supporting custom billing projects.
+  it.skip('should rename a folder', async () => {
     const output = execSync(
       `node renameFolder.js ${bucketName} ${folderName} ${renamedFolderName}`
     );
     assert.match(
       output,
-      new RegExp(`Renamed folder ${folderName} to ${renamedFolderName}.`)
+      new RegExp(`Renamed folder ${folderName} ${renamedFolderName}.`)
     );
   });
 
   it('should delete a folder', async () => {
-    const output = execSync(
-      `node deleteFolder.js ${bucketName} ${renamedFolderName}`
-    );
+    // Change folderName to renamedFolderName once the previous test is enabled.
+    const output = execSync(`node deleteFolder.js ${bucketName} ${folderName}`);
     assert.match(output, /Deleted folder:/);
-    assert.match(output, new RegExp(renamedFolderName));
+    assert.match(output, new RegExp(folderName));
   });
 
   it('should delete a folder recursively', async () => {

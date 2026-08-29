@@ -28,59 +28,9 @@ function main(bucketName, folderName) {
 
   // Imports the Control library
   const {StorageControlClient} = require('@google-cloud/storage-control').v2;
-  //  // Instantiates a client
+
+  // Instantiates a client
   const controlClient = new StorageControlClient();
-  if (
-    controlClient.auth &&
-    typeof controlClient.auth.getClient === 'function'
-  ) {
-    const originalGetClient = controlClient.auth.getClient.bind(
-      controlClient.auth
-    );
-    controlClient.auth.getClient = async (...args) => {
-      const client = await originalGetClient(...args);
-      if (client) {
-        if (typeof client.getRequestHeaders === 'function') {
-          const originalGetRequestHeaders =
-            client.getRequestHeaders.bind(client);
-          client.getRequestHeaders = async (...a) => {
-            const headers = await originalGetRequestHeaders(...a);
-            if (headers) {
-              if (typeof headers.delete === 'function') {
-                headers.delete('x-goog-user-project');
-                headers.delete('X-Goog-User-Project');
-              } else {
-                delete headers['x-goog-user-project'];
-                delete headers['X-Goog-User-Project'];
-              }
-            }
-            return headers;
-          };
-        }
-        if (typeof client.getRequestMetadata === 'function') {
-          const originalGetRequestMetadata =
-            client.getRequestMetadata.bind(client);
-          client.getRequestMetadata = async (...a) => {
-            const metadata = await originalGetRequestMetadata(...a);
-            if (metadata) {
-              if (typeof metadata.remove === 'function') {
-                metadata.remove('x-goog-user-project');
-                metadata.remove('X-Goog-User-Project');
-              } else if (typeof metadata.delete === 'function') {
-                metadata.delete('x-goog-user-project');
-                metadata.delete('X-Goog-User-Project');
-              } else {
-                delete metadata['x-goog-user-project'];
-                delete metadata['X-Goog-User-Project'];
-              }
-            }
-            return metadata;
-          };
-        }
-      }
-      return client;
-    };
-  }
 
   async function callDeleteFolderRecursive() {
     const folderPath = controlClient.folderPath('_', bucketName, folderName);
@@ -93,27 +43,7 @@ function main(bucketName, folderName) {
     // Run request
     console.log(`Deleting folder recursively: ${folderName}`);
     const [operation] = await controlClient.deleteFolderRecursive(request);
-
-    // Poll manually to avoid GAX LRO request-params matching bug
-    let op = operation.latestResponse;
-    const operationsClient = controlClient.operationsClient;
-    while (!op.done) {
-      console.log(`Waiting for operation ${op.name} to complete...`);
-      await new Promise(resolve => setTimeout(resolve, 5000));
-      const [latestOp] = await operationsClient.getOperation(
-        {
-          name: op.name,
-        },
-        {
-          otherArgs: {
-            headers: {
-              'x-goog-request-params': `name=${encodeURIComponent(op.name)}`,
-            },
-          },
-        }
-      );
-      op = latestOp;
-    }
+    await operation.promise();
     console.log(`Deleted folder: ${folderName}.`);
   }
 

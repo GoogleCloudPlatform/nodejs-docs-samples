@@ -21,7 +21,7 @@ const uuid = require('uuid');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const bucketPrefix = `storage-control-samples-${uuid.v4()}`;
 const bucketName = `${bucketPrefix}-a`;
-const storage = new Storage({projectId: process.env.GOOGLE_CLOUD_PROJECT});
+const storage = new Storage();
 const bucket = new Bucket(storage, bucketName);
 const managedFolderName = uuid.v4();
 

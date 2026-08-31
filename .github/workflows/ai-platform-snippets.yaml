@@ -55,6 +55,10 @@ jobs:
         secrets: |-
           caip_id:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-caip-project-id
           location:nodejs-docs-samples-tests/nodejs-docs-samples-ai-platform-location
+    - name: Set environment variables
+      run: |
+        echo "CAIP_PROJECT_ID=${{ steps.secrets.outputs.caip_id }}" >> $GITHUB_ENV
+        echo "LOCATION=${{ steps.secrets.outputs.location }}" >> $GITHUB_ENV
     - uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
       with:
         node-version: 16
@@ -78,5 +82,3 @@ jobs:
       run: make test dir=ai-platform/snippets
       env:
         GOOGLE_SAMPLES_PROJECT: "long-door-651"
-        LOCATION: ${{ steps.secrets.outputs.location }}
-        CAIP_PROJECT_ID: ${{ steps.secrets.outputs.caip_id }}

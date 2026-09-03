@@ -14,19 +14,14 @@
 
 'use strict';
 
-function main(projectId = 'my-project-id') {
+function main() {
   // [START storage_list_buckets_ip_filtering]
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // The ID of the project to which the service account belongs
-  // const projectId = 'my-project-id';
 
   // Imports the Google Cloud client library
   const {Storage} = require('@google-cloud/storage');
 
   // Creates a client
-  const storage = new Storage({projectId});
+  const storage = new Storage();
 
   async function listBucketsIpFiltering() {
     const [buckets] = await storage.getBuckets();

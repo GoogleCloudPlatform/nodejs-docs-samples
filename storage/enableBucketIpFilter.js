@@ -22,6 +22,9 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
   // The ID of your GCS bucket
   // const bucketName = 'your-unique-bucket-name';
 
+  // Toggle data filtering (e.g., 'Enabled' | 'Disabled')
+  // const filterMode = 'Enabled';
+
   // Imports the Google Cloud client library
   const {Storage} = require('@google-cloud/storage');
 
@@ -34,7 +37,7 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
     const [metadata] = await storage.bucket(bucketName).getMetadata();
     const existingIpFilter = metadata.ipFilter || {
       mode: filterMode,
-      publicNetworkSource: {allowedIpCidrRanges: ['0.0.0.0/0']},
+      publicNetworkSource: {allowedIpCidrRanges: []},
       allowCrossOrgVpcs: false,
       allowAllServiceAgentAccess: false,
     };

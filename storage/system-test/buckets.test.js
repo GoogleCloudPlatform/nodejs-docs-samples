@@ -142,6 +142,17 @@ it('should update and then remove bucket encryption enforcement configuration', 
   assert.ok(!metadata.encryption);
 });
 
+it('should create a bucket with IP filter', () => {
+  const newBucketName = `${samplesTestBucketPrefix}-c`;
+  const output = execSync(
+    `node createBucketWithIpFilter.js ${newBucketName} Disabled`
+  );
+  assert.include(
+    output,
+    `Bucket ${newBucketName} created with IP filter mode Disabled.`
+  );
+});
+
 it('should enable the bucket IP filter', () => {
   const output = execSync(
     `node enableBucketIpFilter.js ${bucketName} Disabled`
@@ -160,8 +171,7 @@ it('should get the bucket IP filter', () => {
 });
 
 it('should list the bucket IP filters', () => {
-  const projectId = process.env.GCLOUD_PROJECT;
-  const output = execSync(`node listBucketIpFilters.js ${projectId}`);
+  const output = execSync('node listBucketIpFilters.js');
   assert.include(output, `${bucketName}: IP Filter Mode - Disabled`);
   assert.include(output, 'Public Network Allowed IP Ranges:');
   assert.include(output, '- 8.8.8.8/32');
@@ -173,6 +183,7 @@ it('should delete specific bucket IP filter rules', () => {
     output,
     `Specific IP Filter rules deleted for bucket ${bucketName}.`
   );
+  assert.notInclude(output, '8.8.8.8/32');
 });
 
 it('should disable the bucket IP filter', () => {

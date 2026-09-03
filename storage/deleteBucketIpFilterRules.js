@@ -21,6 +21,8 @@ function main(bucketName = 'my-bucket', cidrToDelete = '8.8.8.8/32') {
    */
   // The ID of your GCS bucket
   // const bucketName = 'your-unique-bucket-name';
+
+  // Target IP address/CIDR block to remove
   // const cidrToDelete = '8.8.8.8/32';
 
   // Imports the Google Cloud client library
@@ -33,14 +35,25 @@ function main(bucketName = 'my-bucket', cidrToDelete = '8.8.8.8/32') {
     // Note: To delete specific rules, you fetch the existing config, filter out the rules, and update.
     const [metadata] = await storage.bucket(bucketName).getMetadata();
 
-    if (!metadata.ipFilter) {
-      console.log(`No IP Filter configuration found for bucket ${bucketName}.`);
+    if (!metadata.ipFilter || !metadata.ipFilter.publicNetworkSource) {
+      console.log(
+        `No IP Filter public network configuration found for bucket ${bucketName}.`
+      );
       return;
     }
 
-    const updatedIpRanges = (
-      metadata.ipFilter.publicNetworkSource?.allowedIpCidrRanges || []
-    ).filter(range => range !== cidrToDelete);
+    const currentIpRanges =
+      metadata.ipFilter.publicNetworkSource.allowedIpCidrRanges || [];
+    if (!currentIpRanges.includes(cidrToDelete)) {
+      console.log(
+        `CIDR range ${cidrToDelete} not found in bucket ${bucketName}. No changes made.`
+      );
+      return;
+    }
+
+    const updatedIpRanges = currentIpRanges.filter(
+      range => range !== cidrToDelete
+    );
 
     const updatedIpFilter = {
       ...metadata.ipFilter,

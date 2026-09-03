@@ -146,7 +146,10 @@ it('should enable the bucket IP filter', () => {
   const output = execSync(
     `node enableBucketIpFilter.js ${bucketName} Disabled`
   );
-  assert.include(output, `IP Filter mode set to Disabled for bucket ${bucketName}.`);
+  assert.include(
+    output,
+    `IP Filter mode set to Disabled for bucket ${bucketName}.`
+  );
   assert.include(output, '8.8.8.8/32');
 });
 

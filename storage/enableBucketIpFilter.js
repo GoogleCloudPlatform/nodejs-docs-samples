@@ -60,7 +60,9 @@ function main(bucketName = 'my-bucket', filterMode = 'Enabled') {
       ipFilter: updatedIpFilter,
     });
 
-    console.log(`IP Filter mode set to ${updatedMetadata.ipFilter.mode} for bucket ${bucketName}.`);
+    console.log(
+      `IP Filter mode set to ${updatedMetadata.ipFilter.mode} for bucket ${bucketName}.`
+    );
     console.log(JSON.stringify(updatedMetadata.ipFilter, null, 2));
   }
 

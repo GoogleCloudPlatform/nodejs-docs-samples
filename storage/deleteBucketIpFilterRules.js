@@ -14,13 +14,14 @@
 
 'use strict';
 
-function main(bucketName = 'my-bucket') {
+function main(bucketName = 'my-bucket', cidrToDelete = '8.8.8.8/32') {
   // [START storage_delete_ip_filtering_rules]
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
   // The ID of your GCS bucket
   // const bucketName = 'your-unique-bucket-name';
+  // const cidrToDelete = '8.8.8.8/32';
 
   // Imports the Google Cloud client library
   const {Storage} = require('@google-cloud/storage');
@@ -39,7 +40,7 @@ function main(bucketName = 'my-bucket') {
 
     const updatedIpRanges = (
       metadata.ipFilter.publicNetworkSource?.allowedIpCidrRanges || []
-    ).filter(range => range !== '8.8.8.8/32');
+    ).filter(range => range !== cidrToDelete);
 
     const updatedIpFilter = {
       ...metadata.ipFilter,

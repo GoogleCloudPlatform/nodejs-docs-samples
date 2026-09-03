@@ -33,6 +33,9 @@ function main(projectId = 'my-project-id') {
 
     for (const bucket of buckets) {
       if (bucket.metadata?.ipFilter) {
+        // Note: storage.getBuckets() does not populate the full ipFilter object
+        // (publicNetworkSource and vpcNetworkSources are omitted in the list response).
+        // Therefore, we must call getMetadata() on the individual bucket to get the full config.
         try {
           const [metadata] = await storage.bucket(bucket.name).getMetadata();
           const ipFilter = metadata.ipFilter;
@@ -59,6 +62,7 @@ function main(projectId = 'my-project-id') {
             });
           }
         } catch (err) {
+          // If a bucket is fully locked down by an IP filter, getMetadata will return a 403.
           console.log(
             `${bucket.name}: Error fetching IP filter - ${err.message}`
           );

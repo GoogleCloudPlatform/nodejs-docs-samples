@@ -24,8 +24,15 @@ describe('mailjet', () => {
   it('should send an email', () => {
     proxyquire('../mailjet', {
       nodemailer: {
-        createTransport: arg => {
-          assert.strictEqual(arg, 'test');
+        createTransport: options => {
+          assert.deepStrictEqual(options, {
+            host: 'in.mailjet.com',
+            port: 2525,
+            auth: {
+              user: 'foo',
+              pass: 'bar',
+            },
+          });
           return {
             sendMail: payload => {
               assert.deepStrictEqual(payload, {
@@ -38,17 +45,6 @@ describe('mailjet', () => {
             },
           };
         },
-      },
-      'nodemailer-smtp-transport': options => {
-        assert.deepStrictEqual(options, {
-          host: 'in.mailjet.com',
-          port: 2525,
-          auth: {
-            user: 'foo',
-            pass: 'bar',
-          },
-        });
-        return 'test';
       },
     });
   });

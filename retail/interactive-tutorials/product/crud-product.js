@@ -119,10 +119,15 @@ async function main(generatedProductId) {
   };
 
   console.log('Start CRUD product');
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
   // Create product
   console.log('Start to create the product');
   const createdProduct = await callCreateProduct();
   console.log(`Product ${createdProduct.id} creation finished`);
+
+  // Wait for the product to be available for read operations
+  const API_PROPAGATION_DELAY_MS = 30000; // 30 seconds
+  await delay(API_PROPAGATION_DELAY_MS);
 
   // Get product
   console.log('Start product get operation');

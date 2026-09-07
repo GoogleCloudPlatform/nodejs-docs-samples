@@ -15,7 +15,7 @@
 
 /** Demonstrates listing findings at a point in time. */
 function main(sourceName = 'FULL RESOURCE PATH TO PARENT SOURCE') {
-  // [START securitycenter_list_findings_at_time]
+  // [START securitycenter_list_findings_within_time_range]
   // Imports the Google Cloud client library.
   const {SecurityCenterClient} = require('@google-cloud/security-center');
 
@@ -48,7 +48,7 @@ function main(sourceName = 'FULL RESOURCE PATH TO PARENT SOURCE') {
     );
   }
   listFindingsAtTime();
-  // [END securitycenter_list_findings_at_time]
+  // [END securitycenter_list_findings_within_time_range]
 }
 
 main(...process.argv.slice(2));

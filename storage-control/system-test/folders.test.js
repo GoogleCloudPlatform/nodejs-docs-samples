@@ -76,4 +76,20 @@ describe('Folders', () => {
     assert.match(output, /Deleted folder:/);
     assert.match(output, new RegExp(folderName));
   });
+
+  it('should delete a folder recursively', async () => {
+    const parentFolder = uuid.v4();
+    const childFolder = `${parentFolder}/${uuid.v4()}`;
+
+    // Create parent folder
+    execSync(`node createFolder.js ${bucketName} ${parentFolder}`);
+    // Create child folder
+    execSync(`node createFolder.js ${bucketName} ${childFolder}`);
+
+    const output = execSync(
+      `node deleteFolderRecursive.js ${bucketName} ${parentFolder}`
+    );
+    assert.match(output, /Deleted folder:/);
+    assert.match(output, new RegExp(parentFolder));
+  });
 });

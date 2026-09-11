@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// sample-metadata:
+//  title: Create database with queue
+//  usage: node queue-create-database.js <INSTANCE_ID> <DATABASE_ID> <PROJECT_ID>
+
 'use strict';
 
-async function main(
-  instanceId = 'my-instance',
-  databaseId = 'my-database',
-  projectId = 'my-project-id'
-) {
+async function main(instanceId, databaseId, projectId) {
   // [START spanner_create_database_with_queue]
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');

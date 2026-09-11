@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// sample-metadata:
+//  title: Delete message from queue using SQL API
+//  usage: node queue-delete-with-sql-api.js <INSTANCE_ID> <DATABASE_ID> <PROJECT_ID>
+
 'use strict';
 
-async function main(
-  instanceId = 'my-instance',
-  databaseId = 'my-database',
-  projectId = 'my-project-id'
-) {
+async function main(instanceId, databaseId, projectId) {
   // [START spanner_delete_queue_message_with_sql_api]
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');

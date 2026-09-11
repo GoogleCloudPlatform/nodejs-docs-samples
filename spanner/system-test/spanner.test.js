@@ -63,8 +63,7 @@ const queueSendSqlCmd = 'node queue-send-with-sql-api.js';
 const queueSendMutationFutureCmd =
   'node queue-send-with-mutation-api-in-future.js';
 const queueSendSqlFutureCmd = 'node queue-send-with-sql-api-in-future.js';
-const queueSendAndReceiveSqlCmd =
-  'node queue-send-and-receive-with-sql-api.js';
+const queueSendAndReceiveSqlCmd = 'node queue-send-and-receive-with-sql-api.js';
 const queueAckMutationCmd = 'node queue-ack-with-mutation-api.js';
 const queueAckSqlCmd = 'node queue-ack-with-sql-api.js';
 const queueDeleteSqlCmd = 'node queue-delete-with-sql-api.js';

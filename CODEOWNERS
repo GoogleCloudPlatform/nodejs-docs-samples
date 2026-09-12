@@ -32,6 +32,7 @@ webrisk @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud
 # SDK teams
 cloud-sql @GoogleCloudPlatform/cloud-sql-connectors @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 datastore @GoogleCloudPlatform/cloud-native-db-dpes @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
+storage @GoogleCloudPlatform/gcs-sdk-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 storagetransfer @GoogleCloudPlatform/gcs-sdk-team @GoogleCloudPlatform/nodejs-samples-reviewers @GoogleCloudPlatform/cloud-samples-reviewers
 
 # One-offs

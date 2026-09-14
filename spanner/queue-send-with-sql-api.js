@@ -14,28 +14,25 @@
 
 // sample-metadata:
 //  title: Send message to queue using SQL API
-//  usage: node queue-send-with-sql-api.js <INSTANCE_ID> <DATABASE_ID> <PROJECT_ID>
+//  usage: node queue-send-with-sql-api.js <PROJECT_ID> <INSTANCE_ID> <DATABASE_ID>
 
 'use strict';
 
-async function main(instanceId, databaseId, projectId) {
-  // [START spanner_send_to_queue_with_sql_api]
-  // Imports the Google Cloud client library
+// [START spanner_send_to_queue_with_sql_api]
+/**
+ * Sends a message to a queue using the SQL API.
+ *
+ * @param {string} projectId - The Google Cloud Project ID.
+ * @param {string} instanceId - The Spanner Instance ID.
+ * @param {string} databaseId - The Spanner Database ID.
+ */
+async function main(projectId, instanceId, databaseId) {
   const {Spanner} = require('@google-cloud/spanner');
 
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'my-project-id';
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
-  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
 
-  // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
@@ -60,8 +57,8 @@ async function main(instanceId, databaseId, projectId) {
     // Close the database when finished.
     await database.close();
   }
-  // [END spanner_send_to_queue_with_sql_api]
 }
+// [END spanner_send_to_queue_with_sql_api]
 
 main(...process.argv.slice(2));
 module.exports = {main};

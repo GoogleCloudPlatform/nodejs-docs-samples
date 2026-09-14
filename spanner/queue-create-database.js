@@ -14,28 +14,25 @@
 
 // sample-metadata:
 //  title: Create database with queue
-//  usage: node queue-create-database.js <INSTANCE_ID> <DATABASE_ID> <PROJECT_ID>
+//  usage: node queue-create-database.js <PROJECT_ID> <INSTANCE_ID> <DATABASE_ID>
 
 'use strict';
 
-async function main(instanceId, databaseId, projectId) {
-  // [START spanner_create_database_with_queue]
-  // Imports the Google Cloud client library
+// [START spanner_create_database_with_queue]
+/**
+ * Creates a database containing a queue.
+ *
+ * @param {string} projectId - The Google Cloud Project ID.
+ * @param {string} instanceId - The Spanner Instance ID.
+ * @param {string} databaseId - The Spanner Database ID.
+ */
+async function main(projectId, instanceId, databaseId) {
   const {Spanner} = require('@google-cloud/spanner');
 
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'my-project-id';
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
-  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
 
-  // Gets a reference to a Cloud Spanner Database Admin Client object
   const databaseAdminClient = spanner.getDatabaseAdminClient();
 
   const createQueueStatement = `
@@ -58,8 +55,8 @@ async function main(instanceId, databaseId, projectId) {
   } catch (err) {
     console.error('ERROR:', err);
   }
-  // [END spanner_create_database_with_queue]
 }
+// [END spanner_create_database_with_queue]
 
 main(...process.argv.slice(2));
 module.exports = {main};

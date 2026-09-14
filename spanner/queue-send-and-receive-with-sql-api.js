@@ -14,33 +14,30 @@
 
 // sample-metadata:
 //  title: Send and receive queue message using SQL API
-//  usage: node queue-send-and-receive-with-sql-api.js <INSTANCE_ID> <DATABASE_ID> <PROJECT_ID>
+//  usage: node queue-send-and-receive-with-sql-api.js <PROJECT_ID> <INSTANCE_ID> <DATABASE_ID>
 
 'use strict';
 
-async function main(instanceId, databaseId, projectId) {
-  // [START spanner_send_and_receive_queue_message_with_sql_api]
-  // Imports the Google Cloud client library
+// [START spanner_send_and_receive_queue_message_with_sql_api]
+/**
+ * Sends a message to a queue and receives it using the SQL API.
+ *
+ * @param {string} projectId - The Google Cloud Project ID.
+ * @param {string} instanceId - The Spanner Instance ID.
+ * @param {string} databaseId - The Spanner Database ID.
+ */
+async function main(projectId, instanceId, databaseId) {
   const {Spanner} = require('@google-cloud/spanner');
 
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  // const projectId = 'my-project-id';
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
-
-  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
 
-  // Gets a reference to a Cloud Spanner instance and database
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
   try {
-    // 1. Send a message to the queue using SQL INSERT
+    // Send a message to the queue using SQL INSERT
     await database.runTransactionAsync(async transaction => {
       const [rowCount] = await transaction.runUpdate({
         sql: 'INSERT INTO MyQueue (Id, Payload) VALUES (@id, @payload)',
@@ -56,26 +53,33 @@ async function main(instanceId, databaseId, projectId) {
       await transaction.commit();
     });
 
-    // 2. Receive messages from the queue using Table-Valued Function (TVF) RECEIVE_<QueueName>
+    // Receive messages from the queue using Table-Valued Function (TVF) RECEIVE_<QueueName>.
+    // This is a long-running operation, so stream the results to process each
+    // message as soon as it is delivered.
     const query = {
       sql: "SELECT * FROM RECEIVE_MyQueue(max_duration => '1m')",
     };
 
-    const [rows] = await database.run(query);
-    for (const row of rows) {
-      const message = row.toJSON();
-      console.log(
-        `Received message: Id=${message.Id}, Payload=${message.Payload}`
-      );
-    }
+    await new Promise((resolve, reject) => {
+      database
+        .runStream(query)
+        .on('error', reject)
+        .on('data', row => {
+          const message = row.toJSON();
+          console.log(
+            `Received message: Id=${message.Id}, Payload=${message.Payload}`
+          );
+        })
+        .on('end', resolve);
+    });
   } catch (err) {
     console.error('ERROR:', err);
   } finally {
     // Close the database when finished.
     await database.close();
   }
-  // [END spanner_send_and_receive_queue_message_with_sql_api]
 }
+// [END spanner_send_and_receive_queue_message_with_sql_api]
 
 main(...process.argv.slice(2));
 module.exports = {main};

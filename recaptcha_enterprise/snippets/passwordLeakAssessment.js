@@ -166,4 +166,5 @@ checkPasswordLeak(projectId, username, password).catch(err => {
   process.exitCode = 1;
 });
 // [END recaptcha_enterprise_password_leak_verification]
-module.exports = checkPasswordLeak
+// eslint-disable-next-line no-undef
+module.exports = checkPasswordLeak;

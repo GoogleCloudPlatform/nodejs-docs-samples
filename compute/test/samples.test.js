@@ -269,7 +269,7 @@ describe('samples', () => {
               initializeParams: {
                 diskSizeGb: '10',
                 sourceImage:
-                  'projects/debian-cloud/global/images/family/debian-11',
+                  'projects/debian-cloud/global/images/family/debian-13',
               },
               autoDelete: true,
               boot: true,
@@ -447,7 +447,7 @@ describe('samples', () => {
                 initializeParams: {
                   diskSizeGb: '10',
                   sourceImage:
-                    'projects/debian-cloud/global/images/family/debian-11',
+                    'projects/debian-cloud/global/images/family/debian-13',
                 },
                 autoDelete: true,
                 boot: true,

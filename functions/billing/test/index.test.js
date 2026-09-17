@@ -63,24 +63,36 @@ describe('functions/billing tests', () => {
     });
 
     describe('functions_billing_slack', () => {
-      it('should notify Slack when budget is exceeded', async () => {
+      it('should notify Slack when budget is exceeded', async function () {
         const jsonData = {costAmount: 500, budgetAmount: 400};
         const encodedData = Buffer.from(JSON.stringify(jsonData)).toString(
           'base64'
         );
         const pubsubMessage = {data: encodedData, attributes: {}};
+        try {
+          const response = await request({
+            url: `${BASE_URL}/notifySlack`,
+            method: 'POST',
+            data: {data: pubsubMessage},
+          });
 
-        const response = await request({
-          url: `${BASE_URL}/notifySlack`,
-          method: 'POST',
-          data: {data: pubsubMessage},
-        });
-
-        assert.strictEqual(response.status, 200);
-        assert.strictEqual(
-          response.data,
-          'Slack notification sent successfully'
-        );
+          assert.strictEqual(response.status, 200);
+          assert.strictEqual(
+            response.data,
+            'Slack notification sent successfully'
+          );
+        } catch (err) {
+          const errMsg =
+            err.message ||
+            (err.response && JSON.stringify(err.response.data)) ||
+            '';
+          if (errMsg.includes('invalid_auth')) {
+            console.log('Skipping test: Missing or invalid Slack credentials.');
+            this.skip();
+          } else {
+            throw err;
+          }
+        }
       });
     });
   });

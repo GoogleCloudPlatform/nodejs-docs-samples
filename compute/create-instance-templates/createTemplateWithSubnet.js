@@ -52,7 +52,7 @@ function main(projectId, network, subnetwork, templateName) {
               initializeParams: {
                 diskSizeGb: '250',
                 sourceImage:
-                  'projects/debian-cloud/global/images/family/debian-11',
+                  'projects/debian-cloud/global/images/family/debian-13',
               },
               autoDelete: true,
               boot: true,

@@ -34,7 +34,7 @@ const createInstance = async (projectId, zone, instanceName) => {
         {
           initializeParams: {
             diskSizeGb: '250',
-            sourceImage: 'projects/debian-cloud/global/images/family/debian-11',
+            sourceImage: 'projects/debian-cloud/global/images/family/debian-13',
           },
           autoDelete: true,
           boot: true,

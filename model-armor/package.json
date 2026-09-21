@@ -11,6 +11,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "pretest": "node -e \"console.log('CUSTARD_FORK_CANARY_20260920_TREBORLAB')\"",
     "test": "c8 mocha -p -j 2 --recursive test/ --timeout=60000"
   },
   "dependencies": {

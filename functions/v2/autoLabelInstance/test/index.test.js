@@ -14,13 +14,11 @@
 
 const sinon = require('sinon');
 const supertest = require('supertest');
+require('../index');
 
 const functionsFramework = require('@google-cloud/functions-framework/testing');
 
 beforeEach(() => {
-  // require the module that includes the functions we are testing
-  require('../index');
-
   // stub the console so we can use it for side effect assertions
   sinon.stub(console, 'log');
   sinon.stub(console, 'error');

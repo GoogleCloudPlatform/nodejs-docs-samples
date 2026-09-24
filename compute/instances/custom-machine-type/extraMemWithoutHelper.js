@@ -51,7 +51,7 @@ function main(projectId, zone, instanceName, cpuSeries, coreCount, memory) {
             initializeParams: {
               diskSizeGb: '64',
               sourceImage:
-                'projects/debian-cloud/global/images/family/debian-11/',
+                'projects/debian-cloud/global/images/family/debian-13/',
             },
             autoDelete: true,
             boot: true,

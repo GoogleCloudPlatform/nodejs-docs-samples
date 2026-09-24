@@ -4,7 +4,7 @@
   "main": "index.ts",
   "private": true,
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "start": "node index.js",
@@ -14,7 +14,7 @@
     "test": "mocha --loader=ts-node/esm --extension ts --timeout 600000 --exit"
   },
   "dependencies": {
-    "@google-cloud/workflows": "^3.0.0",
+    "@google-cloud/workflows": "^5.0.0",
     "typescript": "^5.1.6"
   },
   "devDependencies": {

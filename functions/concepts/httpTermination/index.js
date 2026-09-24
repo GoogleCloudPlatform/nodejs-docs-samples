@@ -32,3 +32,4 @@ functions.http('httpTermination', async (req, res) => {
   return Promise.resolve();
   // [END functions_concepts_node_termination_http]
 });
+

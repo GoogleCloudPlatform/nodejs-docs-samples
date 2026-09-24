@@ -292,6 +292,18 @@ describe('Model Armor tests', () => {
     // Create basic SDP template
     basicSdpTemplateId = `${templateIdPrefix}-basic-sdp`;
     await createTemplate(basicSdpTemplateId, {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
+          },
+        ],
+      },
       sdpSettings: {
         basicConfig: {
           filterEnforcement: SdpBasicConfigEnforcement.ENABLED,

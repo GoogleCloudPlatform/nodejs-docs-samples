@@ -78,6 +78,7 @@ async function grantCloudSqlRole(member) {
     const [policy] = await resourcemanagerProjectsClient.getIamPolicy({
       resource: resource,
     });
+    policy.bindings = policy.bindings || [];
     let binding = policy.bindings.find(b => b.role === CLOUD_SQL_ROLE);
     if (binding) {
       if (!binding.members.includes(member)) {
@@ -112,6 +113,7 @@ async function revokeCloudSqlRole(member) {
     const [policy] = await resourcemanagerProjectsClient.getIamPolicy({
       resource: resource,
     });
+    policy.bindings = policy.bindings || [];
     const binding = policy.bindings.find(b => b.role === CLOUD_SQL_ROLE);
     if (!binding || !binding.members.includes(member)) {
       return;

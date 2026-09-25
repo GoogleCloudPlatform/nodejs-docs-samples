@@ -21,9 +21,11 @@ const {v4} = require('uuid');
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 const {TagKeysClient} = require('@google-cloud/resource-manager').v3;
 const {TagValuesClient} = require('@google-cloud/resource-manager').v3;
+const {ProjectsClient} = require('@google-cloud/resource-manager').v3;
 const client = new SecretManagerServiceClient();
 const resourcemanagerTagKeyClient = new TagKeysClient();
 const resourcemanagerTagValueClient = new TagValuesClient();
+const resourcemanagerProjectsClient = new ProjectsClient();
 
 let projectId;
 const locationId = process.env.GCLOUD_LOCATION || 'us-central1';
@@ -54,6 +56,84 @@ options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 const regionalClient = new SecretManagerServiceClient(options);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
+
+// Role granted to a Cloud SQL DB credentials secret's built-in identity so
+// that managed rotation can update the Cloud SQL user's password. This
+// grant is per-secret (the member is the secret's own generated
+// principal), so it has to be made fresh for the secret the managed
+// rotation tests below create.
+const CLOUD_SQL_ROLE = 'roles/cloudsql.admin';
+const cloudSqlInstanceId = process.env.CLOUD_SQL_INSTANCE;
+const cloudSqlUsername = process.env.CLOUD_SQL_USER;
+let cloudSqlSecretPrincipal;
+
+// Grants CLOUD_SQL_ROLE to member on the project. setIamPolicy replaces the
+// whole policy, so this reads the current policy, adds member to the
+// existing (or a new) binding for the role, and writes it back -- retrying
+// the whole read-modify-write if another writer raced us (ABORTED, from an
+// etag mismatch).
+async function grantCloudSqlRole(member) {
+  const resource = `projects/${projectId}`;
+  for (let attempt = 0; ; attempt++) {
+    const [policy] = await resourcemanagerProjectsClient.getIamPolicy({
+      resource: resource,
+    });
+    policy.bindings = policy.bindings || [];
+    let binding = policy.bindings.find(b => b.role === CLOUD_SQL_ROLE);
+    if (binding) {
+      if (!binding.members.includes(member)) {
+        binding.members.push(member);
+      }
+    } else {
+      binding = {role: CLOUD_SQL_ROLE, members: [member]};
+      policy.bindings.push(binding);
+    }
+
+    try {
+      await resourcemanagerProjectsClient.setIamPolicy({
+        resource: resource,
+        policy: policy,
+      });
+      return;
+    } catch (err) {
+      if (err.code === 10 && attempt < 5) {
+        // ABORTED (etag conflict) -- retry the read-modify-write.
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+// Removes member from CLOUD_SQL_ROLE on the project, added by
+// grantCloudSqlRole.
+async function revokeCloudSqlRole(member) {
+  const resource = `projects/${projectId}`;
+  for (let attempt = 0; ; attempt++) {
+    const [policy] = await resourcemanagerProjectsClient.getIamPolicy({
+      resource: resource,
+    });
+    policy.bindings = policy.bindings || [];
+    const binding = policy.bindings.find(b => b.role === CLOUD_SQL_ROLE);
+    if (!binding || !binding.members.includes(member)) {
+      return;
+    }
+    binding.members = binding.members.filter(m => m !== member);
+
+    try {
+      await resourcemanagerProjectsClient.setIamPolicy({
+        resource: resource,
+        policy: policy,
+      });
+      return;
+    } catch (err) {
+      if (err.code === 10 && attempt < 5) {
+        continue;
+      }
+      throw err;
+    }
+  }
+}
 
 describe('Secret Manager samples', () => {
   before(async () => {
@@ -340,6 +420,29 @@ describe('Secret Manager samples', () => {
     );
     try {
       await deleteKeyOperation.promise();
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    if (cloudSqlSecretPrincipal) {
+      await revokeCloudSqlRole(cloudSqlSecretPrincipal);
+    }
+    try {
+      await regionalClient.deleteSecret({
+        name: `${regionalSecret.name}-8`,
+      });
+    } catch (err) {
+      if (!err.message.includes('NOT_FOUND')) {
+        throw err;
+      }
+    }
+
+    try {
+      await client.deleteSecret({
+        name: `${secret.name}-9`,
+      });
     } catch (err) {
       if (!err.message.includes('NOT_FOUND')) {
         throw err;
@@ -840,5 +943,75 @@ describe('Secret Manager samples', () => {
       new RegExp(`Created secret ${regionalSecret.name}-bind-tags`)
     );
     assert.match(output, new RegExp('Created Tag Binding'));
+  });
+
+  it('creates a regional secret with Cloud SQL DB credentials', async () => {
+    const output = execSync(
+      `node regional_samples/createRegionalSecretWithCloudSqlCredentials.js ${projectId} ${locationId} ${secretId}-8`
+    );
+    assert.match(output, new RegExp(`Created secret ${regionalSecret.name}-8`));
+
+    const principalMatch = output.match(
+      /Grant this identity Cloud SQL IAM permissions to enable rotation: (\S+)/
+    );
+    assert.ok(
+      principalMatch,
+      'expected output to contain the identity to grant Cloud SQL IAM permissions to'
+    );
+    cloudSqlSecretPrincipal = principalMatch[1];
+
+    // enableRegionalSecretManagedRotation needs this secret's own built-in
+    // identity granted Cloud SQL IAM permissions first -- there's no
+    // broader grant that covers a secret before it exists.
+    await grantCloudSqlRole(cloudSqlSecretPrincipal);
+    // IAM grants are eventually consistent; give it a moment before the
+    // next test tries to use it for managed rotation.
+    await new Promise(resolve => setTimeout(resolve, 10000));
+  });
+
+  it('enables managed rotation for a regional secret', async () => {
+    const output = execSync(
+      `node regional_samples/enableRegionalSecretManagedRotation.js ${projectId} ${locationId} ${secretId}-8 ${cloudSqlInstanceId} ${cloudSqlUsername}`
+    );
+    assert.match(
+      output,
+      new RegExp('Enabled managed rotation, created secret version:')
+    );
+  });
+
+  it('rotates a regional secret', async () => {
+    const output = execSync(
+      `node regional_samples/rotateRegionalSecret.js ${projectId} ${locationId} ${secretId}-8`
+    );
+    assert.match(output, new RegExp('Rotated secret, created secret version:'));
+  });
+
+  it('configures a scheduled rotation for a regional secret', async () => {
+    const output = execSync(
+      `node regional_samples/updateRegionalSecretWithManagedRotationSchedule.js ${projectId} ${locationId} ${secretId}-8 86400`
+    );
+    assert.match(
+      output,
+      new RegExp('Updated regional secret rotation schedule:')
+    );
+  });
+
+  it('creates a secret with type', async () => {
+    const output = execSync(
+      `node createSecretWithType.js projects/${projectId} ${secretId}-9 CERTIFICATE`
+    );
+    assert.match(output, new RegExp('Created secret with secret type:'));
+  });
+
+  it('gets secret type', async () => {
+    const output = execSync(`node getSecretType.js ${secret.name}`);
+    assert.match(output, new RegExp('with secret type'));
+  });
+
+  it('gets regional secret type', async () => {
+    const output = execSync(
+      `node regional_samples/getRegionalSecretType.js ${projectId} ${locationId} ${secretId}`
+    );
+    assert.match(output, new RegExp('with secret type'));
   });
 });

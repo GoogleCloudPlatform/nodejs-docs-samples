@@ -16,13 +16,18 @@
 
 // [START gae_update_web_server_app]
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
+const fs = require('fs').promises;
 const path = require('path');
 
 const app = express();
 
 // [START gae_enable_parser]
 // This middleware is available in Express v4.16.0 onwards
+app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
+app.use(csrf({cookie: true}));
 // [END gae_enable_parser]
 
 app.get('/', (req, res) => {
@@ -30,8 +35,18 @@ app.get('/', (req, res) => {
 });
 
 // [START gae_add_display_form]
-app.get('/submit', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/form.html'));
+app.get('/submit', async (req, res, next) => {
+  try {
+    const token = req.csrfToken();
+    const template = await fs.readFile(path.join(__dirname, '/views/form.html'), 'utf-8');
+    const html = template.replace(
+      '<form method="POST" action="/submit">',
+      `<form method="POST" action="/submit"><input type="hidden" name="_csrf" value="${token}">`
+    );
+    res.send(html);
+  } catch (err) {
+    next(err);
+  }
 });
 // [END gae_add_display_form]
 

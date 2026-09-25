@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {WorkflowsClient} from '@google-cloud/workflows';
+import {v1} from '@google-cloud/workflows';
 import * as assert from 'assert';
 import * as cp from 'child_process';
 import {before, beforeEach, describe, it} from 'mocha';
 
-const client: WorkflowsClient = new WorkflowsClient();
+const client = new v1.WorkflowsClient();
 const execSync = (cmd: string) => cp.execSync(cmd, {encoding: 'utf-8'});
-
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT as string;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';

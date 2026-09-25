@@ -18,18 +18,17 @@ functions.http('httpTermination', async (req, res) => {
   // [START functions_concepts_node_termination_http]
   // OK: await-ing a Promise before sending an HTTP response
   await Promise.resolve();
-  
+
   // WRONG: HTTP functions should send an
   // HTTP response instead of returning.
   return Promise.resolve();
-  
+
   // HTTP functions should signal termination by returning an HTTP response.
   // This should not be done until all background tasks are complete.
   res.status(200).send();
-  
+
   // WRONG: this may not execute since an
   // HTTP response has already been sent.
   return Promise.resolve();
   // [END functions_concepts_node_termination_http]
 });
-

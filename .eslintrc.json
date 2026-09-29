@@ -1,15 +1,21 @@
 {
   "root": true,
   "extends": "./node_modules/gts/",
+  "plugins": ["n"],
   "env": {
     "mocha": true
   },
   "rules": {
-    "node/no-missing-import": ["off"], 
-    "node/no-missing-require": ["off"], 
+    "node/no-missing-import": ["off"],
+    "node/no-missing-require": ["off"],
     "node/no-unpublished-import": ["off"],
     "node/no-unpublished-require": ["off"],
-    "node/no-unsupported-features/es-syntax": ["off"]
+    "node/no-unsupported-features/es-syntax": ["off"],
+    "n/no-missing-import": ["off"],
+    "n/no-missing-require": ["off"],
+    "n/no-unpublished-import": ["off"],
+    "n/no-unpublished-require": ["off"],
+    "n/no-unsupported-features/es-syntax": ["off"]
   },
   "parserOptions": {
     "ecmaVersion": 2020,

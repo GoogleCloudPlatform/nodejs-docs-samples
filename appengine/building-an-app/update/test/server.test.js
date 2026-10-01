@@ -66,7 +66,9 @@ describe('gae_add_display_form', () => {
 describe('gae_add_post_handler gae_enable_parser', () => {
   it('should record message', async () => {
     await requestObj
-      .post('/submit', {
+      .post('/submit')
+      .type('form')
+      .send({
         name: 'sample-user',
         message: 'sample-message',
       })

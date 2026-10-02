@@ -132,7 +132,7 @@ describe('snapshots tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     await createDisk(projectId, zone, diskName, newestDebian.selfLink);

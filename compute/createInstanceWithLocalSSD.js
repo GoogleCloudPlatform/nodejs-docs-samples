@@ -37,7 +37,7 @@ function main(projectId, zone, instanceName) {
     const imagesClient = new compute.ImagesClient();
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     // Create the disks to be included in the instance.

@@ -1,0 +1,28 @@
+{
+  "name": "nodejs-developer-knowledge-samples",
+  "description": "Node.js samples for Google Developer Knowledge API",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google LLC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git",
+    "directory": "developer-knowledge"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "*.js"
+  ],
+  "scripts": {
+    "test": "mocha test/*.test.js --timeout 60000"
+  },
+  "dependencies": {
+    "@google/developer-knowledge": "^0.5.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  }
+}

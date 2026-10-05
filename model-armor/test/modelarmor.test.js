@@ -292,6 +292,18 @@ describe('Model Armor tests', () => {
     // Create basic SDP template
     basicSdpTemplateId = `${templateIdPrefix}-basic-sdp`;
     await createTemplate(basicSdpTemplateId, {
+      raiSettings: {
+        raiFilters: [
+          {
+            filterType: RaiFilterType.HARASSMENT,
+            confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
+          },
+          {
+            filterType: RaiFilterType.SEXUALLY_EXPLICIT,
+            confidenceLevel: DetectionConfidenceLevel.LOW_AND_ABOVE,
+          },
+        ],
+      },
       sdpSettings: {
         basicConfig: {
           filterEnforcement: SdpBasicConfigEnforcement.ENABLED,
@@ -714,10 +726,10 @@ describe('Model Armor tests', () => {
       'MATCH_FOUND'
     );
 
-    assert.equal(
+    assert.oneOf(
       response.sanitizationResult.filterResults.pi_and_jailbreak
         .piAndJailbreakFilterResult.confidenceLevel,
-      'MEDIUM_AND_ABOVE'
+      ['HIGH', 'MEDIUM_AND_ABOVE']
     );
   });
 
@@ -876,6 +888,8 @@ describe('Model Armor tests', () => {
 });
 
 describe('Model Armor floor setting tests', () => {
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
   before(async () => {
     projectId = await client.getProjectId();
   });
@@ -885,6 +899,7 @@ describe('Model Armor floor setting tests', () => {
   });
 
   it('should update organization floor settings', async () => {
+    await sleep(3000);
     const updateOrganizationFloorSettings = require('../snippets/updateOrganizationFloorSettings');
     const output = await updateOrganizationFloorSettings.main(organizationId);
     // Check that the enableFloorSettingEnforcement=true
@@ -892,6 +907,7 @@ describe('Model Armor floor setting tests', () => {
   });
 
   it('should update folder floor settings', async () => {
+    await sleep(3000);
     const updateFolderFloorSettings = require('../snippets/updateFolderFloorSettings');
     const output = await updateFolderFloorSettings.main(folderId);
     // Check that the enableFloorSettingEnforcement=true

@@ -15,7 +15,6 @@
 'use strict';
 
 function main(parent) {
-  // [START data_catalog_ptm_create_policytag]
   // Create a policy tag resource under a given parent taxonomy.
 
   // Import the Google Cloud client library.
@@ -49,7 +48,6 @@ function main(parent) {
       process.exitCode = 1;
     }
   }
-  // [END data_catalog_ptm_create_policytag]
   createPolicyTag();
 }
 main(...process.argv.slice(2));

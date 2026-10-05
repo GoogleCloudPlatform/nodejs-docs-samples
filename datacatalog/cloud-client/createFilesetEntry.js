@@ -26,7 +26,6 @@ const main = async (
   entryGroupId,
   entryId
 ) => {
-  // [START data_catalog_create_fileset]
   // -------------------------------
   // Import required modules.
   // -------------------------------
@@ -100,7 +99,6 @@ const main = async (
   const [response] = await datacatalog.createEntry(request);
 
   console.log(response);
-  // [END data_catalog_create_fileset]
 };
 
 // node createFilesetEntry.js <projectId> <entryGroupId> <entryId>

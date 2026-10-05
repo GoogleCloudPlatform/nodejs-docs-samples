@@ -15,7 +15,6 @@
 'use strict';
 
 async function main(projectId, templateId, memberId) {
-  // [START data_catalog_grant_tag_template_user_role]
   // Import the Google Cloud client library.
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
@@ -64,6 +63,5 @@ async function main(projectId, templateId, memberId) {
     });
   }
   grantTagTemplateUserRole();
-  // [END data_catalog_grant_tag_template_user_role]
 }
 main(...process.argv.slice(2));

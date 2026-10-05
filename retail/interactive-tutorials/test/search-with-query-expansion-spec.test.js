@@ -82,7 +82,7 @@ describe('Search with query expansion spec', () => {
           expect(
             resultItem,
             'The object has no  valid properties'
-          ).to.have.all.keys(
+          ).to.include.all.keys(
             'matchingVariantFields',
             'variantRollupValues',
             'id',

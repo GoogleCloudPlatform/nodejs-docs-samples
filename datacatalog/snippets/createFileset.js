@@ -15,7 +15,6 @@
 'use strict';
 
 async function main(projectId, entryGroupId, entryId) {
-  // [START data_catalog_create_fileset]
   // Import the Google Cloud client library.
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
@@ -137,6 +136,5 @@ async function main(projectId, entryGroupId, entryId) {
     console.log(`Type: ${response.type}`);
   }
   createFileset();
-  // [END data_catalog_create_fileset]
 }
 main(...process.argv.slice(2));

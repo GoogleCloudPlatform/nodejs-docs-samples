@@ -17,7 +17,13 @@
 //   usage: node observability-traces.js <PROJECT-ID> <INSTANCE-ID> <DATABASE-ID>
 
 'use strict';
-
+/**
+ * Observability (Tracing) with OpenTelemetry.
+ *
+ * @param {string} projectId - The Google Cloud Project ID.
+ * @param {string} instanceId - The Spanner Instance ID.
+ * @param {string} databaseId - The Spanner Database ID.
+ */
 async function main(
   projectId = 'my-project-id',
   instanceId = 'my-instance-id',

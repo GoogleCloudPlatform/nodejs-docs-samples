@@ -17,7 +17,13 @@
 //   usage: node observability-traces-otlp.js <PROJECT-ID> <INSTANCE-ID> <DATABASE-ID>
 
 'use strict';
-
+/**
+ * Observability (Tracing) with OpenTelemetry using OTLP.
+ *
+ * @param {string} projectId - The Google Cloud Project ID.
+ * @param {string} instanceId - The Spanner Instance ID.
+ * @param {string} databaseId - The Spanner Database ID.
+ */
 async function main(
   projectId = 'my-project-id',
   instanceId = 'my-instance-id',
@@ -56,7 +62,6 @@ async function main(
   // Uncomment following line to register tracerProvider globally or pass it in Spanner object
   // provider.register();
 
-  // Create the Cloud Spanner Client.
   const spanner = new Spanner({
     projectId: projectId,
     observabilityOptions: {

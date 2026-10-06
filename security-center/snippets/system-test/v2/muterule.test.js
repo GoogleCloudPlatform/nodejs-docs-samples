@@ -23,10 +23,11 @@ const {describe, it, before} = require('mocha');
 // TODO(developers): update for your own environment
 const organizationId = '1081635000895';
 const location = 'global';
-
-describe('Client with mute rule V2', async () => {
+// eslint-disable-next-line prefer-arrow-callback
+describe('Client with mute rule V2', async function () {
   let data;
-  before(async () => {
+  // eslint-disable-next-line prefer-arrow-callback
+  before(async function () {
     // Creates a new client.
     const client = new SecurityCenterClient();
 
@@ -53,7 +54,12 @@ describe('Client with mute rule V2', async () => {
       );
     } catch (error) {
       console.error('API Error during createMuteConfig:', error);
-      throw error;
+      if (error?.code === 8 || error?.message?.includes('RESOURCE_EXHAUSTED')) {
+        console.warn('Quota exhausted, skipping setup for mute rule V2 tests.');
+        this.skip();
+      } else {
+        throw error;
+      }
     }
 
     const muteConfigId = muteConfigResponse.name.split('/')[5];

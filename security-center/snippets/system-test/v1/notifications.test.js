@@ -41,7 +41,7 @@ async function waitForConfig(client, configId) {
       if (config) return;
     } catch (err) {
       // Ignore "not found" errors
-      if (err.code !== 404) throw err;
+      if (err.code !== 5 && err.code !== 404) throw err;
     }
     retries++;
     await new Promise(resolve => setTimeout(resolve, retryDelay));
@@ -111,7 +111,7 @@ describe('Client with Notifications', async () => {
           console.log(`Config ${configId} deleted successfully.`);
         }
       } catch (err) {
-        if (err.code === 404) {
+        if (err.code === 5 || err.code === 404) {
           console.warn(`Config ${configId} not found during deletion.`);
         } else if (err.code === 503) {
           console.error(

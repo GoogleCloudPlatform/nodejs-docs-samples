@@ -25,6 +25,9 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organizationId = '1081635000895';
 const orgName = 'organizations/' + organizationId;
 const pubsubTopic = 'projects/project-a-id/topics/notifications-sample-topic';
+const getNotificationConfigPath = (orgId, configId) => {
+  return `organizations/${orgId}/notificationConfigs/${configId}`;
+};
 
 async function waitForConfig(client, configId) {
   const maxRetries = 10;
@@ -33,10 +36,7 @@ async function waitForConfig(client, configId) {
 
   while (retries < maxRetries) {
     try {
-      const name = client.organizationNotificationConfigPath(
-        organizationId,
-        configId
-      );
+      const name = getNotificationConfigPath(organizationId, configId);
       const [config] = await client.getNotificationConfig({name});
       if (config) return;
     } catch (err) {
@@ -101,10 +101,7 @@ describe('Client with Notifications', async () => {
   after(async () => {
     const client = new SecurityCenterClient();
     async function deleteNotificationConfigIfExists(configId) {
-      const name = client.organizationNotificationConfigPath(
-        organizationId,
-        configId
-      );
+      const name = getNotificationConfigPath(organizationId, configId);
       try {
         // Check if the config exists
         const [config] = await client.getNotificationConfig({name});

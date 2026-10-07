@@ -15,7 +15,6 @@
 'use strict';
 
 function main(projectId, location, displayName) {
-  // [START data_catalog_ptm_create_taxonomy]
   // Import the Google Cloud client library.
   const {DataCatalogClient, PolicyTagManagerClient} =
     require('@google-cloud/datacatalog').v1;
@@ -50,7 +49,6 @@ function main(projectId, location, displayName) {
       process.exitCode = 1;
     }
   }
-  // [END data_catalog_ptm_create_taxonomy]
   createTaxonomy();
 }
 main(...process.argv.slice(2));

@@ -31,7 +31,7 @@ const getNotificationConfigPath = (orgId, configId) => {
 
 async function waitForConfig(client, configId) {
   const maxRetries = 10;
-  const retryDelay = 1000; // 1 second
+  const retryDelay = 3000; // 3 seconds
   let retries = 0;
 
   while (retries < maxRetries) {

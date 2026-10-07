@@ -73,12 +73,24 @@ describe('Client with mute rule V2', async function () {
     console.log('My data muteConfig:: %j', data);
   });
 
-  it('client can create mute rule V2', done => {
-    const output = exec(`node v2/createMuteRule.js ${data.orgId}`);
-    assert(output.includes(data.orgId));
-    assert.match(output, /New mute rule config created/);
-    assert.notMatch(output, /undefined/);
-    done();
+  it('client can create mute rule V2', function () {
+    try {
+      const output = exec(`node v2/createMuteRule.js ${data.orgId}`);
+      assert(output.includes(data.orgId));
+      assert.match(output, /New mute rule config created/);
+      assert.notMatch(output, /undefined/);
+    } catch (error) {
+      if (
+        error?.code === 8 ||
+        error?.message?.includes('RESOURCE_EXHAUSTED') ||
+        error?.stderr?.includes('RESOURCE_EXHAUSTED')
+      ) {
+        console.warn('Quota exhausted, skipping create mute rule V2 test.');
+        this.skip();
+      } else {
+        throw error;
+      }
+    }
   });
 
   it('client can list all mute rules V2', done => {

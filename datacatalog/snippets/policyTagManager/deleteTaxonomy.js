@@ -15,7 +15,6 @@
 'use strict';
 
 function main(taxonomyName) {
-  // [START data_catalog_ptm_delete_taxonomy]
   // Import the Google Cloud client library.
   const {PolicyTagManagerClient} = require('@google-cloud/datacatalog').v1;
   const policyTagManager = new PolicyTagManagerClient();
@@ -41,7 +40,6 @@ function main(taxonomyName) {
       process.exitCode = 1;
     }
   }
-  // [END data_catalog_ptm_delete_taxonomy]
   deleteTaxonomy();
 }
 main(...process.argv.slice(2));

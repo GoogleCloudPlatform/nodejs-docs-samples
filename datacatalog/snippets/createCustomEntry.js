@@ -15,7 +15,6 @@
 'use strict';
 
 async function main(projectId, entryGroupId, entryId, tagTemplateId) {
-  // [START data_catalog_create_custom_entry]
   // Import the Google Cloud client library.
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
@@ -185,6 +184,5 @@ async function main(projectId, entryGroupId, entryId, tagTemplateId) {
     console.log(`Created tag: ${createdTag.name}`);
   }
   createCustomEntry();
-  // [END data_catalog_create_custom_entry]
 }
 main(...process.argv.slice(2));

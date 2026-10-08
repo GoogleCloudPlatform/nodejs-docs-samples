@@ -46,7 +46,7 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
-const {delay} = require('./util');
+const {delay, handleTestError} = require('./util');
 
 describe('execute the quickstart', () => {
   beforeEach(async () => {
@@ -65,18 +65,7 @@ describe('execute the quickstart', () => {
       assert.match(stdout, /Job finished successfully/);
       assert.match(stdout, /successfully deleted/);
     } catch (err) {
-      if (
-        err?.message?.includes('QUOTA') ||
-        err?.message?.includes('RESOURCE_EXHAUSTED') ||
-        err?.message?.includes('DISKS_TOTAL_GB')
-      ) {
-        console.warn(
-          `Quota limit reached in project ${projectId}. Skipping test.`
-        );
-        this.skip();
-      } else {
-        throw err;
-      }
+      handleTestError(err, this, projectId);
     }
   });
 

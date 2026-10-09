@@ -73,7 +73,7 @@ async function createDataset() {
 
 describe('Client with bigquery export V2', async () => {
   let data;
-  before(async () => {
+  before(async function () {
     // Creates a new client.
     const client = new SecurityCenterClient();
 
@@ -116,6 +116,15 @@ describe('Client with bigquery export V2', async () => {
       console.log('Created BigQuery export %j', data);
     } catch (error) {
       console.error('Error creating BigQuery export:', error);
+      if (
+        error?.code === 8 ||
+        (error?.message || '').includes('RESOURCE_EXHAUSTED')
+      ) {
+        console.warn('Quota exhausted, skipping BigQuery Export tests.');
+        this.skip();
+      } else {
+        throw error;
+      }
     }
   });
 

@@ -21,7 +21,7 @@ async function main(parent, secretId, secretType) {
    */
   // const parent = 'projects/my-project';
   // const secretId = 'my-secret';
-  // const secretType = 'ACCESS_KEY'; // or 'CERTIFICATE', 'OTHER_DB_CREDENTIALS', 'OTHER'
+  // const secretType = 'ACCESS_KEY';
 
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
@@ -29,13 +29,8 @@ async function main(parent, secretId, secretType) {
   // Instantiates a client
   const client = new SecretManagerServiceClient();
 
-  // Creates a new secret with the given secret type restriction (e.g.
-  // ACCESS_KEY, CERTIFICATE, OTHER_DB_CREDENTIALS, or OTHER -- use
-  // CLOUD_SQL_DB_CREDENTIALS only for a regional secret that will go
-  // through enableManagedRotation; see the regional_samples directory).
-  // Unlike CLOUD_SQL_DB_CREDENTIALS, these other secret types are plain
-  // metadata tags: they don't require any additional credentials payload
-  // at creation time.
+  // Creates a new secret with the given secret type.
+  // Note: CLOUD_SQL_DB_CREDENTIALS is only supported in the regional secret.
   async function createSecretWithType() {
     const [secret] = await client.createSecret({
       parent: parent,

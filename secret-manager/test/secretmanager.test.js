@@ -57,21 +57,13 @@ const regionalClient = new SecretManagerServiceClient(options);
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
-// Role granted to a Cloud SQL DB credentials secret's built-in identity so
-// that managed rotation can update the Cloud SQL user's password. This
-// grant is per-secret (the member is the secret's own generated
-// principal), so it has to be made fresh for the secret the managed
-// rotation tests below create.
+// Role granted to the secret's identity to enable managed rotation.
 const CLOUD_SQL_ROLE = 'roles/cloudsql.admin';
 const cloudSqlInstanceId = process.env.CLOUD_SQL_INSTANCE;
 const cloudSqlUsername = process.env.CLOUD_SQL_USER;
 let cloudSqlSecretPrincipal;
 
-// Grants CLOUD_SQL_ROLE to member on the project. setIamPolicy replaces the
-// whole policy, so this reads the current policy, adds member to the
-// existing (or a new) binding for the role, and writes it back -- retrying
-// the whole read-modify-write if another writer raced us (ABORTED, from an
-// etag mismatch).
+// Grants CLOUD_SQL_ROLE to the member on the project.
 async function grantCloudSqlRole(member) {
   const resource = `projects/${projectId}`;
   for (let attempt = 0; ; attempt++) {
@@ -97,7 +89,7 @@ async function grantCloudSqlRole(member) {
       return;
     } catch (err) {
       if (err.code === 10 && attempt < 5) {
-        // ABORTED (etag conflict) -- retry the read-modify-write.
+        // Retry on etag conflict.
         continue;
       }
       throw err;
@@ -105,8 +97,7 @@ async function grantCloudSqlRole(member) {
   }
 }
 
-// Removes member from CLOUD_SQL_ROLE on the project, added by
-// grantCloudSqlRole.
+// Removes CLOUD_SQL_ROLE from the member on the project.
 async function revokeCloudSqlRole(member) {
   const resource = `projects/${projectId}`;
   for (let attempt = 0; ; attempt++) {
@@ -952,7 +943,7 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp(`Created secret ${regionalSecret.name}-8`));
 
     const principalMatch = output.match(
-      /Grant this identity Cloud SQL IAM permissions to enable rotation: (\S+)/
+      /Grant the Cloud SQL User rotate IAM permissions to enable managed rotation to: (\S+)/
     );
     assert.ok(
       principalMatch,
@@ -960,12 +951,9 @@ describe('Secret Manager samples', () => {
     );
     cloudSqlSecretPrincipal = principalMatch[1];
 
-    // enableRegionalSecretManagedRotation needs this secret's own built-in
-    // identity granted Cloud SQL IAM permissions first -- there's no
-    // broader grant that covers a secret before it exists.
+    // Grant the role to the secret's identity.
     await grantCloudSqlRole(cloudSqlSecretPrincipal);
-    // IAM grants are eventually consistent; give it a moment before the
-    // next test tries to use it for managed rotation.
+    // Wait for the IAM grant to propagate.
     await new Promise(resolve => setTimeout(resolve, 10000));
   });
 

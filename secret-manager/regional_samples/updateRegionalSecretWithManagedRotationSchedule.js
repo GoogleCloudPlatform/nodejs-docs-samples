@@ -36,18 +36,13 @@ async function main(projectId, locationId, secretId, rotationPeriodSeconds) {
   // Instantiates a client
   const client = new SecretManagerServiceClient(options);
 
-  // Reconfigures the recurring rotation schedule on a secret that already
-  // has Cloud SQL managed rotation enabled (see
-  // enableRegionalSecretManagedRotation.js). This only applies to regional
-  // secrets of the CLOUD_SQL_DB_CREDENTIALS type -- calling it on any other
-  // secret type, or before managed rotation has been enabled, fails.
-  //
-  // rotationPeriodSeconds is the interval between rotations, in whole
-  // seconds. The service requires it to be at least 3600 (1 hour), and the
-  // derived nextRotationTime (now + rotationPeriodSeconds) must be at least
-  // 300 seconds (5 minutes) in the future -- both are enforced by the API,
-  // not checked client-side here.
+  // Updates the rotation schedule of a CLOUD_SQL_DB_CREDENTIALS typed secret.
   async function updateRegionalSecretWithManagedRotationSchedule() {
+    // The rotation schedule of a CLOUD_SQL_DB_CREDENTIALS secret can be set
+    // before or after enabling managed rotation; EnableManagedRotation does not
+    // need to be called first. Other secret types also support a rotation
+    // schedule, but only when Pub/Sub topics are configured. Pub/Sub topics are
+    // not required for CLOUD_SQL_DB_CREDENTIALS.
     const nowSeconds = Math.floor(Date.now() / 1000);
 
     const [secret] = await client.updateSecret({
@@ -62,13 +57,8 @@ async function main(projectId, locationId, secretId, rotationPeriodSeconds) {
           },
         },
       },
-      // Mask only the two subfields being set here, not the whole
-      // "rotation" submessage -- that would also include
-      // managed_rotation_status, which is output-only and rejects a
-      // whole-submessage replace with "immutable and cannot be updated"
-      // (the same behavior confirmed against a live project in this same
-      // port's Go samples; field mask paths reference the proto's
-      // snake_case field names regardless of client language).
+      // Mask only the rotation subfields being set, not the whole rotation
+      // submessage.
       updateMask: {
         paths: ['rotation.next_rotation_time', 'rotation.rotation_period'],
       },

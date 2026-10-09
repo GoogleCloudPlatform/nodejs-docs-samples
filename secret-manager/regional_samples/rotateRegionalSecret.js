@@ -23,8 +23,6 @@ async function main(projectId, locationId, secretId) {
   // const locationId = 'my-location';
   // const secretId = 'my-secret';
 
-  // Despite the field name, parent holds the full secret resource name, not
-  // a collection parent.
   const parent = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
   // Imports the Secret Manager library
@@ -37,11 +35,8 @@ async function main(projectId, locationId, secretId) {
   // Instantiates a client
   const client = new SecretManagerServiceClient(options);
 
-  // Triggers a managed rotation for a Cloud SQL DB credentials secret.
-  // Managed rotation must already be enabled on the secret (see
-  // enableRegionalSecretManagedRotation.js). Each call generates a new
-  // password, updates the Cloud SQL user, and adds the result as a new
-  // secret version.
+  // Triggers an adhoc rotation for the managed CLOUD_SQL_DB_CREDENTIALS typed
+  // secret.
   async function rotateRegionalSecret() {
     const [version] = await client.rotateSecret({
       parent: parent,

@@ -27,10 +27,7 @@ async function main(name = 'projects/my-project/secrets/my-secret') {
   // Instantiates a client
   const client = new SecretManagerServiceClient();
 
-  // Gets and prints the secret type (e.g. CLOUD_SQL_DB_CREDENTIALS,
-  // ACCESS_KEY, CERTIFICATE, OTHER_DB_CREDENTIALS, OTHER, or
-  // SECRET_TYPE_UNSPECIFIED for a secret with no type restriction) of the
-  // given secret.
+  // Gets the secret type of the given secret.
   async function getSecretType() {
     const [secret] = await client.getSecret({
       name: name,

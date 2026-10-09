@@ -18,12 +18,12 @@
     "test": "npm run system-test"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^10.0.0",
+    "@google-cloud/datastore": "^11.0.0",
     "express": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^12.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^12.0.0",
     "supertest": "^7.0.0"
   }
 }

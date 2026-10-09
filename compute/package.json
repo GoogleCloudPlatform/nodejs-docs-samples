@@ -16,7 +16,7 @@
   "dependencies": {
     "@google-cloud/compute": "^4.0.0",
     "@sendgrid/mail": "^8.0.0",
-    "nodemailer": "^9.0.0",
+    "nodemailer": "^10.0.6",
     "sinon": "^19.0.2"
   },
   "devDependencies": {

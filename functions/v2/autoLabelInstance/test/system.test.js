@@ -47,7 +47,7 @@ describe('functions_label_gce_instance', () => {
             initializeParams: {
               diskSizeGb: '10',
               sourceImage:
-                'projects/debian-cloud/global/images/family/debian-11',
+                'projects/debian-cloud/global/images/family/debian-13',
             },
             boot: true,
             autoDelete: true,

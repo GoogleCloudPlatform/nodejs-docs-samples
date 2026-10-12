@@ -49,8 +49,10 @@ describe('AI platform create dataset tabular bigquery', () => {
       .split('/')[0];
   });
   after('should delete created dataset', async () => {
-    execSync(`node ./delete-dataset.js ${datasetId} ${project} ${location}`, {
-      cwd,
-    });
+    if (datasetId) {
+      execSync(`node ./delete-dataset.js ${datasetId} ${project} ${location}`, {
+        cwd,
+      });
+    }
   });
 });

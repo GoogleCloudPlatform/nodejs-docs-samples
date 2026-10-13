@@ -59,7 +59,7 @@ describe('Create compute reservation using regional instance template', async ()
       }
     );
 
-    assert(response.includes(`Reservation: ${reservationName} created.`));
     reservationCreated = true;
+    assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 });

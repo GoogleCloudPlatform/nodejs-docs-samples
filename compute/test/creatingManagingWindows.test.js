@@ -28,8 +28,8 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('creating managing windows instances tests', () => {
   const instanceName = generateTestId();
-  const networkName = 'global/networks/default-compute';
-  const subnetworkName = 'regions/europe-central2/subnetworks/default-compute';
+  const networkName = 'global/networks/default';
+  const subnetworkName = 'regions/europe-central2/subnetworks/default';
   const zone = 'europe-central2-b';
   const machineType = 'n1-standard-1';
   const sourceImageFamily = 'windows-2022';

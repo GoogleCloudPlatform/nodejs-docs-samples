@@ -34,7 +34,7 @@ const createInstance = async (projectId, zone, instanceName) => {
         {
           initializeParams: {
             diskSizeGb: '250',
-            sourceImage: 'projects/debian-cloud/global/images/family/debian-11',
+            sourceImage: 'projects/debian-cloud/global/images/family/debian-13',
           },
           autoDelete: true,
           boot: true,
@@ -68,8 +68,8 @@ describe('create instance templates tests', () => {
   const templateName = generateTestId();
   const zone = 'europe-central2-b';
   const instanceName = generateTestId();
-  const networkName = 'global/networks/default-compute';
-  const subnetworkName = 'regions/asia-east1/subnetworks/default-compute';
+  const networkName = 'global/networks/default';
+  const subnetworkName = 'regions/asia-east1/subnetworks/default';
 
   after(async () => {
     const instances = await getStaleVMInstances();

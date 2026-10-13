@@ -62,7 +62,7 @@ describe('suspend/resume instance tests', () => {
             initializeParams: {
               diskSizeGb: '64',
               sourceImage:
-                'projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts',
+                'projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts',
             },
             autoDelete: true,
             boot: true,

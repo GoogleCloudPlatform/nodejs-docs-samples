@@ -45,13 +45,12 @@ async function main(projectId, templateId, versionId) {
       versionId
     );
 
-    // Get the current template version and set the disabled field.
-    const [templateVersion] = await client.getTemplateVersion({name: name});
-    templateVersion.disabled = true;
-
-    // Build the request with an update mask for the disabled field.
+    // Build the request with the updated disabled field and update mask.
     const request = {
-      templateVersion: templateVersion,
+      templateVersion: {
+        name: name,
+        disabled: true,
+      },
       updateMask: {
         paths: ['disabled'],
       },

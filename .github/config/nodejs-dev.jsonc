@@ -223,6 +223,7 @@
     "tpu",
     "translate",
     "vision",
-    "workflows/invoke-private-endpoint"
+    "workflows/invoke-private-endpoint",
+    "ai-platform/snippets"
   ]
 }

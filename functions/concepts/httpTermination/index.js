@@ -11,13 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 'use strict';
-
 /* eslint-disable no-unused-vars, no-unreachable */
-
 const functions = require('@google-cloud/functions-framework');
-
 functions.http('httpTermination', async (req, res) => {
   // [START functions_concepts_node_termination_http]
   // OK: await-ing a Promise before sending an HTTP response
@@ -29,8 +25,7 @@ functions.http('httpTermination', async (req, res) => {
 
   // HTTP functions should signal termination by returning an HTTP response.
   // This should not be done until all background tasks are complete.
-  res.send(200);
-  res.end();
+  res.status(200).send();
 
   // WRONG: this may not execute since an
   // HTTP response has already been sent.

@@ -10,19 +10,19 @@
     "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "start": "node server.js",
     "test": "mocha --exit system-test/*.test.js --timeout=60000"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.13.3",
-    "@grpc/proto-loader": "^0.7.15",
+    "@grpc/grpc-js": "^1.14.0",
+    "@grpc/proto-loader": "^0.8.1",
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "chai": "^4.5.0",
+    "chai": "^6.0.0",
     "mocha": "^10.0.0",
     "wait-port": "^1.0.4"
   }

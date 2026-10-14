@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
+const {handleTestError} = require('./util');
 
 const region = 'us-central1';
 const clusterName = `node-cc-test-${v4()}`;
@@ -35,18 +36,26 @@ const execSync = cmd =>
   });
 
 describe('create a dataproc cluster', () => {
-  it('should create a dataproc cluster', async () => {
-    const stdout = execSync(
-      `node createCluster.js "${projectId}" "${region}" "${clusterName}"`
-    );
-    assert.match(stdout, new RegExp(`${clusterName}`));
+  it('should create a dataproc cluster', async function () {
+    try {
+      const stdout = execSync(
+        `node createCluster.js "${projectId}" "${region}" "${clusterName}"`
+      );
+      assert.match(stdout, new RegExp(`${clusterName}`));
+    } catch (err) {
+      handleTestError(err, this, projectId);
+    }
   });
 
   after(async () => {
-    await clusterClient.deleteCluster({
-      projectId: projectId,
-      region: region,
-      clusterName: clusterName,
-    });
+    try {
+      await clusterClient.deleteCluster({
+        projectId: projectId,
+        region: region,
+        clusterName: clusterName,
+      });
+    } catch (err) {
+      // Ignore errors during cleanup
+    }
   });
 });

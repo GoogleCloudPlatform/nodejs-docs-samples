@@ -10,7 +10,7 @@
   "author": "Yuri Grinshteyn",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^5.0.0",
     "prom-client": "^15.0.0",
     "sleep": "^6.3.0"
   },

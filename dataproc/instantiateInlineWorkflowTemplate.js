@@ -68,6 +68,7 @@ async function main(projectId = 'YOUR_PROJECT_ID', region = 'YOUR_REGION') {
               // Leave 'zoneUri' empty for 'Auto Zone Placement'
               // zoneUri: ''
               zoneUri: 'us-central1-a',
+              internalIpOnly: false,
             },
           },
         },

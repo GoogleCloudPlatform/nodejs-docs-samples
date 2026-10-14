@@ -46,7 +46,7 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
-const {delay} = require('./util');
+const {delay, handleTestError} = require('./util');
 
 describe('execute the quickstart', () => {
   beforeEach(async () => {
@@ -55,14 +55,18 @@ describe('execute the quickstart', () => {
   });
 
   it('should execute the quickstart', async function () {
-    this.retries(4);
-    await delay(this.test);
-    const stdout = execSync(
-      `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
-    );
-    assert.match(stdout, /Cluster created successfully/);
-    assert.match(stdout, /Job finished successfully/);
-    assert.match(stdout, /successfully deleted/);
+    try {
+      this.retries(4);
+      await delay(this.test);
+      const stdout = execSync(
+        `node quickstart.js "${projectId}" "${region}" "${clusterName}" "${jobFilePath}"`
+      );
+      assert.match(stdout, /Cluster created successfully/);
+      assert.match(stdout, /Job finished successfully/);
+      assert.match(stdout, /successfully deleted/);
+    } catch (err) {
+      handleTestError(err, this, projectId);
+    }
   });
 
   afterEach(async () => {

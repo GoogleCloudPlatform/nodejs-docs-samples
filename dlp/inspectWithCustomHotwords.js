@@ -37,7 +37,7 @@ function main(projectId) {
     ],
     rows: [
       {
-        values: [{stringValue: '111-11-1111'}, {stringValue: '222-22-2222'}],
+        values: [{stringValue: '111-11-1111'}, {stringValue: '458-90-3124'}],
       },
     ],
   };

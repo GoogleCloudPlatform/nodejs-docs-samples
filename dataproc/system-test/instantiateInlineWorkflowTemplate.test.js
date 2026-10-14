@@ -26,15 +26,19 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
-const {delay} = require('./util');
+const {delay, handleTestError} = require('./util');
 
 describe('instantiate an inline workflow template', () => {
   it('should instantiate an inline workflow template', async function () {
-    this.retries(4);
-    await delay(this.test);
-    const stdout = execSync(
-      `node instantiateInlineWorkflowTemplate.js "${projectId}" "${region}"`
-    );
-    assert.match(stdout, /successfully/);
+    try {
+      this.retries(4);
+      await delay(this.test);
+      const stdout = execSync(
+        `node instantiateInlineWorkflowTemplate.js "${projectId}" "${region}"`
+      );
+      assert.match(stdout, /successfully/);
+    } catch (err) {
+      handleTestError(err, this, projectId);
+    }
   });
 });

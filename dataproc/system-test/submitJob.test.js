@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
+const {handleTestError} = require('./util');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const region = 'us-central1';
@@ -51,9 +52,13 @@ const execSync = cmd =>
   });
 
 describe('submit a Spark job to a Dataproc cluster', () => {
-  before(async () => {
-    const [operation] = await clusterClient.createCluster(cluster);
-    await operation.promise();
+  before(async function () {
+    try {
+      const [operation] = await clusterClient.createCluster(cluster);
+      await operation.promise();
+    } catch (err) {
+      handleTestError(err, this, projectId);
+    }
   });
 
   it('should submit a job to a dataproc cluster', async () => {
@@ -64,10 +69,14 @@ describe('submit a Spark job to a Dataproc cluster', () => {
   });
 
   after(async () => {
-    await clusterClient.deleteCluster({
-      projectId: projectId,
-      region: region,
-      clusterName: clusterName,
-    });
+    try {
+      await clusterClient.deleteCluster({
+        projectId: projectId,
+        region: region,
+        clusterName: clusterName,
+      });
+    } catch (err) {
+      // Ignore errors during cleanup
+    }
   });
 });

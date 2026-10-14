@@ -1144,7 +1144,7 @@ describe('inspect', () => {
   it('should inspect a table excluding findings in a particular row', () => {
     const output = execSync(`node inspectWithCustomHotwords.js ${projectId}`);
     assert.match(output, /Findings: 1/);
-    assert.match(output, /Quote: 222-22-2222/);
+    assert.match(output, /Quote: 458-90-3124/);
     assert.notMatch(output, /Quote: 111-11-1111/);
   });
 

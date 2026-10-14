@@ -18,6 +18,7 @@ async function main(generatedProductId) {
   // Imports the Google Cloud client library.
   const {ProductServiceClient} = require('@google-cloud/retail').v2;
   const utils = require('../setup/setup-cleanup');
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
   // Instantiates a client.
   const retailClient = new ProductServiceClient();
@@ -26,6 +27,10 @@ async function main(generatedProductId) {
 
   // Create product
   const product = await utils.createProduct(projectId, generatedProductId);
+
+  // Wait for the product to be available for read operations
+  const API_PROPAGATION_DELAY_MS = 30000; // 30 seconds
+  await delay(API_PROPAGATION_DELAY_MS);
 
   // Full resource name of Product
   const name = product.name;

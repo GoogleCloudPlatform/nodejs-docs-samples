@@ -15,7 +15,6 @@
 'use strict';
 
 async function main(projectId, datasetId, tableId) {
-  // [START data_catalog_quickstart]
   // Import the Google Cloud client library and create a client.
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
@@ -165,6 +164,5 @@ async function main(projectId, datasetId, tableId) {
     console.log(`Tag created for entry: ${entry.name}`);
   }
   quickstart();
-  // [END data_catalog_quickstart]
 }
 main(...process.argv.slice(2));

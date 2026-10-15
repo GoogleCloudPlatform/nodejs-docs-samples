@@ -224,6 +224,7 @@
     "translate",
     "vision",
     "workflows/invoke-private-endpoint",
-    "ai-platform/snippets"
+    "ai-platform/snippets",
+    "compute"
   ]
 }

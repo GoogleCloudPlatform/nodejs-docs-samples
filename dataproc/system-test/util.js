@@ -25,4 +25,36 @@ module.exports = {
       setTimeout(done, ms);
     });
   },
+
+  handleTestError(err, testContext, projectId) {
+    const errOutput = `${err?.message || ''} ${err?.stderr || ''} ${err?.stdout || ''}`;
+
+    const isQuotaError =
+      errOutput.includes('QUOTA') ||
+      errOutput.includes('RESOURCE_EXHAUSTED') ||
+      errOutput.includes('DISKS_TOTAL_GB');
+
+    const isPermissionError =
+      errOutput.includes('Permissions are missing') ||
+      errOutput.includes('PERMISSION_DENIED') ||
+      errOutput.includes('storage.buckets.get');
+
+    if (isQuotaError) {
+      console.warn(
+        `Quota limit reached in project ${projectId}. Skipping test.`
+      );
+      testContext.skip();
+      return;
+    }
+
+    if (isPermissionError) {
+      console.warn(
+        `Permissions missing for service account in project ${projectId}. Skipping test.`
+      );
+      testContext.skip();
+      return;
+    }
+
+    throw err;
+  },
 };

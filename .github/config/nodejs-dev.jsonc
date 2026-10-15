@@ -225,6 +225,7 @@
     "vision",
     "workflows/invoke-private-endpoint",
     "ai-platform/snippets",
-    "compute"
+    "compute",
+    "cloud-sql/sqlserver/tedious"
   ]
 }

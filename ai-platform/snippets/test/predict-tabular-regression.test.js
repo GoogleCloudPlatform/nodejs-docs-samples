@@ -38,7 +38,6 @@ describe('AI platform predict tabular regression', () => {
           cwd,
         }
       );
-      console.log(stdout);
       assert.match(stdout, /Predict tabular regression response/);
     } catch (err) {
       if (

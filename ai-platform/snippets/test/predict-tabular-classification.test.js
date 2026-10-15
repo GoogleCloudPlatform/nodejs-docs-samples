@@ -40,7 +40,6 @@ describe('AI platform predict tabular classification', () => {
           cwd,
         }
       );
-      console.log(stdout);
       assert.match(stdout, /Predict tabular classification response/);
     } catch (err) {
       if (

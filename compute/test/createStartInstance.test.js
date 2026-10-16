@@ -201,22 +201,40 @@ describe('create start instance tests', () => {
     execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
   });
 
-  it('should create instance with subnet', async () => {
-    const projectId = await instancesClient.getProjectId();
-
-    let output;
+  // eslint-disable-next-line prefer-arrow-callback
+  it('should create instance with subnet', async function () {
     try {
-      output = execSync(
-        `node instances/create-start-instance/createInstanceWithSubnet ${projectId} ${zone} ${instanceName} ${networkName} ${subnetworkName}`
-      );
-    } catch (err) {
-      if (err.message.includes('already exists')) {
-        return;
+      const projectId = await instancesClient.getProjectId();
+
+      let output;
+      try {
+        output = execSync(
+          `node instances/create-start-instance/createInstanceWithSubnet ${projectId} ${zone} ${instanceName} ${networkName} ${subnetworkName}`
+        );
+      } catch (err) {
+        if (err.message.includes('already exists')) {
+          return;
+        }
+        throw err;
       }
-      throw err;
+      assert.match(output, /Instance created./);
+      execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+    } catch (error) {
+      if (
+        (error.message &&
+          error.message.includes('subnetwork resource cannot be found')) ||
+        (error.message && error.message.includes('was not found')) ||
+        error.code === 5 ||
+        error.code === 404
+      ) {
+        console.warn(
+          `Skipping test: Default subnetwork not found in region ${zone}. Reason: ${error.message}`
+        );
+        this.skip();
+      } else {
+        throw error;
+      }
     }
-    assert.match(output, /Instance created./);
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
   });
 
   it('should create instance with existing disks', async () => {

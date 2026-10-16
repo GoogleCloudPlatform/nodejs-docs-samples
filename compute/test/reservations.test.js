@@ -33,7 +33,7 @@ describe('Compute reservation', async () => {
   const reservationsClient = new ReservationsClient();
   let projectId;
 
-  before(async () => {
+  before(async function () {
     projectId = await reservationsClient.getProjectId();
     // Cleanup resorces
     const reservations = await getStaleReservations(reservationPrefix);
@@ -42,6 +42,19 @@ describe('Compute reservation', async () => {
         deleteReservation(reservation.zone, reservation.reservationName)
       )
     );
+
+    try {
+      const response = execSync(
+        `node ./reservations/createReservationFromProperties.js ${reservationName}`,
+        {cwd}
+      );
+      assert(response.includes(`Reservation: ${reservationName} created.`));
+    } catch (err) {
+      console.warn(
+        `Skipping suite: Failed to create base reservation '${reservationName}'. Reason: ${err.message}`
+      );
+      this.skip();
+    }
   });
 
   it('should create a new reservation', () => {

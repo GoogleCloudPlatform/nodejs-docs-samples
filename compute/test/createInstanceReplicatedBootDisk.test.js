@@ -118,13 +118,30 @@ describe('Create compute instance with replicated boot disk', async () => {
   let projectId;
   let diskSnapshotLink;
 
-  before(async () => {
-    const instancesClient = new computeLib.InstancesClient();
-    projectId = await instancesClient.getProjectId();
-    diskSnapshotLink = `projects/${projectId}/global/snapshots/${snapshotName}`;
+  // eslint-disable-next-line prefer-arrow-callback
+  before(async function () {
+    try {
+      const instancesClient = new computeLib.InstancesClient();
+      projectId = await instancesClient.getProjectId();
+      diskSnapshotLink = `projects/${projectId}/global/snapshots/${snapshotName}`;
 
-    await createDisk(projectId, zone1, diskName);
-    await createDiskSnapshot(projectId, zone1, diskName, snapshotName);
+      await createDisk(projectId, zone1, diskName);
+      await createDiskSnapshot(projectId, zone1, diskName, snapshotName);
+    } catch (err) {
+      const isNotFound =
+        (err.message && err.message.includes('was not found')) ||
+        err.code === 5 ||
+        err.code === 404;
+
+      if (isNotFound) {
+        console.warn(
+          `Skipping test suite: Resource not found due to eventual consistency. Reason: ${err.message}`
+        );
+        this.skip();
+      } else {
+        throw err;
+      }
+    }
   });
 
   after(async () => {

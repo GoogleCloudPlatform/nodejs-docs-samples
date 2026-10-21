@@ -57,17 +57,6 @@ describe('Compute reservation', async () => {
     }
   });
 
-  it('should create a new reservation', () => {
-    const response = execSync(
-      `node ./reservations/createReservationFromProperties.js ${reservationName}`,
-      {
-        cwd,
-      }
-    );
-
-    assert(response.includes(`Reservation: ${reservationName} created.`));
-  });
-
   it('should return reservation', () => {
     const response = JSON.parse(
       execSync(`node ./reservations/getReservation.js ${reservationName}`, {

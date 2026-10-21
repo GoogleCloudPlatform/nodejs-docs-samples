@@ -95,8 +95,10 @@ describe('Create compute regional replicated disk', async () => {
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
   });
 
-  it('should attach replicated disk to vm', () => {
+  it('should attach replicated disk to vm', async () => {
     // Create VM, where replicated disk will be attached.
+    // Give Compute Engine a few seconds to propagate the disk resource
+    await new Promise(resolve => setTimeout(resolve, 5000));
     execSync(
       `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
       {

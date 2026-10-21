@@ -144,16 +144,27 @@ describe('Create compute instance with replicated boot disk', async () => {
     }
   });
 
-  after(async () => {
-    // Cleanup resources
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
-    await deleteDiskSnapshot(projectId, snapshotName);
-    await deleteDisk(projectId, zone1, diskName);
+  // eslint-disable-next-line prefer-arrow-callback
+  after(async function () {
+    try {
+      // Cleanup resources
+      const instances = await getStaleVMInstances();
+      await Promise.all(
+        instances.map(instance =>
+          deleteInstance(instance.zone, instance.instanceName)
+        )
+      );
+      await deleteDiskSnapshot(projectId, snapshotName);
+      await deleteDisk(projectId, zone1, diskName);
+    } catch (err) {
+      if (
+        !err.message?.includes('was not found') &&
+        err.code !== 5 &&
+        err.code !== 404
+      ) {
+        throw err;
+      }
+    }
   });
 
   it('should create an instance with replicated boot disk', () => {

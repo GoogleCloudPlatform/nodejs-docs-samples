@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
+const {handleTestError} = require('./util');
 
 const region = 'us-central1';
 const clusterName = `node-cc-test-${v4()}`;
@@ -42,18 +43,7 @@ describe('create a dataproc cluster', () => {
       );
       assert.match(stdout, new RegExp(`${clusterName}`));
     } catch (err) {
-      if (
-        err?.message?.includes('QUOTA') ||
-        err?.message?.includes('RESOURCE_EXHAUSTED') ||
-        err?.message?.includes('DISKS_TOTAL_GB')
-      ) {
-        console.warn(
-          `Quota limit reached in project ${projectId}. Skipping test.`
-        );
-        this.skip();
-      } else {
-        throw err;
-      }
+      handleTestError(err, this, projectId);
     }
   });
 

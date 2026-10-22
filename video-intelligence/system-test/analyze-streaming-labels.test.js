@@ -17,6 +17,7 @@
 const cp = require('child_process');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const {handlePermissionError} = require('./utils');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -25,9 +26,13 @@ const file = 'resources/googlework_short.mp4';
 
 describe('streaming label', function () {
   this.retries(3);
-  it('should analyze labels in a streaming video', async () => {
-    const output = execSync(`${cmd} ${file}`);
-    assert.match(output, /cat/);
-    assert.match(output, /Confidence: \d+\.\d+/);
+  it('should analyze labels in a streaming video', async function () {
+    try {
+      const output = execSync(`${cmd} ${file}`);
+      assert.match(output, /cat/);
+      assert.match(output, /Confidence: \d+\.\d+/);
+    } catch (err) {
+      handlePermissionError(err, this);
+    }
   });
 });

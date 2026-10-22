@@ -17,6 +17,7 @@
 const cp = require('child_process');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const {handlePermissionError} = require('./utils');
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const cmd = 'node analyze-streaming-annotation-to-storage.js';
@@ -25,8 +26,12 @@ const file = 'resources/googlework_short.mp4';
 const outputUri = 'gs://' + project + '/VIDEO_STREAMING_OUTPUT';
 
 describe('streaming annotation to storage', () => {
-  it('should store the annotation results in GCS', async () => {
-    const output = execSync(`${cmd} ${file} ${outputUri}`);
-    assert.match(output, /The annotation is stored at:/);
+  it('should store the annotation results in GCS', async function () {
+    try {
+      const output = execSync(`${cmd} ${file} ${outputUri}`);
+      assert.match(output, /The annotation is stored at:/);
+    } catch (err) {
+      handlePermissionError(err, this);
+    }
   });
 });

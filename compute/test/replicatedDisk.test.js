@@ -63,11 +63,25 @@ describe('Create compute regional replicated disk', async () => {
   });
 
   after(async () => {
-    // Cleanup resources
-    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
-      cwd,
-    });
-    await deleteDisk(projectId, region, diskName);
+    try {
+      // Cleanup resources
+      execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
+        cwd,
+      });
+      await deleteDisk(projectId, region, diskName);
+    } catch (error) {
+      if (
+        (error.message && error.message.includes('was not found')) ||
+        error.code === 5 ||
+        error.code === 404
+      ) {
+        console.warn(
+          `[WARN] Instance '${vmName}' or ${diskName}  already deleted or not found.`
+        );
+      } else {
+        throw error;
+      }
+    }
   });
 
   it('should create a regional replicated disk', () => {
@@ -81,8 +95,10 @@ describe('Create compute regional replicated disk', async () => {
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
   });
 
-  it('should attach replicated disk to vm', () => {
+  it('should attach replicated disk to vm', async () => {
     // Create VM, where replicated disk will be attached.
+    // Give Compute Engine a few seconds to propagate the disk resource
+    await new Promise(resolve => setTimeout(resolve, 5000));
     execSync(
       `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
       {

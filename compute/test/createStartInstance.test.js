@@ -132,7 +132,7 @@ describe('create start instance tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     await createDisk(projectId, zone, diskName, newestDebian.selfLink);
@@ -163,7 +163,7 @@ describe('create start instance tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     let output;
@@ -224,7 +224,7 @@ describe('create start instance tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     const bootDiskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;

@@ -224,6 +224,9 @@
     "translate",
     "vision",
     "workflows/invoke-private-endpoint",
-    "ai-platform/snippets"
+    "ai-platform/snippets",
+    "compute",
+    "cloud-sql/sqlserver/tedious",
+    "video-intelligence"
   ]
 }

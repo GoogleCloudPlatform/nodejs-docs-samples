@@ -18,8 +18,10 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const {assert} = require('chai');
 
-describe('Memorystore Redis Client-Side Metrics Sample', () => {
-  it('should run successfully with mocked Redis and GCP exporters', async () => {
+describe('Memorystore Redis Client-Side Metrics Sample', function () {
+  this.timeout(10000);
+
+  it('should run successfully with mocked Redis and OTLP exporters', async () => {
     // Stubs for Redis Client
     const clientStub = {
       connect: sinon.stub().resolves(),
@@ -33,7 +35,7 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
       createClient: sinon.stub().returns(clientStub),
     };
 
-    // Mocks for GCP Exporters to avoid needing live GCP credentials in tests
+    // Mocks for OTLP Exporters to avoid needing live GCP credentials in tests
     class MockTraceExporter {
       export(spans, resultCallback) {
         if (resultCallback) resultCallback({code: 0});
@@ -59,11 +61,11 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
     }
 
     const traceExporterMock = {
-      TraceExporter: sinon.stub().returns(new MockTraceExporter()),
+      OTLPTraceExporter: sinon.stub().returns(new MockTraceExporter()),
     };
 
     const metricExporterMock = {
-      MetricExporter: sinon.stub().returns(new MockMetricExporter()),
+      OTLPMetricExporter: sinon.stub().returns(new MockMetricExporter()),
     };
 
     // Mock for Redis Instrumentation to prevent it trying to patch the mocked Redis module
@@ -89,13 +91,27 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
       RedisInstrumentation: MockRedisInstrumentation,
     };
 
+    const gcpDetectorMock = {
+      gcpDetector: {
+        detect: () => ({attributes: {}}),
+      },
+    };
+
+    const googleAuthMock = {
+      GoogleAuth: sinon.stub().returns({
+        getProjectId: sinon.stub().resolves('test-project'),
+        getRequestHeaders: sinon.stub().resolves({}),
+      }),
+    };
+
     // Load the sample with proxyquire, substituting our mocks for its top-level requires
     const {main} = proxyquire('../server.js', {
       redis: redisMock,
-      '@google-cloud/opentelemetry-cloud-trace-exporter': traceExporterMock,
-      '@google-cloud/opentelemetry-cloud-monitoring-exporter':
-        metricExporterMock,
+      '@opentelemetry/exporter-trace-otlp-grpc': traceExporterMock,
+      '@opentelemetry/exporter-metrics-otlp-grpc': metricExporterMock,
       '@opentelemetry/instrumentation-redis': redisInstrumentationMock,
+      '@opentelemetry/resource-detector-gcp': gcpDetectorMock,
+      'google-auth-library': googleAuthMock,
     });
 
     // Verify top-level code executed as expected during the initial load phase
@@ -108,12 +124,12 @@ describe('Memorystore Redis Client-Side Metrics Sample', () => {
       'client.on("error", ...) should be called during load'
     );
     assert.isTrue(
-      traceExporterMock.TraceExporter.calledOnce,
-      'TraceExporter should be instantiated during load'
+      traceExporterMock.OTLPTraceExporter.calledOnce,
+      'OTLPTraceExporter should be instantiated during load'
     );
     assert.isTrue(
-      metricExporterMock.MetricExporter.calledOnce,
-      'MetricExporter should be instantiated during load'
+      metricExporterMock.OTLPMetricExporter.calledOnce,
+      'OTLPMetricExporter should be instantiated during load'
     );
 
     // Run the main function and await its completion

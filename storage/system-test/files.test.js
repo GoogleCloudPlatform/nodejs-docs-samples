@@ -99,6 +99,27 @@ describe('file', () => {
       assert.strictEqual(customContexts['team-owner'].value, 'storage-team');
     });
 
+    it('should delete object contexts', async () => {
+      // Verify the contexts exist before deleting them.
+      const [metadataBefore] = await contextFile.getMetadata();
+      assert.strictEqual(
+        metadataBefore.contexts?.custom?.['priority']?.value,
+        'high'
+      );
+
+      const output = execSync(
+        `node deleteObjectContexts.js ${bucketName} ${fileName}`
+      );
+      assert.include(
+        output,
+        `Deleted object contexts for ${fileName} in bucket ${bucketName}.`
+      );
+
+      const [metadata] = await contextFile.getMetadata();
+      const customContexts = metadata.contexts?.custom || {};
+      assert.deepStrictEqual(customContexts, {});
+    });
+
     it('should list objects with context filters', async () => {
       const noContextFileName = `no-context-${fileName}`;
       await bucket.upload(filePath, {destination: noContextFileName});

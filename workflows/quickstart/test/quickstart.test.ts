@@ -25,7 +25,7 @@ const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
 const SEARCH_TERM = 'cloud';
 
-describe('Cloud Workflows Quickstart Tests', () => {
+describe('Cloud Workflows TypeScript Quickstart Tests', () => {
   before(async () => {
     // Ensure project is configured
     assert.notStrictEqual(
@@ -46,9 +46,12 @@ describe('Cloud Workflows Quickstart Tests', () => {
           name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
         });
         return workflowGet.state === 'ACTIVE';
-      } catch {
-        // If there is an error getting the workflow, it probably doesn't exist.
-        return false;
+      } catch (e) {
+        if ((e as {code?: number})?.code === 5) {
+          // If there is an error getting the workflow, it probably doesn't exist.
+          return false;
+        }
+        throw e;
       }
     }
 
@@ -68,29 +71,35 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
   });
 
+  after(async () => {
+    try {
+      await client.deleteWorkflow({
+        name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
+      });
+      console.log(`The workflow with id ${WORKFLOW_ID} has been deleted.`);
+    } catch (err) {
+      console.error(
+        `Warning: Could not delete the workflow ${WORKFLOW_ID}:`,
+        err
+      );
+    }
+  });
+
   it('should execute the quickstart without optional search term', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+      `node --require ts-node/register ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
-    assert.strictEqual(
-      result.length > 0,
-      true,
-      'Quickstart must return non-empty result'
-    );
-  }).timeout(5000);
+    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
+  }).timeout(60000);
 
   it('should execute the quickstart with optional search term', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
+      `node --require ts-node/register ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID} ${SEARCH_TERM}`
     );
 
-    assert.strictEqual(
-      result.length > 0,
-      true,
-      'Quickstart must return non-empty result'
-    );
-  }).timeout(5000);
+    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
+  }).timeout(60000);
 });

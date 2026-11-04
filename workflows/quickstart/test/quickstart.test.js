@@ -28,7 +28,7 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
 const LOCATION_ID = 'us-central1';
 const WORKFLOW_ID = 'myFirstWorkflow';
 
-describe('Cloud Workflows Quickstart Tests', () => {
+describe('Cloud Workflows JavaScript Quickstart Tests', () => {
   before(async () => {
     // Ensure project is configured
     assert.notStrictEqual(
@@ -50,8 +50,11 @@ describe('Cloud Workflows Quickstart Tests', () => {
         });
         return workflowGet.state === 'ACTIVE';
       } catch (e) {
-        // If there is an error getting the workflow, it probably doesn't exist.
-        return false;
+        if (e.code === 5) {
+          // NOT_FOUND
+          return false;
+        }
+        throw e;
       }
     }
 
@@ -71,16 +74,26 @@ describe('Cloud Workflows Quickstart Tests', () => {
     }
   });
 
+  after(async () => {
+    try {
+      await client.deleteWorkflow({
+        name: client.workflowPath(PROJECT_ID, LOCATION_ID, WORKFLOW_ID),
+      });
+      console.log(`The workflow with id ${WORKFLOW_ID} has been deleted.`);
+    } catch (err) {
+      console.error(
+        `Warning: Could not delete the workflow ${WORKFLOW_ID}:`,
+        err
+      );
+    }
+  });
+
   it('should execute the quickstart', async () => {
     // Execute workflow, with long test timeout
     const result = execSync(
-      `node --loader ts-node/esm ./index.ts ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
+      `node ./index.js ${PROJECT_ID} ${LOCATION_ID} ${WORKFLOW_ID}`
     );
 
-    assert.strictEqual(
-      result.length > 0,
-      true,
-      'Quickstart must return non-empty result'
-    );
-  }).timeout(5000);
+    assert.ok(result.length > 0, 'Quickstart must return non-empty result');
+  }).timeout(60000);
 });

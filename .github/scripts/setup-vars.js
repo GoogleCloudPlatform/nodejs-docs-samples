@@ -46,13 +46,15 @@ export default function setupVars({projectId, core, setup, serviceAccount, idTok
     console.log(`  ${key}: ${setup.secrets[key]}`);
   }
 
-  // Set global secret for the Service Account identity token
+  // Set global secret for the Service Account identity token if provided
   // Use in place of 'gcloud auth print-identity-token' or auth.getIdTokenClient
   // usage: curl -H 'Bearer: $ID_TOKEN' https://
-  core.exportVariable('ID_TOKEN', idToken)
-  core.setSecret(idToken)
-  // For logging, show the source of the ID_TOKEN
-  console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
+  if (idToken) {
+    core.exportVariable('ID_TOKEN', idToken);
+    core.setSecret(idToken);
+    // For logging, show the source of the ID_TOKEN
+    console.log(`  ID_TOKEN: steps.auth.outputs.id_token (from GitHub Action)`);
+  }
 
   // Return env and secrets to use for further steps.
   return {
@@ -65,9 +67,12 @@ export default function setupVars({projectId, core, setup, serviceAccount, idTok
 }
 
 export function substituteVars(value, env) {
+  if (value === null || value === undefined || typeof value !== 'string') {
+    return value;
+  }
   for (const key in env) {
     let re = new RegExp(`\\$(${key}\\b|\\{\\s*${key}\\s*\\})`, 'g');
-    value = value.replaceAll(re, env[key]);
+    value = value.replaceAll(re, String(env[key]));
   }
   return value;
 }

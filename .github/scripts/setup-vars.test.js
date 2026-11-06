@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import {deepStrictEqual} from 'assert';
+import {deepStrictEqual, strictEqual} from 'assert';
 import setupVars from './setup-vars.js';
 import {substituteVars, uniqueId} from './setup-vars.js';
 
@@ -57,6 +57,13 @@ describe('setupVars', () => {
       deepStrictEqual(vars.env, expected);
     });
 
+    it('should support non-string variables without throwing', () => {
+      const setup = {env: {PORT: 8080, ENABLED: true, URL: 'http://localhost:$PORT'}};
+      const vars = setupVars({projectId, core, setup, serviceAccount}, 'run-id');
+      const expected = {...autovars, PORT: 8080, ENABLED: true, URL: 'http://localhost:8080'};
+      deepStrictEqual(vars.env, expected);
+    });
+
     it('should override automatic variables', () => {
       const setup = {env: {PROJECT_ID: 'custom-value', SERVICE_ACCOUNT: 'baz@foo.com'}};
       const vars = setupVars({projectId, core, setup, serviceAccount}, 'run-id');
@@ -79,6 +86,32 @@ describe('setupVars', () => {
       const vars = setupVars({projectId, core, setup, serviceAccount}, 'run-id');
       const expected = {...autovars, C: '$x/$y'};
       deepStrictEqual(vars.env, expected);
+    });
+  });
+
+  describe('idToken handling', () => {
+    it('should export and setSecret ID_TOKEN when idToken is provided', () => {
+      const exported = {};
+      const secrets = [];
+      const testCore = {
+        exportVariable: (k, v) => { exported[k] = v; },
+        setSecret: (s) => { secrets.push(s); },
+      };
+      setupVars({projectId, core: testCore, setup: {}, serviceAccount, idToken: 'test-token-123'}, 'run-id');
+      strictEqual(exported['ID_TOKEN'], 'test-token-123');
+      deepStrictEqual(secrets, ['test-token-123']);
+    });
+
+    it('should not export or setSecret ID_TOKEN when idToken is missing', () => {
+      const exported = {};
+      const secrets = [];
+      const testCore = {
+        exportVariable: (k, v) => { exported[k] = v; },
+        setSecret: (s) => { secrets.push(s); },
+      };
+      setupVars({projectId, core: testCore, setup: {}, serviceAccount}, 'run-id');
+      strictEqual(exported['ID_TOKEN'], undefined);
+      deepStrictEqual(secrets, []);
     });
   });
 
@@ -145,6 +178,13 @@ describe('substituteVars', () => {
     const got = substituteVars('$Ab', {A: 'x'});
     const expected = '$Ab';
     deepStrictEqual(got, expected);
+  });
+
+  it('should safely return non-string inputs', () => {
+    strictEqual(substituteVars(8080, {A: 'x'}), 8080);
+    strictEqual(substituteVars(true, {A: 'x'}), true);
+    strictEqual(substituteVars(null, {A: 'x'}), null);
+    strictEqual(substituteVars(undefined, {A: 'x'}), undefined);
   });
 });
 

@@ -138,7 +138,7 @@ describe('disks tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     await createDisk(projectId, zone, diskName, newestDebian.selfLink);
@@ -165,7 +165,7 @@ describe('disks tests', () => {
 
     const [newestDebian] = await imagesClient.getFromFamily({
       project: 'debian-cloud',
-      family: 'debian-11',
+      family: 'debian-13',
     });
 
     const [response] = await instancesClient.insert({

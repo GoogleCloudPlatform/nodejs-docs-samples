@@ -71,9 +71,27 @@ describe('Compute zonal secondary disk', async () => {
   });
 
   after(async () => {
-    // Cleanup resources
-    const disks = await getStaleDisks(prefix);
-    await Promise.all(disks.map(disk => deleteDisk(disk.zone, disk.diskName)));
+    try {
+      // Cleanup resources
+      const disks = await getStaleDisks(prefix);
+      await Promise.all(
+        disks.map(disk => deleteDisk(disk.zone, disk.diskName))
+      );
+    } catch (error) {
+      if (
+        (error.message &&
+          error.message.includes('active asynchronous replication')) ||
+        (error.message && error.message.includes('was not found')) ||
+        error.code === 5 ||
+        error.code === 404
+      ) {
+        console.warn(
+          `[WARN] Could not delete disk due to active replication or resource not found. Reason: ${error.message}`
+        );
+      } else {
+        throw error;
+      }
+    }
   });
 
   it('should create a zonal secondary disk', () => {

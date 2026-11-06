@@ -17,6 +17,7 @@
 const cp = require('child_process');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const {handlePermissionError} = require('./utils');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -27,8 +28,12 @@ const file = 'resources/googlework_short.mp4';
 
 describe('streaming automl object tracking', function () {
   this.retries(3);
-  it('should track an object in a streaming video', async () => {
-    const output = execSync(`${cmd} ${file} ${project} ${modelId}`);
-    assert.match(output, /Track id/);
+  it('should track an object in a streaming video', async function () {
+    try {
+      const output = execSync(`${cmd} ${file} ${project} ${modelId}`);
+      assert.match(output, /Track id/);
+    } catch (err) {
+      handlePermissionError(err, this);
+    }
   });
 });

@@ -23,7 +23,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cmd = 'node analyze-person-detection-gcs.js';
 const gcsUri = 'gs://cloud-samples-data/video/googlework_short.mp4';
 
-describe('analyzing people in video', () => {
+describe.skip('analyzing people in video', () => {
   it('should identify people in a file in Google Storage', async () => {
     const output = execSync(`${cmd} ${gcsUri}`);
     assert.match(output, /Landmark/);

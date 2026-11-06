@@ -17,26 +17,61 @@
 
 'use strict';
 
+const grpc = require('@grpc/grpc-js');
 const {trace, metrics} = require('@opentelemetry/api');
-const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node');
-const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base');
 const {
-  TraceExporter,
-} = require('@google-cloud/opentelemetry-cloud-trace-exporter');
+  OTLPMetricExporter,
+} = require('@opentelemetry/exporter-metrics-otlp-grpc');
+const {OTLPTraceExporter} = require('@opentelemetry/exporter-trace-otlp-grpc');
+const {registerInstrumentations} = require('@opentelemetry/instrumentation');
+const {RedisInstrumentation} = require('@opentelemetry/instrumentation-redis');
+const {gcpDetector} = require('@opentelemetry/resource-detector-gcp');
+const {defaultResource, detectResources} = require('@opentelemetry/resources');
 const {
   MeterProvider,
   PeriodicExportingMetricReader,
 } = require('@opentelemetry/sdk-metrics');
-const {
-  MetricExporter,
-} = require('@google-cloud/opentelemetry-cloud-monitoring-exporter');
-const {RedisInstrumentation} = require('@opentelemetry/instrumentation-redis');
-const {registerInstrumentations} = require('@opentelemetry/instrumentation');
+const {BatchSpanProcessor} = require('@opentelemetry/sdk-trace-base');
+const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node');
+const {GoogleAuth} = require('google-auth-library');
 const {performance} = require('perf_hooks');
 
-// FIX: Pass spanProcessors in the constructor options for NodeTracerProvider in SDK 2.x
+const auth = new GoogleAuth({
+  scopes: 'https://www.googleapis.com/auth/cloud-platform',
+});
+
+const channelCreds = grpc.credentials.combineChannelCredentials(
+  grpc.credentials.createSsl(),
+  grpc.credentials.createFromGoogleCredential({
+    getRequestHeaders: async url => {
+      const headers = await auth.getRequestHeaders(url);
+      return typeof headers.entries === 'function'
+        ? Object.fromEntries(headers.entries())
+        : headers;
+    },
+  })
+);
+
+const projectDetector = {
+  detect: () => ({
+    attributes: {
+      'gcp.project_id': auth.getProjectId().catch(() => undefined),
+    },
+  }),
+};
+
+const resource = defaultResource().merge(
+  detectResources({detectors: [gcpDetector, projectDetector]})
+);
+
+const traceExporter = new OTLPTraceExporter({
+  url: 'https://telemetry.googleapis.com:443',
+  credentials: channelCreds,
+});
+
 const provider = new NodeTracerProvider({
-  spanProcessors: [new BatchSpanProcessor(new TraceExporter())],
+  resource,
+  spanProcessors: [new BatchSpanProcessor(traceExporter)],
 });
 provider.register();
 
@@ -46,12 +81,18 @@ registerInstrumentations({
 
 const redis = require('redis');
 
-const metricExporter = new MetricExporter();
+const metricExporter = new OTLPMetricExporter({
+  url: 'https://telemetry.googleapis.com:443',
+  credentials: channelCreds,
+});
 const metricReader = new PeriodicExportingMetricReader({
   exporter: metricExporter,
   exportIntervalMillis: 10000,
 });
-const meterProvider = new MeterProvider({readers: [metricReader]});
+const meterProvider = new MeterProvider({
+  resource,
+  readers: [metricReader],
+});
 metrics.setGlobalMeterProvider(meterProvider);
 
 const tracer = trace.getTracer('redis.client.node');
@@ -112,6 +153,9 @@ async function smartRedisCall(operationName, func, ...args) {
 }
 
 async function main() {
+  if (typeof resource.waitForAsyncAttributes === 'function') {
+    await resource.waitForAsyncAttributes();
+  }
   await client.connect();
 
   await tracer.startActiveSpan('process_user_span', async span => {

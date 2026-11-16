@@ -14,7 +14,11 @@
 
 'use strict';
 
-async function main(projectId, locationId, secretId) {
+async function main(
+  projectId = 'my-project',
+  locationId = 'my-location',
+  secretId = 'my-secret'
+) {
   // [START secretmanager_create_regional_secret_with_cloud_sql_credentials]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -28,7 +32,7 @@ async function main(projectId, locationId, secretId) {
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Adding the endpoint to call the regional secret manager sever
+  // Adding the endpoint to call the regional secret manager server
   const options = {};
   options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
@@ -56,7 +60,7 @@ async function main(projectId, locationId, secretId) {
     );
   }
 
-  createRegionalSecretWithCloudSqlCredentials();
+  await createRegionalSecretWithCloudSqlCredentials();
   // [END secretmanager_create_regional_secret_with_cloud_sql_credentials]
 }
 

@@ -14,7 +14,13 @@
 
 'use strict';
 
-async function main(projectId, locationId, secretId, instanceId, username) {
+async function main(
+  projectId = 'my-project',
+  locationId = 'my-location',
+  secretId = 'my-secret',
+  instanceId = 'my-cloud-sql-instance',
+  username = 'my-db-user'
+) {
   // [START secretmanager_enable_regional_secret_managed_rotation]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -30,7 +36,7 @@ async function main(projectId, locationId, secretId, instanceId, username) {
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Adding the endpoint to call the regional secret manager sever
+  // Adding the endpoint to call the regional secret manager server
   const options = {};
   options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
@@ -58,7 +64,7 @@ async function main(projectId, locationId, secretId, instanceId, username) {
     );
   }
 
-  enableRegionalSecretManagedRotation();
+  await enableRegionalSecretManagedRotation();
   // [END secretmanager_enable_regional_secret_managed_rotation]
 }
 

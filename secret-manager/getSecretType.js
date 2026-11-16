@@ -33,12 +33,12 @@ async function main(name = 'projects/my-project/secrets/my-secret') {
       name: name,
     });
 
-    console.info(
+    console.log(
       `Found secret ${secret.name} with secret type ${secret.secretType}`
     );
   }
 
-  getSecretType();
+  await getSecretType();
   // [END secretmanager_get_secret_type]
 }
 

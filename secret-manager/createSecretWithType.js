@@ -14,7 +14,11 @@
 
 'use strict';
 
-async function main(parent, secretId, secretType) {
+async function main(
+  parent = 'projects/my-project',
+  secretId = 'my-secret',
+  secretType = 'ACCESS_KEY'
+) {
   // [START secretmanager_create_secret_with_type]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -46,7 +50,7 @@ async function main(parent, secretId, secretType) {
     console.log(`Created secret with secret type: ${secret.name}`);
   }
 
-  createSecretWithType();
+  await createSecretWithType();
   // [END secretmanager_create_secret_with_type]
 }
 

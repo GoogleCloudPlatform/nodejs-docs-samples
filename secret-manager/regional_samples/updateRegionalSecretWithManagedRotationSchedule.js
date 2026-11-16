@@ -14,7 +14,12 @@
 
 'use strict';
 
-async function main(projectId, locationId, secretId, rotationPeriodSeconds) {
+async function main(
+  projectId = 'my-project',
+  locationId = 'my-location',
+  secretId = 'my-secret',
+  rotationPeriodSeconds = '86400'
+) {
   // [START secretmanager_update_regional_secret_with_managed_rotation_schedule]
   /**
    * TODO(developer): Uncomment these variables before running the sample.
@@ -29,7 +34,7 @@ async function main(projectId, locationId, secretId, rotationPeriodSeconds) {
   // Imports the Secret Manager library
   const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
-  // Adding the endpoint to call the regional secret manager sever
+  // Adding the endpoint to call the regional secret manager server
   const options = {};
   options.apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com`;
 
@@ -67,7 +72,7 @@ async function main(projectId, locationId, secretId, rotationPeriodSeconds) {
     console.log(`Updated regional secret rotation schedule: ${secret.name}`);
   }
 
-  updateRegionalSecretWithManagedRotationSchedule();
+  await updateRegionalSecretWithManagedRotationSchedule();
   // [END secretmanager_update_regional_secret_with_managed_rotation_schedule]
 }
 

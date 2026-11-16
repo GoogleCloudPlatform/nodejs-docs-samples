@@ -936,7 +936,11 @@ describe('Secret Manager samples', () => {
     assert.match(output, new RegExp('Created Tag Binding'));
   });
 
-  it('creates a regional secret with Cloud SQL DB credentials', async () => {
+  it('creates a regional secret with Cloud SQL DB credentials', async function () {
+    if (!cloudSqlInstanceId || !cloudSqlUsername) {
+      // Requires CLOUD_SQL_INSTANCE and CLOUD_SQL_USER.
+      this.skip();
+    }
     const output = execSync(
       `node regional_samples/createRegionalSecretWithCloudSqlCredentials.js ${projectId} ${locationId} ${secretId}-8`
     );
@@ -957,7 +961,11 @@ describe('Secret Manager samples', () => {
     await new Promise(resolve => setTimeout(resolve, 10000));
   });
 
-  it('enables managed rotation for a regional secret', async () => {
+  it('enables managed rotation for a regional secret', async function () {
+    if (!cloudSqlInstanceId || !cloudSqlUsername) {
+      // Requires CLOUD_SQL_INSTANCE and CLOUD_SQL_USER.
+      this.skip();
+    }
     const output = execSync(
       `node regional_samples/enableRegionalSecretManagedRotation.js ${projectId} ${locationId} ${secretId}-8 ${cloudSqlInstanceId} ${cloudSqlUsername}`
     );
@@ -967,14 +975,22 @@ describe('Secret Manager samples', () => {
     );
   });
 
-  it('rotates a regional secret', async () => {
+  it('rotates a regional secret', async function () {
+    if (!cloudSqlInstanceId || !cloudSqlUsername) {
+      // Requires CLOUD_SQL_INSTANCE and CLOUD_SQL_USER.
+      this.skip();
+    }
     const output = execSync(
       `node regional_samples/rotateRegionalSecret.js ${projectId} ${locationId} ${secretId}-8`
     );
     assert.match(output, new RegExp('Rotated secret, created secret version:'));
   });
 
-  it('configures a scheduled rotation for a regional secret', async () => {
+  it('configures a scheduled rotation for a regional secret', async function () {
+    if (!cloudSqlInstanceId || !cloudSqlUsername) {
+      // Requires CLOUD_SQL_INSTANCE and CLOUD_SQL_USER.
+      this.skip();
+    }
     const output = execSync(
       `node regional_samples/updateRegionalSecretWithManagedRotationSchedule.js ${projectId} ${locationId} ${secretId}-8 86400`
     );

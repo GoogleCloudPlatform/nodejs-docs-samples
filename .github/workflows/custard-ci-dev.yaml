@@ -75,6 +75,7 @@ jobs:
     env:
       GOOGLE_SAMPLES_PROJECT: long-door-651
       GOOGLE_SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+      CAIP_PROJECT_ID: long-door-651
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup

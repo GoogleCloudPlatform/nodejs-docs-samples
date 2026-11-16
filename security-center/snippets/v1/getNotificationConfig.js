@@ -20,14 +20,7 @@ function main(organizationId = 'your-org-id', configId = 'your-config-id') {
 
   const client = new SecurityCenterClient();
 
-  // formattedConfigName: You can also use
-  //    `client.projectNotificationConfigPath(projectId, configId)` or
-  //    `client.folderNotificationConfigPath(folderId, configId)`.
-  // configId = "your-config-id";
-  const formattedConfigName = client.organizationNotificationConfigPath(
-    organizationId,
-    configId
-  );
+  const formattedConfigName = `organizations/${organizationId}/notificationConfigs/${configId}`;
 
   async function getNotificationConfg() {
     const [response] = await client.getNotificationConfig({

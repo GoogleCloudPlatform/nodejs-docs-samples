@@ -24,14 +24,7 @@ function main(
 
   const client = new SecurityCenterClient();
 
-  // formattedConfigName: You can also use
-  //    `client.projectNotificationConfigPath(projectId, configId)` or
-  //    `client.folderNotificationConfigPath(folderId, configId)`.
-  // configId = "your-config-id";
-  const formattedConfigName = client.organizationNotificationConfigPath(
-    organizationId,
-    configId
-  );
+  const formattedConfigName = `organizations/${organizationId}/notificationConfigs/${configId}`;
 
   // pubsubTopic = "projects/{your-project}/topics/{your-topic}";
   // Ensure this Service Account has the "pubsub.topics.setIamPolicy" permission on this topic.

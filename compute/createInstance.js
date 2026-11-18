@@ -97,6 +97,12 @@ function main(
       });
     }
 
+    if (operation.error) {
+      throw new Error(
+        operation.error.errors.map(e => `${e.code}: ${e.message}`).join('; ')
+      );
+    }
+
     console.log('Instance created.');
   }
 

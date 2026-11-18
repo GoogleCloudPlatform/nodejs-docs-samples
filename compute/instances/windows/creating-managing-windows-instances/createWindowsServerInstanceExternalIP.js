@@ -55,8 +55,8 @@ function main(
           {
             // Describe the size and source image of the boot disk to attach to the instance.
             initializeParams: {
-              diskSizeGb: '64',
-              sourceImage: `projects/windows-cloud/global/images/family/${sourceImageFamily}/`,
+              diskSizeGb: '50',
+              sourceImage: `projects/windows-cloud/global/images/family/${sourceImageFamily}`,
             },
             autoDelete: true,
             boot: true,
@@ -97,6 +97,12 @@ function main(
         project: projectId,
         zone: operation.zone.split('/').pop(),
       });
+    }
+
+    if (operation.error) {
+      throw new Error(
+        operation.error.errors.map(e => `${e.code}: ${e.message}`).join('; ')
+      );
     }
 
     console.log('Instance created.');

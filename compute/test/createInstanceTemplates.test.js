@@ -20,7 +20,12 @@ const {describe, it} = require('mocha');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  generateTestId,
+  ensureOperationSucceeded,
+  getStaleVMInstances,
+  deleteInstance,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 
@@ -33,7 +38,7 @@ const createInstance = async (projectId, zone, instanceName) => {
       disks: [
         {
           initializeParams: {
-            diskSizeGb: '250',
+            diskSizeGb: '10',
             sourceImage: 'projects/debian-cloud/global/images/family/debian-13',
           },
           autoDelete: true,
@@ -62,6 +67,7 @@ const createInstance = async (projectId, zone, instanceName) => {
       zone: operation.zone.split('/').pop(),
     });
   }
+  ensureOperationSucceeded(operation);
 };
 
 describe('create instance templates tests', () => {

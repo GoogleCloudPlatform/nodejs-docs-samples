@@ -22,32 +22,14 @@ const uuid = require('uuid');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
+const {
+  deleteInstance,
+  deleteRegionDisk,
+  cleanupStaleResources,
+} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-
-async function deleteDisk(projectId, region, diskName) {
-  const disksClient = new computeLib.RegionDisksClient();
-  const regionOperationsClient = new computeLib.RegionOperationsClient();
-
-  const [response] = await disksClient.delete({
-    project: projectId,
-    disk: diskName,
-    region,
-  });
-  let operation = response.latestResponse;
-
-  console.log(`Deleting ${diskName}`);
-
-  // Wait for the delete operation to complete.
-  while (operation.status !== 'DONE') {
-    [operation] = await regionOperationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-      region,
-    });
-  }
-}
 
 describe('Create compute regional replicated disk', async () => {
   const diskName = `replicated-disk-${uuid.v4()}`;
@@ -60,33 +42,17 @@ describe('Create compute regional replicated disk', async () => {
   before(async () => {
     const instancesClient = new computeLib.InstancesClient();
     projectId = await instancesClient.getProjectId();
+    await cleanupStaleResources();
   });
 
   after(async () => {
-    try {
-      // Cleanup resources
-      execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
-        cwd,
-      });
-      await deleteDisk(projectId, region, diskName);
-    } catch (error) {
-      if (
-        (error.message && error.message.includes('was not found')) ||
-        error.code === 5 ||
-        error.code === 404
-      ) {
-        console.warn(
-          `[WARN] Instance '${vmName}' or ${diskName}  already deleted or not found.`
-        );
-      } else {
-        throw error;
-      }
-    }
+    await deleteInstance(zone1, vmName);
+    await deleteRegionDisk(region, diskName);
   });
 
   it('should create a regional replicated disk', () => {
     const response = execSync(
-      `node ./disks/createRegionalReplicatedDisk.js ${diskName} ${region} ${zone1} ${zone2}`,
+      `node ./disks/createRegionalReplicatedDisk.js ${diskName} ${region} ${zone1} ${zone2} pd-balanced 10`,
       {
         cwd,
       }
@@ -95,10 +61,8 @@ describe('Create compute regional replicated disk', async () => {
     assert(response.includes(`Regional replicated disk: ${diskName} created.`));
   });
 
-  it('should attach replicated disk to vm', async () => {
+  it('should attach replicated disk to vm', () => {
     // Create VM, where replicated disk will be attached.
-    // Give Compute Engine a few seconds to propagate the disk resource
-    await new Promise(resolve => setTimeout(resolve, 5000));
     execSync(
       `node ./createInstance.js ${projectId} ${zone1} ${vmName} e2-small`,
       {

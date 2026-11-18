@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * Creates a new preemptible VM instance with Debian 11 operating system.
+ * Creates a new preemptible VM instance with Debian 13 operating system.
  *
  * @param {string} projectId - ID or number of the project you want to use.
  * @param {string} zone - Name of the zone you want to use, for example: us-west3-b
@@ -39,9 +39,9 @@ function main(projectId, zone, instanceName) {
         disks: [
           {
             initializeParams: {
-              diskSizeGb: '64',
+              diskSizeGb: '10',
               sourceImage:
-                'projects/debian-cloud/global/images/family/debian-13/',
+                'projects/debian-cloud/global/images/family/debian-13',
             },
             autoDelete: true,
             boot: true,
@@ -71,6 +71,12 @@ function main(projectId, zone, instanceName) {
         project: projectId,
         zone: operation.zone.split('/').pop(),
       });
+    }
+
+    if (operation.error) {
+      throw new Error(
+        operation.error.errors.map(e => `${e.code}: ${e.message}`).join('; ')
+      );
     }
 
     console.log('Instance created.');

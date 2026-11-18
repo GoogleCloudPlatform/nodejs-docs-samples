@@ -16,17 +16,23 @@
 
 const compute = require('@google-cloud/compute');
 
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const uuid = require('uuid');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  ensureOperationSucceeded,
+  deleteDisk: safeDeleteZonalDisk,
+  deleteRegionDisk: safeDeleteRegionDisk,
+  cleanupStaleResources,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 const imagesClient = new compute.ImagesClient();
 const disksClient = new compute.DisksClient();
 const regionDisksClient = new compute.RegionDisksClient();
+const snapshotsClient = new compute.SnapshotsClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -35,8 +41,9 @@ const createRegionDisk = async (projectId, region, diskName) => {
     project: projectId,
     region,
     diskResource: {
-      sizeGb: 200,
+      sizeGb: 10,
       name: diskName,
+      type: `regions/${region}/diskTypes/pd-balanced`,
       replicaZones: [
         `projects/${projectId}/zones/europe-central2-a`,
         `projects/${projectId}/zones/europe-central2-b`,
@@ -53,6 +60,7 @@ const createRegionDisk = async (projectId, region, diskName) => {
       region: operation.region.split('/').pop(),
     });
   }
+  ensureOperationSucceeded(operation);
 };
 
 const createDisk = async (projectId, zone, diskName, sourceImage) => {
@@ -74,57 +82,33 @@ const createDisk = async (projectId, zone, diskName, sourceImage) => {
       zone: operation.zone.split('/').pop(),
     });
   }
-};
-
-const deleteDisk = async (projectId, zone, diskName) => {
-  const [response] = await disksClient.delete({
-    project: projectId,
-    zone,
-    disk: diskName,
-  });
-  let operation = response.latestResponse;
-  const operationsClient = new compute.ZoneOperationsClient();
-
-  while (operation.status !== 'DONE') {
-    [operation] = await operationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-      zone: operation.zone.split('/').pop(),
-    });
-  }
-};
-
-const deleteRegionDisk = async (projectId, region, diskName) => {
-  const [response] = await regionDisksClient.delete({
-    project: projectId,
-    region,
-    disk: diskName,
-  });
-  let operation = response.latestResponse;
-  const operationsClient = new compute.RegionOperationsClient();
-
-  while (operation.status !== 'DONE') {
-    [operation] = await operationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-      region: operation.region.split('/').pop(),
-    });
-  }
+  ensureOperationSucceeded(operation);
 };
 
 describe('snapshots tests', () => {
-  const diskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
-  const snapshotName = `gcloud-test-snapshot-${uuid.v4().split('-')[0]}`;
+  const zonalDiskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
+  const zonalSnapshotName = `gcloud-test-snapshot-${uuid.v4().split('-')[0]}`;
+  const regionalDiskName = `gcloud-test-disk-${uuid.v4().split('-')[0]}`;
+  const regionalSnapshotName = `gcloud-test-snapshot-${uuid.v4().split('-')[0]}`;
   const zone = 'europe-central2-b';
   const location = 'europe-central2';
 
+  before(async () => {
+    await cleanupStaleResources();
+  });
+
   after(async () => {
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
+    const projectId = await instancesClient.getProjectId();
+    await Promise.all([
+      snapshotsClient
+        .delete({project: projectId, snapshot: zonalSnapshotName})
+        .catch(() => {}),
+      snapshotsClient
+        .delete({project: projectId, snapshot: regionalSnapshotName})
+        .catch(() => {}),
+      safeDeleteZonalDisk(zone, zonalDiskName),
+      safeDeleteRegionDisk(location, regionalDiskName),
+    ]);
   });
 
   it('should create zonal snapshot and remove', async () => {
@@ -135,38 +119,38 @@ describe('snapshots tests', () => {
       family: 'debian-13',
     });
 
-    await createDisk(projectId, zone, diskName, newestDebian.selfLink);
+    await createDisk(projectId, zone, zonalDiskName, newestDebian.selfLink);
 
     let output = execSync(
-      `node snapshots/createSnapshot ${projectId} ${diskName} ${snapshotName} ${zone} '' ${location} ''`
+      `node snapshots/createSnapshot ${projectId} ${zonalDiskName} ${zonalSnapshotName} ${zone} '' ${location} ''`
     );
 
     assert.match(output, /Snapshot created./);
 
     output = execSync(
-      `node snapshots/deleteSnapshot ${projectId} ${snapshotName}`
+      `node snapshots/deleteSnapshot ${projectId} ${zonalSnapshotName}`
     );
     assert.match(output, /Snapshot deleted./);
 
-    await deleteDisk(projectId, zone, diskName);
+    await safeDeleteZonalDisk(zone, zonalDiskName);
   });
 
   it('should create regional snapshot and remove', async () => {
     const projectId = await instancesClient.getProjectId();
 
-    await createRegionDisk(projectId, location, diskName);
+    await createRegionDisk(projectId, location, regionalDiskName);
 
     let output = execSync(
-      `node snapshots/createSnapshot ${projectId} ${diskName} ${snapshotName} '' ${location} ${location} ''`
+      `node snapshots/createSnapshot ${projectId} ${regionalDiskName} ${regionalSnapshotName} '' ${location} ${location} ''`
     );
 
     assert.match(output, /Snapshot created./);
 
     output = execSync(
-      `node snapshots/deleteSnapshot ${projectId} ${snapshotName}`
+      `node snapshots/deleteSnapshot ${projectId} ${regionalSnapshotName}`
     );
     assert.match(output, /Snapshot deleted./);
 
-    await deleteRegionDisk(projectId, location, diskName);
+    await safeDeleteRegionDisk(location, regionalDiskName);
   });
 });

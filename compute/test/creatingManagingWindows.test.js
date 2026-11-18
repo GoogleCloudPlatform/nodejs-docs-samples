@@ -16,18 +16,23 @@
 
 const compute = require('@google-cloud/compute');
 
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  generateTestId,
+  deleteInstance,
+  cleanupStaleResources,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 describe('creating managing windows instances tests', () => {
-  const instanceName = generateTestId();
+  const externalInstanceName = generateTestId();
+  const internalInstanceName = generateTestId();
   const networkName = 'global/networks/default';
   const subnetworkName = 'regions/europe-central2/subnetworks/default';
   const zone = 'europe-central2-b';
@@ -35,23 +40,27 @@ describe('creating managing windows instances tests', () => {
   const sourceImageFamily = 'windows-2022';
 
   before(async () => {
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
+    await cleanupStaleResources();
+  });
+
+  after(async () => {
+    await Promise.all([
+      deleteInstance(zone, externalInstanceName),
+      deleteInstance(zone, internalInstanceName),
+    ]);
   });
 
   it('should create windows server instance with external IP', async () => {
     const projectId = await instancesClient.getProjectId();
 
     const output = execSync(
-      `node instances/windows/creating-managing-windows-instances/createWindowsServerInstanceExternalIP ${projectId} ${zone} ${instanceName}`
+      `node instances/windows/creating-managing-windows-instances/createWindowsServerInstanceExternalIP ${projectId} ${zone} ${externalInstanceName}`
     );
     assert.match(output, /Instance created./);
 
-    execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+    execSync(
+      `node deleteInstance ${projectId} ${zone} ${externalInstanceName}`
+    );
   });
 
   // eslint-disable-next-line prefer-arrow-callback
@@ -60,19 +69,18 @@ describe('creating managing windows instances tests', () => {
       const projectId = await instancesClient.getProjectId();
 
       const output = execSync(
-        `node instances/windows/creating-managing-windows-instances/createWindowsServerInstanceInternalIP ${projectId} ${zone} ${instanceName} ${machineType} ${sourceImageFamily} ${networkName} ${subnetworkName}`
+        `node instances/windows/creating-managing-windows-instances/createWindowsServerInstanceInternalIP ${projectId} ${zone} ${internalInstanceName} ${machineType} ${sourceImageFamily} ${networkName} ${subnetworkName}`
       );
 
       assert.match(output, /Instance created./);
 
-      execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
+      execSync(
+        `node deleteInstance ${projectId} ${zone} ${internalInstanceName}`
+      );
     } catch (err) {
       if (
-        (err.message &&
-          err.message.includes('subnetwork resource cannot be found')) ||
-        (err.message && err.message.includes('was not found')) ||
-        err.code === 5 ||
-        err.code === 404
+        err.message &&
+        err.message.includes('subnetwork resource cannot be found')
       ) {
         console.warn(
           `Skipping test: Default subnetwork not found in region ${zone}. Reason: ${err.message}`

@@ -14,7 +14,7 @@
 
 'use strict';
 
-const {SecurityCenterClient} = require('@google-cloud/security-center');
+const {SecurityCenterClient} = require('@google-cloud/security-center').v1;
 const uuidv1 = require('uuid').v1;
 const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
@@ -25,23 +25,23 @@ const exec = cmd => execSync(cmd, {encoding: 'utf8'});
 const organizationId = '1081635000895';
 const orgName = 'organizations/' + organizationId;
 const pubsubTopic = 'projects/project-a-id/topics/notifications-sample-topic';
+const getNotificationConfigPath = (orgId, configId) => {
+  return `organizations/${orgId}/notificationConfigs/${configId}`;
+};
 
 async function waitForConfig(client, configId) {
   const maxRetries = 10;
-  const retryDelay = 1000; // 1 second
+  const retryDelay = 3000; // 3 seconds
   let retries = 0;
 
   while (retries < maxRetries) {
     try {
-      const name = client.organizationNotificationConfigPath(
-        organizationId,
-        configId
-      );
+      const name = getNotificationConfigPath(organizationId, configId);
       const [config] = await client.getNotificationConfig({name});
       if (config) return;
     } catch (err) {
       // Ignore "not found" errors
-      if (err.code !== 404) throw err;
+      if (err.code !== 5 && err.code !== 404) throw err;
     }
     retries++;
     await new Promise(resolve => setTimeout(resolve, retryDelay));
@@ -101,10 +101,7 @@ describe('Client with Notifications', async () => {
   after(async () => {
     const client = new SecurityCenterClient();
     async function deleteNotificationConfigIfExists(configId) {
-      const name = client.organizationNotificationConfigPath(
-        organizationId,
-        configId
-      );
+      const name = getNotificationConfigPath(organizationId, configId);
       try {
         // Check if the config exists
         const [config] = await client.getNotificationConfig({name});
@@ -114,7 +111,7 @@ describe('Client with Notifications', async () => {
           console.log(`Config ${configId} deleted successfully.`);
         }
       } catch (err) {
-        if (err.code === 404) {
+        if (err.code === 5 || err.code === 404) {
           console.warn(`Config ${configId} not found during deletion.`);
         } else if (err.code === 503) {
           console.error(

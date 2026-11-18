@@ -15,7 +15,6 @@
 'use strict';
 
 async function main(projectId) {
-  // [START data_catalog_search_assets]
   // Import the Google Cloud client library.
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
   const datacatalog = new DataCatalogClient();
@@ -52,6 +51,5 @@ async function main(projectId) {
     });
   }
   searchAssets();
-  // [END data_catalog_search_assets]
 }
 main(...process.argv.slice(2));

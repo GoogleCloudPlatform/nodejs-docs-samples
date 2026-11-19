@@ -53,17 +53,31 @@ describe('Create compute reservation using global instance template', async () =
   });
 
   after(() => {
-    // Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
-    // Delete template
-    execSync(
-      `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
-      {
+    try {
+      // Delete reservation
+      execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
         cwd,
+      });
+      // Delete template
+      execSync(
+        `node ./create-instance-templates/deleteInstanceTemplate.js ${projectId} ${instanceTemplateName}`,
+        {
+          cwd,
+        }
+      );
+    } catch (err) {
+      if (
+        err.message?.includes('was not found') ||
+        err.code === 5 ||
+        err.code === 404
+      ) {
+        console.warn(
+          `Reservation '${reservationName}' already deleted or not found.`
+        );
+      } else {
+        throw err;
       }
-    );
+    }
   });
 
   it('should create a new reservation', () => {

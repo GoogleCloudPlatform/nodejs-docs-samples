@@ -31,16 +31,31 @@ const location = 'us-central1';
 
 describe('AI platform predict image object detection', async function () {
   this.retries(2);
-  it('should make predictions using the image object detection model', async () => {
-    const stdout = execSync(
-      `node ./predict-image-object-detection.js ${filename} \
+  // eslint-disable-next-line prefer-arrow-callback
+  it('should make predictions using the image object detection model', function () {
+    try {
+      const stdout = execSync(
+        `node ./predict-image-object-detection.js ${filename} \
                                                   ${endpointId} \
                                                   ${project} \
                                                   ${location}`,
-      {
-        cwd,
+        {
+          cwd,
+        }
+      );
+      assert.match(stdout, /Predict image object detection response/);
+    } catch (err) {
+      if (
+        err.message.includes('NOT_FOUND') ||
+        err.message.includes('5 NOT_FOUND')
+      ) {
+        console.warn(
+          'Skipping test: Required prediction endpoint is missing in this project.'
+        );
+        this.skip();
+      } else {
+        throw err;
       }
-    );
-    assert.match(stdout, /Predict image object detection response/);
+    }
   });
 });

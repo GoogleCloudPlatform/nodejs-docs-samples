@@ -16,11 +16,15 @@
 
 const compute = require('@google-cloud/compute');
 
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  generateTestId,
+  deleteInstance,
+  cleanupStaleResources,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 
@@ -31,12 +35,11 @@ describe('preemptible instances tests', () => {
   const zone = 'europe-central2-b';
 
   before(async () => {
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
+    await cleanupStaleResources();
+  });
+
+  after(async () => {
+    await deleteInstance(zone, instanceName);
   });
 
   it('create and print preemptible instance', async () => {

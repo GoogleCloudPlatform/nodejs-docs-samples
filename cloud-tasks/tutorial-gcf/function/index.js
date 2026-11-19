@@ -20,7 +20,7 @@ const {OAuth2Client} = require('google-auth-library');
 const sendgrid = require('@sendgrid/mail');
 
 const authClient = new OAuth2Client();
-const EMAIL_REGEX = /^[^\s@<>",;]+@[^\s@<>",;]+\.[^\s@<>",;]+$/;
+const EMAIL_REGEX = /^[^\s@<>",;]+@[^\s@<>",;.]+(?:\.[^\s@<>",;.]+)+$/;
 
 /**
  * Responds to an HTTP request from Cloud Tasks and sends an email using data
@@ -35,9 +35,7 @@ const EMAIL_REGEX = /^[^\s@<>",;]+@[^\s@<>",;]+\.[^\s@<>",;]+$/;
  */
 exports.sendEmail = async (req, res) => {
   // Verify the OIDC bearer token attached by Cloud Tasks.
-  const authHeader =
-    (req.headers && (req.headers.authorization || req.headers.Authorization)) ||
-    '';
+  const authHeader = (req.headers && req.headers.authorization) || '';
   const match = /^Bearer\s+(\S+)$/i.exec(authHeader);
   if (
     !match ||
@@ -92,7 +90,11 @@ exports.sendEmail = async (req, res) => {
     const error = new Error('Sender name not provided.');
     error.code = 400;
     throw error;
-  } else if (typeof to_email !== 'string' || !EMAIL_REGEX.test(to_email)) {
+  } else if (
+    typeof to_email !== 'string' ||
+    to_email.length > 254 ||
+    !EMAIL_REGEX.test(to_email)
+  ) {
     const error = new Error('Invalid email address.');
     error.code = 400;
     throw error;

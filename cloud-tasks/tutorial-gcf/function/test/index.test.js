@@ -83,7 +83,12 @@ describe('tasks/function', () => {
   });
 
   afterEach(() => {
-    process.env = originalEnv;
+    for (const envKey of Object.keys(process.env)) {
+      if (!(envKey in originalEnv)) {
+        delete process.env[envKey];
+      }
+    }
+    Object.assign(process.env, originalEnv);
     console.error.restore();
     console.log.restore();
   });

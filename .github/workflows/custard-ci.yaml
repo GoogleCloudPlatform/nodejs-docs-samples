@@ -13,7 +13,8 @@
 # limitations under the License.
 
 # IMPORTANT: DO NOT CHANGE THE NAME OF THIS WORKFLOW!
-# The workflow named "Custard CI" triggers both custard-run.yaml and custard-run-dev.yaml.
+# The `lint` job is a required status check on main.
+# custard-run.yaml and custard-run-dev.yaml no longer trigger from this workflow.
 # TODO: To sunset old tests remove `affected`, `lint`, and `test` jobs (only keep `region-tags`).
 name: Custard CI
 on:
@@ -24,6 +25,9 @@ on:
   # schedule:
   #   # https://crontab.guru/#0_12_*_*_0
   #   - cron: 0 12 * * 0 # At 12:00 on Sunday
+
+permissions:
+  contents: read
 
 env:
   GO_VERSION: ^1.22.0
@@ -44,7 +48,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           repository: GoogleCloudPlatform/cloud-samples-tools
-          ref: v0.3.2
+          ref: 9ee708234e240605d96e78f652c333ed6aa95a23 # v0.3.2
           path: cloud-samples-tools
       - name: Create `bin` directory for cloud-samples-tools binaries
         run: mkdir bin
@@ -78,12 +82,14 @@ jobs:
       - run: npm install
       - name: Run lint
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+        env:
+          AFFECTED_PATHS: ${{ needs.affected.outputs.nodejs-paths }}
         with:
           script: |
             const { execSync } = await import("node:child_process");
 
             const cmd = 'npx gts lint';
-            const affected = ${{ needs.affected.outputs.nodejs-paths }};
+            const affected = JSON.parse(process.env.AFFECTED_PATHS);
             if (affected.length === 0) {
               console.log("No packages were affected, nothing to lint.")
             }
@@ -139,7 +145,7 @@ jobs:
       CI_SETUP: ${{ toJson(fromJson(needs.affected.outputs.nodejs-setups)[matrix.path])}}
     steps:
       - name: CI Setup
-        run: echo "${{ env.CI_SETUP }}"
+        run: echo "${CI_SETUP}"
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -159,13 +165,15 @@ jobs:
       - name: Export environment variables
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
         id: vars
+        env:
+          ID_TOKEN: ${{ steps.auth.outputs.id_token }}
         with:
           script: |
-            const { default: setupVars } = await import('${{ github.workspace }}/.github/scripts/setup-vars.js');
-            const projectId = '${{ env.GOOGLE_SAMPLES_PROJECT }}';
+            const { default: setupVars } = await import(`${process.env.GITHUB_WORKSPACE}/.github/scripts/setup-vars.js`);
+            const projectId = process.env.GOOGLE_SAMPLES_PROJECT;
             const setup = JSON.parse(process.env.CI_SETUP);
-            const serviceAccount = '${{ env.GOOGLE_SERVICE_ACCOUNT }}';
-            const idToken = '${{ steps.auth.outputs.id_token }}';
+            const serviceAccount = process.env.GOOGLE_SERVICE_ACCOUNT;
+            const idToken = process.env.ID_TOKEN;
             return await setupVars({projectId, core, setup, serviceAccount, idToken})
       - uses: google-github-actions/get-secretmanager-secrets@e5bb06c2ca53b244f978d33348d18317a7f263ce # v2
         if: ${{ fromJson(steps.vars.outputs.result).secrets }}
@@ -173,6 +181,9 @@ jobs:
           secrets: ${{ fromJson(steps.vars.outputs.result).secrets }}
           export_to_environment: true
       - name: Run tests for ${{ matrix.path }}
+        env:
+          TIMEOUT_MINUTES: ${{ fromJson(env.CI_SETUP).timeout-minutes }}
+          MATRIX_PATH: ${{ matrix.path }}
         run: |
-          timeout ${{ fromJson(env.CI_SETUP).timeout-minutes }}m \
-            make test dir=${{ matrix.path }}
+          timeout "${TIMEOUT_MINUTES}m" \
+            make test dir="${MATRIX_PATH}"

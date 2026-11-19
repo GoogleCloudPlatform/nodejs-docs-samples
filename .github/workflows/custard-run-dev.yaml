@@ -15,13 +15,9 @@
 name: (dev) Custard run
 
 on:
-  # Run tests when a pull request is created or updated.
-  # This allows to run tests from forked repos (after reviewer's approval).
-  workflow_run:
-    workflows:
-      - Custard CI # .github/workflows/custard-ci.yaml
-    types:
-      - in_progress
+  # Pull requests do not trigger this workflow. Code from a pull request must
+  # not run here with Google Cloud credentials unless a maintainer starts the
+  # run through workflow_dispatch after reviewing the commit.
 
   # Run tests again as validation when a PR merge into main.
   push:
@@ -84,6 +80,7 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.workflow_run.head_sha || inputs.ref || github.sha }}
+          persist-credentials: false
       - name: Authenticate
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         id: auth

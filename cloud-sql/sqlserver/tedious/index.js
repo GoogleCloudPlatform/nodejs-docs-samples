@@ -156,7 +156,7 @@ app.get('/', httpGet);
 
 // Handle incoming vote requests and inserting them into the database.
 const httpPost = async (req, res) => {
-  const {team} = req.body;
+  const {team} = req.body || {};
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
@@ -187,7 +187,7 @@ const httpPost = async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 };
 
-app.post('*', httpPost);
+app.post('/{*splat}', httpPost);
 
 /**
  * Responds to GET and POST requests for TABS vs SPACES sample app.

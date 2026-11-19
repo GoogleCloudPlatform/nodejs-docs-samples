@@ -15,7 +15,12 @@
 'use strict';
 
 // [START cloud_tasks_func]
+const escapeHtml = require('escape-html');
+const {OAuth2Client} = require('google-auth-library');
 const sendgrid = require('@sendgrid/mail');
+
+const authClient = new OAuth2Client();
+const EMAIL_REGEX = /^[^\s@<>",;]+@[^\s@<>",;]+\.[^\s@<>",;]+$/;
 
 /**
  * Responds to an HTTP request from Cloud Tasks and sends an email using data
@@ -29,6 +34,39 @@ const sendgrid = require('@sendgrid/mail');
  * @param {object} res Cloud Function response context.
  */
 exports.sendEmail = async (req, res) => {
+  // Verify the OIDC bearer token attached by Cloud Tasks.
+  const authHeader =
+    (req.headers && (req.headers.authorization || req.headers.Authorization)) ||
+    '';
+  const match = /^Bearer\s+(\S+)$/i.exec(authHeader);
+  if (
+    !match ||
+    !process.env.FUNCTION_URL ||
+    !process.env.SERVICE_ACCOUNT_EMAIL
+  ) {
+    res.status(401).send('Unauthorized.');
+    return;
+  }
+  try {
+    const ticket = await authClient.verifyIdToken({
+      idToken: match[1],
+      audience: process.env.FUNCTION_URL,
+    });
+    const payload = ticket.getPayload();
+    if (
+      !payload ||
+      !payload.email_verified ||
+      payload.email !== process.env.SERVICE_ACCOUNT_EMAIL
+    ) {
+      res.status(403).send('Forbidden.');
+      return;
+    }
+  } catch (err) {
+    console.error('OIDC token verification failed:', err);
+    res.status(401).send('Unauthorized.');
+    return;
+  }
+
   // Get the SendGrid API key from the environment variable.
   const key = process.env.SENDGRID_API_KEY;
   if (!key) {
@@ -41,7 +79,7 @@ exports.sendEmail = async (req, res) => {
   sendgrid.setApiKey(key);
 
   // Get the body from the Cloud Task request.
-  const {to_email, to_name, from_name} = req.body;
+  const {to_email, to_name, from_name} = req.body || {};
   if (!to_email) {
     const error = new Error('Email address not provided.');
     error.code = 400;
@@ -54,6 +92,23 @@ exports.sendEmail = async (req, res) => {
     const error = new Error('Sender name not provided.');
     error.code = 400;
     throw error;
+  } else if (typeof to_email !== 'string' || !EMAIL_REGEX.test(to_email)) {
+    const error = new Error('Invalid email address.');
+    error.code = 400;
+    throw error;
+  }
+
+  // Restrict recipients to an allowlist to prevent open mail relay.
+  const allowedRecipients = (process.env.ALLOWED_RECIPIENT_EMAILS || '')
+    .split(',')
+    .map(addr => addr.trim().toLowerCase())
+    .filter(Boolean);
+  if (
+    allowedRecipients.length === 0 ||
+    !allowedRecipients.includes(to_email.trim().toLowerCase())
+  ) {
+    res.status(403).send('Recipient email address is not allowed.');
+    return;
   }
 
   // Construct the email request.
@@ -69,8 +124,9 @@ exports.sendEmail = async (req, res) => {
     // Send OK to Cloud Task queue to delete task.
     res.status(200).send('Postcard Sent!');
   } catch (error) {
+    console.error(error);
     // Any status code other than 2xx or 503 will trigger the task to retry.
-    res.status(error.code).send(error.message);
+    res.status(500).send('Unable to send email.');
   }
 };
 // [END cloud_tasks_func]
@@ -118,9 +174,9 @@ const postcardHTML = function (to_name, from_name) {
   <body>
     <div class="postcard">
       <div class="postcard-names">
-        To: ${to_name}
+        To: ${escapeHtml(to_name)}
         <br>
-        From: ${from_name}
+        From: ${escapeHtml(from_name)}
       </div>
       <div class="postcard-text">
           Hello,<br>World!

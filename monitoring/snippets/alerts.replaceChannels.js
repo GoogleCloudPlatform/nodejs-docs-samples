@@ -14,12 +14,15 @@
 
 'use strict';
 
-function main(projectId, alertPolicyId, ...channelIds) {
+/**
+ * Replaces the notification channels of an alert policy.
+ *
+ * @param {string} projectId The project ID containing the alert policy and channels.
+ * @param {string} alertPolicyId The ID of the alert policy to update.
+ * @param {...string} channelIds The list of notification channel IDs to attach to the policy.
+ */
+async function main(projectId, alertPolicyId, ...channelIds) {
   // [START monitoring_alert_replace_channels]
-  // [START monitoring_alert_enable_channel]
-  // [START monitoring_alert_update_channel]
-  // [START monitoring_alert_create_channel]
-
   // Imports the Google Cloud client library
   const monitoring = require('@google-cloud/monitoring');
 
@@ -39,42 +42,13 @@ function main(projectId, alertPolicyId, ...channelIds) {
     //   'channel-3',
     // ];
 
+    if (!projectId || !alertPolicyId) {
+      throw new Error('Both projectId and alertPolicyId are required.');
+    }
+
     const notificationChannels = channelIds.map(id =>
       notificationClient.projectNotificationChannelPath(projectId, id)
     );
-
-    for (const channel of notificationChannels) {
-      const updateChannelRequest = {
-        updateMask: {
-          paths: ['enabled'],
-        },
-        notificationChannel: {
-          name: channel,
-          enabled: {
-            value: true,
-          },
-        },
-      };
-      try {
-        await notificationClient.updateNotificationChannel(
-          updateChannelRequest
-        );
-      } catch (err) {
-        const createChannelRequest = {
-          notificationChannel: {
-            name: channel,
-            notificationChannel: {
-              type: 'email',
-            },
-          },
-        };
-        const newChannel =
-          await notificationClient.createNotificationChannel(
-            createChannelRequest
-          );
-        notificationChannels.push(newChannel);
-      }
-    }
 
     const updateAlertPolicyRequest = {
       updateMask: {
@@ -85,20 +59,30 @@ function main(projectId, alertPolicyId, ...channelIds) {
         notificationChannels: notificationChannels,
       },
     };
-    const [alertPolicy] = await alertClient.updateAlertPolicy(
-      updateAlertPolicyRequest
-    );
-    console.log(`Updated ${alertPolicy.name}.`);
+
+    try {
+      const [alertPolicy] = await alertClient.updateAlertPolicy(
+        updateAlertPolicyRequest
+      );
+      console.log(`Updated ${alertPolicy.name}.`);
+      return alertPolicy;
+    } catch (err) {
+      console.error(`Failed to update alert policy: ${err.message}`);
+      throw err;
+    }
   }
-  replaceChannels();
+
+  return await replaceChannels();
   // [END monitoring_alert_replace_channels]
-  // [END monitoring_alert_enable_channel]
-  // [END monitoring_alert_update_channel]
-  // [END monitoring_alert_create_channel]
 }
 
 process.on('unhandledRejection', err => {
   console.error(err.message);
   process.exitCode = 1;
 });
-main(...process.argv.slice(2));
+
+if (require.main === module) {
+  main(...process.argv.slice(2));
+}
+
+module.exports = main;

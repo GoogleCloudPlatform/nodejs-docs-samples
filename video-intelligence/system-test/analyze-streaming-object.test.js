@@ -17,6 +17,7 @@
 const cp = require('child_process');
 const {assert} = require('chai');
 const {describe, it} = require('mocha');
+const {handlePermissionError} = require('./utils');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
@@ -24,9 +25,14 @@ const cmd = 'node analyze-streaming-object.js';
 const file = 'resources/googlework_short.mp4';
 
 describe('streaming object', () => {
-  it('should track an object in a streaming video', async () => {
-    const output = execSync(`${cmd} ${file}`);
-    assert.match(output, /cat/);
-    assert.match(output, /Confidence: \d+\.\d+/);
+  // eslint-disable-next-line prefer-arrow-callback
+  it('should track an object in a streaming video', async function () {
+    try {
+      const output = execSync(`${cmd} ${file}`);
+      assert.match(output, /cat/);
+      assert.match(output, /Confidence: \d+\.\d+/);
+    } catch (err) {
+      handlePermissionError(err, this);
+    }
   });
 });

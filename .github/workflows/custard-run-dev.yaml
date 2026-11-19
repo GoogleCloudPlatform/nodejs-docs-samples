@@ -113,6 +113,7 @@ jobs:
           MATRIX_PATH: ${{ matrix.path }}
           # TODO: remove this when the self-contained runner lands.
           SERVICE_ACCOUNT: kokoro-system-test@long-door-651.iam.gserviceaccount.com
+          CAIP_PROJECT_ID: long-door-651
         run: |
           timeout "${TIMEOUT_MINUTES}m" \
             make test dir="${MATRIX_PATH}"

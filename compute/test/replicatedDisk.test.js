@@ -22,32 +22,14 @@ const uuid = require('uuid');
 const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const computeLib = require('@google-cloud/compute');
+const {
+  deleteInstance,
+  deleteRegionDisk,
+  cleanupStaleResources,
+} = require('./util');
 
 const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 const cwd = path.join(__dirname, '..');
-
-async function deleteDisk(projectId, region, diskName) {
-  const disksClient = new computeLib.RegionDisksClient();
-  const regionOperationsClient = new computeLib.RegionOperationsClient();
-
-  const [response] = await disksClient.delete({
-    project: projectId,
-    disk: diskName,
-    region,
-  });
-  let operation = response.latestResponse;
-
-  console.log(`Deleting ${diskName}`);
-
-  // Wait for the delete operation to complete.
-  while (operation.status !== 'DONE') {
-    [operation] = await regionOperationsClient.wait({
-      operation: operation.name,
-      project: projectId,
-      region,
-    });
-  }
-}
 
 describe('Create compute regional replicated disk', async () => {
   const diskName = `replicated-disk-${uuid.v4()}`;
@@ -60,19 +42,17 @@ describe('Create compute regional replicated disk', async () => {
   before(async () => {
     const instancesClient = new computeLib.InstancesClient();
     projectId = await instancesClient.getProjectId();
+    await cleanupStaleResources();
   });
 
   after(async () => {
-    // Cleanup resources
-    execSync(`node ./deleteInstance.js ${projectId} ${zone1} ${vmName}`, {
-      cwd,
-    });
-    await deleteDisk(projectId, region, diskName);
+    await deleteInstance(zone1, vmName);
+    await deleteRegionDisk(region, diskName);
   });
 
   it('should create a regional replicated disk', () => {
     const response = execSync(
-      `node ./disks/createRegionalReplicatedDisk.js ${diskName} ${region} ${zone1} ${zone2}`,
+      `node ./disks/createRegionalReplicatedDisk.js ${diskName} ${region} ${zone1} ${zone2} pd-balanced 10`,
       {
         cwd,
       }

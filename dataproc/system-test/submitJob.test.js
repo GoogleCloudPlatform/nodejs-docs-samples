@@ -18,6 +18,7 @@ const {assert} = require('chai');
 const {describe, it, before, after} = require('mocha');
 const cp = require('child_process');
 const {v4} = require('uuid');
+const {handleTestError} = require('./util');
 
 const projectId = process.env.GCLOUD_PROJECT;
 const region = 'us-central1';
@@ -56,18 +57,7 @@ describe('submit a Spark job to a Dataproc cluster', () => {
       const [operation] = await clusterClient.createCluster(cluster);
       await operation.promise();
     } catch (err) {
-      if (
-        err?.message?.includes('QUOTA') ||
-        err?.message?.includes('RESOURCE_EXHAUSTED') ||
-        err?.message?.includes('DISKS_TOTAL_GB')
-      ) {
-        console.warn(
-          `Quota limit reached in project ${projectId}. Skipping test.`
-        );
-        this.skip();
-      } else {
-        throw err;
-      }
+      handleTestError(err, this, projectId);
     }
   });
 

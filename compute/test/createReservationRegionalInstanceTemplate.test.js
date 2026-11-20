@@ -30,6 +30,7 @@ describe('Create compute reservation using regional instance template', async ()
   const reservationName = `${reservationPrefix}-04bf4ed${Math.floor(Math.random() * 1000 + 1)}`;
   const instanceTemplateName = 'pernament-region-template-name';
   const location = 'regions/us-central1';
+  let reservationCreated = false;
 
   before(async () => {
     // Cleanup resources
@@ -43,9 +44,11 @@ describe('Create compute reservation using regional instance template', async ()
 
   after(() => {
     // Delete reservation
-    execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
-      cwd,
-    });
+    if (reservationCreated) {
+      execSync(`node ./reservations/deleteReservation.js ${reservationName}`, {
+        cwd,
+      });
+    }
   });
 
   it('should create a new reservation', () => {
@@ -56,6 +59,7 @@ describe('Create compute reservation using regional instance template', async ()
       }
     );
 
+    reservationCreated = true;
     assert(response.includes(`Reservation: ${reservationName} created.`));
   });
 });

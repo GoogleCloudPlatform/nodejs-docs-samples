@@ -62,12 +62,12 @@ const createPool = async () => {
   config.pool.acquireTimeoutMillis = 30000;
   // 'idleTimeoutMillis' is the number of milliseconds a connection must sit idle in the pool
   // and not be checked out before it is automatically closed
-  (config.pool.idleTimeoutMillis = 600000),
-    // [END cloud_sql_sqlserver_mssql_timeout]
-    // [START cloud_sql_sqlserver_mssql_limit]
-    // 'max' limits the total number of concurrent connections this pool will keep. Ideal
-    // values for this setting are highly variable on app design, infrastructure, and database.
-    (config.pool.max = 5);
+  config.pool.idleTimeoutMillis = 600000;
+  // [END cloud_sql_sqlserver_mssql_timeout]
+  // [START cloud_sql_sqlserver_mssql_limit]
+  // 'max' limits the total number of concurrent connections this pool will keep. Ideal
+  // values for this setting are highly variable on app design, infrastructure, and database.
+  config.pool.max = 5;
   // 'min' is the minimum number of idle connections maintained in the pool.
   // Additional connections will be established to meet this value unless the pool is full.
   config.pool.min = 1;
@@ -184,7 +184,7 @@ app.get('/', httpGet);
 
 // Handle incoming vote requests and inserting them into the database.
 const httpPost = async (req, res) => {
-  const {team} = req.body;
+  const {team} = req.body || {};
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
@@ -226,7 +226,7 @@ const httpPost = async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 };
 
-app.post('*', httpPost);
+app.post('/{*splat}', httpPost);
 
 /**
  * Responds to GET and POST requests for TABS vs SPACES sample app.

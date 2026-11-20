@@ -1,0 +1,4 @@
+{
+  "_justification": "@google-cloud/spanner v9 requires Node >= 22.",
+  "node-version": 22
+}

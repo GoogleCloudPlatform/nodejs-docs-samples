@@ -16,11 +16,16 @@
 
 const compute = require('@google-cloud/compute');
 
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  generateTestId,
+  ensureOperationSucceeded,
+  deleteInstance,
+  cleanupStaleResources,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 const imagesClient = new compute.ImagesClient();
@@ -35,13 +40,16 @@ describe('create windows os image tests', () => {
   const imageName = generateTestId();
   const zone = 'europe-central2-b';
 
+  before(async () => {
+    await cleanupStaleResources();
+  });
+
   after(async () => {
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
+    const projectId = await instancesClient.getProjectId();
+    await imagesClient
+      .delete({project: projectId, image: imageName})
+      .catch(() => {});
+    await deleteInstance(zone, instanceName);
   });
 
   it('should create windows os image', async () => {
@@ -54,9 +62,9 @@ describe('create windows os image tests', () => {
           {
             initializeParams: {
               diskName: diskName,
-              diskSizeGb: '64',
+              diskSizeGb: '50',
               sourceImage:
-                'projects/windows-cloud/global/images/windows-server-2022-dc-core-v20231011',
+                'projects/windows-cloud/global/images/family/windows-2022-core',
             },
             deviceName: diskName,
             autoDelete: true,
@@ -83,6 +91,7 @@ describe('create windows os image tests', () => {
         zone: operation.zone.split('/').pop(),
       });
     }
+    ensureOperationSucceeded(operation);
 
     try {
       execSync(
@@ -112,6 +121,7 @@ describe('create windows os image tests', () => {
         project: projectId,
       });
     }
+    ensureOperationSucceeded(operation);
 
     execSync(`node deleteInstance ${projectId} ${zone} ${instanceName}`);
   });

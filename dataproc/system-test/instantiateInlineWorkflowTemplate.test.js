@@ -26,7 +26,7 @@ const execSync = cmd =>
     encoding: 'utf-8',
   });
 
-const {delay} = require('./util');
+const {delay, handleTestError} = require('./util');
 
 describe('instantiate an inline workflow template', () => {
   it('should instantiate an inline workflow template', async function () {
@@ -38,18 +38,7 @@ describe('instantiate an inline workflow template', () => {
       );
       assert.match(stdout, /successfully/);
     } catch (err) {
-      if (
-        err?.message?.includes('QUOTA') ||
-        err?.message?.includes('RESOURCE_EXHAUSTED') ||
-        err?.message?.includes('DISKS_TOTAL_GB')
-      ) {
-        console.warn(
-          `Quota limit reached in project ${projectId}. Skipping test.`
-        );
-        this.skip();
-      } else {
-        throw err;
-      }
+      handleTestError(err, this, projectId);
     }
   });
 });

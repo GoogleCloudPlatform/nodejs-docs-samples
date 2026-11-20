@@ -19,26 +19,41 @@ const sinon = require('sinon');
 const assert = require('assert');
 
 describe('tasks/function', () => {
+  const functionUrl = 'https://us-central1-proj.cloudfunctions.net/sendEmail';
+  const serviceAccount = 'tasks@proj.iam.gserviceaccount.com';
   let key;
+  let originalEnv;
 
-  const getSample = function () {
+  const getSample = function (verifyIdTokenStub) {
     const sendGridStub = {
       setApiKey: sinon.stub(),
       send: sinon.stub().resolves([{statusCode: 200}]),
+    };
+    const authClientStub = {
+      verifyIdToken:
+        verifyIdTokenStub ||
+        sinon.stub().resolves({
+          getPayload: () => ({email: serviceAccount, email_verified: true}),
+        }),
     };
 
     return {
       program: proxyquire('../', {
         '@sendgrid/mail': sendGridStub,
+        'google-auth-library': {
+          OAuth2Client: sinon.stub().returns(authClientStub),
+        },
       }),
       mocks: {
         sendGridStub: sendGridStub,
+        authClientStub: authClientStub,
       },
     };
   };
 
   const getMocks = function () {
     const req = {
+      headers: {authorization: 'Bearer valid-token'},
       body: {},
     };
 
@@ -55,23 +70,31 @@ describe('tasks/function', () => {
 
   before(async () => {
     key = 'SG.dummy_key_for_testing';
-    process.env.SENDGRID_API_KEY = key;
   });
 
   beforeEach(() => {
+    originalEnv = {...process.env};
+    process.env.SENDGRID_API_KEY = key;
+    process.env.FUNCTION_URL = functionUrl;
+    process.env.SERVICE_ACCOUNT_EMAIL = serviceAccount;
+    process.env.ALLOWED_RECIPIENT_EMAILS = 'to@gmail.com';
     sinon.spy(console, 'error');
     sinon.spy(console, 'log');
   });
 
   afterEach(() => {
+    for (const envKey of Object.keys(process.env)) {
+      if (!(envKey in originalEnv)) {
+        delete process.env[envKey];
+      }
+    }
+    Object.assign(process.env, originalEnv);
     console.error.restore();
     console.log.restore();
   });
 
   it('send fails without API key', async () => {
-    process.env = {
-      SENDGRID_API_KEY: undefined,
-    };
+    delete process.env.SENDGRID_API_KEY;
     const mocks = getMocks();
     const sample = getSample();
     const error = new Error(
@@ -87,9 +110,6 @@ describe('tasks/function', () => {
   });
 
   it('send fails without sender name', async () => {
-    process.env = {
-      SENDGRID_API_KEY: key,
-    };
     const mocks = getMocks();
     mocks.req.body.to_email = 'to@gmail.com';
     mocks.req.body.to_name = 'testA';
@@ -106,9 +126,6 @@ describe('tasks/function', () => {
   });
 
   it('send fails without recipient email', async () => {
-    process.env = {
-      SENDGRID_API_KEY: key,
-    };
     const mocks = getMocks();
     mocks.req.body.to_name = 'testA';
     mocks.req.body.from_name = 'testB';
@@ -125,16 +142,11 @@ describe('tasks/function', () => {
   });
 
   it('send fails without recipient name', async () => {
-    process.env = {
-      SENDGRID_API_KEY: key,
-    };
     const mocks = getMocks();
     mocks.req.body.to_email = 'to@gmail.com';
     mocks.req.body.from_name = 'testB';
 
-    const sample = getSample({
-      SENDGRID_API_KEY: key,
-    });
+    const sample = getSample();
 
     const error = new Error('Recipient name not provided.');
     error.code = 400;
@@ -147,9 +159,6 @@ describe('tasks/function', () => {
   });
 
   it('send succeeds', async () => {
-    process.env = {
-      SENDGRID_API_KEY: key,
-    };
     const mocks = getMocks();
     mocks.req.body.to_email = 'to@gmail.com';
     mocks.req.body.to_name = 'testA';
@@ -166,5 +175,96 @@ describe('tasks/function', () => {
       subject: 'A Postcard Just for You!',
       html: sinon.match.string,
     });
+  });
+
+  it('rejects missing or invalid OIDC bearer token', async () => {
+    const noAuth = getMocks();
+    noAuth.req.headers = {};
+    const sample = getSample(sinon.stub().rejects(new Error('invalid token')));
+
+    await sample.program.sendEmail(noAuth.req, noAuth.res);
+    assert.strictEqual(noAuth.res.statusCode, 401);
+
+    const badAuth = getMocks();
+    await sample.program.sendEmail(badAuth.req, badAuth.res);
+    assert.strictEqual(badAuth.res.statusCode, 401);
+    sinon.assert.notCalled(sample.mocks.sendGridStub.send);
+  });
+
+  it('rejects unexpected service account or disallowed recipient', async () => {
+    const wrongSaMocks = getMocks();
+    const wrongSaSample = getSample(
+      sinon.stub().resolves({
+        getPayload: () => ({
+          email: 'other@proj.iam.gserviceaccount.com',
+          email_verified: true,
+        }),
+      })
+    );
+    await wrongSaSample.program.sendEmail(wrongSaMocks.req, wrongSaMocks.res);
+    assert.strictEqual(wrongSaMocks.res.statusCode, 403);
+
+    const badRecipient = getMocks();
+    badRecipient.req.body = {
+      to_email: 'victim@external.example',
+      to_name: 'testA',
+      from_name: 'testB',
+    };
+    const sample = getSample();
+    await sample.program.sendEmail(badRecipient.req, badRecipient.res);
+    assert.strictEqual(badRecipient.res.statusCode, 403);
+
+    const invalidEmail = getMocks();
+    invalidEmail.req.body = {
+      to_email: 'not-an-email',
+      to_name: 'testA',
+      from_name: 'testB',
+    };
+    await assert.rejects(
+      () => sample.program.sendEmail(invalidEmail.req, invalidEmail.res),
+      {message: 'Invalid email address.', code: 400}
+    );
+    sinon.assert.notCalled(sample.mocks.sendGridStub.send);
+  });
+
+  it('escapes HTML in to_name and from_name', async () => {
+    const mocks = getMocks();
+    mocks.req.body = {
+      to_email: 'to@gmail.com',
+      to_name: '<a href="https://evil.example">click</a>',
+      from_name: '<img src="x" onerror="alert(1)">',
+    };
+    const sample = getSample();
+    await sample.program.sendEmail(mocks.req, mocks.res);
+
+    assert.strictEqual(mocks.res.statusCode, 200);
+    const {html} = sample.mocks.sendGridStub.send.firstCall.args[0];
+    assert.ok(!html.includes('<a href='));
+    assert.ok(!html.includes('<img '));
+    assert.ok(
+      html.includes(
+        '&lt;a href=&quot;https://evil.example&quot;&gt;click&lt;/a&gt;'
+      )
+    );
+  });
+
+  it('returns generic 500 on SendGrid error', async () => {
+    const mocks = getMocks();
+    mocks.req.body = {
+      to_email: 'to@gmail.com',
+      to_name: 'testA',
+      from_name: 'testB',
+    };
+    const sample = getSample();
+    const err = new Error('SendGrid secret details');
+    err.code = 403;
+    sample.mocks.sendGridStub.send.rejects(err);
+
+    await sample.program.sendEmail(mocks.req, mocks.res);
+    assert.strictEqual(mocks.res.statusCode, 500);
+    assert.strictEqual(
+      mocks.res.send.firstCall.args[0],
+      'Unable to send email.'
+    );
   });
 });

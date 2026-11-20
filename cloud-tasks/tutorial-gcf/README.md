@@ -16,6 +16,15 @@ to the queue.
 
 * The Cloud Function calls the SendGrid API to send a postcard email.
 
+## Cloud Function Environment Variables
+
+Configure the following environment variables when deploying `function/`:
+
+* `SENDGRID_API_KEY`: Your SendGrid API key.
+* `FUNCTION_URL`: The deployed Cloud Function HTTPS URL (used as the expected OIDC `audience`).
+* `SERVICE_ACCOUNT_EMAIL`: The Cloud Tasks invoker service account email verified in the OIDC token.
+* `ALLOWED_RECIPIENT_EMAILS`: Comma-separated list of permitted recipient email addresses. Requests fail with `403 Forbidden` if this variable is unset or the recipient is not allowlisted.
+
 [tutorial-link]: https://cloud.google.com/tasks/docs/tutorial-gcf
 [cloud-tasks]: https://cloud.google.com/tasks/docs/
 [gae-std]: https://cloud.google.com/appengine/docs/standard/nodejs/

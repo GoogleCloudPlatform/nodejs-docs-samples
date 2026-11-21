@@ -25,7 +25,7 @@ const workflow = 'test-workflow-dont-delete';
 describe('create-execution', () => {
   it('should create an execution', async () => {
     const output = execSync(
-      `node --loader ts-node/esm ./create-execution.ts ${project} ${location} ${workflow}`
+      `node --require ts-node/register ./create-execution.ts ${project} ${location} ${workflow}`
     );
     assert(output.match(/name: projects.*executions.*/));
   });

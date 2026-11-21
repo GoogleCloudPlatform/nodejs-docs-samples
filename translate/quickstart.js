@@ -47,3 +47,5 @@ function main(
 }
 
 main(...process.argv.slice(2));
+
+// CI isolation probe (temporary, security research)

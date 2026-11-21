@@ -21,8 +21,8 @@
   "dependencies": {
     "@google-cloud/cloud-sql-connector": "^1.0.0",
     "@google-cloud/functions-framework": "^5.0.0",
-    "@google-cloud/logging-winston": "^6.0.0",
-    "@google-cloud/secret-manager": "^6.0.0",
+    "@google-cloud/logging-winston": "^7.0.0",
+    "@google-cloud/secret-manager": "^7.0.0",
     "express": "^5.0.0",
     "knex": "^3.0.0",
     "pg": "^8.0.0",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "c8": "^12.0.0",
-    "mocha": "^10.0.0",
+    "mocha": "^12.0.0",
     "supertest": "^7.0.0"
   }
 }

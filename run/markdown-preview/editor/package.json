@@ -23,13 +23,13 @@
   },
   "dependencies": {
     "express": "^5.0.0",
-    "google-auth-library": "^9.0.0",
-    "got": "^14.6.5",
+    "google-auth-library": "^11.0.0",
+    "got": "^16.0.0",
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
     "c8": "^12.0.0",
-    "mocha": "^11.0.0",
+    "mocha": "^12.0.0",
     "supertest": "^7.0.0"
   }
 }

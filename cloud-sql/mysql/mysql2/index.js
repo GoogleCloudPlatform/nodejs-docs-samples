@@ -191,8 +191,8 @@ const httpGet = app.get('/', async (req, res) => {
 });
 
 // Handle incoming vote requests and inserting them into the database.
-const httpPost = app.post('*', async (req, res) => {
-  const {team} = req.body;
+const httpPost = app.post('/{*splat}', async (req, res) => {
+  const {team} = req.body || {};
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {

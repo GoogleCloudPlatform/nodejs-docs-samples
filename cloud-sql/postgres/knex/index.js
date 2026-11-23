@@ -257,7 +257,7 @@ app.get('/', httpGet);
 const httpPost = async (req, res) => {
   pool = pool || (await createPoolAndEnsureSchema());
   // Get the team from the request and record the time of the vote.
-  const {team} = req.body;
+  const {team} = req.body || {};
   const timestamp = new Date();
 
   if (!team || (team !== 'TABS' && team !== 'SPACES')) {
@@ -285,7 +285,7 @@ const httpPost = async (req, res) => {
   res.status(200).send(`Successfully voted for ${team} at ${timestamp}`).end();
 };
 
-app.post('*', httpPost);
+app.post('/{*splat}', httpPost);
 
 /**
  * Responds to GET and POST requests for TABS vs SPACES sample app.

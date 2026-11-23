@@ -16,11 +16,16 @@
 
 const compute = require('@google-cloud/compute');
 
-const {describe, it} = require('mocha');
+const {after, before, describe, it} = require('mocha');
 const cp = require('child_process');
 const {assert} = require('chai');
 
-const {generateTestId, getStaleVMInstances, deleteInstance} = require('./util');
+const {
+  generateTestId,
+  ensureOperationSucceeded,
+  deleteInstance,
+  cleanupStaleResources,
+} = require('./util');
 
 const instancesClient = new compute.InstancesClient();
 const zoneOperationsClient = new compute.ZoneOperationsClient();
@@ -42,13 +47,12 @@ describe('suspend/resume instance tests', () => {
     return instance;
   };
 
+  before(async () => {
+    await cleanupStaleResources();
+  });
+
   after(async () => {
-    const instances = await getStaleVMInstances();
-    await Promise.all(
-      instances.map(instance =>
-        deleteInstance(instance.zone, instance.instanceName)
-      )
-    );
+    await deleteInstance(zone, instanceName);
   });
 
   it('should suspend and resume instance', async () => {
@@ -60,9 +64,9 @@ describe('suspend/resume instance tests', () => {
         disks: [
           {
             initializeParams: {
-              diskSizeGb: '64',
+              diskSizeGb: '20',
               sourceImage:
-                'projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts',
+                'projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts',
             },
             autoDelete: true,
             boot: true,
@@ -87,6 +91,7 @@ describe('suspend/resume instance tests', () => {
         zone: operation.zone.split('/').pop(),
       });
     }
+    ensureOperationSucceeded(operation);
 
     // Once the machine is running, give it some time to fully start all processes
     // before trying to suspend it.

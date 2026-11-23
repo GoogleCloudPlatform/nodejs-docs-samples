@@ -16,7 +16,14 @@
 
 'use strict';
 
-async function main(diskName, region, zone1, zone2) {
+async function main(
+  diskName,
+  region,
+  zone1,
+  zone2,
+  diskTypeName = 'pd-standard',
+  diskSizeGb = 200
+) {
   // [START compute_disk_regional_replicated]
   // Import the Compute library
   const computeLib = require('@google-cloud/compute');
@@ -46,16 +53,18 @@ async function main(diskName, region, zone1, zone2) {
 
   // The type of replicated disk.
   // The default value is `pd-standard`. For Hyperdisk, specify the value `hyperdisk-balanced-high-availability`.
-  const diskType = `regions/${region}/diskTypes/pd-standard`;
+  // diskTypeName = 'pd-standard';
+  const diskType = `regions/${region}/diskTypes/${diskTypeName}`;
 
   // The size of the new disk in gigabytes.
-  const diskSizeGb = 200;
+  // diskSizeGb = 200;
+  const sizeGb = Number(diskSizeGb);
 
   // Create a secondary disk identical to the primary disk.
   async function callCreateRegionalDiskReplicated() {
     // Create a replicated disk
     const disk = new compute.Disk({
-      sizeGb: diskSizeGb,
+      sizeGb,
       name: diskName,
       region,
       type: diskType,
@@ -80,6 +89,12 @@ async function main(diskName, region, zone1, zone2) {
         project: projectId,
         region,
       });
+    }
+
+    if (operation.error) {
+      throw new Error(
+        operation.error.errors.map(e => `${e.code}: ${e.message}`).join('; ')
+      );
     }
 
     console.log(`Regional replicated disk: ${diskName} created.`);

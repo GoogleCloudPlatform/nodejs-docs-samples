@@ -14,7 +14,30 @@
 
 const express = require('express');
 const {redisClient, getRoomFromCache, addMessageToCache} = require('./redis');
-const {addUser, getUser, deleteUser} = require('./users');
+const {addUser, getUser, deleteUser, validateMessage} = require('./users');
+
+const MAX_HTTP_BUFFER_SIZE = 1e4; // 10 KB
+const RATE_LIMIT_WINDOW_MS = 10000; // 10 seconds
+const RATE_LIMIT_MAX_MESSAGES = 20;
+
+// Sliding-window rate limiter scoped to a single socket connection
+function createRateLimiter(
+  maxMessages = RATE_LIMIT_MAX_MESSAGES,
+  windowMs = RATE_LIMIT_WINDOW_MS
+) {
+  const timestamps = [];
+  return () => {
+    const now = Date.now();
+    while (timestamps.length > 0 && now - timestamps[0] >= windowMs) {
+      timestamps.shift();
+    }
+    if (timestamps.length >= maxMessages) {
+      return false;
+    }
+    timestamps.push(now);
+    return true;
+  };
+}
 
 const app = express();
 app.use(express.static(__dirname + '/public'));
@@ -27,7 +50,9 @@ app.get('/', async (req, res) => {
 // [START cloudrun_websockets_server]
 // Initialize Socket.io
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  maxHttpBufferSize: MAX_HTTP_BUFFER_SIZE,
+});
 
 // [START cloudrun_websockets_redis_adapter]
 const {createAdapter} = require('@socket.io/redis-adapter');
@@ -46,53 +71,91 @@ subClient.on('error', err => {
 
 // Listen for new connection
 io.on('connection', socket => {
+  const allowMessage = createRateLimiter();
+
   // Add listener for "signin" event
-  socket.on('signin', async ({user, room}, callback) => {
+  socket.on('signin', async (payload, callback) => {
+    const cb = typeof callback === 'function' ? callback : () => {};
     try {
+      const {user, room} =
+        payload && typeof payload === 'object' ? payload : {};
+      const previous = getUser(socket.id);
       // Record socket ID to user's name and chat room
-      addUser(socket.id, user, room);
+      const {user: sanitizedUser, room: sanitizedRoom} = addUser(
+        socket.id,
+        user,
+        room
+      );
+      if (previous.room && previous.room !== sanitizedRoom) {
+        socket.leave(previous.room);
+      }
       // Call join to subscribe the socket to a given channel
-      socket.join(room);
+      socket.join(sanitizedRoom);
       // Emit notification event
-      socket.in(room).emit('notification', {
+      socket.in(sanitizedRoom).emit('notification', {
         title: "Someone's here",
-        description: `${user} just entered the room`,
+        description: `${sanitizedUser} just entered the room`,
       });
       // Retrieve room's message history or return null
-      const messages = await getRoomFromCache(room);
+      const messages = await getRoomFromCache(sanitizedRoom);
       // Use the callback to respond with the room's message history
       // Callbacks are more commonly used for event listeners than promises
-      callback(null, messages);
+      cb(null, messages);
     } catch (err) {
-      callback(err, null);
+      cb(err.message || 'Sign-in failed.', null);
     }
   });
 
   // [START cloudrun_websockets_update_socket]
   // Add listener for "updateSocketId" event
-  socket.on('updateSocketId', async ({user, room}) => {
+  socket.on('updateSocketId', async (payload, callback) => {
+    const cb = typeof callback === 'function' ? callback : () => {};
     try {
-      addUser(socket.id, user, room);
-      socket.join(room);
+      const {user, room} =
+        payload && typeof payload === 'object' ? payload : {};
+      const previous = getUser(socket.id);
+      const {room: sanitizedRoom} = addUser(socket.id, user, room);
+      if (previous.room && previous.room !== sanitizedRoom) {
+        socket.leave(previous.room);
+      }
+      socket.join(sanitizedRoom);
+      cb(null);
     } catch (err) {
       console.error(err);
+      cb(err.message || 'Failed to update session.');
     }
   });
   // [END cloudrun_websockets_update_socket]
 
   // Add listener for "sendMessage" event
-  socket.on('sendMessage', (message, callback) => {
-    // Retrieve user's name and chat room  from socket ID
+  socket.on('sendMessage', async (message, callback) => {
+    const cb = typeof callback === 'function' ? callback : () => {};
+    // Retrieve user's name and chat room from socket ID
     const {user, room} = getUser(socket.id);
-    if (room) {
-      const msg = {user, text: message};
-      // Push message to clients in chat room
-      io.in(room).emit('message', msg);
-      addMessageToCache(room, msg);
-      callback();
-    } else {
-      callback('User session not found.');
+    if (!room) {
+      cb('User session not found.');
+      return;
     }
+    if (!allowMessage()) {
+      cb('Rate limit exceeded. Please wait before sending more messages.');
+      return;
+    }
+    let sanitizedMessage;
+    try {
+      sanitizedMessage = validateMessage(message);
+    } catch (err) {
+      cb(err.message);
+      return;
+    }
+    const msg = {user, text: sanitizedMessage};
+    // Push message to clients in chat room
+    io.in(room).emit('message', msg);
+    try {
+      await addMessageToCache(room, msg);
+    } catch (err) {
+      console.error(err);
+    }
+    cb();
   });
 
   // Add listener for disconnection

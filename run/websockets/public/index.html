@@ -33,13 +33,13 @@ limitations under the License.
         <h1>Please sign in</h1>
         <label class="name mdc-text-field mdc-text-field--filled">
             <span class="mdc-text-field__ripple"></span>
-            <input class="mdc-text-field__input" id="name" name="name" type="text" aria-labelledby="name-label" required>
+            <input class="mdc-text-field__input" id="name" name="name" type="text" maxlength="50" aria-labelledby="name-label" required>
             <span class="mdc-floating-label" id="name-label">Name</span>
             <span class="mdc-line-ripple"></span>
         </label>
         <label class="room mdc-text-field mdc-text-field--filled">
             <span class="mdc-text-field__ripple"></span>
-            <input class="mdc-text-field__input" id="room" name="room" type="text" aria-labelledby="room-label" required>
+            <input class="mdc-text-field__input" id="room" name="room" type="text" maxlength="50" aria-labelledby="room-label" required>
             <span class="mdc-floating-label" id="room-label">Room</span>
             <span class="mdc-line-ripple"></span>
         </label>
@@ -58,7 +58,7 @@ limitations under the License.
             <form id="chat">
                 <label class="mdc-text-field mdc-text-field--filled">
                     <span class="mdc-text-field__ripple"></span>
-                    <input class="mdc-text-field__input" id="msg" type="text" autocomplete="off">
+                    <input class="mdc-text-field__input" id="msg" type="text" maxlength="1000" autocomplete="off">
                     <span class="mdc-line-ripple"></span>
                 </label>
                 <div class="button-container">
@@ -73,7 +73,7 @@ limitations under the License.
     <!-- [START cloudrun_websockets_client] -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- [END cloudrun_websockets_client] -->
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.8.0.min.js" integrity="sha256-Qsm+tn0R947bY3ltDZv7B00PwaILR61y/Lf7Dz3Gpv4=" crossorigin="anonymous"></script>
     <script src="/index.js"></script>
 </body>
 

@@ -48,7 +48,7 @@ async function addMessageToCache(roomName, msg) {
   }
   await redisClient.set(roomName, JSON.stringify(room));
   // Insert message to the database as well
-  addMessageToDb(room);
+  await addMessageToDb(room);
 }
 
 // Query Redis for messages for a specific room

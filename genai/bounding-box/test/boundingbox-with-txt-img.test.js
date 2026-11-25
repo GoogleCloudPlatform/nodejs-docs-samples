@@ -19,10 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../boundingbox-with-txt-img');
+const {delay} = require('../../test/util');
 
 describe('boundingbox-with-txt-img', async () => {
   it('should return the bounding box', async function () {
-    this.timeout(100000);
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
     const output = await sample.createBoundingBox(projectId);
     assert(output.length > 0);
   });

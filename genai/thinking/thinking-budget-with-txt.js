@@ -31,7 +31,7 @@ async function generateWithThoughts(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: 'solve x^2 + 4x + 4 = 0',
     config: {
       thinkingConfig: {

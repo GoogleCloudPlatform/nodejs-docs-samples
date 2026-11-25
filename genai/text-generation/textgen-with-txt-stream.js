@@ -31,7 +31,7 @@ async function generateContent(
   });
 
   const response = await client.models.generateContentStream({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: 'Why is the sky blue?',
   });
 

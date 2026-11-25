@@ -32,7 +32,7 @@ async function countTokens(
   });
 
   const response = await client.models.computeTokens({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: "What's the longest word in the English language?",
   });
 

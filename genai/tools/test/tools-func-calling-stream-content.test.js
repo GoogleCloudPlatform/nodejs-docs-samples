@@ -21,7 +21,7 @@ const execSync = cmd => cp.execSync(cmd, {encoding: 'utf-8'});
 
 const projectId = process.env.GOOGLE_CLOUD_PROJECT;
 const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
-const model = 'gemini-2.5-flash';
+const model = 'gemini-3.8-flash';
 
 describe('tools-func-calling-stream-content', () => {
   /**
@@ -30,7 +30,7 @@ describe('tools-func-calling-stream-content', () => {
    */
   // const projectId = 'YOUR_PROJECT_ID';
   // const location = 'YOUR_LOCATION';
-  // const model = 'gemini-2.5-flash';
+  // const model = 'gemini-3.8-flash';
 
   it('should create stream chat and begin the conversation the same in each instance', async () => {
     const output = execSync(

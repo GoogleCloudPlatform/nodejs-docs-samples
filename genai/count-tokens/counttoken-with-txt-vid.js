@@ -38,7 +38,7 @@ async function countTokens(
   };
 
   const response = await client.models.countTokens({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: [video, 'Provide a description of the video.'],
   });
 

@@ -34,7 +34,7 @@ async function generateText(
     'Provide a concise summary of the main points in the audio file.';
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: [
       {
         fileData: {

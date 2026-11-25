@@ -36,7 +36,7 @@ async function generateContent(
   const url2 = 'https://cloud.google.com/docs/overview';
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: `Compare the content, purpose, and audiences of ${url1} and ${url2}.`,
     config: {
       tools: [{urlContext: {}}],

@@ -43,7 +43,7 @@ async function generateContent(
   const image2 = loadImageAsBase64(imagePath2);
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: [
       {
         role: 'user',

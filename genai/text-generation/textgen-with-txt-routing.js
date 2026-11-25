@@ -18,8 +18,7 @@
 const {GoogleGenAI, FeatureSelectionPreference} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION =
-  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 
 async function generateContent(
   projectId = GOOGLE_CLOUD_PROJECT,
@@ -38,7 +37,7 @@ async function generateContent(
   };
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: 'How does AI work?',
     config: generateContentConfig,
   });

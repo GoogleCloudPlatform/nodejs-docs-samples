@@ -35,7 +35,7 @@ async function createTuningJob(
   }
 
   let tuningJob = await client.tunings.tune({
-    baseModel: 'gemini-2.5-flash',
+    baseModel: 'gemini-3.8-flash',
     trainingDataset: {
       gcsUri:
         'gs://cloud-samples-data/ai-platform/generative_ai/gemini/text/sft_train_data.jsonl',

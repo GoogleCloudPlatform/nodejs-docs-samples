@@ -60,7 +60,7 @@ async function generateContentCache(
   ];
 
   const contentCache = await client.caches.create({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     config: {
       contents: contents,
       systemInstruction: systemInstruction,

@@ -31,7 +31,7 @@ async function generateAndExecuteCode(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents:
       'Calculate 20th fibonacci number. Then find the nearest palindrome to it.',
     config: {

@@ -40,7 +40,7 @@ async function generateText(
   };
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash-lite',
+    model: 'gemini-3.8-flash',
     contents: [ytVideo, prompt],
     config: {
       mediaResolution: 'MEDIA_RESOLUTION_LOW',

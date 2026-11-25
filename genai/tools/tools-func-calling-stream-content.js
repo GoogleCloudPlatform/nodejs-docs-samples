@@ -48,8 +48,8 @@ const functionResponseParts = [
  */
 async function functionCallingStreamContent(
   projectId = 'PROJECT_ID',
-  location = 'us-central1',
-  model = 'gemini-2.5-flash'
+  location = 'global',
+  model = 'gemini-3.8-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({
@@ -58,19 +58,22 @@ async function functionCallingStreamContent(
     location: location,
   });
 
+  const userTurn = {
+    role: 'user',
+    parts: [{text: 'What is the weather in Boston?'}],
+  };
+
+  // First turn: let the model request the function call so its response
+  // preserves the thought signature required by Gemini 3.8.
+  const firstResponse = await client.models.generateContent({
+    model: model,
+    contents: [userTurn],
+    config: {tools: tools},
+  });
+
   const request = [
-    {role: 'user', parts: [{text: 'What is the weather in Boston?'}]},
-    {
-      role: 'model',
-      parts: [
-        {
-          functionCall: {
-            name: 'get_current_weather',
-            args: {location: 'Boston'},
-          },
-        },
-      ],
-    },
+    userTurn,
+    firstResponse.candidates[0].content,
     {role: 'user', parts: functionResponseParts},
   ];
 

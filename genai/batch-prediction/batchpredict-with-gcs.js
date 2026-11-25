@@ -18,8 +18,7 @@
 const {GoogleGenAI} = require('@google/genai');
 
 const GOOGLE_CLOUD_PROJECT = process.env.GOOGLE_CLOUD_PROJECT;
-const GOOGLE_CLOUD_LOCATION =
-  process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const GOOGLE_CLOUD_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'global';
 const OUTPUT_URI = 'gs://your-bucket/your-prefix';
 
 async function runBatchPredictionJob(
@@ -40,7 +39,7 @@ async function runBatchPredictionJob(
   let job = await client.batches.create({
     // To use a tuned model, set the model param to your tuned model using the following format:
     // model="projects/{PROJECT_ID}/locations/{LOCATION}/models/{MODEL_ID}"
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     // Source link: https://storage.cloud.google.com/cloud-samples-data/batch/prompt_for_batch_gemini_predict.jsonl
     src: 'gs://cloud-samples-data/batch/prompt_for_batch_gemini_predict.jsonl',
     config: {

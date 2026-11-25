@@ -31,7 +31,7 @@ async function generateText(
   });
 
   const chatSession = client.chats.create({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
   });
 
   for await (const chunk of await chatSession.sendMessageStream({

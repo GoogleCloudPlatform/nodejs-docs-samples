@@ -54,7 +54,7 @@ async function generateNestedClassSchema(
   }
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents:
       'List about 10 home-baked cookies and give them grades based on tastiness.',
     config: {

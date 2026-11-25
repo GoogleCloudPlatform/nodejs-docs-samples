@@ -31,7 +31,7 @@ async function generateContent(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-3.8-flash',
     contents: 'How does AI work?',
   });
 

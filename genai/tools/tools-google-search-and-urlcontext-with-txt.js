@@ -35,7 +35,7 @@ async function generateContent(
   const url = 'https://www.google.com/search?q=events+in+New+York';
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: `Give me a three-day events schedule based on ${url}. Also let me know what to take care of considering weather and commute.`,
     config: {
       tools: [{urlContext: {}}, {googleSearch: {}}],

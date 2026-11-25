@@ -19,7 +19,7 @@ const {describe, it} = require('mocha');
 const proxyquire = require('proxyquire');
 
 const projectId = process.env.CAIP_PROJECT_ID;
-const location = 'us-central1';
+const location = 'global';
 const {delay} = require('../../test/util');
 const {GoogleGenAI_Mock} = require('./batchprediction-utils');
 

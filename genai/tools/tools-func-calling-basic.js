@@ -42,8 +42,8 @@ const tools = [
  */
 async function functionCallingBasic(
   projectId = 'PROJECT_ID',
-  location = 'us-central1',
-  model = 'gemini-2.5-flash'
+  location = 'global',
+  model = 'gemini-3.8-flash'
 ) {
   // Initialize client with your Cloud project and location
   const client = new GoogleGenAI({

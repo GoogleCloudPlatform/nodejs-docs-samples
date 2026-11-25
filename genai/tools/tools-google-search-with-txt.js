@@ -31,7 +31,7 @@ async function generateGoogleSearch(
   });
 
   const response = await client.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     contents: 'When is the next total solar eclipse in the United States?',
     config: {
       tools: [

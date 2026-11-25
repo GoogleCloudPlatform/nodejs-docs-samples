@@ -19,10 +19,13 @@ const {describe, it} = require('mocha');
 
 const projectId = process.env.CAIP_PROJECT_ID;
 const sample = require('../ctrlgen-with-resp-schema.js');
+const {delay} = require('../../test/util');
 
 describe('ctrlgen-with-resp-schema', () => {
   it('should generate text content in given schema', async function () {
-    this.timeout(10000);
+    this.timeout(180000);
+    this.retries(4);
+    await delay(this.test);
     const output = await sample.generateResponseSchema(projectId);
     assert(output.length > 0 && output.includes('Cookies'));
   });

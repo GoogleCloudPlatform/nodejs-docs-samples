@@ -71,6 +71,10 @@ async function functionCallingStreamContent(
     config: {tools: tools},
   });
 
+  if (!firstResponse.candidates?.[0]?.content) {
+    throw new Error('No content returned from the model.');
+  }
+
   const request = [
     userTurn,
     firstResponse.candidates[0].content,

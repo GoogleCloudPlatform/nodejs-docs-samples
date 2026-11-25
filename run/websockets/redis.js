@@ -27,6 +27,8 @@ const redisClient = require('redis').createClient({
 })();
 // [END cloudrun_websockets_redis]
 
+const MAX_ROOM_MESSAGES = 100;
+
 // Insert new messages into the Redis cache
 async function addMessageToCache(roomName, msg) {
   // Check for current cache
@@ -40,6 +42,9 @@ async function addMessageToCache(roomName, msg) {
       room: roomName,
       messages: [msg],
     };
+  }
+  if (room.messages.length > MAX_ROOM_MESSAGES) {
+    room.messages = room.messages.slice(-MAX_ROOM_MESSAGES);
   }
   await redisClient.set(roomName, JSON.stringify(room));
   // Insert message to the database as well
@@ -99,6 +104,7 @@ function getRoomFromDatabase(roomName) {
 }
 
 module.exports = {
+  MAX_ROOM_MESSAGES,
   getRoomFromCache,
   addMessageToCache,
   redisClient,

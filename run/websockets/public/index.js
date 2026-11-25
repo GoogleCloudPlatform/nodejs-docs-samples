@@ -112,18 +112,40 @@ socket.io.on('reconnect', () => {
 
 // Add message history in chat room
 function addHistory(messages) {
+  if (!Array.isArray(messages)) {
+    return;
+  }
   messages.forEach(message => {
-    log(message.user, message.text);
+    if (message) {
+      log(message.user, message.text);
+    }
   });
+}
+
+// Coerce arbitrary values to plain text for safe DOM insertion
+function toText(value) {
+  return value === null || value === undefined ? '' : String(value);
 }
 
 // Helper function to set chatroom name
 function setChatroom(room) {
-  $('#chatroom h1').append(room);
+  const heading = document.querySelector('#chatroom h1');
+  if (heading) {
+    heading.textContent = toText(room);
+  }
 }
 
 // Helper function to print to chatroom
 function log(name, msg) {
-  $('#messages').append(`<li> <strong>${name}</strong>: ${msg}`);
+  const messagesList = document.querySelector('#messages');
+  if (!messagesList) {
+    return;
+  }
+  const item = document.createElement('li');
+  const sender = document.createElement('strong');
+  sender.textContent = toText(name);
+  item.appendChild(sender);
+  item.appendChild(document.createTextNode(`: ${toText(msg)}`));
+  messagesList.appendChild(item);
   window.scrollTo(0, document.body.scrollHeight);
 }

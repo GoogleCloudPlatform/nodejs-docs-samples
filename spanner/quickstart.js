@@ -16,24 +16,29 @@
 
 // [START spanner_quickstart]
 const {Spanner} = require('@google-cloud/spanner');
-const {status} = require('@grpc/grpc-js');
 
-// Creates a client using the ambient project ID or environment configuration
-const spanner = new Spanner();
+// gRPC status code 5 corresponds to NOT_FOUND.
+const GRPC_NOT_FOUND = 5;
 
 /**
- * Executes a query against a Cloud Spanner database.
+ * Executes a basic read-only `SELECT 1` query against a Cloud Spanner database.
  *
- * @param {string} projectId The project ID containing the Spanner instance (for example, 'example-project-id').
- * @param {string} instanceId The ID of the Spanner instance (for example, 'example-instance').
- * @param {string} databaseId The ID of the Spanner database (for example 'example-database').
+ * Precondition: `instanceId` and `databaseId` must exist in `projectId`, and
+ * Application Default Credentials must grant `roles/spanner.databaseUser` (or
+ * `roles/spanner.databaseReader`).
+ *
+ * @param {string} projectId Google Cloud project ID (e.g., 'example-project').
+ * @param {string} instanceId Spanner instance ID (e.g., 'example-instance').
+ * @param {string} databaseId Spanner database ID (e.g., 'example-database').
+ * @returns {Promise<void>} Resolves after printing rows and closing the client.
  */
 async function quickstart(projectId, instanceId, databaseId) {
-  try {
-    // Gets a reference to a Cloud Spanner instance and database
-    const instance = spanner.instance(instanceId);
-    const database = instance.database(databaseId);
+  // Pass projectId explicitly when provided; falls back to ambient credentials.
+  const spanner = new Spanner(projectId ? {projectId} : {});
+  const instance = spanner.instance(instanceId);
+  const database = instance.database(databaseId);
 
+  try {
     const query = {
       sql: 'SELECT 1',
     };
@@ -45,13 +50,19 @@ async function quickstart(projectId, instanceId, databaseId) {
       console.log(`  Row details: ${JSON.stringify(row)}`);
     });
   } catch (err) {
-    if (err.code === status.NOT_FOUND) {
+    // Recovery: NOT_FOUND (code 5) -> verify projectId, instanceId, databaseId.
+    if (err.code === GRPC_NOT_FOUND) {
       console.error(
-        `Resource not found. Please verify that instance '${instanceId}' and database '${databaseId}' exist under project '${projectId}'.`
+        `Resource not found. Verify that instance '${instanceId}' and ` +
+          `database '${databaseId}' exist under project '${projectId}'.`
       );
     } else {
       console.error('An unexpected error occurred during execution:', err);
     }
+    process.exitCode = 1;
+  } finally {
+    await database.close();
+    spanner.close();
   }
 }
 // [END spanner_quickstart]

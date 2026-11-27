@@ -18,18 +18,24 @@
 // creates a database using Database Admin Client
 async function createDatabase(instanceID, databaseID, projectID) {
   // [START spanner_create_database]
+  // Creates a GoogleSQL-dialect database with interleaved Singers and Albums
+  // tables.
+  // Precondition: instanceID must exist, and databaseID (2-30 lowercase chars
+  // matching [a-z][a-z0-9_\-]*[a-z0-9]) must not already exist.
+  // Recovery: ALREADY_EXISTS (code 6) -> reuse the database or choose a new ID;
+  // NOT_FOUND (code 5) -> verify projectID and instanceID.
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
    */
-  // const projectId = 'my-project-id';
-  // const instanceId = 'my-instance';
-  // const databaseId = 'my-database';
+  // const projectID = 'my-project-id';
+  // const instanceID = 'my-instance';
+  // const databaseID = 'my-database';
 
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
-  // creates a client
+  // Creates a client
   const spanner = new Spanner({
     projectId: projectID,
   });
@@ -69,6 +75,10 @@ async function createDatabase(instanceID, databaseID, projectID) {
     console.log(`Created database ${databaseID} on instance ${instanceID}.`);
   } catch (err) {
     console.error('Failed to create database:', err.message || err);
+    process.exitCode = 1;
+  } finally {
+    // Closing the Spanner client also closes its DatabaseAdminClient channels.
+    spanner.close();
   }
 
   // [END spanner_create_database]
@@ -76,6 +86,11 @@ async function createDatabase(instanceID, databaseID, projectID) {
 
 async function addColumn(instanceId, databaseId, projectId) {
   // [START spanner_add_column]
+  // Adds a nullable MarketingBudget INT64 column to the Albums table.
+  // Precondition: the Albums table must exist and must not already define
+  // MarketingBudget.
+  // Recovery: FAILED_PRECONDITION (code 9) or INVALID_ARGUMENT (code 3) ->
+  // verify that Albums exists and MarketingBudget has not already been added.
 
   /**
    * TODO(developer): Uncomment the following lines before running the sample.
@@ -87,14 +102,14 @@ async function addColumn(instanceId, databaseId, projectId) {
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
-  // creates a client
+  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
 
   const databaseAdminClient = spanner.getDatabaseAdminClient();
 
-  // Creates a new index in the database
+  // Adds a new MarketingBudget column to the Albums table
   try {
     const [operation] = await databaseAdminClient.updateDatabaseDdl({
       database: databaseAdminClient.databasePath(
@@ -111,9 +126,9 @@ async function addColumn(instanceId, databaseId, projectId) {
     console.log('Added the MarketingBudget column.');
   } catch (err) {
     console.error('Failed to add column:', err.message || err);
+    process.exitCode = 1;
   } finally {
-    // Close the spanner client when finished.
-    // The databaseAdminClient does not require explicit closure. The closure of the Spanner client will automatically close the databaseAdminClient.
+    // Closing the Spanner client automatically closes databaseAdminClient.
     spanner.close();
   }
 
@@ -122,10 +137,11 @@ async function addColumn(instanceId, databaseId, projectId) {
 
 async function queryDataWithNewColumn(instanceId, databaseId, projectId) {
   // [START spanner_query_data_with_new_column]
-  // This sample uses the `MarketingBudget` column. You can add the column
-  // by running the `add_column` sample or by running this DDL statement against
-  // your database:
-  //    ALTER TABLE Albums ADD COLUMN MarketingBudget INT64
+  // Queries SingerId, AlbumId, and nullable MarketingBudget from all Albums
+  // rows in a single-use read-only context.
+  // Precondition: MarketingBudget must exist on Albums (run addColumn or
+  // `ALTER TABLE Albums ADD COLUMN MarketingBudget INT64` first).
+  // Recovery: INVALID_ARGUMENT (code 3) -> add the MarketingBudget column first.
 
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
@@ -160,13 +176,12 @@ async function queryDataWithNewColumn(instanceId, databaseId, projectId) {
       console.log(
         `SingerId: ${json.SingerId}, AlbumId: ${
           json.AlbumId
-        }, MarketingBudget: ${
-          json.MarketingBudget ? json.MarketingBudget : null
-        }`
+        }, MarketingBudget: ${json.MarketingBudget ?? null}`
       );
     });
   } catch (err) {
     console.error('Failed to query data with new column:', err.message || err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();

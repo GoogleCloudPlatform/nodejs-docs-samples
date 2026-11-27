@@ -18,12 +18,20 @@
 
 'use strict';
 
-function main(
+async function main(
   instanceId = 'my-instance',
   databaseId = 'my-database',
   projectId = 'my-project-id'
 ) {
   // [START spanner_create_storing_index]
+  // Creates the AlbumsByAlbumTitle2 secondary index with `STORING
+  // (MarketingBudget)` so index reads can return MarketingBudget without a
+  // base-table join.
+  // Precondition: Albums and its MarketingBudget column must exist, and
+  // AlbumsByAlbumTitle2 must not already exist.
+  // Recovery: FAILED_PRECONDITION (code 9) or INVALID_ARGUMENT (code 3) ->
+  // ensure MarketingBudget exists and AlbumsByAlbumTitle2 does not.
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -34,7 +42,7 @@ function main(
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
-  // creates a client
+  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
@@ -46,7 +54,7 @@ function main(
       'CREATE INDEX AlbumsByAlbumTitle2 ON Albums(AlbumTitle) STORING (MarketingBudget)',
     ];
 
-    // Creates a new index in the database
+    // Creates a new value-storing index in the database
     try {
       const [operation] = await databaseAdminClient.updateDatabaseDdl({
         database: databaseAdminClient.databasePath(
@@ -63,13 +71,13 @@ function main(
       console.log('Added the AlbumsByAlbumTitle2 index.');
     } catch (err) {
       console.error('Failed to create storing index:', err.message || err);
+      process.exitCode = 1;
     } finally {
-      // Close the spanner client when finished.
-      // The databaseAdminClient does not require explicit closure. The closure of the Spanner client will automatically close the databaseAdminClient.
+      // Closing the Spanner client automatically closes databaseAdminClient.
       spanner.close();
     }
   }
-  createStoringIndex();
+  await createStoringIndex();
   // [END spanner_create_storing_index]
 }
 

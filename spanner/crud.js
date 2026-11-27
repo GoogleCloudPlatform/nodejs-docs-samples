@@ -19,6 +19,13 @@
 
 async function updateData(instanceId, databaseId, projectId) {
   // [START spanner_update_data]
+  // Updates MarketingBudget for Albums keys (1, 1) and (2, 2) using mutations.
+  // Precondition: the MarketingBudget column (see addColumn) and rows (1, 1)
+  // and (2, 2) must already exist in Albums.
+  // Recovery: NOT_FOUND (code 5) -> insert target rows first or use
+  // `albumsTable.upsert(...)`; INVALID_ARGUMENT (code 3) -> add MarketingBudget
+  // first.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -38,9 +45,9 @@ async function updateData(instanceId, databaseId, projectId) {
   const instance = spanner.instance(instanceId);
   const database = instance.database(databaseId);
 
-  // Update a row in the Albums table
-  // Note: Cloud Spanner interprets Node.js numbers as FLOAT64s, so they
-  // must be converted to strings before being inserted as INT64s
+  // Update rows in the Albums table.
+  // Note: Cloud Spanner interprets Node.js numbers as FLOAT64, so pass INT64
+  // values as strings.
   const albumsTable = database.table('Albums');
 
   try {
@@ -51,6 +58,7 @@ async function updateData(instanceId, databaseId, projectId) {
     console.log('Updated data.');
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();
@@ -60,6 +68,12 @@ async function updateData(instanceId, databaseId, projectId) {
 
 async function insertData(instanceId, databaseId, projectId) {
   // [START spanner_insert_data]
+  // Inserts sample Singers and interleaved Albums rows using table mutations.
+  // Precondition: Singers and Albums tables must exist, and these primary keys
+  // must not already exist. Insert parent Singers rows before child Albums.
+  // Recovery: ALREADY_EXISTS (code 6) -> use `upsert(...)` to overwrite
+  // existing keys; NOT_FOUND (code 5) -> create the tables first.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -83,9 +97,9 @@ async function insertData(instanceId, databaseId, projectId) {
   const singersTable = database.table('Singers');
   const albumsTable = database.table('Albums');
 
-  // Inserts rows into the Singers table
-  // Note: Cloud Spanner interprets Node.js numbers as FLOAT64s, so
-  // they must be converted to strings before being inserted as INT64s
+  // Inserts rows into the Singers and Albums tables.
+  // Note: Cloud Spanner interprets Node.js numbers as FLOAT64, so pass INT64
+  // values as strings.
   try {
     await singersTable.insert([
       {SingerId: '1', FirstName: 'Marc', LastName: 'Richards'},
@@ -106,6 +120,7 @@ async function insertData(instanceId, databaseId, projectId) {
     console.log('Inserted data.');
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     await database.close();
   }
@@ -186,6 +201,12 @@ async function deleteData(instanceId, databaseId, projectId) {
 
 async function queryData(instanceId, databaseId, projectId) {
   // [START spanner_query_data]
+  // Queries SingerId, AlbumId, and AlbumTitle from all Albums rows in a
+  // single-use read-only context.
+  // Precondition: the Albums table must exist.
+  // Recovery: INVALID_ARGUMENT (code 3) or NOT_FOUND (code 5) -> verify that
+  // the database and Albums table exist.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -221,6 +242,7 @@ async function queryData(instanceId, databaseId, projectId) {
     });
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();
@@ -230,6 +252,12 @@ async function queryData(instanceId, databaseId, projectId) {
 
 async function readData(instanceId, databaseId, projectId) {
   // [START spanner_read_data]
+  // Reads SingerId, AlbumId, and AlbumTitle from all Albums rows using the
+  // key-value Read API (`keySet: {all: true}`) without SQL parsing overhead.
+  // Precondition: the Albums table must exist.
+  // Recovery: NOT_FOUND (code 5) -> verify that the database and Albums table
+  // exist.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -270,6 +298,7 @@ async function readData(instanceId, databaseId, projectId) {
     });
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();

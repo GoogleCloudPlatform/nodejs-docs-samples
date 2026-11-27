@@ -18,12 +18,19 @@
 
 'use strict';
 
-function main(
+async function main(
   instanceId = 'my-instance',
   databaseId = 'my-database',
   projectId = 'my-project-id'
 ) {
   // [START spanner_read_data_with_index]
+  // Reads AlbumId and AlbumTitle in AlbumTitle order using the
+  // AlbumsByAlbumTitle secondary index.
+  // Precondition: the AlbumsByAlbumTitle index must exist on Albums (run
+  // `index-create.js` first).
+  // Recovery: INVALID_ARGUMENT (code 3) or NOT_FOUND (code 5) -> create the
+  // AlbumsByAlbumTitle index first.
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -64,12 +71,13 @@ function main(
       });
     } catch (err) {
       console.error('ERROR:', err);
+      process.exitCode = 1;
     } finally {
       // Close the database when finished.
       await database.close();
     }
   }
-  readDataWithIndex();
+  await readDataWithIndex();
   // [END spanner_read_data_with_index]
 }
 

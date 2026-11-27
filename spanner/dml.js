@@ -280,6 +280,13 @@ async function updateUsingDmlWithStruct(instanceId, databaseId, projectId) {
 
 async function writeUsingDml(instanceId, databaseId, projectId) {
   // [START spanner_dml_getting_started_insert]
+  // Inserts four Singers rows inside a read-write transaction using DML.
+  // Precondition: the Singers table must exist, and SingerId keys 12..15 must
+  // not already exist. `runTransactionAsync` automatically retries on ABORTED,
+  // so keep the transaction callback idempotent and free of side effects.
+  // Recovery: ALREADY_EXISTS (code 6) -> one or more SingerId keys exist;
+  // NOT_FOUND (code 5) -> create the Singers table first.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -301,18 +308,24 @@ async function writeUsingDml(instanceId, databaseId, projectId) {
 
   try {
     await database.runTransactionAsync(async transaction => {
-      const [rowCount] = await transaction.runUpdate({
-        sql: `INSERT Singers (SingerId, FirstName, LastName) VALUES
-        (12, 'Melissa', 'Garcia'),
-        (13, 'Russell', 'Morales'),
-        (14, 'Jacqueline', 'Long'),
-        (15, 'Dylan', 'Shaw')`,
-      });
-      console.log(`${rowCount} records inserted.`);
-      await transaction.commit();
+      try {
+        const [rowCount] = await transaction.runUpdate({
+          sql: `INSERT Singers (SingerId, FirstName, LastName) VALUES
+          (12, 'Melissa', 'Garcia'),
+          (13, 'Russell', 'Morales'),
+          (14, 'Jacqueline', 'Long'),
+          (15, 'Dylan', 'Shaw')`,
+        });
+        console.log(`${rowCount} records inserted.`);
+        await transaction.commit();
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
     });
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();
@@ -322,6 +335,14 @@ async function writeUsingDml(instanceId, databaseId, projectId) {
 
 async function queryDataWithParameter(instanceId, databaseId, projectId) {
   // [START spanner_query_with_parameter]
+  // Queries Singers rows matching a bound `@lastName` parameter in a
+  // single-use read-only context.
+  // Precondition: the Singers table must exist. Binding `@lastName` via
+  // `params` prevents SQL injection and lets Spanner cache the query plan
+  // (also pass `types: {lastName: 'string'}` if the value could be `null`).
+  // Recovery: INVALID_ARGUMENT (code 3) or NOT_FOUND (code 5) -> verify that
+  // Singers exists and parameter types match column types.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -349,7 +370,7 @@ async function queryDataWithParameter(instanceId, databaseId, projectId) {
     },
   };
 
-  // Queries rows from the Albums table
+  // Queries rows from the Singers table
   try {
     const [rows] = await database.run(query);
 
@@ -361,6 +382,7 @@ async function queryDataWithParameter(instanceId, databaseId, projectId) {
     });
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
     await database.close();
@@ -370,10 +392,13 @@ async function queryDataWithParameter(instanceId, databaseId, projectId) {
 
 async function writeWithTransactionUsingDml(instanceId, databaseId, projectId) {
   // [START spanner_dml_getting_started_update]
-  // This sample transfers 200,000 from the MarketingBudget field
-  // of the second Album to the first Album, as long as the second
-  // Album has enough money in its budget. Make sure to run the
-  // addColumn and updateData samples first (in that order).
+  // Transfers 200,000 of MarketingBudget from Album (2, 2) to Album (1, 1)
+  // atomically using parameterized DML inside a read-write transaction.
+  // Precondition: run `addColumn` and `updateData` first so MarketingBudget
+  // exists and Album (2, 2) has at least 200,000. `runTransactionAsync`
+  // retries automatically on ABORTED.
+  // Recovery: INVALID_ARGUMENT (code 3) -> add MarketingBudget first;
+  // insufficient budget or missing rows -> seed rows via insertData/updateData.
 
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
@@ -398,64 +423,76 @@ async function writeWithTransactionUsingDml(instanceId, databaseId, projectId) {
 
   try {
     await database.runTransactionAsync(async transaction => {
-      let firstBudget, secondBudget;
-      const queryOne = `SELECT MarketingBudget FROM Albums
-        WHERE SingerId = 2 AND AlbumId = 2`;
+      try {
+        const queryOne = `SELECT MarketingBudget FROM Albums
+          WHERE SingerId = 2 AND AlbumId = 2`;
+        const queryTwo = `SELECT MarketingBudget FROM Albums
+          WHERE SingerId = 1 AND AlbumId = 1`;
 
-      const queryTwo = `SELECT MarketingBudget FROM Albums
-      WHERE SingerId = 1 AND AlbumId = 1`;
+        // Reads the second album's budget
+        const [resultsOne] = await transaction.run(queryOne);
+        const rowsOne = resultsOne.map(row => row.toJSON());
+        if (rowsOne.length === 0) {
+          throw new Error('Album (SingerId=2, AlbumId=2) was not found.');
+        }
+        let secondBudget = rowsOne[0].MarketingBudget ?? 0;
+        console.log(`The second album's marketing budget: ${secondBudget}`);
 
-      // Reads the second album's budget
-      const [resultsOne] = await transaction.run(queryOne);
-      const rowsOne = resultsOne.map(row => row.toJSON());
-      secondBudget = rowsOne[0].MarketingBudget;
-      console.log(`The second album's marketing budget: ${secondBudget}`);
+        // Ensures the second album's budget covers the transfer
+        if (secondBudget < transferAmount) {
+          throw new Error(
+            `The second album's budget (${secondBudget}) is less than the ` +
+              `transfer amount (${transferAmount}).`
+          );
+        }
 
-      // Makes sure the second album's budget is large enough
-      if (secondBudget < transferAmount) {
-        throw new Error(
-          `The second album's budget (${secondBudget}) is less than the transfer amount (${transferAmount}).`
+        // Reads the first album's budget
+        const [resultsTwo] = await transaction.run(queryTwo);
+        const rowsTwo = resultsTwo.map(row => row.toJSON());
+        if (rowsTwo.length === 0) {
+          throw new Error('Album (SingerId=1, AlbumId=1) was not found.');
+        }
+        let firstBudget = rowsTwo[0].MarketingBudget ?? 0;
+        console.log(`The first album's marketing budget: ${firstBudget}`);
+
+        // Transfers the budgets between the albums
+        console.log(firstBudget, secondBudget);
+        firstBudget += transferAmount;
+        secondBudget -= transferAmount;
+        console.log(firstBudget, secondBudget);
+
+        // Updates both rows atomically inside the same transaction
+        await transaction.runUpdate({
+          sql: `UPDATE Albums SET MarketingBudget = @Budget
+                WHERE SingerId = 1 and AlbumId = 1`,
+          params: {
+            Budget: firstBudget,
+          },
+        });
+
+        await transaction.runUpdate({
+          sql: `UPDATE Albums SET MarketingBudget = @Budget
+                WHERE SingerId = 2 and AlbumId = 2`,
+          params: {
+            Budget: secondBudget,
+          },
+        });
+
+        // Commits the transaction
+        await transaction.commit();
+
+        console.log(
+          'Successfully executed read-write transaction using DML to ' +
+            `transfer ${transferAmount} from Album 2 to Album 1.`
         );
+      } catch (err) {
+        await transaction.rollback();
+        throw err;
       }
-
-      // Reads the first album's budget
-      const [resultsTwo] = await transaction.run(queryTwo);
-      const rowsTwo = resultsTwo.map(row => row.toJSON());
-      firstBudget = rowsTwo[0].MarketingBudget;
-      console.log(`The first album's marketing budget: ${firstBudget}`);
-
-      // Transfers the budgets between the albums
-      console.log(firstBudget, secondBudget);
-      firstBudget += transferAmount;
-      secondBudget -= transferAmount;
-      console.log(firstBudget, secondBudget);
-
-      // Updates the database
-      await transaction.runUpdate({
-        sql: `UPDATE Albums SET MarketingBudget = @Budget
-              WHERE SingerId = 1 and AlbumId = 1`,
-        params: {
-          Budget: firstBudget,
-        },
-      });
-
-      await transaction.runUpdate({
-        sql: `UPDATE Albums SET MarketingBudget = @Budget
-              WHERE SingerId = 2 and AlbumId = 2`,
-        params: {
-          Budget: secondBudget,
-        },
-      });
-
-      // Commits the transaction and send the changes to the database
-      await transaction.commit();
-
-      console.log(
-        `Successfully executed read-write transaction using DML to transfer ${transferAmount} from Album 2 to Album 1.`
-      );
     });
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Closes the database when finished
     await database.close();

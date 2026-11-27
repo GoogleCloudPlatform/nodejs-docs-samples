@@ -24,6 +24,13 @@ async function main(
   projectId = 'my-project-id'
 ) {
   // [START spanner_read_data_with_storing_index]
+  // Reads AlbumId, AlbumTitle, and MarketingBudget directly from the
+  // AlbumsByAlbumTitle2 storing index without joining the base Albums table.
+  // Precondition: the AlbumsByAlbumTitle2 index with `STORING
+  // (MarketingBudget)` must exist (run `index-create-storing.js` first).
+  // Recovery: INVALID_ARGUMENT (code 3) or NOT_FOUND (code 5) -> create the
+  // AlbumsByAlbumTitle2 storing index first.
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -39,9 +46,8 @@ async function main(
     projectId: projectId,
   });
 
-  // "Storing" indexes store copies of the columns they index
-  // This speeds up queries, but takes more space compared to normal indexes
-  // See the link below for more information:
+  // Storing indexes store copies of non-key columns to speed up reads at the
+  // cost of extra storage:
   // https://cloud.google.com/spanner/docs/secondary-indexes#storing_clause
   async function readDataWithStoringIndex() {
     // Gets a reference to a Cloud Spanner instance and database
@@ -66,13 +72,17 @@ async function main(
         const json = row.toJSON();
         let rowString = `AlbumId: ${json.AlbumId}`;
         rowString += `, AlbumTitle: ${json.AlbumTitle}`;
-        if (json.MarketingBudget) {
+        if (
+          json.MarketingBudget !== null &&
+          json.MarketingBudget !== undefined
+        ) {
           rowString += `, MarketingBudget: ${json.MarketingBudget}`;
         }
         console.log(rowString);
       });
     } catch (err) {
       console.error('ERROR:', err);
+      process.exitCode = 1;
     } finally {
       // Close the database when finished.
       await database.close();

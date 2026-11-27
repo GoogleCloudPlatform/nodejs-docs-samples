@@ -16,6 +16,13 @@
 
 async function readOnlyTransaction(instanceId, databaseId, projectId) {
   // [START spanner_read_only_transaction]
+  // Executes a SQL query and a key-value read against Albums at a single
+  // consistent snapshot timestamp using `database.getSnapshot()`.
+  // Precondition: the Albums table must exist. Always call `transaction.end()`
+  // when done with a multi-use snapshot and `await database.close()` on exit.
+  // Recovery: NOT_FOUND (code 5) -> verify that the database and Albums table
+  // exist.
+
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
@@ -36,8 +43,7 @@ async function readOnlyTransaction(instanceId, databaseId, projectId) {
     const instance = spanner.instance(instanceId);
     database = instance.database(databaseId);
 
-    // Gets a transaction object that captures the database state
-    // at a specific point in time
+    // Gets a snapshot transaction that reads at a consistent point in time
     const [transaction] = await database.getSnapshot();
 
     try {
@@ -57,9 +63,8 @@ async function readOnlyTransaction(instanceId, databaseId, projectId) {
         columns: ['SingerId', 'AlbumId', 'AlbumTitle'],
       };
 
-      // Read #2, using the `read` method. Even if changes occur
-      // in-between the reads, the transaction ensures that both
-      // return the same data.
+      // Read #2, using `read`. Even if concurrent writes commit between the
+      // two calls, the snapshot guarantees both reads observe the same data.
       const [qTwoRows] = await transaction.read('Albums', queryTwo);
 
       qTwoRows.forEach(row => {
@@ -71,14 +76,17 @@ async function readOnlyTransaction(instanceId, databaseId, projectId) {
 
       console.log('Successfully executed read-only transaction.');
     } finally {
-      // Ensure the transaction is released
+      // Release the snapshot transaction resources
       transaction.end();
     }
   } catch (err) {
     console.error('ERROR:', err);
+    process.exitCode = 1;
   } finally {
     // Close the database when finished.
-    await database.close();
+    if (database) {
+      await database.close();
+    }
   }
   // [END spanner_read_only_transaction]
 }

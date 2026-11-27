@@ -18,12 +18,18 @@
 
 'use strict';
 
-function main(
+async function main(
   instanceId = 'my-instance',
   databaseId = 'my-database',
   projectId = 'my-project-id'
 ) {
   // [START spanner_create_index]
+  // Creates the AlbumsByAlbumTitle secondary index on Albums(AlbumTitle).
+  // Precondition: the Albums table must exist, and AlbumsByAlbumTitle must not
+  // already exist. `operation.promise()` waits until index backfill completes.
+  // Recovery: FAILED_PRECONDITION (code 9) or ALREADY_EXISTS (code 6) -> verify
+  // that Albums exists and AlbumsByAlbumTitle does not.
+
   /**
    * TODO(developer): Uncomment these variables before running the sample.
    */
@@ -34,7 +40,7 @@ function main(
   // Imports the Google Cloud client library
   const {Spanner} = require('@google-cloud/spanner');
 
-  // creates a client
+  // Creates a client
   const spanner = new Spanner({
     projectId: projectId,
   });
@@ -61,13 +67,13 @@ function main(
       console.log('Added the AlbumsByAlbumTitle index.');
     } catch (err) {
       console.error('Failed to create index:', err.message || err);
+      process.exitCode = 1;
     } finally {
-      // Close the spanner client when finished.
-      // The databaseAdminClient does not require explicit closure. The closure of the Spanner client will automatically close the databaseAdminClient.
+      // Closing the Spanner client automatically closes databaseAdminClient.
       spanner.close();
     }
   }
-  createIndex();
+  await createIndex();
   // [END spanner_create_index]
 }
 

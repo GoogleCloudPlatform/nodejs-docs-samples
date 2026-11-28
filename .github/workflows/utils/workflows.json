@@ -18,6 +18,7 @@
   "asset/snippets",
   "auth",
   "batch",
+  "cdn/signed-urls",
   "cloudbuild",
   "cloud-language",
   "cloud-tasks/snippets",

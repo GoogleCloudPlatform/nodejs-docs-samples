@@ -13,10 +13,10 @@
   },
   "devDependencies": {
     "c8": "^12.0.0",
-    "mocha": "^10.0.0",
-    "uuid": "^11.1.1"
+    "mocha": "^12.0.0",
+    "uuid": "^14.0.0"
   },
   "dependencies": {
-    "@googleapis/healthcare": "^26.0.0"
+    "@googleapis/healthcare": "^32.0.0"
   }
 }

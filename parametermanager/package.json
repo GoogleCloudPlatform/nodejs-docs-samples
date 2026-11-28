@@ -17,7 +17,9 @@
     "test": "test"
   },
   "dependencies": {
-    "@google-cloud/parametermanager": "^0.6.0"
+    "@google-cloud/parametermanager": "^0.9.0",
+    "@google-cloud/resource-manager": "^7.2.0",
+    "fast-crc32c": "^2.0.0"
   },
   "devDependencies": {
     "@google-cloud/kms": "^5.0.0",
